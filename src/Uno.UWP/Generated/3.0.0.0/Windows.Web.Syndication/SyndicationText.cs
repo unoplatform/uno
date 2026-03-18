@@ -164,12 +164,6 @@ namespace Windows.Web.Syndication
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationText.SyndicationText(string, Windows.Web.Syndication.SyndicationTextType)
-		// Forced skipping of method Windows.Web.Syndication.SyndicationText.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Syndication.SyndicationText.operator ==(Windows.Web.Syndication.SyndicationText, Windows.Web.Syndication.SyndicationText)
-		// Forced skipping of method Windows.Web.Syndication.SyndicationText.operator !=(Windows.Web.Syndication.SyndicationText, Windows.Web.Syndication.SyndicationText)
-		// Forced skipping of method Windows.Web.Syndication.SyndicationText.Equals(Windows.Web.Syndication.SyndicationText)
-		// Forced skipping of method Windows.Web.Syndication.SyndicationText.Equals(object)
-		// Forced skipping of method Windows.Web.Syndication.SyndicationText.GetHashCode()
 		// Forced skipping of method Windows.Web.Syndication.SyndicationText.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Syndication.SyndicationText.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Syndication.SyndicationText.WinRT.IWinRTObject.QueryInterfaceCache.get

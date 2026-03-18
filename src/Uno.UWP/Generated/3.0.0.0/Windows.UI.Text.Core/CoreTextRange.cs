@@ -17,11 +17,6 @@ namespace Windows.UI.Text.Core
 		}
 #endif
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.CoreTextRange(int, int)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.operator ==(Windows.UI.Text.Core.CoreTextRange, Windows.UI.Text.Core.CoreTextRange)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.operator !=(Windows.UI.Text.Core.CoreTextRange, Windows.UI.Text.Core.CoreTextRange)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.Equals(Windows.UI.Text.Core.CoreTextRange)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.Equals(object)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int StartCaretPosition;
 #endif

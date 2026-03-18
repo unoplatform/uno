@@ -53,12 +53,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.RegionsOfInterestControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.RegionsOfInterestControl.operator ==(Windows.Media.Devices.RegionsOfInterestControl, Windows.Media.Devices.RegionsOfInterestControl)
-		// Forced skipping of method Windows.Media.Devices.RegionsOfInterestControl.operator !=(Windows.Media.Devices.RegionsOfInterestControl, Windows.Media.Devices.RegionsOfInterestControl)
-		// Forced skipping of method Windows.Media.Devices.RegionsOfInterestControl.Equals(Windows.Media.Devices.RegionsOfInterestControl)
-		// Forced skipping of method Windows.Media.Devices.RegionsOfInterestControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.RegionsOfInterestControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.RegionsOfInterestControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.RegionsOfInterestControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.RegionsOfInterestControl.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -191,12 +191,6 @@ namespace Windows.UI.StartScreen
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.FromAbi(nint)
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.operator ==(Windows.UI.StartScreen.SecondaryTileVisualElements, Windows.UI.StartScreen.SecondaryTileVisualElements)
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.operator !=(Windows.UI.StartScreen.SecondaryTileVisualElements, Windows.UI.StartScreen.SecondaryTileVisualElements)
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Equals(Windows.UI.StartScreen.SecondaryTileVisualElements)
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Equals(object)
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.GetHashCode()
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.WinRT.IWinRTObject.QueryInterfaceCache.get

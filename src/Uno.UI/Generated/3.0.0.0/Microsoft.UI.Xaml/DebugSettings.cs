@@ -54,12 +54,6 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property LayoutCycleTracingLevel
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.operator ==(Microsoft.UI.Xaml.DebugSettings, Microsoft.UI.Xaml.DebugSettings)
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.operator !=(Microsoft.UI.Xaml.DebugSettings, Microsoft.UI.Xaml.DebugSettings)
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.Equals(Microsoft.UI.Xaml.DebugSettings)
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

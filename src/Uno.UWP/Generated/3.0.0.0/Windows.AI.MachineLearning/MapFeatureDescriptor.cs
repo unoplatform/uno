@@ -73,12 +73,6 @@ namespace Windows.AI.MachineLearning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.FromAbi(nint)
-		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.operator ==(Windows.AI.MachineLearning.MapFeatureDescriptor, Windows.AI.MachineLearning.MapFeatureDescriptor)
-		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.operator !=(Windows.AI.MachineLearning.MapFeatureDescriptor, Windows.AI.MachineLearning.MapFeatureDescriptor)
-		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.Equals(Windows.AI.MachineLearning.MapFeatureDescriptor)
-		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.Equals(object)
-		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.GetHashCode()
 		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get

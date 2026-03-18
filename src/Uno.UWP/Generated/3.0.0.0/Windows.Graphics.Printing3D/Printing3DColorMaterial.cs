@@ -44,12 +44,6 @@ namespace Windows.Graphics.Printing3D
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DColorMaterial.Printing3DColorMaterial()
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DColorMaterial.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DColorMaterial.operator ==(Windows.Graphics.Printing3D.Printing3DColorMaterial, Windows.Graphics.Printing3D.Printing3DColorMaterial)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DColorMaterial.operator !=(Windows.Graphics.Printing3D.Printing3DColorMaterial, Windows.Graphics.Printing3D.Printing3DColorMaterial)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DColorMaterial.Equals(Windows.Graphics.Printing3D.Printing3DColorMaterial)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DColorMaterial.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DColorMaterial.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DColorMaterial.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DColorMaterial.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DColorMaterial.WinRT.IWinRTObject.QueryInterfaceCache.get

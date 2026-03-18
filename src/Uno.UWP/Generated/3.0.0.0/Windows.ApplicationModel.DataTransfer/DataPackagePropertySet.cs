@@ -26,12 +26,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Skipping already declared property Square30x30Logo
 		// Skipping already declared property Thumbnail
 		// Skipping already declared property Title
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySet.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySet.operator ==(Windows.ApplicationModel.DataTransfer.DataPackagePropertySet, Windows.ApplicationModel.DataTransfer.DataPackagePropertySet)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySet.operator !=(Windows.ApplicationModel.DataTransfer.DataPackagePropertySet, Windows.ApplicationModel.DataTransfer.DataPackagePropertySet)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySet.Equals(Windows.ApplicationModel.DataTransfer.DataPackagePropertySet)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySet.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySet.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySet.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySet.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySet.WinRT.IWinRTObject.QueryInterfaceCache.get

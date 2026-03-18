@@ -23,12 +23,6 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.operator ==(Windows.Networking.Connectivity.NetworkItem, Windows.Networking.Connectivity.NetworkItem)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.operator !=(Windows.Networking.Connectivity.NetworkItem, Windows.Networking.Connectivity.NetworkItem)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.Equals(Windows.Networking.Connectivity.NetworkItem)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.Equals(object)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.GetHashCode()
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -30,12 +30,6 @@ namespace Windows.Security.Isolation
 		}
 #endif
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.IsolatedWindowsEnvironmentTelemetryParameters()
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.operator ==(Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters, Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.operator !=(Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters, Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.Equals(Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.Equals(object)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.GetHashCode()
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.WinRT.IWinRTObject.QueryInterfaceCache.get

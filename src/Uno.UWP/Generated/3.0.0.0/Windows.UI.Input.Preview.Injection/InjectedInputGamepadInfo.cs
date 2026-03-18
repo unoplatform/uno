@@ -122,12 +122,6 @@ namespace Windows.UI.Input.Preview.Injection
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.InjectedInputGamepadInfo(Windows.Gaming.Input.GamepadReading)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.operator ==(Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo, Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.operator !=(Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo, Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.Equals(Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -112,12 +112,6 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.ContactInstantMessageField(string, Windows.ApplicationModel.Contacts.ContactFieldCategory, string, string, System.Uri)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.operator ==(Windows.ApplicationModel.Contacts.ContactInstantMessageField, Windows.ApplicationModel.Contacts.ContactInstantMessageField)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.operator !=(Windows.ApplicationModel.Contacts.ContactInstantMessageField, Windows.ApplicationModel.Contacts.ContactInstantMessageField)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.Equals(Windows.ApplicationModel.Contacts.ContactInstantMessageField)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.WinRT.IWinRTObject.QueryInterfaceCache.get

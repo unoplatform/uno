@@ -33,12 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.operator ==(Microsoft.UI.Xaml.Controls.MapElementClickEventArgs, Microsoft.UI.Xaml.Controls.MapElementClickEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.operator !=(Microsoft.UI.Xaml.Controls.MapElementClickEventArgs, Microsoft.UI.Xaml.Controls.MapElementClickEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.Equals(Microsoft.UI.Xaml.Controls.MapElementClickEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

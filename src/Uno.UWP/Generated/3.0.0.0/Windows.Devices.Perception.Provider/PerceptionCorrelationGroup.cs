@@ -26,12 +26,6 @@ namespace Windows.Devices.Perception.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.PerceptionCorrelationGroup(System.Collections.Generic.IEnumerable<Windows.Devices.Perception.Provider.PerceptionCorrelation>)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.operator ==(Windows.Devices.Perception.Provider.PerceptionCorrelationGroup, Windows.Devices.Perception.Provider.PerceptionCorrelationGroup)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.operator !=(Windows.Devices.Perception.Provider.PerceptionCorrelationGroup, Windows.Devices.Perception.Provider.PerceptionCorrelationGroup)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.Equals(Windows.Devices.Perception.Provider.PerceptionCorrelationGroup)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -23,12 +23,6 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.operator ==(Windows.Perception.Spatial.SpatialEntityWatcher, Windows.Perception.Spatial.SpatialEntityWatcher)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.operator !=(Windows.Perception.Spatial.SpatialEntityWatcher, Windows.Perception.Spatial.SpatialEntityWatcher)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Equals(Windows.Perception.Spatial.SpatialEntityWatcher)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.GetHashCode()
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get

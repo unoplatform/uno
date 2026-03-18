@@ -268,12 +268,6 @@ namespace Windows.Media.Capture
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.MediaCaptureInitializationSettings()
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.operator ==(Windows.Media.Capture.MediaCaptureInitializationSettings, Windows.Media.Capture.MediaCaptureInitializationSettings)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.operator !=(Windows.Media.Capture.MediaCaptureInitializationSettings, Windows.Media.Capture.MediaCaptureInitializationSettings)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.Equals(Windows.Media.Capture.MediaCaptureInitializationSettings)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

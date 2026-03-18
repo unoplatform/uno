@@ -53,12 +53,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.PrintTaskSettingsActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.PrintTaskSettingsActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.PrintTaskSettingsActivatedEventArgs, Windows.ApplicationModel.Activation.PrintTaskSettingsActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.PrintTaskSettingsActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.PrintTaskSettingsActivatedEventArgs, Windows.ApplicationModel.Activation.PrintTaskSettingsActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.PrintTaskSettingsActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.PrintTaskSettingsActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.PrintTaskSettingsActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.PrintTaskSettingsActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.PrintTaskSettingsActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.PrintTaskSettingsActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.PrintTaskSettingsActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

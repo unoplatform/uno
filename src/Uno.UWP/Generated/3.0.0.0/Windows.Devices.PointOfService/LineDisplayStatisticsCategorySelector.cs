@@ -43,12 +43,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.operator ==(Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector, Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.operator !=(Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector, Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.Equals(Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.WinRT.IWinRTObject.QueryInterfaceCache.get

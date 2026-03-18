@@ -43,12 +43,6 @@ namespace Windows.System.Profile.SystemManufacturers
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.FromAbi(nint)
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.operator ==(Windows.System.Profile.SystemManufacturers.OemSupportInfo, Windows.System.Profile.SystemManufacturers.OemSupportInfo)
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.operator !=(Windows.System.Profile.SystemManufacturers.OemSupportInfo, Windows.System.Profile.SystemManufacturers.OemSupportInfo)
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.Equals(Windows.System.Profile.SystemManufacturers.OemSupportInfo)
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.Equals(object)
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.GetHashCode()
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -12,12 +12,6 @@ namespace Windows.Storage.Streams
 		// Skipping already declared property ErrorCode
 		// Skipping already declared property Id
 		// Skipping already declared property Status
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.operator ==(Windows.Storage.Streams.DataWriterStoreOperation, Windows.Storage.Streams.DataWriterStoreOperation)
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.operator !=(Windows.Storage.Streams.DataWriterStoreOperation, Windows.Storage.Streams.DataWriterStoreOperation)
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Equals(Windows.Storage.Streams.DataWriterStoreOperation)
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Equals(object)
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.GetHashCode()
 		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

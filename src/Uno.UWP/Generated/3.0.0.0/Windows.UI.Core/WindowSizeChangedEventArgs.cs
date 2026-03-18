@@ -10,12 +10,6 @@ namespace Windows.UI.Core
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property Size
-		// Forced skipping of method Windows.UI.Core.WindowSizeChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.WindowSizeChangedEventArgs.operator ==(Windows.UI.Core.WindowSizeChangedEventArgs, Windows.UI.Core.WindowSizeChangedEventArgs)
-		// Forced skipping of method Windows.UI.Core.WindowSizeChangedEventArgs.operator !=(Windows.UI.Core.WindowSizeChangedEventArgs, Windows.UI.Core.WindowSizeChangedEventArgs)
-		// Forced skipping of method Windows.UI.Core.WindowSizeChangedEventArgs.Equals(Windows.UI.Core.WindowSizeChangedEventArgs)
-		// Forced skipping of method Windows.UI.Core.WindowSizeChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Core.WindowSizeChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.WindowSizeChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.WindowSizeChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.WindowSizeChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

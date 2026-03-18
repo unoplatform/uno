@@ -78,7 +78,6 @@ namespace Windows.Devices.Lights.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.LampArrayEffectPlaylist()
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void StartAll(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.LampArrayEffectPlaylist> value)
@@ -100,12 +99,6 @@ namespace Windows.Devices.Lights.Effects
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "void LampArrayEffectPlaylist.PauseAll(IEnumerable<LampArrayEffectPlaylist> value)");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.operator ==(Windows.Devices.Lights.Effects.LampArrayEffectPlaylist, Windows.Devices.Lights.Effects.LampArrayEffectPlaylist)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.operator !=(Windows.Devices.Lights.Effects.LampArrayEffectPlaylist, Windows.Devices.Lights.Effects.LampArrayEffectPlaylist)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.Equals(Windows.Devices.Lights.Effects.LampArrayEffectPlaylist)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.Equals(object)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.GetHashCode()
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -266,7 +266,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Skipping already declared property Name
 		// Skipping already declared property TextDecorations
 		// Skipping already declared property XamlRoot
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.AccessKeyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.AccessKeyScopeOwnerProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.AllowFocusOnInteractionProperty.get
@@ -285,14 +284,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.KeyTipVerticalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.LanguageProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.TextDecorationsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.TextElement(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.operator ==(Microsoft.UI.Xaml.Documents.TextElement, Microsoft.UI.Xaml.Documents.TextElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.operator !=(Microsoft.UI.Xaml.Documents.TextElement, Microsoft.UI.Xaml.Documents.TextElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.Equals(Microsoft.UI.Xaml.Documents.TextElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.TextElement(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -315,7 +306,6 @@ namespace Microsoft.UI.Xaml.Documents
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextElement", "void TextElement.OnDisconnectVisualChildren()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.Microsoft.UI.Xaml.Documents.ITextElementOverrides.OnDisconnectVisualChildren()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.AccessKey.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.AccessKey.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.AccessKeyScopeOwner.get
@@ -359,7 +349,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.TextDecorations.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.XamlRoot.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.XamlRoot.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

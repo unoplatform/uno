@@ -63,12 +63,6 @@ namespace Windows.Security.Authentication.Identity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.operator ==(Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo, Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo)
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.operator !=(Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo, Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo)
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.Equals(Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo)
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.Equals(object)
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.GetHashCode()
 		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

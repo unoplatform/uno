@@ -51,7 +51,6 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.RadialController.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
@@ -66,12 +65,6 @@ namespace Windows.UI.Input
 			throw new global::System.NotImplementedException("The member RadialController RadialController.CreateForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialController%20RadialController.CreateForCurrentView%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.RadialController.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.RadialController.operator ==(Windows.UI.Input.RadialController, Windows.UI.Input.RadialController)
-		// Forced skipping of method Windows.UI.Input.RadialController.operator !=(Windows.UI.Input.RadialController, Windows.UI.Input.RadialController)
-		// Forced skipping of method Windows.UI.Input.RadialController.Equals(Windows.UI.Input.RadialController)
-		// Forced skipping of method Windows.UI.Input.RadialController.Equals(object)
-		// Forced skipping of method Windows.UI.Input.RadialController.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.RadialController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.RadialController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.RadialController.WinRT.IWinRTObject.QueryInterfaceCache.get

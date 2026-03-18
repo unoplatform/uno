@@ -33,12 +33,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.CapturedPhoto.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.CapturedPhoto.operator ==(Windows.Media.Capture.CapturedPhoto, Windows.Media.Capture.CapturedPhoto)
-		// Forced skipping of method Windows.Media.Capture.CapturedPhoto.operator !=(Windows.Media.Capture.CapturedPhoto, Windows.Media.Capture.CapturedPhoto)
-		// Forced skipping of method Windows.Media.Capture.CapturedPhoto.Equals(Windows.Media.Capture.CapturedPhoto)
-		// Forced skipping of method Windows.Media.Capture.CapturedPhoto.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.CapturedPhoto.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.CapturedPhoto.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.CapturedPhoto.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.CapturedPhoto.WinRT.IWinRTObject.QueryInterfaceCache.get

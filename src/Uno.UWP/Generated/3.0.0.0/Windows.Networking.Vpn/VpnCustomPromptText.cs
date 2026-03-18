@@ -72,12 +72,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomPromptText.VpnCustomPromptText()
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomPromptText.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomPromptText.operator ==(Windows.Networking.Vpn.VpnCustomPromptText, Windows.Networking.Vpn.VpnCustomPromptText)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomPromptText.operator !=(Windows.Networking.Vpn.VpnCustomPromptText, Windows.Networking.Vpn.VpnCustomPromptText)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomPromptText.Equals(Windows.Networking.Vpn.VpnCustomPromptText)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomPromptText.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomPromptText.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomPromptText.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomPromptText.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomPromptText.WinRT.IWinRTObject.QueryInterfaceCache.get

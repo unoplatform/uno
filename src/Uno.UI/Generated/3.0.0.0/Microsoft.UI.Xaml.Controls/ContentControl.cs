@@ -19,27 +19,15 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ContentTransitions
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentControl.ContentControl()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentControl()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentTemplateSelectorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentTransitionsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentControl(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.operator ==(Microsoft.UI.Xaml.Controls.ContentControl, Microsoft.UI.Xaml.Controls.ContentControl)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.operator !=(Microsoft.UI.Xaml.Controls.ContentControl, Microsoft.UI.Xaml.Controls.ContentControl)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.Equals(Microsoft.UI.Xaml.Controls.ContentControl)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentControl(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentControl.OnContentChanged(object, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.Microsoft.UI.Xaml.Controls.IContentControlOverrides.OnContentChanged(object, object)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentControl.OnContentTemplateChanged(Microsoft.UI.Xaml.DataTemplate, Microsoft.UI.Xaml.DataTemplate)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.Microsoft.UI.Xaml.Controls.IContentControlOverrides.OnContentTemplateChanged(Microsoft.UI.Xaml.DataTemplate, Microsoft.UI.Xaml.DataTemplate)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentControl.OnContentTemplateSelectorChanged(Microsoft.UI.Xaml.Controls.DataTemplateSelector, Microsoft.UI.Xaml.Controls.DataTemplateSelector)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.Microsoft.UI.Xaml.Controls.IContentControlOverrides.OnContentTemplateSelectorChanged(Microsoft.UI.Xaml.Controls.DataTemplateSelector, Microsoft.UI.Xaml.Controls.DataTemplateSelector)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.Content.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentTemplate.get
@@ -49,7 +37,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentTemplateSelector.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentTransitions.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentTransitions.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

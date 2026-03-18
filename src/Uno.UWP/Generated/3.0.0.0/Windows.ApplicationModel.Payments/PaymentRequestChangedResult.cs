@@ -66,12 +66,6 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.PaymentRequestChangedResult(bool, Windows.ApplicationModel.Payments.PaymentDetails)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.operator ==(Windows.ApplicationModel.Payments.PaymentRequestChangedResult, Windows.ApplicationModel.Payments.PaymentRequestChangedResult)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.operator !=(Windows.ApplicationModel.Payments.PaymentRequestChangedResult, Windows.ApplicationModel.Payments.PaymentRequestChangedResult)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.Equals(Windows.ApplicationModel.Payments.PaymentRequestChangedResult)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.WinRT.IWinRTObject.QueryInterfaceCache.get

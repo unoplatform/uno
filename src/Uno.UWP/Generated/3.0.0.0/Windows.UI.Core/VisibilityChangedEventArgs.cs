@@ -10,12 +10,6 @@ namespace Windows.UI.Core
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property Visible
-		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.operator ==(Windows.UI.Core.VisibilityChangedEventArgs, Windows.UI.Core.VisibilityChangedEventArgs)
-		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.operator !=(Windows.UI.Core.VisibilityChangedEventArgs, Windows.UI.Core.VisibilityChangedEventArgs)
-		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.Equals(Windows.UI.Core.VisibilityChangedEventArgs)
-		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

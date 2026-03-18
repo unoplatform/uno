@@ -25,12 +25,6 @@ namespace Windows.Security.Credentials
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.PasswordCredential()
 		// Skipping already declared method Windows.Security.Credentials.PasswordCredential.PasswordCredential(string, string, string)
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.PasswordCredential(string, string, string)
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.operator ==(Windows.Security.Credentials.PasswordCredential, Windows.Security.Credentials.PasswordCredential)
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.operator !=(Windows.Security.Credentials.PasswordCredential, Windows.Security.Credentials.PasswordCredential)
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.Equals(Windows.Security.Credentials.PasswordCredential)
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.Equals(object)
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.GetHashCode()
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.WinRT.IWinRTObject.QueryInterfaceCache.get

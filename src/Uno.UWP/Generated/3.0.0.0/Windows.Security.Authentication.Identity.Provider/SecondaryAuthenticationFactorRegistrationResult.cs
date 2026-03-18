@@ -33,12 +33,6 @@ namespace Windows.Security.Authentication.Identity.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.operator ==(Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult, Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.operator !=(Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult, Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.Equals(Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.Equals(object)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.GetHashCode()
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.WinRT.IWinRTObject.QueryInterfaceCache.get

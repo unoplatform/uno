@@ -13,12 +13,6 @@ namespace Windows.Storage
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeReader.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeReader.operator ==(Windows.Storage.StorageLibraryChangeReader, Windows.Storage.StorageLibraryChangeReader)
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeReader.operator !=(Windows.Storage.StorageLibraryChangeReader, Windows.Storage.StorageLibraryChangeReader)
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeReader.Equals(Windows.Storage.StorageLibraryChangeReader)
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeReader.Equals(object)
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeReader.GetHashCode()
 		// Forced skipping of method Windows.Storage.StorageLibraryChangeReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.StorageLibraryChangeReader.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.StorageLibraryChangeReader.WinRT.IWinRTObject.QueryInterfaceCache.get

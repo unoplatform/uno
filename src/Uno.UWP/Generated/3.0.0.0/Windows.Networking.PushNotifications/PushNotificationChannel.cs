@@ -33,12 +33,6 @@ namespace Windows.Networking.PushNotifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.operator ==(Windows.Networking.PushNotifications.PushNotificationChannel, Windows.Networking.PushNotifications.PushNotificationChannel)
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.operator !=(Windows.Networking.PushNotifications.PushNotificationChannel, Windows.Networking.PushNotifications.PushNotificationChannel)
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.Equals(Windows.Networking.PushNotifications.PushNotificationChannel)
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.Equals(object)
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.GetHashCode()
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.WinRT.IWinRTObject.QueryInterfaceCache.get

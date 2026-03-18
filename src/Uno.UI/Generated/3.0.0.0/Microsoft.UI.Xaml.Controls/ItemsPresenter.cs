@@ -26,7 +26,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Padding
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsPresenter.ItemsPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.ItemsPresenter()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.FooterProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.FooterTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.FooterTransitionsProperty.get
@@ -34,12 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.HeaderTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.HeaderTransitionsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.PaddingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.operator ==(Microsoft.UI.Xaml.Controls.ItemsPresenter, Microsoft.UI.Xaml.Controls.ItemsPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.operator !=(Microsoft.UI.Xaml.Controls.ItemsPresenter, Microsoft.UI.Xaml.Controls.ItemsPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.Equals(Microsoft.UI.Xaml.Controls.ItemsPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsPresenter.GetIrregularSnapPoints(Microsoft.UI.Xaml.Controls.Orientation, Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment)
@@ -64,7 +57,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.HeaderTransitions.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.Padding.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.Padding.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

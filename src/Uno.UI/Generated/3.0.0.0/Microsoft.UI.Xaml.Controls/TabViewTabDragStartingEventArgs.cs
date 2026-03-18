@@ -12,12 +12,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Data
 		// Skipping already declared property Item
 		// Skipping already declared property Tab
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs, Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs, Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs.Equals(Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragStartingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

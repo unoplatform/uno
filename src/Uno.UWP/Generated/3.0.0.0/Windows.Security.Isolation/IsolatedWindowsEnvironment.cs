@@ -23,7 +23,6 @@ namespace Windows.Security.Isolation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironment.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Security.Isolation.IsolatedWindowsEnvironmentCreateResult, global::Windows.Security.Isolation.IsolatedWindowsEnvironmentCreateProgress> CreateAsync(global::Windows.Security.Isolation.IsolatedWindowsEnvironmentOptions options)
@@ -52,12 +51,6 @@ namespace Windows.Security.Isolation
 			throw new global::System.NotImplementedException("The member IReadOnlyList<IsolatedWindowsEnvironment> IsolatedWindowsEnvironment.FindByOwnerId(string environmentOwnerId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CIsolatedWindowsEnvironment%3E%20IsolatedWindowsEnvironment.FindByOwnerId%28string%20environmentOwnerId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironment.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironment.operator ==(Windows.Security.Isolation.IsolatedWindowsEnvironment, Windows.Security.Isolation.IsolatedWindowsEnvironment)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironment.operator !=(Windows.Security.Isolation.IsolatedWindowsEnvironment, Windows.Security.Isolation.IsolatedWindowsEnvironment)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironment.Equals(Windows.Security.Isolation.IsolatedWindowsEnvironment)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironment.Equals(object)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironment.GetHashCode()
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironment.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -43,7 +43,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Resources
 		// Skipping already declared method Microsoft.UI.Xaml.Application.Application()
 		// Forced skipping of method Microsoft.UI.Xaml.Application.Application()
-		// Forced skipping of method Microsoft.UI.Xaml.Application.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Application.Start(Microsoft.UI.Xaml.ApplicationInitializationCallback)
 		// Skipping already declared method Microsoft.UI.Xaml.Application.LoadComponent(object, System.Uri)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -54,14 +53,6 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Application.Current.get
-		// Forced skipping of method Microsoft.UI.Xaml.Application.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Application.Application(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Application.operator ==(Microsoft.UI.Xaml.Application, Microsoft.UI.Xaml.Application)
-		// Forced skipping of method Microsoft.UI.Xaml.Application.operator !=(Microsoft.UI.Xaml.Application, Microsoft.UI.Xaml.Application)
-		// Forced skipping of method Microsoft.UI.Xaml.Application.Equals(Microsoft.UI.Xaml.Application)
-		// Forced skipping of method Microsoft.UI.Xaml.Application.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Application.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Application.Application(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Application.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Application.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Application.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -72,7 +63,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Application.ResourceManagerRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Application.ResourceManagerRequested.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Application.OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Application.Microsoft.UI.Xaml.IApplicationOverrides.OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs)
 		// Forced skipping of method Microsoft.UI.Xaml.Application.DebugSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Application.DispatcherShutdownMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Application.DispatcherShutdownMode.set
@@ -84,7 +74,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Application.RequestedTheme.set
 		// Forced skipping of method Microsoft.UI.Xaml.Application.Resources.get
 		// Forced skipping of method Microsoft.UI.Xaml.Application.Resources.set
-		// Forced skipping of method Microsoft.UI.Xaml.Application.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Application.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Application.UnhandledException
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

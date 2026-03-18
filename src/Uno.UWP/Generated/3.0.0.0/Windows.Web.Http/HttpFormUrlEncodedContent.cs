@@ -26,12 +26,6 @@ namespace Windows.Web.Http
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpFormUrlEncodedContent.HttpFormUrlEncodedContent(System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>)
-		// Forced skipping of method Windows.Web.Http.HttpFormUrlEncodedContent.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.HttpFormUrlEncodedContent.operator ==(Windows.Web.Http.HttpFormUrlEncodedContent, Windows.Web.Http.HttpFormUrlEncodedContent)
-		// Forced skipping of method Windows.Web.Http.HttpFormUrlEncodedContent.operator !=(Windows.Web.Http.HttpFormUrlEncodedContent, Windows.Web.Http.HttpFormUrlEncodedContent)
-		// Forced skipping of method Windows.Web.Http.HttpFormUrlEncodedContent.Equals(Windows.Web.Http.HttpFormUrlEncodedContent)
-		// Forced skipping of method Windows.Web.Http.HttpFormUrlEncodedContent.Equals(object)
-		// Forced skipping of method Windows.Web.Http.HttpFormUrlEncodedContent.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.HttpFormUrlEncodedContent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpFormUrlEncodedContent.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpFormUrlEncodedContent.WinRT.IWinRTObject.QueryInterfaceCache.get

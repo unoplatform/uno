@@ -23,12 +23,6 @@ namespace Windows.Media.DialProtocol
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.DialProtocol.DialApp.FromAbi(nint)
-		// Forced skipping of method Windows.Media.DialProtocol.DialApp.operator ==(Windows.Media.DialProtocol.DialApp, Windows.Media.DialProtocol.DialApp)
-		// Forced skipping of method Windows.Media.DialProtocol.DialApp.operator !=(Windows.Media.DialProtocol.DialApp, Windows.Media.DialProtocol.DialApp)
-		// Forced skipping of method Windows.Media.DialProtocol.DialApp.Equals(Windows.Media.DialProtocol.DialApp)
-		// Forced skipping of method Windows.Media.DialProtocol.DialApp.Equals(object)
-		// Forced skipping of method Windows.Media.DialProtocol.DialApp.GetHashCode()
 		// Forced skipping of method Windows.Media.DialProtocol.DialApp.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.DialProtocol.DialApp.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.DialProtocol.DialApp.WinRT.IWinRTObject.QueryInterfaceCache.get

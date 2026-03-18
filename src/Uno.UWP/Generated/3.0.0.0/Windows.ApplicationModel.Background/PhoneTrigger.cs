@@ -36,12 +36,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.PhoneTrigger.PhoneTrigger(Windows.ApplicationModel.Calls.Background.PhoneTriggerType, bool)
-		// Forced skipping of method Windows.ApplicationModel.Background.PhoneTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.PhoneTrigger.operator ==(Windows.ApplicationModel.Background.PhoneTrigger, Windows.ApplicationModel.Background.PhoneTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.PhoneTrigger.operator !=(Windows.ApplicationModel.Background.PhoneTrigger, Windows.ApplicationModel.Background.PhoneTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.PhoneTrigger.Equals(Windows.ApplicationModel.Background.PhoneTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.PhoneTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.PhoneTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.PhoneTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.PhoneTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.PhoneTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

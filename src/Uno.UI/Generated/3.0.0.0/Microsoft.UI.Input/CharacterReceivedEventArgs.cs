@@ -47,12 +47,6 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.operator ==(Microsoft.UI.Input.CharacterReceivedEventArgs, Microsoft.UI.Input.CharacterReceivedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.operator !=(Microsoft.UI.Input.CharacterReceivedEventArgs, Microsoft.UI.Input.CharacterReceivedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.Equals(Microsoft.UI.Input.CharacterReceivedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

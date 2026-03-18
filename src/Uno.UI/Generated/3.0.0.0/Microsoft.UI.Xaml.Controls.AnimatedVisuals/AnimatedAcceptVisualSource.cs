@@ -11,12 +11,6 @@ namespace Microsoft.UI.Xaml.Controls.AnimatedVisuals
 		// Skipping already declared property Markers
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource.AnimatedAcceptVisualSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource.AnimatedAcceptVisualSource()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource.operator ==(Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource, Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource.operator !=(Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource, Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource.Equals(Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource.WinRT.IWinRTObject.QueryInterfaceCache.get

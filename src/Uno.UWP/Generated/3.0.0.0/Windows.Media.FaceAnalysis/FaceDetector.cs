@@ -51,7 +51,6 @@ namespace Windows.Media.FaceAnalysis
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.FaceAnalysis.FaceDetector> CreateAsync()
@@ -74,12 +73,6 @@ namespace Windows.Media.FaceAnalysis
 		}
 #endif
 		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.IsSupported.get
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.FromAbi(nint)
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.operator ==(Windows.Media.FaceAnalysis.FaceDetector, Windows.Media.FaceAnalysis.FaceDetector)
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.operator !=(Windows.Media.FaceAnalysis.FaceDetector, Windows.Media.FaceAnalysis.FaceDetector)
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.Equals(Windows.Media.FaceAnalysis.FaceDetector)
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.Equals(object)
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.GetHashCode()
 		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.WinRT.IWinRTObject.QueryInterfaceCache.get

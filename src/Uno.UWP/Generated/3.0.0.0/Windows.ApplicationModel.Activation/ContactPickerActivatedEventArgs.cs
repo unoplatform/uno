@@ -53,12 +53,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPickerActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPickerActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.ContactPickerActivatedEventArgs, Windows.ApplicationModel.Activation.ContactPickerActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPickerActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.ContactPickerActivatedEventArgs, Windows.ApplicationModel.Activation.ContactPickerActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPickerActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.ContactPickerActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPickerActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPickerActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPickerActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPickerActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPickerActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

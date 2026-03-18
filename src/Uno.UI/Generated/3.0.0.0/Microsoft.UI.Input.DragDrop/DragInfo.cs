@@ -53,12 +53,6 @@ namespace Microsoft.UI.Input.DragDrop
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.operator ==(Microsoft.UI.Input.DragDrop.DragInfo, Microsoft.UI.Input.DragDrop.DragInfo)
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.operator !=(Microsoft.UI.Input.DragDrop.DragInfo, Microsoft.UI.Input.DragDrop.DragInfo)
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.Equals(Microsoft.UI.Input.DragDrop.DragInfo)
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -140,12 +140,6 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.operator ==(Windows.Media.Playback.MediaPlaybackSession, Windows.Media.Playback.MediaPlaybackSession)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.operator !=(Windows.Media.Playback.MediaPlaybackSession, Windows.Media.Playback.MediaPlaybackSession)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.Equals(Windows.Media.Playback.MediaPlaybackSession)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.Equals(object)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.GetHashCode()
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -15,12 +15,6 @@ namespace Windows.Foundation.Collections
 		// Skipping already declared property this[]
 		// Skipping already declared method Windows.Foundation.Collections.PropertySet.PropertySet()
 		// Forced skipping of method Windows.Foundation.Collections.PropertySet.PropertySet()
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.FromAbi(nint)
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.operator ==(Windows.Foundation.Collections.PropertySet, Windows.Foundation.Collections.PropertySet)
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.operator !=(Windows.Foundation.Collections.PropertySet, Windows.Foundation.Collections.PropertySet)
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.Equals(Windows.Foundation.Collections.PropertySet)
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.Equals(object)
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.GetHashCode()
 		// Forced skipping of method Windows.Foundation.Collections.PropertySet.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Foundation.Collections.PropertySet.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Foundation.Collections.PropertySet.WinRT.IWinRTObject.QueryInterfaceCache.get

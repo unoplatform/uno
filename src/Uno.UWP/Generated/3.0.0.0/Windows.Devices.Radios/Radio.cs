@@ -43,7 +43,6 @@ namespace Windows.Devices.Radios
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Radios.Radio.As<I>()
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Radios.Radio>> GetRadiosAsync()
@@ -72,12 +71,6 @@ namespace Windows.Devices.Radios
 			throw new global::System.NotImplementedException("The member IAsyncOperation<RadioAccessStatus> Radio.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRadioAccessStatus%3E%20Radio.RequestAccessAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Radios.Radio.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Radios.Radio.operator ==(Windows.Devices.Radios.Radio, Windows.Devices.Radios.Radio)
-		// Forced skipping of method Windows.Devices.Radios.Radio.operator !=(Windows.Devices.Radios.Radio, Windows.Devices.Radios.Radio)
-		// Forced skipping of method Windows.Devices.Radios.Radio.Equals(Windows.Devices.Radios.Radio)
-		// Forced skipping of method Windows.Devices.Radios.Radio.Equals(object)
-		// Forced skipping of method Windows.Devices.Radios.Radio.GetHashCode()
 		// Forced skipping of method Windows.Devices.Radios.Radio.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Radios.Radio.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Radios.Radio.WinRT.IWinRTObject.QueryInterfaceCache.get

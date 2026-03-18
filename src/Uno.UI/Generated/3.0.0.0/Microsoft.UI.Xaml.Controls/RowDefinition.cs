@@ -17,16 +17,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property MinHeight
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RowDefinition.RowDefinition()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.RowDefinition()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.HeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.MaxHeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.MinHeightProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.operator ==(Microsoft.UI.Xaml.Controls.RowDefinition, Microsoft.UI.Xaml.Controls.RowDefinition)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.operator !=(Microsoft.UI.Xaml.Controls.RowDefinition, Microsoft.UI.Xaml.Controls.RowDefinition)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.Equals(Microsoft.UI.Xaml.Controls.RowDefinition)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.ActualHeight.get
@@ -36,7 +29,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.MaxHeight.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.MinHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.MinHeight.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

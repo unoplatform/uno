@@ -16,12 +16,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Top
 		// Skipping already declared property TopLeftRadius
 		// Skipping already declared property TopRightRadius
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.operator ==(Microsoft.UI.Composition.RectangleClip, Microsoft.UI.Composition.RectangleClip)
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.operator !=(Microsoft.UI.Composition.RectangleClip, Microsoft.UI.Composition.RectangleClip)
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Equals(Microsoft.UI.Composition.RectangleClip)
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Bottom.get
@@ -40,7 +34,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.TopLeftRadius.set
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.TopRightRadius.get
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.TopRightRadius.set
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

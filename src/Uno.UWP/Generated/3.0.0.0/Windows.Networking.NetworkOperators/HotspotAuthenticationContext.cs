@@ -63,7 +63,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryGetAuthenticationContext(string evenToken, out global::Windows.Networking.NetworkOperators.HotspotAuthenticationContext context)
@@ -71,12 +70,6 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member bool HotspotAuthenticationContext.TryGetAuthenticationContext(string evenToken, out HotspotAuthenticationContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HotspotAuthenticationContext.TryGetAuthenticationContext%28string%20evenToken%2C%20out%20HotspotAuthenticationContext%20context%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.operator ==(Windows.Networking.NetworkOperators.HotspotAuthenticationContext, Windows.Networking.NetworkOperators.HotspotAuthenticationContext)
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.operator !=(Windows.Networking.NetworkOperators.HotspotAuthenticationContext, Windows.Networking.NetworkOperators.HotspotAuthenticationContext)
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.Equals(Windows.Networking.NetworkOperators.HotspotAuthenticationContext)
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationContext.WinRT.IWinRTObject.QueryInterfaceCache.get

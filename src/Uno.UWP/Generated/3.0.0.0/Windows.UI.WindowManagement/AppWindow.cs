@@ -121,7 +121,6 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.WindowManagement.AppWindow> TryCreateAsync()
@@ -143,12 +142,6 @@ namespace Windows.UI.WindowManagement
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "void AppWindow.ClearPersistedState(string key)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.operator ==(Windows.UI.WindowManagement.AppWindow, Windows.UI.WindowManagement.AppWindow)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.operator !=(Windows.UI.WindowManagement.AppWindow, Windows.UI.WindowManagement.AppWindow)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Equals(Windows.UI.WindowManagement.AppWindow)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Equals(object)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.GetHashCode()
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.WinRT.IWinRTObject.QueryInterfaceCache.get

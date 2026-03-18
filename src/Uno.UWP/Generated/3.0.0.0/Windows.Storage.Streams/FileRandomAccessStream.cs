@@ -12,7 +12,6 @@ namespace Windows.Storage.Streams
 		// Skipping already declared property CanWrite
 		// Skipping already declared property Position
 		// Skipping already declared property Size
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> OpenAsync(string filePath, global::Windows.Storage.FileAccessMode accessMode)
@@ -69,12 +68,6 @@ namespace Windows.Storage.Streams
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteForUserAsync(User user, string filePath, StorageOpenOptions openOptions, FileOpenDisposition openDisposition) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageStreamTransaction%3E%20FileRandomAccessStream.OpenTransactedWriteForUserAsync%28User%20user%2C%20string%20filePath%2C%20StorageOpenOptions%20openOptions%2C%20FileOpenDisposition%20openDisposition%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.operator ==(Windows.Storage.Streams.FileRandomAccessStream, Windows.Storage.Streams.FileRandomAccessStream)
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.operator !=(Windows.Storage.Streams.FileRandomAccessStream, Windows.Storage.Streams.FileRandomAccessStream)
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.Equals(Windows.Storage.Streams.FileRandomAccessStream)
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.Equals(object)
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.GetHashCode()
 		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.WinRT.IWinRTObject.QueryInterfaceCache.get

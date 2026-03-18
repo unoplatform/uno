@@ -93,12 +93,6 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.operator ==(Windows.Perception.Spatial.SpatialLocation, Windows.Perception.Spatial.SpatialLocation)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.operator !=(Windows.Perception.Spatial.SpatialLocation, Windows.Perception.Spatial.SpatialLocation)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.Equals(Windows.Perception.Spatial.SpatialLocation)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.GetHashCode()
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.WinRT.IWinRTObject.QueryInterfaceCache.get

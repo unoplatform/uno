@@ -228,7 +228,6 @@ namespace Windows.System.Profile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.KnownRetailInfoProperties.As<I>()
 		// Forced skipping of method Windows.System.Profile.KnownRetailInfoProperties.BatteryLifeDescription.get
 		// Forced skipping of method Windows.System.Profile.KnownRetailInfoProperties.DisplayDescription.get
 		// Forced skipping of method Windows.System.Profile.KnownRetailInfoProperties.DisplayModelName.get

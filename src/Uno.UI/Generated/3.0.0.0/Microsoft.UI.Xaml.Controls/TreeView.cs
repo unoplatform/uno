@@ -34,7 +34,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SelectionMode
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TreeView.TreeView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.TreeView()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.CanDragItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.CanReorderItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.ItemContainerStyleProperty.get
@@ -45,14 +44,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.ItemsSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectedItemProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectionModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.TreeView(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.operator ==(Microsoft.UI.Xaml.Controls.TreeView, Microsoft.UI.Xaml.Controls.TreeView)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.operator !=(Microsoft.UI.Xaml.Controls.TreeView, Microsoft.UI.Xaml.Controls.TreeView)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.Equals(Microsoft.UI.Xaml.Controls.TreeView)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.TreeView(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TreeView.Expand(Microsoft.UI.Xaml.Controls.TreeViewNode)
@@ -99,7 +90,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectedNodes.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectionMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectionMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TreeView.Collapsed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TreeView.Expanding

@@ -15,16 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Mode
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeItems.SwipeItems()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.SwipeItems()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.ModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.SwipeItems(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.operator ==(Microsoft.UI.Xaml.Controls.SwipeItems, Microsoft.UI.Xaml.Controls.SwipeItems)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.operator !=(Microsoft.UI.Xaml.Controls.SwipeItems, Microsoft.UI.Xaml.Controls.SwipeItems)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Equals(Microsoft.UI.Xaml.Controls.SwipeItems)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.SwipeItems(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Count.get
@@ -43,7 +34,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Mode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Mode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.SwipeItem>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.SwipeItem>.set_Item(int, Microsoft.UI.Xaml.Controls.SwipeItem)

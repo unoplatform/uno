@@ -23,12 +23,6 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs.operator ==(Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs, Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs.operator !=(Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs, Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs.Equals(Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

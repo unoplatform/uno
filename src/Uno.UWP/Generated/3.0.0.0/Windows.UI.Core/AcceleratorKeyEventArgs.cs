@@ -67,12 +67,6 @@ namespace Windows.UI.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.operator ==(Windows.UI.Core.AcceleratorKeyEventArgs, Windows.UI.Core.AcceleratorKeyEventArgs)
-		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.operator !=(Windows.UI.Core.AcceleratorKeyEventArgs, Windows.UI.Core.AcceleratorKeyEventArgs)
-		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.Equals(Windows.UI.Core.AcceleratorKeyEventArgs)
-		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

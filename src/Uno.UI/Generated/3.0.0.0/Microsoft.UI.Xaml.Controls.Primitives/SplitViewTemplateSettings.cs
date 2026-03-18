@@ -14,12 +14,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property OpenPaneGridLength
 		// Skipping already declared property OpenPaneLength
 		// Skipping already declared property OpenPaneLengthMinusCompactLength
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.operator ==(Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings, Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.operator !=(Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings, Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.Equals(Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.CompactPaneGridLength.get
@@ -28,7 +22,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.OpenPaneGridLength.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.OpenPaneLength.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.OpenPaneLengthMinusCompactLength.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

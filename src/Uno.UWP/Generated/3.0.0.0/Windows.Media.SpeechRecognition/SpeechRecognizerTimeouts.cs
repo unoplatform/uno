@@ -11,12 +11,6 @@ namespace Windows.Media.SpeechRecognition
 		// Skipping already declared property BabbleTimeout
 		// Skipping already declared property EndSilenceTimeout
 		// Skipping already declared property InitialSilenceTimeout
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts.FromAbi(nint)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts.operator ==(Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts, Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts.operator !=(Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts, Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts.Equals(Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts.Equals(object)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts.GetHashCode()
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts.WinRT.IWinRTObject.QueryInterfaceCache.get

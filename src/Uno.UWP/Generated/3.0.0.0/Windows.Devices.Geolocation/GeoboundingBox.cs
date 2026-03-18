@@ -112,7 +112,6 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.GeoboundingBox(Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.AltitudeReferenceSystem, uint)
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Geolocation.GeoboundingBox TryCompute(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.BasicGeoposition> positions)
@@ -134,12 +133,6 @@ namespace Windows.Devices.Geolocation
 			throw new global::System.NotImplementedException("The member GeoboundingBox GeoboundingBox.TryCompute(IEnumerable<BasicGeoposition> positions, AltitudeReferenceSystem altitudeRefSystem, uint spatialReferenceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GeoboundingBox%20GeoboundingBox.TryCompute%28IEnumerable%3CBasicGeoposition%3E%20positions%2C%20AltitudeReferenceSystem%20altitudeRefSystem%2C%20uint%20spatialReferenceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.operator ==(Windows.Devices.Geolocation.GeoboundingBox, Windows.Devices.Geolocation.GeoboundingBox)
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.operator !=(Windows.Devices.Geolocation.GeoboundingBox, Windows.Devices.Geolocation.GeoboundingBox)
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.Equals(Windows.Devices.Geolocation.GeoboundingBox)
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.Equals(object)
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.GetHashCode()
 		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -114,12 +114,6 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.PfxImportParameters()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.operator ==(Windows.Security.Cryptography.Certificates.PfxImportParameters, Windows.Security.Cryptography.Certificates.PfxImportParameters)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.operator !=(Windows.Security.Cryptography.Certificates.PfxImportParameters, Windows.Security.Cryptography.Certificates.PfxImportParameters)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.Equals(Windows.Security.Cryptography.Certificates.PfxImportParameters)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.Equals(object)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.GetHashCode()
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.WinRT.IWinRTObject.QueryInterfaceCache.get

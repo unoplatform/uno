@@ -133,12 +133,6 @@ namespace Windows.Services.Maps.Guidance
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceManeuver.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceManeuver.operator ==(Windows.Services.Maps.Guidance.GuidanceManeuver, Windows.Services.Maps.Guidance.GuidanceManeuver)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceManeuver.operator !=(Windows.Services.Maps.Guidance.GuidanceManeuver, Windows.Services.Maps.Guidance.GuidanceManeuver)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceManeuver.Equals(Windows.Services.Maps.Guidance.GuidanceManeuver)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceManeuver.Equals(object)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceManeuver.GetHashCode()
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceManeuver.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceManeuver.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceManeuver.WinRT.IWinRTObject.QueryInterfaceCache.get

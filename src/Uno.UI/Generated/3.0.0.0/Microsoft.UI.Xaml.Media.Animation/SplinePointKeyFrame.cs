@@ -38,19 +38,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.SplinePointKeyFrame()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.KeySplineProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame, Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame, Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.KeySpline.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.KeySpline.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

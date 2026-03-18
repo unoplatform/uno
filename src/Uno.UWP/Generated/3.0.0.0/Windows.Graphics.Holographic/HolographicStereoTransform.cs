@@ -17,11 +17,6 @@ namespace Windows.Graphics.Holographic
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.HolographicStereoTransform(System.Numerics.Matrix4x4, System.Numerics.Matrix4x4)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.operator ==(Windows.Graphics.Holographic.HolographicStereoTransform, Windows.Graphics.Holographic.HolographicStereoTransform)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.operator !=(Windows.Graphics.Holographic.HolographicStereoTransform, Windows.Graphics.Holographic.HolographicStereoTransform)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.Equals(Windows.Graphics.Holographic.HolographicStereoTransform)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.Equals(object)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicStereoTransform.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Matrix4x4 Left;
 #endif

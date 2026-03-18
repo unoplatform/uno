@@ -124,12 +124,6 @@ namespace Windows.UI.Notifications
 		// Skipping already declared property Tag
 		// Skipping already declared method Windows.UI.Notifications.ToastNotification.ToastNotification(Windows.Data.Xml.Dom.XmlDocument)
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.ToastNotification(Windows.Data.Xml.Dom.XmlDocument)
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.operator ==(Windows.UI.Notifications.ToastNotification, Windows.UI.Notifications.ToastNotification)
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.operator !=(Windows.UI.Notifications.ToastNotification, Windows.UI.Notifications.ToastNotification)
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Equals(Windows.UI.Notifications.ToastNotification)
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Equals(object)
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.GetHashCode()
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.WinRT.IWinRTObject.QueryInterfaceCache.get

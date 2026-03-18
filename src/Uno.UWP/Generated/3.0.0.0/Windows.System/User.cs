@@ -43,7 +43,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.User.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.UserWatcher CreateWatcher()
@@ -79,12 +78,6 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member User User.GetFromId(string nonRoamableId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20User.GetFromId%28string%20nonRoamableId%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.User.FromAbi(nint)
-		// Forced skipping of method Windows.System.User.operator ==(Windows.System.User, Windows.System.User)
-		// Forced skipping of method Windows.System.User.operator !=(Windows.System.User, Windows.System.User)
-		// Forced skipping of method Windows.System.User.Equals(Windows.System.User)
-		// Forced skipping of method Windows.System.User.Equals(object)
-		// Forced skipping of method Windows.System.User.GetHashCode()
 		// Forced skipping of method Windows.System.User.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.User.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.User.WinRT.IWinRTObject.QueryInterfaceCache.get

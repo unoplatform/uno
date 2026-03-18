@@ -126,20 +126,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapControl()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.CenterProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.InteractiveControlsVisibleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.LayersProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapServiceTokenProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.ZoomLevelProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapControl(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.operator ==(Microsoft.UI.Xaml.Controls.MapControl, Microsoft.UI.Xaml.Controls.MapControl)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.operator !=(Microsoft.UI.Xaml.Controls.MapControl, Microsoft.UI.Xaml.Controls.MapControl)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.Equals(Microsoft.UI.Xaml.Controls.MapControl)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapControl(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapElementClick.add
@@ -156,7 +147,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapServiceToken.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.ZoomLevel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.ZoomLevel.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

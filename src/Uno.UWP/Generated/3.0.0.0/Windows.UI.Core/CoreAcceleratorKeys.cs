@@ -13,12 +13,6 @@ namespace Windows.UI.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.CoreAcceleratorKeys.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.CoreAcceleratorKeys.operator ==(Windows.UI.Core.CoreAcceleratorKeys, Windows.UI.Core.CoreAcceleratorKeys)
-		// Forced skipping of method Windows.UI.Core.CoreAcceleratorKeys.operator !=(Windows.UI.Core.CoreAcceleratorKeys, Windows.UI.Core.CoreAcceleratorKeys)
-		// Forced skipping of method Windows.UI.Core.CoreAcceleratorKeys.Equals(Windows.UI.Core.CoreAcceleratorKeys)
-		// Forced skipping of method Windows.UI.Core.CoreAcceleratorKeys.Equals(object)
-		// Forced skipping of method Windows.UI.Core.CoreAcceleratorKeys.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.CoreAcceleratorKeys.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.CoreAcceleratorKeys.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.CoreAcceleratorKeys.WinRT.IWinRTObject.QueryInterfaceCache.get

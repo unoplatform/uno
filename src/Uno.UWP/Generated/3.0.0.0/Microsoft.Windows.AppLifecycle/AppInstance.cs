@@ -43,7 +43,6 @@ namespace Microsoft.Windows.AppLifecycle
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.Windows.AppLifecycle.AppInstance GetCurrent()
@@ -72,12 +71,6 @@ namespace Microsoft.Windows.AppLifecycle
 			throw new global::System.NotImplementedException("The member AppRestartFailureReason AppInstance.Restart(string arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppRestartFailureReason%20AppInstance.Restart%28string%20arguments%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.FromAbi(nint)
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.operator ==(Microsoft.Windows.AppLifecycle.AppInstance, Microsoft.Windows.AppLifecycle.AppInstance)
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.operator !=(Microsoft.Windows.AppLifecycle.AppInstance, Microsoft.Windows.AppLifecycle.AppInstance)
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.Equals(Microsoft.Windows.AppLifecycle.AppInstance)
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.Equals(object)
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.GetHashCode()
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.WinRT.IWinRTObject.QueryInterfaceCache.get

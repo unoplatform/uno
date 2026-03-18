@@ -84,7 +84,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TemplateSettings
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NavigationView.NavigationView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.NavigationView()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.AlwaysShowHeaderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.AutoSuggestBoxProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.CompactModeThresholdWidthProperty.get
@@ -122,14 +121,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.SettingsItemProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.ShoulderNavigationEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.TemplateSettingsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.NavigationView(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.operator ==(Microsoft.UI.Xaml.Controls.NavigationView, Microsoft.UI.Xaml.Controls.NavigationView)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.operator !=(Microsoft.UI.Xaml.Controls.NavigationView, Microsoft.UI.Xaml.Controls.NavigationView)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.Equals(Microsoft.UI.Xaml.Controls.NavigationView)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.NavigationView(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NavigationView.MenuItemFromContainer(Microsoft.UI.Xaml.DependencyObject)
@@ -225,7 +216,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.ShoulderNavigationEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.ShoulderNavigationEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.NavigationView.DisplayModeChanged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.NavigationView.ItemInvoked

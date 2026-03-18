@@ -13,12 +13,6 @@ namespace Windows.Media.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaStreamSampleProtectionProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.MediaStreamSampleProtectionProperties.operator ==(Windows.Media.Core.MediaStreamSampleProtectionProperties, Windows.Media.Core.MediaStreamSampleProtectionProperties)
-		// Forced skipping of method Windows.Media.Core.MediaStreamSampleProtectionProperties.operator !=(Windows.Media.Core.MediaStreamSampleProtectionProperties, Windows.Media.Core.MediaStreamSampleProtectionProperties)
-		// Forced skipping of method Windows.Media.Core.MediaStreamSampleProtectionProperties.Equals(Windows.Media.Core.MediaStreamSampleProtectionProperties)
-		// Forced skipping of method Windows.Media.Core.MediaStreamSampleProtectionProperties.Equals(object)
-		// Forced skipping of method Windows.Media.Core.MediaStreamSampleProtectionProperties.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.MediaStreamSampleProtectionProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.MediaStreamSampleProtectionProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.MediaStreamSampleProtectionProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

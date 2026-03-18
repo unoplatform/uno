@@ -85,12 +85,6 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.operator ==(Microsoft.UI.Input.WindowRectChangingEventArgs, Microsoft.UI.Input.WindowRectChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.operator !=(Microsoft.UI.Input.WindowRectChangingEventArgs, Microsoft.UI.Input.WindowRectChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.Equals(Microsoft.UI.Input.WindowRectChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

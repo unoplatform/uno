@@ -73,12 +73,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult, Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult, Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.Equals(Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.WinRT.IWinRTObject.QueryInterfaceCache.get

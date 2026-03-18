@@ -40,20 +40,11 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.AcrylicBrush.AcrylicBrush()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AcrylicBrush()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AlwaysUseFallbackProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintColorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintLuminosityOpacityProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintOpacityProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintTransitionDurationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AcrylicBrush(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.operator ==(Microsoft.UI.Xaml.Media.AcrylicBrush, Microsoft.UI.Xaml.Media.AcrylicBrush)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.operator !=(Microsoft.UI.Xaml.Media.AcrylicBrush, Microsoft.UI.Xaml.Media.AcrylicBrush)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.Equals(Microsoft.UI.Xaml.Media.AcrylicBrush)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AcrylicBrush(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AlwaysUseFallback.get
@@ -66,7 +57,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintOpacity.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintTransitionDuration.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintTransitionDuration.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

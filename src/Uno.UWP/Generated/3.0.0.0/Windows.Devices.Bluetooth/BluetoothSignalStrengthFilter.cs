@@ -72,12 +72,6 @@ namespace Windows.Devices.Bluetooth
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.BluetoothSignalStrengthFilter()
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.operator ==(Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter, Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.operator !=(Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter, Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.Equals(Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.WinRT.IWinRTObject.QueryInterfaceCache.get

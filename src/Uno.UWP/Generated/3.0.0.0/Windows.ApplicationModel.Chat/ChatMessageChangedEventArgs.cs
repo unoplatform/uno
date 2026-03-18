@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Chat
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs.operator ==(Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs, Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs.operator !=(Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs, Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs.Equals(Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

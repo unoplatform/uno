@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Contacts
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.operator ==(Windows.ApplicationModel.Contacts.AggregateContactManager, Windows.ApplicationModel.Contacts.AggregateContactManager)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.operator !=(Windows.ApplicationModel.Contacts.AggregateContactManager, Windows.ApplicationModel.Contacts.AggregateContactManager)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.Equals(Windows.ApplicationModel.Contacts.AggregateContactManager)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.AggregateContactManager.WinRT.IWinRTObject.QueryInterfaceCache.get

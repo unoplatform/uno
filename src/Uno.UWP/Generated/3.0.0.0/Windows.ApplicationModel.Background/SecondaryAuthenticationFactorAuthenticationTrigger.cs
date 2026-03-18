@@ -16,12 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger.SecondaryAuthenticationFactorAuthenticationTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger.operator ==(Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger, Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger.operator !=(Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger, Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger.Equals(Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.SecondaryAuthenticationFactorAuthenticationTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

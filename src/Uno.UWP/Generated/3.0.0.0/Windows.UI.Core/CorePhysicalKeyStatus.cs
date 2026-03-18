@@ -17,11 +17,6 @@ namespace Windows.UI.Core
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CorePhysicalKeyStatus.CorePhysicalKeyStatus(uint, uint, bool, bool, bool, bool)
-		// Forced skipping of method Windows.UI.Core.CorePhysicalKeyStatus.operator ==(Windows.UI.Core.CorePhysicalKeyStatus, Windows.UI.Core.CorePhysicalKeyStatus)
-		// Forced skipping of method Windows.UI.Core.CorePhysicalKeyStatus.operator !=(Windows.UI.Core.CorePhysicalKeyStatus, Windows.UI.Core.CorePhysicalKeyStatus)
-		// Forced skipping of method Windows.UI.Core.CorePhysicalKeyStatus.Equals(Windows.UI.Core.CorePhysicalKeyStatus)
-		// Forced skipping of method Windows.UI.Core.CorePhysicalKeyStatus.Equals(object)
-		// Forced skipping of method Windows.UI.Core.CorePhysicalKeyStatus.GetHashCode()
 		// Skipping already declared field Windows.UI.Core.CorePhysicalKeyStatus.RepeatCount
 		// Skipping already declared field Windows.UI.Core.CorePhysicalKeyStatus.ScanCode
 		// Skipping already declared field Windows.UI.Core.CorePhysicalKeyStatus.IsExtendedKey

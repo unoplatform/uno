@@ -52,12 +52,6 @@ namespace Windows.ApplicationModel.Core
 		}
 #endif
 		// Skipping already declared property TitleBar
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.operator ==(Windows.ApplicationModel.Core.CoreApplicationView, Windows.ApplicationModel.Core.CoreApplicationView)
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.operator !=(Windows.ApplicationModel.Core.CoreApplicationView, Windows.ApplicationModel.Core.CoreApplicationView)
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.Equals(Windows.ApplicationModel.Core.CoreApplicationView)
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.WinRT.IWinRTObject.QueryInterfaceCache.get

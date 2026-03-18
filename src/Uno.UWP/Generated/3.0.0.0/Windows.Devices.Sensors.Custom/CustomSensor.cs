@@ -71,7 +71,6 @@ namespace Windows.Devices.Sensors.Custom
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector(global::System.Guid interfaceId)
@@ -86,12 +85,6 @@ namespace Windows.Devices.Sensors.Custom
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CustomSensor> CustomSensor.FromIdAsync(string sensorId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCustomSensor%3E%20CustomSensor.FromIdAsync%28string%20sensorId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.operator ==(Windows.Devices.Sensors.Custom.CustomSensor, Windows.Devices.Sensors.Custom.CustomSensor)
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.operator !=(Windows.Devices.Sensors.Custom.CustomSensor, Windows.Devices.Sensors.Custom.CustomSensor)
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.Equals(Windows.Devices.Sensors.Custom.CustomSensor)
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.WinRT.IWinRTObject.QueryInterfaceCache.get

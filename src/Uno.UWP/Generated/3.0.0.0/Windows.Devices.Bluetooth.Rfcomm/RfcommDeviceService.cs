@@ -83,7 +83,6 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService> FromIdAsync(string deviceId)
@@ -126,12 +125,6 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			throw new global::System.NotImplementedException("The member string RfcommDeviceService.GetDeviceSelectorForBluetoothDeviceAndServiceId(BluetoothDevice bluetoothDevice, RfcommServiceId serviceId, BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RfcommDeviceService.GetDeviceSelectorForBluetoothDeviceAndServiceId%28BluetoothDevice%20bluetoothDevice%2C%20RfcommServiceId%20serviceId%2C%20BluetoothCacheMode%20cacheMode%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.operator ==(Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService, Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService)
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.operator !=(Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService, Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService)
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.Equals(Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService)
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.WinRT.IWinRTObject.QueryInterfaceCache.get

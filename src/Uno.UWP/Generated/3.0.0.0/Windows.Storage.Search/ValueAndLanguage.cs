@@ -44,12 +44,6 @@ namespace Windows.Storage.Search
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.ValueAndLanguage()
-		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.operator ==(Windows.Storage.Search.ValueAndLanguage, Windows.Storage.Search.ValueAndLanguage)
-		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.operator !=(Windows.Storage.Search.ValueAndLanguage, Windows.Storage.Search.ValueAndLanguage)
-		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.Equals(Windows.Storage.Search.ValueAndLanguage)
-		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.Equals(object)
-		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.GetHashCode()
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.WinRT.IWinRTObject.QueryInterfaceCache.get

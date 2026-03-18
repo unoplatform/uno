@@ -33,7 +33,6 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -48,12 +47,6 @@ namespace Windows.Media.Audio
 			throw new global::System.NotImplementedException("The member AudioPlaybackConnection AudioPlaybackConnection.TryCreateFromId(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioPlaybackConnection%20AudioPlaybackConnection.TryCreateFromId%28string%20id%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.operator ==(Windows.Media.Audio.AudioPlaybackConnection, Windows.Media.Audio.AudioPlaybackConnection)
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.operator !=(Windows.Media.Audio.AudioPlaybackConnection, Windows.Media.Audio.AudioPlaybackConnection)
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.Equals(Windows.Media.Audio.AudioPlaybackConnection)
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.Equals(object)
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.GetHashCode()
 		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.WinRT.IWinRTObject.QueryInterfaceCache.get

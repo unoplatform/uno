@@ -53,12 +53,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.Print3DWorkflowActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.Print3DWorkflowActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.Print3DWorkflowActivatedEventArgs, Windows.ApplicationModel.Activation.Print3DWorkflowActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.Print3DWorkflowActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.Print3DWorkflowActivatedEventArgs, Windows.ApplicationModel.Activation.Print3DWorkflowActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.Print3DWorkflowActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.Print3DWorkflowActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.Print3DWorkflowActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.Print3DWorkflowActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.Print3DWorkflowActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.Print3DWorkflowActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.Print3DWorkflowActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

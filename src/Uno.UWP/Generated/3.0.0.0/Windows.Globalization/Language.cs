@@ -53,7 +53,6 @@ namespace Windows.Globalization
 #endif
 		// Skipping already declared method Windows.Globalization.Language.Language(string)
 		// Forced skipping of method Windows.Globalization.Language.Language(string)
-		// Forced skipping of method Windows.Globalization.Language.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsWellFormed(string languageTag)
@@ -76,12 +75,6 @@ namespace Windows.Globalization
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Language.CurrentInputMethodLanguageTag.get
-		// Forced skipping of method Windows.Globalization.Language.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.Language.operator ==(Windows.Globalization.Language, Windows.Globalization.Language)
-		// Forced skipping of method Windows.Globalization.Language.operator !=(Windows.Globalization.Language, Windows.Globalization.Language)
-		// Forced skipping of method Windows.Globalization.Language.Equals(Windows.Globalization.Language)
-		// Forced skipping of method Windows.Globalization.Language.Equals(object)
-		// Forced skipping of method Windows.Globalization.Language.GetHashCode()
 		// Forced skipping of method Windows.Globalization.Language.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.Language.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.Language.WinRT.IWinRTObject.QueryInterfaceCache.get

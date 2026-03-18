@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs.operator ==(Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs, Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs.operator !=(Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs, Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs.Equals(Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

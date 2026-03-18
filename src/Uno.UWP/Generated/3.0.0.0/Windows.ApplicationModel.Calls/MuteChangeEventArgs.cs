@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.MuteChangeEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.MuteChangeEventArgs.operator ==(Windows.ApplicationModel.Calls.MuteChangeEventArgs, Windows.ApplicationModel.Calls.MuteChangeEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Calls.MuteChangeEventArgs.operator !=(Windows.ApplicationModel.Calls.MuteChangeEventArgs, Windows.ApplicationModel.Calls.MuteChangeEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Calls.MuteChangeEventArgs.Equals(Windows.ApplicationModel.Calls.MuteChangeEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Calls.MuteChangeEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.MuteChangeEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.MuteChangeEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.MuteChangeEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.MuteChangeEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

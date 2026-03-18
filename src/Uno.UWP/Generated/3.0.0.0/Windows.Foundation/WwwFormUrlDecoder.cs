@@ -36,12 +36,6 @@ namespace Windows.Foundation
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.WwwFormUrlDecoder(string)
-		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.FromAbi(nint)
-		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.operator ==(Windows.Foundation.WwwFormUrlDecoder, Windows.Foundation.WwwFormUrlDecoder)
-		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.operator !=(Windows.Foundation.WwwFormUrlDecoder, Windows.Foundation.WwwFormUrlDecoder)
-		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.Equals(Windows.Foundation.WwwFormUrlDecoder)
-		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.Equals(object)
-		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.GetHashCode()
 		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.WinRT.IWinRTObject.QueryInterfaceCache.get

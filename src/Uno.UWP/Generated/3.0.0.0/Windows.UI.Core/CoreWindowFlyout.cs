@@ -110,12 +110,6 @@ namespace Windows.UI.Core
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.CoreWindowFlyout(Windows.Foundation.Point, string)
-		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.operator ==(Windows.UI.Core.CoreWindowFlyout, Windows.UI.Core.CoreWindowFlyout)
-		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.operator !=(Windows.UI.Core.CoreWindowFlyout, Windows.UI.Core.CoreWindowFlyout)
-		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.Equals(Windows.UI.Core.CoreWindowFlyout)
-		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.Equals(object)
-		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -23,12 +23,6 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs.operator ==(Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs, Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs.operator !=(Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs, Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs.Equals(Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs.Equals(object)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

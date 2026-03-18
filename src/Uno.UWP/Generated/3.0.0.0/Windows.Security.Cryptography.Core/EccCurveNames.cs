@@ -468,7 +468,6 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.As<I>()
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.AllEccCurveNames.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.BrainpoolP160r1.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EccCurveNames.BrainpoolP160t1.get

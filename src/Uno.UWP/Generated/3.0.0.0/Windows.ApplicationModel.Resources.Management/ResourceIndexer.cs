@@ -24,12 +24,6 @@ namespace Windows.ApplicationModel.Resources.Management
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.ResourceIndexer(System.Uri, System.Uri)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.operator ==(Windows.ApplicationModel.Resources.Management.ResourceIndexer, Windows.ApplicationModel.Resources.Management.ResourceIndexer)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.operator !=(Windows.ApplicationModel.Resources.Management.ResourceIndexer, Windows.ApplicationModel.Resources.Management.ResourceIndexer)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.Equals(Windows.ApplicationModel.Resources.Management.ResourceIndexer)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.WinRT.IWinRTObject.QueryInterfaceCache.get

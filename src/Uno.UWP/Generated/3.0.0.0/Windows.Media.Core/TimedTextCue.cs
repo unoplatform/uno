@@ -96,12 +96,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextCue.TimedTextCue()
-		// Forced skipping of method Windows.Media.Core.TimedTextCue.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.TimedTextCue.operator ==(Windows.Media.Core.TimedTextCue, Windows.Media.Core.TimedTextCue)
-		// Forced skipping of method Windows.Media.Core.TimedTextCue.operator !=(Windows.Media.Core.TimedTextCue, Windows.Media.Core.TimedTextCue)
-		// Forced skipping of method Windows.Media.Core.TimedTextCue.Equals(Windows.Media.Core.TimedTextCue)
-		// Forced skipping of method Windows.Media.Core.TimedTextCue.Equals(object)
-		// Forced skipping of method Windows.Media.Core.TimedTextCue.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.TimedTextCue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.TimedTextCue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.TimedTextCue.WinRT.IWinRTObject.QueryInterfaceCache.get

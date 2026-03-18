@@ -13,12 +13,6 @@ namespace Windows.UI.ViewManagement
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.ActivationViewSwitcher.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ViewManagement.ActivationViewSwitcher.operator ==(Windows.UI.ViewManagement.ActivationViewSwitcher, Windows.UI.ViewManagement.ActivationViewSwitcher)
-		// Forced skipping of method Windows.UI.ViewManagement.ActivationViewSwitcher.operator !=(Windows.UI.ViewManagement.ActivationViewSwitcher, Windows.UI.ViewManagement.ActivationViewSwitcher)
-		// Forced skipping of method Windows.UI.ViewManagement.ActivationViewSwitcher.Equals(Windows.UI.ViewManagement.ActivationViewSwitcher)
-		// Forced skipping of method Windows.UI.ViewManagement.ActivationViewSwitcher.Equals(object)
-		// Forced skipping of method Windows.UI.ViewManagement.ActivationViewSwitcher.GetHashCode()
 		// Forced skipping of method Windows.UI.ViewManagement.ActivationViewSwitcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.ActivationViewSwitcher.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.ActivationViewSwitcher.WinRT.IWinRTObject.QueryInterfaceCache.get

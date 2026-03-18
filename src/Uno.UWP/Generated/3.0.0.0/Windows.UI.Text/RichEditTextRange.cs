@@ -173,12 +173,6 @@ namespace Windows.UI.Text
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.RichEditTextRange.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Text.RichEditTextRange.operator ==(Windows.UI.Text.RichEditTextRange, Windows.UI.Text.RichEditTextRange)
-		// Forced skipping of method Windows.UI.Text.RichEditTextRange.operator !=(Windows.UI.Text.RichEditTextRange, Windows.UI.Text.RichEditTextRange)
-		// Forced skipping of method Windows.UI.Text.RichEditTextRange.Equals(Windows.UI.Text.RichEditTextRange)
-		// Forced skipping of method Windows.UI.Text.RichEditTextRange.Equals(object)
-		// Forced skipping of method Windows.UI.Text.RichEditTextRange.GetHashCode()
 		// Forced skipping of method Windows.UI.Text.RichEditTextRange.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Text.RichEditTextRange.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Text.RichEditTextRange.WinRT.IWinRTObject.QueryInterfaceCache.get

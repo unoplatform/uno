@@ -78,12 +78,6 @@ namespace Windows.Media.Audio
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.EchoEffectDefinition(Windows.Media.Audio.AudioGraph)
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.operator ==(Windows.Media.Audio.EchoEffectDefinition, Windows.Media.Audio.EchoEffectDefinition)
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.operator !=(Windows.Media.Audio.EchoEffectDefinition, Windows.Media.Audio.EchoEffectDefinition)
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Equals(Windows.Media.Audio.EchoEffectDefinition)
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Equals(object)
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.GetHashCode()
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get

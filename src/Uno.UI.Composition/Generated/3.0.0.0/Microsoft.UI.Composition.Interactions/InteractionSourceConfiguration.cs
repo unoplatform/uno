@@ -55,12 +55,6 @@ namespace Microsoft.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration.operator ==(Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration, Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration.operator !=(Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration, Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration.Equals(Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration.PositionXSourceMode.get
@@ -69,7 +63,6 @@ namespace Microsoft.UI.Composition.Interactions
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration.PositionYSourceMode.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration.ScaleSourceMode.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration.ScaleSourceMode.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionSourceConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

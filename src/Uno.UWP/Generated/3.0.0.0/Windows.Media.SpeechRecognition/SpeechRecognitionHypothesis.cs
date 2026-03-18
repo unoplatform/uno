@@ -9,12 +9,6 @@ namespace Windows.Media.SpeechRecognition
 	public partial class SpeechRecognitionHypothesis
 	{
 		// Skipping already declared property Text
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.FromAbi(nint)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.operator ==(Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis, Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.operator !=(Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis, Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.Equals(Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.Equals(object)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.GetHashCode()
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -55,12 +55,6 @@ namespace Windows.Graphics.Printing
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.operator ==(Windows.Graphics.Printing.PrintPageRangeOptions, Windows.Graphics.Printing.PrintPageRangeOptions)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.operator !=(Windows.Graphics.Printing.PrintPageRangeOptions, Windows.Graphics.Printing.PrintPageRangeOptions)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.Equals(Windows.Graphics.Printing.PrintPageRangeOptions)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

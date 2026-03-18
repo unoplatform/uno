@@ -69,12 +69,6 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.MouseWheelParameters.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.MouseWheelParameters.operator ==(Windows.UI.Input.MouseWheelParameters, Windows.UI.Input.MouseWheelParameters)
-		// Forced skipping of method Windows.UI.Input.MouseWheelParameters.operator !=(Windows.UI.Input.MouseWheelParameters, Windows.UI.Input.MouseWheelParameters)
-		// Forced skipping of method Windows.UI.Input.MouseWheelParameters.Equals(Windows.UI.Input.MouseWheelParameters)
-		// Forced skipping of method Windows.UI.Input.MouseWheelParameters.Equals(object)
-		// Forced skipping of method Windows.UI.Input.MouseWheelParameters.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.MouseWheelParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.MouseWheelParameters.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.MouseWheelParameters.WinRT.IWinRTObject.QueryInterfaceCache.get

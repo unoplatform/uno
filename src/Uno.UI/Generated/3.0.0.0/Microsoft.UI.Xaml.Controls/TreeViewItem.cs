@@ -28,7 +28,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TreeViewItemTemplateSettings
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TreeViewItem.TreeViewItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.TreeViewItem()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.CollapsedGlyphProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.ExpandedGlyphProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.GlyphBrushProperty.get
@@ -38,14 +37,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.IsExpandedProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.ItemsSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.TreeViewItemTemplateSettingsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.TreeViewItem(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.operator ==(Microsoft.UI.Xaml.Controls.TreeViewItem, Microsoft.UI.Xaml.Controls.TreeViewItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.operator !=(Microsoft.UI.Xaml.Controls.TreeViewItem, Microsoft.UI.Xaml.Controls.TreeViewItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.Equals(Microsoft.UI.Xaml.Controls.TreeViewItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.TreeViewItem(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.CollapsedGlyph.get
@@ -65,7 +56,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.ItemsSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.ItemsSource.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.TreeViewItemTemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

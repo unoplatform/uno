@@ -28,7 +28,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property TranslateY
 		// Skipping already declared method Microsoft.UI.Xaml.Media.CompositeTransform.CompositeTransform()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.CompositeTransform()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.CenterXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.CenterYProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.RotationProperty.get
@@ -38,12 +37,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.SkewYProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.TranslateXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.TranslateYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.operator ==(Microsoft.UI.Xaml.Media.CompositeTransform, Microsoft.UI.Xaml.Media.CompositeTransform)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.operator !=(Microsoft.UI.Xaml.Media.CompositeTransform, Microsoft.UI.Xaml.Media.CompositeTransform)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.Equals(Microsoft.UI.Xaml.Media.CompositeTransform)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.CenterX.get
@@ -64,7 +57,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.TranslateX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.TranslateY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.TranslateY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositeTransform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

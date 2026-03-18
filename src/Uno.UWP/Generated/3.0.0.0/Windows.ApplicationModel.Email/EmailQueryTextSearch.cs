@@ -55,12 +55,6 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.operator ==(Windows.ApplicationModel.Email.EmailQueryTextSearch, Windows.ApplicationModel.Email.EmailQueryTextSearch)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.operator !=(Windows.ApplicationModel.Email.EmailQueryTextSearch, Windows.ApplicationModel.Email.EmailQueryTextSearch)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.Equals(Windows.ApplicationModel.Email.EmailQueryTextSearch)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.WinRT.IWinRTObject.QueryInterfaceCache.get

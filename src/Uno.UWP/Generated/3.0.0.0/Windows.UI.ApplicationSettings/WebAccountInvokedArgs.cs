@@ -23,12 +23,6 @@ namespace Windows.UI.ApplicationSettings
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.operator ==(Windows.UI.ApplicationSettings.WebAccountInvokedArgs, Windows.UI.ApplicationSettings.WebAccountInvokedArgs)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.operator !=(Windows.UI.ApplicationSettings.WebAccountInvokedArgs, Windows.UI.ApplicationSettings.WebAccountInvokedArgs)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.Equals(Windows.UI.ApplicationSettings.WebAccountInvokedArgs)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.Equals(object)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

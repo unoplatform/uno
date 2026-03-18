@@ -240,12 +240,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextStyle.TimedTextStyle()
-		// Forced skipping of method Windows.Media.Core.TimedTextStyle.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.TimedTextStyle.operator ==(Windows.Media.Core.TimedTextStyle, Windows.Media.Core.TimedTextStyle)
-		// Forced skipping of method Windows.Media.Core.TimedTextStyle.operator !=(Windows.Media.Core.TimedTextStyle, Windows.Media.Core.TimedTextStyle)
-		// Forced skipping of method Windows.Media.Core.TimedTextStyle.Equals(Windows.Media.Core.TimedTextStyle)
-		// Forced skipping of method Windows.Media.Core.TimedTextStyle.Equals(object)
-		// Forced skipping of method Windows.Media.Core.TimedTextStyle.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.TimedTextStyle.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.TimedTextStyle.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.TimedTextStyle.WinRT.IWinRTObject.QueryInterfaceCache.get

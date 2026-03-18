@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.UserDataTasks.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListDeleteTaskRequest.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListDeleteTaskRequest.operator ==(Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListDeleteTaskRequest, Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListDeleteTaskRequest)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListDeleteTaskRequest.operator !=(Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListDeleteTaskRequest, Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListDeleteTaskRequest)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListDeleteTaskRequest.Equals(Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListDeleteTaskRequest)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListDeleteTaskRequest.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListDeleteTaskRequest.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListDeleteTaskRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListDeleteTaskRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListDeleteTaskRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

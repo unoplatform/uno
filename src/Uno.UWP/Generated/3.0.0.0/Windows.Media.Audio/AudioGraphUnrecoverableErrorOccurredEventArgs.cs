@@ -23,12 +23,6 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.operator ==(Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs, Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.operator !=(Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs, Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.Equals(Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

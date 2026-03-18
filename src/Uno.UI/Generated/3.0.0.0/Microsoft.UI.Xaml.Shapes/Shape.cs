@@ -141,7 +141,6 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Skipping already declared property StrokeThickness
 		// Skipping already declared method Microsoft.UI.Xaml.Shapes.Shape.Shape()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Shape()
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.FillProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StretchProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeDashArrayProperty.get
@@ -153,14 +152,6 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeStartLineCapProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeThicknessProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Shape(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.operator ==(Microsoft.UI.Xaml.Shapes.Shape, Microsoft.UI.Xaml.Shapes.Shape)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.operator !=(Microsoft.UI.Xaml.Shapes.Shape, Microsoft.UI.Xaml.Shapes.Shape)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Equals(Microsoft.UI.Xaml.Shapes.Shape)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Shape(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -193,7 +184,6 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeStartLineCap.set
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeThickness.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeThickness.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

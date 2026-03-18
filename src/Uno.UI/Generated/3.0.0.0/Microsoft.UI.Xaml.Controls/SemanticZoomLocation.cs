@@ -44,12 +44,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.SemanticZoomLocation()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.operator ==(Microsoft.UI.Xaml.Controls.SemanticZoomLocation, Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.operator !=(Microsoft.UI.Xaml.Controls.SemanticZoomLocation, Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.Equals(Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.WinRT.IWinRTObject.QueryInterfaceCache.get

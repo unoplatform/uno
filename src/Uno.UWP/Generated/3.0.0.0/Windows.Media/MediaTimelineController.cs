@@ -82,12 +82,6 @@ namespace Windows.Media
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaTimelineController.MediaTimelineController()
-		// Forced skipping of method Windows.Media.MediaTimelineController.FromAbi(nint)
-		// Forced skipping of method Windows.Media.MediaTimelineController.operator ==(Windows.Media.MediaTimelineController, Windows.Media.MediaTimelineController)
-		// Forced skipping of method Windows.Media.MediaTimelineController.operator !=(Windows.Media.MediaTimelineController, Windows.Media.MediaTimelineController)
-		// Forced skipping of method Windows.Media.MediaTimelineController.Equals(Windows.Media.MediaTimelineController)
-		// Forced skipping of method Windows.Media.MediaTimelineController.Equals(object)
-		// Forced skipping of method Windows.Media.MediaTimelineController.GetHashCode()
 		// Forced skipping of method Windows.Media.MediaTimelineController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.MediaTimelineController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.MediaTimelineController.WinRT.IWinRTObject.QueryInterfaceCache.get

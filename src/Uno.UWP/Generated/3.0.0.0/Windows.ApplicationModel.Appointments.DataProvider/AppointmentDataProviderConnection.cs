@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.operator ==(Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection, Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.operator !=(Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection, Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.Equals(Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.WinRT.IWinRTObject.QueryInterfaceCache.get

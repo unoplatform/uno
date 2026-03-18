@@ -38,7 +38,6 @@ namespace Windows.Devices.Perception.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.Provider.KnownPerceptionFrameKind.As<I>()
 		// Forced skipping of method Windows.Devices.Perception.Provider.KnownPerceptionFrameKind.Color.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.KnownPerceptionFrameKind.Depth.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.KnownPerceptionFrameKind.Infrared.get

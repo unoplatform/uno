@@ -73,7 +73,6 @@ namespace Windows.Devices.Bluetooth
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEDevice.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.BluetoothLEDevice> FromIdAsync(string deviceId)
@@ -102,12 +101,6 @@ namespace Windows.Devices.Bluetooth
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BluetoothLEDevice> BluetoothLEDevice.FromBluetoothAddressAsync(ulong bluetoothAddress, BluetoothAddressType bluetoothAddressType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBluetoothLEDevice%3E%20BluetoothLEDevice.FromBluetoothAddressAsync%28ulong%20bluetoothAddress%2C%20BluetoothAddressType%20bluetoothAddressType%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEDevice.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEDevice.operator ==(Windows.Devices.Bluetooth.BluetoothLEDevice, Windows.Devices.Bluetooth.BluetoothLEDevice)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEDevice.operator !=(Windows.Devices.Bluetooth.BluetoothLEDevice, Windows.Devices.Bluetooth.BluetoothLEDevice)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEDevice.Equals(Windows.Devices.Bluetooth.BluetoothLEDevice)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEDevice.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEDevice.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEDevice.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEDevice.WinRT.IWinRTObject.QueryInterfaceCache.get

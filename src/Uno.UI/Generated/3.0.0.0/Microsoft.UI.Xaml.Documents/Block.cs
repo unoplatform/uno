@@ -126,20 +126,11 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.Block()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.HorizontalTextAlignmentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.LineHeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.LineStackingStrategyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.MarginProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.TextAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.Block(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.operator ==(Microsoft.UI.Xaml.Documents.Block, Microsoft.UI.Xaml.Documents.Block)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.operator !=(Microsoft.UI.Xaml.Documents.Block, Microsoft.UI.Xaml.Documents.Block)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.Equals(Microsoft.UI.Xaml.Documents.Block)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.Block(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.HorizontalTextAlignment.get
@@ -152,7 +143,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.Margin.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.TextAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.TextAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -37,12 +37,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.operator ==(Windows.Media.Devices.PanelBasedOptimizationControl, Windows.Media.Devices.PanelBasedOptimizationControl)
-		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.operator !=(Windows.Media.Devices.PanelBasedOptimizationControl, Windows.Media.Devices.PanelBasedOptimizationControl)
-		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.Equals(Windows.Media.Devices.PanelBasedOptimizationControl)
-		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.WinRT.IWinRTObject.QueryInterfaceCache.get

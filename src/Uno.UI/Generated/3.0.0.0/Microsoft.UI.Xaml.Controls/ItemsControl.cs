@@ -83,7 +83,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ItemsSource
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsControl()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsControl()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.GetItemsOwner(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsControlFromItemContainer(Microsoft.UI.Xaml.DependencyObject)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.DisplayMemberPathProperty.get
@@ -96,14 +95,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemTemplateSelectorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsPanelProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsControl(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.operator ==(Microsoft.UI.Xaml.Controls.ItemsControl, Microsoft.UI.Xaml.Controls.ItemsControl)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.operator !=(Microsoft.UI.Xaml.Controls.ItemsControl, Microsoft.UI.Xaml.Controls.ItemsControl)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.Equals(Microsoft.UI.Xaml.Controls.ItemsControl)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsControl(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -114,23 +105,14 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.IsItemItsOwnContainerOverride(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.Microsoft.UI.Xaml.Controls.IItemsControlOverrides.IsItemItsOwnContainerOverride(object)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.GetContainerForItemOverride()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.Microsoft.UI.Xaml.Controls.IItemsControlOverrides.GetContainerForItemOverride()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.ClearContainerForItemOverride(Microsoft.UI.Xaml.DependencyObject, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.Microsoft.UI.Xaml.Controls.IItemsControlOverrides.ClearContainerForItemOverride(Microsoft.UI.Xaml.DependencyObject, object)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.PrepareContainerForItemOverride(Microsoft.UI.Xaml.DependencyObject, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.Microsoft.UI.Xaml.Controls.IItemsControlOverrides.PrepareContainerForItemOverride(Microsoft.UI.Xaml.DependencyObject, object)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.OnItemsChanged(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.Microsoft.UI.Xaml.Controls.IItemsControlOverrides.OnItemsChanged(object)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.OnItemContainerStyleChanged(Microsoft.UI.Xaml.Style, Microsoft.UI.Xaml.Style)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.Microsoft.UI.Xaml.Controls.IItemsControlOverrides.OnItemContainerStyleChanged(Microsoft.UI.Xaml.Style, Microsoft.UI.Xaml.Style)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.OnItemContainerStyleSelectorChanged(Microsoft.UI.Xaml.Controls.StyleSelector, Microsoft.UI.Xaml.Controls.StyleSelector)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.Microsoft.UI.Xaml.Controls.IItemsControlOverrides.OnItemContainerStyleSelectorChanged(Microsoft.UI.Xaml.Controls.StyleSelector, Microsoft.UI.Xaml.Controls.StyleSelector)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.OnItemTemplateChanged(Microsoft.UI.Xaml.DataTemplate, Microsoft.UI.Xaml.DataTemplate)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.Microsoft.UI.Xaml.Controls.IItemsControlOverrides.OnItemTemplateChanged(Microsoft.UI.Xaml.DataTemplate, Microsoft.UI.Xaml.DataTemplate)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.OnItemTemplateSelectorChanged(Microsoft.UI.Xaml.Controls.DataTemplateSelector, Microsoft.UI.Xaml.Controls.DataTemplateSelector)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.Microsoft.UI.Xaml.Controls.IItemsControlOverrides.OnItemTemplateSelectorChanged(Microsoft.UI.Xaml.Controls.DataTemplateSelector, Microsoft.UI.Xaml.Controls.DataTemplateSelector)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void OnGroupStyleSelectorChanged(global::Microsoft.UI.Xaml.Controls.GroupStyleSelector oldGroupStyleSelector, global::Microsoft.UI.Xaml.Controls.GroupStyleSelector newGroupStyleSelector)
@@ -138,7 +120,6 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsControl", "void ItemsControl.OnGroupStyleSelectorChanged(GroupStyleSelector oldGroupStyleSelector, GroupStyleSelector newGroupStyleSelector)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.Microsoft.UI.Xaml.Controls.IItemsControlOverrides.OnGroupStyleSelectorChanged(Microsoft.UI.Xaml.Controls.GroupStyleSelector, Microsoft.UI.Xaml.Controls.GroupStyleSelector)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.ItemFromContainer(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.ContainerFromItem(object)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.IndexFromContainer(Microsoft.UI.Xaml.DependencyObject)
@@ -166,7 +147,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsPanelRoot.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Controls.IItemContainerMapping
 	}

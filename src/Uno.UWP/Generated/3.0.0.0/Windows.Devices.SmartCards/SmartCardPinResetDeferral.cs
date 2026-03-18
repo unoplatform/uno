@@ -13,12 +13,6 @@ namespace Windows.Devices.SmartCards
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinResetDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinResetDeferral.operator ==(Windows.Devices.SmartCards.SmartCardPinResetDeferral, Windows.Devices.SmartCards.SmartCardPinResetDeferral)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinResetDeferral.operator !=(Windows.Devices.SmartCards.SmartCardPinResetDeferral, Windows.Devices.SmartCards.SmartCardPinResetDeferral)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinResetDeferral.Equals(Windows.Devices.SmartCards.SmartCardPinResetDeferral)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinResetDeferral.Equals(object)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinResetDeferral.GetHashCode()
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinResetDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinResetDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinResetDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -33,12 +33,6 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs.operator ==(Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs, Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs.operator !=(Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs, Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs.Equals(Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs.Equals(object)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

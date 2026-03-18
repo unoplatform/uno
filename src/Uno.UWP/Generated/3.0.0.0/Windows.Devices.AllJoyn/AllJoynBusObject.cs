@@ -52,12 +52,6 @@ namespace Windows.Devices.AllJoyn
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.AllJoynBusObject(string, Windows.Devices.AllJoyn.AllJoynBusAttachment)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.operator ==(Windows.Devices.AllJoyn.AllJoynBusObject, Windows.Devices.AllJoyn.AllJoynBusObject)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.operator !=(Windows.Devices.AllJoyn.AllJoynBusObject, Windows.Devices.AllJoyn.AllJoynBusObject)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.Equals(Windows.Devices.AllJoyn.AllJoynBusObject)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.Equals(object)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.GetHashCode()
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.WinRT.IWinRTObject.QueryInterfaceCache.get

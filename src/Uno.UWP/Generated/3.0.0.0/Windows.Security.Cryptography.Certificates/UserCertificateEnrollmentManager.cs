@@ -13,12 +13,6 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.operator ==(Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager, Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.operator !=(Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager, Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.Equals(Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.Equals(object)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.GetHashCode()
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.UserCertificateEnrollmentManager.WinRT.IWinRTObject.QueryInterfaceCache.get

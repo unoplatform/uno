@@ -43,12 +43,6 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.operator ==(Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem, Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.operator !=(Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem, Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.Equals(Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.WinRT.IWinRTObject.QueryInterfaceCache.get

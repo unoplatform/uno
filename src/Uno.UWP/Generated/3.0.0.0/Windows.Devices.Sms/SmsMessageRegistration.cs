@@ -33,7 +33,6 @@ namespace Windows.Devices.Sms
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sms.SmsMessageRegistration Register(string id, global::Windows.Devices.Sms.SmsFilterRules filterRules)
@@ -42,12 +41,6 @@ namespace Windows.Devices.Sms
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.AllRegistrations.get
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.operator ==(Windows.Devices.Sms.SmsMessageRegistration, Windows.Devices.Sms.SmsMessageRegistration)
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.operator !=(Windows.Devices.Sms.SmsMessageRegistration, Windows.Devices.Sms.SmsMessageRegistration)
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.Equals(Windows.Devices.Sms.SmsMessageRegistration)
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.Equals(object)
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.WinRT.IWinRTObject.QueryInterfaceCache.get

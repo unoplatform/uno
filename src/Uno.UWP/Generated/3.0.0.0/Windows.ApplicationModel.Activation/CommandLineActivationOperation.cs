@@ -47,12 +47,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.operator ==(Windows.ApplicationModel.Activation.CommandLineActivationOperation, Windows.ApplicationModel.Activation.CommandLineActivationOperation)
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.operator !=(Windows.ApplicationModel.Activation.CommandLineActivationOperation, Windows.ApplicationModel.Activation.CommandLineActivationOperation)
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.Equals(Windows.ApplicationModel.Activation.CommandLineActivationOperation)
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

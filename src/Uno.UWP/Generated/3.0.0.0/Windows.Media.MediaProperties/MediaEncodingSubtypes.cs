@@ -528,7 +528,6 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.As<I>()
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Aac.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.AacAdts.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Ac3.get

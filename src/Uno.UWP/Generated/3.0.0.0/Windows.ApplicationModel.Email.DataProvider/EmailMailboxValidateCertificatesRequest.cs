@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest.operator ==(Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest, Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest.operator !=(Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest, Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest.Equals(Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

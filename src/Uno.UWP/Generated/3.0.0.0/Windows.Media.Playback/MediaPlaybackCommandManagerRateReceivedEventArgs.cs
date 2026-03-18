@@ -37,12 +37,6 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs.operator ==(Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs, Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs.operator !=(Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs, Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs.Equals(Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

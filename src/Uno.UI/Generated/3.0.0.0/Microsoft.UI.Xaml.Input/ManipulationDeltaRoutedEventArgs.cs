@@ -18,12 +18,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Velocities
 		// Skipping already declared method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.ManipulationDeltaRoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.ManipulationDeltaRoutedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.operator ==(Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs, Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.operator !=(Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs, Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.Equals(Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.Complete()
@@ -36,7 +30,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.Position.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.Velocities.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

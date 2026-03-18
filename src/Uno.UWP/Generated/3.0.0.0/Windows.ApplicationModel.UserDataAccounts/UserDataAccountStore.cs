@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.operator ==(Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore, Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.operator !=(Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore, Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.Equals(Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.WinRT.IWinRTObject.QueryInterfaceCache.get

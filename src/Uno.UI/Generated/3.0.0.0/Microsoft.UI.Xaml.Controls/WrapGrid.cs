@@ -142,19 +142,12 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.WrapGrid.WrapGrid()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.WrapGrid()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.HorizontalChildrenAlignmentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.ItemHeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.ItemWidthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.MaximumRowsOrColumnsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.OrientationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.VerticalChildrenAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.operator ==(Microsoft.UI.Xaml.Controls.WrapGrid, Microsoft.UI.Xaml.Controls.WrapGrid)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.operator !=(Microsoft.UI.Xaml.Controls.WrapGrid, Microsoft.UI.Xaml.Controls.WrapGrid)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.Equals(Microsoft.UI.Xaml.Controls.WrapGrid)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.HorizontalChildrenAlignment.get
@@ -169,7 +162,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.Orientation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.VerticalChildrenAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.VerticalChildrenAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -43,12 +43,6 @@ namespace Windows.Perception.Spatial.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.operator ==(Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview, Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview)
-		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.operator !=(Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview, Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview)
-		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.Equals(Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview)
-		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.GetHashCode()
 		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.WinRT.IWinRTObject.QueryInterfaceCache.get

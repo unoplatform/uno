@@ -11,12 +11,6 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared property Count
 		// Skipping already declared property this[]
 		// Skipping already declared property Length
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.operator ==(Windows.Data.Xml.Dom.XmlNodeList, Windows.Data.Xml.Dom.XmlNodeList)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.operator !=(Windows.Data.Xml.Dom.XmlNodeList, Windows.Data.Xml.Dom.XmlNodeList)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.Equals(Windows.Data.Xml.Dom.XmlNodeList)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.Equals(object)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.GetHashCode()
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.WinRT.IWinRTObject.QueryInterfaceCache.get

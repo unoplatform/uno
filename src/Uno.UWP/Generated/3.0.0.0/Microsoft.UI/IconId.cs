@@ -11,11 +11,6 @@ namespace Microsoft.UI
 		// Forced skipping of method Microsoft.UI.IconId.IconId()
 		// Skipping already declared method Microsoft.UI.IconId.IconId(ulong)
 		// Forced skipping of method Microsoft.UI.IconId.IconId(ulong)
-		// Forced skipping of method Microsoft.UI.IconId.operator ==(Microsoft.UI.IconId, Microsoft.UI.IconId)
-		// Forced skipping of method Microsoft.UI.IconId.operator !=(Microsoft.UI.IconId, Microsoft.UI.IconId)
-		// Forced skipping of method Microsoft.UI.IconId.Equals(Microsoft.UI.IconId)
-		// Forced skipping of method Microsoft.UI.IconId.Equals(object)
-		// Forced skipping of method Microsoft.UI.IconId.GetHashCode()
 		// Skipping already declared field Microsoft.UI.IconId.Value
 	}
 }

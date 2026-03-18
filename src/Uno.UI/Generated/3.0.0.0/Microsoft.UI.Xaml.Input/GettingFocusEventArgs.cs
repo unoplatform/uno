@@ -16,12 +16,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property InputDevice
 		// Skipping already declared property NewFocusedElement
 		// Skipping already declared property OldFocusedElement
-		// Forced skipping of method Microsoft.UI.Xaml.Input.GettingFocusEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.GettingFocusEventArgs.operator ==(Microsoft.UI.Xaml.Input.GettingFocusEventArgs, Microsoft.UI.Xaml.Input.GettingFocusEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.GettingFocusEventArgs.operator !=(Microsoft.UI.Xaml.Input.GettingFocusEventArgs, Microsoft.UI.Xaml.Input.GettingFocusEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.GettingFocusEventArgs.Equals(Microsoft.UI.Xaml.Input.GettingFocusEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.GettingFocusEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.GettingFocusEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.GettingFocusEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.GettingFocusEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Input.GettingFocusEventArgs.TryCancel()
@@ -37,7 +31,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.GettingFocusEventArgs.NewFocusedElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.GettingFocusEventArgs.NewFocusedElement.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.GettingFocusEventArgs.OldFocusedElement.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.GettingFocusEventArgs.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.GettingFocusEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -26,12 +26,6 @@ namespace Windows.Web.Http
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpStreamContent.HttpStreamContent(Windows.Storage.Streams.IInputStream)
-		// Forced skipping of method Windows.Web.Http.HttpStreamContent.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.HttpStreamContent.operator ==(Windows.Web.Http.HttpStreamContent, Windows.Web.Http.HttpStreamContent)
-		// Forced skipping of method Windows.Web.Http.HttpStreamContent.operator !=(Windows.Web.Http.HttpStreamContent, Windows.Web.Http.HttpStreamContent)
-		// Forced skipping of method Windows.Web.Http.HttpStreamContent.Equals(Windows.Web.Http.HttpStreamContent)
-		// Forced skipping of method Windows.Web.Http.HttpStreamContent.Equals(object)
-		// Forced skipping of method Windows.Web.Http.HttpStreamContent.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.HttpStreamContent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpStreamContent.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpStreamContent.WinRT.IWinRTObject.QueryInterfaceCache.get

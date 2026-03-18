@@ -106,12 +106,6 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.ChainBuildingParameters()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.operator ==(Windows.Security.Cryptography.Certificates.ChainBuildingParameters, Windows.Security.Cryptography.Certificates.ChainBuildingParameters)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.operator !=(Windows.Security.Cryptography.Certificates.ChainBuildingParameters, Windows.Security.Cryptography.Certificates.ChainBuildingParameters)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.Equals(Windows.Security.Cryptography.Certificates.ChainBuildingParameters)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.Equals(object)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.GetHashCode()
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.WinRT.IWinRTObject.QueryInterfaceCache.get

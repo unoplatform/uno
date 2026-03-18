@@ -68,14 +68,7 @@ namespace Windows.UI.ApplicationSettings
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.SettingsCommand(object, string, Windows.UI.Popups.UICommandInvokedHandler)
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.As<I>()
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.AccountsCommand.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.operator ==(Windows.UI.ApplicationSettings.SettingsCommand, Windows.UI.ApplicationSettings.SettingsCommand)
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.operator !=(Windows.UI.ApplicationSettings.SettingsCommand, Windows.UI.ApplicationSettings.SettingsCommand)
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Equals(Windows.UI.ApplicationSettings.SettingsCommand)
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Equals(object)
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.GetHashCode()
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.WinRT.IWinRTObject.QueryInterfaceCache.get

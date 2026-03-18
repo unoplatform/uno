@@ -44,12 +44,6 @@ namespace Windows.Storage.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.StorageProviderGetPathForContentUriResult()
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.operator ==(Windows.Storage.Provider.StorageProviderGetPathForContentUriResult, Windows.Storage.Provider.StorageProviderGetPathForContentUriResult)
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.operator !=(Windows.Storage.Provider.StorageProviderGetPathForContentUriResult, Windows.Storage.Provider.StorageProviderGetPathForContentUriResult)
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.Equals(Windows.Storage.Provider.StorageProviderGetPathForContentUriResult)
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.Equals(object)
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.GetHashCode()
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.WinRT.IWinRTObject.QueryInterfaceCache.get

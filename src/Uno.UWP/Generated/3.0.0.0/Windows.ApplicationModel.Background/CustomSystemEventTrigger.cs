@@ -36,12 +36,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.CustomSystemEventTrigger(string, Windows.ApplicationModel.Background.CustomSystemEventTriggerRecurrence)
-		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.operator ==(Windows.ApplicationModel.Background.CustomSystemEventTrigger, Windows.ApplicationModel.Background.CustomSystemEventTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.operator !=(Windows.ApplicationModel.Background.CustomSystemEventTrigger, Windows.ApplicationModel.Background.CustomSystemEventTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.Equals(Windows.ApplicationModel.Background.CustomSystemEventTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

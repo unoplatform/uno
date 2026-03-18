@@ -73,12 +73,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUICachedFileUpdaterActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUICachedFileUpdaterActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUICachedFileUpdaterActivatedEventArgs, Windows.UI.WebUI.WebUICachedFileUpdaterActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUICachedFileUpdaterActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUICachedFileUpdaterActivatedEventArgs, Windows.UI.WebUI.WebUICachedFileUpdaterActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUICachedFileUpdaterActivatedEventArgs.Equals(Windows.UI.WebUI.WebUICachedFileUpdaterActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUICachedFileUpdaterActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUICachedFileUpdaterActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUICachedFileUpdaterActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUICachedFileUpdaterActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUICachedFileUpdaterActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

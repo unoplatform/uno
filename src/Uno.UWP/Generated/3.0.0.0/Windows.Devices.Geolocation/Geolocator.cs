@@ -106,7 +106,6 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.Geolocator()
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.As<I>()
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.GeolocationAccessStatus> RequestAccessAsync()
@@ -131,12 +130,6 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DefaultGeoposition.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DefaultGeoposition.set
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.IsDefaultGeopositionRecommended.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.operator ==(Windows.Devices.Geolocation.Geolocator, Windows.Devices.Geolocation.Geolocator)
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.operator !=(Windows.Devices.Geolocation.Geolocator, Windows.Devices.Geolocation.Geolocator)
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.Equals(Windows.Devices.Geolocation.Geolocator)
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.Equals(object)
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.GetHashCode()
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.WinRT.IWinRTObject.QueryInterfaceCache.get

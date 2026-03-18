@@ -73,12 +73,6 @@ namespace Windows.ApplicationModel.Calls.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.operator ==(Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails, Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.operator !=(Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails, Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.Equals(Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

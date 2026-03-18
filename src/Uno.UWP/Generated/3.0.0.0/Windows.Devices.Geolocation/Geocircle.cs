@@ -31,12 +31,6 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.Geocircle(Windows.Devices.Geolocation.BasicGeoposition, double, Windows.Devices.Geolocation.AltitudeReferenceSystem, uint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.operator ==(Windows.Devices.Geolocation.Geocircle, Windows.Devices.Geolocation.Geocircle)
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.operator !=(Windows.Devices.Geolocation.Geocircle, Windows.Devices.Geolocation.Geocircle)
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.Equals(Windows.Devices.Geolocation.Geocircle)
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.Equals(object)
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.GetHashCode()
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.WinRT.IWinRTObject.QueryInterfaceCache.get

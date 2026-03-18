@@ -23,12 +23,6 @@ namespace Windows.Storage.Search
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails.operator ==(Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails, Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails)
-		// Forced skipping of method Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails.operator !=(Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails, Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails)
-		// Forced skipping of method Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails.Equals(Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails)
-		// Forced skipping of method Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

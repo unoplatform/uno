@@ -73,12 +73,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs, Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs, Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -17,11 +17,6 @@ namespace Windows.UI.Input.Preview.Injection
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.InjectedInputPointerInfo(uint, Windows.UI.Input.Preview.Injection.InjectedInputPointerOptions, Windows.UI.Input.Preview.Injection.InjectedInputPoint, uint, ulong)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.operator ==(Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo, Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.operator !=(Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo, Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.Equals(Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.GetHashCode()
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.PointerId
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.PointerOptions
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.PixelLocation

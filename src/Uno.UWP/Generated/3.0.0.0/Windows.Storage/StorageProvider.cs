@@ -10,12 +10,6 @@ namespace Windows.Storage
 	{
 		// Skipping already declared property DisplayName
 		// Skipping already declared property Id
-		// Forced skipping of method Windows.Storage.StorageProvider.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.StorageProvider.operator ==(Windows.Storage.StorageProvider, Windows.Storage.StorageProvider)
-		// Forced skipping of method Windows.Storage.StorageProvider.operator !=(Windows.Storage.StorageProvider, Windows.Storage.StorageProvider)
-		// Forced skipping of method Windows.Storage.StorageProvider.Equals(Windows.Storage.StorageProvider)
-		// Forced skipping of method Windows.Storage.StorageProvider.Equals(object)
-		// Forced skipping of method Windows.Storage.StorageProvider.GetHashCode()
 		// Forced skipping of method Windows.Storage.StorageProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.StorageProvider.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.StorageProvider.WinRT.IWinRTObject.QueryInterfaceCache.get

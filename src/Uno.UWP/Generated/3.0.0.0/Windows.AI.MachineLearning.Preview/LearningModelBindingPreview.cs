@@ -56,12 +56,6 @@ namespace Windows.AI.MachineLearning.Preview
 		}
 #endif
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.LearningModelBindingPreview(Windows.AI.MachineLearning.Preview.LearningModelPreview)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.FromAbi(nint)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.operator ==(Windows.AI.MachineLearning.Preview.LearningModelBindingPreview, Windows.AI.MachineLearning.Preview.LearningModelBindingPreview)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.operator !=(Windows.AI.MachineLearning.Preview.LearningModelBindingPreview, Windows.AI.MachineLearning.Preview.LearningModelBindingPreview)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.Equals(Windows.AI.MachineLearning.Preview.LearningModelBindingPreview)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.Equals(object)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.GetHashCode()
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.WinRT.IWinRTObject.QueryInterfaceCache.get

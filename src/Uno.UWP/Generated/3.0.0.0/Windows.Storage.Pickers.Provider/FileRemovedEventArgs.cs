@@ -23,12 +23,6 @@ namespace Windows.Storage.Pickers.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.operator ==(Windows.Storage.Pickers.Provider.FileRemovedEventArgs, Windows.Storage.Pickers.Provider.FileRemovedEventArgs)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.operator !=(Windows.Storage.Pickers.Provider.FileRemovedEventArgs, Windows.Storage.Pickers.Provider.FileRemovedEventArgs)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.Equals(Windows.Storage.Pickers.Provider.FileRemovedEventArgs)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

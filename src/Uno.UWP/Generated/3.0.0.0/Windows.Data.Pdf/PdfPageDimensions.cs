@@ -63,12 +63,6 @@ namespace Windows.Data.Pdf
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.operator ==(Windows.Data.Pdf.PdfPageDimensions, Windows.Data.Pdf.PdfPageDimensions)
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.operator !=(Windows.Data.Pdf.PdfPageDimensions, Windows.Data.Pdf.PdfPageDimensions)
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.Equals(Windows.Data.Pdf.PdfPageDimensions)
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.Equals(object)
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.GetHashCode()
 		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.WinRT.IWinRTObject.QueryInterfaceCache.get

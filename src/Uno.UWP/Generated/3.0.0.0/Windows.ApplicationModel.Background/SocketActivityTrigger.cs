@@ -26,12 +26,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.SocketActivityTrigger.SocketActivityTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.SocketActivityTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.SocketActivityTrigger.operator ==(Windows.ApplicationModel.Background.SocketActivityTrigger, Windows.ApplicationModel.Background.SocketActivityTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.SocketActivityTrigger.operator !=(Windows.ApplicationModel.Background.SocketActivityTrigger, Windows.ApplicationModel.Background.SocketActivityTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.SocketActivityTrigger.Equals(Windows.ApplicationModel.Background.SocketActivityTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.SocketActivityTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.SocketActivityTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.SocketActivityTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.SocketActivityTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.SocketActivityTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

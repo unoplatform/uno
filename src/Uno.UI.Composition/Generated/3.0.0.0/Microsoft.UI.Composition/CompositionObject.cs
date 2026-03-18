@@ -35,7 +35,6 @@ namespace Microsoft.UI.Composition
 		}
 #endif
 		// Skipping already declared property Properties
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void StartAnimationWithIAnimationObject(global::Microsoft.UI.Composition.IAnimationObject target, string propertyName, global::Microsoft.UI.Composition.CompositionAnimation animation)
@@ -50,14 +49,6 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionObject", "void CompositionObject.StartAnimationGroupWithIAnimationObject(IAnimationObject target, ICompositionAnimationBase animation)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.CompositionObject(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.operator ==(Microsoft.UI.Composition.CompositionObject, Microsoft.UI.Composition.CompositionObject)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.operator !=(Microsoft.UI.Composition.CompositionObject, Microsoft.UI.Composition.CompositionObject)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.Equals(Microsoft.UI.Composition.CompositionObject)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.CompositionObject(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -95,7 +86,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.ImplicitAnimations.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.ImplicitAnimations.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.Properties.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 		// Processing: Microsoft.UI.Composition.IAnimationObject

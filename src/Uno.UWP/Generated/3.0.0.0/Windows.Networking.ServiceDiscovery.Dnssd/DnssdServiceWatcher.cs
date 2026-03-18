@@ -23,12 +23,6 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.operator ==(Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher, Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher)
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.operator !=(Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher, Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher)
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.Equals(Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher)
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.Equals(object)
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.GetHashCode()
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get

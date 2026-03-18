@@ -42,21 +42,12 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.CompositionLight(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.operator ==(Windows.UI.Composition.CompositionLight, Windows.UI.Composition.CompositionLight)
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.operator !=(Windows.UI.Composition.CompositionLight, Windows.UI.Composition.CompositionLight)
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.Equals(Windows.UI.Composition.CompositionLight)
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.CompositionLight(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.ExclusionsFromTargets.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.IsEnabled.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.IsEnabled.set
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.Targets.get
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

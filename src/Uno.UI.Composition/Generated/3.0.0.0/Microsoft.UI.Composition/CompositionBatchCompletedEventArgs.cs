@@ -13,15 +13,8 @@ namespace Microsoft.UI.Composition
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionBatchCompletedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionBatchCompletedEventArgs.operator ==(Microsoft.UI.Composition.CompositionBatchCompletedEventArgs, Microsoft.UI.Composition.CompositionBatchCompletedEventArgs)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionBatchCompletedEventArgs.operator !=(Microsoft.UI.Composition.CompositionBatchCompletedEventArgs, Microsoft.UI.Composition.CompositionBatchCompletedEventArgs)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionBatchCompletedEventArgs.Equals(Microsoft.UI.Composition.CompositionBatchCompletedEventArgs)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionBatchCompletedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionBatchCompletedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionBatchCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionBatchCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionBatchCompletedEventArgs.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionBatchCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

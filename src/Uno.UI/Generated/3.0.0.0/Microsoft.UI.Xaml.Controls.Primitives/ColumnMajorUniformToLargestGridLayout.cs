@@ -16,18 +16,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property RowSpacing
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.ColumnMajorUniformToLargestGridLayout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.ColumnMajorUniformToLargestGridLayout()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.ColumnSpacingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.MaxColumnsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.RowSpacingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.ColumnMajorUniformToLargestGridLayout(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout, Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout, Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.Equals(Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.ColumnMajorUniformToLargestGridLayout(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.ColumnSpacing.get
@@ -36,7 +27,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.MaxColumns.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.RowSpacing.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.RowSpacing.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

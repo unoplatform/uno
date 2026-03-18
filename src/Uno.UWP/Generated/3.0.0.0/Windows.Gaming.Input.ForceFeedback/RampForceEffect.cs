@@ -40,12 +40,6 @@ namespace Windows.Gaming.Input.ForceFeedback
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.RampForceEffect()
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.operator ==(Windows.Gaming.Input.ForceFeedback.RampForceEffect, Windows.Gaming.Input.ForceFeedback.RampForceEffect)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.operator !=(Windows.Gaming.Input.ForceFeedback.RampForceEffect, Windows.Gaming.Input.ForceFeedback.RampForceEffect)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.Equals(Windows.Gaming.Input.ForceFeedback.RampForceEffect)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.RampForceEffect.WinRT.IWinRTObject.QueryInterfaceCache.get

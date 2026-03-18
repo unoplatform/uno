@@ -14,23 +14,13 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Title
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MenuBarItem.MenuBarItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.MenuBarItem()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.ItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.TitleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.MenuBarItem(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.operator ==(Microsoft.UI.Xaml.Controls.MenuBarItem, Microsoft.UI.Xaml.Controls.MenuBarItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.operator !=(Microsoft.UI.Xaml.Controls.MenuBarItem, Microsoft.UI.Xaml.Controls.MenuBarItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.Equals(Microsoft.UI.Xaml.Controls.MenuBarItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.MenuBarItem(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.Title.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.Title.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

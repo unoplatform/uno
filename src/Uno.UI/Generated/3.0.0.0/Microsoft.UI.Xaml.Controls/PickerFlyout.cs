@@ -54,15 +54,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PickerFlyout.PickerFlyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.PickerFlyout()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.ConfirmationButtonsVisibleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.ContentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.operator ==(Microsoft.UI.Xaml.Controls.PickerFlyout, Microsoft.UI.Xaml.Controls.PickerFlyout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.operator !=(Microsoft.UI.Xaml.Controls.PickerFlyout, Microsoft.UI.Xaml.Controls.PickerFlyout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.Equals(Microsoft.UI.Xaml.Controls.PickerFlyout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -78,7 +71,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.ConfirmationButtonsVisible.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.Content.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

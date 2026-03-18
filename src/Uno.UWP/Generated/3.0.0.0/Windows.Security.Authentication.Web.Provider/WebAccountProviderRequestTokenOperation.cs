@@ -57,12 +57,6 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation.operator ==(Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation, Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation.operator !=(Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation, Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation.Equals(Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation.Equals(object)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation.GetHashCode()
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

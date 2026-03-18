@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation.operator ==(Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation, Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation.operator !=(Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation, Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation.Equals(Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

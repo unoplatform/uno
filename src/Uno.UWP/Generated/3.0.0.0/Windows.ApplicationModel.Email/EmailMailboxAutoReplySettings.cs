@@ -102,12 +102,6 @@ namespace Windows.ApplicationModel.Email
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.EmailMailboxAutoReplySettings()
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.operator ==(Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings, Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.operator !=(Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings, Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.Equals(Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -83,7 +83,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Networking.NetworkOperators.MobileBroadbandAccount CreateFromNetworkAccountId(string networkAccountId)
@@ -92,12 +91,6 @@ namespace Windows.Networking.NetworkOperators
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.AvailableNetworkAccountIds.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandAccount, Windows.Networking.NetworkOperators.MobileBroadbandAccount)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandAccount, Windows.Networking.NetworkOperators.MobileBroadbandAccount)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.Equals(Windows.Networking.NetworkOperators.MobileBroadbandAccount)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.WinRT.IWinRTObject.QueryInterfaceCache.get

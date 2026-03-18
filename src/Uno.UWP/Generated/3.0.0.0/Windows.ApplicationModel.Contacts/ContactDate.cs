@@ -86,12 +86,6 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.ContactDate()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.operator ==(Windows.ApplicationModel.Contacts.ContactDate, Windows.ApplicationModel.Contacts.ContactDate)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.operator !=(Windows.ApplicationModel.Contacts.ContactDate, Windows.ApplicationModel.Contacts.ContactDate)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Equals(Windows.ApplicationModel.Contacts.ContactDate)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.WinRT.IWinRTObject.QueryInterfaceCache.get

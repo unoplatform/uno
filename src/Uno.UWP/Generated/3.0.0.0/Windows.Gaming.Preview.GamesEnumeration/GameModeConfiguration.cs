@@ -135,12 +135,6 @@ namespace Windows.Gaming.Preview.GamesEnumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.operator ==(Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration, Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration)
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.operator !=(Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration, Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration)
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.Equals(Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration)
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.Equals(object)
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

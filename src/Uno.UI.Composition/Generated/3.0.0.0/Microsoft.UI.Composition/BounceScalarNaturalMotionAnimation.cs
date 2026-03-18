@@ -41,19 +41,12 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation.operator ==(Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation, Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation.operator !=(Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation, Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation.Equals(Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation.Acceleration.get
 		// Forced skipping of method Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation.Acceleration.set
 		// Forced skipping of method Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation.Restitution.get
 		// Forced skipping of method Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation.Restitution.set
-		// Forced skipping of method Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

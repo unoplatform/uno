@@ -17,12 +17,6 @@ namespace Microsoft.UI.Xaml.Hosting
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.XamlSourceFocusNavigationRequest(Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationReason, Windows.Foundation.Rect)
 		// Skipping already declared method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.XamlSourceFocusNavigationRequest(Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationReason, Windows.Foundation.Rect, System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.XamlSourceFocusNavigationRequest(Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationReason, Windows.Foundation.Rect, System.Guid)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.operator ==(Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest, Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.operator !=(Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest, Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.Equals(Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

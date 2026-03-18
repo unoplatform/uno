@@ -30,7 +30,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property RowSpacing
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Grid.Grid()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.Grid()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.GetRow(Microsoft.UI.Xaml.FrameworkElement)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.SetRow(Microsoft.UI.Xaml.FrameworkElement, int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.GetColumn(Microsoft.UI.Xaml.FrameworkElement)
@@ -50,14 +49,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.RowProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.RowSpacingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.RowSpanProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.Grid(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.operator ==(Microsoft.UI.Xaml.Controls.Grid, Microsoft.UI.Xaml.Controls.Grid)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.operator !=(Microsoft.UI.Xaml.Controls.Grid, Microsoft.UI.Xaml.Controls.Grid)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.Equals(Microsoft.UI.Xaml.Controls.Grid)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.Grid(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.BackgroundSizing.get
@@ -76,7 +67,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.RowDefinitions.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.RowSpacing.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.RowSpacing.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

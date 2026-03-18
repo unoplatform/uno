@@ -13,12 +13,6 @@ namespace Windows.Media.Control
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Control.CurrentSessionChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Control.CurrentSessionChangedEventArgs.operator ==(Windows.Media.Control.CurrentSessionChangedEventArgs, Windows.Media.Control.CurrentSessionChangedEventArgs)
-		// Forced skipping of method Windows.Media.Control.CurrentSessionChangedEventArgs.operator !=(Windows.Media.Control.CurrentSessionChangedEventArgs, Windows.Media.Control.CurrentSessionChangedEventArgs)
-		// Forced skipping of method Windows.Media.Control.CurrentSessionChangedEventArgs.Equals(Windows.Media.Control.CurrentSessionChangedEventArgs)
-		// Forced skipping of method Windows.Media.Control.CurrentSessionChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Control.CurrentSessionChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Control.CurrentSessionChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Control.CurrentSessionChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Control.CurrentSessionChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

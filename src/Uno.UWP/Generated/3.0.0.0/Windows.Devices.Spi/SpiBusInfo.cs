@@ -53,12 +53,6 @@ namespace Windows.Devices.Spi
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.operator ==(Windows.Devices.Spi.SpiBusInfo, Windows.Devices.Spi.SpiBusInfo)
-		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.operator !=(Windows.Devices.Spi.SpiBusInfo, Windows.Devices.Spi.SpiBusInfo)
-		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.Equals(Windows.Devices.Spi.SpiBusInfo)
-		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.Equals(object)
-		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.GetHashCode()
 		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -52,12 +52,6 @@ namespace Microsoft.UI.Xaml.Input
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.ManipulationPivot(Windows.Foundation.Point, double)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.operator ==(Microsoft.UI.Xaml.Input.ManipulationPivot, Microsoft.UI.Xaml.Input.ManipulationPivot)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.operator !=(Microsoft.UI.Xaml.Input.ManipulationPivot, Microsoft.UI.Xaml.Input.ManipulationPivot)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.Equals(Microsoft.UI.Xaml.Input.ManipulationPivot)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.WinRT.IWinRTObject.QueryInterfaceCache.get

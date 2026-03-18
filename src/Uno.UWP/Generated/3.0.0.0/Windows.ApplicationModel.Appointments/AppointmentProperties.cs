@@ -187,7 +187,6 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.As<I>()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.AllDay.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.AllowNewTimeProposal.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.BusyStatus.get

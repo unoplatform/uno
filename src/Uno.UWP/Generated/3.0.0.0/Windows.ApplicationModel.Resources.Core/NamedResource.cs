@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.NamedResource.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.NamedResource.operator ==(Windows.ApplicationModel.Resources.Core.NamedResource, Windows.ApplicationModel.Resources.Core.NamedResource)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.NamedResource.operator !=(Windows.ApplicationModel.Resources.Core.NamedResource, Windows.ApplicationModel.Resources.Core.NamedResource)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.NamedResource.Equals(Windows.ApplicationModel.Resources.Core.NamedResource)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.NamedResource.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.NamedResource.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.NamedResource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.NamedResource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.NamedResource.WinRT.IWinRTObject.QueryInterfaceCache.get

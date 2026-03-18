@@ -17,11 +17,6 @@ namespace Microsoft.UI.Xaml.Markup
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.XamlBinaryWriterErrorInformation(uint, uint, uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.operator ==(Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation, Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation)
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.operator !=(Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation, Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation)
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.Equals(Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation)
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint InputStreamIndex;
 #endif

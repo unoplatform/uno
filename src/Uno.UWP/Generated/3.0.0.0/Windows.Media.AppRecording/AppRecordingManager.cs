@@ -23,7 +23,6 @@ namespace Windows.Media.AppRecording
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.AppRecording.AppRecordingManager GetDefault()
@@ -31,12 +30,6 @@ namespace Windows.Media.AppRecording
 			throw new global::System.NotImplementedException("The member AppRecordingManager AppRecordingManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppRecordingManager%20AppRecordingManager.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingManager.FromAbi(nint)
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingManager.operator ==(Windows.Media.AppRecording.AppRecordingManager, Windows.Media.AppRecording.AppRecordingManager)
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingManager.operator !=(Windows.Media.AppRecording.AppRecordingManager, Windows.Media.AppRecording.AppRecordingManager)
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingManager.Equals(Windows.Media.AppRecording.AppRecordingManager)
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingManager.Equals(object)
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingManager.GetHashCode()
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingManager.WinRT.IWinRTObject.QueryInterfaceCache.get

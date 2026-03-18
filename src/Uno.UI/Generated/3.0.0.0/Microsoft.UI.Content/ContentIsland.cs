@@ -290,7 +290,6 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ContentIsland Create(global::Microsoft.UI.Composition.Visual Root)
@@ -347,14 +346,6 @@ namespace Microsoft.UI.Content
 			throw new global::System.NotImplementedException("The member ContentIsland ContentIsland.GetBySystemVisual(Visual child) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20ContentIsland.GetBySystemVisual%28Visual%20child%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.ContentIsland(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.operator ==(Microsoft.UI.Content.ContentIsland, Microsoft.UI.Content.ContentIsland)
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.operator !=(Microsoft.UI.Content.ContentIsland, Microsoft.UI.Content.ContentIsland)
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.Equals(Microsoft.UI.Content.ContentIsland)
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.Equals(object)
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.ContentIsland(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -428,7 +419,6 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.RasterizationScale.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.SystemBackdrop.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.SystemBackdrop.set
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Content.ContentIsland.AutomationProviderRequested
 		// Skipping already declared event Microsoft.UI.Content.ContentIsland.StateChanged

@@ -33,12 +33,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.SceneModeControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.SceneModeControl.operator ==(Windows.Media.Devices.SceneModeControl, Windows.Media.Devices.SceneModeControl)
-		// Forced skipping of method Windows.Media.Devices.SceneModeControl.operator !=(Windows.Media.Devices.SceneModeControl, Windows.Media.Devices.SceneModeControl)
-		// Forced skipping of method Windows.Media.Devices.SceneModeControl.Equals(Windows.Media.Devices.SceneModeControl)
-		// Forced skipping of method Windows.Media.Devices.SceneModeControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.SceneModeControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.SceneModeControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.SceneModeControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.SceneModeControl.WinRT.IWinRTObject.QueryInterfaceCache.get

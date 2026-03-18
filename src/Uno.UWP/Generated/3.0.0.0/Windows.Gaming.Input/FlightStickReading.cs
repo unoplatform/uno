@@ -17,11 +17,6 @@ namespace Windows.Gaming.Input
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.FlightStickReading.FlightStickReading(ulong, Windows.Gaming.Input.FlightStickButtons, Windows.Gaming.Input.GameControllerSwitchPosition, double, double, double, double)
-		// Forced skipping of method Windows.Gaming.Input.FlightStickReading.operator ==(Windows.Gaming.Input.FlightStickReading, Windows.Gaming.Input.FlightStickReading)
-		// Forced skipping of method Windows.Gaming.Input.FlightStickReading.operator !=(Windows.Gaming.Input.FlightStickReading, Windows.Gaming.Input.FlightStickReading)
-		// Forced skipping of method Windows.Gaming.Input.FlightStickReading.Equals(Windows.Gaming.Input.FlightStickReading)
-		// Forced skipping of method Windows.Gaming.Input.FlightStickReading.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.FlightStickReading.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong Timestamp;
 #endif

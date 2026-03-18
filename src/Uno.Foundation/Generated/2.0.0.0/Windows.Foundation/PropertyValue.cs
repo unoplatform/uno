@@ -8,7 +8,6 @@ namespace Windows.Foundation
 #endif
 	public static partial class PropertyValue
 	{
-		// Forced skipping of method Windows.Foundation.PropertyValue.As<I>()
 		// Skipping already declared method Windows.Foundation.PropertyValue.CreateEmpty()
 		// Skipping already declared method Windows.Foundation.PropertyValue.CreateUInt8(byte)
 		// Skipping already declared method Windows.Foundation.PropertyValue.CreateInt16(short)

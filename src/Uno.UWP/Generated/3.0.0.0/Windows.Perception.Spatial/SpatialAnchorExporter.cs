@@ -13,7 +13,6 @@ namespace Windows.Perception.Spatial
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Perception.Spatial.SpatialAnchorExporter GetDefault()
@@ -28,12 +27,6 @@ namespace Windows.Perception.Spatial
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SpatialPerceptionAccessStatus> SpatialAnchorExporter.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpatialPerceptionAccessStatus%3E%20SpatialAnchorExporter.RequestAccessAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.operator ==(Windows.Perception.Spatial.SpatialAnchorExporter, Windows.Perception.Spatial.SpatialAnchorExporter)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.operator !=(Windows.Perception.Spatial.SpatialAnchorExporter, Windows.Perception.Spatial.SpatialAnchorExporter)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.Equals(Windows.Perception.Spatial.SpatialAnchorExporter)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.GetHashCode()
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.WinRT.IWinRTObject.QueryInterfaceCache.get

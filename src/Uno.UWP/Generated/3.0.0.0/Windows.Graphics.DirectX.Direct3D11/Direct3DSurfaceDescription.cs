@@ -17,11 +17,6 @@ namespace Windows.Graphics.DirectX.Direct3D11
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DSurfaceDescription.Direct3DSurfaceDescription(int, int, Windows.Graphics.DirectX.DirectXPixelFormat, Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription)
-		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DSurfaceDescription.operator ==(Windows.Graphics.DirectX.Direct3D11.Direct3DSurfaceDescription, Windows.Graphics.DirectX.Direct3D11.Direct3DSurfaceDescription)
-		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DSurfaceDescription.operator !=(Windows.Graphics.DirectX.Direct3D11.Direct3DSurfaceDescription, Windows.Graphics.DirectX.Direct3D11.Direct3DSurfaceDescription)
-		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DSurfaceDescription.Equals(Windows.Graphics.DirectX.Direct3D11.Direct3DSurfaceDescription)
-		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DSurfaceDescription.Equals(object)
-		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DSurfaceDescription.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int Width;
 #endif

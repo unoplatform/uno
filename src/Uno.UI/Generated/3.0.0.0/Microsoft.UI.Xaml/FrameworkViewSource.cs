@@ -16,12 +16,6 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.FrameworkViewSource()
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.operator ==(Microsoft.UI.Xaml.FrameworkViewSource, Microsoft.UI.Xaml.FrameworkViewSource)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.operator !=(Microsoft.UI.Xaml.FrameworkViewSource, Microsoft.UI.Xaml.FrameworkViewSource)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.Equals(Microsoft.UI.Xaml.FrameworkViewSource)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkViewSource.WinRT.IWinRTObject.QueryInterfaceCache.get

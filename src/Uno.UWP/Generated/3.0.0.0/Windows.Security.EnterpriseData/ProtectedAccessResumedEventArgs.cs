@@ -23,12 +23,6 @@ namespace Windows.Security.EnterpriseData
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs.operator ==(Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs, Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs.operator !=(Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs, Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs.Equals(Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

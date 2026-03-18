@@ -205,12 +205,6 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBar.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBar.operator ==(Windows.UI.WindowManagement.AppWindowTitleBar, Windows.UI.WindowManagement.AppWindowTitleBar)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBar.operator !=(Windows.UI.WindowManagement.AppWindowTitleBar, Windows.UI.WindowManagement.AppWindowTitleBar)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBar.Equals(Windows.UI.WindowManagement.AppWindowTitleBar)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBar.Equals(object)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBar.GetHashCode()
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBar.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -83,12 +83,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIFileOpenPickerActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUIFileOpenPickerActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIFileOpenPickerActivatedEventArgs, Windows.UI.WebUI.WebUIFileOpenPickerActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIFileOpenPickerActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIFileOpenPickerActivatedEventArgs, Windows.UI.WebUI.WebUIFileOpenPickerActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIFileOpenPickerActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIFileOpenPickerActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIFileOpenPickerActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUIFileOpenPickerActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUIFileOpenPickerActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIFileOpenPickerActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIFileOpenPickerActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

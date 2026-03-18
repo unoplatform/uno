@@ -63,12 +63,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppMemoryReport.FromAbi(nint)
-		// Forced skipping of method Windows.System.AppMemoryReport.operator ==(Windows.System.AppMemoryReport, Windows.System.AppMemoryReport)
-		// Forced skipping of method Windows.System.AppMemoryReport.operator !=(Windows.System.AppMemoryReport, Windows.System.AppMemoryReport)
-		// Forced skipping of method Windows.System.AppMemoryReport.Equals(Windows.System.AppMemoryReport)
-		// Forced skipping of method Windows.System.AppMemoryReport.Equals(object)
-		// Forced skipping of method Windows.System.AppMemoryReport.GetHashCode()
 		// Forced skipping of method Windows.System.AppMemoryReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.AppMemoryReport.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.AppMemoryReport.WinRT.IWinRTObject.QueryInterfaceCache.get

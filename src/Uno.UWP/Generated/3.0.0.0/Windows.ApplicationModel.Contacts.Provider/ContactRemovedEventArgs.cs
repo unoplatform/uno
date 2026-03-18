@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Contacts.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.operator ==(Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs, Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.operator !=(Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs, Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.Equals(Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

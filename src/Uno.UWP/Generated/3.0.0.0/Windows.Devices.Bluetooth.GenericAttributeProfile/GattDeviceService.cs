@@ -79,7 +79,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		}
 #endif
 		// Skipping already declared property Uuid
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService> FromIdAsync(string deviceId)
@@ -143,12 +142,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			throw new global::System.NotImplementedException("The member string GattDeviceService.GetDeviceSelectorForBluetoothDeviceIdAndUuid(BluetoothDeviceId bluetoothDeviceId, Guid serviceUuid, BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattDeviceService.GetDeviceSelectorForBluetoothDeviceIdAndUuid%28BluetoothDeviceId%20bluetoothDeviceId%2C%20Guid%20serviceUuid%2C%20BluetoothCacheMode%20cacheMode%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService, Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService, Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -40,12 +40,6 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.BadgeNotification.BadgeNotification(Windows.Data.Xml.Dom.XmlDocument)
-		// Forced skipping of method Windows.UI.Notifications.BadgeNotification.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Notifications.BadgeNotification.operator ==(Windows.UI.Notifications.BadgeNotification, Windows.UI.Notifications.BadgeNotification)
-		// Forced skipping of method Windows.UI.Notifications.BadgeNotification.operator !=(Windows.UI.Notifications.BadgeNotification, Windows.UI.Notifications.BadgeNotification)
-		// Forced skipping of method Windows.UI.Notifications.BadgeNotification.Equals(Windows.UI.Notifications.BadgeNotification)
-		// Forced skipping of method Windows.UI.Notifications.BadgeNotification.Equals(object)
-		// Forced skipping of method Windows.UI.Notifications.BadgeNotification.GetHashCode()
 		// Forced skipping of method Windows.UI.Notifications.BadgeNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.BadgeNotification.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.BadgeNotification.WinRT.IWinRTObject.QueryInterfaceCache.get

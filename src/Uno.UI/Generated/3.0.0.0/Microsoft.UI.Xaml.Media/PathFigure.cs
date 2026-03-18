@@ -18,17 +18,10 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property StartPoint
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PathFigure.PathFigure()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.PathFigure()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.IsClosedProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.IsFilledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.SegmentsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.StartPointProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.operator ==(Microsoft.UI.Xaml.Media.PathFigure, Microsoft.UI.Xaml.Media.PathFigure)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.operator !=(Microsoft.UI.Xaml.Media.PathFigure, Microsoft.UI.Xaml.Media.PathFigure)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.Equals(Microsoft.UI.Xaml.Media.PathFigure)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.IsClosed.get
@@ -39,7 +32,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.Segments.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.StartPoint.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.StartPoint.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

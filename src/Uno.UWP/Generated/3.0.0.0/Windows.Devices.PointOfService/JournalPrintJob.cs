@@ -13,12 +13,6 @@ namespace Windows.Devices.PointOfService
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrintJob.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrintJob.operator ==(Windows.Devices.PointOfService.JournalPrintJob, Windows.Devices.PointOfService.JournalPrintJob)
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrintJob.operator !=(Windows.Devices.PointOfService.JournalPrintJob, Windows.Devices.PointOfService.JournalPrintJob)
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrintJob.Equals(Windows.Devices.PointOfService.JournalPrintJob)
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrintJob.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrintJob.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrintJob.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrintJob.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrintJob.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -47,19 +47,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ContextMenuEventArgs, Microsoft.UI.Xaml.Controls.ContextMenuEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ContextMenuEventArgs, Microsoft.UI.Xaml.Controls.ContextMenuEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.Equals(Microsoft.UI.Xaml.Controls.ContextMenuEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.CursorLeft.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.CursorTop.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.Handled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

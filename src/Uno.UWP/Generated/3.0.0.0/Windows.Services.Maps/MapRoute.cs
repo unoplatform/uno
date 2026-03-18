@@ -123,12 +123,6 @@ namespace Windows.Services.Maps
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.MapRoute.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Maps.MapRoute.operator ==(Windows.Services.Maps.MapRoute, Windows.Services.Maps.MapRoute)
-		// Forced skipping of method Windows.Services.Maps.MapRoute.operator !=(Windows.Services.Maps.MapRoute, Windows.Services.Maps.MapRoute)
-		// Forced skipping of method Windows.Services.Maps.MapRoute.Equals(Windows.Services.Maps.MapRoute)
-		// Forced skipping of method Windows.Services.Maps.MapRoute.Equals(object)
-		// Forced skipping of method Windows.Services.Maps.MapRoute.GetHashCode()
 		// Forced skipping of method Windows.Services.Maps.MapRoute.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Maps.MapRoute.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Maps.MapRoute.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -16,12 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger.ChatMessageReceivedNotificationTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger.operator ==(Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger, Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger.operator !=(Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger, Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger.Equals(Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageReceivedNotificationTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

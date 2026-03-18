@@ -112,21 +112,12 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ToolTip.ToolTip()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.ToolTip()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.HorizontalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.IsOpenProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.PlacementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.PlacementRectProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.PlacementTargetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.VerticalOffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.ToolTip(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.operator ==(Microsoft.UI.Xaml.Controls.ToolTip, Microsoft.UI.Xaml.Controls.ToolTip)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.operator !=(Microsoft.UI.Xaml.Controls.ToolTip, Microsoft.UI.Xaml.Controls.ToolTip)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.Equals(Microsoft.UI.Xaml.Controls.ToolTip)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.ToolTip(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.Closed.add
@@ -146,7 +137,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.VerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.VerticalOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ToolTip.Closed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ToolTip.Opened

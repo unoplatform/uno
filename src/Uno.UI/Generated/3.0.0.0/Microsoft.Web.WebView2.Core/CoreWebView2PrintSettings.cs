@@ -307,12 +307,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings, Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings, Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.Equals(Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

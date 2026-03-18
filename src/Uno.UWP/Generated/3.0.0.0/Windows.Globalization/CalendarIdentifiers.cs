@@ -23,7 +23,6 @@ namespace Windows.Globalization
 		// Skipping already declared property Thai
 		// Skipping already declared property UmAlQura
 		// Skipping already declared property VietnameseLunar
-		// Forced skipping of method Windows.Globalization.CalendarIdentifiers.As<I>()
 		// Forced skipping of method Windows.Globalization.CalendarIdentifiers.ChineseLunar.get
 		// Forced skipping of method Windows.Globalization.CalendarIdentifiers.Gregorian.get
 		// Forced skipping of method Windows.Globalization.CalendarIdentifiers.Hebrew.get

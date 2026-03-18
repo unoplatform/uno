@@ -23,12 +23,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.DialRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.DialRequestedEventArgs.operator ==(Windows.Media.Devices.DialRequestedEventArgs, Windows.Media.Devices.DialRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Devices.DialRequestedEventArgs.operator !=(Windows.Media.Devices.DialRequestedEventArgs, Windows.Media.Devices.DialRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Devices.DialRequestedEventArgs.Equals(Windows.Media.Devices.DialRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Devices.DialRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.DialRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.DialRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.DialRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.DialRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

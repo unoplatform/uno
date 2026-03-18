@@ -174,7 +174,6 @@ namespace Windows.Networking.BackgroundTransfer
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.BackgroundDownloader(Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.BackgroundTransfer.DownloadOperation>> GetCurrentDownloadsAsync()
@@ -203,12 +202,6 @@ namespace Windows.Networking.BackgroundTransfer
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UnconstrainedTransferRequestResult> BackgroundDownloader.RequestUnconstrainedDownloadsAsync(IEnumerable<DownloadOperation> operations) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUnconstrainedTransferRequestResult%3E%20BackgroundDownloader.RequestUnconstrainedDownloadsAsync%28IEnumerable%3CDownloadOperation%3E%20operations%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.operator ==(Windows.Networking.BackgroundTransfer.BackgroundDownloader, Windows.Networking.BackgroundTransfer.BackgroundDownloader)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.operator !=(Windows.Networking.BackgroundTransfer.BackgroundDownloader, Windows.Networking.BackgroundTransfer.BackgroundDownloader)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.Equals(Windows.Networking.BackgroundTransfer.BackgroundDownloader)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.Equals(object)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.GetHashCode()
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.WinRT.IWinRTObject.QueryInterfaceCache.get

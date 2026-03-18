@@ -17,11 +17,6 @@ namespace Windows.Foundation.Numerics
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Numerics.Rational.Rational(uint, uint)
-		// Forced skipping of method Windows.Foundation.Numerics.Rational.operator ==(Windows.Foundation.Numerics.Rational, Windows.Foundation.Numerics.Rational)
-		// Forced skipping of method Windows.Foundation.Numerics.Rational.operator !=(Windows.Foundation.Numerics.Rational, Windows.Foundation.Numerics.Rational)
-		// Forced skipping of method Windows.Foundation.Numerics.Rational.Equals(Windows.Foundation.Numerics.Rational)
-		// Forced skipping of method Windows.Foundation.Numerics.Rational.Equals(object)
-		// Forced skipping of method Windows.Foundation.Numerics.Rational.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint Numerator;
 #endif

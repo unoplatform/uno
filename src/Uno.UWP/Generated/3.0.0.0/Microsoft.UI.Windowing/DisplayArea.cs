@@ -63,7 +63,6 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.DisplayAreaWatcher CreateWatcher()
@@ -107,12 +106,6 @@ namespace Microsoft.UI.Windowing
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.Primary.get
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.operator ==(Microsoft.UI.Windowing.DisplayArea, Microsoft.UI.Windowing.DisplayArea)
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.operator !=(Microsoft.UI.Windowing.DisplayArea, Microsoft.UI.Windowing.DisplayArea)
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.Equals(Microsoft.UI.Windowing.DisplayArea)
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.Equals(object)
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WinRT.IWinRTObject.QueryInterfaceCache.get

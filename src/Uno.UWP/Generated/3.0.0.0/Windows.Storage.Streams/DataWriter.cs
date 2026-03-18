@@ -15,12 +15,6 @@ namespace Windows.Storage.Streams
 		// Forced skipping of method Windows.Storage.Streams.DataWriter.DataWriter()
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.DataWriter(Windows.Storage.Streams.IOutputStream)
 		// Forced skipping of method Windows.Storage.Streams.DataWriter.DataWriter(Windows.Storage.Streams.IOutputStream)
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.operator ==(Windows.Storage.Streams.DataWriter, Windows.Storage.Streams.DataWriter)
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.operator !=(Windows.Storage.Streams.DataWriter, Windows.Storage.Streams.DataWriter)
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.Equals(Windows.Storage.Streams.DataWriter)
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.Equals(object)
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.GetHashCode()
 		// Forced skipping of method Windows.Storage.Streams.DataWriter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.DataWriter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.DataWriter.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -16,12 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger.MobileBroadbandDeviceServiceNotificationTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger.operator ==(Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger, Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger.operator !=(Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger, Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger.Equals(Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandDeviceServiceNotificationTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

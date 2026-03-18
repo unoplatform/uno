@@ -13,12 +13,6 @@ namespace Windows.Devices.PointOfService
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.operator ==(Windows.Devices.PointOfService.CashDrawerEventSource, Windows.Devices.PointOfService.CashDrawerEventSource)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.operator !=(Windows.Devices.PointOfService.CashDrawerEventSource, Windows.Devices.PointOfService.CashDrawerEventSource)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.Equals(Windows.Devices.PointOfService.CashDrawerEventSource)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.WinRT.IWinRTObject.QueryInterfaceCache.get

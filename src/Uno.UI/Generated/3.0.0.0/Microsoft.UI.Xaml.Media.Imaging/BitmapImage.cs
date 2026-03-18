@@ -80,7 +80,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.BitmapImage()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.BitmapImage(System.Uri)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.BitmapImage(System.Uri)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.AutoPlayProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.CreateOptionsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.DecodePixelHeightProperty.get
@@ -89,12 +88,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.IsAnimatedBitmapProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.IsPlayingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.UriSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.operator ==(Microsoft.UI.Xaml.Media.Imaging.BitmapImage, Microsoft.UI.Xaml.Media.Imaging.BitmapImage)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.operator !=(Microsoft.UI.Xaml.Media.Imaging.BitmapImage, Microsoft.UI.Xaml.Media.Imaging.BitmapImage)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.Equals(Microsoft.UI.Xaml.Media.Imaging.BitmapImage)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -131,7 +124,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.IsPlaying.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.UriSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.UriSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapImage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Media.Imaging.BitmapImage.DownloadProgress
 		// Skipping already declared event Microsoft.UI.Xaml.Media.Imaging.BitmapImage.ImageFailed

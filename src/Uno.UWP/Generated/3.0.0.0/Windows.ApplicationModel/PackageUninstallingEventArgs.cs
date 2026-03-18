@@ -63,12 +63,6 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.operator ==(Windows.ApplicationModel.PackageUninstallingEventArgs, Windows.ApplicationModel.PackageUninstallingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.operator !=(Windows.ApplicationModel.PackageUninstallingEventArgs, Windows.ApplicationModel.PackageUninstallingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.Equals(Windows.ApplicationModel.PackageUninstallingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUninstallingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

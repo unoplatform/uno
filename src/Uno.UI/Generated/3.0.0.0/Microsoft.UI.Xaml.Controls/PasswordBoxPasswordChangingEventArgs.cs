@@ -23,12 +23,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs, Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs, Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs.Equals(Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

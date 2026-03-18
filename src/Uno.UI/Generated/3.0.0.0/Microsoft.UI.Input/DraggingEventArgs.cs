@@ -11,12 +11,6 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property DraggingState
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		// Forced skipping of method Microsoft.UI.Input.DraggingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.DraggingEventArgs.operator ==(Microsoft.UI.Input.DraggingEventArgs, Microsoft.UI.Input.DraggingEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.DraggingEventArgs.operator !=(Microsoft.UI.Input.DraggingEventArgs, Microsoft.UI.Input.DraggingEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.DraggingEventArgs.Equals(Microsoft.UI.Input.DraggingEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.DraggingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.DraggingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.DraggingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.DraggingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.DraggingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Skipping already declared property ResourceMap
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackage.DataPackage()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.DataPackage()
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.operator ==(Windows.ApplicationModel.DataTransfer.DataPackage, Windows.ApplicationModel.DataTransfer.DataPackage)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.operator !=(Windows.ApplicationModel.DataTransfer.DataPackage, Windows.ApplicationModel.DataTransfer.DataPackage)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.Equals(Windows.ApplicationModel.DataTransfer.DataPackage)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.WinRT.IWinRTObject.QueryInterfaceCache.get

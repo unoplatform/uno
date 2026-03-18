@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Core.UnhandledError.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Core.UnhandledError.operator ==(Windows.ApplicationModel.Core.UnhandledError, Windows.ApplicationModel.Core.UnhandledError)
-		// Forced skipping of method Windows.ApplicationModel.Core.UnhandledError.operator !=(Windows.ApplicationModel.Core.UnhandledError, Windows.ApplicationModel.Core.UnhandledError)
-		// Forced skipping of method Windows.ApplicationModel.Core.UnhandledError.Equals(Windows.ApplicationModel.Core.UnhandledError)
-		// Forced skipping of method Windows.ApplicationModel.Core.UnhandledError.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Core.UnhandledError.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Core.UnhandledError.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Core.UnhandledError.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Core.UnhandledError.WinRT.IWinRTObject.QueryInterfaceCache.get

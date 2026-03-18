@@ -40,12 +40,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MediaBinder.MediaBinder()
-		// Forced skipping of method Windows.Media.Core.MediaBinder.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.MediaBinder.operator ==(Windows.Media.Core.MediaBinder, Windows.Media.Core.MediaBinder)
-		// Forced skipping of method Windows.Media.Core.MediaBinder.operator !=(Windows.Media.Core.MediaBinder, Windows.Media.Core.MediaBinder)
-		// Forced skipping of method Windows.Media.Core.MediaBinder.Equals(Windows.Media.Core.MediaBinder)
-		// Forced skipping of method Windows.Media.Core.MediaBinder.Equals(object)
-		// Forced skipping of method Windows.Media.Core.MediaBinder.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.MediaBinder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.MediaBinder.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.MediaBinder.WinRT.IWinRTObject.QueryInterfaceCache.get

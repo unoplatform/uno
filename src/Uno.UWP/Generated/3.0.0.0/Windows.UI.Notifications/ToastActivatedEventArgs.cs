@@ -33,12 +33,6 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.ToastActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Notifications.ToastActivatedEventArgs.operator ==(Windows.UI.Notifications.ToastActivatedEventArgs, Windows.UI.Notifications.ToastActivatedEventArgs)
-		// Forced skipping of method Windows.UI.Notifications.ToastActivatedEventArgs.operator !=(Windows.UI.Notifications.ToastActivatedEventArgs, Windows.UI.Notifications.ToastActivatedEventArgs)
-		// Forced skipping of method Windows.UI.Notifications.ToastActivatedEventArgs.Equals(Windows.UI.Notifications.ToastActivatedEventArgs)
-		// Forced skipping of method Windows.UI.Notifications.ToastActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Notifications.ToastActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Notifications.ToastActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.ToastActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.ToastActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

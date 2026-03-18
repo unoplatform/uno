@@ -93,12 +93,6 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.operator ==(Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration, Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.operator !=(Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration, Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.Equals(Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

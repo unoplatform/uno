@@ -23,12 +23,6 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails.operator ==(Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails, Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails.operator !=(Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails, Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails.Equals(Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceConnectionChangeTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

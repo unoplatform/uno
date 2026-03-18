@@ -50,14 +50,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.NaturalMotionAnimation(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.operator ==(Windows.UI.Composition.NaturalMotionAnimation, Windows.UI.Composition.NaturalMotionAnimation)
-		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.operator !=(Windows.UI.Composition.NaturalMotionAnimation, Windows.UI.Composition.NaturalMotionAnimation)
-		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.Equals(Windows.UI.Composition.NaturalMotionAnimation)
-		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.NaturalMotionAnimation(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.DelayBehavior.get
@@ -66,7 +58,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.DelayTime.set
 		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.StopBehavior.get
 		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.StopBehavior.set
-		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.NaturalMotionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -12,12 +12,6 @@ namespace Windows.Devices.Sensors
 		// Skipping already declared property CumulativeStepsDuration
 		// Skipping already declared property StepKind
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.operator ==(Windows.Devices.Sensors.PedometerReading, Windows.Devices.Sensors.PedometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.operator !=(Windows.Devices.Sensors.PedometerReading, Windows.Devices.Sensors.PedometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.Equals(Windows.Devices.Sensors.PedometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.WinRT.IWinRTObject.QueryInterfaceCache.get

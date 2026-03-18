@@ -82,16 +82,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.DragOverThemeAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.DirectionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.TargetNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.ToOffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation, Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation, Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.Direction.get
@@ -100,7 +93,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.TargetName.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.ToOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.ToOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

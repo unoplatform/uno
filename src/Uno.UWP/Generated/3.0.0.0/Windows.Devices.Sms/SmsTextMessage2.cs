@@ -190,12 +190,6 @@ namespace Windows.Devices.Sms
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.SmsTextMessage2()
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.operator ==(Windows.Devices.Sms.SmsTextMessage2, Windows.Devices.Sms.SmsTextMessage2)
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.operator !=(Windows.Devices.Sms.SmsTextMessage2, Windows.Devices.Sms.SmsTextMessage2)
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.Equals(Windows.Devices.Sms.SmsTextMessage2)
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.Equals(object)
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.WinRT.IWinRTObject.QueryInterfaceCache.get

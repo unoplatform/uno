@@ -23,12 +23,6 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.VolumeChangeRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.PlayTo.VolumeChangeRequestedEventArgs.operator ==(Windows.Media.PlayTo.VolumeChangeRequestedEventArgs, Windows.Media.PlayTo.VolumeChangeRequestedEventArgs)
-		// Forced skipping of method Windows.Media.PlayTo.VolumeChangeRequestedEventArgs.operator !=(Windows.Media.PlayTo.VolumeChangeRequestedEventArgs, Windows.Media.PlayTo.VolumeChangeRequestedEventArgs)
-		// Forced skipping of method Windows.Media.PlayTo.VolumeChangeRequestedEventArgs.Equals(Windows.Media.PlayTo.VolumeChangeRequestedEventArgs)
-		// Forced skipping of method Windows.Media.PlayTo.VolumeChangeRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.PlayTo.VolumeChangeRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.PlayTo.VolumeChangeRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.PlayTo.VolumeChangeRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.PlayTo.VolumeChangeRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

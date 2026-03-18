@@ -23,12 +23,6 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs.operator ==(Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs, Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs.operator !=(Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs, Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs.Equals(Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

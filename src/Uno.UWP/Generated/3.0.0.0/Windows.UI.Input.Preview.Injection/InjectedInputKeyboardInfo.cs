@@ -58,12 +58,6 @@ namespace Windows.UI.Input.Preview.Injection
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.InjectedInputKeyboardInfo()
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.operator ==(Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo, Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.operator !=(Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo, Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.Equals(Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

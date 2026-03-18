@@ -13,12 +13,6 @@ namespace Windows.UI.Popups
 		// Skipping already declared property Label
 		// Skipping already declared method Windows.UI.Popups.UICommandSeparator.UICommandSeparator()
 		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.UICommandSeparator()
-		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.operator ==(Windows.UI.Popups.UICommandSeparator, Windows.UI.Popups.UICommandSeparator)
-		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.operator !=(Windows.UI.Popups.UICommandSeparator, Windows.UI.Popups.UICommandSeparator)
-		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.Equals(Windows.UI.Popups.UICommandSeparator)
-		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.Equals(object)
-		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.GetHashCode()
 		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.WinRT.IWinRTObject.QueryInterfaceCache.get

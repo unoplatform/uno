@@ -93,7 +93,6 @@ namespace Windows.AI.MachineLearning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModel.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.AI.MachineLearning.LearningModel> LoadFromStorageFileAsync(global::Windows.Storage.IStorageFile modelFile)
@@ -150,12 +149,6 @@ namespace Windows.AI.MachineLearning
 			throw new global::System.NotImplementedException("The member LearningModel LearningModel.LoadFromStream(IRandomAccessStreamReference modelStream, ILearningModelOperatorProvider operatorProvider) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LearningModel%20LearningModel.LoadFromStream%28IRandomAccessStreamReference%20modelStream%2C%20ILearningModelOperatorProvider%20operatorProvider%29");
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModel.FromAbi(nint)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModel.operator ==(Windows.AI.MachineLearning.LearningModel, Windows.AI.MachineLearning.LearningModel)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModel.operator !=(Windows.AI.MachineLearning.LearningModel, Windows.AI.MachineLearning.LearningModel)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModel.Equals(Windows.AI.MachineLearning.LearningModel)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModel.Equals(object)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModel.GetHashCode()
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModel.WinRT.IWinRTObject.QueryInterfaceCache.get

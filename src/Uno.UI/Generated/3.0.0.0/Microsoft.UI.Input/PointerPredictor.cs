@@ -27,7 +27,6 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.PointerPredictor.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.PointerPredictor CreateForInputPointerSource(global::Microsoft.UI.Input.InputPointerSource inputPointerSource)
@@ -35,12 +34,6 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member PointerPredictor PointerPredictor.CreateForInputPointerSource(InputPointerSource inputPointerSource) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerPredictor%20PointerPredictor.CreateForInputPointerSource%28InputPointerSource%20inputPointerSource%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.PointerPredictor.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.PointerPredictor.operator ==(Microsoft.UI.Input.PointerPredictor, Microsoft.UI.Input.PointerPredictor)
-		// Forced skipping of method Microsoft.UI.Input.PointerPredictor.operator !=(Microsoft.UI.Input.PointerPredictor, Microsoft.UI.Input.PointerPredictor)
-		// Forced skipping of method Microsoft.UI.Input.PointerPredictor.Equals(Microsoft.UI.Input.PointerPredictor)
-		// Forced skipping of method Microsoft.UI.Input.PointerPredictor.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.PointerPredictor.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.PointerPredictor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPredictor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPredictor.WinRT.IWinRTObject.QueryInterfaceCache.get

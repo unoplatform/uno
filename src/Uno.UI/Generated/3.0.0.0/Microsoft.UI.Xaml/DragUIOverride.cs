@@ -12,12 +12,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property IsCaptionVisible
 		// Skipping already declared property IsContentVisible
 		// Skipping already declared property IsGlyphVisible
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.operator ==(Microsoft.UI.Xaml.DragUIOverride, Microsoft.UI.Xaml.DragUIOverride)
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.operator !=(Microsoft.UI.Xaml.DragUIOverride, Microsoft.UI.Xaml.DragUIOverride)
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.Equals(Microsoft.UI.Xaml.DragUIOverride)
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.WinRT.IWinRTObject.QueryInterfaceCache.get

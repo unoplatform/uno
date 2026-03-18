@@ -271,7 +271,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TextWrapping
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.TextBox()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextBox()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.AcceptsReturnProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CanPasteClipboardContentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CanRedoProperty.get
@@ -299,14 +298,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextReadingOrderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrappingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextBox(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.operator ==(Microsoft.UI.Xaml.Controls.TextBox, Microsoft.UI.Xaml.Controls.TextBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.operator !=(Microsoft.UI.Xaml.Controls.TextBox, Microsoft.UI.Xaml.Controls.TextBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Equals(Microsoft.UI.Xaml.Controls.TextBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextBox(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.Select(int, int)
@@ -431,7 +422,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextReadingOrder.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrapping.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrapping.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.BeforeTextChanging
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

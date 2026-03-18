@@ -78,12 +78,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.RfcommConnectionTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.operator ==(Windows.ApplicationModel.Background.RfcommConnectionTrigger, Windows.ApplicationModel.Background.RfcommConnectionTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.operator !=(Windows.ApplicationModel.Background.RfcommConnectionTrigger, Windows.ApplicationModel.Background.RfcommConnectionTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.Equals(Windows.ApplicationModel.Background.RfcommConnectionTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

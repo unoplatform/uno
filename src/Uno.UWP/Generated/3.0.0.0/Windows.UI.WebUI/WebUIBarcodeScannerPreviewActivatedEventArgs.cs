@@ -73,12 +73,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs, Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs, Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIBarcodeScannerPreviewActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

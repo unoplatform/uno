@@ -57,12 +57,6 @@ namespace Windows.Gaming.Input.ForceFeedback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.operator ==(Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor, Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.operator !=(Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor, Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.Equals(Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.WinRT.IWinRTObject.QueryInterfaceCache.get

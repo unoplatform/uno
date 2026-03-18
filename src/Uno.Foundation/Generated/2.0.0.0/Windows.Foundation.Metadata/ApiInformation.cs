@@ -8,7 +8,6 @@ namespace Windows.Foundation.Metadata
 #endif
 	public static partial class ApiInformation
 	{
-		// Forced skipping of method Windows.Foundation.Metadata.ApiInformation.As<I>()
 		// Skipping already declared method Windows.Foundation.Metadata.ApiInformation.IsTypePresent(string)
 		// Skipping already declared method Windows.Foundation.Metadata.ApiInformation.IsMethodPresent(string, string)
 		// Skipping already declared method Windows.Foundation.Metadata.ApiInformation.IsMethodPresent(string, string, uint)

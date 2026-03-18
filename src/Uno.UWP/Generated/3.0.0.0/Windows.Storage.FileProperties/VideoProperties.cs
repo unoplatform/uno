@@ -193,12 +193,6 @@ namespace Windows.Storage.FileProperties
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.operator ==(Windows.Storage.FileProperties.VideoProperties, Windows.Storage.FileProperties.VideoProperties)
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.operator !=(Windows.Storage.FileProperties.VideoProperties, Windows.Storage.FileProperties.VideoProperties)
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Equals(Windows.Storage.FileProperties.VideoProperties)
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.Equals(object)
-		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.GetHashCode()
 		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.FileProperties.VideoProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

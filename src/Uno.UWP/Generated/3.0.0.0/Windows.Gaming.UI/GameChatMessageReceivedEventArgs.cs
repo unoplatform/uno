@@ -63,12 +63,6 @@ namespace Windows.Gaming.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.operator ==(Windows.Gaming.UI.GameChatMessageReceivedEventArgs, Windows.Gaming.UI.GameChatMessageReceivedEventArgs)
-		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.operator !=(Windows.Gaming.UI.GameChatMessageReceivedEventArgs, Windows.Gaming.UI.GameChatMessageReceivedEventArgs)
-		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.Equals(Windows.Gaming.UI.GameChatMessageReceivedEventArgs)
-		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

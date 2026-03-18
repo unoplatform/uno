@@ -23,12 +23,6 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.operator ==(Windows.Media.ShuffleEnabledChangeRequestedEventArgs, Windows.Media.ShuffleEnabledChangeRequestedEventArgs)
-		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.operator !=(Windows.Media.ShuffleEnabledChangeRequestedEventArgs, Windows.Media.ShuffleEnabledChangeRequestedEventArgs)
-		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.Equals(Windows.Media.ShuffleEnabledChangeRequestedEventArgs)
-		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.ShuffleEnabledChangeRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

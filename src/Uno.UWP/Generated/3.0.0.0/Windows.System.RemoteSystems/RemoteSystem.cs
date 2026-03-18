@@ -123,7 +123,6 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.RemoteSystems.RemoteSystem> FindByHostNameAsync(global::Windows.Networking.HostName hostName)
@@ -173,12 +172,6 @@ namespace Windows.System.RemoteSystems
 			throw new global::System.NotImplementedException("The member RemoteSystemWatcher RemoteSystem.CreateWatcherForUser(User user, IEnumerable<IRemoteSystemFilter> filters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemWatcher%20RemoteSystem.CreateWatcherForUser%28User%20user%2C%20IEnumerable%3CIRemoteSystemFilter%3E%20filters%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.FromAbi(nint)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.operator ==(Windows.System.RemoteSystems.RemoteSystem, Windows.System.RemoteSystems.RemoteSystem)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.operator !=(Windows.System.RemoteSystems.RemoteSystem, Windows.System.RemoteSystems.RemoteSystem)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.Equals(Windows.System.RemoteSystems.RemoteSystem)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.Equals(object)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.GetHashCode()
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.WinRT.IWinRTObject.QueryInterfaceCache.get

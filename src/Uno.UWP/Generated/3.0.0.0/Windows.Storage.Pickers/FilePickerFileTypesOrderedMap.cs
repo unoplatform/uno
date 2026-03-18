@@ -13,12 +13,6 @@ namespace Windows.Storage.Pickers
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.operator ==(Windows.Storage.Pickers.FilePickerFileTypesOrderedMap, Windows.Storage.Pickers.FilePickerFileTypesOrderedMap)
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.operator !=(Windows.Storage.Pickers.FilePickerFileTypesOrderedMap, Windows.Storage.Pickers.FilePickerFileTypesOrderedMap)
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.Equals(Windows.Storage.Pickers.FilePickerFileTypesOrderedMap)
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.Equals(object)
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.GetHashCode()
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.WinRT.IWinRTObject.QueryInterfaceCache.get

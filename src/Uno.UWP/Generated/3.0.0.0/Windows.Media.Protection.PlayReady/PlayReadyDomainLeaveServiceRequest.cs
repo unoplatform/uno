@@ -102,12 +102,6 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest.PlayReadyDomainLeaveServiceRequest()
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest.operator ==(Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest, Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest.operator !=(Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest, Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest.Equals(Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainLeaveServiceRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

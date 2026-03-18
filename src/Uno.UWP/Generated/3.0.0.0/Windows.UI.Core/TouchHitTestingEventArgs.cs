@@ -61,12 +61,6 @@ namespace Windows.UI.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.operator ==(Windows.UI.Core.TouchHitTestingEventArgs, Windows.UI.Core.TouchHitTestingEventArgs)
-		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.operator !=(Windows.UI.Core.TouchHitTestingEventArgs, Windows.UI.Core.TouchHitTestingEventArgs)
-		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.Equals(Windows.UI.Core.TouchHitTestingEventArgs)
-		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

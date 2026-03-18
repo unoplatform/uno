@@ -9,12 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class SplitViewPaneClosingEventArgs
 	{
 		// Skipping already declared property Cancel
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs, Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs, Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs.Equals(Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitViewPaneClosingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

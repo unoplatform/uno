@@ -83,12 +83,6 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.operator ==(Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo, Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo)
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.operator !=(Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo, Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo)
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.Equals(Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo)
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

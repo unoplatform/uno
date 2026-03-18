@@ -427,7 +427,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.ScrollViewer()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ScrollViewer()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetHorizontalScrollBarVisibility(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetHorizontalScrollBarVisibility(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Controls.ScrollBarVisibility)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetVerticalScrollBarVisibility(Microsoft.UI.Xaml.DependencyObject)
@@ -606,12 +605,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomSnapPointsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomSnapPointsTypeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.operator ==(Microsoft.UI.Xaml.Controls.ScrollViewer, Microsoft.UI.Xaml.Controls.ScrollViewer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.operator !=(Microsoft.UI.Xaml.Controls.ScrollViewer, Microsoft.UI.Xaml.Controls.ScrollViewer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.Equals(Microsoft.UI.Xaml.Controls.ScrollViewer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.ScrollToHorizontalOffset(double)
@@ -725,7 +718,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomSnapPoints.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomSnapPointsType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomSnapPointsType.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

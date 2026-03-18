@@ -71,12 +71,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -23,12 +23,6 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.operator ==(Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters, Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.operator !=(Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters, Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.Equals(Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.Equals(object)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.WinRT.IWinRTObject.QueryInterfaceCache.get

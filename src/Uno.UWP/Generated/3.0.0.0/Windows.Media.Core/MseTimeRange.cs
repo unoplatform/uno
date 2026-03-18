@@ -17,11 +17,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MseTimeRange.MseTimeRange(System.TimeSpan, System.TimeSpan)
-		// Forced skipping of method Windows.Media.Core.MseTimeRange.operator ==(Windows.Media.Core.MseTimeRange, Windows.Media.Core.MseTimeRange)
-		// Forced skipping of method Windows.Media.Core.MseTimeRange.operator !=(Windows.Media.Core.MseTimeRange, Windows.Media.Core.MseTimeRange)
-		// Forced skipping of method Windows.Media.Core.MseTimeRange.Equals(Windows.Media.Core.MseTimeRange)
-		// Forced skipping of method Windows.Media.Core.MseTimeRange.Equals(object)
-		// Forced skipping of method Windows.Media.Core.MseTimeRange.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.TimeSpan Start;
 #endif

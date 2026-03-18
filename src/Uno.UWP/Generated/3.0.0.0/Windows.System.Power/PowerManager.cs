@@ -58,7 +58,6 @@ namespace Windows.System.Power
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Power.PowerManager.As<I>()
 		// Forced skipping of method Windows.System.Power.PowerManager.BatteryStatusChanged.add
 		// Forced skipping of method Windows.System.Power.PowerManager.BatteryStatusChanged.remove
 		// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatusChanged.add

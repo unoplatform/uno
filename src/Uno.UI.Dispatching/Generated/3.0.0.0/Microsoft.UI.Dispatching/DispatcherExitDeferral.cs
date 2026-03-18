@@ -16,12 +16,6 @@ namespace Microsoft.UI.Dispatching
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.DispatcherExitDeferral()
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.operator ==(Microsoft.UI.Dispatching.DispatcherExitDeferral, Microsoft.UI.Dispatching.DispatcherExitDeferral)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.operator !=(Microsoft.UI.Dispatching.DispatcherExitDeferral, Microsoft.UI.Dispatching.DispatcherExitDeferral)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.Equals(Microsoft.UI.Dispatching.DispatcherExitDeferral)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.Equals(object)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherExitDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

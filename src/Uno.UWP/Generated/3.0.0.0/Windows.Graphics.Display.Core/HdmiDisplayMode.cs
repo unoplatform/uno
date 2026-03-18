@@ -123,12 +123,6 @@ namespace Windows.Graphics.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.operator ==(Windows.Graphics.Display.Core.HdmiDisplayMode, Windows.Graphics.Display.Core.HdmiDisplayMode)
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.operator !=(Windows.Graphics.Display.Core.HdmiDisplayMode, Windows.Graphics.Display.Core.HdmiDisplayMode)
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.Equals(Windows.Graphics.Display.Core.HdmiDisplayMode)
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.Equals(object)
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.WinRT.IWinRTObject.QueryInterfaceCache.get

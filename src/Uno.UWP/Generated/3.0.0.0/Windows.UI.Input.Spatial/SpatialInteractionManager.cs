@@ -13,7 +13,6 @@ namespace Windows.UI.Input.Spatial
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.Spatial.SpatialInteractionManager GetForCurrentView()
@@ -28,12 +27,6 @@ namespace Windows.UI.Input.Spatial
 			throw new global::System.NotImplementedException("The member bool SpatialInteractionManager.IsSourceKindSupported(SpatialInteractionSourceKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialInteractionManager.IsSourceKindSupported%28SpatialInteractionSourceKind%20kind%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.operator ==(Windows.UI.Input.Spatial.SpatialInteractionManager, Windows.UI.Input.Spatial.SpatialInteractionManager)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.operator !=(Windows.UI.Input.Spatial.SpatialInteractionManager, Windows.UI.Input.Spatial.SpatialInteractionManager)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.Equals(Windows.UI.Input.Spatial.SpatialInteractionManager)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.WinRT.IWinRTObject.QueryInterfaceCache.get

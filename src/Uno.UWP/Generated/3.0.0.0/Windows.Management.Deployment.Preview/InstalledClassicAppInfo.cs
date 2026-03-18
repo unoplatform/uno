@@ -33,12 +33,6 @@ namespace Windows.Management.Deployment.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.operator ==(Windows.Management.Deployment.Preview.InstalledClassicAppInfo, Windows.Management.Deployment.Preview.InstalledClassicAppInfo)
-		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.operator !=(Windows.Management.Deployment.Preview.InstalledClassicAppInfo, Windows.Management.Deployment.Preview.InstalledClassicAppInfo)
-		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.Equals(Windows.Management.Deployment.Preview.InstalledClassicAppInfo)
-		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.Equals(object)
-		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.GetHashCode()
 		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

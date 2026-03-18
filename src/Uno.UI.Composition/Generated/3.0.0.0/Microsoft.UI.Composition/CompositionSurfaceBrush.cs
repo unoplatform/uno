@@ -21,12 +21,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Surface
 		// Skipping already declared property TransformMatrix
 		// Skipping already declared property VerticalAlignmentRatio
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.operator ==(Microsoft.UI.Composition.CompositionSurfaceBrush, Microsoft.UI.Composition.CompositionSurfaceBrush)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.operator !=(Microsoft.UI.Composition.CompositionSurfaceBrush, Microsoft.UI.Composition.CompositionSurfaceBrush)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.Equals(Microsoft.UI.Composition.CompositionSurfaceBrush)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.AnchorPoint.get
@@ -55,7 +49,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.TransformMatrix.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.VerticalAlignmentRatio.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.VerticalAlignmentRatio.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -29,12 +29,6 @@ namespace Windows.ApplicationModel.Calls
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.PhoneCallHistoryEntryAddress()
 		// Skipping already declared method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.PhoneCallHistoryEntryAddress(string, Windows.ApplicationModel.Calls.PhoneCallHistoryEntryRawAddressKind)
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.PhoneCallHistoryEntryAddress(string, Windows.ApplicationModel.Calls.PhoneCallHistoryEntryRawAddressKind)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.operator ==(Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress, Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.operator !=(Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress, Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.Equals(Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.WinRT.IWinRTObject.QueryInterfaceCache.get

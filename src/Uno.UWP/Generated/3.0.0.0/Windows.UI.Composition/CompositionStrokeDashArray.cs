@@ -47,12 +47,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.operator ==(Windows.UI.Composition.CompositionStrokeDashArray, Windows.UI.Composition.CompositionStrokeDashArray)
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.operator !=(Windows.UI.Composition.CompositionStrokeDashArray, Windows.UI.Composition.CompositionStrokeDashArray)
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.Equals(Windows.UI.Composition.CompositionStrokeDashArray)
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.Count.get
@@ -123,7 +117,6 @@ namespace Windows.UI.Composition
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.System.Collections.Generic.IList<float>.get_Item(int)
 		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.System.Collections.Generic.IList<float>.set_Item(int, float)

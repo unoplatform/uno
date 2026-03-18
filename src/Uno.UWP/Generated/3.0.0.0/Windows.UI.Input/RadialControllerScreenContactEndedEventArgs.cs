@@ -33,12 +33,6 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactEndedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactEndedEventArgs.operator ==(Windows.UI.Input.RadialControllerScreenContactEndedEventArgs, Windows.UI.Input.RadialControllerScreenContactEndedEventArgs)
-		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactEndedEventArgs.operator !=(Windows.UI.Input.RadialControllerScreenContactEndedEventArgs, Windows.UI.Input.RadialControllerScreenContactEndedEventArgs)
-		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactEndedEventArgs.Equals(Windows.UI.Input.RadialControllerScreenContactEndedEventArgs)
-		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactEndedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactEndedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactEndedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactEndedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactEndedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

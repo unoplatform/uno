@@ -44,12 +44,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.GattCharacteristicNotificationTrigger(Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic, Windows.Devices.Bluetooth.Background.BluetoothEventTriggeringMode)
-		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.operator ==(Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger, Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.operator !=(Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger, Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.Equals(Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -12,7 +12,6 @@ namespace Windows.ApplicationModel.Resources
 		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader()
 		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader(string)
 		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader(string)
-		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.As<I>()
 		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetStringForReference(System.Uri)
 		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView()
 		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView(string)
@@ -25,12 +24,6 @@ namespace Windows.ApplicationModel.Resources
 			throw new global::System.NotImplementedException("The member ResourceLoader ResourceLoader.GetForUIContext(UIContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceLoader%20ResourceLoader.GetForUIContext%28UIContext%20context%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.operator ==(Windows.ApplicationModel.Resources.ResourceLoader, Windows.ApplicationModel.Resources.ResourceLoader)
-		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.operator !=(Windows.ApplicationModel.Resources.ResourceLoader, Windows.ApplicationModel.Resources.ResourceLoader)
-		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.Equals(Windows.ApplicationModel.Resources.ResourceLoader)
-		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.WinRT.IWinRTObject.QueryInterfaceCache.get

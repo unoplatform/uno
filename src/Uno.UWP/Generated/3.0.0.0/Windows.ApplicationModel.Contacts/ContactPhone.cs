@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Contacts
 		// Skipping already declared property Number
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactPhone.ContactPhone()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPhone.ContactPhone()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPhone.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPhone.operator ==(Windows.ApplicationModel.Contacts.ContactPhone, Windows.ApplicationModel.Contacts.ContactPhone)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPhone.operator !=(Windows.ApplicationModel.Contacts.ContactPhone, Windows.ApplicationModel.Contacts.ContactPhone)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPhone.Equals(Windows.ApplicationModel.Contacts.ContactPhone)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPhone.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPhone.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPhone.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPhone.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPhone.WinRT.IWinRTObject.QueryInterfaceCache.get

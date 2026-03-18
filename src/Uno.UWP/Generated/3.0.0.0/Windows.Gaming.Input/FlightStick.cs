@@ -63,7 +63,6 @@ namespace Windows.Gaming.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Gaming.Input.FlightStick FromGameController(global::Windows.Gaming.Input.IGameController gameController)
@@ -76,12 +75,6 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightStickRemoved.add
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightStickRemoved.remove
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightSticks.get
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.operator ==(Windows.Gaming.Input.FlightStick, Windows.Gaming.Input.FlightStick)
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.operator !=(Windows.Gaming.Input.FlightStick, Windows.Gaming.Input.FlightStick)
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.Equals(Windows.Gaming.Input.FlightStick)
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -67,12 +67,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

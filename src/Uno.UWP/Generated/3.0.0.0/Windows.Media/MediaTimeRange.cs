@@ -17,11 +17,6 @@ namespace Windows.Media
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaTimeRange.MediaTimeRange(System.TimeSpan, System.TimeSpan)
-		// Forced skipping of method Windows.Media.MediaTimeRange.operator ==(Windows.Media.MediaTimeRange, Windows.Media.MediaTimeRange)
-		// Forced skipping of method Windows.Media.MediaTimeRange.operator !=(Windows.Media.MediaTimeRange, Windows.Media.MediaTimeRange)
-		// Forced skipping of method Windows.Media.MediaTimeRange.Equals(Windows.Media.MediaTimeRange)
-		// Forced skipping of method Windows.Media.MediaTimeRange.Equals(object)
-		// Forced skipping of method Windows.Media.MediaTimeRange.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.TimeSpan Start;
 #endif

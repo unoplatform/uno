@@ -113,12 +113,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.FileActivatedEventArgs, Windows.ApplicationModel.Activation.FileActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.FileActivatedEventArgs, Windows.ApplicationModel.Activation.FileActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.FileActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

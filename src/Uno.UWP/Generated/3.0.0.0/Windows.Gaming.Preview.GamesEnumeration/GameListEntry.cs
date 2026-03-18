@@ -93,12 +93,6 @@ namespace Windows.Gaming.Preview.GamesEnumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.operator ==(Windows.Gaming.Preview.GamesEnumeration.GameListEntry, Windows.Gaming.Preview.GamesEnumeration.GameListEntry)
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.operator !=(Windows.Gaming.Preview.GamesEnumeration.GameListEntry, Windows.Gaming.Preview.GamesEnumeration.GameListEntry)
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.Equals(Windows.Gaming.Preview.GamesEnumeration.GameListEntry)
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.Equals(object)
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.WinRT.IWinRTObject.QueryInterfaceCache.get

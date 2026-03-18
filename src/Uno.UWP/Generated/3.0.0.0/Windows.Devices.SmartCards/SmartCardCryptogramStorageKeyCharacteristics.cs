@@ -56,12 +56,6 @@ namespace Windows.Devices.SmartCards
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics.SmartCardCryptogramStorageKeyCharacteristics()
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics.operator ==(Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics, Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics.operator !=(Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics, Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics.Equals(Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics.Equals(object)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics.GetHashCode()
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyCharacteristics.WinRT.IWinRTObject.QueryInterfaceCache.get

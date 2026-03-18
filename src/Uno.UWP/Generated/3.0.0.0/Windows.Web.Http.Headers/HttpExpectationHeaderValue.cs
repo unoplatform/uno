@@ -58,7 +58,6 @@ namespace Windows.Web.Http.Headers
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.HttpExpectationHeaderValue(string, string)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpExpectationHeaderValue Parse(string input)
@@ -73,12 +72,6 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpExpectationHeaderValue.TryParse(string input, out HttpExpectationHeaderValue expectationHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpExpectationHeaderValue.TryParse%28string%20input%2C%20out%20HttpExpectationHeaderValue%20expectationHeaderValue%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.operator ==(Windows.Web.Http.Headers.HttpExpectationHeaderValue, Windows.Web.Http.Headers.HttpExpectationHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.operator !=(Windows.Web.Http.Headers.HttpExpectationHeaderValue, Windows.Web.Http.Headers.HttpExpectationHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.Equals(Windows.Web.Http.Headers.HttpExpectationHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.WinRT.IWinRTObject.QueryInterfaceCache.get

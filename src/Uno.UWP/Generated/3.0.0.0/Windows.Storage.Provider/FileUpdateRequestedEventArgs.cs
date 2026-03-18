@@ -23,12 +23,6 @@ namespace Windows.Storage.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestedEventArgs.operator ==(Windows.Storage.Provider.FileUpdateRequestedEventArgs, Windows.Storage.Provider.FileUpdateRequestedEventArgs)
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestedEventArgs.operator !=(Windows.Storage.Provider.FileUpdateRequestedEventArgs, Windows.Storage.Provider.FileUpdateRequestedEventArgs)
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestedEventArgs.Equals(Windows.Storage.Provider.FileUpdateRequestedEventArgs)
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

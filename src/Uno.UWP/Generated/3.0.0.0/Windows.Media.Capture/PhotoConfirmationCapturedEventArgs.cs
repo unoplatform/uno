@@ -33,12 +33,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.PhotoConfirmationCapturedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.PhotoConfirmationCapturedEventArgs.operator ==(Windows.Media.Capture.PhotoConfirmationCapturedEventArgs, Windows.Media.Capture.PhotoConfirmationCapturedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.PhotoConfirmationCapturedEventArgs.operator !=(Windows.Media.Capture.PhotoConfirmationCapturedEventArgs, Windows.Media.Capture.PhotoConfirmationCapturedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.PhotoConfirmationCapturedEventArgs.Equals(Windows.Media.Capture.PhotoConfirmationCapturedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.PhotoConfirmationCapturedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.PhotoConfirmationCapturedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.PhotoConfirmationCapturedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.PhotoConfirmationCapturedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.PhotoConfirmationCapturedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

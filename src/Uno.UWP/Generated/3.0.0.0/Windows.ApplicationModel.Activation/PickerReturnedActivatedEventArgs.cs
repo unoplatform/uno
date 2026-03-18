@@ -53,12 +53,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs, Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs, Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

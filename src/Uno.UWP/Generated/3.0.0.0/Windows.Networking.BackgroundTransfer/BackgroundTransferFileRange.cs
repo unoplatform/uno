@@ -17,11 +17,6 @@ namespace Windows.Networking.BackgroundTransfer
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferFileRange.BackgroundTransferFileRange(ulong, ulong)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferFileRange.operator ==(Windows.Networking.BackgroundTransfer.BackgroundTransferFileRange, Windows.Networking.BackgroundTransfer.BackgroundTransferFileRange)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferFileRange.operator !=(Windows.Networking.BackgroundTransfer.BackgroundTransferFileRange, Windows.Networking.BackgroundTransfer.BackgroundTransferFileRange)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferFileRange.Equals(Windows.Networking.BackgroundTransfer.BackgroundTransferFileRange)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferFileRange.Equals(object)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferFileRange.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong Offset;
 #endif

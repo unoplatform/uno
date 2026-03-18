@@ -176,12 +176,6 @@ namespace Windows.ApplicationModel.Calls
 		// Skipping already declared property StartTime
 		// Skipping already declared method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.PhoneCallHistoryEntry()
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.PhoneCallHistoryEntry()
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.operator ==(Windows.ApplicationModel.Calls.PhoneCallHistoryEntry, Windows.ApplicationModel.Calls.PhoneCallHistoryEntry)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.operator !=(Windows.ApplicationModel.Calls.PhoneCallHistoryEntry, Windows.ApplicationModel.Calls.PhoneCallHistoryEntry)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.Equals(Windows.ApplicationModel.Calls.PhoneCallHistoryEntry)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -33,7 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property WrapMode
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PipsPager.PipsPager()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.PipsPager()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.MaxVisiblePipsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.NextButtonStyleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.NextButtonVisibilityProperty.get
@@ -45,14 +44,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.SelectedPageIndexProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.SelectedPipStyleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.WrapModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.PipsPager(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.operator ==(Microsoft.UI.Xaml.Controls.PipsPager, Microsoft.UI.Xaml.Controls.PipsPager)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.operator !=(Microsoft.UI.Xaml.Controls.PipsPager, Microsoft.UI.Xaml.Controls.PipsPager)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.Equals(Microsoft.UI.Xaml.Controls.PipsPager)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.PipsPager(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.SelectedIndexChanged.add
@@ -80,7 +71,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.WrapMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.WrapMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.PipsPager.SelectedIndexChanged
 	}

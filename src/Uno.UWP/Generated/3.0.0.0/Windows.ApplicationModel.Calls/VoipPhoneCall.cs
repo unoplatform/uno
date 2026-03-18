@@ -55,12 +55,6 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.operator ==(Windows.ApplicationModel.Calls.VoipPhoneCall, Windows.ApplicationModel.Calls.VoipPhoneCall)
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.operator !=(Windows.ApplicationModel.Calls.VoipPhoneCall, Windows.ApplicationModel.Calls.VoipPhoneCall)
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.Equals(Windows.ApplicationModel.Calls.VoipPhoneCall)
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.WinRT.IWinRTObject.QueryInterfaceCache.get

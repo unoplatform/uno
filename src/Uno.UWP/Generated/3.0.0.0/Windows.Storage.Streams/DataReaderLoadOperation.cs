@@ -57,12 +57,6 @@ namespace Windows.Storage.Streams
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.operator ==(Windows.Storage.Streams.DataReaderLoadOperation, Windows.Storage.Streams.DataReaderLoadOperation)
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.operator !=(Windows.Storage.Streams.DataReaderLoadOperation, Windows.Storage.Streams.DataReaderLoadOperation)
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Equals(Windows.Storage.Streams.DataReaderLoadOperation)
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Equals(object)
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.GetHashCode()
 		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

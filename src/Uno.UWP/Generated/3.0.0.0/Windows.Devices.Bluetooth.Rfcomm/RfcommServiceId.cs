@@ -83,7 +83,6 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId FromUuid(global::System.Guid uuid)
@@ -104,12 +103,6 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.PhoneBookAccessPce.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.PhoneBookAccessPse.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.SerialPort.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.operator ==(Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId, Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId)
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.operator !=(Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId, Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId)
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.Equals(Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId)
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.WinRT.IWinRTObject.QueryInterfaceCache.get

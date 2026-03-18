@@ -18,7 +18,6 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.KnownNotificationBindings.As<I>()
 		// Forced skipping of method Windows.UI.Notifications.KnownNotificationBindings.ToastGeneric.get
 	}
 }

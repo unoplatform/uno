@@ -203,12 +203,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs.operator ==(Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs, Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs.operator !=(Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs, Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs.Equals(Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

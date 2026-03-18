@@ -16,12 +16,6 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseSession.PlayReadyLicenseSession(Windows.Foundation.Collections.IPropertySet)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseSession.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseSession.operator ==(Windows.Media.Protection.PlayReady.PlayReadyLicenseSession, Windows.Media.Protection.PlayReady.PlayReadyLicenseSession)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseSession.operator !=(Windows.Media.Protection.PlayReady.PlayReadyLicenseSession, Windows.Media.Protection.PlayReady.PlayReadyLicenseSession)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseSession.Equals(Windows.Media.Protection.PlayReady.PlayReadyLicenseSession)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseSession.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseSession.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseSession.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseSession.WinRT.IWinRTObject.QueryInterfaceCache.get

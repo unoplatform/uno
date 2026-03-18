@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChange.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChange.operator ==(Windows.ApplicationModel.Contacts.ContactChange, Windows.ApplicationModel.Contacts.ContactChange)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChange.operator !=(Windows.ApplicationModel.Contacts.ContactChange, Windows.ApplicationModel.Contacts.ContactChange)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChange.Equals(Windows.ApplicationModel.Contacts.ContactChange)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChange.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChange.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChange.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChange.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChange.WinRT.IWinRTObject.QueryInterfaceCache.get

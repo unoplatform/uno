@@ -298,7 +298,6 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.PlaneProjection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationYProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationZProperty.get
@@ -312,12 +311,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationYProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationZProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.operator ==(Microsoft.UI.Xaml.Media.PlaneProjection, Microsoft.UI.Xaml.Media.PlaneProjection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.operator !=(Microsoft.UI.Xaml.Media.PlaneProjection, Microsoft.UI.Xaml.Media.PlaneProjection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.Equals(Microsoft.UI.Xaml.Media.PlaneProjection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationX.get
@@ -345,7 +338,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationY.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationZ.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationZ.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

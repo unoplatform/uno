@@ -86,12 +86,6 @@ namespace Windows.Devices.Perception.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.PerceptionFrameProviderInfo()
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.operator ==(Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo, Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.operator !=(Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo, Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.Equals(Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

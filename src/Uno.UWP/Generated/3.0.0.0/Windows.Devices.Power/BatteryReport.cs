@@ -63,12 +63,6 @@ namespace Windows.Devices.Power
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Power.BatteryReport.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Power.BatteryReport.operator ==(Windows.Devices.Power.BatteryReport, Windows.Devices.Power.BatteryReport)
-		// Forced skipping of method Windows.Devices.Power.BatteryReport.operator !=(Windows.Devices.Power.BatteryReport, Windows.Devices.Power.BatteryReport)
-		// Forced skipping of method Windows.Devices.Power.BatteryReport.Equals(Windows.Devices.Power.BatteryReport)
-		// Forced skipping of method Windows.Devices.Power.BatteryReport.Equals(object)
-		// Forced skipping of method Windows.Devices.Power.BatteryReport.GetHashCode()
 		// Forced skipping of method Windows.Devices.Power.BatteryReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Power.BatteryReport.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Power.BatteryReport.WinRT.IWinRTObject.QueryInterfaceCache.get

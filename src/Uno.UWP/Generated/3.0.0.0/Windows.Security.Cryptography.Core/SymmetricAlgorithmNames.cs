@@ -198,7 +198,6 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.As<I>()
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesCbc.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesCbcPkcs7.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesCcm.get

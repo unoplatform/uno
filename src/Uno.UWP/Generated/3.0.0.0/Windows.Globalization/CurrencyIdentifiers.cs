@@ -170,7 +170,6 @@ namespace Windows.Globalization
 		// Skipping already declared property ZAR
 		// Skipping already declared property ZMW
 		// Skipping already declared property ZWL
-		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.As<I>()
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.AED.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.AFN.get
 		// Forced skipping of method Windows.Globalization.CurrencyIdentifiers.ALL.get

@@ -24,12 +24,6 @@ namespace Windows.Media.ContentRestrictions
 		}
 #endif
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.RatedContentRestrictions(uint)
-		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.FromAbi(nint)
-		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.operator ==(Windows.Media.ContentRestrictions.RatedContentRestrictions, Windows.Media.ContentRestrictions.RatedContentRestrictions)
-		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.operator !=(Windows.Media.ContentRestrictions.RatedContentRestrictions, Windows.Media.ContentRestrictions.RatedContentRestrictions)
-		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.Equals(Windows.Media.ContentRestrictions.RatedContentRestrictions)
-		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.Equals(object)
-		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.GetHashCode()
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.WinRT.IWinRTObject.QueryInterfaceCache.get

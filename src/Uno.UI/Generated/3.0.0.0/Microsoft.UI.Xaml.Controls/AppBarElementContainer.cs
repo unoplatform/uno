@@ -16,18 +16,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property IsInOverflow
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AppBarElementContainer.AppBarElementContainer()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.AppBarElementContainer()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.DynamicOverflowOrderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.IsCompactProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.IsInOverflowProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.AppBarElementContainer(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.operator ==(Microsoft.UI.Xaml.Controls.AppBarElementContainer, Microsoft.UI.Xaml.Controls.AppBarElementContainer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.operator !=(Microsoft.UI.Xaml.Controls.AppBarElementContainer, Microsoft.UI.Xaml.Controls.AppBarElementContainer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.Equals(Microsoft.UI.Xaml.Controls.AppBarElementContainer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.AppBarElementContainer(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.DynamicOverflowOrder.get
@@ -35,7 +26,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.IsCompact.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.IsCompact.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.IsInOverflow.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarElementContainer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Controls.ICommandBarElement
 	}

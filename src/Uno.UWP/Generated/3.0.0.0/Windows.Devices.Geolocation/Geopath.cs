@@ -72,12 +72,6 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geopath.Geopath(System.Collections.Generic.IEnumerable<Windows.Devices.Geolocation.BasicGeoposition>, Windows.Devices.Geolocation.AltitudeReferenceSystem, uint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geopath.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geopath.operator ==(Windows.Devices.Geolocation.Geopath, Windows.Devices.Geolocation.Geopath)
-		// Forced skipping of method Windows.Devices.Geolocation.Geopath.operator !=(Windows.Devices.Geolocation.Geopath, Windows.Devices.Geolocation.Geopath)
-		// Forced skipping of method Windows.Devices.Geolocation.Geopath.Equals(Windows.Devices.Geolocation.Geopath)
-		// Forced skipping of method Windows.Devices.Geolocation.Geopath.Equals(object)
-		// Forced skipping of method Windows.Devices.Geolocation.Geopath.GetHashCode()
 		// Forced skipping of method Windows.Devices.Geolocation.Geopath.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geopath.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geopath.WinRT.IWinRTObject.QueryInterfaceCache.get

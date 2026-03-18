@@ -8,17 +8,8 @@ namespace Windows.UI.Composition.Interactions
 #endif
 	public partial class InteractionTrackerInertiaModifier : global::Windows.UI.Composition.CompositionObject
 	{
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier.InteractionTrackerInertiaModifier(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier.operator ==(Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier, Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier.operator !=(Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier, Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier.Equals(Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier.InteractionTrackerInertiaModifier(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

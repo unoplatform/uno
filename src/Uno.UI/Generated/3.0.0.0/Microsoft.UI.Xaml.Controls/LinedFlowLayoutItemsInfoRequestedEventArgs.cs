@@ -65,12 +65,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs, Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs, Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.Equals(Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

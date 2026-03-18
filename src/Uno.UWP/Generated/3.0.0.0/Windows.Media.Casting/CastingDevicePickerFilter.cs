@@ -65,12 +65,6 @@ namespace Windows.Media.Casting
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.operator ==(Windows.Media.Casting.CastingDevicePickerFilter, Windows.Media.Casting.CastingDevicePickerFilter)
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.operator !=(Windows.Media.Casting.CastingDevicePickerFilter, Windows.Media.Casting.CastingDevicePickerFilter)
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.Equals(Windows.Media.Casting.CastingDevicePickerFilter)
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.Equals(object)
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.GetHashCode()
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.WinRT.IWinRTObject.QueryInterfaceCache.get

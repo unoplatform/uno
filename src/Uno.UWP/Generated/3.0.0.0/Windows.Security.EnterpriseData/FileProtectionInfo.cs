@@ -53,12 +53,6 @@ namespace Windows.Security.EnterpriseData
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.EnterpriseData.FileProtectionInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Security.EnterpriseData.FileProtectionInfo.operator ==(Windows.Security.EnterpriseData.FileProtectionInfo, Windows.Security.EnterpriseData.FileProtectionInfo)
-		// Forced skipping of method Windows.Security.EnterpriseData.FileProtectionInfo.operator !=(Windows.Security.EnterpriseData.FileProtectionInfo, Windows.Security.EnterpriseData.FileProtectionInfo)
-		// Forced skipping of method Windows.Security.EnterpriseData.FileProtectionInfo.Equals(Windows.Security.EnterpriseData.FileProtectionInfo)
-		// Forced skipping of method Windows.Security.EnterpriseData.FileProtectionInfo.Equals(object)
-		// Forced skipping of method Windows.Security.EnterpriseData.FileProtectionInfo.GetHashCode()
 		// Forced skipping of method Windows.Security.EnterpriseData.FileProtectionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.EnterpriseData.FileProtectionInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.EnterpriseData.FileProtectionInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

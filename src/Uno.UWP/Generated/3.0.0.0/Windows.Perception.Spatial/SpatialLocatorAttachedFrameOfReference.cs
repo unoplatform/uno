@@ -41,12 +41,6 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.operator ==(Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference, Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.operator !=(Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference, Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.Equals(Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.GetHashCode()
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -86,12 +86,6 @@ namespace Windows.Devices.Lights.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.LampArrayColorRampEffect(Windows.Devices.Lights.LampArray, int[])
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.operator ==(Windows.Devices.Lights.Effects.LampArrayColorRampEffect, Windows.Devices.Lights.Effects.LampArrayColorRampEffect)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.operator !=(Windows.Devices.Lights.Effects.LampArrayColorRampEffect, Windows.Devices.Lights.Effects.LampArrayColorRampEffect)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.Equals(Windows.Devices.Lights.Effects.LampArrayColorRampEffect)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.Equals(object)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.GetHashCode()
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.WinRT.IWinRTObject.QueryInterfaceCache.get

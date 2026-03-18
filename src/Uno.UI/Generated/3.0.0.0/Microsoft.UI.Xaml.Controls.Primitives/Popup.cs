@@ -103,7 +103,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property VerticalOffset
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.Popup.Popup()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.Popup()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.ChildProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.ChildTransitionsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.DesiredPlacementProperty.get
@@ -115,12 +114,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.ShouldConstrainToRootBoundsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.SystemBackdropProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.VerticalOffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.operator ==(Microsoft.UI.Xaml.Controls.Primitives.Popup, Microsoft.UI.Xaml.Controls.Primitives.Popup)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.operator !=(Microsoft.UI.Xaml.Controls.Primitives.Popup, Microsoft.UI.Xaml.Controls.Primitives.Popup)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.Equals(Microsoft.UI.Xaml.Controls.Primitives.Popup)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.Closed.add
@@ -153,7 +146,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.SystemBackdrop.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.VerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.VerticalOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.Popup.Closed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.Popup.Opened

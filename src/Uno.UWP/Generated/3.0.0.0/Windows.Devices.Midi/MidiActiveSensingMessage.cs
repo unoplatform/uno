@@ -13,12 +13,6 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiActiveSensingMessage.MidiActiveSensingMessage()
 		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.MidiActiveSensingMessage()
-		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.operator ==(Windows.Devices.Midi.MidiActiveSensingMessage, Windows.Devices.Midi.MidiActiveSensingMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.operator !=(Windows.Devices.Midi.MidiActiveSensingMessage, Windows.Devices.Midi.MidiActiveSensingMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.Equals(Windows.Devices.Midi.MidiActiveSensingMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.Equals(object)
-		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.GetHashCode()
 		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.WinRT.IWinRTObject.QueryInterfaceCache.get

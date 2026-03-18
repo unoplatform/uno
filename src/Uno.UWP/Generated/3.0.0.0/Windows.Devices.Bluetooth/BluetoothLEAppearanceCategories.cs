@@ -30,7 +30,6 @@ namespace Windows.Devices.Bluetooth
 		// Skipping already declared property Uncategorized
 		// Skipping already declared property Watch
 		// Skipping already declared property WeightScale
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.As<I>()
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.BarcodeScanner.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.BloodPressure.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Clock.get

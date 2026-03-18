@@ -90,7 +90,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Compass.As<I>()
 		// Skipping already declared method Windows.Devices.Sensors.Compass.GetDefault()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -106,12 +105,6 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Compass> Compass.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCompass%3E%20Compass.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Compass.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.Compass.operator ==(Windows.Devices.Sensors.Compass, Windows.Devices.Sensors.Compass)
-		// Forced skipping of method Windows.Devices.Sensors.Compass.operator !=(Windows.Devices.Sensors.Compass, Windows.Devices.Sensors.Compass)
-		// Forced skipping of method Windows.Devices.Sensors.Compass.Equals(Windows.Devices.Sensors.Compass)
-		// Forced skipping of method Windows.Devices.Sensors.Compass.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.Compass.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.Compass.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Compass.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Compass.WinRT.IWinRTObject.QueryInterfaceCache.get

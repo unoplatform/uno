@@ -12,12 +12,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property DropIndex
 		// Skipping already declared property Items
 		// Skipping already declared property Tabs
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs, Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs, Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.Equals(Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

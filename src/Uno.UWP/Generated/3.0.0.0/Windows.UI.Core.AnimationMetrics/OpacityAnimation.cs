@@ -83,12 +83,6 @@ namespace Windows.UI.Core.AnimationMetrics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.operator ==(Windows.UI.Core.AnimationMetrics.OpacityAnimation, Windows.UI.Core.AnimationMetrics.OpacityAnimation)
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.operator !=(Windows.UI.Core.AnimationMetrics.OpacityAnimation, Windows.UI.Core.AnimationMetrics.OpacityAnimation)
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.Equals(Windows.UI.Core.AnimationMetrics.OpacityAnimation)
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.Equals(object)
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.WinRT.IWinRTObject.QueryInterfaceCache.get

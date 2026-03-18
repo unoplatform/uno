@@ -113,12 +113,6 @@ namespace Windows.ApplicationModel.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.operator ==(Windows.ApplicationModel.Store.ListingInformation, Windows.ApplicationModel.Store.ListingInformation)
-		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.operator !=(Windows.ApplicationModel.Store.ListingInformation, Windows.ApplicationModel.Store.ListingInformation)
-		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.Equals(Windows.ApplicationModel.Store.ListingInformation)
-		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.WinRT.IWinRTObject.QueryInterfaceCache.get

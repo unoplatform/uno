@@ -113,7 +113,6 @@ namespace Windows.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.ApplicationData.As<I>()
 #if false || false || false || IS_UNIT_TESTS || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.ApplicationData> GetForUserAsync(global::Windows.System.User user)
@@ -122,12 +121,6 @@ namespace Windows.Storage
 		}
 #endif
 		// Forced skipping of method Windows.Storage.ApplicationData.Current.get
-		// Forced skipping of method Windows.Storage.ApplicationData.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.ApplicationData.operator ==(Windows.Storage.ApplicationData, Windows.Storage.ApplicationData)
-		// Forced skipping of method Windows.Storage.ApplicationData.operator !=(Windows.Storage.ApplicationData, Windows.Storage.ApplicationData)
-		// Forced skipping of method Windows.Storage.ApplicationData.Equals(Windows.Storage.ApplicationData)
-		// Forced skipping of method Windows.Storage.ApplicationData.Equals(object)
-		// Forced skipping of method Windows.Storage.ApplicationData.GetHashCode()
 		// Forced skipping of method Windows.Storage.ApplicationData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.ApplicationData.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.ApplicationData.WinRT.IWinRTObject.QueryInterfaceCache.get

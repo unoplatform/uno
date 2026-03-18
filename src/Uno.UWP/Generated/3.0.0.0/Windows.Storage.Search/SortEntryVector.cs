@@ -47,12 +47,6 @@ namespace Windows.Storage.Search
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.operator ==(Windows.Storage.Search.SortEntryVector, Windows.Storage.Search.SortEntryVector)
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.operator !=(Windows.Storage.Search.SortEntryVector, Windows.Storage.Search.SortEntryVector)
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.Equals(Windows.Storage.Search.SortEntryVector)
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.Equals(object)
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.GetHashCode()
 		// Forced skipping of method Windows.Storage.Search.SortEntryVector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Search.SortEntryVector.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Search.SortEntryVector.WinRT.IWinRTObject.QueryInterfaceCache.get

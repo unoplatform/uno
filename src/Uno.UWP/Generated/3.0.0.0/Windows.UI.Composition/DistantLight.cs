@@ -69,12 +69,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.DistantLight.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.DistantLight.operator ==(Windows.UI.Composition.DistantLight, Windows.UI.Composition.DistantLight)
-		// Forced skipping of method Windows.UI.Composition.DistantLight.operator !=(Windows.UI.Composition.DistantLight, Windows.UI.Composition.DistantLight)
-		// Forced skipping of method Windows.UI.Composition.DistantLight.Equals(Windows.UI.Composition.DistantLight)
-		// Forced skipping of method Windows.UI.Composition.DistantLight.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.DistantLight.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.DistantLight.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.DistantLight.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.DistantLight.Color.get
@@ -85,7 +79,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.DistantLight.Direction.set
 		// Forced skipping of method Windows.UI.Composition.DistantLight.Intensity.get
 		// Forced skipping of method Windows.UI.Composition.DistantLight.Intensity.set
-		// Forced skipping of method Windows.UI.Composition.DistantLight.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.DistantLight.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

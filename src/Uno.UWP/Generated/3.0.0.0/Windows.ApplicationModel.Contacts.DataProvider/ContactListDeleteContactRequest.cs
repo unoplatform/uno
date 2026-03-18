@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequest.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequest.operator ==(Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequest, Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequest)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequest.operator !=(Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequest, Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequest)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequest.Equals(Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequest)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequest.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequest.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

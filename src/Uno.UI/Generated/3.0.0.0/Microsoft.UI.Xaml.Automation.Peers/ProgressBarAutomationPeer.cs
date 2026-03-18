@@ -10,17 +10,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.ProgressBarAutomationPeer(Microsoft.UI.Xaml.Controls.ProgressBar)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.ProgressBarAutomationPeer(Microsoft.UI.Xaml.Controls.ProgressBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.ProgressBarAutomationPeer(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.ProgressBarAutomationPeer(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

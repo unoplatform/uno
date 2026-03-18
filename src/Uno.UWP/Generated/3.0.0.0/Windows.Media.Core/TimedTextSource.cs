@@ -13,7 +13,6 @@ namespace Windows.Media.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.TimedTextSource.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.TimedTextSource CreateFromStream(global::Windows.Storage.Streams.IRandomAccessStream stream)
@@ -70,12 +69,6 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member TimedTextSource TimedTextSource.CreateFromUriWithIndex(Uri uri, Uri indexUri, string defaultLanguage) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextSource%20TimedTextSource.CreateFromUriWithIndex%28Uri%20uri%2C%20Uri%20indexUri%2C%20string%20defaultLanguage%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.TimedTextSource.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.TimedTextSource.operator ==(Windows.Media.Core.TimedTextSource, Windows.Media.Core.TimedTextSource)
-		// Forced skipping of method Windows.Media.Core.TimedTextSource.operator !=(Windows.Media.Core.TimedTextSource, Windows.Media.Core.TimedTextSource)
-		// Forced skipping of method Windows.Media.Core.TimedTextSource.Equals(Windows.Media.Core.TimedTextSource)
-		// Forced skipping of method Windows.Media.Core.TimedTextSource.Equals(object)
-		// Forced skipping of method Windows.Media.Core.TimedTextSource.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.TimedTextSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.TimedTextSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.TimedTextSource.WinRT.IWinRTObject.QueryInterfaceCache.get

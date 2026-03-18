@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs.operator ==(Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs, Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs.operator !=(Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs, Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs.Equals(Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

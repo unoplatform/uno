@@ -110,12 +110,6 @@ namespace Windows.Management
 		}
 #endif
 		// Forced skipping of method Windows.Management.MdmAlert.MdmAlert()
-		// Forced skipping of method Windows.Management.MdmAlert.FromAbi(nint)
-		// Forced skipping of method Windows.Management.MdmAlert.operator ==(Windows.Management.MdmAlert, Windows.Management.MdmAlert)
-		// Forced skipping of method Windows.Management.MdmAlert.operator !=(Windows.Management.MdmAlert, Windows.Management.MdmAlert)
-		// Forced skipping of method Windows.Management.MdmAlert.Equals(Windows.Management.MdmAlert)
-		// Forced skipping of method Windows.Management.MdmAlert.Equals(object)
-		// Forced skipping of method Windows.Management.MdmAlert.GetHashCode()
 		// Forced skipping of method Windows.Management.MdmAlert.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Management.MdmAlert.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Management.MdmAlert.WinRT.IWinRTObject.QueryInterfaceCache.get

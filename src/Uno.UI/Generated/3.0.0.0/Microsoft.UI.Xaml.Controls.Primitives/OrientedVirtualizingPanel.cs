@@ -130,14 +130,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.OrientedVirtualizingPanel(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.operator ==(Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel, Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.operator !=(Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel, Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.Equals(Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.OrientedVirtualizingPanel(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -284,7 +276,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.VerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.ViewportHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.ViewportWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

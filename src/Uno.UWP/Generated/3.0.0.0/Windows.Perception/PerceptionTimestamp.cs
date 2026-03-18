@@ -43,12 +43,6 @@ namespace Windows.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.PerceptionTimestamp.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.PerceptionTimestamp.operator ==(Windows.Perception.PerceptionTimestamp, Windows.Perception.PerceptionTimestamp)
-		// Forced skipping of method Windows.Perception.PerceptionTimestamp.operator !=(Windows.Perception.PerceptionTimestamp, Windows.Perception.PerceptionTimestamp)
-		// Forced skipping of method Windows.Perception.PerceptionTimestamp.Equals(Windows.Perception.PerceptionTimestamp)
-		// Forced skipping of method Windows.Perception.PerceptionTimestamp.Equals(object)
-		// Forced skipping of method Windows.Perception.PerceptionTimestamp.GetHashCode()
 		// Forced skipping of method Windows.Perception.PerceptionTimestamp.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.PerceptionTimestamp.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.PerceptionTimestamp.WinRT.IWinRTObject.QueryInterfaceCache.get

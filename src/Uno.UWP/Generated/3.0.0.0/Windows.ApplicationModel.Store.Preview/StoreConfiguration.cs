@@ -32,7 +32,6 @@ namespace Windows.ApplicationModel.Store.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreConfiguration.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void SetSystemConfiguration(string catalogHardwareManufacturerId, string catalogStoreContentModifierId, global::System.DateTimeOffset systemConfigurationExpiration, string catalogHardwareDescriptor)

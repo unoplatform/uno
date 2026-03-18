@@ -48,7 +48,6 @@ namespace Windows.System.Profile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.As<I>()
 		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.PolicyChanged.add
 		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.PolicyChanged.remove
 		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.CanDisable.get

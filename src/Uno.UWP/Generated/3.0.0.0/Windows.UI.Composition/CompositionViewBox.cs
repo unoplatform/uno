@@ -83,12 +83,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.operator ==(Windows.UI.Composition.CompositionViewBox, Windows.UI.Composition.CompositionViewBox)
-		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.operator !=(Windows.UI.Composition.CompositionViewBox, Windows.UI.Composition.CompositionViewBox)
-		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.Equals(Windows.UI.Composition.CompositionViewBox)
-		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.HorizontalAlignmentRatio.get
@@ -101,7 +95,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.Stretch.set
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.VerticalAlignmentRatio.get
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.VerticalAlignmentRatio.set
-		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

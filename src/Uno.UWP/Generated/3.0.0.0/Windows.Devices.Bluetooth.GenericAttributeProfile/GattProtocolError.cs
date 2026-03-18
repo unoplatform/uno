@@ -25,7 +25,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		// Skipping already declared property UnlikelyError
 		// Skipping already declared property UnsupportedGroupType
 		// Skipping already declared property WriteNotPermitted
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.As<I>()
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.AttributeNotFound.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.AttributeNotLong.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InsufficientAuthentication.get

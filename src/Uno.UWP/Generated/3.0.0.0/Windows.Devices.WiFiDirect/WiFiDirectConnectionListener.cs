@@ -16,12 +16,6 @@ namespace Windows.Devices.WiFiDirect
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionListener.WiFiDirectConnectionListener()
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionListener.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionListener.operator ==(Windows.Devices.WiFiDirect.WiFiDirectConnectionListener, Windows.Devices.WiFiDirect.WiFiDirectConnectionListener)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionListener.operator !=(Windows.Devices.WiFiDirect.WiFiDirectConnectionListener, Windows.Devices.WiFiDirect.WiFiDirectConnectionListener)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionListener.Equals(Windows.Devices.WiFiDirect.WiFiDirectConnectionListener)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionListener.Equals(object)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionListener.GetHashCode()
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionListener.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionListener.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionListener.WinRT.IWinRTObject.QueryInterfaceCache.get

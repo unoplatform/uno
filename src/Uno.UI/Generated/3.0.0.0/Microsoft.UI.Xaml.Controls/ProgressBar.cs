@@ -17,18 +17,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TemplateSettings
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ProgressBar.ProgressBar()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.ProgressBar()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.IsIndeterminateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.ShowErrorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.ShowPausedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.ProgressBar(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.operator ==(Microsoft.UI.Xaml.Controls.ProgressBar, Microsoft.UI.Xaml.Controls.ProgressBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.operator !=(Microsoft.UI.Xaml.Controls.ProgressBar, Microsoft.UI.Xaml.Controls.ProgressBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.Equals(Microsoft.UI.Xaml.Controls.ProgressBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.ProgressBar(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.IsIndeterminate.get
@@ -38,7 +29,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.ShowPaused.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.ShowPaused.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -156,12 +156,6 @@ namespace Windows.Security.Credentials.UI
 		}
 #endif
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.CredentialPickerOptions()
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.operator ==(Windows.Security.Credentials.UI.CredentialPickerOptions, Windows.Security.Credentials.UI.CredentialPickerOptions)
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.operator !=(Windows.Security.Credentials.UI.CredentialPickerOptions, Windows.Security.Credentials.UI.CredentialPickerOptions)
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.Equals(Windows.Security.Credentials.UI.CredentialPickerOptions)
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.Equals(object)
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.GetHashCode()
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

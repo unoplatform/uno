@@ -46,7 +46,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property PlaceholderText
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.CalendarDatePicker.CalendarDatePicker()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.CalendarDatePicker()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.CalendarIdentifierProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.CalendarViewStyleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.DateFormatProperty.get
@@ -65,14 +64,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.MaxDateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.MinDateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.PlaceholderTextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.CalendarDatePicker(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.operator ==(Microsoft.UI.Xaml.Controls.CalendarDatePicker, Microsoft.UI.Xaml.Controls.CalendarDatePicker)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.operator !=(Microsoft.UI.Xaml.Controls.CalendarDatePicker, Microsoft.UI.Xaml.Controls.CalendarDatePicker)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.Equals(Microsoft.UI.Xaml.Controls.CalendarDatePicker)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.CalendarDatePicker(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.CalendarDatePicker.SetDisplayDate(System.DateTimeOffset)
@@ -121,7 +112,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.MinDate.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.PlaceholderText.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.PlaceholderText.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

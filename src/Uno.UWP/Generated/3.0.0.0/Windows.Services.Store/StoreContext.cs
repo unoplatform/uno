@@ -28,7 +28,6 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreContext.As<I>()
 		// Skipping already declared method Windows.Services.Store.StoreContext.GetDefault()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -37,12 +36,6 @@ namespace Windows.Services.Store
 			throw new global::System.NotImplementedException("The member StoreContext StoreContext.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreContext%20StoreContext.GetForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreContext.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Store.StoreContext.operator ==(Windows.Services.Store.StoreContext, Windows.Services.Store.StoreContext)
-		// Forced skipping of method Windows.Services.Store.StoreContext.operator !=(Windows.Services.Store.StoreContext, Windows.Services.Store.StoreContext)
-		// Forced skipping of method Windows.Services.Store.StoreContext.Equals(Windows.Services.Store.StoreContext)
-		// Forced skipping of method Windows.Services.Store.StoreContext.Equals(object)
-		// Forced skipping of method Windows.Services.Store.StoreContext.GetHashCode()
 		// Forced skipping of method Windows.Services.Store.StoreContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Store.StoreContext.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Store.StoreContext.WinRT.IWinRTObject.QueryInterfaceCache.get

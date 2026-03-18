@@ -29,12 +29,6 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property Twist
 		// Skipping already declared property XTilt
 		// Skipping already declared property YTilt
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.operator ==(Microsoft.UI.Input.PointerPointProperties, Microsoft.UI.Input.PointerPointProperties)
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.operator !=(Microsoft.UI.Input.PointerPointProperties, Microsoft.UI.Input.PointerPointProperties)
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.Equals(Microsoft.UI.Input.PointerPointProperties)
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

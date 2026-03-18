@@ -16,12 +16,6 @@ namespace Windows.Data.Xml.Xsl
 		}
 #endif
 		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.XsltProcessor(Windows.Data.Xml.Dom.XmlDocument)
-		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.operator ==(Windows.Data.Xml.Xsl.XsltProcessor, Windows.Data.Xml.Xsl.XsltProcessor)
-		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.operator !=(Windows.Data.Xml.Xsl.XsltProcessor, Windows.Data.Xml.Xsl.XsltProcessor)
-		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.Equals(Windows.Data.Xml.Xsl.XsltProcessor)
-		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.Equals(object)
-		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.GetHashCode()
 		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.WinRT.IWinRTObject.QueryInterfaceCache.get

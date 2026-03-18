@@ -44,12 +44,6 @@ namespace Windows.Graphics.Printing3D
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.Printing3DComponentWithMatrix()
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.operator ==(Windows.Graphics.Printing3D.Printing3DComponentWithMatrix, Windows.Graphics.Printing3D.Printing3DComponentWithMatrix)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.operator !=(Windows.Graphics.Printing3D.Printing3DComponentWithMatrix, Windows.Graphics.Printing3D.Printing3DComponentWithMatrix)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.Equals(Windows.Graphics.Printing3D.Printing3DComponentWithMatrix)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.WinRT.IWinRTObject.QueryInterfaceCache.get

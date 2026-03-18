@@ -33,12 +33,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppUriHandlerRegistration.FromAbi(nint)
-		// Forced skipping of method Windows.System.AppUriHandlerRegistration.operator ==(Windows.System.AppUriHandlerRegistration, Windows.System.AppUriHandlerRegistration)
-		// Forced skipping of method Windows.System.AppUriHandlerRegistration.operator !=(Windows.System.AppUriHandlerRegistration, Windows.System.AppUriHandlerRegistration)
-		// Forced skipping of method Windows.System.AppUriHandlerRegistration.Equals(Windows.System.AppUriHandlerRegistration)
-		// Forced skipping of method Windows.System.AppUriHandlerRegistration.Equals(object)
-		// Forced skipping of method Windows.System.AppUriHandlerRegistration.GetHashCode()
 		// Forced skipping of method Windows.System.AppUriHandlerRegistration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.AppUriHandlerRegistration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.AppUriHandlerRegistration.WinRT.IWinRTObject.QueryInterfaceCache.get

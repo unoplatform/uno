@@ -43,13 +43,7 @@ namespace Windows.Media.Effects
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.FromAbi(nint)
 		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.~CompositeVideoFrameContext()
-		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.operator ==(Windows.Media.Effects.CompositeVideoFrameContext, Windows.Media.Effects.CompositeVideoFrameContext)
-		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.operator !=(Windows.Media.Effects.CompositeVideoFrameContext, Windows.Media.Effects.CompositeVideoFrameContext)
-		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.Equals(Windows.Media.Effects.CompositeVideoFrameContext)
-		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.Equals(object)
-		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.GetHashCode()
 		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.WinRT.IWinRTObject.QueryInterfaceCache.get

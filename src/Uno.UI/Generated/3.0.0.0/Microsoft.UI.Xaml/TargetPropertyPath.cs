@@ -14,12 +14,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath()
 		// Skipping already declared method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath(Microsoft.UI.Xaml.DependencyProperty)
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath(Microsoft.UI.Xaml.DependencyProperty)
-		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.operator ==(Microsoft.UI.Xaml.TargetPropertyPath, Microsoft.UI.Xaml.TargetPropertyPath)
-		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.operator !=(Microsoft.UI.Xaml.TargetPropertyPath, Microsoft.UI.Xaml.TargetPropertyPath)
-		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Equals(Microsoft.UI.Xaml.TargetPropertyPath)
-		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.WinRT.IWinRTObject.QueryInterfaceCache.get

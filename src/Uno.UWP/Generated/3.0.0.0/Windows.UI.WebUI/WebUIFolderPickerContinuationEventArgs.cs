@@ -83,12 +83,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIFolderPickerContinuationEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUIFolderPickerContinuationEventArgs.operator ==(Windows.UI.WebUI.WebUIFolderPickerContinuationEventArgs, Windows.UI.WebUI.WebUIFolderPickerContinuationEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIFolderPickerContinuationEventArgs.operator !=(Windows.UI.WebUI.WebUIFolderPickerContinuationEventArgs, Windows.UI.WebUI.WebUIFolderPickerContinuationEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIFolderPickerContinuationEventArgs.Equals(Windows.UI.WebUI.WebUIFolderPickerContinuationEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIFolderPickerContinuationEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUIFolderPickerContinuationEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUIFolderPickerContinuationEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIFolderPickerContinuationEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIFolderPickerContinuationEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

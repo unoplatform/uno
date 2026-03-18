@@ -8,7 +8,6 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class CompositionTarget
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.CompositionTarget.GetCompositorForCurrentThread()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendered.add
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendered.remove
@@ -16,12 +15,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendering.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.SurfaceContentsLost.add
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.SurfaceContentsLost.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.operator ==(Microsoft.UI.Xaml.Media.CompositionTarget, Microsoft.UI.Xaml.Media.CompositionTarget)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.operator !=(Microsoft.UI.Xaml.Media.CompositionTarget, Microsoft.UI.Xaml.Media.CompositionTarget)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Equals(Microsoft.UI.Xaml.Media.CompositionTarget)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.WinRT.IWinRTObject.QueryInterfaceCache.get

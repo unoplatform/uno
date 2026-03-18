@@ -17,11 +17,6 @@ namespace Windows.Graphics.Holographic
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameId.HolographicFrameId(ulong)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameId.operator ==(Windows.Graphics.Holographic.HolographicFrameId, Windows.Graphics.Holographic.HolographicFrameId)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameId.operator !=(Windows.Graphics.Holographic.HolographicFrameId, Windows.Graphics.Holographic.HolographicFrameId)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameId.Equals(Windows.Graphics.Holographic.HolographicFrameId)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameId.Equals(object)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameId.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong Value;
 #endif

@@ -37,12 +37,6 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.operator ==(Windows.UI.Input.RadialControllerMenu, Windows.UI.Input.RadialControllerMenu)
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.operator !=(Windows.UI.Input.RadialControllerMenu, Windows.UI.Input.RadialControllerMenu)
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.Equals(Windows.UI.Input.RadialControllerMenu)
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.Equals(object)
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.WinRT.IWinRTObject.QueryInterfaceCache.get

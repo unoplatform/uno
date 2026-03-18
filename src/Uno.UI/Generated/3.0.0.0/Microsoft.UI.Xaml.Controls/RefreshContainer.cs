@@ -14,17 +14,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Visualizer
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RefreshContainer.RefreshContainer()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.RefreshContainer()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.PullDirectionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.VisualizerProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.RefreshContainer(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.operator ==(Microsoft.UI.Xaml.Controls.RefreshContainer, Microsoft.UI.Xaml.Controls.RefreshContainer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.operator !=(Microsoft.UI.Xaml.Controls.RefreshContainer, Microsoft.UI.Xaml.Controls.RefreshContainer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.Equals(Microsoft.UI.Xaml.Controls.RefreshContainer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.RefreshContainer(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RefreshContainer.RequestRefresh()
@@ -34,7 +25,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.PullDirection.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.Visualizer.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.Visualizer.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.RefreshContainer.RefreshRequested
 	}

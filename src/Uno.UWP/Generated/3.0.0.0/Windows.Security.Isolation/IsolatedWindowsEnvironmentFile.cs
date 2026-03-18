@@ -33,12 +33,6 @@ namespace Windows.Security.Isolation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentFile.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentFile.operator ==(Windows.Security.Isolation.IsolatedWindowsEnvironmentFile, Windows.Security.Isolation.IsolatedWindowsEnvironmentFile)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentFile.operator !=(Windows.Security.Isolation.IsolatedWindowsEnvironmentFile, Windows.Security.Isolation.IsolatedWindowsEnvironmentFile)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentFile.Equals(Windows.Security.Isolation.IsolatedWindowsEnvironmentFile)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentFile.Equals(object)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentFile.GetHashCode()
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentFile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentFile.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentFile.WinRT.IWinRTObject.QueryInterfaceCache.get

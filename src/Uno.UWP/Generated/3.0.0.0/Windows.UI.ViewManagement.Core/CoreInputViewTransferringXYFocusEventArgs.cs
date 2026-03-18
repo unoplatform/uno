@@ -61,12 +61,6 @@ namespace Windows.UI.ViewManagement.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.operator ==(Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs, Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.operator !=(Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs, Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.Equals(Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

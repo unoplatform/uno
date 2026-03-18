@@ -258,7 +258,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.SplitOpenThemeAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.ClosedLengthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.ClosedTargetNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.ClosedTargetProperty.get
@@ -270,12 +269,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.OpenedLengthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.OpenedTargetNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.OpenedTargetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation, Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation, Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.ClosedLength.get
@@ -300,7 +293,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.OpenedTarget.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.OpenedTargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.OpenedTargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

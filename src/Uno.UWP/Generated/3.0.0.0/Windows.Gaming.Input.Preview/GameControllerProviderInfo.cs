@@ -8,7 +8,6 @@ namespace Windows.Gaming.Input.Preview
 #endif
 	public static partial class GameControllerProviderInfo
 	{
-		// Forced skipping of method Windows.Gaming.Input.Preview.GameControllerProviderInfo.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetParentProviderId(global::Windows.Gaming.Input.Custom.IGameControllerProvider provider)

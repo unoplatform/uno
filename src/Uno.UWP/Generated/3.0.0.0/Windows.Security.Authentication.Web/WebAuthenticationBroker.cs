@@ -8,7 +8,6 @@ namespace Windows.Security.Authentication.Web
 #endif
 	public static partial class WebAuthenticationBroker
 	{
-		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationBroker.As<I>()
 #if false || false || __TVOS__ || false || false || false || false
 		[global::Uno.NotImplemented("__TVOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.WebAuthenticationResult> AuthenticateAsync(global::Windows.Security.Authentication.Web.WebAuthenticationOptions options, global::System.Uri requestUri, global::System.Uri callbackUri)

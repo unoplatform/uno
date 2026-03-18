@@ -13,12 +13,6 @@ namespace Windows.Media.Devices.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.operator ==(Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper, Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper)
-		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.operator !=(Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper, Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper)
-		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.Equals(Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper)
-		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper.WinRT.IWinRTObject.QueryInterfaceCache.get

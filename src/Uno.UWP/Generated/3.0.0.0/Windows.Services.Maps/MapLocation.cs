@@ -12,12 +12,6 @@ namespace Windows.Services.Maps
 		// Skipping already declared property Description
 		// Skipping already declared property DisplayName
 		// Skipping already declared property Point
-		// Forced skipping of method Windows.Services.Maps.MapLocation.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Maps.MapLocation.operator ==(Windows.Services.Maps.MapLocation, Windows.Services.Maps.MapLocation)
-		// Forced skipping of method Windows.Services.Maps.MapLocation.operator !=(Windows.Services.Maps.MapLocation, Windows.Services.Maps.MapLocation)
-		// Forced skipping of method Windows.Services.Maps.MapLocation.Equals(Windows.Services.Maps.MapLocation)
-		// Forced skipping of method Windows.Services.Maps.MapLocation.Equals(object)
-		// Forced skipping of method Windows.Services.Maps.MapLocation.GetHashCode()
 		// Forced skipping of method Windows.Services.Maps.MapLocation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Maps.MapLocation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Maps.MapLocation.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -43,12 +43,6 @@ namespace Windows.Media.Ocr
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Ocr.OcrResult.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Ocr.OcrResult.operator ==(Windows.Media.Ocr.OcrResult, Windows.Media.Ocr.OcrResult)
-		// Forced skipping of method Windows.Media.Ocr.OcrResult.operator !=(Windows.Media.Ocr.OcrResult, Windows.Media.Ocr.OcrResult)
-		// Forced skipping of method Windows.Media.Ocr.OcrResult.Equals(Windows.Media.Ocr.OcrResult)
-		// Forced skipping of method Windows.Media.Ocr.OcrResult.Equals(object)
-		// Forced skipping of method Windows.Media.Ocr.OcrResult.GetHashCode()
 		// Forced skipping of method Windows.Media.Ocr.OcrResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Ocr.OcrResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Ocr.OcrResult.WinRT.IWinRTObject.QueryInterfaceCache.get

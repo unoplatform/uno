@@ -12,12 +12,6 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared property RequestedSourceKind
 		// Skipping already declared property ResourceContext
 		// Skipping already declared property Response
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

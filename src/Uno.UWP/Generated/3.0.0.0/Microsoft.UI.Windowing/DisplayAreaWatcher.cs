@@ -23,12 +23,6 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.operator ==(Microsoft.UI.Windowing.DisplayAreaWatcher, Microsoft.UI.Windowing.DisplayAreaWatcher)
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.operator !=(Microsoft.UI.Windowing.DisplayAreaWatcher, Microsoft.UI.Windowing.DisplayAreaWatcher)
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.Equals(Microsoft.UI.Windowing.DisplayAreaWatcher)
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.Equals(object)
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get

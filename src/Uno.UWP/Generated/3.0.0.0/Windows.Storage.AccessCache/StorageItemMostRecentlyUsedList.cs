@@ -33,12 +33,6 @@ namespace Windows.Storage.AccessCache
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.operator ==(Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList, Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList)
-		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.operator !=(Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList, Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList)
-		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.Equals(Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList)
-		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.Equals(object)
-		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.GetHashCode()
 		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.WinRT.IWinRTObject.QueryInterfaceCache.get

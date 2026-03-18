@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppDisplayInfo.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.AppDisplayInfo.operator ==(Windows.ApplicationModel.AppDisplayInfo, Windows.ApplicationModel.AppDisplayInfo)
-		// Forced skipping of method Windows.ApplicationModel.AppDisplayInfo.operator !=(Windows.ApplicationModel.AppDisplayInfo, Windows.ApplicationModel.AppDisplayInfo)
-		// Forced skipping of method Windows.ApplicationModel.AppDisplayInfo.Equals(Windows.ApplicationModel.AppDisplayInfo)
-		// Forced skipping of method Windows.ApplicationModel.AppDisplayInfo.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.AppDisplayInfo.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.AppDisplayInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppDisplayInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppDisplayInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -23,12 +23,6 @@ namespace Windows.Graphics.Printing.Workflow
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs.operator ==(Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs, Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs.operator !=(Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs, Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs.Equals(Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowXpsDataAvailableEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -180,12 +180,6 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.PaymentAddress()
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.operator ==(Windows.ApplicationModel.Payments.PaymentAddress, Windows.ApplicationModel.Payments.PaymentAddress)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.operator !=(Windows.ApplicationModel.Payments.PaymentAddress, Windows.ApplicationModel.Payments.PaymentAddress)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.Equals(Windows.ApplicationModel.Payments.PaymentAddress)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.WinRT.IWinRTObject.QueryInterfaceCache.get

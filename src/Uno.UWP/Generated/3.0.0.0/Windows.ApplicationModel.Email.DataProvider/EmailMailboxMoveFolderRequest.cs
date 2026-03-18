@@ -53,12 +53,6 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequest.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequest.operator ==(Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequest, Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequest)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequest.operator !=(Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequest, Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequest)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequest.Equals(Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequest)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequest.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequest.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

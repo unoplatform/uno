@@ -42,12 +42,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property IsHostVisible
 		// Skipping already declared property RasterizationScale
 		// Skipping already declared property Size
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.operator ==(Microsoft.UI.Xaml.XamlRoot, Microsoft.UI.Xaml.XamlRoot)
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.operator !=(Microsoft.UI.Xaml.XamlRoot, Microsoft.UI.Xaml.XamlRoot)
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Equals(Microsoft.UI.Xaml.XamlRoot)
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.WinRT.IWinRTObject.QueryInterfaceCache.get

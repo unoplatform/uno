@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangeTracker.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangeTracker.operator ==(Windows.ApplicationModel.Email.EmailMailboxChangeTracker, Windows.ApplicationModel.Email.EmailMailboxChangeTracker)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangeTracker.operator !=(Windows.ApplicationModel.Email.EmailMailboxChangeTracker, Windows.ApplicationModel.Email.EmailMailboxChangeTracker)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangeTracker.Equals(Windows.ApplicationModel.Email.EmailMailboxChangeTracker)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangeTracker.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangeTracker.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangeTracker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangeTracker.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangeTracker.WinRT.IWinRTObject.QueryInterfaceCache.get

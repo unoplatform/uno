@@ -43,12 +43,6 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.operator ==(Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult, Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult)
-		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.operator !=(Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult, Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult)
-		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.Equals(Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult)
-		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.Equals(object)
-		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.GetHashCode()
 		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -11,12 +11,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property TimeSpan
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.KeyTime()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.KeyTime.FromTimeSpan(System.TimeSpan)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.Equals(Microsoft.UI.Xaml.Media.Animation.KeyTime, Microsoft.UI.Xaml.Media.Animation.KeyTime)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.operator ==(Microsoft.UI.Xaml.Media.Animation.KeyTime, Microsoft.UI.Xaml.Media.Animation.KeyTime)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.operator !=(Microsoft.UI.Xaml.Media.Animation.KeyTime, Microsoft.UI.Xaml.Media.Animation.KeyTime)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.Equals(Microsoft.UI.Xaml.Media.Animation.KeyTime)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.GetHashCode()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.KeyTime.ToString()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.implicit operator Microsoft.UI.Xaml.Media.Animation.KeyTime(System.TimeSpan)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeyTime.TimeSpan.get

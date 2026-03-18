@@ -60,12 +60,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs, Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs, Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

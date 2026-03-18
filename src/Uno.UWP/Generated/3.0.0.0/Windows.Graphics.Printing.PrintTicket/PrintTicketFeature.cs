@@ -73,12 +73,6 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.operator ==(Windows.Graphics.Printing.PrintTicket.PrintTicketFeature, Windows.Graphics.Printing.PrintTicket.PrintTicketFeature)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.operator !=(Windows.Graphics.Printing.PrintTicket.PrintTicketFeature, Windows.Graphics.Printing.PrintTicket.PrintTicketFeature)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.Equals(Windows.Graphics.Printing.PrintTicket.PrintTicketFeature)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.WinRT.IWinRTObject.QueryInterfaceCache.get

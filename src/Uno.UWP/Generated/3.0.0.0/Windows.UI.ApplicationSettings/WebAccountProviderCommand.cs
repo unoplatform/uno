@@ -36,12 +36,6 @@ namespace Windows.UI.ApplicationSettings
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WebAccountProviderCommand(Windows.Security.Credentials.WebAccountProvider, Windows.UI.ApplicationSettings.WebAccountProviderCommandInvokedHandler)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.operator ==(Windows.UI.ApplicationSettings.WebAccountProviderCommand, Windows.UI.ApplicationSettings.WebAccountProviderCommand)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.operator !=(Windows.UI.ApplicationSettings.WebAccountProviderCommand, Windows.UI.ApplicationSettings.WebAccountProviderCommand)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.Equals(Windows.UI.ApplicationSettings.WebAccountProviderCommand)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.Equals(object)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.GetHashCode()
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WinRT.IWinRTObject.QueryInterfaceCache.get

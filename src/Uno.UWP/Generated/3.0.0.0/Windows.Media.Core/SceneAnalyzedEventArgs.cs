@@ -23,12 +23,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.SceneAnalyzedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.SceneAnalyzedEventArgs.operator ==(Windows.Media.Core.SceneAnalyzedEventArgs, Windows.Media.Core.SceneAnalyzedEventArgs)
-		// Forced skipping of method Windows.Media.Core.SceneAnalyzedEventArgs.operator !=(Windows.Media.Core.SceneAnalyzedEventArgs, Windows.Media.Core.SceneAnalyzedEventArgs)
-		// Forced skipping of method Windows.Media.Core.SceneAnalyzedEventArgs.Equals(Windows.Media.Core.SceneAnalyzedEventArgs)
-		// Forced skipping of method Windows.Media.Core.SceneAnalyzedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Core.SceneAnalyzedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.SceneAnalyzedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.SceneAnalyzedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.SceneAnalyzedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

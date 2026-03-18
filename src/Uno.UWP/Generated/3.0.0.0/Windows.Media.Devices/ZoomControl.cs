@@ -87,12 +87,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.ZoomControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.ZoomControl.operator ==(Windows.Media.Devices.ZoomControl, Windows.Media.Devices.ZoomControl)
-		// Forced skipping of method Windows.Media.Devices.ZoomControl.operator !=(Windows.Media.Devices.ZoomControl, Windows.Media.Devices.ZoomControl)
-		// Forced skipping of method Windows.Media.Devices.ZoomControl.Equals(Windows.Media.Devices.ZoomControl)
-		// Forced skipping of method Windows.Media.Devices.ZoomControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.ZoomControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.ZoomControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.ZoomControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.ZoomControl.WinRT.IWinRTObject.QueryInterfaceCache.get

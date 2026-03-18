@@ -53,7 +53,6 @@ namespace Windows.Services.TargetedContent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.TargetedContent.TargetedContentContainer> GetAsync(string contentId)
@@ -61,12 +60,6 @@ namespace Windows.Services.TargetedContent
 			throw new global::System.NotImplementedException("The member IAsyncOperation<TargetedContentContainer> TargetedContentContainer.GetAsync(string contentId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CTargetedContentContainer%3E%20TargetedContentContainer.GetAsync%28string%20contentId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.FromAbi(nint)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.operator ==(Windows.Services.TargetedContent.TargetedContentContainer, Windows.Services.TargetedContent.TargetedContentContainer)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.operator !=(Windows.Services.TargetedContent.TargetedContentContainer, Windows.Services.TargetedContent.TargetedContentContainer)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.Equals(Windows.Services.TargetedContent.TargetedContentContainer)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.Equals(object)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.GetHashCode()
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.WinRT.IWinRTObject.QueryInterfaceCache.get

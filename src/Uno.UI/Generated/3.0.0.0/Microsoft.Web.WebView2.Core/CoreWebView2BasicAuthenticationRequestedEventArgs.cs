@@ -57,12 +57,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

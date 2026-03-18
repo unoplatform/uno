@@ -33,12 +33,6 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.operator ==(Windows.Devices.Enumeration.DeviceAccessChangedEventArgs, Windows.Devices.Enumeration.DeviceAccessChangedEventArgs)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.operator !=(Windows.Devices.Enumeration.DeviceAccessChangedEventArgs, Windows.Devices.Enumeration.DeviceAccessChangedEventArgs)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.Equals(Windows.Devices.Enumeration.DeviceAccessChangedEventArgs)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

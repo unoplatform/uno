@@ -23,14 +23,7 @@ namespace Windows.UI.Notifications.Management
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.As<I>()
 		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.Current.get
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.operator ==(Windows.UI.Notifications.Management.UserNotificationListener, Windows.UI.Notifications.Management.UserNotificationListener)
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.operator !=(Windows.UI.Notifications.Management.UserNotificationListener, Windows.UI.Notifications.Management.UserNotificationListener)
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.Equals(Windows.UI.Notifications.Management.UserNotificationListener)
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.Equals(object)
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.GetHashCode()
 		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.WinRT.IWinRTObject.QueryInterfaceCache.get

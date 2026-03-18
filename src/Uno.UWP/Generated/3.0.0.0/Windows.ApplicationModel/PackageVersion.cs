@@ -11,11 +11,6 @@ namespace Windows.ApplicationModel
 		// Forced skipping of method Windows.ApplicationModel.PackageVersion.PackageVersion()
 		// Skipping already declared method Windows.ApplicationModel.PackageVersion.PackageVersion(ushort, ushort, ushort, ushort)
 		// Forced skipping of method Windows.ApplicationModel.PackageVersion.PackageVersion(ushort, ushort, ushort, ushort)
-		// Forced skipping of method Windows.ApplicationModel.PackageVersion.operator ==(Windows.ApplicationModel.PackageVersion, Windows.ApplicationModel.PackageVersion)
-		// Forced skipping of method Windows.ApplicationModel.PackageVersion.operator !=(Windows.ApplicationModel.PackageVersion, Windows.ApplicationModel.PackageVersion)
-		// Forced skipping of method Windows.ApplicationModel.PackageVersion.Equals(Windows.ApplicationModel.PackageVersion)
-		// Forced skipping of method Windows.ApplicationModel.PackageVersion.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.PackageVersion.GetHashCode()
 		// Skipping already declared field Windows.ApplicationModel.PackageVersion.Major
 		// Skipping already declared field Windows.ApplicationModel.PackageVersion.Minor
 		// Skipping already declared field Windows.ApplicationModel.PackageVersion.Build

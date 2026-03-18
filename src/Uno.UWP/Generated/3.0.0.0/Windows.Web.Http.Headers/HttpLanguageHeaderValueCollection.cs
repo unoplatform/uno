@@ -47,12 +47,6 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection.operator ==(Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection, Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection.operator !=(Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection, Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection.Equals(Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

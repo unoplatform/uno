@@ -36,12 +36,6 @@ namespace Windows.Data.Text
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.TextReverseConversionGenerator.TextReverseConversionGenerator(string)
-		// Forced skipping of method Windows.Data.Text.TextReverseConversionGenerator.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Text.TextReverseConversionGenerator.operator ==(Windows.Data.Text.TextReverseConversionGenerator, Windows.Data.Text.TextReverseConversionGenerator)
-		// Forced skipping of method Windows.Data.Text.TextReverseConversionGenerator.operator !=(Windows.Data.Text.TextReverseConversionGenerator, Windows.Data.Text.TextReverseConversionGenerator)
-		// Forced skipping of method Windows.Data.Text.TextReverseConversionGenerator.Equals(Windows.Data.Text.TextReverseConversionGenerator)
-		// Forced skipping of method Windows.Data.Text.TextReverseConversionGenerator.Equals(object)
-		// Forced skipping of method Windows.Data.Text.TextReverseConversionGenerator.GetHashCode()
 		// Forced skipping of method Windows.Data.Text.TextReverseConversionGenerator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Text.TextReverseConversionGenerator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Text.TextReverseConversionGenerator.WinRT.IWinRTObject.QueryInterfaceCache.get

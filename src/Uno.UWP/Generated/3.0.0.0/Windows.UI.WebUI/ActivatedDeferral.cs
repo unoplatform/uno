@@ -13,12 +13,6 @@ namespace Windows.UI.WebUI
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.ActivatedDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.ActivatedDeferral.operator ==(Windows.UI.WebUI.ActivatedDeferral, Windows.UI.WebUI.ActivatedDeferral)
-		// Forced skipping of method Windows.UI.WebUI.ActivatedDeferral.operator !=(Windows.UI.WebUI.ActivatedDeferral, Windows.UI.WebUI.ActivatedDeferral)
-		// Forced skipping of method Windows.UI.WebUI.ActivatedDeferral.Equals(Windows.UI.WebUI.ActivatedDeferral)
-		// Forced skipping of method Windows.UI.WebUI.ActivatedDeferral.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.ActivatedDeferral.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.ActivatedDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.ActivatedDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.ActivatedDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -53,12 +53,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.operator ==(Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult, Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult)
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.operator !=(Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult, Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult)
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.Equals(Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult)
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.WinRT.IWinRTObject.QueryInterfaceCache.get

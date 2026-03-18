@@ -33,12 +33,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.System.UserChangedEventArgs.operator ==(Windows.System.UserChangedEventArgs, Windows.System.UserChangedEventArgs)
-		// Forced skipping of method Windows.System.UserChangedEventArgs.operator !=(Windows.System.UserChangedEventArgs, Windows.System.UserChangedEventArgs)
-		// Forced skipping of method Windows.System.UserChangedEventArgs.Equals(Windows.System.UserChangedEventArgs)
-		// Forced skipping of method Windows.System.UserChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.System.UserChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.System.UserChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.UserChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.UserChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

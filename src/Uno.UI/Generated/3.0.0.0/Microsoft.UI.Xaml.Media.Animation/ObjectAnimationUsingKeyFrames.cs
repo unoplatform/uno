@@ -33,20 +33,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property KeyFrames
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.ObjectAnimationUsingKeyFrames()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.ObjectAnimationUsingKeyFrames()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.operator ==(Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames, Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.operator !=(Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames, Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.Equals(Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.EnableDependentAnimation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.EnableDependentAnimation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.KeyFrames.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

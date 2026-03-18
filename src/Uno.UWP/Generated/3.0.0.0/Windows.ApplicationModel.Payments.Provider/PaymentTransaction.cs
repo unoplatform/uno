@@ -65,7 +65,6 @@ namespace Windows.ApplicationModel.Payments.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.Provider.PaymentTransaction> FromIdAsync(string id)
@@ -73,12 +72,6 @@ namespace Windows.ApplicationModel.Payments.Provider
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PaymentTransaction> PaymentTransaction.FromIdAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPaymentTransaction%3E%20PaymentTransaction.FromIdAsync%28string%20id%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.operator ==(Windows.ApplicationModel.Payments.Provider.PaymentTransaction, Windows.ApplicationModel.Payments.Provider.PaymentTransaction)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.operator !=(Windows.ApplicationModel.Payments.Provider.PaymentTransaction, Windows.ApplicationModel.Payments.Provider.PaymentTransaction)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.Equals(Windows.ApplicationModel.Payments.Provider.PaymentTransaction)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.WinRT.IWinRTObject.QueryInterfaceCache.get

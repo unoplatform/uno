@@ -109,12 +109,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintBorderingOptionDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintBorderingOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintBorderingOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintBorderingOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintBorderingOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintBorderingOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintBorderingOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintBorderingOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintBorderingOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintBorderingOptionDetails.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintBorderingOptionDetails.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintBorderingOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintBorderingOptionDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintBorderingOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

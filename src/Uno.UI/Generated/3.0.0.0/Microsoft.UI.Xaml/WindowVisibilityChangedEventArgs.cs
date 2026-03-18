@@ -37,12 +37,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs.operator ==(Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs, Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs.operator !=(Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs, Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs.Equals(Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

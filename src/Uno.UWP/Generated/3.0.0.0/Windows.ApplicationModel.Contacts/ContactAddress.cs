@@ -17,12 +17,6 @@ namespace Windows.ApplicationModel.Contacts
 		// Skipping already declared property StreetAddress
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactAddress.ContactAddress()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.ContactAddress()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.operator ==(Windows.ApplicationModel.Contacts.ContactAddress, Windows.ApplicationModel.Contacts.ContactAddress)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.operator !=(Windows.ApplicationModel.Contacts.ContactAddress, Windows.ApplicationModel.Contacts.ContactAddress)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Equals(Windows.ApplicationModel.Contacts.ContactAddress)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.WinRT.IWinRTObject.QueryInterfaceCache.get

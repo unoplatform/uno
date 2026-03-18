@@ -47,12 +47,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.operator ==(Windows.Media.Devices.VideoTemporalDenoisingControl, Windows.Media.Devices.VideoTemporalDenoisingControl)
-		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.operator !=(Windows.Media.Devices.VideoTemporalDenoisingControl, Windows.Media.Devices.VideoTemporalDenoisingControl)
-		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.Equals(Windows.Media.Devices.VideoTemporalDenoisingControl)
-		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -8,15 +8,8 @@ namespace Microsoft.UI
 #endif
 	public partial class ColorHelper
 	{
-		// Forced skipping of method Microsoft.UI.ColorHelper.As<I>()
 		// Skipping already declared method Microsoft.UI.ColorHelper.FromArgb(byte, byte, byte, byte)
 		// Skipping already declared method Microsoft.UI.ColorHelper.ToDisplayName(Windows.UI.Color)
-		// Forced skipping of method Microsoft.UI.ColorHelper.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.ColorHelper.operator ==(Microsoft.UI.ColorHelper, Microsoft.UI.ColorHelper)
-		// Forced skipping of method Microsoft.UI.ColorHelper.operator !=(Microsoft.UI.ColorHelper, Microsoft.UI.ColorHelper)
-		// Forced skipping of method Microsoft.UI.ColorHelper.Equals(Microsoft.UI.ColorHelper)
-		// Forced skipping of method Microsoft.UI.ColorHelper.Equals(object)
-		// Forced skipping of method Microsoft.UI.ColorHelper.GetHashCode()
 		// Forced skipping of method Microsoft.UI.ColorHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.ColorHelper.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.ColorHelper.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -44,13 +44,7 @@ namespace Windows.Media.Editing
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.MediaOverlayLayer(Windows.Media.Effects.IVideoCompositorDefinition)
-		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.FromAbi(nint)
 		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.~MediaOverlayLayer()
-		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.operator ==(Windows.Media.Editing.MediaOverlayLayer, Windows.Media.Editing.MediaOverlayLayer)
-		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.operator !=(Windows.Media.Editing.MediaOverlayLayer, Windows.Media.Editing.MediaOverlayLayer)
-		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.Equals(Windows.Media.Editing.MediaOverlayLayer)
-		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.Equals(object)
-		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.GetHashCode()
 		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.WinRT.IWinRTObject.QueryInterfaceCache.get

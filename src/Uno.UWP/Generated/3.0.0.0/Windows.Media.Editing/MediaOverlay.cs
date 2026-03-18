@@ -90,13 +90,7 @@ namespace Windows.Media.Editing
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.MediaOverlay(Windows.Media.Editing.MediaClip, Windows.Foundation.Rect, double)
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.FromAbi(nint)
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.~MediaOverlay()
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.operator ==(Windows.Media.Editing.MediaOverlay, Windows.Media.Editing.MediaOverlay)
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.operator !=(Windows.Media.Editing.MediaOverlay, Windows.Media.Editing.MediaOverlay)
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Equals(Windows.Media.Editing.MediaOverlay)
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Equals(object)
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.GetHashCode()
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.WinRT.IWinRTObject.QueryInterfaceCache.get

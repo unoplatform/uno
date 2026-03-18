@@ -13,12 +13,6 @@ namespace Windows.Web.Http
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.HttpCookieManager.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.HttpCookieManager.operator ==(Windows.Web.Http.HttpCookieManager, Windows.Web.Http.HttpCookieManager)
-		// Forced skipping of method Windows.Web.Http.HttpCookieManager.operator !=(Windows.Web.Http.HttpCookieManager, Windows.Web.Http.HttpCookieManager)
-		// Forced skipping of method Windows.Web.Http.HttpCookieManager.Equals(Windows.Web.Http.HttpCookieManager)
-		// Forced skipping of method Windows.Web.Http.HttpCookieManager.Equals(object)
-		// Forced skipping of method Windows.Web.Http.HttpCookieManager.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.HttpCookieManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpCookieManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpCookieManager.WinRT.IWinRTObject.QueryInterfaceCache.get

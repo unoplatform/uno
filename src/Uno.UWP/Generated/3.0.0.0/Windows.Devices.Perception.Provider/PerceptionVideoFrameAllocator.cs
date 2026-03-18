@@ -16,12 +16,6 @@ namespace Windows.Devices.Perception.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator.PerceptionVideoFrameAllocator(uint, Windows.Graphics.Imaging.BitmapPixelFormat, Windows.Foundation.Size, Windows.Graphics.Imaging.BitmapAlphaMode)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator.operator ==(Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator, Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator.operator !=(Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator, Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator.Equals(Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator.WinRT.IWinRTObject.QueryInterfaceCache.get

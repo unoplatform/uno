@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProviderOperation.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProviderOperation.operator ==(Windows.ApplicationModel.DataTransfer.ShareProviderOperation, Windows.ApplicationModel.DataTransfer.ShareProviderOperation)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProviderOperation.operator !=(Windows.ApplicationModel.DataTransfer.ShareProviderOperation, Windows.ApplicationModel.DataTransfer.ShareProviderOperation)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProviderOperation.Equals(Windows.ApplicationModel.DataTransfer.ShareProviderOperation)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProviderOperation.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProviderOperation.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProviderOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProviderOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProviderOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

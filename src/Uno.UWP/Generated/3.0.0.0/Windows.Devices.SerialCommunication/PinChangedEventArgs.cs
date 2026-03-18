@@ -23,12 +23,6 @@ namespace Windows.Devices.SerialCommunication
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SerialCommunication.PinChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.SerialCommunication.PinChangedEventArgs.operator ==(Windows.Devices.SerialCommunication.PinChangedEventArgs, Windows.Devices.SerialCommunication.PinChangedEventArgs)
-		// Forced skipping of method Windows.Devices.SerialCommunication.PinChangedEventArgs.operator !=(Windows.Devices.SerialCommunication.PinChangedEventArgs, Windows.Devices.SerialCommunication.PinChangedEventArgs)
-		// Forced skipping of method Windows.Devices.SerialCommunication.PinChangedEventArgs.Equals(Windows.Devices.SerialCommunication.PinChangedEventArgs)
-		// Forced skipping of method Windows.Devices.SerialCommunication.PinChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.SerialCommunication.PinChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.SerialCommunication.PinChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.SerialCommunication.PinChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.SerialCommunication.PinChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

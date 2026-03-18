@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs.operator ==(Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs, Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs.operator !=(Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs, Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs.Equals(Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

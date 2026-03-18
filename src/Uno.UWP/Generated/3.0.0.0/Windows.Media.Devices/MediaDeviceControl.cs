@@ -23,12 +23,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.operator ==(Windows.Media.Devices.MediaDeviceControl, Windows.Media.Devices.MediaDeviceControl)
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.operator !=(Windows.Media.Devices.MediaDeviceControl, Windows.Media.Devices.MediaDeviceControl)
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.Equals(Windows.Media.Devices.MediaDeviceControl)
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.WinRT.IWinRTObject.QueryInterfaceCache.get

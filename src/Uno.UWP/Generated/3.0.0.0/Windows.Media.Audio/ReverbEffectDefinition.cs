@@ -358,12 +358,6 @@ namespace Windows.Media.Audio
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.ReverbEffectDefinition(Windows.Media.Audio.AudioGraph)
-		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.operator ==(Windows.Media.Audio.ReverbEffectDefinition, Windows.Media.Audio.ReverbEffectDefinition)
-		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.operator !=(Windows.Media.Audio.ReverbEffectDefinition, Windows.Media.Audio.ReverbEffectDefinition)
-		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.Equals(Windows.Media.Audio.ReverbEffectDefinition)
-		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.Equals(object)
-		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.GetHashCode()
 		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -33,7 +33,6 @@ namespace Windows.AI.MachineLearning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.AI.MachineLearning.ImageFeatureValue CreateFromVideoFrame(global::Windows.Media.VideoFrame image)
@@ -41,12 +40,6 @@ namespace Windows.AI.MachineLearning
 			throw new global::System.NotImplementedException("The member ImageFeatureValue ImageFeatureValue.CreateFromVideoFrame(VideoFrame image) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageFeatureValue%20ImageFeatureValue.CreateFromVideoFrame%28VideoFrame%20image%29");
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.FromAbi(nint)
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.operator ==(Windows.AI.MachineLearning.ImageFeatureValue, Windows.AI.MachineLearning.ImageFeatureValue)
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.operator !=(Windows.AI.MachineLearning.ImageFeatureValue, Windows.AI.MachineLearning.ImageFeatureValue)
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.Equals(Windows.AI.MachineLearning.ImageFeatureValue)
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.Equals(object)
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.GetHashCode()
 		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.WinRT.IWinRTObject.QueryInterfaceCache.get

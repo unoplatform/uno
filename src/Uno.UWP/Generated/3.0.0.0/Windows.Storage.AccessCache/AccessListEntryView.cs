@@ -33,12 +33,6 @@ namespace Windows.Storage.AccessCache
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.operator ==(Windows.Storage.AccessCache.AccessListEntryView, Windows.Storage.AccessCache.AccessListEntryView)
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.operator !=(Windows.Storage.AccessCache.AccessListEntryView, Windows.Storage.AccessCache.AccessListEntryView)
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.Equals(Windows.Storage.AccessCache.AccessListEntryView)
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.Equals(object)
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.GetHashCode()
 		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.WinRT.IWinRTObject.QueryInterfaceCache.get

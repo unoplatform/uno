@@ -63,12 +63,6 @@ namespace Windows.Globalization.Fonts
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.operator ==(Windows.Globalization.Fonts.LanguageFont, Windows.Globalization.Fonts.LanguageFont)
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.operator !=(Windows.Globalization.Fonts.LanguageFont, Windows.Globalization.Fonts.LanguageFont)
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.Equals(Windows.Globalization.Fonts.LanguageFont)
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.Equals(object)
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.GetHashCode()
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.WinRT.IWinRTObject.QueryInterfaceCache.get

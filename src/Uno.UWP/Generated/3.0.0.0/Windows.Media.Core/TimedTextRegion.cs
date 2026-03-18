@@ -184,12 +184,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.TimedTextRegion()
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.operator ==(Windows.Media.Core.TimedTextRegion, Windows.Media.Core.TimedTextRegion)
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.operator !=(Windows.Media.Core.TimedTextRegion, Windows.Media.Core.TimedTextRegion)
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Equals(Windows.Media.Core.TimedTextRegion)
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Equals(object)
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WinRT.IWinRTObject.QueryInterfaceCache.get

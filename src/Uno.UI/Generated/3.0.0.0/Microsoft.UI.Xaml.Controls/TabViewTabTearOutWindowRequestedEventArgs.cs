@@ -11,12 +11,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Items
 		// Skipping already declared property NewWindowId
 		// Skipping already declared property Tabs
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs, Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs, Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.Equals(Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

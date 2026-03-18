@@ -17,12 +17,6 @@ namespace Windows.UI.Input.Preview.Injection
 		// Skipping already declared property TiltY
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.InjectedInputPenInfo()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.InjectedInputPenInfo()
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.operator ==(Windows.UI.Input.Preview.Injection.InjectedInputPenInfo, Windows.UI.Input.Preview.Injection.InjectedInputPenInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.operator !=(Windows.UI.Input.Preview.Injection.InjectedInputPenInfo, Windows.UI.Input.Preview.Injection.InjectedInputPenInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.Equals(Windows.UI.Input.Preview.Injection.InjectedInputPenInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

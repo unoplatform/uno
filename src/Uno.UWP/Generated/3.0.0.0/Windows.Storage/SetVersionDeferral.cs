@@ -13,12 +13,6 @@ namespace Windows.Storage
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Storage.SetVersionDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.SetVersionDeferral.operator ==(Windows.Storage.SetVersionDeferral, Windows.Storage.SetVersionDeferral)
-		// Forced skipping of method Windows.Storage.SetVersionDeferral.operator !=(Windows.Storage.SetVersionDeferral, Windows.Storage.SetVersionDeferral)
-		// Forced skipping of method Windows.Storage.SetVersionDeferral.Equals(Windows.Storage.SetVersionDeferral)
-		// Forced skipping of method Windows.Storage.SetVersionDeferral.Equals(object)
-		// Forced skipping of method Windows.Storage.SetVersionDeferral.GetHashCode()
 		// Forced skipping of method Windows.Storage.SetVersionDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.SetVersionDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.SetVersionDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

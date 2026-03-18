@@ -23,12 +23,6 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs.operator ==(Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs, Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs.operator !=(Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs, Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs.Equals(Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs.Equals(object)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs.GetHashCode()
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -14,12 +14,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property RecommendedNavigationTransitionInfo
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.NavigationViewItemInvokedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.NavigationViewItemInvokedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs, Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs, Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.Equals(Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

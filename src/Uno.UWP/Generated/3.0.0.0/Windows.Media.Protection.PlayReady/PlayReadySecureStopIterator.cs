@@ -33,12 +33,6 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator.operator ==(Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator, Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator.operator !=(Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator, Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator.Equals(Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator.WinRT.IWinRTObject.QueryInterfaceCache.get

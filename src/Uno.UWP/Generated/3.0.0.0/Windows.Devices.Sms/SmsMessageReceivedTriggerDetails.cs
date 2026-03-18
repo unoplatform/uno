@@ -83,12 +83,6 @@ namespace Windows.Devices.Sms
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.operator ==(Windows.Devices.Sms.SmsMessageReceivedTriggerDetails, Windows.Devices.Sms.SmsMessageReceivedTriggerDetails)
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.operator !=(Windows.Devices.Sms.SmsMessageReceivedTriggerDetails, Windows.Devices.Sms.SmsMessageReceivedTriggerDetails)
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.Equals(Windows.Devices.Sms.SmsMessageReceivedTriggerDetails)
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

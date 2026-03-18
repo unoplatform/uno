@@ -41,12 +41,6 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.operator ==(Windows.Media.Devices.Core.FrameExposureControl, Windows.Media.Devices.Core.FrameExposureControl)
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.operator !=(Windows.Media.Devices.Core.FrameExposureControl, Windows.Media.Devices.Core.FrameExposureControl)
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.Equals(Windows.Media.Devices.Core.FrameExposureControl)
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.WinRT.IWinRTObject.QueryInterfaceCache.get

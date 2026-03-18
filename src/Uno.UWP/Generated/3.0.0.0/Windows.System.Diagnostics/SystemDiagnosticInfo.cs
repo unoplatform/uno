@@ -33,7 +33,6 @@ namespace Windows.System.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.SystemDiagnosticInfo GetForCurrentSystem()
@@ -41,12 +40,6 @@ namespace Windows.System.Diagnostics
 			throw new global::System.NotImplementedException("The member SystemDiagnosticInfo SystemDiagnosticInfo.GetForCurrentSystem() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemDiagnosticInfo%20SystemDiagnosticInfo.GetForCurrentSystem%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.FromAbi(nint)
-		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.operator ==(Windows.System.Diagnostics.SystemDiagnosticInfo, Windows.System.Diagnostics.SystemDiagnosticInfo)
-		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.operator !=(Windows.System.Diagnostics.SystemDiagnosticInfo, Windows.System.Diagnostics.SystemDiagnosticInfo)
-		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.Equals(Windows.System.Diagnostics.SystemDiagnosticInfo)
-		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.Equals(object)
-		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.GetHashCode()
 		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

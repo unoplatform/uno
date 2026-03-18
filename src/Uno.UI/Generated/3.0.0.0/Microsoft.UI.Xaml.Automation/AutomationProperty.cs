@@ -8,12 +8,6 @@ namespace Microsoft.UI.Xaml.Automation
 #endif
 	public partial class AutomationProperty
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperty.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperty.operator ==(Microsoft.UI.Xaml.Automation.AutomationProperty, Microsoft.UI.Xaml.Automation.AutomationProperty)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperty.operator !=(Microsoft.UI.Xaml.Automation.AutomationProperty, Microsoft.UI.Xaml.Automation.AutomationProperty)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperty.Equals(Microsoft.UI.Xaml.Automation.AutomationProperty)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperty.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperty.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperty.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperty.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperty.WinRT.IWinRTObject.QueryInterfaceCache.get

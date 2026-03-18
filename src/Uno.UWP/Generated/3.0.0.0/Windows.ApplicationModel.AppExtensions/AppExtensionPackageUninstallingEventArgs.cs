@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.AppExtensions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs.operator ==(Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs, Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs.operator !=(Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs, Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs.Equals(Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUninstallingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

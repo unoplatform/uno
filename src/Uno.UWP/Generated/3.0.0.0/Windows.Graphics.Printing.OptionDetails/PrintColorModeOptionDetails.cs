@@ -109,12 +109,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintColorModeOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

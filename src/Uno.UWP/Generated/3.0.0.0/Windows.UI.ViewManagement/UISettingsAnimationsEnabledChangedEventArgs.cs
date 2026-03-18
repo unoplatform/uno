@@ -13,12 +13,6 @@ namespace Windows.UI.ViewManagement
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs.operator ==(Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs, Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs)
-		// Forced skipping of method Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs.operator !=(Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs, Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs)
-		// Forced skipping of method Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs.Equals(Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs)
-		// Forced skipping of method Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

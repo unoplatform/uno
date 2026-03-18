@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Payments.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.operator ==(Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails, Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.operator !=(Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails, Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.Equals(Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppCanMakePaymentTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

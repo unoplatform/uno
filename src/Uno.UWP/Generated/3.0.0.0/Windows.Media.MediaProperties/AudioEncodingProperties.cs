@@ -116,7 +116,6 @@ namespace Windows.Media.MediaProperties
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.AudioEncodingProperties()
-		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.AudioEncodingProperties CreateAac(uint sampleRate, uint channelCount, uint bitrate)
@@ -166,12 +165,6 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioEncodingProperties.CreateFlac(uint sampleRate, uint channelCount, uint bitsPerSample) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioEncodingProperties%20AudioEncodingProperties.CreateFlac%28uint%20sampleRate%2C%20uint%20channelCount%2C%20uint%20bitsPerSample%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.operator ==(Windows.Media.MediaProperties.AudioEncodingProperties, Windows.Media.MediaProperties.AudioEncodingProperties)
-		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.operator !=(Windows.Media.MediaProperties.AudioEncodingProperties, Windows.Media.MediaProperties.AudioEncodingProperties)
-		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.Equals(Windows.Media.MediaProperties.AudioEncodingProperties)
-		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.Equals(object)
-		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.GetHashCode()
 		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

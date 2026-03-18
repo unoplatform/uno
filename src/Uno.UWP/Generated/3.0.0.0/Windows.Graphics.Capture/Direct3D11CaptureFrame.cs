@@ -43,12 +43,6 @@ namespace Windows.Graphics.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.operator ==(Windows.Graphics.Capture.Direct3D11CaptureFrame, Windows.Graphics.Capture.Direct3D11CaptureFrame)
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.operator !=(Windows.Graphics.Capture.Direct3D11CaptureFrame, Windows.Graphics.Capture.Direct3D11CaptureFrame)
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.Equals(Windows.Graphics.Capture.Direct3D11CaptureFrame)
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.Equals(object)
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.WinRT.IWinRTObject.QueryInterfaceCache.get

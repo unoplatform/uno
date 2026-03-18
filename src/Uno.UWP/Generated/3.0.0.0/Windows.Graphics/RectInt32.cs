@@ -11,11 +11,6 @@ namespace Windows.Graphics
 		// Forced skipping of method Windows.Graphics.RectInt32.RectInt32()
 		// Skipping already declared method Windows.Graphics.RectInt32.RectInt32(int, int, int, int)
 		// Forced skipping of method Windows.Graphics.RectInt32.RectInt32(int, int, int, int)
-		// Forced skipping of method Windows.Graphics.RectInt32.operator ==(Windows.Graphics.RectInt32, Windows.Graphics.RectInt32)
-		// Forced skipping of method Windows.Graphics.RectInt32.operator !=(Windows.Graphics.RectInt32, Windows.Graphics.RectInt32)
-		// Forced skipping of method Windows.Graphics.RectInt32.Equals(Windows.Graphics.RectInt32)
-		// Forced skipping of method Windows.Graphics.RectInt32.Equals(object)
-		// Forced skipping of method Windows.Graphics.RectInt32.GetHashCode()
 		// Skipping already declared field Windows.Graphics.RectInt32.X
 		// Skipping already declared field Windows.Graphics.RectInt32.Y
 		// Skipping already declared field Windows.Graphics.RectInt32.Width

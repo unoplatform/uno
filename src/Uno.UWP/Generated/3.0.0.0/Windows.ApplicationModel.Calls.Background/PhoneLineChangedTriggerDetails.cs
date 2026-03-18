@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.Calls.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneLineChangedTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneLineChangedTriggerDetails.operator ==(Windows.ApplicationModel.Calls.Background.PhoneLineChangedTriggerDetails, Windows.ApplicationModel.Calls.Background.PhoneLineChangedTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneLineChangedTriggerDetails.operator !=(Windows.ApplicationModel.Calls.Background.PhoneLineChangedTriggerDetails, Windows.ApplicationModel.Calls.Background.PhoneLineChangedTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneLineChangedTriggerDetails.Equals(Windows.ApplicationModel.Calls.Background.PhoneLineChangedTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneLineChangedTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneLineChangedTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneLineChangedTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneLineChangedTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneLineChangedTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

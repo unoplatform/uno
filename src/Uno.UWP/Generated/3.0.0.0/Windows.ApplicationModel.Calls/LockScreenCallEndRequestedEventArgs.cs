@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.operator ==(Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs, Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.operator !=(Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs, Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.Equals(Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

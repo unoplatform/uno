@@ -13,12 +13,6 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSpoolStreamContent.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSpoolStreamContent.operator ==(Windows.Graphics.Printing.Workflow.PrintWorkflowSpoolStreamContent, Windows.Graphics.Printing.Workflow.PrintWorkflowSpoolStreamContent)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSpoolStreamContent.operator !=(Windows.Graphics.Printing.Workflow.PrintWorkflowSpoolStreamContent, Windows.Graphics.Printing.Workflow.PrintWorkflowSpoolStreamContent)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSpoolStreamContent.Equals(Windows.Graphics.Printing.Workflow.PrintWorkflowSpoolStreamContent)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSpoolStreamContent.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSpoolStreamContent.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSpoolStreamContent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSpoolStreamContent.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSpoolStreamContent.WinRT.IWinRTObject.QueryInterfaceCache.get

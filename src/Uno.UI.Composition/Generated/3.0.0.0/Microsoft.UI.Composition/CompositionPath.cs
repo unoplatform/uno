@@ -10,12 +10,6 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared method Microsoft.UI.Composition.CompositionPath.CompositionPath(Windows.Graphics.IGeometrySource2D)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.CompositionPath(Windows.Graphics.IGeometrySource2D)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.operator ==(Microsoft.UI.Composition.CompositionPath, Microsoft.UI.Composition.CompositionPath)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.operator !=(Microsoft.UI.Composition.CompositionPath, Microsoft.UI.Composition.CompositionPath)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.Equals(Microsoft.UI.Composition.CompositionPath)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.WinRT.IWinRTObject.QueryInterfaceCache.get

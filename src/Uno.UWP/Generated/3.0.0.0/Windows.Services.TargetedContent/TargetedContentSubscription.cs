@@ -23,7 +23,6 @@ namespace Windows.Services.TargetedContent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscription.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.TargetedContent.TargetedContentSubscription> GetAsync(string subscriptionId)
@@ -38,12 +37,6 @@ namespace Windows.Services.TargetedContent
 			throw new global::System.NotImplementedException("The member TargetedContentSubscriptionOptions TargetedContentSubscription.GetOptions(string subscriptionId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TargetedContentSubscriptionOptions%20TargetedContentSubscription.GetOptions%28string%20subscriptionId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscription.FromAbi(nint)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscription.operator ==(Windows.Services.TargetedContent.TargetedContentSubscription, Windows.Services.TargetedContent.TargetedContentSubscription)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscription.operator !=(Windows.Services.TargetedContent.TargetedContentSubscription, Windows.Services.TargetedContent.TargetedContentSubscription)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscription.Equals(Windows.Services.TargetedContent.TargetedContentSubscription)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscription.Equals(object)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscription.GetHashCode()
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscription.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscription.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscription.WinRT.IWinRTObject.QueryInterfaceCache.get

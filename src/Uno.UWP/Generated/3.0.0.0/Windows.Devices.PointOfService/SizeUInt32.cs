@@ -17,11 +17,6 @@ namespace Windows.Devices.PointOfService
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.SizeUInt32.SizeUInt32(uint, uint)
-		// Forced skipping of method Windows.Devices.PointOfService.SizeUInt32.operator ==(Windows.Devices.PointOfService.SizeUInt32, Windows.Devices.PointOfService.SizeUInt32)
-		// Forced skipping of method Windows.Devices.PointOfService.SizeUInt32.operator !=(Windows.Devices.PointOfService.SizeUInt32, Windows.Devices.PointOfService.SizeUInt32)
-		// Forced skipping of method Windows.Devices.PointOfService.SizeUInt32.Equals(Windows.Devices.PointOfService.SizeUInt32)
-		// Forced skipping of method Windows.Devices.PointOfService.SizeUInt32.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.SizeUInt32.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint Width;
 #endif

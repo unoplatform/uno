@@ -38,14 +38,6 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.ContentSiteEnvironmentView(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.operator ==(Microsoft.UI.Content.ContentSiteEnvironmentView, Microsoft.UI.Content.ContentSiteEnvironmentView)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.operator !=(Microsoft.UI.Content.ContentSiteEnvironmentView, Microsoft.UI.Content.ContentSiteEnvironmentView)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.Equals(Microsoft.UI.Content.ContentSiteEnvironmentView)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.Equals(object)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.ContentSiteEnvironmentView(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -53,7 +45,6 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.AppWindowId.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.DisplayId.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.DisplayScale.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

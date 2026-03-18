@@ -18,12 +18,6 @@ namespace Windows.ApplicationModel
 		// Skipping already declared property PublisherId
 		// Skipping already declared property ResourceId
 		// Skipping already declared property Version
-		// Forced skipping of method Windows.ApplicationModel.PackageId.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.PackageId.operator ==(Windows.ApplicationModel.PackageId, Windows.ApplicationModel.PackageId)
-		// Forced skipping of method Windows.ApplicationModel.PackageId.operator !=(Windows.ApplicationModel.PackageId, Windows.ApplicationModel.PackageId)
-		// Forced skipping of method Windows.ApplicationModel.PackageId.Equals(Windows.ApplicationModel.PackageId)
-		// Forced skipping of method Windows.ApplicationModel.PackageId.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.PackageId.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.PackageId.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.PackageId.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.PackageId.WinRT.IWinRTObject.QueryInterfaceCache.get

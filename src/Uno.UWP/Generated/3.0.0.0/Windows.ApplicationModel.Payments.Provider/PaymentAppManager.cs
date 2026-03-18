@@ -23,14 +23,7 @@ namespace Windows.ApplicationModel.Payments.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.As<I>()
 		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.Current.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.operator ==(Windows.ApplicationModel.Payments.Provider.PaymentAppManager, Windows.ApplicationModel.Payments.Provider.PaymentAppManager)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.operator !=(Windows.ApplicationModel.Payments.Provider.PaymentAppManager, Windows.ApplicationModel.Payments.Provider.PaymentAppManager)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.Equals(Windows.ApplicationModel.Payments.Provider.PaymentAppManager)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentAppManager.WinRT.IWinRTObject.QueryInterfaceCache.get

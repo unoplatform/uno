@@ -8,7 +8,6 @@ namespace Windows.Services.Maps
 #endif
 	public static partial class MapRouteFinder
 	{
-		// Forced skipping of method Windows.Services.Maps.MapRouteFinder.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.MapRouteFinderResult> GetDrivingRouteAsync(global::Windows.Devices.Geolocation.Geopoint startPoint, global::Windows.Devices.Geolocation.Geopoint endPoint)

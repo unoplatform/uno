@@ -162,14 +162,6 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ContentSiteView(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.operator ==(Microsoft.UI.Content.ContentSiteView, Microsoft.UI.Content.ContentSiteView)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.operator !=(Microsoft.UI.Content.ContentSiteView, Microsoft.UI.Content.ContentSiteView)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.Equals(Microsoft.UI.Content.ContentSiteView)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.Equals(object)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ContentSiteView(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -193,7 +185,6 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.RasterizationScale.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.RequestedSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ShouldApplyRasterizationScale.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

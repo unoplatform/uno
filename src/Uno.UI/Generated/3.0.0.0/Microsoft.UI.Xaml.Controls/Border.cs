@@ -26,7 +26,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Padding
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Border.Border()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.Border()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.BackgroundProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.BackgroundSizingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.BorderBrushProperty.get
@@ -34,12 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.ChildTransitionsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.CornerRadiusProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.PaddingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.operator ==(Microsoft.UI.Xaml.Controls.Border, Microsoft.UI.Xaml.Controls.Border)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.operator !=(Microsoft.UI.Xaml.Controls.Border, Microsoft.UI.Xaml.Controls.Border)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.Equals(Microsoft.UI.Xaml.Controls.Border)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.Background.get
@@ -60,7 +53,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.CornerRadius.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.Padding.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.Padding.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

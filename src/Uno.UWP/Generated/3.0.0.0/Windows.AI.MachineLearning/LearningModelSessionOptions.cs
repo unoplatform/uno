@@ -44,12 +44,6 @@ namespace Windows.AI.MachineLearning
 		}
 #endif
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.LearningModelSessionOptions()
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.FromAbi(nint)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.operator ==(Windows.AI.MachineLearning.LearningModelSessionOptions, Windows.AI.MachineLearning.LearningModelSessionOptions)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.operator !=(Windows.AI.MachineLearning.LearningModelSessionOptions, Windows.AI.MachineLearning.LearningModelSessionOptions)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.Equals(Windows.AI.MachineLearning.LearningModelSessionOptions)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.Equals(object)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.GetHashCode()
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

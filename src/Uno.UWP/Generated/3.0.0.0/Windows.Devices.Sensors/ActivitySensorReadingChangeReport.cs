@@ -23,12 +23,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangeReport.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangeReport.operator ==(Windows.Devices.Sensors.ActivitySensorReadingChangeReport, Windows.Devices.Sensors.ActivitySensorReadingChangeReport)
-		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangeReport.operator !=(Windows.Devices.Sensors.ActivitySensorReadingChangeReport, Windows.Devices.Sensors.ActivitySensorReadingChangeReport)
-		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangeReport.Equals(Windows.Devices.Sensors.ActivitySensorReadingChangeReport)
-		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangeReport.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangeReport.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangeReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangeReport.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReadingChangeReport.WinRT.IWinRTObject.QueryInterfaceCache.get

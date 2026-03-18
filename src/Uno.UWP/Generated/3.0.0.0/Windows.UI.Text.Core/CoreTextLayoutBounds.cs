@@ -41,12 +41,6 @@ namespace Windows.UI.Text.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.operator ==(Windows.UI.Text.Core.CoreTextLayoutBounds, Windows.UI.Text.Core.CoreTextLayoutBounds)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.operator !=(Windows.UI.Text.Core.CoreTextLayoutBounds, Windows.UI.Text.Core.CoreTextLayoutBounds)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.Equals(Windows.UI.Text.Core.CoreTextLayoutBounds)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.Equals(object)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.GetHashCode()
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.WinRT.IWinRTObject.QueryInterfaceCache.get

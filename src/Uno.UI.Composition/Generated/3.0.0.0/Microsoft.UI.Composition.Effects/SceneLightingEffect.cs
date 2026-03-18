@@ -114,12 +114,6 @@ namespace Microsoft.UI.Composition.Effects
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.SceneLightingEffect()
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.operator ==(Microsoft.UI.Composition.Effects.SceneLightingEffect, Microsoft.UI.Composition.Effects.SceneLightingEffect)
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.operator !=(Microsoft.UI.Composition.Effects.SceneLightingEffect, Microsoft.UI.Composition.Effects.SceneLightingEffect)
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.Equals(Microsoft.UI.Composition.Effects.SceneLightingEffect)
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.WinRT.IWinRTObject.QueryInterfaceCache.get

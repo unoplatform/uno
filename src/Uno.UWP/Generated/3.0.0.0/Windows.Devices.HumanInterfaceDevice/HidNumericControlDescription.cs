@@ -173,12 +173,6 @@ namespace Windows.Devices.HumanInterfaceDevice
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.operator ==(Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription, Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription)
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.operator !=(Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription, Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription)
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.Equals(Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription)
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.Equals(object)
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.GetHashCode()
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -50,12 +50,6 @@ namespace Windows.Graphics.Printing3D
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup.Printing3DTexture2CoordMaterialGroup(uint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup.operator ==(Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup, Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup.operator !=(Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup, Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup.Equals(Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DTexture2CoordMaterialGroup.WinRT.IWinRTObject.QueryInterfaceCache.get

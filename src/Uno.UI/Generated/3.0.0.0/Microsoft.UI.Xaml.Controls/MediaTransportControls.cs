@@ -60,7 +60,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ShowAndHideAutomatically
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaTransportControls.MediaTransportControls()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.MediaTransportControls()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.FastPlayFallbackBehaviourProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.IsCompactProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.IsFastForwardButtonVisibleProperty.get
@@ -86,14 +85,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.IsZoomButtonVisibleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.IsZoomEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.ShowAndHideAutomaticallyProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.MediaTransportControls(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.operator ==(Microsoft.UI.Xaml.Controls.MediaTransportControls, Microsoft.UI.Xaml.Controls.MediaTransportControls)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.operator !=(Microsoft.UI.Xaml.Controls.MediaTransportControls, Microsoft.UI.Xaml.Controls.MediaTransportControls)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.Equals(Microsoft.UI.Xaml.Controls.MediaTransportControls)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.MediaTransportControls(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaTransportControls.Show()
@@ -150,7 +141,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.IsZoomEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.ShowAndHideAutomatically.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.ShowAndHideAutomatically.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

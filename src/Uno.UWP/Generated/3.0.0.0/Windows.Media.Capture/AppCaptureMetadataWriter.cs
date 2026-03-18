@@ -26,12 +26,6 @@ namespace Windows.Media.Capture
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppCaptureMetadataWriter.AppCaptureMetadataWriter()
-		// Forced skipping of method Windows.Media.Capture.AppCaptureMetadataWriter.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureMetadataWriter.operator ==(Windows.Media.Capture.AppCaptureMetadataWriter, Windows.Media.Capture.AppCaptureMetadataWriter)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureMetadataWriter.operator !=(Windows.Media.Capture.AppCaptureMetadataWriter, Windows.Media.Capture.AppCaptureMetadataWriter)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureMetadataWriter.Equals(Windows.Media.Capture.AppCaptureMetadataWriter)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureMetadataWriter.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureMetadataWriter.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.AppCaptureMetadataWriter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppCaptureMetadataWriter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppCaptureMetadataWriter.WinRT.IWinRTObject.QueryInterfaceCache.get

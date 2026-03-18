@@ -8,17 +8,8 @@ namespace Windows.UI.Composition
 #endif
 	public partial class CompositionEasingFunction : global::Windows.UI.Composition.CompositionObject
 	{
-		// Forced skipping of method Windows.UI.Composition.CompositionEasingFunction.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionEasingFunction.CompositionEasingFunction(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.CompositionEasingFunction.operator ==(Windows.UI.Composition.CompositionEasingFunction, Windows.UI.Composition.CompositionEasingFunction)
-		// Forced skipping of method Windows.UI.Composition.CompositionEasingFunction.operator !=(Windows.UI.Composition.CompositionEasingFunction, Windows.UI.Composition.CompositionEasingFunction)
-		// Forced skipping of method Windows.UI.Composition.CompositionEasingFunction.Equals(Windows.UI.Composition.CompositionEasingFunction)
-		// Forced skipping of method Windows.UI.Composition.CompositionEasingFunction.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionEasingFunction.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.CompositionEasingFunction.CompositionEasingFunction(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.CompositionEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionEasingFunction.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionEasingFunction.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,12 +23,6 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.SetDefaultSpatialAudioFormatResult.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Audio.SetDefaultSpatialAudioFormatResult.operator ==(Windows.Media.Audio.SetDefaultSpatialAudioFormatResult, Windows.Media.Audio.SetDefaultSpatialAudioFormatResult)
-		// Forced skipping of method Windows.Media.Audio.SetDefaultSpatialAudioFormatResult.operator !=(Windows.Media.Audio.SetDefaultSpatialAudioFormatResult, Windows.Media.Audio.SetDefaultSpatialAudioFormatResult)
-		// Forced skipping of method Windows.Media.Audio.SetDefaultSpatialAudioFormatResult.Equals(Windows.Media.Audio.SetDefaultSpatialAudioFormatResult)
-		// Forced skipping of method Windows.Media.Audio.SetDefaultSpatialAudioFormatResult.Equals(object)
-		// Forced skipping of method Windows.Media.Audio.SetDefaultSpatialAudioFormatResult.GetHashCode()
 		// Forced skipping of method Windows.Media.Audio.SetDefaultSpatialAudioFormatResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Audio.SetDefaultSpatialAudioFormatResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Audio.SetDefaultSpatialAudioFormatResult.WinRT.IWinRTObject.QueryInterfaceCache.get

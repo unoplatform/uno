@@ -102,16 +102,9 @@ namespace Windows.Perception.Spatial.Surfaces
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SpatialSurfaceMeshOptions()
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.As<I>()
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SupportedTriangleIndexFormats.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SupportedVertexNormalFormats.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SupportedVertexPositionFormats.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.operator ==(Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions, Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions)
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.operator !=(Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions, Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions)
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.Equals(Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions)
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.GetHashCode()
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

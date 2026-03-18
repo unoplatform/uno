@@ -38,7 +38,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensor.As<I>()
 		// Skipping already declared method Windows.Devices.Sensors.ProximitySensor.GetDeviceSelector()
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -54,12 +53,6 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IReadOnlyList<ProximitySensorReading> ProximitySensor.GetReadingsFromTriggerDetails(SensorDataThresholdTriggerDetails triggerDetails) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CProximitySensorReading%3E%20ProximitySensor.GetReadingsFromTriggerDetails%28SensorDataThresholdTriggerDetails%20triggerDetails%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensor.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensor.operator ==(Windows.Devices.Sensors.ProximitySensor, Windows.Devices.Sensors.ProximitySensor)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensor.operator !=(Windows.Devices.Sensors.ProximitySensor, Windows.Devices.Sensors.ProximitySensor)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensor.Equals(Windows.Devices.Sensors.ProximitySensor)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensor.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensor.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensor.WinRT.IWinRTObject.QueryInterfaceCache.get

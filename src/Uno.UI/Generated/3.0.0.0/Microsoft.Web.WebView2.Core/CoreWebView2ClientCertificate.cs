@@ -93,12 +93,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate, Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate, Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -33,12 +33,6 @@ namespace Windows.Services.Maps.OfflineMaps
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.operator ==(Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult, Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult)
-		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.operator !=(Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult, Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult)
-		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.Equals(Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult)
-		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.Equals(object)
-		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.GetHashCode()
 		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.WinRT.IWinRTObject.QueryInterfaceCache.get

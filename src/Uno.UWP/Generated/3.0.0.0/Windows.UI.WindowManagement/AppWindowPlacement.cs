@@ -43,12 +43,6 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.operator ==(Windows.UI.WindowManagement.AppWindowPlacement, Windows.UI.WindowManagement.AppWindowPlacement)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.operator !=(Windows.UI.WindowManagement.AppWindowPlacement, Windows.UI.WindowManagement.AppWindowPlacement)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.Equals(Windows.UI.WindowManagement.AppWindowPlacement)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.Equals(object)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.GetHashCode()
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -67,12 +67,6 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.operator ==(Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs, Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.operator !=(Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs, Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.Equals(Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

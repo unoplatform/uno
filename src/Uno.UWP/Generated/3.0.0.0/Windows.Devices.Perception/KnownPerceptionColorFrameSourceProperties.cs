@@ -38,7 +38,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionColorFrameSourceProperties.As<I>()
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionColorFrameSourceProperties.AutoExposureEnabled.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionColorFrameSourceProperties.Exposure.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionColorFrameSourceProperties.ExposureCompensation.get

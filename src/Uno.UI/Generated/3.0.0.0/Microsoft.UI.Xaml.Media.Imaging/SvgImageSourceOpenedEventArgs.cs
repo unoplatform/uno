@@ -8,12 +8,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #endif
 	public partial class SvgImageSourceOpenedEventArgs
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs.operator ==(Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs, Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs.operator !=(Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs, Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs.Equals(Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

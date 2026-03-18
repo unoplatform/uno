@@ -95,7 +95,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensor.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sensors.OrientationSensor GetDefault()
@@ -145,12 +144,6 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<OrientationSensor> OrientationSensor.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3COrientationSensor%3E%20OrientationSensor.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensor.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensor.operator ==(Windows.Devices.Sensors.OrientationSensor, Windows.Devices.Sensors.OrientationSensor)
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensor.operator !=(Windows.Devices.Sensors.OrientationSensor, Windows.Devices.Sensors.OrientationSensor)
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensor.Equals(Windows.Devices.Sensors.OrientationSensor)
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensor.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensor.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensor.WinRT.IWinRTObject.QueryInterfaceCache.get

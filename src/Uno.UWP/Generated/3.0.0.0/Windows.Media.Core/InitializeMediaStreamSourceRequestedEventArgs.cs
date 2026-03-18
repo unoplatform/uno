@@ -33,12 +33,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.operator ==(Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs, Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.operator !=(Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs, Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.Equals(Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

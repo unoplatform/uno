@@ -41,7 +41,6 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.PointerVisualizationSettings GetForCurrentView()
@@ -49,12 +48,6 @@ namespace Windows.UI.Input
 			throw new global::System.NotImplementedException("The member PointerVisualizationSettings PointerVisualizationSettings.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerVisualizationSettings%20PointerVisualizationSettings.GetForCurrentView%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.operator ==(Windows.UI.Input.PointerVisualizationSettings, Windows.UI.Input.PointerVisualizationSettings)
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.operator !=(Windows.UI.Input.PointerVisualizationSettings, Windows.UI.Input.PointerVisualizationSettings)
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.Equals(Windows.UI.Input.PointerVisualizationSettings)
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.Equals(object)
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

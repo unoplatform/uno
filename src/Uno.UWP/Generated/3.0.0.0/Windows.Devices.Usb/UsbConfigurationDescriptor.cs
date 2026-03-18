@@ -53,7 +53,6 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(global::Windows.Devices.Usb.UsbDescriptor descriptor, out global::Windows.Devices.Usb.UsbConfigurationDescriptor parsed)
@@ -68,12 +67,6 @@ namespace Windows.Devices.Usb
 			throw new global::System.NotImplementedException("The member UsbConfigurationDescriptor UsbConfigurationDescriptor.Parse(UsbDescriptor descriptor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbConfigurationDescriptor%20UsbConfigurationDescriptor.Parse%28UsbDescriptor%20descriptor%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.operator ==(Windows.Devices.Usb.UsbConfigurationDescriptor, Windows.Devices.Usb.UsbConfigurationDescriptor)
-		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.operator !=(Windows.Devices.Usb.UsbConfigurationDescriptor, Windows.Devices.Usb.UsbConfigurationDescriptor)
-		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.Equals(Windows.Devices.Usb.UsbConfigurationDescriptor)
-		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.Equals(object)
-		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.GetHashCode()
 		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Email
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailStoreNotificationTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailStoreNotificationTriggerDetails.operator ==(Windows.ApplicationModel.Email.EmailStoreNotificationTriggerDetails, Windows.ApplicationModel.Email.EmailStoreNotificationTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailStoreNotificationTriggerDetails.operator !=(Windows.ApplicationModel.Email.EmailStoreNotificationTriggerDetails, Windows.ApplicationModel.Email.EmailStoreNotificationTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailStoreNotificationTriggerDetails.Equals(Windows.ApplicationModel.Email.EmailStoreNotificationTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailStoreNotificationTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailStoreNotificationTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailStoreNotificationTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailStoreNotificationTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailStoreNotificationTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

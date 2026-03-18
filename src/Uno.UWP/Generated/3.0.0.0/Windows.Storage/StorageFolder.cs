@@ -62,7 +62,6 @@ namespace Windows.Storage
 		}
 #endif
 		// Skipping already declared property Provider
-		// Forced skipping of method Windows.Storage.StorageFolder.As<I>()
 		// Skipping already declared method Windows.Storage.StorageFolder.GetFolderFromPathAsync(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -71,12 +70,6 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> StorageFolder.GetFolderFromPathForUserAsync(User user, string path) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20StorageFolder.GetFolderFromPathForUserAsync%28User%20user%2C%20string%20path%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.StorageFolder.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.StorageFolder.operator ==(Windows.Storage.StorageFolder, Windows.Storage.StorageFolder)
-		// Forced skipping of method Windows.Storage.StorageFolder.operator !=(Windows.Storage.StorageFolder, Windows.Storage.StorageFolder)
-		// Forced skipping of method Windows.Storage.StorageFolder.Equals(Windows.Storage.StorageFolder)
-		// Forced skipping of method Windows.Storage.StorageFolder.Equals(object)
-		// Forced skipping of method Windows.Storage.StorageFolder.GetHashCode()
 		// Forced skipping of method Windows.Storage.StorageFolder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.StorageFolder.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.StorageFolder.WinRT.IWinRTObject.QueryInterfaceCache.get

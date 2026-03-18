@@ -85,12 +85,6 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.FromAbi(nint)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.operator ==(Windows.Media.SystemMediaTransportControlsDisplayUpdater, Windows.Media.SystemMediaTransportControlsDisplayUpdater)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.operator !=(Windows.Media.SystemMediaTransportControlsDisplayUpdater, Windows.Media.SystemMediaTransportControlsDisplayUpdater)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.Equals(Windows.Media.SystemMediaTransportControlsDisplayUpdater)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.Equals(object)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.GetHashCode()
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -17,11 +17,6 @@ namespace Windows.Networking.NetworkOperators
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileInstallProgress.ESimProfileInstallProgress(int, int)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileInstallProgress.operator ==(Windows.Networking.NetworkOperators.ESimProfileInstallProgress, Windows.Networking.NetworkOperators.ESimProfileInstallProgress)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileInstallProgress.operator !=(Windows.Networking.NetworkOperators.ESimProfileInstallProgress, Windows.Networking.NetworkOperators.ESimProfileInstallProgress)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileInstallProgress.Equals(Windows.Networking.NetworkOperators.ESimProfileInstallProgress)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileInstallProgress.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileInstallProgress.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int TotalSizeInBytes;
 #endif

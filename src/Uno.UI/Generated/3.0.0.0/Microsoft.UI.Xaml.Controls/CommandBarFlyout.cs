@@ -13,21 +13,12 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SecondaryCommands
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.CommandBarFlyout.CommandBarFlyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.CommandBarFlyout()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.CommandBarFlyout(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.operator ==(Microsoft.UI.Xaml.Controls.CommandBarFlyout, Microsoft.UI.Xaml.Controls.CommandBarFlyout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.operator !=(Microsoft.UI.Xaml.Controls.CommandBarFlyout, Microsoft.UI.Xaml.Controls.CommandBarFlyout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.Equals(Microsoft.UI.Xaml.Controls.CommandBarFlyout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.CommandBarFlyout(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.AlwaysExpanded.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.AlwaysExpanded.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.PrimaryCommands.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.SecondaryCommands.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

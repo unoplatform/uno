@@ -33,12 +33,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults.operator ==(Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults, Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults.operator !=(Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults, Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults.Equals(Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults.WinRT.IWinRTObject.QueryInterfaceCache.get

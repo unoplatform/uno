@@ -49,20 +49,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.PointAnimationUsingKeyFrames()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.operator ==(Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames, Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.operator !=(Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames, Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.Equals(Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.EnableDependentAnimation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.EnableDependentAnimation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.KeyFrames.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

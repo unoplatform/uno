@@ -58,12 +58,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.VpnCustomErrorBox()
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.operator ==(Windows.Networking.Vpn.VpnCustomErrorBox, Windows.Networking.Vpn.VpnCustomErrorBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.operator !=(Windows.Networking.Vpn.VpnCustomErrorBox, Windows.Networking.Vpn.VpnCustomErrorBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Equals(Windows.Networking.Vpn.VpnCustomErrorBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomErrorBox.WinRT.IWinRTObject.QueryInterfaceCache.get

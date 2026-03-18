@@ -25,12 +25,6 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared property ParentNode
 		// Skipping already declared property Prefix
 		// Skipping already declared property PreviousSibling
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.operator ==(Windows.Data.Xml.Dom.XmlComment, Windows.Data.Xml.Dom.XmlComment)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.operator !=(Windows.Data.Xml.Dom.XmlComment, Windows.Data.Xml.Dom.XmlComment)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.Equals(Windows.Data.Xml.Dom.XmlComment)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.Equals(object)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.GetHashCode()
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.WinRT.IWinRTObject.QueryInterfaceCache.get

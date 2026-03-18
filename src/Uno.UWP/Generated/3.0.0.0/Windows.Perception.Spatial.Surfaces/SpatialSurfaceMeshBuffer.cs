@@ -53,13 +53,7 @@ namespace Windows.Perception.Spatial.Surfaces
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.FromAbi(nint)
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.~SpatialSurfaceMeshBuffer()
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.operator ==(Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer, Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer)
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.operator !=(Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer, Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer)
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.Equals(Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer)
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.GetHashCode()
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.WinRT.IWinRTObject.QueryInterfaceCache.get

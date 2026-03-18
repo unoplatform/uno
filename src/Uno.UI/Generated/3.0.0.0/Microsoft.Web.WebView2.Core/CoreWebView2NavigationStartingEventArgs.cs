@@ -47,12 +47,6 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Skipping already declared property Uri
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

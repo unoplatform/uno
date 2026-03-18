@@ -13,7 +13,6 @@ namespace Windows.Networking.NetworkOperators
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Networking.NetworkOperators.UssdSession CreateFromNetworkAccountId(string networkAccountId)
@@ -28,12 +27,6 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member UssdSession UssdSession.CreateFromNetworkInterfaceId(string networkInterfaceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UssdSession%20UssdSession.CreateFromNetworkInterfaceId%28string%20networkInterfaceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.operator ==(Windows.Networking.NetworkOperators.UssdSession, Windows.Networking.NetworkOperators.UssdSession)
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.operator !=(Windows.Networking.NetworkOperators.UssdSession, Windows.Networking.NetworkOperators.UssdSession)
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.Equals(Windows.Networking.NetworkOperators.UssdSession)
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -86,12 +86,6 @@ namespace Windows.Media.Devices.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.CameraIntrinsics(System.Numerics.Vector2, System.Numerics.Vector2, System.Numerics.Vector3, System.Numerics.Vector2, uint, uint)
-		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.operator ==(Windows.Media.Devices.Core.CameraIntrinsics, Windows.Media.Devices.Core.CameraIntrinsics)
-		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.operator !=(Windows.Media.Devices.Core.CameraIntrinsics, Windows.Media.Devices.Core.CameraIntrinsics)
-		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.Equals(Windows.Media.Devices.Core.CameraIntrinsics)
-		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.WinRT.IWinRTObject.QueryInterfaceCache.get

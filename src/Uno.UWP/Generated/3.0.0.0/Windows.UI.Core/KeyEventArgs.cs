@@ -12,12 +12,6 @@ namespace Windows.UI.Core
 		// Skipping already declared property Handled
 		// Skipping already declared property KeyStatus
 		// Skipping already declared property VirtualKey
-		// Forced skipping of method Windows.UI.Core.KeyEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.KeyEventArgs.operator ==(Windows.UI.Core.KeyEventArgs, Windows.UI.Core.KeyEventArgs)
-		// Forced skipping of method Windows.UI.Core.KeyEventArgs.operator !=(Windows.UI.Core.KeyEventArgs, Windows.UI.Core.KeyEventArgs)
-		// Forced skipping of method Windows.UI.Core.KeyEventArgs.Equals(Windows.UI.Core.KeyEventArgs)
-		// Forced skipping of method Windows.UI.Core.KeyEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Core.KeyEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.KeyEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.KeyEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.KeyEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

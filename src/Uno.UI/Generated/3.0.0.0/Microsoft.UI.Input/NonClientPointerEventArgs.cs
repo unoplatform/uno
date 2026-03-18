@@ -12,12 +12,6 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property Point
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property RegionKind
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.operator ==(Microsoft.UI.Input.NonClientPointerEventArgs, Microsoft.UI.Input.NonClientPointerEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.operator !=(Microsoft.UI.Input.NonClientPointerEventArgs, Microsoft.UI.Input.NonClientPointerEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.Equals(Microsoft.UI.Input.NonClientPointerEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

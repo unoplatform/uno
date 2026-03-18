@@ -100,12 +100,6 @@ namespace Windows.Data.Pdf
 		}
 #endif
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.PdfPageRenderOptions()
-		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.operator ==(Windows.Data.Pdf.PdfPageRenderOptions, Windows.Data.Pdf.PdfPageRenderOptions)
-		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.operator !=(Windows.Data.Pdf.PdfPageRenderOptions, Windows.Data.Pdf.PdfPageRenderOptions)
-		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.Equals(Windows.Data.Pdf.PdfPageRenderOptions)
-		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.Equals(object)
-		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.GetHashCode()
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

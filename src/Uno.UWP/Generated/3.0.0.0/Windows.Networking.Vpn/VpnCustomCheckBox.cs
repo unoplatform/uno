@@ -82,12 +82,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.VpnCustomCheckBox()
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.operator ==(Windows.Networking.Vpn.VpnCustomCheckBox, Windows.Networking.Vpn.VpnCustomCheckBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.operator !=(Windows.Networking.Vpn.VpnCustomCheckBox, Windows.Networking.Vpn.VpnCustomCheckBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Equals(Windows.Networking.Vpn.VpnCustomCheckBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.WinRT.IWinRTObject.QueryInterfaceCache.get

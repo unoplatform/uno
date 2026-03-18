@@ -115,12 +115,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.operator ==(Windows.Devices.PointOfService.ClaimedPosPrinter, Windows.Devices.PointOfService.ClaimedPosPrinter)
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.operator !=(Windows.Devices.PointOfService.ClaimedPosPrinter, Windows.Devices.PointOfService.ClaimedPosPrinter)
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Equals(Windows.Devices.PointOfService.ClaimedPosPrinter)
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.WinRT.IWinRTObject.QueryInterfaceCache.get

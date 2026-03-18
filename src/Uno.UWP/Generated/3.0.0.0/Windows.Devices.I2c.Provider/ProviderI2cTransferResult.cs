@@ -17,11 +17,6 @@ namespace Windows.Devices.I2c.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cTransferResult.ProviderI2cTransferResult(Windows.Devices.I2c.Provider.ProviderI2cTransferStatus, uint)
-		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cTransferResult.operator ==(Windows.Devices.I2c.Provider.ProviderI2cTransferResult, Windows.Devices.I2c.Provider.ProviderI2cTransferResult)
-		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cTransferResult.operator !=(Windows.Devices.I2c.Provider.ProviderI2cTransferResult, Windows.Devices.I2c.Provider.ProviderI2cTransferResult)
-		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cTransferResult.Equals(Windows.Devices.I2c.Provider.ProviderI2cTransferResult)
-		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cTransferResult.Equals(object)
-		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cTransferResult.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Devices.I2c.Provider.ProviderI2cTransferStatus Status;
 #endif

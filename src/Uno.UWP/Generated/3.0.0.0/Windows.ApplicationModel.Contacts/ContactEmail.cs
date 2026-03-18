@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Contacts
 		// Skipping already declared property Kind
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactEmail.ContactEmail()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.ContactEmail()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.operator ==(Windows.ApplicationModel.Contacts.ContactEmail, Windows.ApplicationModel.Contacts.ContactEmail)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.operator !=(Windows.ApplicationModel.Contacts.ContactEmail, Windows.ApplicationModel.Contacts.ContactEmail)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Equals(Windows.ApplicationModel.Contacts.ContactEmail)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.WinRT.IWinRTObject.QueryInterfaceCache.get

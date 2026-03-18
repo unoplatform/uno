@@ -77,12 +77,6 @@ namespace Windows.UI.ApplicationSettings
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.operator ==(Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs, Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs)
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.operator !=(Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs, Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs)
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.Equals(Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs)
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

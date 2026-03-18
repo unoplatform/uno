@@ -43,12 +43,6 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.operator ==(Windows.ApplicationModel.Calls.PhoneVoicemail, Windows.ApplicationModel.Calls.PhoneVoicemail)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.operator !=(Windows.ApplicationModel.Calls.PhoneVoicemail, Windows.ApplicationModel.Calls.PhoneVoicemail)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.Equals(Windows.ApplicationModel.Calls.PhoneVoicemail)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.WinRT.IWinRTObject.QueryInterfaceCache.get

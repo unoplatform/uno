@@ -38,19 +38,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.EdgeUIThemeTransition()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.EdgeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.operator ==(Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition, Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.operator !=(Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition, Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.Equals(Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.Edge.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.Edge.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EdgeUIThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

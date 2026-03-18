@@ -83,12 +83,6 @@ namespace Windows.System.UserProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.FromAbi(nint)
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.operator ==(Windows.System.UserProfile.GlobalizationPreferencesForUser, Windows.System.UserProfile.GlobalizationPreferencesForUser)
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.operator !=(Windows.System.UserProfile.GlobalizationPreferencesForUser, Windows.System.UserProfile.GlobalizationPreferencesForUser)
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Equals(Windows.System.UserProfile.GlobalizationPreferencesForUser)
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Equals(object)
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.GetHashCode()
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WinRT.IWinRTObject.QueryInterfaceCache.get

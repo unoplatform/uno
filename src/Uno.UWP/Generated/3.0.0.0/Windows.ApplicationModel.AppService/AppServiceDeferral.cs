@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.AppService
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceDeferral.operator ==(Windows.ApplicationModel.AppService.AppServiceDeferral, Windows.ApplicationModel.AppService.AppServiceDeferral)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceDeferral.operator !=(Windows.ApplicationModel.AppService.AppServiceDeferral, Windows.ApplicationModel.AppService.AppServiceDeferral)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceDeferral.Equals(Windows.ApplicationModel.AppService.AppServiceDeferral)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceDeferral.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceDeferral.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

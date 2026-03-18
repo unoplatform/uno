@@ -50,7 +50,6 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ShowContactCard(global::Windows.ApplicationModel.Contacts.Contact contact, global::Windows.Foundation.Rect selection)

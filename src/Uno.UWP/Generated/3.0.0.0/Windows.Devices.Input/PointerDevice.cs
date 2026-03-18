@@ -69,7 +69,6 @@ namespace Windows.Devices.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.PointerDevice GetPointerDevice(uint pointerId)
@@ -84,12 +83,6 @@ namespace Windows.Devices.Input
 			throw new global::System.NotImplementedException("The member IReadOnlyList<PointerDevice> PointerDevice.GetPointerDevices() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPointerDevice%3E%20PointerDevice.GetPointerDevices%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.operator ==(Windows.Devices.Input.PointerDevice, Windows.Devices.Input.PointerDevice)
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.operator !=(Windows.Devices.Input.PointerDevice, Windows.Devices.Input.PointerDevice)
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.Equals(Windows.Devices.Input.PointerDevice)
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.Equals(object)
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.GetHashCode()
 		// Forced skipping of method Windows.Devices.Input.PointerDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Input.PointerDevice.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Input.PointerDevice.WinRT.IWinRTObject.QueryInterfaceCache.get

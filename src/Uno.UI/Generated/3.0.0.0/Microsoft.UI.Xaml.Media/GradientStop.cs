@@ -14,22 +14,14 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property Offset
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GradientStop.GradientStop()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.GradientStop()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.ColorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.OffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.operator ==(Microsoft.UI.Xaml.Media.GradientStop, Microsoft.UI.Xaml.Media.GradientStop)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.operator !=(Microsoft.UI.Xaml.Media.GradientStop, Microsoft.UI.Xaml.Media.GradientStop)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.Equals(Microsoft.UI.Xaml.Media.GradientStop)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.Color.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.Color.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.Offset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.Offset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

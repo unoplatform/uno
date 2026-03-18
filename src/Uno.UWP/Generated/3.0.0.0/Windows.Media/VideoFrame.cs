@@ -130,7 +130,6 @@ namespace Windows.Media
 		}
 #endif
 		// Forced skipping of method Windows.Media.VideoFrame.VideoFrame(Windows.Graphics.Imaging.BitmapPixelFormat, int, int, Windows.Graphics.Imaging.BitmapAlphaMode)
-		// Forced skipping of method Windows.Media.VideoFrame.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.VideoFrame CreateAsDirect3D11SurfaceBacked(global::Windows.Graphics.DirectX.DirectXPixelFormat format, int width, int height)
@@ -159,13 +158,7 @@ namespace Windows.Media
 			throw new global::System.NotImplementedException("The member VideoFrame VideoFrame.CreateWithDirect3D11Surface(IDirect3DSurface surface) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoFrame%20VideoFrame.CreateWithDirect3D11Surface%28IDirect3DSurface%20surface%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.VideoFrame.FromAbi(nint)
 		// Forced skipping of method Windows.Media.VideoFrame.~VideoFrame()
-		// Forced skipping of method Windows.Media.VideoFrame.operator ==(Windows.Media.VideoFrame, Windows.Media.VideoFrame)
-		// Forced skipping of method Windows.Media.VideoFrame.operator !=(Windows.Media.VideoFrame, Windows.Media.VideoFrame)
-		// Forced skipping of method Windows.Media.VideoFrame.Equals(Windows.Media.VideoFrame)
-		// Forced skipping of method Windows.Media.VideoFrame.Equals(object)
-		// Forced skipping of method Windows.Media.VideoFrame.GetHashCode()
 		// Forced skipping of method Windows.Media.VideoFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.VideoFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.VideoFrame.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -32,21 +32,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.FlyoutPresenter.FlyoutPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.FlyoutPresenter()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.IsDefaultShadowEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.FlyoutPresenter(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.operator ==(Microsoft.UI.Xaml.Controls.FlyoutPresenter, Microsoft.UI.Xaml.Controls.FlyoutPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.operator !=(Microsoft.UI.Xaml.Controls.FlyoutPresenter, Microsoft.UI.Xaml.Controls.FlyoutPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.Equals(Microsoft.UI.Xaml.Controls.FlyoutPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.FlyoutPresenter(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.IsDefaultShadowEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.IsDefaultShadowEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

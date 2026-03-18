@@ -69,12 +69,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.InsetClip.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.InsetClip.operator ==(Windows.UI.Composition.InsetClip, Windows.UI.Composition.InsetClip)
-		// Forced skipping of method Windows.UI.Composition.InsetClip.operator !=(Windows.UI.Composition.InsetClip, Windows.UI.Composition.InsetClip)
-		// Forced skipping of method Windows.UI.Composition.InsetClip.Equals(Windows.UI.Composition.InsetClip)
-		// Forced skipping of method Windows.UI.Composition.InsetClip.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.InsetClip.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.InsetClip.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.InsetClip.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.InsetClip.BottomInset.get
@@ -85,7 +79,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.InsetClip.RightInset.set
 		// Forced skipping of method Windows.UI.Composition.InsetClip.TopInset.get
 		// Forced skipping of method Windows.UI.Composition.InsetClip.TopInset.set
-		// Forced skipping of method Windows.UI.Composition.InsetClip.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.InsetClip.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Contacts
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStoreNotificationTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStoreNotificationTriggerDetails.operator ==(Windows.ApplicationModel.Contacts.ContactStoreNotificationTriggerDetails, Windows.ApplicationModel.Contacts.ContactStoreNotificationTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStoreNotificationTriggerDetails.operator !=(Windows.ApplicationModel.Contacts.ContactStoreNotificationTriggerDetails, Windows.ApplicationModel.Contacts.ContactStoreNotificationTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStoreNotificationTriggerDetails.Equals(Windows.ApplicationModel.Contacts.ContactStoreNotificationTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStoreNotificationTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStoreNotificationTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStoreNotificationTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStoreNotificationTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactStoreNotificationTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -53,12 +53,6 @@ namespace Windows.Management.Deployment
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.Deployment.DeploymentResult.FromAbi(nint)
-		// Forced skipping of method Windows.Management.Deployment.DeploymentResult.operator ==(Windows.Management.Deployment.DeploymentResult, Windows.Management.Deployment.DeploymentResult)
-		// Forced skipping of method Windows.Management.Deployment.DeploymentResult.operator !=(Windows.Management.Deployment.DeploymentResult, Windows.Management.Deployment.DeploymentResult)
-		// Forced skipping of method Windows.Management.Deployment.DeploymentResult.Equals(Windows.Management.Deployment.DeploymentResult)
-		// Forced skipping of method Windows.Management.Deployment.DeploymentResult.Equals(object)
-		// Forced skipping of method Windows.Management.Deployment.DeploymentResult.GetHashCode()
 		// Forced skipping of method Windows.Management.Deployment.DeploymentResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Management.Deployment.DeploymentResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Management.Deployment.DeploymentResult.WinRT.IWinRTObject.QueryInterfaceCache.get

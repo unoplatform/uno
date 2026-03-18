@@ -67,12 +67,6 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.operator ==(Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation, Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.operator !=(Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation, Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.Equals(Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.Equals(object)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.GetHashCode()
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

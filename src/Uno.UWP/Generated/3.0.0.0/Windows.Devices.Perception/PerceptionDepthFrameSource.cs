@@ -133,7 +133,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher CreateWatcher()
@@ -162,12 +161,6 @@ namespace Windows.Devices.Perception
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionFrameSourceAccessStatus> PerceptionDepthFrameSource.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionFrameSourceAccessStatus%3E%20PerceptionDepthFrameSource.RequestAccessAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.operator ==(Windows.Devices.Perception.PerceptionDepthFrameSource, Windows.Devices.Perception.PerceptionDepthFrameSource)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.operator !=(Windows.Devices.Perception.PerceptionDepthFrameSource, Windows.Devices.Perception.PerceptionDepthFrameSource)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.Equals(Windows.Devices.Perception.PerceptionDepthFrameSource)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSource.WinRT.IWinRTObject.QueryInterfaceCache.get

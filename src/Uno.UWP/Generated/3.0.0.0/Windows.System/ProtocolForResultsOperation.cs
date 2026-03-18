@@ -13,12 +13,6 @@ namespace Windows.System
 		{
 		}
 #endif
-		// Forced skipping of method Windows.System.ProtocolForResultsOperation.FromAbi(nint)
-		// Forced skipping of method Windows.System.ProtocolForResultsOperation.operator ==(Windows.System.ProtocolForResultsOperation, Windows.System.ProtocolForResultsOperation)
-		// Forced skipping of method Windows.System.ProtocolForResultsOperation.operator !=(Windows.System.ProtocolForResultsOperation, Windows.System.ProtocolForResultsOperation)
-		// Forced skipping of method Windows.System.ProtocolForResultsOperation.Equals(Windows.System.ProtocolForResultsOperation)
-		// Forced skipping of method Windows.System.ProtocolForResultsOperation.Equals(object)
-		// Forced skipping of method Windows.System.ProtocolForResultsOperation.GetHashCode()
 		// Forced skipping of method Windows.System.ProtocolForResultsOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.ProtocolForResultsOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.ProtocolForResultsOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

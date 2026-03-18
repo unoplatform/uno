@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Background
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceWatcherTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceWatcherTrigger.operator ==(Windows.ApplicationModel.Background.DeviceWatcherTrigger, Windows.ApplicationModel.Background.DeviceWatcherTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceWatcherTrigger.operator !=(Windows.ApplicationModel.Background.DeviceWatcherTrigger, Windows.ApplicationModel.Background.DeviceWatcherTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceWatcherTrigger.Equals(Windows.ApplicationModel.Background.DeviceWatcherTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceWatcherTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceWatcherTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceWatcherTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceWatcherTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceWatcherTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -9,12 +9,6 @@ namespace Windows.ApplicationModel.Activation
 	public partial class SplashScreen
 	{
 		// Skipping already declared property ImageLocation
-		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.operator ==(Windows.ApplicationModel.Activation.SplashScreen, Windows.ApplicationModel.Activation.SplashScreen)
-		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.operator !=(Windows.ApplicationModel.Activation.SplashScreen, Windows.ApplicationModel.Activation.SplashScreen)
-		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.Equals(Windows.ApplicationModel.Activation.SplashScreen)
-		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.WinRT.IWinRTObject.QueryInterfaceCache.get

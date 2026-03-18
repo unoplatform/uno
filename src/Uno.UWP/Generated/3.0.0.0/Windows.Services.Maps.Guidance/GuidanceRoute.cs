@@ -73,7 +73,6 @@ namespace Windows.Services.Maps.Guidance
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoute.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool CanCreateFromMapRoute(global::Windows.Services.Maps.MapRoute mapRoute)
@@ -88,12 +87,6 @@ namespace Windows.Services.Maps.Guidance
 			throw new global::System.NotImplementedException("The member GuidanceRoute GuidanceRoute.TryCreateFromMapRoute(MapRoute mapRoute) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GuidanceRoute%20GuidanceRoute.TryCreateFromMapRoute%28MapRoute%20mapRoute%29");
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoute.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoute.operator ==(Windows.Services.Maps.Guidance.GuidanceRoute, Windows.Services.Maps.Guidance.GuidanceRoute)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoute.operator !=(Windows.Services.Maps.Guidance.GuidanceRoute, Windows.Services.Maps.Guidance.GuidanceRoute)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoute.Equals(Windows.Services.Maps.Guidance.GuidanceRoute)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoute.Equals(object)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoute.GetHashCode()
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoute.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoute.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoute.WinRT.IWinRTObject.QueryInterfaceCache.get

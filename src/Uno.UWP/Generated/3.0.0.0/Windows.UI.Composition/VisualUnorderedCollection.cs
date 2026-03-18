@@ -23,12 +23,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.VisualUnorderedCollection.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.VisualUnorderedCollection.operator ==(Windows.UI.Composition.VisualUnorderedCollection, Windows.UI.Composition.VisualUnorderedCollection)
-		// Forced skipping of method Windows.UI.Composition.VisualUnorderedCollection.operator !=(Windows.UI.Composition.VisualUnorderedCollection, Windows.UI.Composition.VisualUnorderedCollection)
-		// Forced skipping of method Windows.UI.Composition.VisualUnorderedCollection.Equals(Windows.UI.Composition.VisualUnorderedCollection)
-		// Forced skipping of method Windows.UI.Composition.VisualUnorderedCollection.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.VisualUnorderedCollection.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.VisualUnorderedCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.VisualUnorderedCollection.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -61,7 +55,6 @@ namespace Windows.UI.Composition
 #endif
 		// Forced skipping of method Windows.UI.Composition.VisualUnorderedCollection.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Windows.UI.Composition.VisualUnorderedCollection.Count.get
-		// Forced skipping of method Windows.UI.Composition.VisualUnorderedCollection.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.VisualUnorderedCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Composition.Visual>
 		// Processing: System.Collections.IEnumerable

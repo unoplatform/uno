@@ -39,19 +39,11 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.Matrix3DProjection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.ProjectionMatrixProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.operator ==(Microsoft.UI.Xaml.Media.Matrix3DProjection, Microsoft.UI.Xaml.Media.Matrix3DProjection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.operator !=(Microsoft.UI.Xaml.Media.Matrix3DProjection, Microsoft.UI.Xaml.Media.Matrix3DProjection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.Equals(Microsoft.UI.Xaml.Media.Matrix3DProjection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.ProjectionMatrix.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.ProjectionMatrix.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

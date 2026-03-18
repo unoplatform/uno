@@ -114,7 +114,6 @@ namespace Windows.Media.SpeechRecognition
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SpeechRecognizer(Windows.Globalization.Language)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> TrySetSystemSpeechLanguageAsync(global::Windows.Globalization.Language speechLanguage)
@@ -125,12 +124,6 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SupportedGrammarLanguages.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SupportedTopicLanguages.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SystemSpeechLanguage.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.FromAbi(nint)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.operator ==(Windows.Media.SpeechRecognition.SpeechRecognizer, Windows.Media.SpeechRecognition.SpeechRecognizer)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.operator !=(Windows.Media.SpeechRecognition.SpeechRecognizer, Windows.Media.SpeechRecognition.SpeechRecognizer)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.Equals(Windows.Media.SpeechRecognition.SpeechRecognizer)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.Equals(object)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.GetHashCode()
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.WinRT.IWinRTObject.QueryInterfaceCache.get

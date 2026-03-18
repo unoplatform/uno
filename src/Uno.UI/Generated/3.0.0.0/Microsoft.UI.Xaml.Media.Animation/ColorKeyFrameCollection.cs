@@ -13,12 +13,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.ColorKeyFrameCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.ColorKeyFrameCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.operator ==(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection, Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.operator !=(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection, Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.Equals(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -81,15 +81,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ViewportWidth
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollContentPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollContentPresenter()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBoundsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.SizesContentToTemplatedParentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.operator ==(Microsoft.UI.Xaml.Controls.ScrollContentPresenter, Microsoft.UI.Xaml.Controls.ScrollContentPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.operator !=(Microsoft.UI.Xaml.Controls.ScrollContentPresenter, Microsoft.UI.Xaml.Controls.ScrollContentPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.Equals(Microsoft.UI.Xaml.Controls.ScrollContentPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -207,7 +200,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.VerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ViewportHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ViewportWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

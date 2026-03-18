@@ -196,7 +196,6 @@ namespace Windows.Web.Http.Filters
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.HttpBaseProtocolFilter()
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Filters.HttpBaseProtocolFilter CreateForUser(global::Windows.System.User user)
@@ -204,12 +203,6 @@ namespace Windows.Web.Http.Filters
 			throw new global::System.NotImplementedException("The member HttpBaseProtocolFilter HttpBaseProtocolFilter.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpBaseProtocolFilter%20HttpBaseProtocolFilter.CreateForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.operator ==(Windows.Web.Http.Filters.HttpBaseProtocolFilter, Windows.Web.Http.Filters.HttpBaseProtocolFilter)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.operator !=(Windows.Web.Http.Filters.HttpBaseProtocolFilter, Windows.Web.Http.Filters.HttpBaseProtocolFilter)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.Equals(Windows.Web.Http.Filters.HttpBaseProtocolFilter)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.WinRT.IWinRTObject.QueryInterfaceCache.get

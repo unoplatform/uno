@@ -26,12 +26,6 @@ namespace Windows.System.RemoteSystems
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKindFilter.RemoteSystemKindFilter(System.Collections.Generic.IEnumerable<string>)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKindFilter.FromAbi(nint)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKindFilter.operator ==(Windows.System.RemoteSystems.RemoteSystemKindFilter, Windows.System.RemoteSystems.RemoteSystemKindFilter)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKindFilter.operator !=(Windows.System.RemoteSystems.RemoteSystemKindFilter, Windows.System.RemoteSystems.RemoteSystemKindFilter)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKindFilter.Equals(Windows.System.RemoteSystems.RemoteSystemKindFilter)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKindFilter.Equals(object)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKindFilter.GetHashCode()
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKindFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKindFilter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKindFilter.WinRT.IWinRTObject.QueryInterfaceCache.get

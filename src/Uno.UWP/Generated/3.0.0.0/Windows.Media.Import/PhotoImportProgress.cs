@@ -17,11 +17,6 @@ namespace Windows.Media.Import
 		}
 #endif
 		// Forced skipping of method Windows.Media.Import.PhotoImportProgress.PhotoImportProgress(uint, uint, ulong, ulong, double)
-		// Forced skipping of method Windows.Media.Import.PhotoImportProgress.operator ==(Windows.Media.Import.PhotoImportProgress, Windows.Media.Import.PhotoImportProgress)
-		// Forced skipping of method Windows.Media.Import.PhotoImportProgress.operator !=(Windows.Media.Import.PhotoImportProgress, Windows.Media.Import.PhotoImportProgress)
-		// Forced skipping of method Windows.Media.Import.PhotoImportProgress.Equals(Windows.Media.Import.PhotoImportProgress)
-		// Forced skipping of method Windows.Media.Import.PhotoImportProgress.Equals(object)
-		// Forced skipping of method Windows.Media.Import.PhotoImportProgress.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint ItemsImported;
 #endif

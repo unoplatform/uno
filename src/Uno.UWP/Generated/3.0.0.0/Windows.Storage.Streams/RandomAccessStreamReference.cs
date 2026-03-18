@@ -8,16 +8,9 @@ namespace Windows.Storage.Streams
 #endif
 	public partial class RandomAccessStreamReference : global::Windows.Storage.Streams.IRandomAccessStreamReference
 	{
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.As<I>()
 		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.CreateFromFile(Windows.Storage.IStorageFile)
 		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.CreateFromUri(System.Uri)
 		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.CreateFromStream(Windows.Storage.Streams.IRandomAccessStream)
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.operator ==(Windows.Storage.Streams.RandomAccessStreamReference, Windows.Storage.Streams.RandomAccessStreamReference)
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.operator !=(Windows.Storage.Streams.RandomAccessStreamReference, Windows.Storage.Streams.RandomAccessStreamReference)
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.Equals(Windows.Storage.Streams.RandomAccessStreamReference)
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.Equals(object)
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.GetHashCode()
 		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.WinRT.IWinRTObject.QueryInterfaceCache.get

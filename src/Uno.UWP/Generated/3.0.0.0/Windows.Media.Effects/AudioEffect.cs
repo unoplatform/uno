@@ -23,12 +23,6 @@ namespace Windows.Media.Effects
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Effects.AudioEffect.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Effects.AudioEffect.operator ==(Windows.Media.Effects.AudioEffect, Windows.Media.Effects.AudioEffect)
-		// Forced skipping of method Windows.Media.Effects.AudioEffect.operator !=(Windows.Media.Effects.AudioEffect, Windows.Media.Effects.AudioEffect)
-		// Forced skipping of method Windows.Media.Effects.AudioEffect.Equals(Windows.Media.Effects.AudioEffect)
-		// Forced skipping of method Windows.Media.Effects.AudioEffect.Equals(object)
-		// Forced skipping of method Windows.Media.Effects.AudioEffect.GetHashCode()
 		// Forced skipping of method Windows.Media.Effects.AudioEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Effects.AudioEffect.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Effects.AudioEffect.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -180,12 +180,6 @@ namespace Windows.UI.Input.Inking
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.InkPresenterProtractor(Windows.UI.Input.Inking.InkPresenter)
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.operator ==(Windows.UI.Input.Inking.InkPresenterProtractor, Windows.UI.Input.Inking.InkPresenterProtractor)
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.operator !=(Windows.UI.Input.Inking.InkPresenterProtractor, Windows.UI.Input.Inking.InkPresenterProtractor)
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.Equals(Windows.UI.Input.Inking.InkPresenterProtractor)
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.WinRT.IWinRTObject.QueryInterfaceCache.get

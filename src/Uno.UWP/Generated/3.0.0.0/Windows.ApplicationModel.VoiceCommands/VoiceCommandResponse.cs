@@ -75,7 +75,6 @@ namespace Windows.ApplicationModel.VoiceCommands
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse CreateResponse(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage userMessage)
@@ -105,12 +104,6 @@ namespace Windows.ApplicationModel.VoiceCommands
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.MaxSupportedVoiceCommandContentTiles.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.operator ==(Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse, Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.operator !=(Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse, Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.Equals(Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.WinRT.IWinRTObject.QueryInterfaceCache.get

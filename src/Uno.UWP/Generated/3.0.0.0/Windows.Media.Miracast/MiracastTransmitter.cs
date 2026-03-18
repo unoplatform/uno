@@ -61,12 +61,6 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.operator ==(Windows.Media.Miracast.MiracastTransmitter, Windows.Media.Miracast.MiracastTransmitter)
-		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.operator !=(Windows.Media.Miracast.MiracastTransmitter, Windows.Media.Miracast.MiracastTransmitter)
-		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.Equals(Windows.Media.Miracast.MiracastTransmitter)
-		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.Equals(object)
-		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.GetHashCode()
 		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.WinRT.IWinRTObject.QueryInterfaceCache.get

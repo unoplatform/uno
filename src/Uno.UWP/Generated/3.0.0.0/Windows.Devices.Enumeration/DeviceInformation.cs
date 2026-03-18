@@ -43,7 +43,6 @@ namespace Windows.Devices.Enumeration
 		}
 #endif
 		// Skipping already declared property Properties
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync(string deviceId)
@@ -130,12 +129,6 @@ namespace Windows.Devices.Enumeration
 			throw new global::System.NotImplementedException("The member DeviceWatcher DeviceInformation.CreateWatcher(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcher%20DeviceInformation.CreateWatcher%28string%20aqsFilter%2C%20IEnumerable%3Cstring%3E%20additionalProperties%2C%20DeviceInformationKind%20kind%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.operator ==(Windows.Devices.Enumeration.DeviceInformation, Windows.Devices.Enumeration.DeviceInformation)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.operator !=(Windows.Devices.Enumeration.DeviceInformation, Windows.Devices.Enumeration.DeviceInformation)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Equals(Windows.Devices.Enumeration.DeviceInformation)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Equals(object)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.GetHashCode()
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.WinRT.IWinRTObject.QueryInterfaceCache.get

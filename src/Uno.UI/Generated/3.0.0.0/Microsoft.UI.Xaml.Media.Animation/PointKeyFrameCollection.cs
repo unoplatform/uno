@@ -50,12 +50,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.PointKeyFrameCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.operator ==(Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection, Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.operator !=(Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection, Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.Equals(Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

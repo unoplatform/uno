@@ -27,12 +27,6 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs.operator ==(Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs, Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs.operator !=(Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs, Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs.Equals(Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

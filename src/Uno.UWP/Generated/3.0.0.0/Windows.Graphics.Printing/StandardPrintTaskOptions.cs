@@ -158,7 +158,6 @@ namespace Windows.Graphics.Printing
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.StandardPrintTaskOptions.As<I>()
 		// Forced skipping of method Windows.Graphics.Printing.StandardPrintTaskOptions.Binding.get
 		// Forced skipping of method Windows.Graphics.Printing.StandardPrintTaskOptions.Bordering.get
 		// Forced skipping of method Windows.Graphics.Printing.StandardPrintTaskOptions.Collation.get

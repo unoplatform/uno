@@ -50,14 +50,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.Vector2NaturalMotionAnimation(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.operator ==(Windows.UI.Composition.Vector2NaturalMotionAnimation, Windows.UI.Composition.Vector2NaturalMotionAnimation)
-		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.operator !=(Windows.UI.Composition.Vector2NaturalMotionAnimation, Windows.UI.Composition.Vector2NaturalMotionAnimation)
-		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.Equals(Windows.UI.Composition.Vector2NaturalMotionAnimation)
-		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.Vector2NaturalMotionAnimation(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.FinalValue.get
@@ -66,7 +58,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.InitialValue.set
 		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.InitialVelocity.get
 		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.InitialVelocity.set
-		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.Vector2NaturalMotionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

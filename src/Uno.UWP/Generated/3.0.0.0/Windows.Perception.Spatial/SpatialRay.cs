@@ -17,11 +17,6 @@ namespace Windows.Perception.Spatial
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.SpatialRay(System.Numerics.Vector3, System.Numerics.Vector3)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.operator ==(Windows.Perception.Spatial.SpatialRay, Windows.Perception.Spatial.SpatialRay)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.operator !=(Windows.Perception.Spatial.SpatialRay, Windows.Perception.Spatial.SpatialRay)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.Equals(Windows.Perception.Spatial.SpatialRay)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Vector3 Origin;
 #endif

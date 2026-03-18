@@ -10,7 +10,6 @@ namespace Windows.Devices.Sensors
 	{
 		// Skipping already declared property DeviceId
 		// Skipping already declared property ReadingTransform
-		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.As<I>()
 		// Skipping already declared method Windows.Devices.Sensors.SimpleOrientationSensor.GetDefault()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -26,12 +25,6 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SimpleOrientationSensor> SimpleOrientationSensor.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSimpleOrientationSensor%3E%20SimpleOrientationSensor.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.operator ==(Windows.Devices.Sensors.SimpleOrientationSensor, Windows.Devices.Sensors.SimpleOrientationSensor)
-		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.operator !=(Windows.Devices.Sensors.SimpleOrientationSensor, Windows.Devices.Sensors.SimpleOrientationSensor)
-		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.Equals(Windows.Devices.Sensors.SimpleOrientationSensor)
-		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.WinRT.IWinRTObject.QueryInterfaceCache.get

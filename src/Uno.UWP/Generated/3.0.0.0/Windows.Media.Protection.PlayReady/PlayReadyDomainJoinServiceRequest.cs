@@ -116,12 +116,6 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest.PlayReadyDomainJoinServiceRequest()
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest.operator ==(Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest, Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest.operator !=(Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest, Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest.Equals(Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

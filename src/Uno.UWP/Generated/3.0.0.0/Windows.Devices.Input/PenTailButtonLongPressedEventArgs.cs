@@ -13,12 +13,6 @@ namespace Windows.Devices.Input
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.PenTailButtonLongPressedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Input.PenTailButtonLongPressedEventArgs.operator ==(Windows.Devices.Input.PenTailButtonLongPressedEventArgs, Windows.Devices.Input.PenTailButtonLongPressedEventArgs)
-		// Forced skipping of method Windows.Devices.Input.PenTailButtonLongPressedEventArgs.operator !=(Windows.Devices.Input.PenTailButtonLongPressedEventArgs, Windows.Devices.Input.PenTailButtonLongPressedEventArgs)
-		// Forced skipping of method Windows.Devices.Input.PenTailButtonLongPressedEventArgs.Equals(Windows.Devices.Input.PenTailButtonLongPressedEventArgs)
-		// Forced skipping of method Windows.Devices.Input.PenTailButtonLongPressedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.Input.PenTailButtonLongPressedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.Input.PenTailButtonLongPressedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Input.PenTailButtonLongPressedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Input.PenTailButtonLongPressedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -13,12 +13,6 @@ namespace Windows.Devices.Printers.Extensions
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral.operator ==(Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral, Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral.operator !=(Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral, Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral.Equals(Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral.Equals(object)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral.GetHashCode()
 		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

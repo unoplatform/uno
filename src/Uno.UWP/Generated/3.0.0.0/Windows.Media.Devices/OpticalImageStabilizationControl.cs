@@ -47,12 +47,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.operator ==(Windows.Media.Devices.OpticalImageStabilizationControl, Windows.Media.Devices.OpticalImageStabilizationControl)
-		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.operator !=(Windows.Media.Devices.OpticalImageStabilizationControl, Windows.Media.Devices.OpticalImageStabilizationControl)
-		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.Equals(Windows.Media.Devices.OpticalImageStabilizationControl)
-		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -15,12 +15,6 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Values
 		// Skipping already declared method Windows.Devices.Midi.MidiTimeCodeMessage.MidiTimeCodeMessage(byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiTimeCodeMessage.MidiTimeCodeMessage(byte, byte)
-		// Forced skipping of method Windows.Devices.Midi.MidiTimeCodeMessage.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Midi.MidiTimeCodeMessage.operator ==(Windows.Devices.Midi.MidiTimeCodeMessage, Windows.Devices.Midi.MidiTimeCodeMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiTimeCodeMessage.operator !=(Windows.Devices.Midi.MidiTimeCodeMessage, Windows.Devices.Midi.MidiTimeCodeMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiTimeCodeMessage.Equals(Windows.Devices.Midi.MidiTimeCodeMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiTimeCodeMessage.Equals(object)
-		// Forced skipping of method Windows.Devices.Midi.MidiTimeCodeMessage.GetHashCode()
 		// Forced skipping of method Windows.Devices.Midi.MidiTimeCodeMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Midi.MidiTimeCodeMessage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Midi.MidiTimeCodeMessage.WinRT.IWinRTObject.QueryInterfaceCache.get

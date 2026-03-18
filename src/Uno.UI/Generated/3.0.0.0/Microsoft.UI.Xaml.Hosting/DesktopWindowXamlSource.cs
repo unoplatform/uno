@@ -50,14 +50,6 @@ namespace Microsoft.UI.Xaml.Hosting
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.DesktopWindowXamlSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.DesktopWindowXamlSource()
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.DesktopWindowXamlSource(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.operator ==(Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource, Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.operator !=(Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource, Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.Equals(Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.DesktopWindowXamlSource(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -83,7 +75,6 @@ namespace Microsoft.UI.Xaml.Hosting
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.SiteBridge.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.SystemBackdrop.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.SystemBackdrop.set
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.GotFocus
 		// Skipping already declared event Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource.TakeFocusRequested

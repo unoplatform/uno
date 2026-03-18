@@ -25,12 +25,6 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared property TextScaleFactor
 		// Skipping already declared method Windows.UI.ViewManagement.UISettings.UISettings()
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.UISettings()
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.operator ==(Windows.UI.ViewManagement.UISettings, Windows.UI.ViewManagement.UISettings)
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.operator !=(Windows.UI.ViewManagement.UISettings, Windows.UI.ViewManagement.UISettings)
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.Equals(Windows.UI.ViewManagement.UISettings)
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.Equals(object)
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.GetHashCode()
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.WinRT.IWinRTObject.QueryInterfaceCache.get

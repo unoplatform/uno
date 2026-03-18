@@ -193,12 +193,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.operator ==(Windows.Media.Capture.AppBroadcastGlobalSettings, Windows.Media.Capture.AppBroadcastGlobalSettings)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.operator !=(Windows.Media.Capture.AppBroadcastGlobalSettings, Windows.Media.Capture.AppBroadcastGlobalSettings)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.Equals(Windows.Media.Capture.AppBroadcastGlobalSettings)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -136,14 +136,7 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Package.As<I>()
 		// Forced skipping of method Windows.ApplicationModel.Package.Current.get
-		// Forced skipping of method Windows.ApplicationModel.Package.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Package.operator ==(Windows.ApplicationModel.Package, Windows.ApplicationModel.Package)
-		// Forced skipping of method Windows.ApplicationModel.Package.operator !=(Windows.ApplicationModel.Package, Windows.ApplicationModel.Package)
-		// Forced skipping of method Windows.ApplicationModel.Package.Equals(Windows.ApplicationModel.Package)
-		// Forced skipping of method Windows.ApplicationModel.Package.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Package.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Package.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Package.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Package.WinRT.IWinRTObject.QueryInterfaceCache.get

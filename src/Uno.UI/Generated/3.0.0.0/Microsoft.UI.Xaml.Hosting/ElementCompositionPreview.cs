@@ -8,7 +8,6 @@ namespace Microsoft.UI.Xaml.Hosting
 #endif
 	public partial class ElementCompositionPreview
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(Microsoft.UI.Xaml.UIElement)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -53,12 +52,6 @@ namespace Microsoft.UI.Xaml.Hosting
 			throw new global::System.NotImplementedException("The member CompositionPropertySet ElementCompositionPreview.GetPointerPositionPropertySet(UIElement targetElement) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionPropertySet%20ElementCompositionPreview.GetPointerPositionPropertySet%28UIElement%20targetElement%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.operator ==(Microsoft.UI.Xaml.Hosting.ElementCompositionPreview, Microsoft.UI.Xaml.Hosting.ElementCompositionPreview)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.operator !=(Microsoft.UI.Xaml.Hosting.ElementCompositionPreview, Microsoft.UI.Xaml.Hosting.ElementCompositionPreview)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.Equals(Microsoft.UI.Xaml.Hosting.ElementCompositionPreview)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.WinRT.IWinRTObject.QueryInterfaceCache.get

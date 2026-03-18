@@ -10,12 +10,6 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		// Skipping already declared property Data
 		// Skipping already declared property Deadline
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequest.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequest.operator ==(Windows.ApplicationModel.DataTransfer.DataRequest, Windows.ApplicationModel.DataTransfer.DataRequest)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequest.operator !=(Windows.ApplicationModel.DataTransfer.DataRequest, Windows.ApplicationModel.DataTransfer.DataRequest)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequest.Equals(Windows.ApplicationModel.DataTransfer.DataRequest)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequest.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequest.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

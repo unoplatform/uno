@@ -64,15 +64,8 @@ namespace Windows.UI.Composition
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Compositor.Compositor()
-		// Forced skipping of method Windows.UI.Composition.Compositor.As<I>()
 		// Forced skipping of method Windows.UI.Composition.Compositor.MaxGlobalPlaybackRate.get
 		// Forced skipping of method Windows.UI.Composition.Compositor.MinGlobalPlaybackRate.get
-		// Forced skipping of method Windows.UI.Composition.Compositor.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.Compositor.operator ==(Windows.UI.Composition.Compositor, Windows.UI.Composition.Compositor)
-		// Forced skipping of method Windows.UI.Composition.Compositor.operator !=(Windows.UI.Composition.Compositor, Windows.UI.Composition.Compositor)
-		// Forced skipping of method Windows.UI.Composition.Compositor.Equals(Windows.UI.Composition.Compositor)
-		// Forced skipping of method Windows.UI.Composition.Compositor.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.Compositor.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.Compositor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Compositor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Compositor.WinRT.IWinRTObject.QueryInterfaceCache.get

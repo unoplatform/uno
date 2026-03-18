@@ -63,12 +63,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs, Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs, Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

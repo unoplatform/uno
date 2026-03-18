@@ -38,19 +38,10 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property SpreadMethod
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GradientBrush.GradientBrush()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.GradientBrush()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.ColorInterpolationModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.GradientStopsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.MappingModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.SpreadMethodProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.GradientBrush(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.operator ==(Microsoft.UI.Xaml.Media.GradientBrush, Microsoft.UI.Xaml.Media.GradientBrush)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.operator !=(Microsoft.UI.Xaml.Media.GradientBrush, Microsoft.UI.Xaml.Media.GradientBrush)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.Equals(Microsoft.UI.Xaml.Media.GradientBrush)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.GradientBrush(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.ColorInterpolationMode.get
@@ -61,7 +52,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.MappingMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.SpreadMethod.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.SpreadMethod.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

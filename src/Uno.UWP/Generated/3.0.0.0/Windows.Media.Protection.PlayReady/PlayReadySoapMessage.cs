@@ -33,12 +33,6 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySoapMessage.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySoapMessage.operator ==(Windows.Media.Protection.PlayReady.PlayReadySoapMessage, Windows.Media.Protection.PlayReady.PlayReadySoapMessage)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySoapMessage.operator !=(Windows.Media.Protection.PlayReady.PlayReadySoapMessage, Windows.Media.Protection.PlayReady.PlayReadySoapMessage)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySoapMessage.Equals(Windows.Media.Protection.PlayReady.PlayReadySoapMessage)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySoapMessage.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySoapMessage.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySoapMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySoapMessage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySoapMessage.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -97,12 +97,6 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.operator ==(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal, Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.operator !=(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal, Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.Equals(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.WinRT.IWinRTObject.QueryInterfaceCache.get

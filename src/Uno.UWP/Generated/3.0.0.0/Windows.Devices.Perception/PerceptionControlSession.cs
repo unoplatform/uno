@@ -13,12 +13,6 @@ namespace Windows.Devices.Perception
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionControlSession.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionControlSession.operator ==(Windows.Devices.Perception.PerceptionControlSession, Windows.Devices.Perception.PerceptionControlSession)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionControlSession.operator !=(Windows.Devices.Perception.PerceptionControlSession, Windows.Devices.Perception.PerceptionControlSession)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionControlSession.Equals(Windows.Devices.Perception.PerceptionControlSession)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionControlSession.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionControlSession.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.PerceptionControlSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionControlSession.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionControlSession.WinRT.IWinRTObject.QueryInterfaceCache.get

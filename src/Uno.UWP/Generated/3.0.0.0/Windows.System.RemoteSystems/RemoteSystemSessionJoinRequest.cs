@@ -23,12 +23,6 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.FromAbi(nint)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.operator ==(Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest, Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.operator !=(Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest, Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.Equals(Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.Equals(object)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.GetHashCode()
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

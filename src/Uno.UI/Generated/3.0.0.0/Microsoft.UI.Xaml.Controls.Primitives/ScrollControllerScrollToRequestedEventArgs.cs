@@ -13,12 +13,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property Options
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.ScrollControllerScrollToRequestedEventArgs(double, Microsoft.UI.Xaml.Controls.ScrollingScrollOptions)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.ScrollControllerScrollToRequestedEventArgs(double, Microsoft.UI.Xaml.Controls.ScrollingScrollOptions)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.Equals(Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

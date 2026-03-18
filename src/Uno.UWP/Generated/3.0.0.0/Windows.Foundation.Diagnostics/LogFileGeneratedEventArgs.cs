@@ -23,12 +23,6 @@ namespace Windows.Foundation.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.operator ==(Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs, Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.operator !=(Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs, Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.Equals(Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

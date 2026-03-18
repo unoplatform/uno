@@ -10,12 +10,6 @@ namespace Microsoft.UI.Xaml
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property NewValue
-		// Forced skipping of method Microsoft.UI.Xaml.DataContextChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.DataContextChangedEventArgs.operator ==(Microsoft.UI.Xaml.DataContextChangedEventArgs, Microsoft.UI.Xaml.DataContextChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.DataContextChangedEventArgs.operator !=(Microsoft.UI.Xaml.DataContextChangedEventArgs, Microsoft.UI.Xaml.DataContextChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.DataContextChangedEventArgs.Equals(Microsoft.UI.Xaml.DataContextChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.DataContextChangedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.DataContextChangedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.DataContextChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DataContextChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DataContextChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

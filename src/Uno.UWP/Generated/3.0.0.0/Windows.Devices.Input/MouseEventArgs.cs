@@ -23,12 +23,6 @@ namespace Windows.Devices.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.operator ==(Windows.Devices.Input.MouseEventArgs, Windows.Devices.Input.MouseEventArgs)
-		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.operator !=(Windows.Devices.Input.MouseEventArgs, Windows.Devices.Input.MouseEventArgs)
-		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.Equals(Windows.Devices.Input.MouseEventArgs)
-		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

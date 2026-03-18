@@ -14,12 +14,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property XYFocusNavigationStrategyOverride
 		// Skipping already declared method Microsoft.UI.Xaml.Input.FindNextElementOptions.FindNextElementOptions()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.FindNextElementOptions()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.operator ==(Microsoft.UI.Xaml.Input.FindNextElementOptions, Microsoft.UI.Xaml.Input.FindNextElementOptions)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.operator !=(Microsoft.UI.Xaml.Input.FindNextElementOptions, Microsoft.UI.Xaml.Input.FindNextElementOptions)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.Equals(Microsoft.UI.Xaml.Input.FindNextElementOptions)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

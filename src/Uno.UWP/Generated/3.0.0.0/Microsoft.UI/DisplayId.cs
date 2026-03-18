@@ -11,11 +11,6 @@ namespace Microsoft.UI
 		// Forced skipping of method Microsoft.UI.DisplayId.DisplayId()
 		// Skipping already declared method Microsoft.UI.DisplayId.DisplayId(ulong)
 		// Forced skipping of method Microsoft.UI.DisplayId.DisplayId(ulong)
-		// Forced skipping of method Microsoft.UI.DisplayId.operator ==(Microsoft.UI.DisplayId, Microsoft.UI.DisplayId)
-		// Forced skipping of method Microsoft.UI.DisplayId.operator !=(Microsoft.UI.DisplayId, Microsoft.UI.DisplayId)
-		// Forced skipping of method Microsoft.UI.DisplayId.Equals(Microsoft.UI.DisplayId)
-		// Forced skipping of method Microsoft.UI.DisplayId.Equals(object)
-		// Forced skipping of method Microsoft.UI.DisplayId.GetHashCode()
 		// Skipping already declared field Microsoft.UI.DisplayId.Value
 	}
 }

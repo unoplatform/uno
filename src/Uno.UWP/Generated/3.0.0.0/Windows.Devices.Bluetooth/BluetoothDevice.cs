@@ -128,7 +128,6 @@ namespace Windows.Devices.Bluetooth
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.BluetoothDevice> FromIdAsync(string deviceId)
@@ -162,12 +161,6 @@ namespace Windows.Devices.Bluetooth
 			throw new global::System.NotImplementedException("The member string BluetoothDevice.GetDeviceSelectorFromClassOfDevice(BluetoothClassOfDevice classOfDevice) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BluetoothDevice.GetDeviceSelectorFromClassOfDevice%28BluetoothClassOfDevice%20classOfDevice%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.operator ==(Windows.Devices.Bluetooth.BluetoothDevice, Windows.Devices.Bluetooth.BluetoothDevice)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.operator !=(Windows.Devices.Bluetooth.BluetoothDevice, Windows.Devices.Bluetooth.BluetoothDevice)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.Equals(Windows.Devices.Bluetooth.BluetoothDevice)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.WinRT.IWinRTObject.QueryInterfaceCache.get

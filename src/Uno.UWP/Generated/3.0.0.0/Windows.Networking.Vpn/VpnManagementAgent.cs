@@ -16,12 +16,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.VpnManagementAgent()
-		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.operator ==(Windows.Networking.Vpn.VpnManagementAgent, Windows.Networking.Vpn.VpnManagementAgent)
-		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.operator !=(Windows.Networking.Vpn.VpnManagementAgent, Windows.Networking.Vpn.VpnManagementAgent)
-		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.Equals(Windows.Networking.Vpn.VpnManagementAgent)
-		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.WinRT.IWinRTObject.QueryInterfaceCache.get

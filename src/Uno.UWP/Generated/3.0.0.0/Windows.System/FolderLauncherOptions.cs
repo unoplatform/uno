@@ -40,12 +40,6 @@ namespace Windows.System
 		}
 #endif
 		// Forced skipping of method Windows.System.FolderLauncherOptions.FolderLauncherOptions()
-		// Forced skipping of method Windows.System.FolderLauncherOptions.FromAbi(nint)
-		// Forced skipping of method Windows.System.FolderLauncherOptions.operator ==(Windows.System.FolderLauncherOptions, Windows.System.FolderLauncherOptions)
-		// Forced skipping of method Windows.System.FolderLauncherOptions.operator !=(Windows.System.FolderLauncherOptions, Windows.System.FolderLauncherOptions)
-		// Forced skipping of method Windows.System.FolderLauncherOptions.Equals(Windows.System.FolderLauncherOptions)
-		// Forced skipping of method Windows.System.FolderLauncherOptions.Equals(object)
-		// Forced skipping of method Windows.System.FolderLauncherOptions.GetHashCode()
 		// Forced skipping of method Windows.System.FolderLauncherOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.FolderLauncherOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.FolderLauncherOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

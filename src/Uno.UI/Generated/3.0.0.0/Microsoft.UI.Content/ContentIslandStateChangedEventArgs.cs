@@ -33,12 +33,6 @@ namespace Microsoft.UI.Content
 		// Skipping already declared property DidRasterizationScaleChange
 		// Skipping already declared property DidSiteEnabledChange
 		// Skipping already declared property DidSiteVisibleChange
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.operator ==(Microsoft.UI.Content.ContentIslandStateChangedEventArgs, Microsoft.UI.Content.ContentIslandStateChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.operator !=(Microsoft.UI.Content.ContentIslandStateChangedEventArgs, Microsoft.UI.Content.ContentIslandStateChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.Equals(Microsoft.UI.Content.ContentIslandStateChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

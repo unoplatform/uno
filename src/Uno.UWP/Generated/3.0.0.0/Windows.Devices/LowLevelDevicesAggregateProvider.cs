@@ -66,12 +66,6 @@ namespace Windows.Devices
 		}
 #endif
 		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.LowLevelDevicesAggregateProvider(Windows.Devices.Adc.Provider.IAdcControllerProvider, Windows.Devices.Pwm.Provider.IPwmControllerProvider, Windows.Devices.Gpio.Provider.IGpioControllerProvider, Windows.Devices.I2c.Provider.II2cControllerProvider, Windows.Devices.Spi.Provider.ISpiControllerProvider)
-		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.operator ==(Windows.Devices.LowLevelDevicesAggregateProvider, Windows.Devices.LowLevelDevicesAggregateProvider)
-		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.operator !=(Windows.Devices.LowLevelDevicesAggregateProvider, Windows.Devices.LowLevelDevicesAggregateProvider)
-		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.Equals(Windows.Devices.LowLevelDevicesAggregateProvider)
-		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.Equals(object)
-		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.GetHashCode()
 		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.WinRT.IWinRTObject.QueryInterfaceCache.get

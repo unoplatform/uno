@@ -48,7 +48,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NumberBox.NumberBox()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.NumberBox()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.AcceptsExpressionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.DescriptionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.HeaderProperty.get
@@ -68,14 +67,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.TextReadingOrderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValidationModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.NumberBox(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.operator ==(Microsoft.UI.Xaml.Controls.NumberBox, Microsoft.UI.Xaml.Controls.NumberBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.operator !=(Microsoft.UI.Xaml.Controls.NumberBox, Microsoft.UI.Xaml.Controls.NumberBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Equals(Microsoft.UI.Xaml.Controls.NumberBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.NumberBox(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValueChanged.add
@@ -118,7 +109,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.ValidationMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.Value.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.NumberBox.ValueChanged
 	}

@@ -227,14 +227,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.As<I>()
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.IsCustomizationSupported()
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.operator ==(Microsoft.UI.Windowing.AppWindowTitleBar, Microsoft.UI.Windowing.AppWindowTitleBar)
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.operator !=(Microsoft.UI.Windowing.AppWindowTitleBar, Microsoft.UI.Windowing.AppWindowTitleBar)
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.Equals(Microsoft.UI.Windowing.AppWindowTitleBar)
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.Equals(object)
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.WinRT.IWinRTObject.QueryInterfaceCache.get

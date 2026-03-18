@@ -120,12 +120,6 @@ namespace Windows.Graphics.Printing3D
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.Printing3DMesh()
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.operator ==(Windows.Graphics.Printing3D.Printing3DMesh, Windows.Graphics.Printing3D.Printing3DMesh)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.operator !=(Windows.Graphics.Printing3D.Printing3DMesh, Windows.Graphics.Printing3D.Printing3DMesh)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.Equals(Windows.Graphics.Printing3D.Printing3DMesh)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.WinRT.IWinRTObject.QueryInterfaceCache.get

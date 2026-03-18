@@ -195,12 +195,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.operator ==(Windows.UI.Composition.CompositionSurfaceBrush, Windows.UI.Composition.CompositionSurfaceBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.operator !=(Windows.UI.Composition.CompositionSurfaceBrush, Windows.UI.Composition.CompositionSurfaceBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.Equals(Windows.UI.Composition.CompositionSurfaceBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.AnchorPoint.get
@@ -229,7 +223,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.TransformMatrix.set
 		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.VerticalAlignmentRatio.get
 		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.VerticalAlignmentRatio.set
-		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionSurfaceBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

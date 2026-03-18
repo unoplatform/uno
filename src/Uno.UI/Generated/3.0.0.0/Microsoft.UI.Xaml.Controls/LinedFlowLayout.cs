@@ -164,21 +164,12 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LinedFlowLayout()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ActualLineHeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsJustificationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsStretchProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LineHeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LineSpacingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.MinItemSpacingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LinedFlowLayout(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.operator ==(Microsoft.UI.Xaml.Controls.LinedFlowLayout, Microsoft.UI.Xaml.Controls.LinedFlowLayout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.operator !=(Microsoft.UI.Xaml.Controls.LinedFlowLayout, Microsoft.UI.Xaml.Controls.LinedFlowLayout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.Equals(Microsoft.UI.Xaml.Controls.LinedFlowLayout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LinedFlowLayout(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -212,7 +203,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.MinItemSpacing.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.RequestedRangeLength.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.RequestedRangeStartIndex.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

@@ -26,12 +26,6 @@ namespace Microsoft.UI.Xaml.Printing
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs.GetPreviewPageEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs.operator ==(Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs, Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs.operator !=(Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs, Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs.Equals(Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

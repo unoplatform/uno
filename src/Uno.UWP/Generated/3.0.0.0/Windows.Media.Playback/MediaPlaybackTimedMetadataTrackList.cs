@@ -33,12 +33,6 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.operator ==(Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList, Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.operator !=(Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList, Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.Equals(Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.Equals(object)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.GetHashCode()
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -72,12 +72,6 @@ namespace Windows.System
 		}
 #endif
 		// Forced skipping of method Windows.System.ProcessLauncherOptions.ProcessLauncherOptions()
-		// Forced skipping of method Windows.System.ProcessLauncherOptions.FromAbi(nint)
-		// Forced skipping of method Windows.System.ProcessLauncherOptions.operator ==(Windows.System.ProcessLauncherOptions, Windows.System.ProcessLauncherOptions)
-		// Forced skipping of method Windows.System.ProcessLauncherOptions.operator !=(Windows.System.ProcessLauncherOptions, Windows.System.ProcessLauncherOptions)
-		// Forced skipping of method Windows.System.ProcessLauncherOptions.Equals(Windows.System.ProcessLauncherOptions)
-		// Forced skipping of method Windows.System.ProcessLauncherOptions.Equals(object)
-		// Forced skipping of method Windows.System.ProcessLauncherOptions.GetHashCode()
 		// Forced skipping of method Windows.System.ProcessLauncherOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.ProcessLauncherOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.ProcessLauncherOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

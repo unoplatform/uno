@@ -20,18 +20,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property To
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.DoubleAnimation()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.DoubleAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.ByProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.EasingFunctionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.EnableDependentAnimationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.FromProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.ToProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.DoubleAnimation, Microsoft.UI.Xaml.Media.Animation.DoubleAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.DoubleAnimation, Microsoft.UI.Xaml.Media.Animation.DoubleAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.DoubleAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.By.get
@@ -44,7 +37,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.From.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.To.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.To.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

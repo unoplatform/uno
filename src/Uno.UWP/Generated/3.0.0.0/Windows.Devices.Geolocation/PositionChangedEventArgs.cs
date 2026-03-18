@@ -9,12 +9,6 @@ namespace Windows.Devices.Geolocation
 	public partial class PositionChangedEventArgs
 	{
 		// Skipping already declared property Position
-		// Forced skipping of method Windows.Devices.Geolocation.PositionChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Geolocation.PositionChangedEventArgs.operator ==(Windows.Devices.Geolocation.PositionChangedEventArgs, Windows.Devices.Geolocation.PositionChangedEventArgs)
-		// Forced skipping of method Windows.Devices.Geolocation.PositionChangedEventArgs.operator !=(Windows.Devices.Geolocation.PositionChangedEventArgs, Windows.Devices.Geolocation.PositionChangedEventArgs)
-		// Forced skipping of method Windows.Devices.Geolocation.PositionChangedEventArgs.Equals(Windows.Devices.Geolocation.PositionChangedEventArgs)
-		// Forced skipping of method Windows.Devices.Geolocation.PositionChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.Geolocation.PositionChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.Geolocation.PositionChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.PositionChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.PositionChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

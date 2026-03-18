@@ -294,12 +294,6 @@ namespace Windows.Media.Playback
 		// Skipping already declared property Volume
 		// Skipping already declared method Windows.Media.Playback.MediaPlayer.MediaPlayer()
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.MediaPlayer()
-		// Forced skipping of method Windows.Media.Playback.MediaPlayer.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Playback.MediaPlayer.operator ==(Windows.Media.Playback.MediaPlayer, Windows.Media.Playback.MediaPlayer)
-		// Forced skipping of method Windows.Media.Playback.MediaPlayer.operator !=(Windows.Media.Playback.MediaPlayer, Windows.Media.Playback.MediaPlayer)
-		// Forced skipping of method Windows.Media.Playback.MediaPlayer.Equals(Windows.Media.Playback.MediaPlayer)
-		// Forced skipping of method Windows.Media.Playback.MediaPlayer.Equals(object)
-		// Forced skipping of method Windows.Media.Playback.MediaPlayer.GetHashCode()
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.WinRT.IWinRTObject.QueryInterfaceCache.get

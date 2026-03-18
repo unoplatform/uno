@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Search
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral.operator ==(Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral, Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral.operator !=(Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral, Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral.Equals(Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

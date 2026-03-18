@@ -98,7 +98,6 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName.As<I>()
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName.Contrast.get
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName.Custom.get
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName.DeviceFamily.get

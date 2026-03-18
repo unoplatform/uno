@@ -73,12 +73,6 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.operator ==(Windows.Networking.Connectivity.DataPlanStatus, Windows.Networking.Connectivity.DataPlanStatus)
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.operator !=(Windows.Networking.Connectivity.DataPlanStatus, Windows.Networking.Connectivity.DataPlanStatus)
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.Equals(Windows.Networking.Connectivity.DataPlanStatus)
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.Equals(object)
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.GetHashCode()
 		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.WinRT.IWinRTObject.QueryInterfaceCache.get

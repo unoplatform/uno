@@ -518,7 +518,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.As<I>()
 		// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatAac.get
 		// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatAdts.get
 		// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatAlac.get

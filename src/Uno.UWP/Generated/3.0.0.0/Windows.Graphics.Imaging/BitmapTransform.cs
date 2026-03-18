@@ -100,12 +100,6 @@ namespace Windows.Graphics.Imaging
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.BitmapTransform()
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.operator ==(Windows.Graphics.Imaging.BitmapTransform, Windows.Graphics.Imaging.BitmapTransform)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.operator !=(Windows.Graphics.Imaging.BitmapTransform, Windows.Graphics.Imaging.BitmapTransform)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.Equals(Windows.Graphics.Imaging.BitmapTransform)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.Equals(object)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.WinRT.IWinRTObject.QueryInterfaceCache.get

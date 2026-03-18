@@ -57,12 +57,6 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.operator ==(Microsoft.UI.Input.KeyEventArgs, Microsoft.UI.Input.KeyEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.operator !=(Microsoft.UI.Input.KeyEventArgs, Microsoft.UI.Input.KeyEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.Equals(Microsoft.UI.Input.KeyEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

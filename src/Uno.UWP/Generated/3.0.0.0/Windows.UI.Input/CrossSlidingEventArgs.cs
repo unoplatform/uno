@@ -53,12 +53,6 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.operator ==(Windows.UI.Input.CrossSlidingEventArgs, Windows.UI.Input.CrossSlidingEventArgs)
-		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.operator !=(Windows.UI.Input.CrossSlidingEventArgs, Windows.UI.Input.CrossSlidingEventArgs)
-		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.Equals(Windows.UI.Input.CrossSlidingEventArgs)
-		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

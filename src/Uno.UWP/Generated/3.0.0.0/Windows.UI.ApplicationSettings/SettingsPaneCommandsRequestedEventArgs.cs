@@ -23,12 +23,6 @@ namespace Windows.UI.ApplicationSettings
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs.operator ==(Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs, Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs)
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs.operator !=(Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs, Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs)
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs.Equals(Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs)
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

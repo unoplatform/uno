@@ -103,12 +103,6 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.FromAbi(nint)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.operator ==(Windows.Media.SpeechRecognition.SpeechRecognitionResult, Windows.Media.SpeechRecognition.SpeechRecognitionResult)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.operator !=(Windows.Media.SpeechRecognition.SpeechRecognitionResult, Windows.Media.SpeechRecognition.SpeechRecognitionResult)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Equals(Windows.Media.SpeechRecognition.SpeechRecognitionResult)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Equals(object)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.GetHashCode()
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.WinRT.IWinRTObject.QueryInterfaceCache.get

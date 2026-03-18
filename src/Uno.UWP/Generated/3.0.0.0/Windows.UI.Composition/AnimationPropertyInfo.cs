@@ -27,17 +27,10 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.AnimationPropertyInfo.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.AnimationPropertyInfo.operator ==(Windows.UI.Composition.AnimationPropertyInfo, Windows.UI.Composition.AnimationPropertyInfo)
-		// Forced skipping of method Windows.UI.Composition.AnimationPropertyInfo.operator !=(Windows.UI.Composition.AnimationPropertyInfo, Windows.UI.Composition.AnimationPropertyInfo)
-		// Forced skipping of method Windows.UI.Composition.AnimationPropertyInfo.Equals(Windows.UI.Composition.AnimationPropertyInfo)
-		// Forced skipping of method Windows.UI.Composition.AnimationPropertyInfo.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.AnimationPropertyInfo.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.AnimationPropertyInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.AnimationPropertyInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.AnimationPropertyInfo.AccessMode.get
 		// Forced skipping of method Windows.UI.Composition.AnimationPropertyInfo.AccessMode.set
-		// Forced skipping of method Windows.UI.Composition.AnimationPropertyInfo.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.AnimationPropertyInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,12 +13,6 @@ namespace Windows.UI.ViewManagement.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewHidingEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewHidingEventArgs.operator ==(Windows.UI.ViewManagement.Core.CoreInputViewHidingEventArgs, Windows.UI.ViewManagement.Core.CoreInputViewHidingEventArgs)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewHidingEventArgs.operator !=(Windows.UI.ViewManagement.Core.CoreInputViewHidingEventArgs, Windows.UI.ViewManagement.Core.CoreInputViewHidingEventArgs)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewHidingEventArgs.Equals(Windows.UI.ViewManagement.Core.CoreInputViewHidingEventArgs)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewHidingEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewHidingEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewHidingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewHidingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewHidingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

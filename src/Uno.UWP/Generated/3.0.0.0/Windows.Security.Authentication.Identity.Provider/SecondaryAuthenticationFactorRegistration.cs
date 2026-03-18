@@ -13,7 +13,6 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorDevicePresenceMonitoringRegistrationStatus> RegisterDevicePresenceMonitoringAsync(string deviceId, string deviceInstancePath, global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorDevicePresenceMonitoringMode monitoringMode)
@@ -70,12 +69,6 @@ namespace Windows.Security.Authentication.Identity.Provider
 			throw new global::System.NotImplementedException("The member IAsyncAction SecondaryAuthenticationFactorRegistration.UpdateDeviceConfigurationDataAsync(string deviceId, IBuffer deviceConfigurationData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SecondaryAuthenticationFactorRegistration.UpdateDeviceConfigurationDataAsync%28string%20deviceId%2C%20IBuffer%20deviceConfigurationData%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.operator ==(Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration, Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.operator !=(Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration, Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.Equals(Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.Equals(object)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.GetHashCode()
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -13,12 +13,6 @@ namespace Windows.Perception.Spatial
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialCoordinateSystem.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialCoordinateSystem.operator ==(Windows.Perception.Spatial.SpatialCoordinateSystem, Windows.Perception.Spatial.SpatialCoordinateSystem)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialCoordinateSystem.operator !=(Windows.Perception.Spatial.SpatialCoordinateSystem, Windows.Perception.Spatial.SpatialCoordinateSystem)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialCoordinateSystem.Equals(Windows.Perception.Spatial.SpatialCoordinateSystem)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialCoordinateSystem.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialCoordinateSystem.GetHashCode()
 		// Forced skipping of method Windows.Perception.Spatial.SpatialCoordinateSystem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialCoordinateSystem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialCoordinateSystem.WinRT.IWinRTObject.QueryInterfaceCache.get

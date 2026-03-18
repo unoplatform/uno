@@ -16,16 +16,9 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property CenterY
 		// Skipping already declared method Microsoft.UI.Xaml.Media.RotateTransform.RotateTransform()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.RotateTransform()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.AngleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.CenterXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.CenterYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.operator ==(Microsoft.UI.Xaml.Media.RotateTransform, Microsoft.UI.Xaml.Media.RotateTransform)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.operator !=(Microsoft.UI.Xaml.Media.RotateTransform, Microsoft.UI.Xaml.Media.RotateTransform)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.Equals(Microsoft.UI.Xaml.Media.RotateTransform)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.Angle.get
@@ -34,7 +27,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.CenterX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.CenterY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.CenterY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

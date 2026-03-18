@@ -43,12 +43,6 @@ namespace Windows.ApplicationModel.Calls.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.operator ==(Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails, Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.operator !=(Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails, Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.Equals(Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

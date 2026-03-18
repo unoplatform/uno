@@ -63,12 +63,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

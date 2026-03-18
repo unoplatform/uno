@@ -17,11 +17,6 @@ namespace Windows.Graphics.Holographic
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.HolographicAdapterId(uint, int)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.operator ==(Windows.Graphics.Holographic.HolographicAdapterId, Windows.Graphics.Holographic.HolographicAdapterId)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.operator !=(Windows.Graphics.Holographic.HolographicAdapterId, Windows.Graphics.Holographic.HolographicAdapterId)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.Equals(Windows.Graphics.Holographic.HolographicAdapterId)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.Equals(object)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint LowPart;
 #endif

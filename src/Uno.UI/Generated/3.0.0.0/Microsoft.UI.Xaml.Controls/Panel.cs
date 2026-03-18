@@ -18,18 +18,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property IsItemsHost
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Panel.Panel()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.Panel()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.BackgroundProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.ChildrenTransitionsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.IsItemsHostProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.Panel(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.operator ==(Microsoft.UI.Xaml.Controls.Panel, Microsoft.UI.Xaml.Controls.Panel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.operator !=(Microsoft.UI.Xaml.Controls.Panel, Microsoft.UI.Xaml.Controls.Panel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.Equals(Microsoft.UI.Xaml.Controls.Panel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.Panel(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.Background.get
@@ -40,7 +31,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.ChildrenTransitions.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.ChildrenTransitions.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.IsItemsHost.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

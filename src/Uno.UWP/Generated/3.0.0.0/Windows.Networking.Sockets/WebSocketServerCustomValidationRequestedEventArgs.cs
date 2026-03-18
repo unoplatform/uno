@@ -53,12 +53,6 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.operator ==(Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs, Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs)
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.operator !=(Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs, Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs)
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.Equals(Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs)
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Sockets.WebSocketServerCustomValidationRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

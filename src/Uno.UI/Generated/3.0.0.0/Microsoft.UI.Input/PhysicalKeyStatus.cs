@@ -17,11 +17,6 @@ namespace Microsoft.UI.Input
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.PhysicalKeyStatus.PhysicalKeyStatus(uint, uint, bool, bool, bool, bool)
-		// Forced skipping of method Microsoft.UI.Input.PhysicalKeyStatus.operator ==(Microsoft.UI.Input.PhysicalKeyStatus, Microsoft.UI.Input.PhysicalKeyStatus)
-		// Forced skipping of method Microsoft.UI.Input.PhysicalKeyStatus.operator !=(Microsoft.UI.Input.PhysicalKeyStatus, Microsoft.UI.Input.PhysicalKeyStatus)
-		// Forced skipping of method Microsoft.UI.Input.PhysicalKeyStatus.Equals(Microsoft.UI.Input.PhysicalKeyStatus)
-		// Forced skipping of method Microsoft.UI.Input.PhysicalKeyStatus.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.PhysicalKeyStatus.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint RepeatCount;
 #endif

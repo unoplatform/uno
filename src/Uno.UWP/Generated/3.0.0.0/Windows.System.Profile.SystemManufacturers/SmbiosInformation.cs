@@ -18,7 +18,6 @@ namespace Windows.System.Profile.SystemManufacturers
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SmbiosInformation.As<I>()
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SmbiosInformation.SerialNumber.get
 	}
 }

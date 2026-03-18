@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.LockScreen
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.operator ==(Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral, Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral)
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.operator !=(Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral, Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral)
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.Equals(Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral)
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

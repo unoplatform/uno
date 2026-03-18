@@ -17,11 +17,6 @@ namespace Windows.Networking.BackgroundTransfer
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress.BackgroundDownloadProgress(ulong, ulong, Windows.Networking.BackgroundTransfer.BackgroundTransferStatus, bool, bool)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress.operator ==(Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress, Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress.operator !=(Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress, Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress.Equals(Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress.Equals(object)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong BytesReceived;
 #endif

@@ -41,7 +41,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService GetForCurrentView()
@@ -49,12 +48,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			throw new global::System.NotImplementedException("The member ConnectedAnimationService ConnectedAnimationService.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConnectedAnimationService%20ConnectedAnimationService.GetForCurrentView%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.operator ==(Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService, Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.operator !=(Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService, Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.Equals(Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.WinRT.IWinRTObject.QueryInterfaceCache.get

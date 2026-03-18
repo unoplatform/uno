@@ -23,7 +23,6 @@ namespace Windows.Services.Cortana
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Services.Cortana.CortanaActionableInsights GetDefault()
@@ -38,12 +37,6 @@ namespace Windows.Services.Cortana
 			throw new global::System.NotImplementedException("The member CortanaActionableInsights CortanaActionableInsights.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CortanaActionableInsights%20CortanaActionableInsights.GetForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.operator ==(Windows.Services.Cortana.CortanaActionableInsights, Windows.Services.Cortana.CortanaActionableInsights)
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.operator !=(Windows.Services.Cortana.CortanaActionableInsights, Windows.Services.Cortana.CortanaActionableInsights)
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.Equals(Windows.Services.Cortana.CortanaActionableInsights)
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.Equals(object)
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.GetHashCode()
 		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.WinRT.IWinRTObject.QueryInterfaceCache.get

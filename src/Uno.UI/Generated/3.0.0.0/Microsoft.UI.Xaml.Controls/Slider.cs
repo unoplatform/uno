@@ -32,7 +32,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TickPlacement
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Slider.Slider()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Slider()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.HeaderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.HeaderTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IntermediateValueProperty.get
@@ -44,14 +43,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.ThumbToolTipValueConverterProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickFrequencyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickPlacementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Slider(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.operator ==(Microsoft.UI.Xaml.Controls.Slider, Microsoft.UI.Xaml.Controls.Slider)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.operator !=(Microsoft.UI.Xaml.Controls.Slider, Microsoft.UI.Xaml.Controls.Slider)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Equals(Microsoft.UI.Xaml.Controls.Slider)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Slider(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Header.get
@@ -76,7 +67,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickFrequency.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickPlacement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickPlacement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

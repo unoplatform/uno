@@ -41,12 +41,6 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.operator ==(Windows.Web.Http.Filters.HttpCacheControl, Windows.Web.Http.Filters.HttpCacheControl)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.operator !=(Windows.Web.Http.Filters.HttpCacheControl, Windows.Web.Http.Filters.HttpCacheControl)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.Equals(Windows.Web.Http.Filters.HttpCacheControl)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -63,7 +63,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.CashDrawer> GetDefaultAsync()
@@ -92,12 +91,6 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member string CashDrawer.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CashDrawer.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.operator ==(Windows.Devices.PointOfService.CashDrawer, Windows.Devices.PointOfService.CashDrawer)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.operator !=(Windows.Devices.PointOfService.CashDrawer, Windows.Devices.PointOfService.CashDrawer)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.Equals(Windows.Devices.PointOfService.CashDrawer)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.WinRT.IWinRTObject.QueryInterfaceCache.get

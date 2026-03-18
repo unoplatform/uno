@@ -73,12 +73,6 @@ namespace Windows.System.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.FromAbi(nint)
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.operator ==(Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading, Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading)
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.operator !=(Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading, Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading)
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Equals(Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading)
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Equals(object)
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.GetHashCode()
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.WinRT.IWinRTObject.QueryInterfaceCache.get

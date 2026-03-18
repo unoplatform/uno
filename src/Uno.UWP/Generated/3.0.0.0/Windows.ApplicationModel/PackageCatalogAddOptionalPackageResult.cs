@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.operator ==(Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult, Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.operator !=(Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult, Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.Equals(Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -10,17 +10,8 @@ namespace Microsoft.UI.Xaml.Media
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.DesktopAcrylicBackdrop()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.DesktopAcrylicBackdrop()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.DesktopAcrylicBackdrop(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.operator ==(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop, Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.operator !=(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop, Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.Equals(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.DesktopAcrylicBackdrop(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

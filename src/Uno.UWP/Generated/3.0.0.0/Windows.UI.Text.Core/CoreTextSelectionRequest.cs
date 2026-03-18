@@ -37,12 +37,6 @@ namespace Windows.UI.Text.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.operator ==(Windows.UI.Text.Core.CoreTextSelectionRequest, Windows.UI.Text.Core.CoreTextSelectionRequest)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.operator !=(Windows.UI.Text.Core.CoreTextSelectionRequest, Windows.UI.Text.Core.CoreTextSelectionRequest)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.Equals(Windows.UI.Text.Core.CoreTextSelectionRequest)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.Equals(object)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.GetHashCode()
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

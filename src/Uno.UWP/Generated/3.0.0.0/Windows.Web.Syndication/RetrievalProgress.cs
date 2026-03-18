@@ -17,11 +17,6 @@ namespace Windows.Web.Syndication
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.RetrievalProgress(uint, uint)
-		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.operator ==(Windows.Web.Syndication.RetrievalProgress, Windows.Web.Syndication.RetrievalProgress)
-		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.operator !=(Windows.Web.Syndication.RetrievalProgress, Windows.Web.Syndication.RetrievalProgress)
-		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.Equals(Windows.Web.Syndication.RetrievalProgress)
-		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.Equals(object)
-		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint BytesRetrieved;
 #endif

@@ -17,11 +17,6 @@ namespace Windows.Media.Capture
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.WhiteBalanceGain(double, double, double)
-		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.operator ==(Windows.Media.Capture.WhiteBalanceGain, Windows.Media.Capture.WhiteBalanceGain)
-		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.operator !=(Windows.Media.Capture.WhiteBalanceGain, Windows.Media.Capture.WhiteBalanceGain)
-		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.Equals(Windows.Media.Capture.WhiteBalanceGain)
-		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double R;
 #endif

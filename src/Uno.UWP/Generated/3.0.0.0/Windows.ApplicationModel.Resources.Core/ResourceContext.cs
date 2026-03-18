@@ -40,7 +40,6 @@ namespace Windows.ApplicationModel.Resources.Core
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.ResourceContext()
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Resources.Core.ResourceContext CreateMatchingContext(global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Resources.Core.ResourceQualifier> result)
@@ -97,12 +96,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			throw new global::System.NotImplementedException("The member ResourceContext ResourceContext.GetForUIContext(UIContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceContext%20ResourceContext.GetForUIContext%28UIContext%20context%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.operator ==(Windows.ApplicationModel.Resources.Core.ResourceContext, Windows.ApplicationModel.Resources.Core.ResourceContext)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.operator !=(Windows.ApplicationModel.Resources.Core.ResourceContext, Windows.ApplicationModel.Resources.Core.ResourceContext)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.Equals(Windows.ApplicationModel.Resources.Core.ResourceContext)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.WinRT.IWinRTObject.QueryInterfaceCache.get

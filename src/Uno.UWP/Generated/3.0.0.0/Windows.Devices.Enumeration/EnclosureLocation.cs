@@ -53,12 +53,6 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.operator ==(Windows.Devices.Enumeration.EnclosureLocation, Windows.Devices.Enumeration.EnclosureLocation)
-		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.operator !=(Windows.Devices.Enumeration.EnclosureLocation, Windows.Devices.Enumeration.EnclosureLocation)
-		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.Equals(Windows.Devices.Enumeration.EnclosureLocation)
-		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.Equals(object)
-		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.GetHashCode()
 		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -37,7 +37,6 @@ namespace Windows.AI.MachineLearning.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.AI.MachineLearning.Preview.LearningModelPreview> LoadModelFromStorageFileAsync(global::Windows.Storage.IStorageFile modelFile)
@@ -52,12 +51,6 @@ namespace Windows.AI.MachineLearning.Preview
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LearningModelPreview> LearningModelPreview.LoadModelFromStreamAsync(IRandomAccessStreamReference modelStream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLearningModelPreview%3E%20LearningModelPreview.LoadModelFromStreamAsync%28IRandomAccessStreamReference%20modelStream%29");
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.FromAbi(nint)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.operator ==(Windows.AI.MachineLearning.Preview.LearningModelPreview, Windows.AI.MachineLearning.Preview.LearningModelPreview)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.operator !=(Windows.AI.MachineLearning.Preview.LearningModelPreview, Windows.AI.MachineLearning.Preview.LearningModelPreview)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.Equals(Windows.AI.MachineLearning.Preview.LearningModelPreview)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.Equals(object)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.GetHashCode()
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.WinRT.IWinRTObject.QueryInterfaceCache.get

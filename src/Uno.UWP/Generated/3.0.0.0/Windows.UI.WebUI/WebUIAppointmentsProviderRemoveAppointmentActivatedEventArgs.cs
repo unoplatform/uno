@@ -83,12 +83,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs, Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs, Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderRemoveAppointmentActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -61,12 +61,6 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.operator ==(Windows.Graphics.Holographic.HolographicCameraRenderingParameters, Windows.Graphics.Holographic.HolographicCameraRenderingParameters)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.operator !=(Windows.Graphics.Holographic.HolographicCameraRenderingParameters, Windows.Graphics.Holographic.HolographicCameraRenderingParameters)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.Equals(Windows.Graphics.Holographic.HolographicCameraRenderingParameters)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.Equals(object)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.WinRT.IWinRTObject.QueryInterfaceCache.get

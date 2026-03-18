@@ -82,18 +82,9 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.TileBrush()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.AlignmentXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.AlignmentYProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.StretchProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.TileBrush(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.operator ==(Microsoft.UI.Xaml.Media.TileBrush, Microsoft.UI.Xaml.Media.TileBrush)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.operator !=(Microsoft.UI.Xaml.Media.TileBrush, Microsoft.UI.Xaml.Media.TileBrush)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.Equals(Microsoft.UI.Xaml.Media.TileBrush)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.TileBrush(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.AlignmentX.get
@@ -102,7 +93,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.AlignmentY.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.Stretch.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.Stretch.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

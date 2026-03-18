@@ -83,12 +83,6 @@ namespace Windows.Security.Authentication.Identity.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.operator ==(Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo, Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.operator !=(Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo, Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.Equals(Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.Equals(object)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.GetHashCode()
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

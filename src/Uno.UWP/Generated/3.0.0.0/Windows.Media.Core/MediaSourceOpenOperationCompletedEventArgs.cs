@@ -23,12 +23,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs.operator ==(Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs, Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs)
-		// Forced skipping of method Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs.operator !=(Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs, Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs)
-		// Forced skipping of method Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs.Equals(Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs)
-		// Forced skipping of method Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -150,12 +150,6 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.PlayReadyContentHeader(uint, System.Guid[], string[], Windows.Media.Protection.PlayReady.PlayReadyEncryptionAlgorithm, System.Uri, System.Uri, string, System.Guid)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.operator ==(Windows.Media.Protection.PlayReady.PlayReadyContentHeader, Windows.Media.Protection.PlayReady.PlayReadyContentHeader)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.operator !=(Windows.Media.Protection.PlayReady.PlayReadyContentHeader, Windows.Media.Protection.PlayReady.PlayReadyContentHeader)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.Equals(Windows.Media.Protection.PlayReady.PlayReadyContentHeader)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.WinRT.IWinRTObject.QueryInterfaceCache.get

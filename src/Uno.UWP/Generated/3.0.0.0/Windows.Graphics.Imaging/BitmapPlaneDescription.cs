@@ -17,11 +17,6 @@ namespace Windows.Graphics.Imaging
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.BitmapPlaneDescription(int, int, int, int)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.operator ==(Windows.Graphics.Imaging.BitmapPlaneDescription, Windows.Graphics.Imaging.BitmapPlaneDescription)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.operator !=(Windows.Graphics.Imaging.BitmapPlaneDescription, Windows.Graphics.Imaging.BitmapPlaneDescription)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.Equals(Windows.Graphics.Imaging.BitmapPlaneDescription)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.Equals(object)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int StartIndex;
 #endif

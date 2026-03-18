@@ -9,12 +9,6 @@ namespace Windows.ApplicationModel
 	public partial class SuspendingEventArgs : global::Windows.ApplicationModel.ISuspendingEventArgs
 	{
 		// Skipping already declared property SuspendingOperation
-		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.operator ==(Windows.ApplicationModel.SuspendingEventArgs, Windows.ApplicationModel.SuspendingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.operator !=(Windows.ApplicationModel.SuspendingEventArgs, Windows.ApplicationModel.SuspendingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.Equals(Windows.ApplicationModel.SuspendingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

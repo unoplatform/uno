@@ -64,12 +64,6 @@ namespace Windows.Media.Audio
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.LimiterEffectDefinition(Windows.Media.Audio.AudioGraph)
-		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.operator ==(Windows.Media.Audio.LimiterEffectDefinition, Windows.Media.Audio.LimiterEffectDefinition)
-		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.operator !=(Windows.Media.Audio.LimiterEffectDefinition, Windows.Media.Audio.LimiterEffectDefinition)
-		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.Equals(Windows.Media.Audio.LimiterEffectDefinition)
-		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.Equals(object)
-		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.GetHashCode()
 		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get

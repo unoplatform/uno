@@ -20,18 +20,11 @@ namespace Windows.Graphics.Display
 		// Skipping already declared property ScreenHeightInRawPixels
 		// Skipping already declared property ScreenWidthInRawPixels
 		// Skipping already declared property StereoEnabled
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.As<I>()
 		// Skipping already declared method Windows.Graphics.Display.DisplayInformation.GetForCurrentView()
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DisplayContentsInvalidated.add
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DisplayContentsInvalidated.remove
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences.set
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.operator ==(Windows.Graphics.Display.DisplayInformation, Windows.Graphics.Display.DisplayInformation)
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.operator !=(Windows.Graphics.Display.DisplayInformation, Windows.Graphics.Display.DisplayInformation)
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.Equals(Windows.Graphics.Display.DisplayInformation)
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.Equals(object)
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.WinRT.IWinRTObject.QueryInterfaceCache.get

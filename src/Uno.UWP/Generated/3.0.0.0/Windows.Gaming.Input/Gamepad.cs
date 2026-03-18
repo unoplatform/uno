@@ -62,7 +62,6 @@ namespace Windows.Gaming.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.As<I>()
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.GamepadAdded.add
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.GamepadAdded.remove
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.GamepadRemoved.add
@@ -75,12 +74,6 @@ namespace Windows.Gaming.Input
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.Gamepads.get
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.operator ==(Windows.Gaming.Input.Gamepad, Windows.Gaming.Input.Gamepad)
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.operator !=(Windows.Gaming.Input.Gamepad, Windows.Gaming.Input.Gamepad)
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.Equals(Windows.Gaming.Input.Gamepad)
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.Gamepad.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.Gamepad.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -8,7 +8,6 @@ namespace Windows.ApplicationModel.DataTransfer
 #endif
 	public static partial class Clipboard
 	{
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.As<I>()
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.DataTransfer.DataPackageView GetContent()

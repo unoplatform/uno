@@ -12,21 +12,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Header
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PivotItem.PivotItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.PivotItem()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.HeaderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.PivotItem(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.operator ==(Microsoft.UI.Xaml.Controls.PivotItem, Microsoft.UI.Xaml.Controls.PivotItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.operator !=(Microsoft.UI.Xaml.Controls.PivotItem, Microsoft.UI.Xaml.Controls.PivotItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.Equals(Microsoft.UI.Xaml.Controls.PivotItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.PivotItem(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.Header.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.Header.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

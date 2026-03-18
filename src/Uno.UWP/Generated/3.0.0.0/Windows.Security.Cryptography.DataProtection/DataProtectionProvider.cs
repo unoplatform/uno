@@ -24,12 +24,6 @@ namespace Windows.Security.Cryptography.DataProtection
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.DataProtectionProvider(string)
-		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.operator ==(Windows.Security.Cryptography.DataProtection.DataProtectionProvider, Windows.Security.Cryptography.DataProtection.DataProtectionProvider)
-		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.operator !=(Windows.Security.Cryptography.DataProtection.DataProtectionProvider, Windows.Security.Cryptography.DataProtection.DataProtectionProvider)
-		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.Equals(Windows.Security.Cryptography.DataProtection.DataProtectionProvider)
-		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.Equals(object)
-		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.GetHashCode()
 		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -8,12 +8,6 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class DragOperationDeferral
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.DragOperationDeferral.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.DragOperationDeferral.operator ==(Microsoft.UI.Xaml.DragOperationDeferral, Microsoft.UI.Xaml.DragOperationDeferral)
-		// Forced skipping of method Microsoft.UI.Xaml.DragOperationDeferral.operator !=(Microsoft.UI.Xaml.DragOperationDeferral, Microsoft.UI.Xaml.DragOperationDeferral)
-		// Forced skipping of method Microsoft.UI.Xaml.DragOperationDeferral.Equals(Microsoft.UI.Xaml.DragOperationDeferral)
-		// Forced skipping of method Microsoft.UI.Xaml.DragOperationDeferral.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.DragOperationDeferral.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.DragOperationDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DragOperationDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DragOperationDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -33,12 +33,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCustomGlyphs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCustomGlyphs.operator ==(Windows.Devices.PointOfService.LineDisplayCustomGlyphs, Windows.Devices.PointOfService.LineDisplayCustomGlyphs)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCustomGlyphs.operator !=(Windows.Devices.PointOfService.LineDisplayCustomGlyphs, Windows.Devices.PointOfService.LineDisplayCustomGlyphs)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCustomGlyphs.Equals(Windows.Devices.PointOfService.LineDisplayCustomGlyphs)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCustomGlyphs.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCustomGlyphs.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCustomGlyphs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCustomGlyphs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCustomGlyphs.WinRT.IWinRTObject.QueryInterfaceCache.get

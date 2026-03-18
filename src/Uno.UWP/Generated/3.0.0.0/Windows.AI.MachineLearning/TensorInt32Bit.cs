@@ -43,7 +43,6 @@ namespace Windows.AI.MachineLearning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.TensorInt32Bit.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.AI.MachineLearning.TensorInt32Bit Create()
@@ -86,12 +85,6 @@ namespace Windows.AI.MachineLearning
 			throw new global::System.NotImplementedException("The member TensorInt32Bit TensorInt32Bit.CreateFromBuffer(long[] shape, IBuffer buffer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TensorInt32Bit%20TensorInt32Bit.CreateFromBuffer%28long%5B%5D%20shape%2C%20IBuffer%20buffer%29");
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.TensorInt32Bit.FromAbi(nint)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorInt32Bit.operator ==(Windows.AI.MachineLearning.TensorInt32Bit, Windows.AI.MachineLearning.TensorInt32Bit)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorInt32Bit.operator !=(Windows.AI.MachineLearning.TensorInt32Bit, Windows.AI.MachineLearning.TensorInt32Bit)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorInt32Bit.Equals(Windows.AI.MachineLearning.TensorInt32Bit)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorInt32Bit.Equals(object)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorInt32Bit.GetHashCode()
 		// Forced skipping of method Windows.AI.MachineLearning.TensorInt32Bit.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.TensorInt32Bit.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.TensorInt32Bit.WinRT.IWinRTObject.QueryInterfaceCache.get

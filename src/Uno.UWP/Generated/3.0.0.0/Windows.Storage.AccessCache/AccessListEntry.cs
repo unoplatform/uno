@@ -17,11 +17,6 @@ namespace Windows.Storage.AccessCache
 		}
 #endif
 		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntry.AccessListEntry(string, string)
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntry.operator ==(Windows.Storage.AccessCache.AccessListEntry, Windows.Storage.AccessCache.AccessListEntry)
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntry.operator !=(Windows.Storage.AccessCache.AccessListEntry, Windows.Storage.AccessCache.AccessListEntry)
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntry.Equals(Windows.Storage.AccessCache.AccessListEntry)
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntry.Equals(object)
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntry.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public string Token;
 #endif

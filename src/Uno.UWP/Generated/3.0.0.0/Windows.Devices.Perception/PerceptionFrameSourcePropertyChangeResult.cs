@@ -33,12 +33,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult.operator ==(Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult, Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult.operator !=(Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult, Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult.Equals(Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult.WinRT.IWinRTObject.QueryInterfaceCache.get

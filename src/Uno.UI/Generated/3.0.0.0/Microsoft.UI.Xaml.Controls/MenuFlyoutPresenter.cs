@@ -55,17 +55,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TemplateSettings
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.MenuFlyoutPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.MenuFlyoutPresenter()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.IsDefaultShadowEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.SystemBackdropProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.MenuFlyoutPresenter(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.operator ==(Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter, Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.operator !=(Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter, Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.Equals(Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.MenuFlyoutPresenter(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.IsDefaultShadowEnabled.get
@@ -73,7 +64,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.SystemBackdrop.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.SystemBackdrop.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

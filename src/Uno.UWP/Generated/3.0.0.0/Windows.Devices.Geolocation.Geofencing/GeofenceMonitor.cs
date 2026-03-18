@@ -53,14 +53,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.As<I>()
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.Current.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.operator ==(Windows.Devices.Geolocation.Geofencing.GeofenceMonitor, Windows.Devices.Geolocation.Geofencing.GeofenceMonitor)
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.operator !=(Windows.Devices.Geolocation.Geofencing.GeofenceMonitor, Windows.Devices.Geolocation.Geofencing.GeofenceMonitor)
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.Equals(Windows.Devices.Geolocation.Geofencing.GeofenceMonitor)
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.Equals(object)
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.GetHashCode()
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.WinRT.IWinRTObject.QueryInterfaceCache.get

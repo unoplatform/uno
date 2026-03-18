@@ -17,11 +17,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextPoint.TimedTextPoint(double, double, Windows.Media.Core.TimedTextUnit)
-		// Forced skipping of method Windows.Media.Core.TimedTextPoint.operator ==(Windows.Media.Core.TimedTextPoint, Windows.Media.Core.TimedTextPoint)
-		// Forced skipping of method Windows.Media.Core.TimedTextPoint.operator !=(Windows.Media.Core.TimedTextPoint, Windows.Media.Core.TimedTextPoint)
-		// Forced skipping of method Windows.Media.Core.TimedTextPoint.Equals(Windows.Media.Core.TimedTextPoint)
-		// Forced skipping of method Windows.Media.Core.TimedTextPoint.Equals(object)
-		// Forced skipping of method Windows.Media.Core.TimedTextPoint.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double X;
 #endif

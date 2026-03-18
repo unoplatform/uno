@@ -33,12 +33,6 @@ namespace Windows.Gaming.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.Headset.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Input.Headset.operator ==(Windows.Gaming.Input.Headset, Windows.Gaming.Input.Headset)
-		// Forced skipping of method Windows.Gaming.Input.Headset.operator !=(Windows.Gaming.Input.Headset, Windows.Gaming.Input.Headset)
-		// Forced skipping of method Windows.Gaming.Input.Headset.Equals(Windows.Gaming.Input.Headset)
-		// Forced skipping of method Windows.Gaming.Input.Headset.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.Headset.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Input.Headset.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.Headset.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.Headset.WinRT.IWinRTObject.QueryInterfaceCache.get

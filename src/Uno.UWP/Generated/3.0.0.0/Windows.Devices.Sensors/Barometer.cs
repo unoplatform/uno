@@ -81,7 +81,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Barometer.As<I>()
 #if false || false || __TVOS__ || false || false || false || false
 		[global::Uno.NotImplemented("__TVOS__")]
 		public static global::Windows.Devices.Sensors.Barometer GetDefault()
@@ -103,12 +102,6 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member string Barometer.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Barometer.GetDeviceSelector%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Barometer.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.Barometer.operator ==(Windows.Devices.Sensors.Barometer, Windows.Devices.Sensors.Barometer)
-		// Forced skipping of method Windows.Devices.Sensors.Barometer.operator !=(Windows.Devices.Sensors.Barometer, Windows.Devices.Sensors.Barometer)
-		// Forced skipping of method Windows.Devices.Sensors.Barometer.Equals(Windows.Devices.Sensors.Barometer)
-		// Forced skipping of method Windows.Devices.Sensors.Barometer.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.Barometer.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.Barometer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Barometer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Barometer.WinRT.IWinRTObject.QueryInterfaceCache.get

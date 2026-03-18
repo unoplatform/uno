@@ -15,19 +15,11 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.SolidColorBrush()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.SolidColorBrush.SolidColorBrush(Windows.UI.Color)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.SolidColorBrush(Windows.UI.Color)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.ColorProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.operator ==(Microsoft.UI.Xaml.Media.SolidColorBrush, Microsoft.UI.Xaml.Media.SolidColorBrush)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.operator !=(Microsoft.UI.Xaml.Media.SolidColorBrush, Microsoft.UI.Xaml.Media.SolidColorBrush)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.Equals(Microsoft.UI.Xaml.Media.SolidColorBrush)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.Color.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.Color.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

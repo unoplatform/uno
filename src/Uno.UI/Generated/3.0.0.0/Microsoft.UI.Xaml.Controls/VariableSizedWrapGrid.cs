@@ -24,7 +24,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property VerticalChildrenAlignment
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.VariableSizedWrapGrid()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.VariableSizedWrapGrid()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.GetRowSpan(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.SetRowSpan(Microsoft.UI.Xaml.UIElement, int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.GetColumnSpan(Microsoft.UI.Xaml.UIElement)
@@ -37,12 +36,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.OrientationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.RowSpanProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.VerticalChildrenAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.operator ==(Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid, Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.operator !=(Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid, Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.Equals(Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.HorizontalChildrenAlignment.get
@@ -57,7 +50,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.Orientation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.VerticalChildrenAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.VerticalChildrenAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -33,12 +33,6 @@ namespace Windows.Devices.Sensors
 		}
 #endif
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.operator ==(Windows.Devices.Sensors.MagnetometerReading, Windows.Devices.Sensors.MagnetometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.operator !=(Windows.Devices.Sensors.MagnetometerReading, Windows.Devices.Sensors.MagnetometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.Equals(Windows.Devices.Sensors.MagnetometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.WinRT.IWinRTObject.QueryInterfaceCache.get

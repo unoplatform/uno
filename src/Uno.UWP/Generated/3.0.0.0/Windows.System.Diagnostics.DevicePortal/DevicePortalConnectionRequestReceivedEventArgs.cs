@@ -53,12 +53,6 @@ namespace Windows.System.Diagnostics.DevicePortal
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.operator ==(Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs, Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs)
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.operator !=(Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs, Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs)
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.Equals(Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs)
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.Equals(object)
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionRequestReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

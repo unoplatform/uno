@@ -133,7 +133,6 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ChildSiteLink Create(global::Microsoft.UI.Content.ContentIsland parent, global::Microsoft.UI.Composition.ContainerVisual placementVisual)
@@ -148,12 +147,6 @@ namespace Microsoft.UI.Content
 			throw new global::System.NotImplementedException("The member ChildSiteLink ChildSiteLink.CreateForSystemVisual(ContentIsland parent, ContainerVisual placementVisual) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChildSiteLink%20ChildSiteLink.CreateForSystemVisual%28ContentIsland%20parent%2C%20ContainerVisual%20placementVisual%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.operator ==(Microsoft.UI.Content.ChildSiteLink, Microsoft.UI.Content.ChildSiteLink)
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.operator !=(Microsoft.UI.Content.ChildSiteLink, Microsoft.UI.Content.ChildSiteLink)
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.Equals(Microsoft.UI.Content.ChildSiteLink)
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.Equals(object)
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.WinRT.IWinRTObject.QueryInterfaceCache.get

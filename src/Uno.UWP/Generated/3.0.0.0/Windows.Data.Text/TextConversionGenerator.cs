@@ -36,12 +36,6 @@ namespace Windows.Data.Text
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.TextConversionGenerator(string)
-		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.operator ==(Windows.Data.Text.TextConversionGenerator, Windows.Data.Text.TextConversionGenerator)
-		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.operator !=(Windows.Data.Text.TextConversionGenerator, Windows.Data.Text.TextConversionGenerator)
-		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.Equals(Windows.Data.Text.TextConversionGenerator)
-		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.Equals(object)
-		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.GetHashCode()
 		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.WinRT.IWinRTObject.QueryInterfaceCache.get

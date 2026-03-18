@@ -13,12 +13,6 @@ namespace Windows.Graphics.Holographic
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutMonitor.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutMonitor.operator ==(Windows.Graphics.Holographic.HolographicFrameScanoutMonitor, Windows.Graphics.Holographic.HolographicFrameScanoutMonitor)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutMonitor.operator !=(Windows.Graphics.Holographic.HolographicFrameScanoutMonitor, Windows.Graphics.Holographic.HolographicFrameScanoutMonitor)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutMonitor.Equals(Windows.Graphics.Holographic.HolographicFrameScanoutMonitor)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutMonitor.Equals(object)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutMonitor.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutMonitor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutMonitor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutMonitor.WinRT.IWinRTObject.QueryInterfaceCache.get

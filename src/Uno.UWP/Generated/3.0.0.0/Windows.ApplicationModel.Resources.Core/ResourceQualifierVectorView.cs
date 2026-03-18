@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.operator ==(Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView, Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.operator !=(Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView, Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.Equals(Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.WinRT.IWinRTObject.QueryInterfaceCache.get

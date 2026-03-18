@@ -17,11 +17,6 @@ namespace Windows.Graphics.Display
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Display.NitRange.NitRange(float, float, float)
-		// Forced skipping of method Windows.Graphics.Display.NitRange.operator ==(Windows.Graphics.Display.NitRange, Windows.Graphics.Display.NitRange)
-		// Forced skipping of method Windows.Graphics.Display.NitRange.operator !=(Windows.Graphics.Display.NitRange, Windows.Graphics.Display.NitRange)
-		// Forced skipping of method Windows.Graphics.Display.NitRange.Equals(Windows.Graphics.Display.NitRange)
-		// Forced skipping of method Windows.Graphics.Display.NitRange.Equals(object)
-		// Forced skipping of method Windows.Graphics.Display.NitRange.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public float MinNits;
 #endif

@@ -57,12 +57,6 @@ namespace Windows.Storage.Pickers.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.operator ==(Windows.Storage.Pickers.Provider.FileSavePickerUI, Windows.Storage.Pickers.Provider.FileSavePickerUI)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.operator !=(Windows.Storage.Pickers.Provider.FileSavePickerUI, Windows.Storage.Pickers.Provider.FileSavePickerUI)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.Equals(Windows.Storage.Pickers.Provider.FileSavePickerUI)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.Equals(object)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.GetHashCode()
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.WinRT.IWinRTObject.QueryInterfaceCache.get

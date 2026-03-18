@@ -33,12 +33,6 @@ namespace Windows.Media.Effects
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.operator ==(Windows.Media.Effects.AudioRenderEffectsManager, Windows.Media.Effects.AudioRenderEffectsManager)
-		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.operator !=(Windows.Media.Effects.AudioRenderEffectsManager, Windows.Media.Effects.AudioRenderEffectsManager)
-		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.Equals(Windows.Media.Effects.AudioRenderEffectsManager)
-		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.Equals(object)
-		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.GetHashCode()
 		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.WinRT.IWinRTObject.QueryInterfaceCache.get

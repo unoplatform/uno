@@ -93,7 +93,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.LineDisplay> FromIdAsync(string deviceId)
@@ -123,12 +122,6 @@ namespace Windows.Devices.PointOfService
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.StatisticsCategorySelector.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.operator ==(Windows.Devices.PointOfService.LineDisplay, Windows.Devices.PointOfService.LineDisplay)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.operator !=(Windows.Devices.PointOfService.LineDisplay, Windows.Devices.PointOfService.LineDisplay)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.Equals(Windows.Devices.PointOfService.LineDisplay)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -8,7 +8,6 @@ namespace Windows.Storage.Provider
 #endif
 	public static partial class StorageProviderSyncRootManager
 	{
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderSyncRootManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void Register(global::Windows.Storage.Provider.StorageProviderSyncRootInfo syncRootInformation)

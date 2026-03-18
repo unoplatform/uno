@@ -26,12 +26,6 @@ namespace Windows.Networking.NetworkOperators
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.MobileBroadbandAccountWatcher()
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher, Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher, Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.Equals(Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get

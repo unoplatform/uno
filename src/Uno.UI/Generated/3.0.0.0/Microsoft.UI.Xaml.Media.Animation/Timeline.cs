@@ -76,7 +76,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Timeline.Timeline()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Timeline()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.AllowDependentAnimations.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.AllowDependentAnimations.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.AutoReverseProperty.get
@@ -85,14 +84,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.FillBehaviorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.RepeatBehaviorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.SpeedRatioProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Timeline(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.operator ==(Microsoft.UI.Xaml.Media.Animation.Timeline, Microsoft.UI.Xaml.Media.Animation.Timeline)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.operator !=(Microsoft.UI.Xaml.Media.Animation.Timeline, Microsoft.UI.Xaml.Media.Animation.Timeline)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Equals(Microsoft.UI.Xaml.Media.Animation.Timeline)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Timeline(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Completed.add
@@ -109,7 +100,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.RepeatBehavior.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.SpeedRatio.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.SpeedRatio.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Media.Animation.Timeline.Completed
 	}

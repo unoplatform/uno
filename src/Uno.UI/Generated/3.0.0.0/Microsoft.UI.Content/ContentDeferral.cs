@@ -13,12 +13,6 @@ namespace Microsoft.UI.Content
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentDeferral.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Content.ContentDeferral.operator ==(Microsoft.UI.Content.ContentDeferral, Microsoft.UI.Content.ContentDeferral)
-		// Forced skipping of method Microsoft.UI.Content.ContentDeferral.operator !=(Microsoft.UI.Content.ContentDeferral, Microsoft.UI.Content.ContentDeferral)
-		// Forced skipping of method Microsoft.UI.Content.ContentDeferral.Equals(Microsoft.UI.Content.ContentDeferral)
-		// Forced skipping of method Microsoft.UI.Content.ContentDeferral.Equals(object)
-		// Forced skipping of method Microsoft.UI.Content.ContentDeferral.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Content.ContentDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ContentDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ContentDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

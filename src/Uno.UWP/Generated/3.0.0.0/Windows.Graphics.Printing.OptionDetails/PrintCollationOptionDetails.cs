@@ -109,12 +109,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

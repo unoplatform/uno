@@ -22,21 +22,12 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Label
 		// Skipping already declared method Microsoft.UI.Xaml.Input.XamlUICommand.XamlUICommand()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.XamlUICommand()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.AccessKeyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.CommandProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.DescriptionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.IconSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.KeyboardAcceleratorsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.LabelProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.XamlUICommand(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.operator ==(Microsoft.UI.Xaml.Input.XamlUICommand, Microsoft.UI.Xaml.Input.XamlUICommand)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.operator !=(Microsoft.UI.Xaml.Input.XamlUICommand, Microsoft.UI.Xaml.Input.XamlUICommand)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.Equals(Microsoft.UI.Xaml.Input.XamlUICommand)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.XamlUICommand(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Input.XamlUICommand.NotifyCanExecuteChanged()
@@ -59,7 +50,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.KeyboardAccelerators.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.Label.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.Label.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.XamlUICommand.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Input.XamlUICommand.CanExecuteRequested
 		// Skipping already declared event Microsoft.UI.Xaml.Input.XamlUICommand.ExecuteRequested

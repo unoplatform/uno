@@ -56,12 +56,6 @@ namespace Windows.Devices.PointOfService
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.UnifiedPosErrorData(string, Windows.Devices.PointOfService.UnifiedPosErrorSeverity, Windows.Devices.PointOfService.UnifiedPosErrorReason, uint)
-		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.operator ==(Windows.Devices.PointOfService.UnifiedPosErrorData, Windows.Devices.PointOfService.UnifiedPosErrorData)
-		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.operator !=(Windows.Devices.PointOfService.UnifiedPosErrorData, Windows.Devices.PointOfService.UnifiedPosErrorData)
-		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.Equals(Windows.Devices.PointOfService.UnifiedPosErrorData)
-		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.WinRT.IWinRTObject.QueryInterfaceCache.get

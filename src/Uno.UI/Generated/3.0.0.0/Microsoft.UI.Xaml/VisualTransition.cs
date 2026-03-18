@@ -28,14 +28,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property To
 		// Skipping already declared method Microsoft.UI.Xaml.VisualTransition.VisualTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.VisualTransition()
-		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.VisualTransition(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.operator ==(Microsoft.UI.Xaml.VisualTransition, Microsoft.UI.Xaml.VisualTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.operator !=(Microsoft.UI.Xaml.VisualTransition, Microsoft.UI.Xaml.VisualTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.Equals(Microsoft.UI.Xaml.VisualTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.VisualTransition(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.From.get
@@ -48,7 +40,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.Storyboard.set
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.To.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.To.set
-		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.VisualTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -43,12 +43,6 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePairingRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePairingRequestedEventArgs.operator ==(Windows.Devices.Enumeration.DevicePairingRequestedEventArgs, Windows.Devices.Enumeration.DevicePairingRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePairingRequestedEventArgs.operator !=(Windows.Devices.Enumeration.DevicePairingRequestedEventArgs, Windows.Devices.Enumeration.DevicePairingRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePairingRequestedEventArgs.Equals(Windows.Devices.Enumeration.DevicePairingRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePairingRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePairingRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePairingRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePairingRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePairingRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -17,11 +17,6 @@ namespace Windows.Networking.Sockets
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.BandwidthStatistics.BandwidthStatistics(ulong, ulong, ulong, ulong, bool, bool)
-		// Forced skipping of method Windows.Networking.Sockets.BandwidthStatistics.operator ==(Windows.Networking.Sockets.BandwidthStatistics, Windows.Networking.Sockets.BandwidthStatistics)
-		// Forced skipping of method Windows.Networking.Sockets.BandwidthStatistics.operator !=(Windows.Networking.Sockets.BandwidthStatistics, Windows.Networking.Sockets.BandwidthStatistics)
-		// Forced skipping of method Windows.Networking.Sockets.BandwidthStatistics.Equals(Windows.Networking.Sockets.BandwidthStatistics)
-		// Forced skipping of method Windows.Networking.Sockets.BandwidthStatistics.Equals(object)
-		// Forced skipping of method Windows.Networking.Sockets.BandwidthStatistics.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong OutboundBitsPerSecond;
 #endif

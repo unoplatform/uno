@@ -40,12 +40,6 @@ namespace Windows.ApplicationModel.Email
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.EmailRecipientResolutionResult()
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.operator ==(Windows.ApplicationModel.Email.EmailRecipientResolutionResult, Windows.ApplicationModel.Email.EmailRecipientResolutionResult)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.operator !=(Windows.ApplicationModel.Email.EmailRecipientResolutionResult, Windows.ApplicationModel.Email.EmailRecipientResolutionResult)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.Equals(Windows.ApplicationModel.Email.EmailRecipientResolutionResult)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipientResolutionResult.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -43,7 +43,6 @@ namespace Windows.Media.Ocr
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsLanguageSupported(global::Windows.Globalization.Language language)
@@ -67,12 +66,6 @@ namespace Windows.Media.Ocr
 #endif
 		// Forced skipping of method Windows.Media.Ocr.OcrEngine.AvailableRecognizerLanguages.get
 		// Forced skipping of method Windows.Media.Ocr.OcrEngine.MaxImageDimension.get
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.operator ==(Windows.Media.Ocr.OcrEngine, Windows.Media.Ocr.OcrEngine)
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.operator !=(Windows.Media.Ocr.OcrEngine, Windows.Media.Ocr.OcrEngine)
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.Equals(Windows.Media.Ocr.OcrEngine)
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.Equals(object)
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.GetHashCode()
 		// Forced skipping of method Windows.Media.Ocr.OcrEngine.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Ocr.OcrEngine.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Ocr.OcrEngine.WinRT.IWinRTObject.QueryInterfaceCache.get

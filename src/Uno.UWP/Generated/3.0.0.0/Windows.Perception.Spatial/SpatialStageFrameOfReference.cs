@@ -53,7 +53,6 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.SpatialStageFrameOfReference> RequestNewStageAsync()
@@ -64,12 +63,6 @@ namespace Windows.Perception.Spatial
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.CurrentChanged.add
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.CurrentChanged.remove
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.Current.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.operator ==(Windows.Perception.Spatial.SpatialStageFrameOfReference, Windows.Perception.Spatial.SpatialStageFrameOfReference)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.operator !=(Windows.Perception.Spatial.SpatialStageFrameOfReference, Windows.Perception.Spatial.SpatialStageFrameOfReference)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.Equals(Windows.Perception.Spatial.SpatialStageFrameOfReference)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.GetHashCode()
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.WinRT.IWinRTObject.QueryInterfaceCache.get

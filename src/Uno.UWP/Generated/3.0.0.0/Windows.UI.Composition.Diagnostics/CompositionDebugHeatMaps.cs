@@ -13,12 +13,6 @@ namespace Windows.UI.Composition.Diagnostics
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps.operator ==(Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps, Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps)
-		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps.operator !=(Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps, Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps)
-		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps.Equals(Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps)
-		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps.WinRT.IWinRTObject.QueryInterfaceCache.get

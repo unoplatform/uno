@@ -47,12 +47,6 @@ namespace Windows.UI.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.operator ==(Windows.UI.Core.CharacterReceivedEventArgs, Windows.UI.Core.CharacterReceivedEventArgs)
-		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.operator !=(Windows.UI.Core.CharacterReceivedEventArgs, Windows.UI.Core.CharacterReceivedEventArgs)
-		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.Equals(Windows.UI.Core.CharacterReceivedEventArgs)
-		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

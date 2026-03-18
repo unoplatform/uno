@@ -18,18 +18,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource(System.Uri)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource(System.Uri)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.RasterizePixelHeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.RasterizePixelWidthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.UriSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.operator ==(Microsoft.UI.Xaml.Media.Imaging.SvgImageSource, Microsoft.UI.Xaml.Media.Imaging.SvgImageSource)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.operator !=(Microsoft.UI.Xaml.Media.Imaging.SvgImageSource, Microsoft.UI.Xaml.Media.Imaging.SvgImageSource)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.Equals(Microsoft.UI.Xaml.Media.Imaging.SvgImageSource)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.SetSourceAsync(Windows.Storage.Streams.IRandomAccessStream)
@@ -43,7 +34,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.RasterizePixelWidth.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.UriSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.UriSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.OpenFailed
 		// Skipping already declared event Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.Opened

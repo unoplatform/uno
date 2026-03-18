@@ -51,12 +51,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.operator ==(Windows.Media.Devices.PhotoConfirmationControl, Windows.Media.Devices.PhotoConfirmationControl)
-		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.operator !=(Windows.Media.Devices.PhotoConfirmationControl, Windows.Media.Devices.PhotoConfirmationControl)
-		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.Equals(Windows.Media.Devices.PhotoConfirmationControl)
-		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -86,12 +86,6 @@ namespace Windows.Devices.Spi
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.SpiConnectionSettings(int)
-		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.operator ==(Windows.Devices.Spi.SpiConnectionSettings, Windows.Devices.Spi.SpiConnectionSettings)
-		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.operator !=(Windows.Devices.Spi.SpiConnectionSettings, Windows.Devices.Spi.SpiConnectionSettings)
-		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.Equals(Windows.Devices.Spi.SpiConnectionSettings)
-		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.Equals(object)
-		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.GetHashCode()
 		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

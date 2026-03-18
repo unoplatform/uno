@@ -13,12 +13,6 @@ namespace Microsoft.Web.WebView2.Core
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2CookieManager, Microsoft.Web.WebView2.Core.CoreWebView2CookieManager)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2CookieManager, Microsoft.Web.WebView2.Core.CoreWebView2CookieManager)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.Equals(Microsoft.Web.WebView2.Core.CoreWebView2CookieManager)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.WinRT.IWinRTObject.QueryInterfaceCache.get

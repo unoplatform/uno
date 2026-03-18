@@ -17,11 +17,6 @@ namespace Windows.Perception.Spatial
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingOrientedBox.SpatialBoundingOrientedBox(System.Numerics.Vector3, System.Numerics.Vector3, System.Numerics.Quaternion)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingOrientedBox.operator ==(Windows.Perception.Spatial.SpatialBoundingOrientedBox, Windows.Perception.Spatial.SpatialBoundingOrientedBox)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingOrientedBox.operator !=(Windows.Perception.Spatial.SpatialBoundingOrientedBox, Windows.Perception.Spatial.SpatialBoundingOrientedBox)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingOrientedBox.Equals(Windows.Perception.Spatial.SpatialBoundingOrientedBox)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingOrientedBox.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingOrientedBox.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Vector3 Center;
 #endif

@@ -12,12 +12,6 @@ namespace Windows.Storage.Streams
 		// Skipping already declared property CanWrite
 		// Skipping already declared property Position
 		// Skipping already declared property Size
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.operator ==(Windows.Storage.Streams.RandomAccessStreamOverStream, Windows.Storage.Streams.RandomAccessStreamOverStream)
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.operator !=(Windows.Storage.Streams.RandomAccessStreamOverStream, Windows.Storage.Streams.RandomAccessStreamOverStream)
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.Equals(Windows.Storage.Streams.RandomAccessStreamOverStream)
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.Equals(object)
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.GetHashCode()
 		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.WinRT.IWinRTObject.QueryInterfaceCache.get

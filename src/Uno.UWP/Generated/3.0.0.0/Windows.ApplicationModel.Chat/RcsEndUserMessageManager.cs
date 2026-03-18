@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Chat
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.operator ==(Windows.ApplicationModel.Chat.RcsEndUserMessageManager, Windows.ApplicationModel.Chat.RcsEndUserMessageManager)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.operator !=(Windows.ApplicationModel.Chat.RcsEndUserMessageManager, Windows.ApplicationModel.Chat.RcsEndUserMessageManager)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.Equals(Windows.ApplicationModel.Chat.RcsEndUserMessageManager)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.WinRT.IWinRTObject.QueryInterfaceCache.get

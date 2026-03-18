@@ -83,12 +83,6 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.operator ==(Windows.Gaming.Input.Custom.HidGameControllerProvider, Windows.Gaming.Input.Custom.HidGameControllerProvider)
-		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.operator !=(Windows.Gaming.Input.Custom.HidGameControllerProvider, Windows.Gaming.Input.Custom.HidGameControllerProvider)
-		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.Equals(Windows.Gaming.Input.Custom.HidGameControllerProvider)
-		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.WinRT.IWinRTObject.QueryInterfaceCache.get

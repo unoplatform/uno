@@ -13,12 +13,6 @@ namespace Windows.Media.Capture.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.operator ==(Windows.Media.Capture.Core.VariablePhotoSequenceCapture, Windows.Media.Capture.Core.VariablePhotoSequenceCapture)
-		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.operator !=(Windows.Media.Capture.Core.VariablePhotoSequenceCapture, Windows.Media.Capture.Core.VariablePhotoSequenceCapture)
-		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.Equals(Windows.Media.Capture.Core.VariablePhotoSequenceCapture)
-		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoSequenceCapture.WinRT.IWinRTObject.QueryInterfaceCache.get

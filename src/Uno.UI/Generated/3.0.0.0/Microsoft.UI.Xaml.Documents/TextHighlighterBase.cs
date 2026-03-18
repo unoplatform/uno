@@ -8,17 +8,8 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 	public partial class TextHighlighterBase : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.TextHighlighterBase(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.operator ==(Microsoft.UI.Xaml.Documents.TextHighlighterBase, Microsoft.UI.Xaml.Documents.TextHighlighterBase)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.operator !=(Microsoft.UI.Xaml.Documents.TextHighlighterBase, Microsoft.UI.Xaml.Documents.TextHighlighterBase)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.Equals(Microsoft.UI.Xaml.Documents.TextHighlighterBase)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.TextHighlighterBase(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

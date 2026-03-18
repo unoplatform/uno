@@ -169,12 +169,6 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.operator ==(Windows.Web.Http.Headers.HttpRequestHeaderCollection, Windows.Web.Http.Headers.HttpRequestHeaderCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.operator !=(Windows.Web.Http.Headers.HttpRequestHeaderCollection, Windows.Web.Http.Headers.HttpRequestHeaderCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Equals(Windows.Web.Http.Headers.HttpRequestHeaderCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

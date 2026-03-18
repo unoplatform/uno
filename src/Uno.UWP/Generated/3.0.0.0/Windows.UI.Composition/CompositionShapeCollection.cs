@@ -47,12 +47,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.operator ==(Windows.UI.Composition.CompositionShapeCollection, Windows.UI.Composition.CompositionShapeCollection)
-		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.operator !=(Windows.UI.Composition.CompositionShapeCollection, Windows.UI.Composition.CompositionShapeCollection)
-		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.Equals(Windows.UI.Composition.CompositionShapeCollection)
-		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.Count.get
@@ -123,7 +117,6 @@ namespace Windows.UI.Composition
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.System.Collections.Generic.IList<Windows.UI.Composition.CompositionShape>.get_Item(int)
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.System.Collections.Generic.IList<Windows.UI.Composition.CompositionShape>.set_Item(int, Windows.UI.Composition.CompositionShape)

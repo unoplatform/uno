@@ -50,14 +50,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.Vector3NaturalMotionAnimation(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.operator ==(Microsoft.UI.Composition.Vector3NaturalMotionAnimation, Microsoft.UI.Composition.Vector3NaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.operator !=(Microsoft.UI.Composition.Vector3NaturalMotionAnimation, Microsoft.UI.Composition.Vector3NaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.Equals(Microsoft.UI.Composition.Vector3NaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.Vector3NaturalMotionAnimation(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.FinalValue.get
@@ -66,7 +58,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.InitialValue.set
 		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.InitialVelocity.get
 		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.InitialVelocity.set
-		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.Vector3NaturalMotionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

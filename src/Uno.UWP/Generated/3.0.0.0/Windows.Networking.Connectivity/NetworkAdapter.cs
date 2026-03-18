@@ -63,12 +63,6 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.operator ==(Windows.Networking.Connectivity.NetworkAdapter, Windows.Networking.Connectivity.NetworkAdapter)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.operator !=(Windows.Networking.Connectivity.NetworkAdapter, Windows.Networking.Connectivity.NetworkAdapter)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.Equals(Windows.Networking.Connectivity.NetworkAdapter)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.Equals(object)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.GetHashCode()
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.WinRT.IWinRTObject.QueryInterfaceCache.get

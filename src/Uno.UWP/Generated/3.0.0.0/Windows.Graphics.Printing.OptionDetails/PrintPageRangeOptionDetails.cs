@@ -99,12 +99,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -12,12 +12,6 @@ namespace Windows.Media.Capture
 		// Skipping already declared property VideoSettings
 		// Skipping already declared method Windows.Media.Capture.CameraCaptureUI.CameraCaptureUI()
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUI.CameraCaptureUI()
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUI.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUI.operator ==(Windows.Media.Capture.CameraCaptureUI, Windows.Media.Capture.CameraCaptureUI)
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUI.operator !=(Windows.Media.Capture.CameraCaptureUI, Windows.Media.Capture.CameraCaptureUI)
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUI.Equals(Windows.Media.Capture.CameraCaptureUI)
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUI.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUI.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUI.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUI.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUI.WinRT.IWinRTObject.QueryInterfaceCache.get

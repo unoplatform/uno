@@ -17,11 +17,6 @@ namespace Microsoft.UI.Xaml.Data
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.LoadMoreItemsResult(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.operator ==(Microsoft.UI.Xaml.Data.LoadMoreItemsResult, Microsoft.UI.Xaml.Data.LoadMoreItemsResult)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.operator !=(Microsoft.UI.Xaml.Data.LoadMoreItemsResult, Microsoft.UI.Xaml.Data.LoadMoreItemsResult)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.Equals(Microsoft.UI.Xaml.Data.LoadMoreItemsResult)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.GetHashCode()
 		// Skipping already declared field Microsoft.UI.Xaml.Data.LoadMoreItemsResult.Count
 	}
 }

@@ -43,12 +43,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.operator ==(Windows.System.UserAuthenticationStatusChangingEventArgs, Windows.System.UserAuthenticationStatusChangingEventArgs)
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.operator !=(Windows.System.UserAuthenticationStatusChangingEventArgs, Windows.System.UserAuthenticationStatusChangingEventArgs)
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.Equals(Windows.System.UserAuthenticationStatusChangingEventArgs)
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.Equals(object)
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.GetHashCode()
 		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

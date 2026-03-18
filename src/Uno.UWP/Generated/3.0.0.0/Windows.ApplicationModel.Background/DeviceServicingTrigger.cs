@@ -16,12 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.DeviceServicingTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.operator ==(Windows.ApplicationModel.Background.DeviceServicingTrigger, Windows.ApplicationModel.Background.DeviceServicingTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.operator !=(Windows.ApplicationModel.Background.DeviceServicingTrigger, Windows.ApplicationModel.Background.DeviceServicingTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.Equals(Windows.ApplicationModel.Background.DeviceServicingTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

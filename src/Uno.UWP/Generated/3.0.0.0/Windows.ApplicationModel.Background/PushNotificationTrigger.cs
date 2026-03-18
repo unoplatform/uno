@@ -24,12 +24,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.PushNotificationTrigger(string)
-		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.operator ==(Windows.ApplicationModel.Background.PushNotificationTrigger, Windows.ApplicationModel.Background.PushNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.operator !=(Windows.ApplicationModel.Background.PushNotificationTrigger, Windows.ApplicationModel.Background.PushNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.Equals(Windows.ApplicationModel.Background.PushNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.PushNotificationTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

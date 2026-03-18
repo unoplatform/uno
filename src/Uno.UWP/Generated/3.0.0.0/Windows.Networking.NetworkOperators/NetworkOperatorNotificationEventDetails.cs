@@ -73,12 +73,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails.operator ==(Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails, Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails.operator !=(Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails, Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails.Equals(Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

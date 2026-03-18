@@ -17,11 +17,6 @@ namespace Windows.Storage.Search
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.SortEntry.SortEntry(string, bool)
-		// Forced skipping of method Windows.Storage.Search.SortEntry.operator ==(Windows.Storage.Search.SortEntry, Windows.Storage.Search.SortEntry)
-		// Forced skipping of method Windows.Storage.Search.SortEntry.operator !=(Windows.Storage.Search.SortEntry, Windows.Storage.Search.SortEntry)
-		// Forced skipping of method Windows.Storage.Search.SortEntry.Equals(Windows.Storage.Search.SortEntry)
-		// Forced skipping of method Windows.Storage.Search.SortEntry.Equals(object)
-		// Forced skipping of method Windows.Storage.Search.SortEntry.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public string PropertyName;
 #endif

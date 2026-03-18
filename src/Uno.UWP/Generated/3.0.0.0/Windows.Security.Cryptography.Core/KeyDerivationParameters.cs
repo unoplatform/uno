@@ -51,7 +51,6 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.Cryptography.Core.KeyDerivationParameters BuildForPbkdf2(global::Windows.Storage.Streams.IBuffer pbkdf2Salt, uint iterationCount)
@@ -80,12 +79,6 @@ namespace Windows.Security.Cryptography.Core
 			throw new global::System.NotImplementedException("The member KeyDerivationParameters KeyDerivationParameters.BuildForCapi1Kdf(Capi1KdfTargetAlgorithm capi1KdfTargetAlgorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyDerivationParameters%20KeyDerivationParameters.BuildForCapi1Kdf%28Capi1KdfTargetAlgorithm%20capi1KdfTargetAlgorithm%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.operator ==(Windows.Security.Cryptography.Core.KeyDerivationParameters, Windows.Security.Cryptography.Core.KeyDerivationParameters)
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.operator !=(Windows.Security.Cryptography.Core.KeyDerivationParameters, Windows.Security.Cryptography.Core.KeyDerivationParameters)
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.Equals(Windows.Security.Cryptography.Core.KeyDerivationParameters)
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.Equals(object)
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.GetHashCode()
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.WinRT.IWinRTObject.QueryInterfaceCache.get

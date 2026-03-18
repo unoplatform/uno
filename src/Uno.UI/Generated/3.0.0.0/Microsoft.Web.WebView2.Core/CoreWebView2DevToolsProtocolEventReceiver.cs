@@ -13,12 +13,6 @@ namespace Microsoft.Web.WebView2.Core
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver, Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver, Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver.Equals(Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver.WinRT.IWinRTObject.QueryInterfaceCache.get

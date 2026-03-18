@@ -43,12 +43,6 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.operator ==(Windows.Devices.Geolocation.GeocoordinateSatelliteData, Windows.Devices.Geolocation.GeocoordinateSatelliteData)
-		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.operator !=(Windows.Devices.Geolocation.GeocoordinateSatelliteData, Windows.Devices.Geolocation.GeocoordinateSatelliteData)
-		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.Equals(Windows.Devices.Geolocation.GeocoordinateSatelliteData)
-		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.Equals(object)
-		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.GetHashCode()
 		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.WinRT.IWinRTObject.QueryInterfaceCache.get

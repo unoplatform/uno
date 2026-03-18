@@ -17,11 +17,6 @@ namespace Windows.Perception.People
 		}
 #endif
 		// Forced skipping of method Windows.Perception.People.HandMeshVertex.HandMeshVertex(System.Numerics.Vector3, System.Numerics.Vector3)
-		// Forced skipping of method Windows.Perception.People.HandMeshVertex.operator ==(Windows.Perception.People.HandMeshVertex, Windows.Perception.People.HandMeshVertex)
-		// Forced skipping of method Windows.Perception.People.HandMeshVertex.operator !=(Windows.Perception.People.HandMeshVertex, Windows.Perception.People.HandMeshVertex)
-		// Forced skipping of method Windows.Perception.People.HandMeshVertex.Equals(Windows.Perception.People.HandMeshVertex)
-		// Forced skipping of method Windows.Perception.People.HandMeshVertex.Equals(object)
-		// Forced skipping of method Windows.Perception.People.HandMeshVertex.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Vector3 Position;
 #endif

@@ -63,12 +63,6 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.operator ==(Windows.Networking.Connectivity.ConnectionCost, Windows.Networking.Connectivity.ConnectionCost)
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.operator !=(Windows.Networking.Connectivity.ConnectionCost, Windows.Networking.Connectivity.ConnectionCost)
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.Equals(Windows.Networking.Connectivity.ConnectionCost)
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.Equals(object)
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.GetHashCode()
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.WinRT.IWinRTObject.QueryInterfaceCache.get

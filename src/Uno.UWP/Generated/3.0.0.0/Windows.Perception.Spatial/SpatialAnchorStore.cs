@@ -13,12 +13,6 @@ namespace Windows.Perception.Spatial
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorStore.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorStore.operator ==(Windows.Perception.Spatial.SpatialAnchorStore, Windows.Perception.Spatial.SpatialAnchorStore)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorStore.operator !=(Windows.Perception.Spatial.SpatialAnchorStore, Windows.Perception.Spatial.SpatialAnchorStore)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorStore.Equals(Windows.Perception.Spatial.SpatialAnchorStore)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorStore.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorStore.GetHashCode()
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorStore.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorStore.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorStore.WinRT.IWinRTObject.QueryInterfaceCache.get

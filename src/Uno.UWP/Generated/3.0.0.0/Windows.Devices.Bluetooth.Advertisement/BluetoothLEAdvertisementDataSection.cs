@@ -14,12 +14,6 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.BluetoothLEAdvertisementDataSection()
 		// Skipping already declared method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.BluetoothLEAdvertisementDataSection(byte, Windows.Storage.Streams.IBuffer)
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.BluetoothLEAdvertisementDataSection(byte, Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.operator ==(Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection, Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection)
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.operator !=(Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection, Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection)
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.Equals(Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection)
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.WinRT.IWinRTObject.QueryInterfaceCache.get

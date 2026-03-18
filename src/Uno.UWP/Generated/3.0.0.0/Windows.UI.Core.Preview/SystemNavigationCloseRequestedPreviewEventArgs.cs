@@ -27,12 +27,6 @@ namespace Windows.UI.Core.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs.operator ==(Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs, Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs)
-		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs.operator !=(Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs, Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs)
-		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs.Equals(Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs)
-		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

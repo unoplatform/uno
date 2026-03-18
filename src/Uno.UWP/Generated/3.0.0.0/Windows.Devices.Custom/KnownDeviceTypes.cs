@@ -18,7 +18,6 @@ namespace Windows.Devices.Custom
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Custom.KnownDeviceTypes.As<I>()
 		// Forced skipping of method Windows.Devices.Custom.KnownDeviceTypes.Unknown.get
 	}
 }

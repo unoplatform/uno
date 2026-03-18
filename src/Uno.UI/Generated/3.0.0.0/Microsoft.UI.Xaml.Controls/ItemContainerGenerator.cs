@@ -13,12 +13,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainerGenerator.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainerGenerator.operator ==(Microsoft.UI.Xaml.Controls.ItemContainerGenerator, Microsoft.UI.Xaml.Controls.ItemContainerGenerator)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainerGenerator.operator !=(Microsoft.UI.Xaml.Controls.ItemContainerGenerator, Microsoft.UI.Xaml.Controls.ItemContainerGenerator)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainerGenerator.Equals(Microsoft.UI.Xaml.Controls.ItemContainerGenerator)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainerGenerator.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainerGenerator.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainerGenerator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainerGenerator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainerGenerator.WinRT.IWinRTObject.QueryInterfaceCache.get

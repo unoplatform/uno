@@ -86,12 +86,6 @@ namespace Windows.ApplicationModel.Calls.Provider
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.PhoneCallOrigin()
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.operator ==(Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin, Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.operator !=(Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin, Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.Equals(Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -10,12 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Cancel
 		// Skipping already declared property Reason
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs, Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs, Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs.Equals(Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

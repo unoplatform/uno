@@ -38,21 +38,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.TitleBarTemplateSettings()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.IconElementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.TitleBarTemplateSettings(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.operator ==(Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings, Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.operator !=(Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings, Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.Equals(Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.TitleBarTemplateSettings(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.IconElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.IconElement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

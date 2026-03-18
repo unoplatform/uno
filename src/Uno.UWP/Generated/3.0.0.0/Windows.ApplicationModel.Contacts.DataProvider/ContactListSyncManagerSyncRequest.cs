@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequest.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequest.operator ==(Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequest, Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequest)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequest.operator !=(Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequest, Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequest)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequest.Equals(Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequest)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequest.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequest.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

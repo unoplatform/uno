@@ -173,12 +173,6 @@ namespace Windows.Services.TargetedContent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.FromAbi(nint)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.operator ==(Windows.Services.TargetedContent.TargetedContentValue, Windows.Services.TargetedContent.TargetedContentValue)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.operator !=(Windows.Services.TargetedContent.TargetedContentValue, Windows.Services.TargetedContent.TargetedContentValue)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.Equals(Windows.Services.TargetedContent.TargetedContentValue)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.Equals(object)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.GetHashCode()
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.WinRT.IWinRTObject.QueryInterfaceCache.get

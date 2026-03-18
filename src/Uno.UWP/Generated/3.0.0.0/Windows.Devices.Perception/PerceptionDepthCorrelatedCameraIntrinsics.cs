@@ -13,12 +13,6 @@ namespace Windows.Devices.Perception
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.operator ==(Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics, Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.operator !=(Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics, Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.Equals(Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics.WinRT.IWinRTObject.QueryInterfaceCache.get

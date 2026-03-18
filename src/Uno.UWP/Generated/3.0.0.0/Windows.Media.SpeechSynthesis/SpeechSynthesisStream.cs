@@ -87,12 +87,6 @@ namespace Windows.Media.SpeechSynthesis
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.FromAbi(nint)
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.operator ==(Windows.Media.SpeechSynthesis.SpeechSynthesisStream, Windows.Media.SpeechSynthesis.SpeechSynthesisStream)
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.operator !=(Windows.Media.SpeechSynthesis.SpeechSynthesisStream, Windows.Media.SpeechSynthesis.SpeechSynthesisStream)
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.Equals(Windows.Media.SpeechSynthesis.SpeechSynthesisStream)
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.Equals(object)
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.GetHashCode()
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.WinRT.IWinRTObject.QueryInterfaceCache.get

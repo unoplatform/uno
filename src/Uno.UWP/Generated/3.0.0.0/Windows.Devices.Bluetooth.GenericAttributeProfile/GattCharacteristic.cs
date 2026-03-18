@@ -64,7 +64,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		}
 #endif
 		// Skipping already declared property Uuid
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Guid ConvertShortIdToUuid(ushort shortId)
@@ -72,12 +71,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			throw new global::System.NotImplementedException("The member Guid GattCharacteristic.ConvertShortIdToUuid(ushort shortId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattCharacteristic.ConvertShortIdToUuid%28ushort%20shortId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic, Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic, Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic.WinRT.IWinRTObject.QueryInterfaceCache.get

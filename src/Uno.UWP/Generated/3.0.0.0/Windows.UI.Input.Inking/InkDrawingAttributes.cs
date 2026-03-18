@@ -158,7 +158,6 @@ namespace Windows.UI.Input.Inking
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.InkDrawingAttributes()
-		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.Inking.InkDrawingAttributes CreateForPencil()
@@ -166,12 +165,6 @@ namespace Windows.UI.Input.Inking
 			throw new global::System.NotImplementedException("The member InkDrawingAttributes InkDrawingAttributes.CreateForPencil() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkDrawingAttributes%20InkDrawingAttributes.CreateForPencil%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.operator ==(Windows.UI.Input.Inking.InkDrawingAttributes, Windows.UI.Input.Inking.InkDrawingAttributes)
-		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.operator !=(Windows.UI.Input.Inking.InkDrawingAttributes, Windows.UI.Input.Inking.InkDrawingAttributes)
-		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.Equals(Windows.UI.Input.Inking.InkDrawingAttributes)
-		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.WinRT.IWinRTObject.QueryInterfaceCache.get

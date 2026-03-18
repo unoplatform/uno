@@ -23,12 +23,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property WeekDay5
 		// Skipping already declared property WeekDay6
 		// Skipping already declared property WeekDay7
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.operator ==(Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings, Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.operator !=(Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings, Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.Equals(Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.CenterX.get
@@ -46,7 +40,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WeekDay5.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WeekDay6.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WeekDay7.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

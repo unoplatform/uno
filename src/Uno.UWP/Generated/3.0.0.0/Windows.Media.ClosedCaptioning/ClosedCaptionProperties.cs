@@ -128,7 +128,6 @@ namespace Windows.Media.ClosedCaptioning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.As<I>()
 		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.BackgroundColor.get
 		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.BackgroundOpacity.get
 		// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.ComputedBackgroundColor.get

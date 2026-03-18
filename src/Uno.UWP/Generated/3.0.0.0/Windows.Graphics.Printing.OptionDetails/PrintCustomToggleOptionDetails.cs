@@ -113,12 +113,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -40,18 +40,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property To
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.ColorAnimation()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.ColorAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.ByProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.EasingFunctionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.EnableDependentAnimationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.FromProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.ToProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.ColorAnimation, Microsoft.UI.Xaml.Media.Animation.ColorAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.ColorAnimation, Microsoft.UI.Xaml.Media.Animation.ColorAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.ColorAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.By.get
@@ -64,7 +57,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.From.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.To.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.To.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

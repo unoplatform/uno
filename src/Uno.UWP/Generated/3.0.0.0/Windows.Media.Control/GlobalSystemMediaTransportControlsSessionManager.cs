@@ -13,7 +13,6 @@ namespace Windows.Media.Control
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager> RequestAsync()
@@ -21,12 +20,6 @@ namespace Windows.Media.Control
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GlobalSystemMediaTransportControlsSessionManager> GlobalSystemMediaTransportControlsSessionManager.RequestAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGlobalSystemMediaTransportControlsSessionManager%3E%20GlobalSystemMediaTransportControlsSessionManager.RequestAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.operator ==(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager, Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager)
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.operator !=(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager, Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager)
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.Equals(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager)
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.Equals(object)
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.GetHashCode()
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.WinRT.IWinRTObject.QueryInterfaceCache.get

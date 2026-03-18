@@ -43,12 +43,6 @@ namespace Windows.Media.ContentRestrictions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy.FromAbi(nint)
-		// Forced skipping of method Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy.operator ==(Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy, Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy)
-		// Forced skipping of method Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy.operator !=(Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy, Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy)
-		// Forced skipping of method Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy.Equals(Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy)
-		// Forced skipping of method Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy.Equals(object)
-		// Forced skipping of method Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy.GetHashCode()
 		// Forced skipping of method Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy.WinRT.IWinRTObject.QueryInterfaceCache.get

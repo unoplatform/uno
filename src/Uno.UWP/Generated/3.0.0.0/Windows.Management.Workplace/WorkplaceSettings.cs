@@ -18,7 +18,6 @@ namespace Windows.Management.Workplace
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.Workplace.WorkplaceSettings.As<I>()
 		// Forced skipping of method Windows.Management.Workplace.WorkplaceSettings.IsMicrosoftAccountOptional.get
 	}
 }

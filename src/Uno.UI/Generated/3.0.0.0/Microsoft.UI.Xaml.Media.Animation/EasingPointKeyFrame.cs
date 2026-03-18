@@ -38,19 +38,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.EasingPointKeyFrame()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.EasingFunctionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame, Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame, Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.EasingFunction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.EasingFunction.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

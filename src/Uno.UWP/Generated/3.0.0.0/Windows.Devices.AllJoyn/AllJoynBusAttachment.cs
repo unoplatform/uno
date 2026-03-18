@@ -74,7 +74,6 @@ namespace Windows.Devices.AllJoyn
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AllJoynBusAttachment(string)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.AllJoyn.AllJoynBusAttachment GetDefault()
@@ -89,12 +88,6 @@ namespace Windows.Devices.AllJoyn
 			throw new global::System.NotImplementedException("The member DeviceWatcher AllJoynBusAttachment.GetWatcher(IEnumerable<string> requiredInterfaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcher%20AllJoynBusAttachment.GetWatcher%28IEnumerable%3Cstring%3E%20requiredInterfaces%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.operator ==(Windows.Devices.AllJoyn.AllJoynBusAttachment, Windows.Devices.AllJoyn.AllJoynBusAttachment)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.operator !=(Windows.Devices.AllJoyn.AllJoynBusAttachment, Windows.Devices.AllJoyn.AllJoynBusAttachment)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.Equals(Windows.Devices.AllJoyn.AllJoynBusAttachment)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.Equals(object)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.GetHashCode()
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.WinRT.IWinRTObject.QueryInterfaceCache.get

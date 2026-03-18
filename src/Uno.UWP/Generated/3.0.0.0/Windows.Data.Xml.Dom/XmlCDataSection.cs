@@ -25,12 +25,6 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared property ParentNode
 		// Skipping already declared property Prefix
 		// Skipping already declared property PreviousSibling
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlCDataSection.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlCDataSection.operator ==(Windows.Data.Xml.Dom.XmlCDataSection, Windows.Data.Xml.Dom.XmlCDataSection)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlCDataSection.operator !=(Windows.Data.Xml.Dom.XmlCDataSection, Windows.Data.Xml.Dom.XmlCDataSection)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlCDataSection.Equals(Windows.Data.Xml.Dom.XmlCDataSection)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlCDataSection.Equals(object)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlCDataSection.GetHashCode()
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlCDataSection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlCDataSection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlCDataSection.WinRT.IWinRTObject.QueryInterfaceCache.get

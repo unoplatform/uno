@@ -16,12 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger.CommunicationBlockingAppSetAsActiveTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger.operator ==(Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger, Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger.operator !=(Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger, Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger.Equals(Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.CommunicationBlockingAppSetAsActiveTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

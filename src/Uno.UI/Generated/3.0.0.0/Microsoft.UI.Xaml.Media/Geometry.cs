@@ -31,24 +31,14 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property TransformProperty
 		// Skipping already declared property Bounds
 		// Skipping already declared property Transform
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.Empty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.StandardFlatteningTolerance.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.TransformProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.Geometry(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.operator ==(Microsoft.UI.Xaml.Media.Geometry, Microsoft.UI.Xaml.Media.Geometry)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.operator !=(Microsoft.UI.Xaml.Media.Geometry, Microsoft.UI.Xaml.Media.Geometry)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.Equals(Microsoft.UI.Xaml.Media.Geometry)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.Geometry(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.Bounds.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.Transform.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.Transform.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

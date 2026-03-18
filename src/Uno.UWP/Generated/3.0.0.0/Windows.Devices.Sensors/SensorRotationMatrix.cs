@@ -103,12 +103,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.operator ==(Windows.Devices.Sensors.SensorRotationMatrix, Windows.Devices.Sensors.SensorRotationMatrix)
-		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.operator !=(Windows.Devices.Sensors.SensorRotationMatrix, Windows.Devices.Sensors.SensorRotationMatrix)
-		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.Equals(Windows.Devices.Sensors.SensorRotationMatrix)
-		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.WinRT.IWinRTObject.QueryInterfaceCache.get

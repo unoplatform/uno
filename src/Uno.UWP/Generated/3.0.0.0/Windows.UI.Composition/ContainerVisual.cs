@@ -18,18 +18,9 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.ContainerVisual.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.ContainerVisual.ContainerVisual(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.ContainerVisual.operator ==(Windows.UI.Composition.ContainerVisual, Windows.UI.Composition.ContainerVisual)
-		// Forced skipping of method Windows.UI.Composition.ContainerVisual.operator !=(Windows.UI.Composition.ContainerVisual, Windows.UI.Composition.ContainerVisual)
-		// Forced skipping of method Windows.UI.Composition.ContainerVisual.Equals(Windows.UI.Composition.ContainerVisual)
-		// Forced skipping of method Windows.UI.Composition.ContainerVisual.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.ContainerVisual.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.ContainerVisual.ContainerVisual(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.ContainerVisual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.ContainerVisual.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.ContainerVisual.Children.get
-		// Forced skipping of method Windows.UI.Composition.ContainerVisual.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.ContainerVisual.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

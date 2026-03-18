@@ -93,12 +93,6 @@ namespace Windows.Management.Deployment
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.Deployment.PackageVolume.FromAbi(nint)
-		// Forced skipping of method Windows.Management.Deployment.PackageVolume.operator ==(Windows.Management.Deployment.PackageVolume, Windows.Management.Deployment.PackageVolume)
-		// Forced skipping of method Windows.Management.Deployment.PackageVolume.operator !=(Windows.Management.Deployment.PackageVolume, Windows.Management.Deployment.PackageVolume)
-		// Forced skipping of method Windows.Management.Deployment.PackageVolume.Equals(Windows.Management.Deployment.PackageVolume)
-		// Forced skipping of method Windows.Management.Deployment.PackageVolume.Equals(object)
-		// Forced skipping of method Windows.Management.Deployment.PackageVolume.GetHashCode()
 		// Forced skipping of method Windows.Management.Deployment.PackageVolume.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Management.Deployment.PackageVolume.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Management.Deployment.PackageVolume.WinRT.IWinRTObject.QueryInterfaceCache.get

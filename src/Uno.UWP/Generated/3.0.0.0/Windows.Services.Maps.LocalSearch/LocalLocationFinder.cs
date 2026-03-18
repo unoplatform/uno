@@ -8,7 +8,6 @@ namespace Windows.Services.Maps.LocalSearch
 #endif
 	public static partial class LocalLocationFinder
 	{
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationFinder.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.LocalSearch.LocalLocationFinderResult> FindLocalLocationsAsync(string searchTerm, global::Windows.Devices.Geolocation.Geocircle searchArea, string localCategory, uint maxResults)

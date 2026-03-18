@@ -184,12 +184,6 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.CoreWebView2EnvironmentOptions()
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions, Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions, Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.Equals(Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

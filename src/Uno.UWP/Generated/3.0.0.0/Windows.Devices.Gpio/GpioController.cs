@@ -23,7 +23,6 @@ namespace Windows.Devices.Gpio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Gpio.GpioController.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Gpio.GpioController GetDefault()
@@ -45,12 +44,6 @@ namespace Windows.Devices.Gpio
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GpioController> GpioController.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGpioController%3E%20GpioController.GetDefaultAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Gpio.GpioController.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Gpio.GpioController.operator ==(Windows.Devices.Gpio.GpioController, Windows.Devices.Gpio.GpioController)
-		// Forced skipping of method Windows.Devices.Gpio.GpioController.operator !=(Windows.Devices.Gpio.GpioController, Windows.Devices.Gpio.GpioController)
-		// Forced skipping of method Windows.Devices.Gpio.GpioController.Equals(Windows.Devices.Gpio.GpioController)
-		// Forced skipping of method Windows.Devices.Gpio.GpioController.Equals(object)
-		// Forced skipping of method Windows.Devices.Gpio.GpioController.GetHashCode()
 		// Forced skipping of method Windows.Devices.Gpio.GpioController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Gpio.GpioController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Gpio.GpioController.WinRT.IWinRTObject.QueryInterfaceCache.get

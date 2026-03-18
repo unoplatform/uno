@@ -13,12 +13,6 @@ namespace Windows.UI.WebUI
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.ActivatedOperation.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.ActivatedOperation.operator ==(Windows.UI.WebUI.ActivatedOperation, Windows.UI.WebUI.ActivatedOperation)
-		// Forced skipping of method Windows.UI.WebUI.ActivatedOperation.operator !=(Windows.UI.WebUI.ActivatedOperation, Windows.UI.WebUI.ActivatedOperation)
-		// Forced skipping of method Windows.UI.WebUI.ActivatedOperation.Equals(Windows.UI.WebUI.ActivatedOperation)
-		// Forced skipping of method Windows.UI.WebUI.ActivatedOperation.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.ActivatedOperation.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.ActivatedOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.ActivatedOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.ActivatedOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

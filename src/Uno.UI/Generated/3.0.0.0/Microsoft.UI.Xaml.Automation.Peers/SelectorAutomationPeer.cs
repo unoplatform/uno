@@ -21,20 +21,11 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.SelectorAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.Selector)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.SelectorAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.Selector)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.SelectorAutomationPeer(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.SelectorAutomationPeer(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.GetSelection()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.CanSelectMultiple.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.IsSelectionRequired.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.ISelectionProvider
 	}

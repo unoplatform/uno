@@ -32,19 +32,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.SlideNavigationTransitionInfo()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.SlideNavigationTransitionInfo()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.EffectProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.operator ==(Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo, Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.operator !=(Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo, Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.Equals(Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.Effect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.Effect.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -72,12 +72,6 @@ namespace Windows.ApplicationModel.UserDataTasks
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.UserDataTaskRegenerationProperties()
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.operator ==(Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties, Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.operator !=(Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties, Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Equals(Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

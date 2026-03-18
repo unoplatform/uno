@@ -18,7 +18,6 @@ namespace Windows.Media.Core.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.Preview.SoundLevelBroker.As<I>()
 		// Forced skipping of method Windows.Media.Core.Preview.SoundLevelBroker.SoundLevelChanged.add
 		// Forced skipping of method Windows.Media.Core.Preview.SoundLevelBroker.SoundLevelChanged.remove
 		// Forced skipping of method Windows.Media.Core.Preview.SoundLevelBroker.SoundLevel.get

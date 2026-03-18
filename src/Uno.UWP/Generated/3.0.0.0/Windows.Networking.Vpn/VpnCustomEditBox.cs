@@ -96,12 +96,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomEditBox.VpnCustomEditBox()
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomEditBox.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomEditBox.operator ==(Windows.Networking.Vpn.VpnCustomEditBox, Windows.Networking.Vpn.VpnCustomEditBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomEditBox.operator !=(Windows.Networking.Vpn.VpnCustomEditBox, Windows.Networking.Vpn.VpnCustomEditBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomEditBox.Equals(Windows.Networking.Vpn.VpnCustomEditBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomEditBox.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomEditBox.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomEditBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomEditBox.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomEditBox.WinRT.IWinRTObject.QueryInterfaceCache.get

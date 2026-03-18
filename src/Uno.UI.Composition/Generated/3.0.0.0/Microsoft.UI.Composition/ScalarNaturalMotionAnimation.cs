@@ -50,14 +50,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.ScalarNaturalMotionAnimation(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.operator ==(Microsoft.UI.Composition.ScalarNaturalMotionAnimation, Microsoft.UI.Composition.ScalarNaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.operator !=(Microsoft.UI.Composition.ScalarNaturalMotionAnimation, Microsoft.UI.Composition.ScalarNaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.Equals(Microsoft.UI.Composition.ScalarNaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.ScalarNaturalMotionAnimation(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.FinalValue.get
@@ -66,7 +58,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.InitialValue.set
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.InitialVelocity.get
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.InitialVelocity.set
-		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

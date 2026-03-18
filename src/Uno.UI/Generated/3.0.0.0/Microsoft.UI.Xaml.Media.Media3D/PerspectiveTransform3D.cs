@@ -82,16 +82,9 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.PerspectiveTransform3D()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.DepthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.operator ==(Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D, Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.operator !=(Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D, Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.Equals(Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.Depth.get
@@ -100,7 +93,6 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -123,12 +123,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.operator ==(Windows.Devices.PointOfService.MagneticStripeReaderCapabilities, Windows.Devices.PointOfService.MagneticStripeReaderCapabilities)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.operator !=(Windows.Devices.PointOfService.MagneticStripeReaderCapabilities, Windows.Devices.PointOfService.MagneticStripeReaderCapabilities)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.Equals(Windows.Devices.PointOfService.MagneticStripeReaderCapabilities)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get

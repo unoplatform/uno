@@ -44,7 +44,6 @@ namespace Windows.System
 		}
 #endif
 		// Forced skipping of method Windows.System.UserPicker.UserPicker()
-		// Forced skipping of method Windows.System.UserPicker.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
@@ -52,12 +51,6 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member bool UserPicker.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserPicker.IsSupported%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.UserPicker.FromAbi(nint)
-		// Forced skipping of method Windows.System.UserPicker.operator ==(Windows.System.UserPicker, Windows.System.UserPicker)
-		// Forced skipping of method Windows.System.UserPicker.operator !=(Windows.System.UserPicker, Windows.System.UserPicker)
-		// Forced skipping of method Windows.System.UserPicker.Equals(Windows.System.UserPicker)
-		// Forced skipping of method Windows.System.UserPicker.Equals(object)
-		// Forced skipping of method Windows.System.UserPicker.GetHashCode()
 		// Forced skipping of method Windows.System.UserPicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.UserPicker.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.UserPicker.WinRT.IWinRTObject.QueryInterfaceCache.get

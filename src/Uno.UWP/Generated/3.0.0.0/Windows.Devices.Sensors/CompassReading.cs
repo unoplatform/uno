@@ -41,12 +41,6 @@ namespace Windows.Devices.Sensors
 		}
 #endif
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.CompassReading.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.CompassReading.operator ==(Windows.Devices.Sensors.CompassReading, Windows.Devices.Sensors.CompassReading)
-		// Forced skipping of method Windows.Devices.Sensors.CompassReading.operator !=(Windows.Devices.Sensors.CompassReading, Windows.Devices.Sensors.CompassReading)
-		// Forced skipping of method Windows.Devices.Sensors.CompassReading.Equals(Windows.Devices.Sensors.CompassReading)
-		// Forced skipping of method Windows.Devices.Sensors.CompassReading.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.CompassReading.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.CompassReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassReading.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassReading.WinRT.IWinRTObject.QueryInterfaceCache.get

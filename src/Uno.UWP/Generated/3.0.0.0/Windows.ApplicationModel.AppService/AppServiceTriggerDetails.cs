@@ -63,12 +63,6 @@ namespace Windows.ApplicationModel.AppService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.operator ==(Windows.ApplicationModel.AppService.AppServiceTriggerDetails, Windows.ApplicationModel.AppService.AppServiceTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.operator !=(Windows.ApplicationModel.AppService.AppServiceTriggerDetails, Windows.ApplicationModel.AppService.AppServiceTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.Equals(Windows.ApplicationModel.AppService.AppServiceTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

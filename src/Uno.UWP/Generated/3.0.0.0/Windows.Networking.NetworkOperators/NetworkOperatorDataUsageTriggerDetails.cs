@@ -23,12 +23,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails.operator ==(Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails, Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails.operator !=(Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails, Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails.Equals(Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorDataUsageTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

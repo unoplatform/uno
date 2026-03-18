@@ -16,7 +16,6 @@ namespace Windows.Globalization.PhoneNumberFormatting
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.PhoneNumberFormatter()
-		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void TryCreate(string regionCode, out global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter phoneNumber)
@@ -45,12 +44,6 @@ namespace Windows.Globalization.PhoneNumberFormatting
 			throw new global::System.NotImplementedException("The member string PhoneNumberFormatter.WrapWithLeftToRightMarkers(string number) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneNumberFormatter.WrapWithLeftToRightMarkers%28string%20number%29");
 		}
 #endif
-		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.operator ==(Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter, Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter)
-		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.operator !=(Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter, Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter)
-		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.Equals(Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter)
-		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.Equals(object)
-		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.GetHashCode()
 		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.WinRT.IWinRTObject.QueryInterfaceCache.get

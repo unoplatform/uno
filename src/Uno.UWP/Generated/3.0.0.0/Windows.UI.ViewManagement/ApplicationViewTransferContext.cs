@@ -40,14 +40,7 @@ namespace Windows.UI.ViewManagement
 		}
 #endif
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.ApplicationViewTransferContext()
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.As<I>()
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.DataPackageFormatId.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.operator ==(Windows.UI.ViewManagement.ApplicationViewTransferContext, Windows.UI.ViewManagement.ApplicationViewTransferContext)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.operator !=(Windows.UI.ViewManagement.ApplicationViewTransferContext, Windows.UI.ViewManagement.ApplicationViewTransferContext)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.Equals(Windows.UI.ViewManagement.ApplicationViewTransferContext)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.Equals(object)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.GetHashCode()
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -17,11 +17,6 @@ namespace Windows.Gaming.Input.Custom
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress.GipFirmwareUpdateProgress(double, uint)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress.operator ==(Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress, Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress.operator !=(Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress, Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress.Equals(Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double PercentCompleted;
 #endif

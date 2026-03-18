@@ -13,12 +13,6 @@ namespace Windows.System
 		{
 		}
 #endif
-		// Forced skipping of method Windows.System.DispatcherQueueShutdownStartingEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.System.DispatcherQueueShutdownStartingEventArgs.operator ==(Windows.System.DispatcherQueueShutdownStartingEventArgs, Windows.System.DispatcherQueueShutdownStartingEventArgs)
-		// Forced skipping of method Windows.System.DispatcherQueueShutdownStartingEventArgs.operator !=(Windows.System.DispatcherQueueShutdownStartingEventArgs, Windows.System.DispatcherQueueShutdownStartingEventArgs)
-		// Forced skipping of method Windows.System.DispatcherQueueShutdownStartingEventArgs.Equals(Windows.System.DispatcherQueueShutdownStartingEventArgs)
-		// Forced skipping of method Windows.System.DispatcherQueueShutdownStartingEventArgs.Equals(object)
-		// Forced skipping of method Windows.System.DispatcherQueueShutdownStartingEventArgs.GetHashCode()
 		// Forced skipping of method Windows.System.DispatcherQueueShutdownStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.DispatcherQueueShutdownStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.DispatcherQueueShutdownStartingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

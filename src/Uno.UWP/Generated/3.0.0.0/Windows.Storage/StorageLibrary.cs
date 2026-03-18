@@ -43,7 +43,6 @@ namespace Windows.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.StorageLibrary.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageLibrary> GetLibraryAsync(global::Windows.Storage.KnownLibraryId libraryId)
@@ -58,12 +57,6 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageLibrary> StorageLibrary.GetLibraryForUserAsync(User user, KnownLibraryId libraryId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageLibrary%3E%20StorageLibrary.GetLibraryForUserAsync%28User%20user%2C%20KnownLibraryId%20libraryId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.StorageLibrary.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.StorageLibrary.operator ==(Windows.Storage.StorageLibrary, Windows.Storage.StorageLibrary)
-		// Forced skipping of method Windows.Storage.StorageLibrary.operator !=(Windows.Storage.StorageLibrary, Windows.Storage.StorageLibrary)
-		// Forced skipping of method Windows.Storage.StorageLibrary.Equals(Windows.Storage.StorageLibrary)
-		// Forced skipping of method Windows.Storage.StorageLibrary.Equals(object)
-		// Forced skipping of method Windows.Storage.StorageLibrary.GetHashCode()
 		// Forced skipping of method Windows.Storage.StorageLibrary.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.StorageLibrary.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.StorageLibrary.WinRT.IWinRTObject.QueryInterfaceCache.get

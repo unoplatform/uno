@@ -10,12 +10,6 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared method Microsoft.UI.Composition.CompositionCapabilities.CompositionCapabilities()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.CompositionCapabilities()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.operator ==(Microsoft.UI.Composition.CompositionCapabilities, Microsoft.UI.Composition.CompositionCapabilities)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.operator !=(Microsoft.UI.Composition.CompositionCapabilities, Microsoft.UI.Composition.CompositionCapabilities)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.Equals(Microsoft.UI.Composition.CompositionCapabilities)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get

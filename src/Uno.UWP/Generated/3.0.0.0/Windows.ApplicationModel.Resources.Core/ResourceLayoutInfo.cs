@@ -17,11 +17,6 @@ namespace Windows.ApplicationModel.Resources.Core
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.ResourceLayoutInfo(uint, uint, uint, uint, int)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.operator ==(Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo, Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.operator !=(Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo, Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.Equals(Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint MajorVersion;
 #endif

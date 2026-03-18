@@ -26,7 +26,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SelectedItem
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RadioButtons.RadioButtons()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.RadioButtons()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.HeaderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.HeaderTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.ItemTemplateProperty.get
@@ -35,14 +34,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.MaxColumnsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.SelectedIndexProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.SelectedItemProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.RadioButtons(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.operator ==(Microsoft.UI.Xaml.Controls.RadioButtons, Microsoft.UI.Xaml.Controls.RadioButtons)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.operator !=(Microsoft.UI.Xaml.Controls.RadioButtons, Microsoft.UI.Xaml.Controls.RadioButtons)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.Equals(Microsoft.UI.Xaml.Controls.RadioButtons)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.RadioButtons(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RadioButtons.ContainerFromIndex(int)
@@ -63,7 +54,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.SelectedIndex.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.SelectedItem.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.SelectedItem.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.RadioButtons.SelectionChanged
 	}

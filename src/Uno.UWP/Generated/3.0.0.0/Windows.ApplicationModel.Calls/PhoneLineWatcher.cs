@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.operator ==(Windows.ApplicationModel.Calls.PhoneLineWatcher, Windows.ApplicationModel.Calls.PhoneLineWatcher)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.operator !=(Windows.ApplicationModel.Calls.PhoneLineWatcher, Windows.ApplicationModel.Calls.PhoneLineWatcher)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.Equals(Windows.ApplicationModel.Calls.PhoneLineWatcher)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get

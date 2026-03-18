@@ -53,12 +53,6 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.operator ==(Windows.Graphics.Imaging.BitmapCodecInformation, Windows.Graphics.Imaging.BitmapCodecInformation)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.operator !=(Windows.Graphics.Imaging.BitmapCodecInformation, Windows.Graphics.Imaging.BitmapCodecInformation)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.Equals(Windows.Graphics.Imaging.BitmapCodecInformation)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.Equals(object)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.WinRT.IWinRTObject.QueryInterfaceCache.get

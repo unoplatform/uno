@@ -17,11 +17,6 @@ namespace Windows.Devices.Gpio
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Gpio.GpioChangeRecord.GpioChangeRecord(System.TimeSpan, Windows.Devices.Gpio.GpioPinEdge)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeRecord.operator ==(Windows.Devices.Gpio.GpioChangeRecord, Windows.Devices.Gpio.GpioChangeRecord)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeRecord.operator !=(Windows.Devices.Gpio.GpioChangeRecord, Windows.Devices.Gpio.GpioChangeRecord)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeRecord.Equals(Windows.Devices.Gpio.GpioChangeRecord)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeRecord.Equals(object)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeRecord.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.TimeSpan RelativeTime;
 #endif

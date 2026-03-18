@@ -16,12 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger.MobileBroadbandPcoDataChangeTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger.operator ==(Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger, Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger.operator !=(Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger, Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger.Equals(Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandPcoDataChangeTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

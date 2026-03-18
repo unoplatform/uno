@@ -11,12 +11,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Element
 		// Skipping already declared property Handled
 		// Skipping already declared property KeyboardAccelerator
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.operator ==(Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs, Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.operator !=(Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs, Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.Equals(Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

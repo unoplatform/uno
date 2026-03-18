@@ -48,12 +48,6 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.PercentFormatter(System.Collections.Generic.IEnumerable<string>, string)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.operator ==(Windows.Globalization.NumberFormatting.PercentFormatter, Windows.Globalization.NumberFormatting.PercentFormatter)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.operator !=(Windows.Globalization.NumberFormatting.PercentFormatter, Windows.Globalization.NumberFormatting.PercentFormatter)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.Equals(Windows.Globalization.NumberFormatting.PercentFormatter)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.Equals(object)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.GetHashCode()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PercentFormatter.WinRT.IWinRTObject.QueryInterfaceCache.get

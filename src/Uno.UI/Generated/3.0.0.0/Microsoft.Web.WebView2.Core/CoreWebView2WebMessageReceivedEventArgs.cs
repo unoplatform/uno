@@ -29,12 +29,6 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Skipping already declared property WebMessageAsJson
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

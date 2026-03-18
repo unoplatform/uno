@@ -56,12 +56,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.ActivitySensorTrigger(uint)
-		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.operator ==(Windows.ApplicationModel.Background.ActivitySensorTrigger, Windows.ApplicationModel.Background.ActivitySensorTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.operator !=(Windows.ApplicationModel.Background.ActivitySensorTrigger, Windows.ApplicationModel.Background.ActivitySensorTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.Equals(Windows.ApplicationModel.Background.ActivitySensorTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.ActivitySensorTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

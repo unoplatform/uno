@@ -33,12 +33,6 @@ namespace Windows.System.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.DiagnosticActionResult.FromAbi(nint)
-		// Forced skipping of method Windows.System.Diagnostics.DiagnosticActionResult.operator ==(Windows.System.Diagnostics.DiagnosticActionResult, Windows.System.Diagnostics.DiagnosticActionResult)
-		// Forced skipping of method Windows.System.Diagnostics.DiagnosticActionResult.operator !=(Windows.System.Diagnostics.DiagnosticActionResult, Windows.System.Diagnostics.DiagnosticActionResult)
-		// Forced skipping of method Windows.System.Diagnostics.DiagnosticActionResult.Equals(Windows.System.Diagnostics.DiagnosticActionResult)
-		// Forced skipping of method Windows.System.Diagnostics.DiagnosticActionResult.Equals(object)
-		// Forced skipping of method Windows.System.Diagnostics.DiagnosticActionResult.GetHashCode()
 		// Forced skipping of method Windows.System.Diagnostics.DiagnosticActionResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.DiagnosticActionResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.DiagnosticActionResult.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -81,12 +81,6 @@ namespace Windows.UI.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.operator ==(Windows.UI.Core.CoreIndependentInputSource, Windows.UI.Core.CoreIndependentInputSource)
-		// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.operator !=(Windows.UI.Core.CoreIndependentInputSource, Windows.UI.Core.CoreIndependentInputSource)
-		// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.Equals(Windows.UI.Core.CoreIndependentInputSource)
-		// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.Equals(object)
-		// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.WinRT.IWinRTObject.QueryInterfaceCache.get

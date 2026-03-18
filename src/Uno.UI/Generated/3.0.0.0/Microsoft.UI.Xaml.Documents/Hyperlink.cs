@@ -58,7 +58,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Skipping already declared property XYFocusUpNavigationStrategy
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Hyperlink.Hyperlink()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.Hyperlink()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.ElementSoundModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.FocusStateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.IsTabStopProperty.get
@@ -73,12 +72,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.XYFocusRightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.XYFocusUpNavigationStrategyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.XYFocusUpProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.operator ==(Microsoft.UI.Xaml.Documents.Hyperlink, Microsoft.UI.Xaml.Documents.Hyperlink)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.operator !=(Microsoft.UI.Xaml.Documents.Hyperlink, Microsoft.UI.Xaml.Documents.Hyperlink)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.Equals(Microsoft.UI.Xaml.Documents.Hyperlink)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Hyperlink.Focus(Microsoft.UI.Xaml.FocusState)
@@ -115,7 +108,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.XYFocusUp.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.XYFocusUpNavigationStrategy.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.XYFocusUpNavigationStrategy.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Documents.Hyperlink.Click
 		// Skipping already declared event Microsoft.UI.Xaml.Documents.Hyperlink.GotFocus

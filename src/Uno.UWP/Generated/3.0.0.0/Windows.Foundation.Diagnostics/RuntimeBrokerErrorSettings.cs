@@ -16,12 +16,6 @@ namespace Windows.Foundation.Diagnostics
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings.RuntimeBrokerErrorSettings()
-		// Forced skipping of method Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings.FromAbi(nint)
-		// Forced skipping of method Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings.operator ==(Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings, Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings)
-		// Forced skipping of method Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings.operator !=(Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings, Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings)
-		// Forced skipping of method Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings.Equals(Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings)
-		// Forced skipping of method Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings.Equals(object)
-		// Forced skipping of method Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings.GetHashCode()
 		// Forced skipping of method Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

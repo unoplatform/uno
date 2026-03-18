@@ -53,12 +53,6 @@ namespace Windows.Networking.Vpn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.operator ==(Windows.Networking.Vpn.VpnChannelConfiguration, Windows.Networking.Vpn.VpnChannelConfiguration)
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.operator !=(Windows.Networking.Vpn.VpnChannelConfiguration, Windows.Networking.Vpn.VpnChannelConfiguration)
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.Equals(Windows.Networking.Vpn.VpnChannelConfiguration)
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

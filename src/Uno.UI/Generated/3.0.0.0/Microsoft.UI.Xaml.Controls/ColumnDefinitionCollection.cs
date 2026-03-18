@@ -11,12 +11,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection.operator ==(Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection, Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection.operator !=(Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection, Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection.Equals(Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

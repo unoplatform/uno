@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs.operator ==(Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs, Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs.operator !=(Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs, Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs.Equals(Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -53,12 +53,6 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.operator ==(Windows.ApplicationModel.Calls.PhoneLineCellularDetails, Windows.ApplicationModel.Calls.PhoneLineCellularDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.operator !=(Windows.ApplicationModel.Calls.PhoneLineCellularDetails, Windows.ApplicationModel.Calls.PhoneLineCellularDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.Equals(Windows.ApplicationModel.Calls.PhoneLineCellularDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

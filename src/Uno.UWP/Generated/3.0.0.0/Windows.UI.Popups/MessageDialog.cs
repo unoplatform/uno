@@ -18,12 +18,6 @@ namespace Windows.UI.Popups
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.MessageDialog(string)
 		// Skipping already declared method Windows.UI.Popups.MessageDialog.MessageDialog(string, string)
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.MessageDialog(string, string)
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.operator ==(Windows.UI.Popups.MessageDialog, Windows.UI.Popups.MessageDialog)
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.operator !=(Windows.UI.Popups.MessageDialog, Windows.UI.Popups.MessageDialog)
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.Equals(Windows.UI.Popups.MessageDialog)
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.Equals(object)
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.GetHashCode()
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.WinRT.IWinRTObject.QueryInterfaceCache.get

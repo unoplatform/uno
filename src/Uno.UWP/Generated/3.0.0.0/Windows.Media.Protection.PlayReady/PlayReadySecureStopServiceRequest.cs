@@ -132,12 +132,6 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest.PlayReadySecureStopServiceRequest(System.Guid, byte[])
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest.operator ==(Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest, Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest.operator !=(Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest, Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest.Equals(Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -26,12 +26,6 @@ namespace Windows.UI.Accessibility
 		}
 #endif
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.ScreenReaderService()
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.operator ==(Windows.UI.Accessibility.ScreenReaderService, Windows.UI.Accessibility.ScreenReaderService)
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.operator !=(Windows.UI.Accessibility.ScreenReaderService, Windows.UI.Accessibility.ScreenReaderService)
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.Equals(Windows.UI.Accessibility.ScreenReaderService)
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.Equals(object)
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.GetHashCode()
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -13,12 +13,6 @@ namespace Windows.Services.TargetedContent
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentAvailabilityChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentAvailabilityChangedEventArgs.operator ==(Windows.Services.TargetedContent.TargetedContentAvailabilityChangedEventArgs, Windows.Services.TargetedContent.TargetedContentAvailabilityChangedEventArgs)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentAvailabilityChangedEventArgs.operator !=(Windows.Services.TargetedContent.TargetedContentAvailabilityChangedEventArgs, Windows.Services.TargetedContent.TargetedContentAvailabilityChangedEventArgs)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentAvailabilityChangedEventArgs.Equals(Windows.Services.TargetedContent.TargetedContentAvailabilityChangedEventArgs)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentAvailabilityChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentAvailabilityChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentAvailabilityChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentAvailabilityChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentAvailabilityChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -66,7 +66,6 @@ namespace Windows.Media.Editing
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaComposition.MediaComposition()
-		// Forced skipping of method Windows.Media.Editing.MediaComposition.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Editing.MediaComposition> LoadAsync(global::Windows.Storage.StorageFile file)
@@ -74,13 +73,7 @@ namespace Windows.Media.Editing
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaComposition> MediaComposition.LoadAsync(StorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMediaComposition%3E%20MediaComposition.LoadAsync%28StorageFile%20file%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Editing.MediaComposition.FromAbi(nint)
 		// Forced skipping of method Windows.Media.Editing.MediaComposition.~MediaComposition()
-		// Forced skipping of method Windows.Media.Editing.MediaComposition.operator ==(Windows.Media.Editing.MediaComposition, Windows.Media.Editing.MediaComposition)
-		// Forced skipping of method Windows.Media.Editing.MediaComposition.operator !=(Windows.Media.Editing.MediaComposition, Windows.Media.Editing.MediaComposition)
-		// Forced skipping of method Windows.Media.Editing.MediaComposition.Equals(Windows.Media.Editing.MediaComposition)
-		// Forced skipping of method Windows.Media.Editing.MediaComposition.Equals(object)
-		// Forced skipping of method Windows.Media.Editing.MediaComposition.GetHashCode()
 		// Forced skipping of method Windows.Media.Editing.MediaComposition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Editing.MediaComposition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Editing.MediaComposition.WinRT.IWinRTObject.QueryInterfaceCache.get

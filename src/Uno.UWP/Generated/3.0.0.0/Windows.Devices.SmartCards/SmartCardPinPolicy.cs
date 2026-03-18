@@ -100,12 +100,6 @@ namespace Windows.Devices.SmartCards
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.SmartCardPinPolicy()
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.operator ==(Windows.Devices.SmartCards.SmartCardPinPolicy, Windows.Devices.SmartCards.SmartCardPinPolicy)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.operator !=(Windows.Devices.SmartCards.SmartCardPinPolicy, Windows.Devices.SmartCards.SmartCardPinPolicy)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.Equals(Windows.Devices.SmartCards.SmartCardPinPolicy)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.Equals(object)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.GetHashCode()
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -63,7 +63,6 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Holographic.HolographicSpace CreateForCoreWindow(global::Windows.UI.Core.CoreWindow window)
@@ -76,12 +75,6 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.IsAvailable.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.IsConfigured.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.IsSupported.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.operator ==(Windows.Graphics.Holographic.HolographicSpace, Windows.Graphics.Holographic.HolographicSpace)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.operator !=(Windows.Graphics.Holographic.HolographicSpace, Windows.Graphics.Holographic.HolographicSpace)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.Equals(Windows.Graphics.Holographic.HolographicSpace)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.Equals(object)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.WinRT.IWinRTObject.QueryInterfaceCache.get

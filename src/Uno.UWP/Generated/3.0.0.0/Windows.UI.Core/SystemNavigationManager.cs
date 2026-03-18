@@ -9,14 +9,7 @@ namespace Windows.UI.Core
 	public partial class SystemNavigationManager
 	{
 		// Skipping already declared property AppViewBackButtonVisibility
-		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.As<I>()
 		// Skipping already declared method Windows.UI.Core.SystemNavigationManager.GetForCurrentView()
-		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.operator ==(Windows.UI.Core.SystemNavigationManager, Windows.UI.Core.SystemNavigationManager)
-		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.operator !=(Windows.UI.Core.SystemNavigationManager, Windows.UI.Core.SystemNavigationManager)
-		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.Equals(Windows.UI.Core.SystemNavigationManager)
-		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.Equals(object)
-		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.WinRT.IWinRTObject.QueryInterfaceCache.get

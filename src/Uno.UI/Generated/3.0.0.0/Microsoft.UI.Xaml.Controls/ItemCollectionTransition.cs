@@ -63,12 +63,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.operator ==(Microsoft.UI.Xaml.Controls.ItemCollectionTransition, Microsoft.UI.Xaml.Controls.ItemCollectionTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.operator !=(Microsoft.UI.Xaml.Controls.ItemCollectionTransition, Microsoft.UI.Xaml.Controls.ItemCollectionTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Equals(Microsoft.UI.Xaml.Controls.ItemCollectionTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.WinRT.IWinRTObject.QueryInterfaceCache.get

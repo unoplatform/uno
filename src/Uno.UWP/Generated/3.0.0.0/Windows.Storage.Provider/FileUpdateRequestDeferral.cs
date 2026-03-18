@@ -13,12 +13,6 @@ namespace Windows.Storage.Provider
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.operator ==(Windows.Storage.Provider.FileUpdateRequestDeferral, Windows.Storage.Provider.FileUpdateRequestDeferral)
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.operator !=(Windows.Storage.Provider.FileUpdateRequestDeferral, Windows.Storage.Provider.FileUpdateRequestDeferral)
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.Equals(Windows.Storage.Provider.FileUpdateRequestDeferral)
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.Equals(object)
-		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.GetHashCode()
 		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -33,7 +33,6 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Calls.PhoneLineTransportDevice FromId(string id)
@@ -55,12 +54,6 @@ namespace Windows.ApplicationModel.Calls
 			throw new global::System.NotImplementedException("The member string PhoneLineTransportDevice.GetDeviceSelector(PhoneLineTransport transport) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneLineTransportDevice.GetDeviceSelector%28PhoneLineTransport%20transport%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.operator ==(Windows.ApplicationModel.Calls.PhoneLineTransportDevice, Windows.ApplicationModel.Calls.PhoneLineTransportDevice)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.operator !=(Windows.ApplicationModel.Calls.PhoneLineTransportDevice, Windows.ApplicationModel.Calls.PhoneLineTransportDevice)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.Equals(Windows.ApplicationModel.Calls.PhoneLineTransportDevice)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.WinRT.IWinRTObject.QueryInterfaceCache.get

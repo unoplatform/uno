@@ -27,12 +27,6 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallUI.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallUI.operator ==(Windows.ApplicationModel.Calls.LockScreenCallUI, Windows.ApplicationModel.Calls.LockScreenCallUI)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallUI.operator !=(Windows.ApplicationModel.Calls.LockScreenCallUI, Windows.ApplicationModel.Calls.LockScreenCallUI)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallUI.Equals(Windows.ApplicationModel.Calls.LockScreenCallUI)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallUI.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallUI.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallUI.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallUI.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallUI.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -23,7 +23,6 @@ namespace Windows.System.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.DiagnosticInvoker.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.DiagnosticInvoker GetDefault()
@@ -39,12 +38,6 @@ namespace Windows.System.Diagnostics
 		}
 #endif
 		// Forced skipping of method Windows.System.Diagnostics.DiagnosticInvoker.IsSupported.get
-		// Forced skipping of method Windows.System.Diagnostics.DiagnosticInvoker.FromAbi(nint)
-		// Forced skipping of method Windows.System.Diagnostics.DiagnosticInvoker.operator ==(Windows.System.Diagnostics.DiagnosticInvoker, Windows.System.Diagnostics.DiagnosticInvoker)
-		// Forced skipping of method Windows.System.Diagnostics.DiagnosticInvoker.operator !=(Windows.System.Diagnostics.DiagnosticInvoker, Windows.System.Diagnostics.DiagnosticInvoker)
-		// Forced skipping of method Windows.System.Diagnostics.DiagnosticInvoker.Equals(Windows.System.Diagnostics.DiagnosticInvoker)
-		// Forced skipping of method Windows.System.Diagnostics.DiagnosticInvoker.Equals(object)
-		// Forced skipping of method Windows.System.Diagnostics.DiagnosticInvoker.GetHashCode()
 		// Forced skipping of method Windows.System.Diagnostics.DiagnosticInvoker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.DiagnosticInvoker.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.DiagnosticInvoker.WinRT.IWinRTObject.QueryInterfaceCache.get

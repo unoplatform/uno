@@ -38,7 +38,6 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared property PreviousSibling
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.XmlDocument()
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.XmlDocument()
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Data.Xml.Dom.XmlDocument> LoadFromUriAsync(global::System.Uri uri)
@@ -61,12 +60,6 @@ namespace Windows.Data.Xml.Dom
 			throw new global::System.NotImplementedException("The member IAsyncOperation<XmlDocument> XmlDocument.LoadFromFileAsync(IStorageFile file, XmlLoadSettings loadSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CXmlDocument%3E%20XmlDocument.LoadFromFileAsync%28IStorageFile%20file%2C%20XmlLoadSettings%20loadSettings%29");
 		}
 #endif
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.operator ==(Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.operator !=(Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Equals(Windows.Data.Xml.Dom.XmlDocument)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Equals(object)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.GetHashCode()
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.WinRT.IWinRTObject.QueryInterfaceCache.get

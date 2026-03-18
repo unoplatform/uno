@@ -81,12 +81,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.operator ==(Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass, Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass)
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.operator !=(Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass, Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass)
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Equals(Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass)
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.WinRT.IWinRTObject.QueryInterfaceCache.get

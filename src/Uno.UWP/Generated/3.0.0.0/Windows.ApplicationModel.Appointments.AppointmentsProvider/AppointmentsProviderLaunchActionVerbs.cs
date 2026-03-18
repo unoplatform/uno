@@ -58,7 +58,6 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs.As<I>()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs.AddAppointment.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs.RemoveAppointment.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs.ReplaceAppointment.get

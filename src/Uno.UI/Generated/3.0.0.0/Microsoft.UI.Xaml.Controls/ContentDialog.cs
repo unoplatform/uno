@@ -46,7 +46,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TitleTemplate
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentDialog.ContentDialog()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.ContentDialog()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.CloseButtonCommandParameterProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.CloseButtonCommandProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.CloseButtonStyleProperty.get
@@ -65,14 +64,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.SecondaryButtonTextProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.TitleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.TitleTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.ContentDialog(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.operator ==(Microsoft.UI.Xaml.Controls.ContentDialog, Microsoft.UI.Xaml.Controls.ContentDialog)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.operator !=(Microsoft.UI.Xaml.Controls.ContentDialog, Microsoft.UI.Xaml.Controls.ContentDialog)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.Equals(Microsoft.UI.Xaml.Controls.ContentDialog)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.ContentDialog(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentDialog.Hide()
@@ -126,7 +117,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.Title.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.TitleTemplate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.TitleTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialog.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ContentDialog.CloseButtonClick
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ContentDialog.Closed

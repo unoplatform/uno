@@ -15,12 +15,6 @@ namespace Windows.Globalization.NumberFormatting
 		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.NumeralSystemTranslator()
 		// Skipping already declared method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.NumeralSystemTranslator(System.Collections.Generic.IEnumerable<string>)
 		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.NumeralSystemTranslator(System.Collections.Generic.IEnumerable<string>)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.operator ==(Windows.Globalization.NumberFormatting.NumeralSystemTranslator, Windows.Globalization.NumberFormatting.NumeralSystemTranslator)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.operator !=(Windows.Globalization.NumberFormatting.NumeralSystemTranslator, Windows.Globalization.NumberFormatting.NumeralSystemTranslator)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.Equals(Windows.Globalization.NumberFormatting.NumeralSystemTranslator)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.Equals(object)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.GetHashCode()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.NumeralSystemTranslator.WinRT.IWinRTObject.QueryInterfaceCache.get

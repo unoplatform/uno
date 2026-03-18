@@ -41,12 +41,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.operator ==(Windows.Devices.Sensors.LightSensorDataThreshold, Windows.Devices.Sensors.LightSensorDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.operator !=(Windows.Devices.Sensors.LightSensorDataThreshold, Windows.Devices.Sensors.LightSensorDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.Equals(Windows.Devices.Sensors.LightSensorDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.WinRT.IWinRTObject.QueryInterfaceCache.get

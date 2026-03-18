@@ -97,12 +97,6 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.operator ==(Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo, Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo)
-		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.operator !=(Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo, Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo)
-		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.Equals(Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo)
-		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Contacts
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.operator ==(Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations, Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.operator !=(Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations, Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.Equals(Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.WinRT.IWinRTObject.QueryInterfaceCache.get

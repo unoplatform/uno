@@ -63,12 +63,6 @@ namespace Windows.Services.Maps.Guidance
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceMapMatchedCoordinate.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceMapMatchedCoordinate.operator ==(Windows.Services.Maps.Guidance.GuidanceMapMatchedCoordinate, Windows.Services.Maps.Guidance.GuidanceMapMatchedCoordinate)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceMapMatchedCoordinate.operator !=(Windows.Services.Maps.Guidance.GuidanceMapMatchedCoordinate, Windows.Services.Maps.Guidance.GuidanceMapMatchedCoordinate)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceMapMatchedCoordinate.Equals(Windows.Services.Maps.Guidance.GuidanceMapMatchedCoordinate)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceMapMatchedCoordinate.Equals(object)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceMapMatchedCoordinate.GetHashCode()
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceMapMatchedCoordinate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceMapMatchedCoordinate.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceMapMatchedCoordinate.WinRT.IWinRTObject.QueryInterfaceCache.get

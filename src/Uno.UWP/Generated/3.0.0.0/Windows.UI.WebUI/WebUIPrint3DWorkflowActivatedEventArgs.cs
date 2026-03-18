@@ -63,12 +63,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs, Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs, Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIPrint3DWorkflowActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

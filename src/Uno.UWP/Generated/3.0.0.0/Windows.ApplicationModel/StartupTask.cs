@@ -33,7 +33,6 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.StartupTask.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.StartupTask>> GetForCurrentPackageAsync()
@@ -48,12 +47,6 @@ namespace Windows.ApplicationModel
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StartupTask> StartupTask.GetAsync(string taskId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStartupTask%3E%20StartupTask.GetAsync%28string%20taskId%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.StartupTask.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.StartupTask.operator ==(Windows.ApplicationModel.StartupTask, Windows.ApplicationModel.StartupTask)
-		// Forced skipping of method Windows.ApplicationModel.StartupTask.operator !=(Windows.ApplicationModel.StartupTask, Windows.ApplicationModel.StartupTask)
-		// Forced skipping of method Windows.ApplicationModel.StartupTask.Equals(Windows.ApplicationModel.StartupTask)
-		// Forced skipping of method Windows.ApplicationModel.StartupTask.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.StartupTask.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.StartupTask.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.StartupTask.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.StartupTask.WinRT.IWinRTObject.QueryInterfaceCache.get

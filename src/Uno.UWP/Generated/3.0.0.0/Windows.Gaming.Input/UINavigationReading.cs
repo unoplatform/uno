@@ -17,11 +17,6 @@ namespace Windows.Gaming.Input
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.UINavigationReading.UINavigationReading(ulong, Windows.Gaming.Input.RequiredUINavigationButtons, Windows.Gaming.Input.OptionalUINavigationButtons)
-		// Forced skipping of method Windows.Gaming.Input.UINavigationReading.operator ==(Windows.Gaming.Input.UINavigationReading, Windows.Gaming.Input.UINavigationReading)
-		// Forced skipping of method Windows.Gaming.Input.UINavigationReading.operator !=(Windows.Gaming.Input.UINavigationReading, Windows.Gaming.Input.UINavigationReading)
-		// Forced skipping of method Windows.Gaming.Input.UINavigationReading.Equals(Windows.Gaming.Input.UINavigationReading)
-		// Forced skipping of method Windows.Gaming.Input.UINavigationReading.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.UINavigationReading.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong Timestamp;
 #endif

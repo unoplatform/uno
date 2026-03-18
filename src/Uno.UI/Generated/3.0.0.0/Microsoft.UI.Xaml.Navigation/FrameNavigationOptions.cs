@@ -12,14 +12,6 @@ namespace Microsoft.UI.Xaml.Navigation
 		// Skipping already declared property TransitionInfoOverride
 		// Skipping already declared method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.FrameNavigationOptions()
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.FrameNavigationOptions()
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.FrameNavigationOptions(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.operator ==(Microsoft.UI.Xaml.Navigation.FrameNavigationOptions, Microsoft.UI.Xaml.Navigation.FrameNavigationOptions)
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.operator !=(Microsoft.UI.Xaml.Navigation.FrameNavigationOptions, Microsoft.UI.Xaml.Navigation.FrameNavigationOptions)
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.Equals(Microsoft.UI.Xaml.Navigation.FrameNavigationOptions)
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.FrameNavigationOptions(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -28,7 +20,6 @@ namespace Microsoft.UI.Xaml.Navigation
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.IsNavigationStackEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.TransitionInfoOverride.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.TransitionInfoOverride.set
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

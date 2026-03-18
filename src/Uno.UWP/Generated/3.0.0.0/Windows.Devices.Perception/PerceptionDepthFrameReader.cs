@@ -37,12 +37,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.operator ==(Windows.Devices.Perception.PerceptionDepthFrameReader, Windows.Devices.Perception.PerceptionDepthFrameReader)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.operator !=(Windows.Devices.Perception.PerceptionDepthFrameReader, Windows.Devices.Perception.PerceptionDepthFrameReader)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.Equals(Windows.Devices.Perception.PerceptionDepthFrameReader)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.WinRT.IWinRTObject.QueryInterfaceCache.get

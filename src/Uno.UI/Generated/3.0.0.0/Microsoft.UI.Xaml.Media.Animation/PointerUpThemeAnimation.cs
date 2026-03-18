@@ -38,19 +38,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.PointerUpThemeAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.TargetNameProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation, Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation, Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.TargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerUpThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

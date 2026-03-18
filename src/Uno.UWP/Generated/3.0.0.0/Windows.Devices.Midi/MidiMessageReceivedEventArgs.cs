@@ -9,12 +9,6 @@ namespace Windows.Devices.Midi
 	public partial class MidiMessageReceivedEventArgs
 	{
 		// Skipping already declared property Message
-		// Forced skipping of method Windows.Devices.Midi.MidiMessageReceivedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Midi.MidiMessageReceivedEventArgs.operator ==(Windows.Devices.Midi.MidiMessageReceivedEventArgs, Windows.Devices.Midi.MidiMessageReceivedEventArgs)
-		// Forced skipping of method Windows.Devices.Midi.MidiMessageReceivedEventArgs.operator !=(Windows.Devices.Midi.MidiMessageReceivedEventArgs, Windows.Devices.Midi.MidiMessageReceivedEventArgs)
-		// Forced skipping of method Windows.Devices.Midi.MidiMessageReceivedEventArgs.Equals(Windows.Devices.Midi.MidiMessageReceivedEventArgs)
-		// Forced skipping of method Windows.Devices.Midi.MidiMessageReceivedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.Midi.MidiMessageReceivedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.Midi.MidiMessageReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Midi.MidiMessageReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Midi.MidiMessageReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

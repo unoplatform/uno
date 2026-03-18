@@ -77,7 +77,6 @@ namespace Windows.Devices.Sms
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -106,12 +105,6 @@ namespace Windows.Devices.Sms
 			throw new global::System.NotImplementedException("The member SmsDevice2 SmsDevice2.FromParentId(string parentDeviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsDevice2%20SmsDevice2.FromParentId%28string%20parentDeviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.operator ==(Windows.Devices.Sms.SmsDevice2, Windows.Devices.Sms.SmsDevice2)
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.operator !=(Windows.Devices.Sms.SmsDevice2, Windows.Devices.Sms.SmsDevice2)
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.Equals(Windows.Devices.Sms.SmsDevice2)
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.Equals(object)
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.WinRT.IWinRTObject.QueryInterfaceCache.get

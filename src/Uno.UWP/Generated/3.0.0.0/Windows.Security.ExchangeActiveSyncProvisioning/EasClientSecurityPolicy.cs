@@ -128,12 +128,6 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		}
 #endif
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy.EasClientSecurityPolicy()
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy.FromAbi(nint)
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy.operator ==(Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy, Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy)
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy.operator !=(Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy, Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy)
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy.Equals(Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy)
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy.Equals(object)
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy.GetHashCode()
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy.WinRT.IWinRTObject.QueryInterfaceCache.get

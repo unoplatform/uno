@@ -149,7 +149,6 @@ namespace Windows.Media.Editing
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Editing.MediaClip.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Editing.MediaClip CreateFromColor(global::Windows.UI.Color color, global::System.TimeSpan originalDuration)
@@ -178,13 +177,7 @@ namespace Windows.Media.Editing
 			throw new global::System.NotImplementedException("The member MediaClip MediaClip.CreateFromSurface(IDirect3DSurface surface, TimeSpan originalDuration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaClip%20MediaClip.CreateFromSurface%28IDirect3DSurface%20surface%2C%20TimeSpan%20originalDuration%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Editing.MediaClip.FromAbi(nint)
 		// Forced skipping of method Windows.Media.Editing.MediaClip.~MediaClip()
-		// Forced skipping of method Windows.Media.Editing.MediaClip.operator ==(Windows.Media.Editing.MediaClip, Windows.Media.Editing.MediaClip)
-		// Forced skipping of method Windows.Media.Editing.MediaClip.operator !=(Windows.Media.Editing.MediaClip, Windows.Media.Editing.MediaClip)
-		// Forced skipping of method Windows.Media.Editing.MediaClip.Equals(Windows.Media.Editing.MediaClip)
-		// Forced skipping of method Windows.Media.Editing.MediaClip.Equals(object)
-		// Forced skipping of method Windows.Media.Editing.MediaClip.GetHashCode()
 		// Forced skipping of method Windows.Media.Editing.MediaClip.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Editing.MediaClip.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Editing.MediaClip.WinRT.IWinRTObject.QueryInterfaceCache.get

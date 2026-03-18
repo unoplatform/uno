@@ -43,12 +43,6 @@ namespace Windows.Security.Authentication.OnlineId
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult.operator ==(Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult, Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult)
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult.operator !=(Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult, Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult)
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult.Equals(Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult)
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult.Equals(object)
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult.GetHashCode()
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult.WinRT.IWinRTObject.QueryInterfaceCache.get

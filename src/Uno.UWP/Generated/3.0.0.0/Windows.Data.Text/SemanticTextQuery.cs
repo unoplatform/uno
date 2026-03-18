@@ -24,12 +24,6 @@ namespace Windows.Data.Text
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.SemanticTextQuery(string, string)
-		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.operator ==(Windows.Data.Text.SemanticTextQuery, Windows.Data.Text.SemanticTextQuery)
-		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.operator !=(Windows.Data.Text.SemanticTextQuery, Windows.Data.Text.SemanticTextQuery)
-		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.Equals(Windows.Data.Text.SemanticTextQuery)
-		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.Equals(object)
-		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.GetHashCode()
 		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.WinRT.IWinRTObject.QueryInterfaceCache.get

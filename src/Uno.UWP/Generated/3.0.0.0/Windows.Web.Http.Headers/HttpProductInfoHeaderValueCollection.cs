@@ -47,12 +47,6 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.operator ==(Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection, Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.operator !=(Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection, Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.Equals(Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -116,7 +116,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PasswordBox.PasswordBox()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.PasswordBox()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.CanPasteClipboardContentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.DescriptionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.HeaderProperty.get
@@ -132,12 +131,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.SelectionFlyoutProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.SelectionHighlightColorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.TextReadingOrderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.operator ==(Microsoft.UI.Xaml.Controls.PasswordBox, Microsoft.UI.Xaml.Controls.PasswordBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.operator !=(Microsoft.UI.Xaml.Controls.PasswordBox, Microsoft.UI.Xaml.Controls.PasswordBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.Equals(Microsoft.UI.Xaml.Controls.PasswordBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PasswordBox.SelectAll()
@@ -179,7 +172,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.SelectionHighlightColor.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.TextReadingOrder.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.TextReadingOrder.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]

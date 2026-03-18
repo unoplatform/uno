@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Core
 		// Skipping already declared property IsVisible
 		// Skipping already declared property SystemOverlayLeftInset
 		// Skipping already declared property SystemOverlayRightInset
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.operator ==(Windows.ApplicationModel.Core.CoreApplicationViewTitleBar, Windows.ApplicationModel.Core.CoreApplicationViewTitleBar)
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.operator !=(Windows.ApplicationModel.Core.CoreApplicationViewTitleBar, Windows.ApplicationModel.Core.CoreApplicationViewTitleBar)
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.Equals(Windows.ApplicationModel.Core.CoreApplicationViewTitleBar)
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.WinRT.IWinRTObject.QueryInterfaceCache.get

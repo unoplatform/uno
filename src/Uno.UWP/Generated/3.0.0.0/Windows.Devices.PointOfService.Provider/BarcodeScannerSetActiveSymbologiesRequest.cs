@@ -23,12 +23,6 @@ namespace Windows.Devices.PointOfService.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest.operator ==(Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest, Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest.operator !=(Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest, Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest.Equals(Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

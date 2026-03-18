@@ -133,7 +133,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher CreateWatcher()
@@ -162,12 +161,6 @@ namespace Windows.Devices.Perception
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionFrameSourceAccessStatus> PerceptionInfraredFrameSource.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionFrameSourceAccessStatus%3E%20PerceptionInfraredFrameSource.RequestAccessAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.operator ==(Windows.Devices.Perception.PerceptionInfraredFrameSource, Windows.Devices.Perception.PerceptionInfraredFrameSource)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.operator !=(Windows.Devices.Perception.PerceptionInfraredFrameSource, Windows.Devices.Perception.PerceptionInfraredFrameSource)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.Equals(Windows.Devices.Perception.PerceptionInfraredFrameSource)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSource.WinRT.IWinRTObject.QueryInterfaceCache.get

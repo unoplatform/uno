@@ -33,12 +33,6 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachmentStateChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachmentStateChangedEventArgs.operator ==(Windows.Devices.AllJoyn.AllJoynBusAttachmentStateChangedEventArgs, Windows.Devices.AllJoyn.AllJoynBusAttachmentStateChangedEventArgs)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachmentStateChangedEventArgs.operator !=(Windows.Devices.AllJoyn.AllJoynBusAttachmentStateChangedEventArgs, Windows.Devices.AllJoyn.AllJoynBusAttachmentStateChangedEventArgs)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachmentStateChangedEventArgs.Equals(Windows.Devices.AllJoyn.AllJoynBusAttachmentStateChangedEventArgs)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachmentStateChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachmentStateChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachmentStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachmentStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachmentStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

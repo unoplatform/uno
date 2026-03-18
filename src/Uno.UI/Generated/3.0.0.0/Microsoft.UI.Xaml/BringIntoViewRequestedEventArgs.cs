@@ -16,12 +16,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property TargetRect
 		// Skipping already declared property VerticalAlignmentRatio
 		// Skipping already declared property VerticalOffset
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.operator ==(Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs, Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.operator !=(Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs, Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.Equals(Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.AnimationDesired.get
@@ -38,7 +32,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.VerticalAlignmentRatio.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.VerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.VerticalOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

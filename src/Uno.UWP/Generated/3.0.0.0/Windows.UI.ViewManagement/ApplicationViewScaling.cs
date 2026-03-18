@@ -23,7 +23,6 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewScaling.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TrySetDisableLayoutScaling(bool disableLayoutScaling)
@@ -32,12 +31,6 @@ namespace Windows.UI.ViewManagement
 		}
 #endif
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewScaling.DisableLayoutScaling.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewScaling.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewScaling.operator ==(Windows.UI.ViewManagement.ApplicationViewScaling, Windows.UI.ViewManagement.ApplicationViewScaling)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewScaling.operator !=(Windows.UI.ViewManagement.ApplicationViewScaling, Windows.UI.ViewManagement.ApplicationViewScaling)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewScaling.Equals(Windows.UI.ViewManagement.ApplicationViewScaling)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewScaling.Equals(object)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewScaling.GetHashCode()
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewScaling.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewScaling.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewScaling.WinRT.IWinRTObject.QueryInterfaceCache.get

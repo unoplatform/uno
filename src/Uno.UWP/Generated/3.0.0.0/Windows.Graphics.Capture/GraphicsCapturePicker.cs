@@ -16,12 +16,6 @@ namespace Windows.Graphics.Capture
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Capture.GraphicsCapturePicker.GraphicsCapturePicker()
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCapturePicker.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCapturePicker.operator ==(Windows.Graphics.Capture.GraphicsCapturePicker, Windows.Graphics.Capture.GraphicsCapturePicker)
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCapturePicker.operator !=(Windows.Graphics.Capture.GraphicsCapturePicker, Windows.Graphics.Capture.GraphicsCapturePicker)
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCapturePicker.Equals(Windows.Graphics.Capture.GraphicsCapturePicker)
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCapturePicker.Equals(object)
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCapturePicker.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Capture.GraphicsCapturePicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Capture.GraphicsCapturePicker.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Capture.GraphicsCapturePicker.WinRT.IWinRTObject.QueryInterfaceCache.get

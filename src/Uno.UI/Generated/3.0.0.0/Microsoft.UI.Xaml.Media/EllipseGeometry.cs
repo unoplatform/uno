@@ -82,16 +82,9 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.EllipseGeometry()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.CenterProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.RadiusXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.RadiusYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.operator ==(Microsoft.UI.Xaml.Media.EllipseGeometry, Microsoft.UI.Xaml.Media.EllipseGeometry)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.operator !=(Microsoft.UI.Xaml.Media.EllipseGeometry, Microsoft.UI.Xaml.Media.EllipseGeometry)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.Equals(Microsoft.UI.Xaml.Media.EllipseGeometry)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.Center.get
@@ -100,7 +93,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.RadiusX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.RadiusY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.RadiusY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -33,12 +33,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs.operator ==(Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs, Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs.operator !=(Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs, Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs.Equals(Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppCaptureMicrophoneCaptureStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -43,12 +43,6 @@ namespace Windows.Devices.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Background.DeviceServicingDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Background.DeviceServicingDetails.operator ==(Windows.Devices.Background.DeviceServicingDetails, Windows.Devices.Background.DeviceServicingDetails)
-		// Forced skipping of method Windows.Devices.Background.DeviceServicingDetails.operator !=(Windows.Devices.Background.DeviceServicingDetails, Windows.Devices.Background.DeviceServicingDetails)
-		// Forced skipping of method Windows.Devices.Background.DeviceServicingDetails.Equals(Windows.Devices.Background.DeviceServicingDetails)
-		// Forced skipping of method Windows.Devices.Background.DeviceServicingDetails.Equals(object)
-		// Forced skipping of method Windows.Devices.Background.DeviceServicingDetails.GetHashCode()
 		// Forced skipping of method Windows.Devices.Background.DeviceServicingDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Background.DeviceServicingDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Background.DeviceServicingDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

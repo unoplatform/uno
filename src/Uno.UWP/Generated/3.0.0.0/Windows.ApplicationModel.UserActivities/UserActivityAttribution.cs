@@ -66,12 +66,6 @@ namespace Windows.ApplicationModel.UserActivities
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.UserActivityAttribution(System.Uri)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.operator ==(Windows.ApplicationModel.UserActivities.UserActivityAttribution, Windows.ApplicationModel.UserActivities.UserActivityAttribution)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.operator !=(Windows.ApplicationModel.UserActivities.UserActivityAttribution, Windows.ApplicationModel.UserActivities.UserActivityAttribution)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.Equals(Windows.ApplicationModel.UserActivities.UserActivityAttribution)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.WinRT.IWinRTObject.QueryInterfaceCache.get

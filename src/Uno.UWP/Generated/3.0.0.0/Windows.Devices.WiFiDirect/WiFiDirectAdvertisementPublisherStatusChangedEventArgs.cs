@@ -33,12 +33,6 @@ namespace Windows.Devices.WiFiDirect
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs.operator ==(Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs, Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs.operator !=(Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs, Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs.Equals(Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

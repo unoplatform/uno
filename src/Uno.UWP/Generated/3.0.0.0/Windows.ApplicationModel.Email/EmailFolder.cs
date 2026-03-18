@@ -109,12 +109,6 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.operator ==(Windows.ApplicationModel.Email.EmailFolder, Windows.ApplicationModel.Email.EmailFolder)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.operator !=(Windows.ApplicationModel.Email.EmailFolder, Windows.ApplicationModel.Email.EmailFolder)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.Equals(Windows.ApplicationModel.Email.EmailFolder)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -23,12 +23,6 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.operator ==(Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection, Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection)
-		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.operator !=(Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection, Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection)
-		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.Equals(Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection)
-		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -61,7 +55,6 @@ namespace Windows.UI.Composition.Interactions
 #endif
 		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.Count.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Composition.Interactions.ICompositionInteractionSource>
 		// Processing: System.Collections.IEnumerable

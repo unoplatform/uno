@@ -16,12 +16,6 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.MidiPolyphonicKeyPressureMessage(byte, byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.MidiPolyphonicKeyPressureMessage(byte, byte, byte)
-		// Forced skipping of method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.operator ==(Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage, Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.operator !=(Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage, Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.Equals(Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.Equals(object)
-		// Forced skipping of method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.GetHashCode()
 		// Forced skipping of method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Midi.MidiPolyphonicKeyPressureMessage.WinRT.IWinRTObject.QueryInterfaceCache.get

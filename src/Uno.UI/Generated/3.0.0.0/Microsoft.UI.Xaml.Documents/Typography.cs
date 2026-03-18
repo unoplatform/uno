@@ -357,7 +357,6 @@ namespace Microsoft.UI.Xaml.Documents
 			typeof(global::Microsoft.UI.Xaml.Documents.Typography),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.FontVariants)));
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static int GetAnnotationAlternates(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -1003,12 +1002,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet8Property.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet9Property.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.VariantsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.operator ==(Microsoft.UI.Xaml.Documents.Typography, Microsoft.UI.Xaml.Documents.Typography)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.operator !=(Microsoft.UI.Xaml.Documents.Typography, Microsoft.UI.Xaml.Documents.Typography)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.Equals(Microsoft.UI.Xaml.Documents.Typography)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -17,11 +17,6 @@ namespace Windows.UI.Input.Preview.Injection
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.InjectedInputRectangle(int, int, int, int)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.operator ==(Windows.UI.Input.Preview.Injection.InjectedInputRectangle, Windows.UI.Input.Preview.Injection.InjectedInputRectangle)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.operator !=(Windows.UI.Input.Preview.Injection.InjectedInputRectangle, Windows.UI.Input.Preview.Injection.InjectedInputRectangle)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.Equals(Windows.UI.Input.Preview.Injection.InjectedInputRectangle)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.GetHashCode()
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputRectangle.Left
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputRectangle.Top
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputRectangle.Bottom

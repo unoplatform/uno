@@ -33,7 +33,6 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus>> RequestAccessForCapabilitiesAsync(global::System.Collections.Generic.IEnumerable<string> capabilityNames)
@@ -62,12 +61,6 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 			throw new global::System.NotImplementedException("The member AppCapability AppCapability.CreateWithProcessIdForUser(User user, string capabilityName, uint pid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCapability%20AppCapability.CreateWithProcessIdForUser%28User%20user%2C%20string%20capabilityName%2C%20uint%20pid%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.operator ==(Windows.Security.Authorization.AppCapabilityAccess.AppCapability, Windows.Security.Authorization.AppCapabilityAccess.AppCapability)
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.operator !=(Windows.Security.Authorization.AppCapabilityAccess.AppCapability, Windows.Security.Authorization.AppCapabilityAccess.AppCapability)
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.Equals(Windows.Security.Authorization.AppCapabilityAccess.AppCapability)
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.Equals(object)
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.GetHashCode()
 		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.WinRT.IWinRTObject.QueryInterfaceCache.get

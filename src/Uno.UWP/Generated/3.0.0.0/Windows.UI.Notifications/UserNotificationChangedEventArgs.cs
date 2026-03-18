@@ -33,12 +33,6 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.UserNotificationChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Notifications.UserNotificationChangedEventArgs.operator ==(Windows.UI.Notifications.UserNotificationChangedEventArgs, Windows.UI.Notifications.UserNotificationChangedEventArgs)
-		// Forced skipping of method Windows.UI.Notifications.UserNotificationChangedEventArgs.operator !=(Windows.UI.Notifications.UserNotificationChangedEventArgs, Windows.UI.Notifications.UserNotificationChangedEventArgs)
-		// Forced skipping of method Windows.UI.Notifications.UserNotificationChangedEventArgs.Equals(Windows.UI.Notifications.UserNotificationChangedEventArgs)
-		// Forced skipping of method Windows.UI.Notifications.UserNotificationChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Notifications.UserNotificationChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Notifications.UserNotificationChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.UserNotificationChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.UserNotificationChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

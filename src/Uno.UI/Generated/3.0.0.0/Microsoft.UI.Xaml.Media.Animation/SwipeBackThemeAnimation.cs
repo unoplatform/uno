@@ -82,16 +82,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.SwipeBackThemeAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.FromHorizontalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.FromVerticalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.TargetNameProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation, Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation, Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.FromHorizontalOffset.get
@@ -100,7 +93,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.FromVerticalOffset.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.TargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeBackThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

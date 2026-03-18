@@ -64,12 +64,6 @@ namespace Windows.ApplicationModel.Search
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.LocalContentSuggestionSettings()
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.operator ==(Windows.ApplicationModel.Search.LocalContentSuggestionSettings, Windows.ApplicationModel.Search.LocalContentSuggestionSettings)
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.operator !=(Windows.ApplicationModel.Search.LocalContentSuggestionSettings, Windows.ApplicationModel.Search.LocalContentSuggestionSettings)
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.Equals(Windows.ApplicationModel.Search.LocalContentSuggestionSettings)
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

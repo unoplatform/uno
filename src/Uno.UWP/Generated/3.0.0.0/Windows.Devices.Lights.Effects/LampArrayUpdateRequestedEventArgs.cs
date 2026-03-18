@@ -23,12 +23,6 @@ namespace Windows.Devices.Lights.Effects
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs.operator ==(Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs, Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs.operator !=(Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs, Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs.Equals(Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

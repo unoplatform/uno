@@ -50,12 +50,6 @@ namespace Windows.Gaming.Input.ForceFeedback
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.PeriodicForceEffect(Windows.Gaming.Input.ForceFeedback.PeriodicForceEffectKind)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.operator ==(Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect, Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.operator !=(Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect, Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.Equals(Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.WinRT.IWinRTObject.QueryInterfaceCache.get

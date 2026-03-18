@@ -51,12 +51,6 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.VideoDisplayProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Media.VideoDisplayProperties.operator ==(Windows.Media.VideoDisplayProperties, Windows.Media.VideoDisplayProperties)
-		// Forced skipping of method Windows.Media.VideoDisplayProperties.operator !=(Windows.Media.VideoDisplayProperties, Windows.Media.VideoDisplayProperties)
-		// Forced skipping of method Windows.Media.VideoDisplayProperties.Equals(Windows.Media.VideoDisplayProperties)
-		// Forced skipping of method Windows.Media.VideoDisplayProperties.Equals(object)
-		// Forced skipping of method Windows.Media.VideoDisplayProperties.GetHashCode()
 		// Forced skipping of method Windows.Media.VideoDisplayProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.VideoDisplayProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.VideoDisplayProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

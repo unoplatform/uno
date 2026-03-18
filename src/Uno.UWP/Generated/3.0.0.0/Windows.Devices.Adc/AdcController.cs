@@ -67,7 +67,6 @@ namespace Windows.Devices.Adc
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Adc.AdcController.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Adc.AdcController>> GetControllersAsync(global::Windows.Devices.Adc.Provider.IAdcProvider provider)
@@ -82,12 +81,6 @@ namespace Windows.Devices.Adc
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AdcController> AdcController.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdcController%3E%20AdcController.GetDefaultAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Adc.AdcController.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Adc.AdcController.operator ==(Windows.Devices.Adc.AdcController, Windows.Devices.Adc.AdcController)
-		// Forced skipping of method Windows.Devices.Adc.AdcController.operator !=(Windows.Devices.Adc.AdcController, Windows.Devices.Adc.AdcController)
-		// Forced skipping of method Windows.Devices.Adc.AdcController.Equals(Windows.Devices.Adc.AdcController)
-		// Forced skipping of method Windows.Devices.Adc.AdcController.Equals(object)
-		// Forced skipping of method Windows.Devices.Adc.AdcController.GetHashCode()
 		// Forced skipping of method Windows.Devices.Adc.AdcController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Adc.AdcController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Adc.AdcController.WinRT.IWinRTObject.QueryInterfaceCache.get

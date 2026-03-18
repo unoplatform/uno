@@ -17,11 +17,6 @@ namespace Windows.Devices.I2c
 		}
 #endif
 		// Forced skipping of method Windows.Devices.I2c.I2cTransferResult.I2cTransferResult(Windows.Devices.I2c.I2cTransferStatus, uint)
-		// Forced skipping of method Windows.Devices.I2c.I2cTransferResult.operator ==(Windows.Devices.I2c.I2cTransferResult, Windows.Devices.I2c.I2cTransferResult)
-		// Forced skipping of method Windows.Devices.I2c.I2cTransferResult.operator !=(Windows.Devices.I2c.I2cTransferResult, Windows.Devices.I2c.I2cTransferResult)
-		// Forced skipping of method Windows.Devices.I2c.I2cTransferResult.Equals(Windows.Devices.I2c.I2cTransferResult)
-		// Forced skipping of method Windows.Devices.I2c.I2cTransferResult.Equals(object)
-		// Forced skipping of method Windows.Devices.I2c.I2cTransferResult.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Devices.I2c.I2cTransferStatus Status;
 #endif

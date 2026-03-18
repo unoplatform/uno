@@ -47,12 +47,6 @@ namespace Windows.Devices.Perception.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.operator ==(Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest, Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.operator !=(Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest, Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.Equals(Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

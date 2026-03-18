@@ -38,7 +38,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.KnownRuimFilePaths.As<I>()
 		// Forced skipping of method Windows.Networking.NetworkOperators.KnownRuimFilePaths.EFSpn.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.KnownRuimFilePaths.Gid1.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.KnownRuimFilePaths.Gid2.get

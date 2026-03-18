@@ -33,12 +33,6 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSessionStartResult.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSessionStartResult.operator ==(Windows.Media.Miracast.MiracastReceiverSessionStartResult, Windows.Media.Miracast.MiracastReceiverSessionStartResult)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSessionStartResult.operator !=(Windows.Media.Miracast.MiracastReceiverSessionStartResult, Windows.Media.Miracast.MiracastReceiverSessionStartResult)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSessionStartResult.Equals(Windows.Media.Miracast.MiracastReceiverSessionStartResult)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSessionStartResult.Equals(object)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSessionStartResult.GetHashCode()
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSessionStartResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSessionStartResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSessionStartResult.WinRT.IWinRTObject.QueryInterfaceCache.get

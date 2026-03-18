@@ -22,19 +22,10 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionTarget.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionTarget.CompositionTarget(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.CompositionTarget.operator ==(Windows.UI.Composition.CompositionTarget, Windows.UI.Composition.CompositionTarget)
-		// Forced skipping of method Windows.UI.Composition.CompositionTarget.operator !=(Windows.UI.Composition.CompositionTarget, Windows.UI.Composition.CompositionTarget)
-		// Forced skipping of method Windows.UI.Composition.CompositionTarget.Equals(Windows.UI.Composition.CompositionTarget)
-		// Forced skipping of method Windows.UI.Composition.CompositionTarget.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionTarget.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.CompositionTarget.CompositionTarget(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.CompositionTarget.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionTarget.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionTarget.Root.get
 		// Forced skipping of method Windows.UI.Composition.CompositionTarget.Root.set
-		// Forced skipping of method Windows.UI.Composition.CompositionTarget.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionTarget.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

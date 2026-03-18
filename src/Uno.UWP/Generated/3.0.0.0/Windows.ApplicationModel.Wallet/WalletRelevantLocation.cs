@@ -44,12 +44,6 @@ namespace Windows.ApplicationModel.Wallet
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.WalletRelevantLocation()
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.operator ==(Windows.ApplicationModel.Wallet.WalletRelevantLocation, Windows.ApplicationModel.Wallet.WalletRelevantLocation)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.operator !=(Windows.ApplicationModel.Wallet.WalletRelevantLocation, Windows.ApplicationModel.Wallet.WalletRelevantLocation)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.Equals(Windows.ApplicationModel.Wallet.WalletRelevantLocation)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.WinRT.IWinRTObject.QueryInterfaceCache.get

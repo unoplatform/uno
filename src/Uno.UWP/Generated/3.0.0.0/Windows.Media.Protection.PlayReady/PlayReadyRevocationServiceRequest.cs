@@ -74,12 +74,6 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.PlayReadyRevocationServiceRequest()
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.operator ==(Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest, Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.operator !=(Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest, Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.Equals(Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

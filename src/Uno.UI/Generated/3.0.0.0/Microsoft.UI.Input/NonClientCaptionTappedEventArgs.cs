@@ -10,12 +10,6 @@ namespace Microsoft.UI.Input
 	{
 		// Skipping already declared property Point
 		// Skipping already declared property PointerDeviceType
-		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.operator ==(Microsoft.UI.Input.NonClientCaptionTappedEventArgs, Microsoft.UI.Input.NonClientCaptionTappedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.operator !=(Microsoft.UI.Input.NonClientCaptionTappedEventArgs, Microsoft.UI.Input.NonClientCaptionTappedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.Equals(Microsoft.UI.Input.NonClientCaptionTappedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

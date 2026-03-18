@@ -13,12 +13,6 @@ namespace Microsoft.UI.Xaml.Media
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.operator ==(Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs, Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.operator !=(Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs, Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.Equals(Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

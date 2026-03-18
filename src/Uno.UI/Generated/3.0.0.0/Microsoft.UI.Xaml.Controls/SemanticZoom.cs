@@ -127,18 +127,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.SemanticZoom()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.CanChangeViewsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.IsZoomOutButtonEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.IsZoomedInViewActiveProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedInViewProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedOutViewProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.operator ==(Microsoft.UI.Xaml.Controls.SemanticZoom, Microsoft.UI.Xaml.Controls.SemanticZoom)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.operator !=(Microsoft.UI.Xaml.Controls.SemanticZoom, Microsoft.UI.Xaml.Controls.SemanticZoom)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.Equals(Microsoft.UI.Xaml.Controls.SemanticZoom)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -162,7 +155,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedInView.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedOutView.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedOutView.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

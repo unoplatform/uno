@@ -30,12 +30,6 @@ namespace Windows.Security.EnterpriseData
 		}
 #endif
 		// Forced skipping of method Windows.Security.EnterpriseData.FileUnprotectOptions.FileUnprotectOptions(bool)
-		// Forced skipping of method Windows.Security.EnterpriseData.FileUnprotectOptions.FromAbi(nint)
-		// Forced skipping of method Windows.Security.EnterpriseData.FileUnprotectOptions.operator ==(Windows.Security.EnterpriseData.FileUnprotectOptions, Windows.Security.EnterpriseData.FileUnprotectOptions)
-		// Forced skipping of method Windows.Security.EnterpriseData.FileUnprotectOptions.operator !=(Windows.Security.EnterpriseData.FileUnprotectOptions, Windows.Security.EnterpriseData.FileUnprotectOptions)
-		// Forced skipping of method Windows.Security.EnterpriseData.FileUnprotectOptions.Equals(Windows.Security.EnterpriseData.FileUnprotectOptions)
-		// Forced skipping of method Windows.Security.EnterpriseData.FileUnprotectOptions.Equals(object)
-		// Forced skipping of method Windows.Security.EnterpriseData.FileUnprotectOptions.GetHashCode()
 		// Forced skipping of method Windows.Security.EnterpriseData.FileUnprotectOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.EnterpriseData.FileUnprotectOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.EnterpriseData.FileUnprotectOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

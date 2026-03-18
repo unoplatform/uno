@@ -70,17 +70,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.ListBox()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SelectionModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SingleSelectionFollowsFocusProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.ListBox(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.operator ==(Microsoft.UI.Xaml.Controls.ListBox, Microsoft.UI.Xaml.Controls.ListBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.operator !=(Microsoft.UI.Xaml.Controls.ListBox, Microsoft.UI.Xaml.Controls.ListBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.Equals(Microsoft.UI.Xaml.Controls.ListBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.ListBox(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -102,7 +93,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SelectionMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SingleSelectionFollowsFocus.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SingleSelectionFollowsFocus.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

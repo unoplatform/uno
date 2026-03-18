@@ -34,22 +34,14 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Skipping already declared property Points
 		// Skipping already declared method Microsoft.UI.Xaml.Shapes.Polyline.Polyline()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.Polyline()
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.FillRuleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.PointsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.operator ==(Microsoft.UI.Xaml.Shapes.Polyline, Microsoft.UI.Xaml.Shapes.Polyline)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.operator !=(Microsoft.UI.Xaml.Shapes.Polyline, Microsoft.UI.Xaml.Shapes.Polyline)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.Equals(Microsoft.UI.Xaml.Shapes.Polyline)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.FillRule.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.FillRule.set
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.Points.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.Points.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

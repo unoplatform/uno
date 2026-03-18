@@ -63,12 +63,6 @@ namespace Windows.ApplicationModel.Resources.Management
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate.operator ==(Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate, Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate.operator !=(Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate, Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate.Equals(Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -8,17 +8,8 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class InputCustomCursor : global::Microsoft.UI.Input.InputCursor
 	{
-		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.InputCustomCursor(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.operator ==(Microsoft.UI.Input.InputCustomCursor, Microsoft.UI.Input.InputCustomCursor)
-		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.operator !=(Microsoft.UI.Input.InputCustomCursor, Microsoft.UI.Input.InputCustomCursor)
-		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.Equals(Microsoft.UI.Input.InputCustomCursor)
-		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.InputCustomCursor(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

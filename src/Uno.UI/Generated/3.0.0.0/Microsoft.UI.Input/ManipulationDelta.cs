@@ -17,11 +17,6 @@ namespace Microsoft.UI.Input
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.ManipulationDelta.ManipulationDelta(Windows.Foundation.Point, float, float, float)
-		// Forced skipping of method Microsoft.UI.Input.ManipulationDelta.operator ==(Microsoft.UI.Input.ManipulationDelta, Microsoft.UI.Input.ManipulationDelta)
-		// Forced skipping of method Microsoft.UI.Input.ManipulationDelta.operator !=(Microsoft.UI.Input.ManipulationDelta, Microsoft.UI.Input.ManipulationDelta)
-		// Forced skipping of method Microsoft.UI.Input.ManipulationDelta.Equals(Microsoft.UI.Input.ManipulationDelta)
-		// Forced skipping of method Microsoft.UI.Input.ManipulationDelta.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.ManipulationDelta.GetHashCode()
 		// Skipping already declared field Microsoft.UI.Input.ManipulationDelta.Translation
 		// Skipping already declared field Microsoft.UI.Input.ManipulationDelta.Scale
 		// Skipping already declared field Microsoft.UI.Input.ManipulationDelta.Rotation

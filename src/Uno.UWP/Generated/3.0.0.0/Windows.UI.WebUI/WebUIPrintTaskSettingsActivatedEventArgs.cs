@@ -63,12 +63,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs, Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs, Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

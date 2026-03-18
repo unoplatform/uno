@@ -15,12 +15,6 @@ namespace Windows.UI.Input
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
 		// Skipping already declared property Velocities
-		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.operator ==(Windows.UI.Input.ManipulationUpdatedEventArgs, Windows.UI.Input.ManipulationUpdatedEventArgs)
-		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.operator !=(Windows.UI.Input.ManipulationUpdatedEventArgs, Windows.UI.Input.ManipulationUpdatedEventArgs)
-		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.Equals(Windows.UI.Input.ManipulationUpdatedEventArgs)
-		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

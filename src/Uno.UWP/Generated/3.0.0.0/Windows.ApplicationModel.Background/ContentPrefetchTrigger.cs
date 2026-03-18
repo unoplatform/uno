@@ -34,12 +34,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.ContentPrefetchTrigger(System.TimeSpan)
-		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.operator ==(Windows.ApplicationModel.Background.ContentPrefetchTrigger, Windows.ApplicationModel.Background.ContentPrefetchTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.operator !=(Windows.ApplicationModel.Background.ContentPrefetchTrigger, Windows.ApplicationModel.Background.ContentPrefetchTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.Equals(Windows.ApplicationModel.Background.ContentPrefetchTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

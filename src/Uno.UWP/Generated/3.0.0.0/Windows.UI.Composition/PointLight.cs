@@ -139,12 +139,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.PointLight.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.PointLight.operator ==(Windows.UI.Composition.PointLight, Windows.UI.Composition.PointLight)
-		// Forced skipping of method Windows.UI.Composition.PointLight.operator !=(Windows.UI.Composition.PointLight, Windows.UI.Composition.PointLight)
-		// Forced skipping of method Windows.UI.Composition.PointLight.Equals(Windows.UI.Composition.PointLight)
-		// Forced skipping of method Windows.UI.Composition.PointLight.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.PointLight.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.PointLight.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.PointLight.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.PointLight.Color.get
@@ -165,7 +159,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.PointLight.Offset.set
 		// Forced skipping of method Windows.UI.Composition.PointLight.QuadraticAttenuation.get
 		// Forced skipping of method Windows.UI.Composition.PointLight.QuadraticAttenuation.set
-		// Forced skipping of method Windows.UI.Composition.PointLight.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.PointLight.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

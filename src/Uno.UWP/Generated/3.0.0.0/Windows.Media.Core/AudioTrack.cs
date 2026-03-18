@@ -87,12 +87,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.AudioTrack.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.AudioTrack.operator ==(Windows.Media.Core.AudioTrack, Windows.Media.Core.AudioTrack)
-		// Forced skipping of method Windows.Media.Core.AudioTrack.operator !=(Windows.Media.Core.AudioTrack, Windows.Media.Core.AudioTrack)
-		// Forced skipping of method Windows.Media.Core.AudioTrack.Equals(Windows.Media.Core.AudioTrack)
-		// Forced skipping of method Windows.Media.Core.AudioTrack.Equals(object)
-		// Forced skipping of method Windows.Media.Core.AudioTrack.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.AudioTrack.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.AudioTrack.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.AudioTrack.WinRT.IWinRTObject.QueryInterfaceCache.get

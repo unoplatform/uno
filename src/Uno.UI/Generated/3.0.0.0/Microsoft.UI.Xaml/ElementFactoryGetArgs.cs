@@ -44,14 +44,6 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.ElementFactoryGetArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.ElementFactoryGetArgs(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.operator ==(Microsoft.UI.Xaml.ElementFactoryGetArgs, Microsoft.UI.Xaml.ElementFactoryGetArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.operator !=(Microsoft.UI.Xaml.ElementFactoryGetArgs, Microsoft.UI.Xaml.ElementFactoryGetArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.Equals(Microsoft.UI.Xaml.ElementFactoryGetArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.ElementFactoryGetArgs(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -60,7 +52,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.Data.set
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.Parent.get
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.Parent.set
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -20,12 +20,6 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared property ForegroundColor
 		// Skipping already declared property InactiveBackgroundColor
 		// Skipping already declared property InactiveForegroundColor
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.operator ==(Windows.UI.ViewManagement.ApplicationViewTitleBar, Windows.UI.ViewManagement.ApplicationViewTitleBar)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.operator !=(Windows.UI.ViewManagement.ApplicationViewTitleBar, Windows.UI.ViewManagement.ApplicationViewTitleBar)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.Equals(Windows.UI.ViewManagement.ApplicationViewTitleBar)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.Equals(object)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.GetHashCode()
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.WinRT.IWinRTObject.QueryInterfaceCache.get

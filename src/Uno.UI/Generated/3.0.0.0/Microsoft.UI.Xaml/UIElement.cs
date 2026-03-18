@@ -696,7 +696,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property XYFocusUp
 		// Skipping already declared property XYFocusUpNavigationStrategy
 		// Skipping already declared property XamlRoot
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryStartDirectManipulation(global::Microsoft.UI.Xaml.Input.Pointer value)
@@ -785,14 +784,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XYFocusRightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XYFocusUpNavigationStrategyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XYFocusUpProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.UIElement(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.operator ==(Microsoft.UI.Xaml.UIElement, Microsoft.UI.Xaml.UIElement)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.operator !=(Microsoft.UI.Xaml.UIElement, Microsoft.UI.Xaml.UIElement)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.Equals(Microsoft.UI.Xaml.UIElement)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.UIElement(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.WinRT.IWinRTObject.NativeObject.get
 #if false || false || false || false || false || false || __NETSTD_REFERENCE__
@@ -931,7 +922,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.Tapped.add
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.Tapped.remove
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.OnCreateAutomationPeer()
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.Microsoft.UI.Xaml.IUIElementOverrides.OnCreateAutomationPeer()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void OnDisconnectVisualChildren()
@@ -939,7 +929,6 @@ namespace Microsoft.UI.Xaml
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "void UIElement.OnDisconnectVisualChildren()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.Microsoft.UI.Xaml.IUIElementOverrides.OnDisconnectVisualChildren()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.IEnumerable<global::Windows.Foundation.Point>> FindSubElementsForTouchTargeting(global::Windows.Foundation.Point point, global::Windows.Foundation.Rect boundingRect)
@@ -947,15 +936,10 @@ namespace Microsoft.UI.Xaml
 			throw new global::System.NotImplementedException("The member IEnumerable<IEnumerable<Point>> UIElement.FindSubElementsForTouchTargeting(Point point, Rect boundingRect) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerable%3CIEnumerable%3CPoint%3E%3E%20UIElement.FindSubElementsForTouchTargeting%28Point%20point%2C%20Rect%20boundingRect%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.Microsoft.UI.Xaml.IUIElementOverrides.FindSubElementsForTouchTargeting(Windows.Foundation.Point, Windows.Foundation.Rect)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.GetChildrenInTabFocusOrder()
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.Microsoft.UI.Xaml.IUIElementOverrides.GetChildrenInTabFocusOrder()
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.OnKeyboardAcceleratorInvoked(Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.Microsoft.UI.Xaml.IUIElementOverrides.OnKeyboardAcceleratorInvoked(Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.OnProcessKeyboardAccelerators(Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.Microsoft.UI.Xaml.IUIElementOverrides.OnProcessKeyboardAccelerators(Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.OnBringIntoViewRequested(Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.Microsoft.UI.Xaml.IUIElementOverrides.OnBringIntoViewRequested(Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void PopulatePropertyInfoOverride(string propertyName, global::Microsoft.UI.Composition.AnimationPropertyInfo animationPropertyInfo)
@@ -963,7 +947,6 @@ namespace Microsoft.UI.Xaml
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "void UIElement.PopulatePropertyInfoOverride(string propertyName, AnimationPropertyInfo animationPropertyInfo)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.Microsoft.UI.Xaml.IUIElementOverrides.PopulatePropertyInfoOverride(string, Microsoft.UI.Composition.AnimationPropertyInfo)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void PopulatePropertyInfo(string propertyName, global::Microsoft.UI.Composition.AnimationPropertyInfo propertyInfo)
@@ -1104,7 +1087,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XYFocusUpNavigationStrategy.set
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XamlRoot.get
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XamlRoot.set
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

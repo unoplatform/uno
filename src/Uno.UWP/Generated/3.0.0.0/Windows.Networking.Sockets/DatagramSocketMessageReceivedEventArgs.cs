@@ -43,13 +43,7 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs.FromAbi(nint)
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs.~DatagramSocketMessageReceivedEventArgs()
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs.operator ==(Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs, Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs)
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs.operator !=(Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs, Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs)
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs.Equals(Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs)
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

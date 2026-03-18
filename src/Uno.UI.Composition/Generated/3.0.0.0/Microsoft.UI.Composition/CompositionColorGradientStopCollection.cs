@@ -11,12 +11,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.operator ==(Microsoft.UI.Composition.CompositionColorGradientStopCollection, Microsoft.UI.Composition.CompositionColorGradientStopCollection)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.operator !=(Microsoft.UI.Composition.CompositionColorGradientStopCollection, Microsoft.UI.Composition.CompositionColorGradientStopCollection)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Equals(Microsoft.UI.Composition.CompositionColorGradientStopCollection)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

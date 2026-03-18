@@ -36,12 +36,6 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDCustomData.NDCustomData(byte[], byte[])
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDCustomData.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDCustomData.operator ==(Windows.Media.Protection.PlayReady.NDCustomData, Windows.Media.Protection.PlayReady.NDCustomData)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDCustomData.operator !=(Windows.Media.Protection.PlayReady.NDCustomData, Windows.Media.Protection.PlayReady.NDCustomData)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDCustomData.Equals(Windows.Media.Protection.PlayReady.NDCustomData)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDCustomData.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDCustomData.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDCustomData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDCustomData.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDCustomData.WinRT.IWinRTObject.QueryInterfaceCache.get

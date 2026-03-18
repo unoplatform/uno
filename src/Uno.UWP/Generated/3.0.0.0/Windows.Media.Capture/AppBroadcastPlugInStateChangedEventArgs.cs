@@ -23,12 +23,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs.operator ==(Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs, Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs.operator !=(Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs, Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs.Equals(Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

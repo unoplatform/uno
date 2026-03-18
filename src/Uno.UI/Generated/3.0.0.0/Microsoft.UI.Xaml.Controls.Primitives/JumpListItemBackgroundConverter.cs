@@ -60,15 +60,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.JumpListItemBackgroundConverter()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.DisabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.EnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.operator ==(Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter, Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.operator !=(Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter, Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Equals(Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -89,7 +82,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Disabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Enabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Enabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Data.IValueConverter
 	}

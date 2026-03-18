@@ -23,12 +23,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReadingChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReadingChangedEventArgs.operator ==(Windows.Devices.Sensors.OrientationSensorReadingChangedEventArgs, Windows.Devices.Sensors.OrientationSensorReadingChangedEventArgs)
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReadingChangedEventArgs.operator !=(Windows.Devices.Sensors.OrientationSensorReadingChangedEventArgs, Windows.Devices.Sensors.OrientationSensorReadingChangedEventArgs)
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReadingChangedEventArgs.Equals(Windows.Devices.Sensors.OrientationSensorReadingChangedEventArgs)
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReadingChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReadingChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReadingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReadingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReadingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

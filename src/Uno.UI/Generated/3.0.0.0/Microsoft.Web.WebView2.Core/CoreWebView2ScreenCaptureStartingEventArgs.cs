@@ -51,12 +51,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

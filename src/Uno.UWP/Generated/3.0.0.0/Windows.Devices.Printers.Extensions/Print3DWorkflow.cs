@@ -37,12 +37,6 @@ namespace Windows.Devices.Printers.Extensions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.operator ==(Windows.Devices.Printers.Extensions.Print3DWorkflow, Windows.Devices.Printers.Extensions.Print3DWorkflow)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.operator !=(Windows.Devices.Printers.Extensions.Print3DWorkflow, Windows.Devices.Printers.Extensions.Print3DWorkflow)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.Equals(Windows.Devices.Printers.Extensions.Print3DWorkflow)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.Equals(object)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.GetHashCode()
 		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.WinRT.IWinRTObject.QueryInterfaceCache.get

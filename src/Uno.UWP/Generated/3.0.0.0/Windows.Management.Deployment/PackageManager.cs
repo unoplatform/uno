@@ -26,12 +26,6 @@ namespace Windows.Management.Deployment
 		}
 #endif
 		// Forced skipping of method Windows.Management.Deployment.PackageManager.PackageManager()
-		// Forced skipping of method Windows.Management.Deployment.PackageManager.FromAbi(nint)
-		// Forced skipping of method Windows.Management.Deployment.PackageManager.operator ==(Windows.Management.Deployment.PackageManager, Windows.Management.Deployment.PackageManager)
-		// Forced skipping of method Windows.Management.Deployment.PackageManager.operator !=(Windows.Management.Deployment.PackageManager, Windows.Management.Deployment.PackageManager)
-		// Forced skipping of method Windows.Management.Deployment.PackageManager.Equals(Windows.Management.Deployment.PackageManager)
-		// Forced skipping of method Windows.Management.Deployment.PackageManager.Equals(object)
-		// Forced skipping of method Windows.Management.Deployment.PackageManager.GetHashCode()
 		// Forced skipping of method Windows.Management.Deployment.PackageManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Management.Deployment.PackageManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Management.Deployment.PackageManager.WinRT.IWinRTObject.QueryInterfaceCache.get

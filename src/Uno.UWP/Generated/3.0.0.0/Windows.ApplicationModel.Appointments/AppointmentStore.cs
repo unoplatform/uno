@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.operator ==(Windows.ApplicationModel.Appointments.AppointmentStore, Windows.ApplicationModel.Appointments.AppointmentStore)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.operator !=(Windows.ApplicationModel.Appointments.AppointmentStore, Windows.ApplicationModel.Appointments.AppointmentStore)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.Equals(Windows.ApplicationModel.Appointments.AppointmentStore)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStore.WinRT.IWinRTObject.QueryInterfaceCache.get

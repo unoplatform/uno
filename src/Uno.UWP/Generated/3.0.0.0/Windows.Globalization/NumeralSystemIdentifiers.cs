@@ -488,7 +488,6 @@ namespace Windows.Globalization
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.As<I>()
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Arab.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.ArabExt.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Bali.get

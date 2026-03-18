@@ -55,12 +55,6 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.operator ==(Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager, Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.operator !=(Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager, Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.Equals(Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -68,12 +68,6 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.ToastCollection(string, string, string, System.Uri)
-		// Forced skipping of method Windows.UI.Notifications.ToastCollection.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Notifications.ToastCollection.operator ==(Windows.UI.Notifications.ToastCollection, Windows.UI.Notifications.ToastCollection)
-		// Forced skipping of method Windows.UI.Notifications.ToastCollection.operator !=(Windows.UI.Notifications.ToastCollection, Windows.UI.Notifications.ToastCollection)
-		// Forced skipping of method Windows.UI.Notifications.ToastCollection.Equals(Windows.UI.Notifications.ToastCollection)
-		// Forced skipping of method Windows.UI.Notifications.ToastCollection.Equals(object)
-		// Forced skipping of method Windows.UI.Notifications.ToastCollection.GetHashCode()
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

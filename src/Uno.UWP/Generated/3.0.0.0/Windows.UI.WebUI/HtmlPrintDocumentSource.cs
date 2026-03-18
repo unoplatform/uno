@@ -135,12 +135,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.operator ==(Windows.UI.WebUI.HtmlPrintDocumentSource, Windows.UI.WebUI.HtmlPrintDocumentSource)
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.operator !=(Windows.UI.WebUI.HtmlPrintDocumentSource, Windows.UI.WebUI.HtmlPrintDocumentSource)
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.Equals(Windows.UI.WebUI.HtmlPrintDocumentSource)
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.WinRT.IWinRTObject.QueryInterfaceCache.get

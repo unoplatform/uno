@@ -12,12 +12,6 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared property HighContrastScheme
 		// Skipping already declared method Windows.UI.ViewManagement.AccessibilitySettings.AccessibilitySettings()
 		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.AccessibilitySettings()
-		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.operator ==(Windows.UI.ViewManagement.AccessibilitySettings, Windows.UI.ViewManagement.AccessibilitySettings)
-		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.operator !=(Windows.UI.ViewManagement.AccessibilitySettings, Windows.UI.ViewManagement.AccessibilitySettings)
-		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.Equals(Windows.UI.ViewManagement.AccessibilitySettings)
-		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.Equals(object)
-		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.GetHashCode()
 		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.WinRT.IWinRTObject.QueryInterfaceCache.get

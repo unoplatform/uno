@@ -46,12 +46,6 @@ namespace Windows.UI.Input.Inking.Core
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.CoreIncrementalInkStroke(Windows.UI.Input.Inking.InkDrawingAttributes, System.Numerics.Matrix3x2)
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.operator ==(Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke, Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke)
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.operator !=(Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke, Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke)
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.Equals(Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke)
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke.WinRT.IWinRTObject.QueryInterfaceCache.get

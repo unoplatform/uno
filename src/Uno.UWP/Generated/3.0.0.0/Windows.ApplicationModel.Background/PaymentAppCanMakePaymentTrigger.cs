@@ -16,12 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger.PaymentAppCanMakePaymentTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger.operator ==(Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger, Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger.operator !=(Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger, Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger.Equals(Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.PaymentAppCanMakePaymentTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

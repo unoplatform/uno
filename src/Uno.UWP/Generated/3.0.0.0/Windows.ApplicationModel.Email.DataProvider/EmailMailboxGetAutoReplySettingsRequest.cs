@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequest.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequest.operator ==(Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequest, Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequest)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequest.operator !=(Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequest, Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequest)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequest.Equals(Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequest)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequest.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequest.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

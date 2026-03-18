@@ -9,12 +9,6 @@ namespace Microsoft.UI.Composition.Interactions
 	public partial class InteractionTrackerRequestIgnoredArgs
 	{
 		// Skipping already declared property RequestId
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.operator ==(Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs, Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.operator !=(Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs, Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.Equals(Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -23,7 +23,6 @@ namespace Windows.UI.StartScreen
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.StartScreen.StartScreenManager GetDefault()
@@ -38,12 +37,6 @@ namespace Windows.UI.StartScreen
 			throw new global::System.NotImplementedException("The member StartScreenManager StartScreenManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StartScreenManager%20StartScreenManager.GetForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.FromAbi(nint)
-		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.operator ==(Windows.UI.StartScreen.StartScreenManager, Windows.UI.StartScreen.StartScreenManager)
-		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.operator !=(Windows.UI.StartScreen.StartScreenManager, Windows.UI.StartScreen.StartScreenManager)
-		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.Equals(Windows.UI.StartScreen.StartScreenManager)
-		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.Equals(object)
-		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.GetHashCode()
 		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.WinRT.IWinRTObject.QueryInterfaceCache.get

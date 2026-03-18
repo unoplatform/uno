@@ -38,7 +38,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCharacterSetIds.As<I>()
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCharacterSetIds.Ansi.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCharacterSetIds.Ascii.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCharacterSetIds.Utf16LE.get

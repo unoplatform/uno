@@ -44,14 +44,6 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Vector3Transition()
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Vector3Transition(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.operator ==(Microsoft.UI.Xaml.Vector3Transition, Microsoft.UI.Xaml.Vector3Transition)
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.operator !=(Microsoft.UI.Xaml.Vector3Transition, Microsoft.UI.Xaml.Vector3Transition)
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Equals(Microsoft.UI.Xaml.Vector3Transition)
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Vector3Transition(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -60,7 +52,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Components.set
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Duration.get
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Duration.set
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

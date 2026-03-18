@@ -23,12 +23,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcherEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcherEventArgs.operator ==(Windows.System.AppDiagnosticInfoWatcherEventArgs, Windows.System.AppDiagnosticInfoWatcherEventArgs)
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcherEventArgs.operator !=(Windows.System.AppDiagnosticInfoWatcherEventArgs, Windows.System.AppDiagnosticInfoWatcherEventArgs)
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcherEventArgs.Equals(Windows.System.AppDiagnosticInfoWatcherEventArgs)
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcherEventArgs.Equals(object)
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcherEventArgs.GetHashCode()
 		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcherEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcherEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcherEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

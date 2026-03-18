@@ -15,12 +15,6 @@ namespace Windows.UI.Input.Preview.Injection
 		// Skipping already declared property TouchParameters
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.InjectedInputTouchInfo()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.InjectedInputTouchInfo()
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.operator ==(Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo, Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.operator !=(Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo, Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.Equals(Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

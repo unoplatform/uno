@@ -58,12 +58,6 @@ namespace Windows.Graphics.Printing3D
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DFaceReductionOptions.Printing3DFaceReductionOptions()
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DFaceReductionOptions.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DFaceReductionOptions.operator ==(Windows.Graphics.Printing3D.Printing3DFaceReductionOptions, Windows.Graphics.Printing3D.Printing3DFaceReductionOptions)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DFaceReductionOptions.operator !=(Windows.Graphics.Printing3D.Printing3DFaceReductionOptions, Windows.Graphics.Printing3D.Printing3DFaceReductionOptions)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DFaceReductionOptions.Equals(Windows.Graphics.Printing3D.Printing3DFaceReductionOptions)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DFaceReductionOptions.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DFaceReductionOptions.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DFaceReductionOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DFaceReductionOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DFaceReductionOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

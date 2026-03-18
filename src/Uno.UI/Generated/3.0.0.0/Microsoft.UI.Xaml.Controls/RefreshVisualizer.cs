@@ -17,19 +17,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property State
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RefreshVisualizer.RefreshVisualizer()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.RefreshVisualizer()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.ContentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.InfoProviderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.OrientationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.StateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.RefreshVisualizer(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.operator ==(Microsoft.UI.Xaml.Controls.RefreshVisualizer, Microsoft.UI.Xaml.Controls.RefreshVisualizer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.operator !=(Microsoft.UI.Xaml.Controls.RefreshVisualizer, Microsoft.UI.Xaml.Controls.RefreshVisualizer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.Equals(Microsoft.UI.Xaml.Controls.RefreshVisualizer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.RefreshVisualizer(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RefreshVisualizer.RequestRefresh()
@@ -42,7 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.Orientation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.Orientation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.State.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.RefreshVisualizer.RefreshRequested
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.RefreshVisualizer.RefreshStateChanged

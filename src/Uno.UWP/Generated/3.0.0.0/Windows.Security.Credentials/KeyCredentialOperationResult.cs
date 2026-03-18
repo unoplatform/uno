@@ -33,12 +33,6 @@ namespace Windows.Security.Credentials
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Credentials.KeyCredentialOperationResult.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Credentials.KeyCredentialOperationResult.operator ==(Windows.Security.Credentials.KeyCredentialOperationResult, Windows.Security.Credentials.KeyCredentialOperationResult)
-		// Forced skipping of method Windows.Security.Credentials.KeyCredentialOperationResult.operator !=(Windows.Security.Credentials.KeyCredentialOperationResult, Windows.Security.Credentials.KeyCredentialOperationResult)
-		// Forced skipping of method Windows.Security.Credentials.KeyCredentialOperationResult.Equals(Windows.Security.Credentials.KeyCredentialOperationResult)
-		// Forced skipping of method Windows.Security.Credentials.KeyCredentialOperationResult.Equals(object)
-		// Forced skipping of method Windows.Security.Credentials.KeyCredentialOperationResult.GetHashCode()
 		// Forced skipping of method Windows.Security.Credentials.KeyCredentialOperationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Credentials.KeyCredentialOperationResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Credentials.KeyCredentialOperationResult.WinRT.IWinRTObject.QueryInterfaceCache.get

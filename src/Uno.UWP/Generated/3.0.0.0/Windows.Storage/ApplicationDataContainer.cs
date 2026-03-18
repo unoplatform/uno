@@ -21,12 +21,6 @@ namespace Windows.Storage
 		// Skipping already declared property Locality
 		// Skipping already declared property Name
 		// Skipping already declared property Values
-		// Forced skipping of method Windows.Storage.ApplicationDataContainer.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.ApplicationDataContainer.operator ==(Windows.Storage.ApplicationDataContainer, Windows.Storage.ApplicationDataContainer)
-		// Forced skipping of method Windows.Storage.ApplicationDataContainer.operator !=(Windows.Storage.ApplicationDataContainer, Windows.Storage.ApplicationDataContainer)
-		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Equals(Windows.Storage.ApplicationDataContainer)
-		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Equals(object)
-		// Forced skipping of method Windows.Storage.ApplicationDataContainer.GetHashCode()
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.WinRT.IWinRTObject.QueryInterfaceCache.get

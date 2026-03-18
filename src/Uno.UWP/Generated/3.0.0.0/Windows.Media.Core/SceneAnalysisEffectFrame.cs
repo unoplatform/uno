@@ -129,12 +129,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.operator ==(Windows.Media.Core.SceneAnalysisEffectFrame, Windows.Media.Core.SceneAnalysisEffectFrame)
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.operator !=(Windows.Media.Core.SceneAnalysisEffectFrame, Windows.Media.Core.SceneAnalysisEffectFrame)
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.Equals(Windows.Media.Core.SceneAnalysisEffectFrame)
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.Equals(object)
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectFrame.WinRT.IWinRTObject.QueryInterfaceCache.get

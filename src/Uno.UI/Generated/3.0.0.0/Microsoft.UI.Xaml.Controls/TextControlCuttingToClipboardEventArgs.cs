@@ -27,12 +27,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs, Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs, Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs.Equals(Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

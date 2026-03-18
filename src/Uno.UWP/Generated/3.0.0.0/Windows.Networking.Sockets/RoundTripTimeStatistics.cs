@@ -17,11 +17,6 @@ namespace Windows.Networking.Sockets
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.RoundTripTimeStatistics.RoundTripTimeStatistics(uint, uint, uint, uint)
-		// Forced skipping of method Windows.Networking.Sockets.RoundTripTimeStatistics.operator ==(Windows.Networking.Sockets.RoundTripTimeStatistics, Windows.Networking.Sockets.RoundTripTimeStatistics)
-		// Forced skipping of method Windows.Networking.Sockets.RoundTripTimeStatistics.operator !=(Windows.Networking.Sockets.RoundTripTimeStatistics, Windows.Networking.Sockets.RoundTripTimeStatistics)
-		// Forced skipping of method Windows.Networking.Sockets.RoundTripTimeStatistics.Equals(Windows.Networking.Sockets.RoundTripTimeStatistics)
-		// Forced skipping of method Windows.Networking.Sockets.RoundTripTimeStatistics.Equals(object)
-		// Forced skipping of method Windows.Networking.Sockets.RoundTripTimeStatistics.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint Variance;
 #endif

@@ -10,12 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Item
 		// Skipping already declared property Node
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs, Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs, Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.Equals(Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

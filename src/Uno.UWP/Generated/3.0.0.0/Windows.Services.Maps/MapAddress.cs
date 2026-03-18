@@ -24,12 +24,6 @@ namespace Windows.Services.Maps
 		// Skipping already declared property Street
 		// Skipping already declared property StreetNumber
 		// Skipping already declared property Town
-		// Forced skipping of method Windows.Services.Maps.MapAddress.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Maps.MapAddress.operator ==(Windows.Services.Maps.MapAddress, Windows.Services.Maps.MapAddress)
-		// Forced skipping of method Windows.Services.Maps.MapAddress.operator !=(Windows.Services.Maps.MapAddress, Windows.Services.Maps.MapAddress)
-		// Forced skipping of method Windows.Services.Maps.MapAddress.Equals(Windows.Services.Maps.MapAddress)
-		// Forced skipping of method Windows.Services.Maps.MapAddress.Equals(object)
-		// Forced skipping of method Windows.Services.Maps.MapAddress.GetHashCode()
 		// Forced skipping of method Windows.Services.Maps.MapAddress.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Maps.MapAddress.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Maps.MapAddress.WinRT.IWinRTObject.QueryInterfaceCache.get

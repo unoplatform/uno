@@ -53,12 +53,6 @@ namespace Windows.Networking.Vpn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.operator ==(Windows.Networking.Vpn.VpnCredential, Windows.Networking.Vpn.VpnCredential)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.operator !=(Windows.Networking.Vpn.VpnCredential, Windows.Networking.Vpn.VpnCredential)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.Equals(Windows.Networking.Vpn.VpnCredential)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.WinRT.IWinRTObject.QueryInterfaceCache.get

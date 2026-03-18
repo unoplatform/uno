@@ -33,12 +33,6 @@ namespace Windows.Perception.Spatial.Surfaces
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.operator ==(Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo, Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo)
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.operator !=(Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo, Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo)
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.Equals(Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo)
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.GetHashCode()
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

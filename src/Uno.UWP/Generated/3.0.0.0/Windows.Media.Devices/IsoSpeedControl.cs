@@ -93,12 +93,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.IsoSpeedControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.IsoSpeedControl.operator ==(Windows.Media.Devices.IsoSpeedControl, Windows.Media.Devices.IsoSpeedControl)
-		// Forced skipping of method Windows.Media.Devices.IsoSpeedControl.operator !=(Windows.Media.Devices.IsoSpeedControl, Windows.Media.Devices.IsoSpeedControl)
-		// Forced skipping of method Windows.Media.Devices.IsoSpeedControl.Equals(Windows.Media.Devices.IsoSpeedControl)
-		// Forced skipping of method Windows.Media.Devices.IsoSpeedControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.IsoSpeedControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.IsoSpeedControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.IsoSpeedControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.IsoSpeedControl.WinRT.IWinRTObject.QueryInterfaceCache.get

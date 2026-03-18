@@ -12,12 +12,6 @@ namespace Windows.Devices.Sensors
 		// Skipping already declared property Properties
 		// Skipping already declared property StationPressureInHectopascals
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.operator ==(Windows.Devices.Sensors.BarometerReading, Windows.Devices.Sensors.BarometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.operator !=(Windows.Devices.Sensors.BarometerReading, Windows.Devices.Sensors.BarometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.Equals(Windows.Devices.Sensors.BarometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.WinRT.IWinRTObject.QueryInterfaceCache.get

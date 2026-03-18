@@ -28,7 +28,6 @@ namespace Windows.Security.Isolation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentHost.As<I>()
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentHost.HostErrors.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentHost.IsReady.get
 	}

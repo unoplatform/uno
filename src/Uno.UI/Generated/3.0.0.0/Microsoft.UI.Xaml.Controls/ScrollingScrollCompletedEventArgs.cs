@@ -9,12 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ScrollingScrollCompletedEventArgs
 	{
 		// Skipping already declared property CorrelationId
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs, Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs, Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.Equals(Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

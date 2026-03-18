@@ -16,12 +16,6 @@ namespace Windows.Devices.Sensors
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sensors.PedometerDataThreshold.PedometerDataThreshold(Windows.Devices.Sensors.Pedometer, int)
-		// Forced skipping of method Windows.Devices.Sensors.PedometerDataThreshold.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.PedometerDataThreshold.operator ==(Windows.Devices.Sensors.PedometerDataThreshold, Windows.Devices.Sensors.PedometerDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.PedometerDataThreshold.operator !=(Windows.Devices.Sensors.PedometerDataThreshold, Windows.Devices.Sensors.PedometerDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.PedometerDataThreshold.Equals(Windows.Devices.Sensors.PedometerDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.PedometerDataThreshold.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.PedometerDataThreshold.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.PedometerDataThreshold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.PedometerDataThreshold.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.PedometerDataThreshold.WinRT.IWinRTObject.QueryInterfaceCache.get

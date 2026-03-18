@@ -43,12 +43,6 @@ namespace Windows.System.Update
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.FromAbi(nint)
-		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.operator ==(Windows.System.Update.SystemUpdateLastErrorInfo, Windows.System.Update.SystemUpdateLastErrorInfo)
-		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.operator !=(Windows.System.Update.SystemUpdateLastErrorInfo, Windows.System.Update.SystemUpdateLastErrorInfo)
-		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.Equals(Windows.System.Update.SystemUpdateLastErrorInfo)
-		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.Equals(object)
-		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.GetHashCode()
 		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

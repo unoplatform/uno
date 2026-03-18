@@ -10,12 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property NewDate
 		// Skipping already declared property OldDate
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs, Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs, Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

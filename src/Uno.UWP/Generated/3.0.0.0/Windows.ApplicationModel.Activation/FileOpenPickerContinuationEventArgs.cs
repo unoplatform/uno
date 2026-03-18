@@ -73,12 +73,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.operator ==(Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs, Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.operator !=(Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs, Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.Equals(Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

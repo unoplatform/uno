@@ -23,12 +23,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.operator ==(Windows.Media.Capture.MediaCaptureRelativePanelWatcher, Windows.Media.Capture.MediaCaptureRelativePanelWatcher)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.operator !=(Windows.Media.Capture.MediaCaptureRelativePanelWatcher, Windows.Media.Capture.MediaCaptureRelativePanelWatcher)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.Equals(Windows.Media.Capture.MediaCaptureRelativePanelWatcher)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get

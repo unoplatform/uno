@@ -67,12 +67,6 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.operator ==(Windows.Media.Devices.Core.VariablePhotoSequenceController, Windows.Media.Devices.Core.VariablePhotoSequenceController)
-		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.operator !=(Windows.Media.Devices.Core.VariablePhotoSequenceController, Windows.Media.Devices.Core.VariablePhotoSequenceController)
-		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.Equals(Windows.Media.Devices.Core.VariablePhotoSequenceController)
-		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.WinRT.IWinRTObject.QueryInterfaceCache.get

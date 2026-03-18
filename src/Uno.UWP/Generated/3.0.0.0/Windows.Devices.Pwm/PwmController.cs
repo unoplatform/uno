@@ -53,7 +53,6 @@ namespace Windows.Devices.Pwm
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Pwm.PwmController.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Pwm.PwmController>> GetControllersAsync(global::Windows.Devices.Pwm.Provider.IPwmProvider provider)
@@ -89,12 +88,6 @@ namespace Windows.Devices.Pwm
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PwmController> PwmController.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPwmController%3E%20PwmController.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Pwm.PwmController.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Pwm.PwmController.operator ==(Windows.Devices.Pwm.PwmController, Windows.Devices.Pwm.PwmController)
-		// Forced skipping of method Windows.Devices.Pwm.PwmController.operator !=(Windows.Devices.Pwm.PwmController, Windows.Devices.Pwm.PwmController)
-		// Forced skipping of method Windows.Devices.Pwm.PwmController.Equals(Windows.Devices.Pwm.PwmController)
-		// Forced skipping of method Windows.Devices.Pwm.PwmController.Equals(object)
-		// Forced skipping of method Windows.Devices.Pwm.PwmController.GetHashCode()
 		// Forced skipping of method Windows.Devices.Pwm.PwmController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Pwm.PwmController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Pwm.PwmController.WinRT.IWinRTObject.QueryInterfaceCache.get

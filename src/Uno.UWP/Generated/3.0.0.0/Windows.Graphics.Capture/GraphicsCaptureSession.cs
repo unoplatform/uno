@@ -27,7 +27,6 @@ namespace Windows.Graphics.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
@@ -35,12 +34,6 @@ namespace Windows.Graphics.Capture
 			throw new global::System.NotImplementedException("The member bool GraphicsCaptureSession.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GraphicsCaptureSession.IsSupported%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.operator ==(Windows.Graphics.Capture.GraphicsCaptureSession, Windows.Graphics.Capture.GraphicsCaptureSession)
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.operator !=(Windows.Graphics.Capture.GraphicsCaptureSession, Windows.Graphics.Capture.GraphicsCaptureSession)
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.Equals(Windows.Graphics.Capture.GraphicsCaptureSession)
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.Equals(object)
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.WinRT.IWinRTObject.QueryInterfaceCache.get

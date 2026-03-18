@@ -8,7 +8,6 @@ namespace Windows.Services.Maps.LocalSearch
 #endif
 	public static partial class PlaceInfoHelper
 	{
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.PlaceInfoHelper.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Services.Maps.PlaceInfo CreateFromLocalLocation(global::Windows.Services.Maps.LocalSearch.LocalLocation location)

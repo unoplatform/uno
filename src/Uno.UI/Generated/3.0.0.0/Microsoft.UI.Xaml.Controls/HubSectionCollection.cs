@@ -47,12 +47,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.operator ==(Microsoft.UI.Xaml.Controls.HubSectionCollection, Microsoft.UI.Xaml.Controls.HubSectionCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.operator !=(Microsoft.UI.Xaml.Controls.HubSectionCollection, Microsoft.UI.Xaml.Controls.HubSectionCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.Equals(Microsoft.UI.Xaml.Controls.HubSectionCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

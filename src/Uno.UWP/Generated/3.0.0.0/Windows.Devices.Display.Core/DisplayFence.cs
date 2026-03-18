@@ -13,12 +13,6 @@ namespace Windows.Devices.Display.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayFence.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayFence.operator ==(Windows.Devices.Display.Core.DisplayFence, Windows.Devices.Display.Core.DisplayFence)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayFence.operator !=(Windows.Devices.Display.Core.DisplayFence, Windows.Devices.Display.Core.DisplayFence)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayFence.Equals(Windows.Devices.Display.Core.DisplayFence)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayFence.Equals(object)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayFence.GetHashCode()
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayFence.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayFence.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayFence.WinRT.IWinRTObject.QueryInterfaceCache.get

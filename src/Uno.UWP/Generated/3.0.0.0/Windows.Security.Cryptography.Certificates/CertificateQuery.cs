@@ -124,12 +124,6 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateQuery.CertificateQuery()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateQuery.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateQuery.operator ==(Windows.Security.Cryptography.Certificates.CertificateQuery, Windows.Security.Cryptography.Certificates.CertificateQuery)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateQuery.operator !=(Windows.Security.Cryptography.Certificates.CertificateQuery, Windows.Security.Cryptography.Certificates.CertificateQuery)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateQuery.Equals(Windows.Security.Cryptography.Certificates.CertificateQuery)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateQuery.Equals(object)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateQuery.GetHashCode()
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateQuery.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateQuery.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateQuery.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -23,12 +23,6 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.TileUpdater.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Notifications.TileUpdater.operator ==(Windows.UI.Notifications.TileUpdater, Windows.UI.Notifications.TileUpdater)
-		// Forced skipping of method Windows.UI.Notifications.TileUpdater.operator !=(Windows.UI.Notifications.TileUpdater, Windows.UI.Notifications.TileUpdater)
-		// Forced skipping of method Windows.UI.Notifications.TileUpdater.Equals(Windows.UI.Notifications.TileUpdater)
-		// Forced skipping of method Windows.UI.Notifications.TileUpdater.Equals(object)
-		// Forced skipping of method Windows.UI.Notifications.TileUpdater.GetHashCode()
 		// Forced skipping of method Windows.UI.Notifications.TileUpdater.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.TileUpdater.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.TileUpdater.WinRT.IWinRTObject.QueryInterfaceCache.get

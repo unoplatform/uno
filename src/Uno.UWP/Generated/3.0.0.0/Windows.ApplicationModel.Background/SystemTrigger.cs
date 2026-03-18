@@ -12,12 +12,6 @@ namespace Windows.ApplicationModel.Background
 		// Skipping already declared property TriggerType
 		// Skipping already declared method Windows.ApplicationModel.Background.SystemTrigger.SystemTrigger(Windows.ApplicationModel.Background.SystemTriggerType, bool)
 		// Forced skipping of method Windows.ApplicationModel.Background.SystemTrigger.SystemTrigger(Windows.ApplicationModel.Background.SystemTriggerType, bool)
-		// Forced skipping of method Windows.ApplicationModel.Background.SystemTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.SystemTrigger.operator ==(Windows.ApplicationModel.Background.SystemTrigger, Windows.ApplicationModel.Background.SystemTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.SystemTrigger.operator !=(Windows.ApplicationModel.Background.SystemTrigger, Windows.ApplicationModel.Background.SystemTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.SystemTrigger.Equals(Windows.ApplicationModel.Background.SystemTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.SystemTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.SystemTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.SystemTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.SystemTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.SystemTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

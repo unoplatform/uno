@@ -13,7 +13,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.As<I>()
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public static void ShowShareUI()
@@ -42,12 +41,6 @@ namespace Windows.ApplicationModel.DataTransfer
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "void DataTransferManager.ShowShareUI(ShareUIOptions options)");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.operator ==(Windows.ApplicationModel.DataTransfer.DataTransferManager, Windows.ApplicationModel.DataTransfer.DataTransferManager)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.operator !=(Windows.ApplicationModel.DataTransfer.DataTransferManager, Windows.ApplicationModel.DataTransfer.DataTransferManager)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.Equals(Windows.ApplicationModel.DataTransfer.DataTransferManager)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.WinRT.IWinRTObject.QueryInterfaceCache.get

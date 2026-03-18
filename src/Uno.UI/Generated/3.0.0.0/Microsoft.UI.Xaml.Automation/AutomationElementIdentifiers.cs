@@ -47,7 +47,6 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property OrientationProperty
 		// Skipping already declared property PositionInSetProperty
 		// Skipping already declared property SizeOfSetProperty
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.AcceleratorKeyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.AccessKeyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.AnnotationsProperty.get
@@ -87,12 +86,6 @@ namespace Microsoft.UI.Xaml.Automation
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.OrientationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.PositionInSetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.SizeOfSetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.operator ==(Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers, Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.operator !=(Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers, Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.Equals(Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -26,12 +26,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.SmartCardTrigger.SmartCardTrigger(Windows.Devices.SmartCards.SmartCardTriggerType)
-		// Forced skipping of method Windows.ApplicationModel.Background.SmartCardTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.SmartCardTrigger.operator ==(Windows.ApplicationModel.Background.SmartCardTrigger, Windows.ApplicationModel.Background.SmartCardTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.SmartCardTrigger.operator !=(Windows.ApplicationModel.Background.SmartCardTrigger, Windows.ApplicationModel.Background.SmartCardTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.SmartCardTrigger.Equals(Windows.ApplicationModel.Background.SmartCardTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.SmartCardTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.SmartCardTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.SmartCardTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.SmartCardTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.SmartCardTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

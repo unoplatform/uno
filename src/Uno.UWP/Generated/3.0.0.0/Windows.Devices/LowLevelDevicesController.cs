@@ -27,15 +27,8 @@ namespace Windows.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.LowLevelDevicesController.As<I>()
 		// Forced skipping of method Windows.Devices.LowLevelDevicesController.DefaultProvider.get
 		// Forced skipping of method Windows.Devices.LowLevelDevicesController.DefaultProvider.set
-		// Forced skipping of method Windows.Devices.LowLevelDevicesController.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.LowLevelDevicesController.operator ==(Windows.Devices.LowLevelDevicesController, Windows.Devices.LowLevelDevicesController)
-		// Forced skipping of method Windows.Devices.LowLevelDevicesController.operator !=(Windows.Devices.LowLevelDevicesController, Windows.Devices.LowLevelDevicesController)
-		// Forced skipping of method Windows.Devices.LowLevelDevicesController.Equals(Windows.Devices.LowLevelDevicesController)
-		// Forced skipping of method Windows.Devices.LowLevelDevicesController.Equals(object)
-		// Forced skipping of method Windows.Devices.LowLevelDevicesController.GetHashCode()
 		// Forced skipping of method Windows.Devices.LowLevelDevicesController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.LowLevelDevicesController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.LowLevelDevicesController.WinRT.IWinRTObject.QueryInterfaceCache.get

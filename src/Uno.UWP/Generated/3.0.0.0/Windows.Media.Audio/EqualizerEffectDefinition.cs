@@ -46,12 +46,6 @@ namespace Windows.Media.Audio
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.EqualizerEffectDefinition(Windows.Media.Audio.AudioGraph)
-		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.operator ==(Windows.Media.Audio.EqualizerEffectDefinition, Windows.Media.Audio.EqualizerEffectDefinition)
-		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.operator !=(Windows.Media.Audio.EqualizerEffectDefinition, Windows.Media.Audio.EqualizerEffectDefinition)
-		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.Equals(Windows.Media.Audio.EqualizerEffectDefinition)
-		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.Equals(object)
-		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.GetHashCode()
 		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get

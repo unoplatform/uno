@@ -232,12 +232,6 @@ namespace Windows.ApplicationModel.Chat
 #endif
 		// Skipping already declared method Windows.ApplicationModel.Chat.ChatMessage.ChatMessage()
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.ChatMessage()
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.operator ==(Windows.ApplicationModel.Chat.ChatMessage, Windows.ApplicationModel.Chat.ChatMessage)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.operator !=(Windows.ApplicationModel.Chat.ChatMessage, Windows.ApplicationModel.Chat.ChatMessage)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Equals(Windows.ApplicationModel.Chat.ChatMessage)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessage.WinRT.IWinRTObject.QueryInterfaceCache.get

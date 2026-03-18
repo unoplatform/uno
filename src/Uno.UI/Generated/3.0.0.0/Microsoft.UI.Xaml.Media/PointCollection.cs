@@ -13,12 +13,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PointCollection.PointCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.PointCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.operator ==(Microsoft.UI.Xaml.Media.PointCollection, Microsoft.UI.Xaml.Media.PointCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.operator !=(Microsoft.UI.Xaml.Media.PointCollection, Microsoft.UI.Xaml.Media.PointCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.Equals(Microsoft.UI.Xaml.Media.PointCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -83,7 +83,6 @@ namespace Windows.Networking.XboxLive
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Networking.XboxLive.XboxLiveEndpointPair FindEndpointPairBySocketAddressBytes(byte[] localSocketAddress, byte[] remoteSocketAddress)
@@ -98,12 +97,6 @@ namespace Windows.Networking.XboxLive
 			throw new global::System.NotImplementedException("The member XboxLiveEndpointPair XboxLiveEndpointPair.FindEndpointPairByHostNamesAndPorts(HostName localHostName, string localPort, HostName remoteHostName, string remotePort) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XboxLiveEndpointPair%20XboxLiveEndpointPair.FindEndpointPairByHostNamesAndPorts%28HostName%20localHostName%2C%20string%20localPort%2C%20HostName%20remoteHostName%2C%20string%20remotePort%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.operator ==(Windows.Networking.XboxLive.XboxLiveEndpointPair, Windows.Networking.XboxLive.XboxLiveEndpointPair)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.operator !=(Windows.Networking.XboxLive.XboxLiveEndpointPair, Windows.Networking.XboxLive.XboxLiveEndpointPair)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.Equals(Windows.Networking.XboxLive.XboxLiveEndpointPair)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.Equals(object)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.GetHashCode()
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.WinRT.IWinRTObject.QueryInterfaceCache.get

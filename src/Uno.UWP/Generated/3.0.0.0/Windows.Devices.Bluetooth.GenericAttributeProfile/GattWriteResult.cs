@@ -33,12 +33,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult, Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult, Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -11,7 +11,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property DecodedPhysicalSize
 		// Skipping already declared property DecodedSize
 		// Skipping already declared property NaturalSize
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Media.LoadedImageSurface StartLoadFromUri(global::System.Uri uri, global::Windows.Foundation.Size desiredMaxSize)
@@ -40,12 +39,6 @@ namespace Microsoft.UI.Xaml.Media
 			throw new global::System.NotImplementedException("The member LoadedImageSurface LoadedImageSurface.StartLoadFromStream(IRandomAccessStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LoadedImageSurface%20LoadedImageSurface.StartLoadFromStream%28IRandomAccessStream%20stream%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.operator ==(Microsoft.UI.Xaml.Media.LoadedImageSurface, Microsoft.UI.Xaml.Media.LoadedImageSurface)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.operator !=(Microsoft.UI.Xaml.Media.LoadedImageSurface, Microsoft.UI.Xaml.Media.LoadedImageSurface)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.Equals(Microsoft.UI.Xaml.Media.LoadedImageSurface)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.WinRT.IWinRTObject.QueryInterfaceCache.get

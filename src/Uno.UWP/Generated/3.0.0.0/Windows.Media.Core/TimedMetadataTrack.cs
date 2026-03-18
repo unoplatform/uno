@@ -120,12 +120,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedMetadataTrack.TimedMetadataTrack(string, string, Windows.Media.Core.TimedMetadataKind)
-		// Forced skipping of method Windows.Media.Core.TimedMetadataTrack.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.TimedMetadataTrack.operator ==(Windows.Media.Core.TimedMetadataTrack, Windows.Media.Core.TimedMetadataTrack)
-		// Forced skipping of method Windows.Media.Core.TimedMetadataTrack.operator !=(Windows.Media.Core.TimedMetadataTrack, Windows.Media.Core.TimedMetadataTrack)
-		// Forced skipping of method Windows.Media.Core.TimedMetadataTrack.Equals(Windows.Media.Core.TimedMetadataTrack)
-		// Forced skipping of method Windows.Media.Core.TimedMetadataTrack.Equals(object)
-		// Forced skipping of method Windows.Media.Core.TimedMetadataTrack.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.TimedMetadataTrack.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.TimedMetadataTrack.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.TimedMetadataTrack.WinRT.IWinRTObject.QueryInterfaceCache.get

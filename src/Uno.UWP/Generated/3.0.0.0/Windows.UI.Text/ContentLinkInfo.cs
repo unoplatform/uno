@@ -86,12 +86,6 @@ namespace Windows.UI.Text
 		}
 #endif
 		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.ContentLinkInfo()
-		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.operator ==(Windows.UI.Text.ContentLinkInfo, Windows.UI.Text.ContentLinkInfo)
-		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.operator !=(Windows.UI.Text.ContentLinkInfo, Windows.UI.Text.ContentLinkInfo)
-		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.Equals(Windows.UI.Text.ContentLinkInfo)
-		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.Equals(object)
-		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.GetHashCode()
 		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

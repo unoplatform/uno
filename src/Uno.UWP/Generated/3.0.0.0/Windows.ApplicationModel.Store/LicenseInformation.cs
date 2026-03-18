@@ -53,12 +53,6 @@ namespace Windows.ApplicationModel.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.operator ==(Windows.ApplicationModel.Store.LicenseInformation, Windows.ApplicationModel.Store.LicenseInformation)
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.operator !=(Windows.ApplicationModel.Store.LicenseInformation, Windows.ApplicationModel.Store.LicenseInformation)
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.Equals(Windows.ApplicationModel.Store.LicenseInformation)
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Store.LicenseInformation.WinRT.IWinRTObject.QueryInterfaceCache.get

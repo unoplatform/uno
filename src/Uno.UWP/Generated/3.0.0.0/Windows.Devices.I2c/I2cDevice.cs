@@ -33,7 +33,6 @@ namespace Windows.Devices.I2c
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.I2c.I2cDevice.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -55,12 +54,6 @@ namespace Windows.Devices.I2c
 			throw new global::System.NotImplementedException("The member IAsyncOperation<I2cDevice> I2cDevice.FromIdAsync(string deviceId, I2cConnectionSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CI2cDevice%3E%20I2cDevice.FromIdAsync%28string%20deviceId%2C%20I2cConnectionSettings%20settings%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.I2c.I2cDevice.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.I2c.I2cDevice.operator ==(Windows.Devices.I2c.I2cDevice, Windows.Devices.I2c.I2cDevice)
-		// Forced skipping of method Windows.Devices.I2c.I2cDevice.operator !=(Windows.Devices.I2c.I2cDevice, Windows.Devices.I2c.I2cDevice)
-		// Forced skipping of method Windows.Devices.I2c.I2cDevice.Equals(Windows.Devices.I2c.I2cDevice)
-		// Forced skipping of method Windows.Devices.I2c.I2cDevice.Equals(object)
-		// Forced skipping of method Windows.Devices.I2c.I2cDevice.GetHashCode()
 		// Forced skipping of method Windows.Devices.I2c.I2cDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.I2c.I2cDevice.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.I2c.I2cDevice.WinRT.IWinRTObject.QueryInterfaceCache.get

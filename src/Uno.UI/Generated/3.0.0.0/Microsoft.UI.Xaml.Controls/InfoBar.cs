@@ -38,7 +38,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Title
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.InfoBar.InfoBar()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.InfoBar()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.ActionButtonProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.CloseButtonCommandParameterProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.CloseButtonCommandProperty.get
@@ -53,14 +52,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.SeverityProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.TemplateSettingsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.TitleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.InfoBar(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.operator ==(Microsoft.UI.Xaml.Controls.InfoBar, Microsoft.UI.Xaml.Controls.InfoBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.operator !=(Microsoft.UI.Xaml.Controls.InfoBar, Microsoft.UI.Xaml.Controls.InfoBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.Equals(Microsoft.UI.Xaml.Controls.InfoBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.InfoBar(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.CloseButtonClick.add
@@ -96,7 +87,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.Title.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.Title.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.InfoBar.CloseButtonClick
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.InfoBar.Closed

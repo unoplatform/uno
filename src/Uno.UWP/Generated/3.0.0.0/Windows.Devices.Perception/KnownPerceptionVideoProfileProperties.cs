@@ -58,7 +58,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoProfileProperties.As<I>()
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoProfileProperties.BitmapAlphaMode.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoProfileProperties.BitmapPixelFormat.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoProfileProperties.FrameDuration.get

@@ -13,12 +13,6 @@ namespace Microsoft.UI.Xaml.Hosting
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.operator ==(Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs, Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.operator !=(Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs, Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.Equals(Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

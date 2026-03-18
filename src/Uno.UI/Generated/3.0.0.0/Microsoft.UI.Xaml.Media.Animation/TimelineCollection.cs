@@ -13,12 +13,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.TimelineCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.TimelineCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.operator ==(Microsoft.UI.Xaml.Media.Animation.TimelineCollection, Microsoft.UI.Xaml.Media.Animation.TimelineCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.operator !=(Microsoft.UI.Xaml.Media.Animation.TimelineCollection, Microsoft.UI.Xaml.Media.Animation.TimelineCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.Equals(Microsoft.UI.Xaml.Media.Animation.TimelineCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -33,7 +33,6 @@ namespace Microsoft.Graphics.Display
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.Graphics.Display.DisplayInformation CreateForWindowId(global::Microsoft.UI.WindowId windowId)
@@ -48,12 +47,6 @@ namespace Microsoft.Graphics.Display
 			throw new global::System.NotImplementedException("The member DisplayInformation DisplayInformation.CreateForDisplayId(DisplayId displayId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayInformation%20DisplayInformation.CreateForDisplayId%28DisplayId%20displayId%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.FromAbi(nint)
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.operator ==(Microsoft.Graphics.Display.DisplayInformation, Microsoft.Graphics.Display.DisplayInformation)
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.operator !=(Microsoft.Graphics.Display.DisplayInformation, Microsoft.Graphics.Display.DisplayInformation)
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.Equals(Microsoft.Graphics.Display.DisplayInformation)
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.Equals(object)
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.GetHashCode()
 		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -18,15 +18,8 @@ namespace Windows.System.UserProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.As<I>()
 		// Skipping already declared method Windows.System.UserProfile.UserProfilePersonalizationSettings.IsSupported()
 		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.Current.get
-		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.FromAbi(nint)
-		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.operator ==(Windows.System.UserProfile.UserProfilePersonalizationSettings, Windows.System.UserProfile.UserProfilePersonalizationSettings)
-		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.operator !=(Windows.System.UserProfile.UserProfilePersonalizationSettings, Windows.System.UserProfile.UserProfilePersonalizationSettings)
-		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.Equals(Windows.System.UserProfile.UserProfilePersonalizationSettings)
-		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.Equals(object)
-		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.GetHashCode()
 		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.UserProfile.UserProfilePersonalizationSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

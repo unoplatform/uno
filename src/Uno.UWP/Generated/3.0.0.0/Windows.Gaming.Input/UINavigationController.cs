@@ -53,7 +53,6 @@ namespace Windows.Gaming.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.UINavigationController.As<I>()
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.UINavigationControllerAdded.add
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.UINavigationControllerAdded.remove
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.UINavigationControllerRemoved.add
@@ -66,12 +65,6 @@ namespace Windows.Gaming.Input
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.UINavigationControllers.get
-		// Forced skipping of method Windows.Gaming.Input.UINavigationController.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Input.UINavigationController.operator ==(Windows.Gaming.Input.UINavigationController, Windows.Gaming.Input.UINavigationController)
-		// Forced skipping of method Windows.Gaming.Input.UINavigationController.operator !=(Windows.Gaming.Input.UINavigationController, Windows.Gaming.Input.UINavigationController)
-		// Forced skipping of method Windows.Gaming.Input.UINavigationController.Equals(Windows.Gaming.Input.UINavigationController)
-		// Forced skipping of method Windows.Gaming.Input.UINavigationController.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.UINavigationController.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.WinRT.IWinRTObject.QueryInterfaceCache.get

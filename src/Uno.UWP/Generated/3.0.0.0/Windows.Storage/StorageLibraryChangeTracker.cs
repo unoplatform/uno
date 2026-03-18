@@ -13,12 +13,6 @@ namespace Windows.Storage
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeTracker.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeTracker.operator ==(Windows.Storage.StorageLibraryChangeTracker, Windows.Storage.StorageLibraryChangeTracker)
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeTracker.operator !=(Windows.Storage.StorageLibraryChangeTracker, Windows.Storage.StorageLibraryChangeTracker)
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeTracker.Equals(Windows.Storage.StorageLibraryChangeTracker)
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeTracker.Equals(object)
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeTracker.GetHashCode()
 		// Forced skipping of method Windows.Storage.StorageLibraryChangeTracker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.StorageLibraryChangeTracker.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.StorageLibraryChangeTracker.WinRT.IWinRTObject.QueryInterfaceCache.get

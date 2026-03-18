@@ -52,17 +52,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.SwapChainPanel()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.SwapChainPanel(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.operator ==(Microsoft.UI.Xaml.Controls.SwapChainPanel, Microsoft.UI.Xaml.Controls.SwapChainPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.operator !=(Microsoft.UI.Xaml.Controls.SwapChainPanel, Microsoft.UI.Xaml.Controls.SwapChainPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.Equals(Microsoft.UI.Xaml.Controls.SwapChainPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.SwapChainPanel(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CreateCoreIndependentInputSource(Microsoft.UI.Input.InputPointerSourceDeviceKinds)
@@ -70,7 +61,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleY.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

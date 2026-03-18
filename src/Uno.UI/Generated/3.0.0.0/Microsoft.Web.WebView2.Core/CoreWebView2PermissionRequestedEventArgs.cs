@@ -85,12 +85,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

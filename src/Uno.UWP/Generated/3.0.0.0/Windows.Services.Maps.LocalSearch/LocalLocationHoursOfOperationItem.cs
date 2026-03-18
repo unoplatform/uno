@@ -43,12 +43,6 @@ namespace Windows.Services.Maps.LocalSearch
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationHoursOfOperationItem.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationHoursOfOperationItem.operator ==(Windows.Services.Maps.LocalSearch.LocalLocationHoursOfOperationItem, Windows.Services.Maps.LocalSearch.LocalLocationHoursOfOperationItem)
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationHoursOfOperationItem.operator !=(Windows.Services.Maps.LocalSearch.LocalLocationHoursOfOperationItem, Windows.Services.Maps.LocalSearch.LocalLocationHoursOfOperationItem)
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationHoursOfOperationItem.Equals(Windows.Services.Maps.LocalSearch.LocalLocationHoursOfOperationItem)
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationHoursOfOperationItem.Equals(object)
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationHoursOfOperationItem.GetHashCode()
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationHoursOfOperationItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationHoursOfOperationItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationHoursOfOperationItem.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -43,7 +43,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScanner.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.BarcodeScanner> GetDefaultAsync()
@@ -72,12 +71,6 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member string BarcodeScanner.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BarcodeScanner.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScanner.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScanner.operator ==(Windows.Devices.PointOfService.BarcodeScanner, Windows.Devices.PointOfService.BarcodeScanner)
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScanner.operator !=(Windows.Devices.PointOfService.BarcodeScanner, Windows.Devices.PointOfService.BarcodeScanner)
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScanner.Equals(Windows.Devices.PointOfService.BarcodeScanner)
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScanner.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScanner.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScanner.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScanner.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScanner.WinRT.IWinRTObject.QueryInterfaceCache.get

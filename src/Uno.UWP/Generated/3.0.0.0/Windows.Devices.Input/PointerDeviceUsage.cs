@@ -17,11 +17,6 @@ namespace Windows.Devices.Input
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.PointerDeviceUsage(uint, uint, int, int, int, int, uint, float)
-		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.operator ==(Windows.Devices.Input.PointerDeviceUsage, Windows.Devices.Input.PointerDeviceUsage)
-		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.operator !=(Windows.Devices.Input.PointerDeviceUsage, Windows.Devices.Input.PointerDeviceUsage)
-		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.Equals(Windows.Devices.Input.PointerDeviceUsage)
-		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.Equals(object)
-		// Forced skipping of method Windows.Devices.Input.PointerDeviceUsage.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint UsagePage;
 #endif

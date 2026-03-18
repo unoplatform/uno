@@ -33,12 +33,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.ModuleCommandResult.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.ModuleCommandResult.operator ==(Windows.Media.Devices.ModuleCommandResult, Windows.Media.Devices.ModuleCommandResult)
-		// Forced skipping of method Windows.Media.Devices.ModuleCommandResult.operator !=(Windows.Media.Devices.ModuleCommandResult, Windows.Media.Devices.ModuleCommandResult)
-		// Forced skipping of method Windows.Media.Devices.ModuleCommandResult.Equals(Windows.Media.Devices.ModuleCommandResult)
-		// Forced skipping of method Windows.Media.Devices.ModuleCommandResult.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.ModuleCommandResult.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.ModuleCommandResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.ModuleCommandResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.ModuleCommandResult.WinRT.IWinRTObject.QueryInterfaceCache.get

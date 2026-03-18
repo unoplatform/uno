@@ -33,12 +33,6 @@ namespace Windows.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.SetVersionRequest.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.SetVersionRequest.operator ==(Windows.Storage.SetVersionRequest, Windows.Storage.SetVersionRequest)
-		// Forced skipping of method Windows.Storage.SetVersionRequest.operator !=(Windows.Storage.SetVersionRequest, Windows.Storage.SetVersionRequest)
-		// Forced skipping of method Windows.Storage.SetVersionRequest.Equals(Windows.Storage.SetVersionRequest)
-		// Forced skipping of method Windows.Storage.SetVersionRequest.Equals(object)
-		// Forced skipping of method Windows.Storage.SetVersionRequest.GetHashCode()
 		// Forced skipping of method Windows.Storage.SetVersionRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.SetVersionRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.SetVersionRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

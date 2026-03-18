@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs.operator ==(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs, Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs.operator !=(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs, Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs.Equals(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

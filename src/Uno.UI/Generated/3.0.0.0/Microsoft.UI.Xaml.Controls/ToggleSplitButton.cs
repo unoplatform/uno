@@ -12,23 +12,13 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property IsChecked
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ToggleSplitButton.ToggleSplitButton()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.ToggleSplitButton()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.IsCheckedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.ToggleSplitButton(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.operator ==(Microsoft.UI.Xaml.Controls.ToggleSplitButton, Microsoft.UI.Xaml.Controls.ToggleSplitButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.operator !=(Microsoft.UI.Xaml.Controls.ToggleSplitButton, Microsoft.UI.Xaml.Controls.ToggleSplitButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.Equals(Microsoft.UI.Xaml.Controls.ToggleSplitButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.ToggleSplitButton(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.IsCheckedChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.IsCheckedChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.IsChecked.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.IsChecked.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ToggleSplitButton.IsCheckedChanged
 	}

@@ -82,12 +82,6 @@ namespace Windows.Devices.Lights.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.LampArrayBitmapEffect(Windows.Devices.Lights.LampArray, int[])
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.operator ==(Windows.Devices.Lights.Effects.LampArrayBitmapEffect, Windows.Devices.Lights.Effects.LampArrayBitmapEffect)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.operator !=(Windows.Devices.Lights.Effects.LampArrayBitmapEffect, Windows.Devices.Lights.Effects.LampArrayBitmapEffect)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.Equals(Windows.Devices.Lights.Effects.LampArrayBitmapEffect)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.Equals(object)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.GetHashCode()
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.WinRT.IWinRTObject.QueryInterfaceCache.get

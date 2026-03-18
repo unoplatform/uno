@@ -63,12 +63,6 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.CurrencyFormatter(string, System.Collections.Generic.IEnumerable<string>, string)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.operator ==(Windows.Globalization.NumberFormatting.CurrencyFormatter, Windows.Globalization.NumberFormatting.CurrencyFormatter)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.operator !=(Windows.Globalization.NumberFormatting.CurrencyFormatter, Windows.Globalization.NumberFormatting.CurrencyFormatter)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.Equals(Windows.Globalization.NumberFormatting.CurrencyFormatter)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.Equals(object)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.GetHashCode()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -12,12 +12,6 @@ namespace Windows.ApplicationModel.Appointments
 		// Skipping already declared property DisplayName
 		// Skipping already declared method Windows.ApplicationModel.Appointments.AppointmentOrganizer.AppointmentOrganizer()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.AppointmentOrganizer()
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.operator ==(Windows.ApplicationModel.Appointments.AppointmentOrganizer, Windows.ApplicationModel.Appointments.AppointmentOrganizer)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.operator !=(Windows.ApplicationModel.Appointments.AppointmentOrganizer, Windows.ApplicationModel.Appointments.AppointmentOrganizer)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.Equals(Windows.ApplicationModel.Appointments.AppointmentOrganizer)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.WinRT.IWinRTObject.QueryInterfaceCache.get

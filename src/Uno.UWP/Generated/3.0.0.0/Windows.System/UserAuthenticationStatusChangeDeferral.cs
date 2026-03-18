@@ -13,12 +13,6 @@ namespace Windows.System
 		{
 		}
 #endif
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangeDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangeDeferral.operator ==(Windows.System.UserAuthenticationStatusChangeDeferral, Windows.System.UserAuthenticationStatusChangeDeferral)
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangeDeferral.operator !=(Windows.System.UserAuthenticationStatusChangeDeferral, Windows.System.UserAuthenticationStatusChangeDeferral)
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangeDeferral.Equals(Windows.System.UserAuthenticationStatusChangeDeferral)
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangeDeferral.Equals(object)
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangeDeferral.GetHashCode()
 		// Forced skipping of method Windows.System.UserAuthenticationStatusChangeDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.UserAuthenticationStatusChangeDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.UserAuthenticationStatusChangeDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

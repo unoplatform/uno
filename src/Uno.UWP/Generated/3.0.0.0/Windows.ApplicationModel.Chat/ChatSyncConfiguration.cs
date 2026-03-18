@@ -41,12 +41,6 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.operator ==(Windows.ApplicationModel.Chat.ChatSyncConfiguration, Windows.ApplicationModel.Chat.ChatSyncConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.operator !=(Windows.ApplicationModel.Chat.ChatSyncConfiguration, Windows.ApplicationModel.Chat.ChatSyncConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.Equals(Windows.ApplicationModel.Chat.ChatSyncConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -156,7 +156,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property VerticalContentAlignment
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.Control()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Control()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.GetIsTemplateFocusTarget(Microsoft.UI.Xaml.FrameworkElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.SetIsTemplateFocusTarget(Microsoft.UI.Xaml.FrameworkElement, bool)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -200,14 +199,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.TabNavigationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.TemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.VerticalContentAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Control(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.operator ==(Microsoft.UI.Xaml.Controls.Control, Microsoft.UI.Xaml.Controls.Control)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.operator !=(Microsoft.UI.Xaml.Controls.Control, Microsoft.UI.Xaml.Controls.Control)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Equals(Microsoft.UI.Xaml.Controls.Control)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Control(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.RemoveFocusEngagement()
@@ -220,43 +211,24 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsEnabledChanged.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.GetTemplateChild(string)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnPointerEntered(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnPointerEntered(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnPointerPressed(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnPointerPressed(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnPointerMoved(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnPointerMoved(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnPointerReleased(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnPointerReleased(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnPointerExited(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnPointerExited(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnPointerCaptureLost(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnPointerCaptureLost(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnPointerCanceled(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnPointerCanceled(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnPointerWheelChanged(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnPointerWheelChanged(Microsoft.UI.Xaml.Input.PointerRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnTapped(Microsoft.UI.Xaml.Input.TappedRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnTapped(Microsoft.UI.Xaml.Input.TappedRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnDoubleTapped(Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnDoubleTapped(Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnHolding(Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnHolding(Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnRightTapped(Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnRightTapped(Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnManipulationStarting(Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnManipulationStarting(Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnManipulationInertiaStarting(Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnManipulationInertiaStarting(Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnManipulationStarted(Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnManipulationStarted(Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnManipulationDelta(Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnManipulationDelta(Microsoft.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnManipulationCompleted(Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnManipulationCompleted(Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnKeyUp(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnKeyUp(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnKeyDown(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnKeyDown(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		protected virtual void OnPreviewKeyDown(global::Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
@@ -264,7 +236,6 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Control", "void Control.OnPreviewKeyDown(KeyRoutedEventArgs e)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnPreviewKeyDown(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		protected virtual void OnPreviewKeyUp(global::Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
@@ -272,11 +243,8 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Control", "void Control.OnPreviewKeyUp(KeyRoutedEventArgs e)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnPreviewKeyUp(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnGotFocus(Microsoft.UI.Xaml.RoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnGotFocus(Microsoft.UI.Xaml.RoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnLostFocus(Microsoft.UI.Xaml.RoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnLostFocus(Microsoft.UI.Xaml.RoutedEventArgs)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void OnCharacterReceived(global::Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs e)
@@ -284,15 +252,10 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Control", "void Control.OnCharacterReceived(CharacterReceivedRoutedEventArgs e)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnCharacterReceived(Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnDragEnter(Microsoft.UI.Xaml.DragEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnDragEnter(Microsoft.UI.Xaml.DragEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnDragLeave(Microsoft.UI.Xaml.DragEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnDragLeave(Microsoft.UI.Xaml.DragEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnDragOver(Microsoft.UI.Xaml.DragEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnDragOver(Microsoft.UI.Xaml.DragEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnDrop(Microsoft.UI.Xaml.DragEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Microsoft.UI.Xaml.Controls.IControlOverrides.OnDrop(Microsoft.UI.Xaml.DragEventArgs)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Background.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Background.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BackgroundSizing.get
@@ -343,7 +306,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Template.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.VerticalContentAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.VerticalContentAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Control.FocusDisengaged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Control.FocusEngaged

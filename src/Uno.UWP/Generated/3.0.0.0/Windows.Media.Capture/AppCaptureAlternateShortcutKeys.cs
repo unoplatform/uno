@@ -237,12 +237,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppCaptureAlternateShortcutKeys.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureAlternateShortcutKeys.operator ==(Windows.Media.Capture.AppCaptureAlternateShortcutKeys, Windows.Media.Capture.AppCaptureAlternateShortcutKeys)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureAlternateShortcutKeys.operator !=(Windows.Media.Capture.AppCaptureAlternateShortcutKeys, Windows.Media.Capture.AppCaptureAlternateShortcutKeys)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureAlternateShortcutKeys.Equals(Windows.Media.Capture.AppCaptureAlternateShortcutKeys)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureAlternateShortcutKeys.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.AppCaptureAlternateShortcutKeys.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.AppCaptureAlternateShortcutKeys.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppCaptureAlternateShortcutKeys.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppCaptureAlternateShortcutKeys.WinRT.IWinRTObject.QueryInterfaceCache.get

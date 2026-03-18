@@ -18,7 +18,6 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.DataTemplate.DataTemplate()
 		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.DataTemplate()
-		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.IDataTemplateExtension GetExtensionInstance(global::Microsoft.UI.Xaml.FrameworkElement element)
@@ -34,14 +33,6 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.ExtensionInstanceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.DataTemplate(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.operator ==(Microsoft.UI.Xaml.DataTemplate, Microsoft.UI.Xaml.DataTemplate)
-		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.operator !=(Microsoft.UI.Xaml.DataTemplate, Microsoft.UI.Xaml.DataTemplate)
-		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.Equals(Microsoft.UI.Xaml.DataTemplate)
-		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.DataTemplate(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.DataTemplate.LoadContent()
@@ -59,7 +50,6 @@ namespace Microsoft.UI.Xaml
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DataTemplate", "void DataTemplate.RecycleElement(ElementFactoryRecycleArgs args)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.IElementFactory
 	}

@@ -17,11 +17,6 @@ namespace Windows.Security.Isolation
 		}
 #endif
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentCreateProgress.IsolatedWindowsEnvironmentCreateProgress(Windows.Security.Isolation.IsolatedWindowsEnvironmentProgressState, uint)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentCreateProgress.operator ==(Windows.Security.Isolation.IsolatedWindowsEnvironmentCreateProgress, Windows.Security.Isolation.IsolatedWindowsEnvironmentCreateProgress)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentCreateProgress.operator !=(Windows.Security.Isolation.IsolatedWindowsEnvironmentCreateProgress, Windows.Security.Isolation.IsolatedWindowsEnvironmentCreateProgress)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentCreateProgress.Equals(Windows.Security.Isolation.IsolatedWindowsEnvironmentCreateProgress)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentCreateProgress.Equals(object)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentCreateProgress.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Security.Isolation.IsolatedWindowsEnvironmentProgressState State;
 #endif

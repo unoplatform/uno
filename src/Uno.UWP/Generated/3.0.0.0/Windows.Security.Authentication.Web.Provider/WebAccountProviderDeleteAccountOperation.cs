@@ -33,12 +33,6 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation.operator ==(Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation, Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation.operator !=(Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation, Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation.Equals(Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation.Equals(object)
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation.GetHashCode()
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderDeleteAccountOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

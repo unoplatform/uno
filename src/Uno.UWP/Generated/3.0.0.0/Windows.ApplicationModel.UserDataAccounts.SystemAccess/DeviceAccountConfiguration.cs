@@ -638,12 +638,6 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.DeviceAccountConfiguration()
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.operator ==(Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration, Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.operator !=(Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration, Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.Equals(Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

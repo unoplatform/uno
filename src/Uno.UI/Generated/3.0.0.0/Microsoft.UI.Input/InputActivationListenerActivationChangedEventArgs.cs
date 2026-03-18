@@ -13,12 +13,6 @@ namespace Microsoft.UI.Input
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.operator ==(Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs, Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.operator !=(Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs, Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.Equals(Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

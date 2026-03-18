@@ -48,12 +48,6 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.DecimalFormatter(System.Collections.Generic.IEnumerable<string>, string)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.operator ==(Windows.Globalization.NumberFormatting.DecimalFormatter, Windows.Globalization.NumberFormatting.DecimalFormatter)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.operator !=(Windows.Globalization.NumberFormatting.DecimalFormatter, Windows.Globalization.NumberFormatting.DecimalFormatter)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.Equals(Windows.Globalization.NumberFormatting.DecimalFormatter)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.Equals(object)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.GetHashCode()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -68,7 +68,6 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.As<I>()
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.Align.get
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.MaxLines.get
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.MinLines.get

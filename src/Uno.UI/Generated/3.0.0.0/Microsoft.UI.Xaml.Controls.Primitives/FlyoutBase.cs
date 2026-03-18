@@ -135,7 +135,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property XamlRoot
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.FlyoutBase()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.FlyoutBase()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.GetAttachedFlyout(Microsoft.UI.Xaml.FrameworkElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.SetAttachedFlyout(Microsoft.UI.Xaml.FrameworkElement, Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.ShowAttachedFlyout(Microsoft.UI.Xaml.FrameworkElement)
@@ -153,14 +152,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.ShowModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.SystemBackdropProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.TargetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.FlyoutBase(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.operator ==(Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase, Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.operator !=(Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase, Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.Equals(Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.FlyoutBase(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.ShowAt(Microsoft.UI.Xaml.FrameworkElement)
@@ -176,9 +167,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.Opening.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.Opening.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.CreatePresenter()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.Microsoft.UI.Xaml.Controls.Primitives.IFlyoutBaseOverrides.CreatePresenter()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.OnProcessKeyboardAccelerators(Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.Microsoft.UI.Xaml.Controls.Primitives.IFlyoutBaseOverrides.OnProcessKeyboardAccelerators(Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.AllowFocusOnInteraction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.AllowFocusOnInteraction.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.AllowFocusWhenDisabled.get
@@ -205,7 +194,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.Target.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.XamlRoot.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.XamlRoot.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.Closed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.Closing

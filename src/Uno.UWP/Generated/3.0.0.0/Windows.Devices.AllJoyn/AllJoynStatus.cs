@@ -188,7 +188,6 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.As<I>()
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.AuthenticationFailed.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.AuthenticationRejectedByUser.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.ConnectionRefused.get

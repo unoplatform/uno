@@ -697,7 +697,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RichTextBlock.RichTextBlock()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.RichTextBlock()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.CharacterSpacingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.FontFamilyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.FontSizeProperty.get
@@ -727,12 +726,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.TextReadingOrderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.TextTrimmingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.TextWrappingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.operator ==(Microsoft.UI.Xaml.Controls.RichTextBlock, Microsoft.UI.Xaml.Controls.RichTextBlock)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.operator !=(Microsoft.UI.Xaml.Controls.RichTextBlock, Microsoft.UI.Xaml.Controls.RichTextBlock)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.Equals(Microsoft.UI.Xaml.Controls.RichTextBlock)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -831,7 +824,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.TextTrimming.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.TextWrapping.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.TextWrapping.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

@@ -13,7 +13,6 @@ namespace Microsoft.UI.Xaml.Hosting
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Hosting.WindowsXamlManager InitializeForCurrentThread()
@@ -28,12 +27,6 @@ namespace Microsoft.UI.Xaml.Hosting
 			throw new global::System.NotImplementedException("The member WindowsXamlManager WindowsXamlManager.GetForCurrentThread() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowsXamlManager%20WindowsXamlManager.GetForCurrentThread%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.operator ==(Microsoft.UI.Xaml.Hosting.WindowsXamlManager, Microsoft.UI.Xaml.Hosting.WindowsXamlManager)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.operator !=(Microsoft.UI.Xaml.Hosting.WindowsXamlManager, Microsoft.UI.Xaml.Hosting.WindowsXamlManager)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.Equals(Microsoft.UI.Xaml.Hosting.WindowsXamlManager)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.WinRT.IWinRTObject.QueryInterfaceCache.get

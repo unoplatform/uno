@@ -76,7 +76,6 @@ namespace Windows.Web.Http.Headers
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.HttpMediaTypeWithQualityHeaderValue(string, double)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue Parse(string input)
@@ -91,12 +90,6 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpMediaTypeWithQualityHeaderValue.TryParse(string input, out HttpMediaTypeWithQualityHeaderValue mediaTypeWithQualityHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpMediaTypeWithQualityHeaderValue.TryParse%28string%20input%2C%20out%20HttpMediaTypeWithQualityHeaderValue%20mediaTypeWithQualityHeaderValue%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.operator ==(Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue, Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.operator !=(Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue, Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.Equals(Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.WinRT.IWinRTObject.QueryInterfaceCache.get

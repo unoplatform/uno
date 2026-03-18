@@ -39,7 +39,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.MemoryManager.As<I>()
 		// Forced skipping of method Windows.System.MemoryManager.AppMemoryUsageDecreased.add
 		// Forced skipping of method Windows.System.MemoryManager.AppMemoryUsageDecreased.remove
 		// Forced skipping of method Windows.System.MemoryManager.AppMemoryUsageIncreased.add

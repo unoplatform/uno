@@ -8,12 +8,6 @@ namespace Windows.ApplicationModel
 #endif
 	public partial class LeavingBackgroundEventArgs : global::Windows.ApplicationModel.ILeavingBackgroundEventArgs
 	{
-		// Forced skipping of method Windows.ApplicationModel.LeavingBackgroundEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.LeavingBackgroundEventArgs.operator ==(Windows.ApplicationModel.LeavingBackgroundEventArgs, Windows.ApplicationModel.LeavingBackgroundEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.LeavingBackgroundEventArgs.operator !=(Windows.ApplicationModel.LeavingBackgroundEventArgs, Windows.ApplicationModel.LeavingBackgroundEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.LeavingBackgroundEventArgs.Equals(Windows.ApplicationModel.LeavingBackgroundEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.LeavingBackgroundEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.LeavingBackgroundEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.LeavingBackgroundEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.LeavingBackgroundEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.LeavingBackgroundEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

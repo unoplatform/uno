@@ -18,11 +18,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.CornerRadius.CornerRadius(double, double, double, double)
 		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.CornerRadius(double, double, double, double)
 		// Skipping already declared method Microsoft.UI.Xaml.CornerRadius.ToString()
-		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.Equals(Microsoft.UI.Xaml.CornerRadius)
-		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.operator ==(Microsoft.UI.Xaml.CornerRadius, Microsoft.UI.Xaml.CornerRadius)
-		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.operator !=(Microsoft.UI.Xaml.CornerRadius, Microsoft.UI.Xaml.CornerRadius)
 		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.TopLeft.get
 		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.TopLeft.set
 		// Forced skipping of method Microsoft.UI.Xaml.CornerRadius.TopRight.get

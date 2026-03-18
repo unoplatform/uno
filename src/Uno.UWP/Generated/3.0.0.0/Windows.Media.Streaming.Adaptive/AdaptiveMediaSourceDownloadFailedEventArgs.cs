@@ -123,12 +123,6 @@ namespace Windows.Media.Streaming.Adaptive
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadFailedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadFailedEventArgs.operator ==(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadFailedEventArgs, Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadFailedEventArgs)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadFailedEventArgs.operator !=(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadFailedEventArgs, Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadFailedEventArgs)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadFailedEventArgs.Equals(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadFailedEventArgs)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadFailedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadFailedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadFailedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadFailedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadFailedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

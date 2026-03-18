@@ -93,12 +93,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs, Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs, Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIAppointmentsProviderShowTimeFrameActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

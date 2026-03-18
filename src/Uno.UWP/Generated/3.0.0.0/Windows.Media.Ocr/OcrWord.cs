@@ -33,12 +33,6 @@ namespace Windows.Media.Ocr
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Ocr.OcrWord.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Ocr.OcrWord.operator ==(Windows.Media.Ocr.OcrWord, Windows.Media.Ocr.OcrWord)
-		// Forced skipping of method Windows.Media.Ocr.OcrWord.operator !=(Windows.Media.Ocr.OcrWord, Windows.Media.Ocr.OcrWord)
-		// Forced skipping of method Windows.Media.Ocr.OcrWord.Equals(Windows.Media.Ocr.OcrWord)
-		// Forced skipping of method Windows.Media.Ocr.OcrWord.Equals(object)
-		// Forced skipping of method Windows.Media.Ocr.OcrWord.GetHashCode()
 		// Forced skipping of method Windows.Media.Ocr.OcrWord.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Ocr.OcrWord.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Ocr.OcrWord.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -60,22 +60,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.PopupThemeTransition()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromHorizontalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromVerticalOffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.operator ==(Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition, Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.operator !=(Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition, Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.Equals(Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromHorizontalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromHorizontalOffset.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromVerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromVerticalOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

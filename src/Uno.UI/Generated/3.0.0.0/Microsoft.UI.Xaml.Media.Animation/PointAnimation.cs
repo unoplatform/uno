@@ -126,18 +126,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.PointAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.ByProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.EasingFunctionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.EnableDependentAnimationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.FromProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.ToProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.PointAnimation, Microsoft.UI.Xaml.Media.Animation.PointAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.PointAnimation, Microsoft.UI.Xaml.Media.Animation.PointAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.PointAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.By.get
@@ -150,7 +143,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.From.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.To.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.To.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

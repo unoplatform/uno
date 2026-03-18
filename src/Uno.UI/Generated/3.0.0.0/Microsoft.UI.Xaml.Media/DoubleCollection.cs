@@ -22,12 +22,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.DoubleCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.DoubleCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.operator ==(Microsoft.UI.Xaml.Media.DoubleCollection, Microsoft.UI.Xaml.Media.DoubleCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.operator !=(Microsoft.UI.Xaml.Media.DoubleCollection, Microsoft.UI.Xaml.Media.DoubleCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.Equals(Microsoft.UI.Xaml.Media.DoubleCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

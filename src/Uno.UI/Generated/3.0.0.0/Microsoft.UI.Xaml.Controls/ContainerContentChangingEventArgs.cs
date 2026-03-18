@@ -25,12 +25,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.ContainerContentChangingEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.ContainerContentChangingEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs, Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs, Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Equals(Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -33,12 +33,6 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.operator ==(Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs, Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.operator !=(Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs, Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.Equals(Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

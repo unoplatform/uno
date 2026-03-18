@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.Calls.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallOriginDataRequestTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallOriginDataRequestTriggerDetails.operator ==(Windows.ApplicationModel.Calls.Background.PhoneCallOriginDataRequestTriggerDetails, Windows.ApplicationModel.Calls.Background.PhoneCallOriginDataRequestTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallOriginDataRequestTriggerDetails.operator !=(Windows.ApplicationModel.Calls.Background.PhoneCallOriginDataRequestTriggerDetails, Windows.ApplicationModel.Calls.Background.PhoneCallOriginDataRequestTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallOriginDataRequestTriggerDetails.Equals(Windows.ApplicationModel.Calls.Background.PhoneCallOriginDataRequestTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallOriginDataRequestTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallOriginDataRequestTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallOriginDataRequestTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallOriginDataRequestTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallOriginDataRequestTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

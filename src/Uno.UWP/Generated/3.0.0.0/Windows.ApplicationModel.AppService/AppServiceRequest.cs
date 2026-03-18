@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.AppService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.operator ==(Windows.ApplicationModel.AppService.AppServiceRequest, Windows.ApplicationModel.AppService.AppServiceRequest)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.operator !=(Windows.ApplicationModel.AppService.AppServiceRequest, Windows.ApplicationModel.AppService.AppServiceRequest)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.Equals(Windows.ApplicationModel.AppService.AppServiceRequest)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

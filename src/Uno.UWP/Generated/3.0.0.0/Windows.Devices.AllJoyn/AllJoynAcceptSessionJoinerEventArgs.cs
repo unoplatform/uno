@@ -66,12 +66,6 @@ namespace Windows.Devices.AllJoyn
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs.AllJoynAcceptSessionJoinerEventArgs(string, ushort, Windows.Devices.AllJoyn.AllJoynTrafficType, byte, Windows.Devices.AllJoyn.IAllJoynAcceptSessionJoiner)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs.operator ==(Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs, Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs.operator !=(Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs, Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs.Equals(Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

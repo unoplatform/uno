@@ -74,12 +74,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.VpnDomainNameInfo(string, Windows.Networking.Vpn.VpnDomainNameType, System.Collections.Generic.IEnumerable<Windows.Networking.HostName>, System.Collections.Generic.IEnumerable<Windows.Networking.HostName>)
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.operator ==(Windows.Networking.Vpn.VpnDomainNameInfo, Windows.Networking.Vpn.VpnDomainNameInfo)
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.operator !=(Windows.Networking.Vpn.VpnDomainNameInfo, Windows.Networking.Vpn.VpnDomainNameInfo)
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.Equals(Windows.Networking.Vpn.VpnDomainNameInfo)
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

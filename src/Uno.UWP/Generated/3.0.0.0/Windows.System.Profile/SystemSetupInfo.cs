@@ -18,7 +18,6 @@ namespace Windows.System.Profile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.SystemSetupInfo.As<I>()
 		// Forced skipping of method Windows.System.Profile.SystemSetupInfo.OutOfBoxExperienceStateChanged.add
 		// Forced skipping of method Windows.System.Profile.SystemSetupInfo.OutOfBoxExperienceStateChanged.remove
 		// Forced skipping of method Windows.System.Profile.SystemSetupInfo.OutOfBoxExperienceState.get

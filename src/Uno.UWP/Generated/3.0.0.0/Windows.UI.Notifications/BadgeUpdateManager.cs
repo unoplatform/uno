@@ -8,7 +8,6 @@ namespace Windows.UI.Notifications
 #endif
 	public static partial class BadgeUpdateManager
 	{
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManager.As<I>()
 #if __ANDROID__ || false || false || false || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__")]
 		public static global::Windows.UI.Notifications.BadgeUpdater CreateBadgeUpdaterForApplication()

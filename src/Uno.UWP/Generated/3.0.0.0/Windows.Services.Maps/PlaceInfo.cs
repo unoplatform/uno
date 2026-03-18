@@ -63,7 +63,6 @@ namespace Windows.Services.Maps
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.PlaceInfo.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Services.Maps.PlaceInfo Create(global::Windows.Devices.Geolocation.Geopoint referencePoint)
@@ -114,12 +113,6 @@ namespace Windows.Services.Maps
 		}
 #endif
 		// Forced skipping of method Windows.Services.Maps.PlaceInfo.IsShowSupported.get
-		// Forced skipping of method Windows.Services.Maps.PlaceInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Maps.PlaceInfo.operator ==(Windows.Services.Maps.PlaceInfo, Windows.Services.Maps.PlaceInfo)
-		// Forced skipping of method Windows.Services.Maps.PlaceInfo.operator !=(Windows.Services.Maps.PlaceInfo, Windows.Services.Maps.PlaceInfo)
-		// Forced skipping of method Windows.Services.Maps.PlaceInfo.Equals(Windows.Services.Maps.PlaceInfo)
-		// Forced skipping of method Windows.Services.Maps.PlaceInfo.Equals(object)
-		// Forced skipping of method Windows.Services.Maps.PlaceInfo.GetHashCode()
 		// Forced skipping of method Windows.Services.Maps.PlaceInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Maps.PlaceInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Maps.PlaceInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -43,12 +43,6 @@ namespace Windows.Devices.Sensors.Custom
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.operator ==(Windows.Devices.Sensors.Custom.CustomSensorReading, Windows.Devices.Sensors.Custom.CustomSensorReading)
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.operator !=(Windows.Devices.Sensors.Custom.CustomSensorReading, Windows.Devices.Sensors.Custom.CustomSensorReading)
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.Equals(Windows.Devices.Sensors.Custom.CustomSensorReading)
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.WinRT.IWinRTObject.QueryInterfaceCache.get

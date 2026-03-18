@@ -203,12 +203,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.operator ==(Windows.Devices.PointOfService.JournalPrinterCapabilities, Windows.Devices.PointOfService.JournalPrinterCapabilities)
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.operator !=(Windows.Devices.PointOfService.JournalPrinterCapabilities, Windows.Devices.PointOfService.JournalPrinterCapabilities)
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.Equals(Windows.Devices.PointOfService.JournalPrinterCapabilities)
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get

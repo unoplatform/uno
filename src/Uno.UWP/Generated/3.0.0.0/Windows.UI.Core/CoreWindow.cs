@@ -73,14 +73,7 @@ namespace Windows.UI.Core
 		}
 #endif
 		// Skipping already declared property Visible
-		// Forced skipping of method Windows.UI.Core.CoreWindow.As<I>()
 		// Skipping already declared method Windows.UI.Core.CoreWindow.GetForCurrentThread()
-		// Forced skipping of method Windows.UI.Core.CoreWindow.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.CoreWindow.operator ==(Windows.UI.Core.CoreWindow, Windows.UI.Core.CoreWindow)
-		// Forced skipping of method Windows.UI.Core.CoreWindow.operator !=(Windows.UI.Core.CoreWindow, Windows.UI.Core.CoreWindow)
-		// Forced skipping of method Windows.UI.Core.CoreWindow.Equals(Windows.UI.Core.CoreWindow)
-		// Forced skipping of method Windows.UI.Core.CoreWindow.Equals(object)
-		// Forced skipping of method Windows.UI.Core.CoreWindow.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.CoreWindow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.CoreWindow.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.CoreWindow.WinRT.IWinRTObject.QueryInterfaceCache.get

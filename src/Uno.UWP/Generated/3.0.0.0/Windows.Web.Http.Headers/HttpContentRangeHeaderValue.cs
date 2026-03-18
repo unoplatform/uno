@@ -76,7 +76,6 @@ namespace Windows.Web.Http.Headers
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.HttpContentRangeHeaderValue(ulong, ulong, ulong)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpContentRangeHeaderValue Parse(string input)
@@ -91,12 +90,6 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpContentRangeHeaderValue.TryParse(string input, out HttpContentRangeHeaderValue contentRangeHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentRangeHeaderValue.TryParse%28string%20input%2C%20out%20HttpContentRangeHeaderValue%20contentRangeHeaderValue%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.operator ==(Windows.Web.Http.Headers.HttpContentRangeHeaderValue, Windows.Web.Http.Headers.HttpContentRangeHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.operator !=(Windows.Web.Http.Headers.HttpContentRangeHeaderValue, Windows.Web.Http.Headers.HttpContentRangeHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.Equals(Windows.Web.Http.Headers.HttpContentRangeHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.WinRT.IWinRTObject.QueryInterfaceCache.get

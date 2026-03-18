@@ -13,7 +13,6 @@ namespace Windows.UI.ApplicationSettings
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.ApplicationSettings.AccountsSettingsPane GetForCurrentView()
@@ -56,12 +55,6 @@ namespace Windows.UI.ApplicationSettings
 			throw new global::System.NotImplementedException("The member IAsyncAction AccountsSettingsPane.ShowAddAccountForUserAsync(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AccountsSettingsPane.ShowAddAccountForUserAsync%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.operator ==(Windows.UI.ApplicationSettings.AccountsSettingsPane, Windows.UI.ApplicationSettings.AccountsSettingsPane)
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.operator !=(Windows.UI.ApplicationSettings.AccountsSettingsPane, Windows.UI.ApplicationSettings.AccountsSettingsPane)
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.Equals(Windows.UI.ApplicationSettings.AccountsSettingsPane)
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.Equals(object)
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.GetHashCode()
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.WinRT.IWinRTObject.QueryInterfaceCache.get

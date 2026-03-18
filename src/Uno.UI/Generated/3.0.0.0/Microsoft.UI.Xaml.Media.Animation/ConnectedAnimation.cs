@@ -41,12 +41,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation, Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation, Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation.WinRT.IWinRTObject.QueryInterfaceCache.get

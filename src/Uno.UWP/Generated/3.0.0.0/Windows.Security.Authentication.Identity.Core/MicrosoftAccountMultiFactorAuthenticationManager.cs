@@ -23,14 +23,7 @@ namespace Windows.Security.Authentication.Identity.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.As<I>()
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.Current.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.operator ==(Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager, Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.operator !=(Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager, Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.Equals(Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.Equals(object)
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.GetHashCode()
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorAuthenticationManager.WinRT.IWinRTObject.QueryInterfaceCache.get

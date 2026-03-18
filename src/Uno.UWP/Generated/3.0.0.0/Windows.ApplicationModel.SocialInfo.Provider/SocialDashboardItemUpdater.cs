@@ -75,12 +75,6 @@ namespace Windows.ApplicationModel.SocialInfo.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.Provider.SocialDashboardItemUpdater.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.Provider.SocialDashboardItemUpdater.operator ==(Windows.ApplicationModel.SocialInfo.Provider.SocialDashboardItemUpdater, Windows.ApplicationModel.SocialInfo.Provider.SocialDashboardItemUpdater)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.Provider.SocialDashboardItemUpdater.operator !=(Windows.ApplicationModel.SocialInfo.Provider.SocialDashboardItemUpdater, Windows.ApplicationModel.SocialInfo.Provider.SocialDashboardItemUpdater)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.Provider.SocialDashboardItemUpdater.Equals(Windows.ApplicationModel.SocialInfo.Provider.SocialDashboardItemUpdater)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.Provider.SocialDashboardItemUpdater.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.Provider.SocialDashboardItemUpdater.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.Provider.SocialDashboardItemUpdater.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.Provider.SocialDashboardItemUpdater.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.Provider.SocialDashboardItemUpdater.WinRT.IWinRTObject.QueryInterfaceCache.get

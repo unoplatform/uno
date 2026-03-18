@@ -23,12 +23,6 @@ namespace Windows.Devices.Printers.Extensions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfiguration.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfiguration.operator ==(Windows.Devices.Printers.Extensions.PrintTaskConfiguration, Windows.Devices.Printers.Extensions.PrintTaskConfiguration)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfiguration.operator !=(Windows.Devices.Printers.Extensions.PrintTaskConfiguration, Windows.Devices.Printers.Extensions.PrintTaskConfiguration)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfiguration.Equals(Windows.Devices.Printers.Extensions.PrintTaskConfiguration)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfiguration.Equals(object)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfiguration.GetHashCode()
 		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

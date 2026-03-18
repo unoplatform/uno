@@ -23,12 +23,6 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcherTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcherTriggerDetails.operator ==(Windows.Devices.Enumeration.DeviceWatcherTriggerDetails, Windows.Devices.Enumeration.DeviceWatcherTriggerDetails)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcherTriggerDetails.operator !=(Windows.Devices.Enumeration.DeviceWatcherTriggerDetails, Windows.Devices.Enumeration.DeviceWatcherTriggerDetails)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcherTriggerDetails.Equals(Windows.Devices.Enumeration.DeviceWatcherTriggerDetails)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcherTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcherTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcherTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcherTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcherTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

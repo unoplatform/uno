@@ -15,15 +15,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Text
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.MenuFlyoutSubItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.MenuFlyoutSubItem()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.IconProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.TextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.operator ==(Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem, Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.operator !=(Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem, Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.Equals(Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.Icon.get
@@ -31,7 +24,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.Text.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.Text.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

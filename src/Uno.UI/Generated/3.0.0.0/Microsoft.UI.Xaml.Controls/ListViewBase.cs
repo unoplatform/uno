@@ -223,7 +223,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SingleSelectionFollowsFocus
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.ListViewBase()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ListViewBase()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.CanDragItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.CanReorderItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.DataFetchSizeProperty.get
@@ -245,14 +244,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.SemanticZoomOwnerProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ShowsScrollingPlaceholdersProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.SingleSelectionFollowsFocusProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ListViewBase(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.operator ==(Microsoft.UI.Xaml.Controls.ListViewBase, Microsoft.UI.Xaml.Controls.ListViewBase)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.operator !=(Microsoft.UI.Xaml.Controls.ListViewBase, Microsoft.UI.Xaml.Controls.ListViewBase)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.Equals(Microsoft.UI.Xaml.Controls.ListViewBase)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ListViewBase(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.WinRT.IWinRTObject.NativeObject.get
 #if false || false || false || IS_UNIT_TESTS || false || false || false
@@ -430,7 +421,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ShowsScrollingPlaceholders.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.SingleSelectionFollowsFocus.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.SingleSelectionFollowsFocus.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

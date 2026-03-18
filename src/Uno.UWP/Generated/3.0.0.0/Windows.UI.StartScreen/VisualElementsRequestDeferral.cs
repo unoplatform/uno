@@ -13,12 +13,6 @@ namespace Windows.UI.StartScreen
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequestDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequestDeferral.operator ==(Windows.UI.StartScreen.VisualElementsRequestDeferral, Windows.UI.StartScreen.VisualElementsRequestDeferral)
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequestDeferral.operator !=(Windows.UI.StartScreen.VisualElementsRequestDeferral, Windows.UI.StartScreen.VisualElementsRequestDeferral)
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequestDeferral.Equals(Windows.UI.StartScreen.VisualElementsRequestDeferral)
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequestDeferral.Equals(object)
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequestDeferral.GetHashCode()
 		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequestDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequestDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequestDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

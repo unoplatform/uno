@@ -14,12 +14,6 @@ namespace Windows.Storage.Streams
 		// Skipping already declared property Size
 		// Skipping already declared method Windows.Storage.Streams.InMemoryRandomAccessStream.InMemoryRandomAccessStream()
 		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.InMemoryRandomAccessStream()
-		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.operator ==(Windows.Storage.Streams.InMemoryRandomAccessStream, Windows.Storage.Streams.InMemoryRandomAccessStream)
-		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.operator !=(Windows.Storage.Streams.InMemoryRandomAccessStream, Windows.Storage.Streams.InMemoryRandomAccessStream)
-		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.Equals(Windows.Storage.Streams.InMemoryRandomAccessStream)
-		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.Equals(object)
-		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.GetHashCode()
 		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.WinRT.IWinRTObject.QueryInterfaceCache.get

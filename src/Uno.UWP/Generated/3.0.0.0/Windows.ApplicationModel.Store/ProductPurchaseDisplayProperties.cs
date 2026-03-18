@@ -66,12 +66,6 @@ namespace Windows.ApplicationModel.Store
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.ProductPurchaseDisplayProperties(string)
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.operator ==(Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties, Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties)
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.operator !=(Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties, Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties)
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Equals(Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties)
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -13,7 +13,6 @@ namespace Windows.ApplicationModel
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.PackageCatalog OpenForCurrentPackage()
@@ -28,12 +27,6 @@ namespace Windows.ApplicationModel
 			throw new global::System.NotImplementedException("The member PackageCatalog PackageCatalog.OpenForCurrentUser() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageCatalog%20PackageCatalog.OpenForCurrentUser%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.operator ==(Windows.ApplicationModel.PackageCatalog, Windows.ApplicationModel.PackageCatalog)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.operator !=(Windows.ApplicationModel.PackageCatalog, Windows.ApplicationModel.PackageCatalog)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.Equals(Windows.ApplicationModel.PackageCatalog)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.WinRT.IWinRTObject.QueryInterfaceCache.get

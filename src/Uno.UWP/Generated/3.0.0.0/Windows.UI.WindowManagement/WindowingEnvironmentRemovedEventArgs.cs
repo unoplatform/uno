@@ -23,12 +23,6 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs.operator ==(Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs, Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs)
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs.operator !=(Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs, Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs)
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs.Equals(Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs)
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

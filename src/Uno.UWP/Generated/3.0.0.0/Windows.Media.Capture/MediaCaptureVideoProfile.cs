@@ -83,12 +83,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.operator ==(Windows.Media.Capture.MediaCaptureVideoProfile, Windows.Media.Capture.MediaCaptureVideoProfile)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.operator !=(Windows.Media.Capture.MediaCaptureVideoProfile, Windows.Media.Capture.MediaCaptureVideoProfile)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.Equals(Windows.Media.Capture.MediaCaptureVideoProfile)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfile.WinRT.IWinRTObject.QueryInterfaceCache.get

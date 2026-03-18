@@ -54,7 +54,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property UpdateTextOnSelect
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AutoSuggestBox.AutoSuggestBox()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.AutoSuggestBox()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.AutoMaximizeSuggestionAreaProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.DescriptionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.HeaderProperty.get
@@ -67,12 +66,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.TextMemberPathProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.TextProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.UpdateTextOnSelectProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.operator ==(Microsoft.UI.Xaml.Controls.AutoSuggestBox, Microsoft.UI.Xaml.Controls.AutoSuggestBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.operator !=(Microsoft.UI.Xaml.Controls.AutoSuggestBox, Microsoft.UI.Xaml.Controls.AutoSuggestBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.Equals(Microsoft.UI.Xaml.Controls.AutoSuggestBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.QuerySubmitted.add
@@ -105,7 +98,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.TextMemberPath.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.UpdateTextOnSelect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.UpdateTextOnSelect.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.AutoSuggestBox.QuerySubmitted
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.AutoSuggestBox.SuggestionChosen

@@ -554,7 +554,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RichEditBox.RichEditBox()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.RichEditBox()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.AcceptsReturnProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.CharacterCasingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.ClipboardCopyFormatProperty.get
@@ -579,14 +578,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.TextAlignmentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.TextReadingOrderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.TextWrappingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.RichEditBox(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.operator ==(Microsoft.UI.Xaml.Controls.RichEditBox, Microsoft.UI.Xaml.Controls.RichEditBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.operator !=(Microsoft.UI.Xaml.Controls.RichEditBox, Microsoft.UI.Xaml.Controls.RichEditBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.Equals(Microsoft.UI.Xaml.Controls.RichEditBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.RichEditBox(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -669,7 +660,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.TextReadingOrder.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.TextWrapping.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.TextWrapping.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

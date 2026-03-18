@@ -23,12 +23,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserWatcher.FromAbi(nint)
-		// Forced skipping of method Windows.System.UserWatcher.operator ==(Windows.System.UserWatcher, Windows.System.UserWatcher)
-		// Forced skipping of method Windows.System.UserWatcher.operator !=(Windows.System.UserWatcher, Windows.System.UserWatcher)
-		// Forced skipping of method Windows.System.UserWatcher.Equals(Windows.System.UserWatcher)
-		// Forced skipping of method Windows.System.UserWatcher.Equals(object)
-		// Forced skipping of method Windows.System.UserWatcher.GetHashCode()
 		// Forced skipping of method Windows.System.UserWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.UserWatcher.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.UserWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get

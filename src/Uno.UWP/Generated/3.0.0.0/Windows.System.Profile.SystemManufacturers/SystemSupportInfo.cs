@@ -38,7 +38,6 @@ namespace Windows.System.Profile.SystemManufacturers
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportInfo.As<I>()
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportInfo.LocalDeviceInfo.get
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportInfo.LocalSystemEdition.get
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportInfo.OemSupportInfo.get

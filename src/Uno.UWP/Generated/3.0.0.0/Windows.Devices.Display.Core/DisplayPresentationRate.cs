@@ -17,11 +17,6 @@ namespace Windows.Devices.Display.Core
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPresentationRate.DisplayPresentationRate(Windows.Foundation.Numerics.Rational, int)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPresentationRate.operator ==(Windows.Devices.Display.Core.DisplayPresentationRate, Windows.Devices.Display.Core.DisplayPresentationRate)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPresentationRate.operator !=(Windows.Devices.Display.Core.DisplayPresentationRate, Windows.Devices.Display.Core.DisplayPresentationRate)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPresentationRate.Equals(Windows.Devices.Display.Core.DisplayPresentationRate)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPresentationRate.Equals(object)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPresentationRate.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Foundation.Numerics.Rational VerticalSyncRate;
 #endif

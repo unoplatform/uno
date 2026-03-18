@@ -23,12 +23,6 @@ namespace Windows.System.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.operator ==(Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs, Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs)
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.operator !=(Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs, Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs)
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.Equals(Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs)
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

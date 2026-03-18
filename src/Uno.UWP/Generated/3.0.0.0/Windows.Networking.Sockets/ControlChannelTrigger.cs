@@ -98,12 +98,6 @@ namespace Windows.Networking.Sockets
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.ControlChannelTrigger(string, uint, Windows.Networking.Sockets.ControlChannelTriggerResourceType)
-		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.operator ==(Windows.Networking.Sockets.ControlChannelTrigger, Windows.Networking.Sockets.ControlChannelTrigger)
-		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.operator !=(Windows.Networking.Sockets.ControlChannelTrigger, Windows.Networking.Sockets.ControlChannelTrigger)
-		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.Equals(Windows.Networking.Sockets.ControlChannelTrigger)
-		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.Equals(object)
-		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.GetHashCode()
 		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

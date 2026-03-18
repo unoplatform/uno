@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequest.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequest.operator ==(Windows.ApplicationModel.UserActivities.UserActivityRequest, Windows.ApplicationModel.UserActivities.UserActivityRequest)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequest.operator !=(Windows.ApplicationModel.UserActivities.UserActivityRequest, Windows.ApplicationModel.UserActivities.UserActivityRequest)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequest.Equals(Windows.ApplicationModel.UserActivities.UserActivityRequest)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequest.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequest.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

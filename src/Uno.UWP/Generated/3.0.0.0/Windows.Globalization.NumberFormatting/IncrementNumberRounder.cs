@@ -12,12 +12,6 @@ namespace Windows.Globalization.NumberFormatting
 		// Skipping already declared property RoundingAlgorithm
 		// Skipping already declared method Windows.Globalization.NumberFormatting.IncrementNumberRounder.IncrementNumberRounder()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.IncrementNumberRounder()
-		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.operator ==(Windows.Globalization.NumberFormatting.IncrementNumberRounder, Windows.Globalization.NumberFormatting.IncrementNumberRounder)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.operator !=(Windows.Globalization.NumberFormatting.IncrementNumberRounder, Windows.Globalization.NumberFormatting.IncrementNumberRounder)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.Equals(Windows.Globalization.NumberFormatting.IncrementNumberRounder)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.Equals(object)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.GetHashCode()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.WinRT.IWinRTObject.QueryInterfaceCache.get

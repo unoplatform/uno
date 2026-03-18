@@ -208,7 +208,6 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmNames.As<I>()
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmNames.CapiKdfMd5.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmNames.CapiKdfSha1.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmNames.CapiKdfSha256.get

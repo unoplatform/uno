@@ -13,12 +13,6 @@ namespace Windows.Devices.Enumeration
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCustomPairing.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCustomPairing.operator ==(Windows.Devices.Enumeration.DeviceInformationCustomPairing, Windows.Devices.Enumeration.DeviceInformationCustomPairing)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCustomPairing.operator !=(Windows.Devices.Enumeration.DeviceInformationCustomPairing, Windows.Devices.Enumeration.DeviceInformationCustomPairing)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCustomPairing.Equals(Windows.Devices.Enumeration.DeviceInformationCustomPairing)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCustomPairing.Equals(object)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCustomPairing.GetHashCode()
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCustomPairing.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCustomPairing.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCustomPairing.WinRT.IWinRTObject.QueryInterfaceCache.get

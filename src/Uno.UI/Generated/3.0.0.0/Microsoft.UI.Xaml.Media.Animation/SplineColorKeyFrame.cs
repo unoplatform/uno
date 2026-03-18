@@ -32,19 +32,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.SplineColorKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.SplineColorKeyFrame()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.KeySplineProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame, Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame, Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.KeySpline.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.KeySpline.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

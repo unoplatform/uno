@@ -47,12 +47,6 @@ namespace Windows.Devices.Pwm
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Pwm.PwmPin.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Pwm.PwmPin.operator ==(Windows.Devices.Pwm.PwmPin, Windows.Devices.Pwm.PwmPin)
-		// Forced skipping of method Windows.Devices.Pwm.PwmPin.operator !=(Windows.Devices.Pwm.PwmPin, Windows.Devices.Pwm.PwmPin)
-		// Forced skipping of method Windows.Devices.Pwm.PwmPin.Equals(Windows.Devices.Pwm.PwmPin)
-		// Forced skipping of method Windows.Devices.Pwm.PwmPin.Equals(object)
-		// Forced skipping of method Windows.Devices.Pwm.PwmPin.GetHashCode()
 		// Forced skipping of method Windows.Devices.Pwm.PwmPin.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Pwm.PwmPin.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Pwm.PwmPin.WinRT.IWinRTObject.QueryInterfaceCache.get

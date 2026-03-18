@@ -37,7 +37,6 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.RadialControllerMenuItem CreateFromIcon(string displayText, global::Windows.Storage.Streams.RandomAccessStreamReference icon)
@@ -66,12 +65,6 @@ namespace Windows.UI.Input
 			throw new global::System.NotImplementedException("The member RadialControllerMenuItem RadialControllerMenuItem.CreateFromFontGlyph(string displayText, string glyph, string fontFamily, Uri fontUri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialControllerMenuItem%20RadialControllerMenuItem.CreateFromFontGlyph%28string%20displayText%2C%20string%20glyph%2C%20string%20fontFamily%2C%20Uri%20fontUri%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.operator ==(Windows.UI.Input.RadialControllerMenuItem, Windows.UI.Input.RadialControllerMenuItem)
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.operator !=(Windows.UI.Input.RadialControllerMenuItem, Windows.UI.Input.RadialControllerMenuItem)
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.Equals(Windows.UI.Input.RadialControllerMenuItem)
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.Equals(object)
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.WinRT.IWinRTObject.QueryInterfaceCache.get

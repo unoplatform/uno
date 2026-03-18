@@ -31,10 +31,5 @@ namespace Windows.UI
 		}
 #endif
 		// Forced skipping of method Windows.UI.Color.System.IFormattable.ToString(string, System.IFormatProvider)
-		// Forced skipping of method Windows.UI.Color.GetHashCode()
-		// Forced skipping of method Windows.UI.Color.Equals(object)
-		// Forced skipping of method Windows.UI.Color.Equals(Windows.UI.Color)
-		// Forced skipping of method Windows.UI.Color.operator ==(Windows.UI.Color, Windows.UI.Color)
-		// Forced skipping of method Windows.UI.Color.operator !=(Windows.UI.Color, Windows.UI.Color)
 	}
 }

@@ -96,7 +96,6 @@ namespace Windows.Web.Http.Headers
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.HttpContentDispositionHeaderValue(string)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpContentDispositionHeaderValue Parse(string input)
@@ -111,12 +110,6 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpContentDispositionHeaderValue.TryParse(string input, out HttpContentDispositionHeaderValue contentDispositionHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentDispositionHeaderValue.TryParse%28string%20input%2C%20out%20HttpContentDispositionHeaderValue%20contentDispositionHeaderValue%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.operator ==(Windows.Web.Http.Headers.HttpContentDispositionHeaderValue, Windows.Web.Http.Headers.HttpContentDispositionHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.operator !=(Windows.Web.Http.Headers.HttpContentDispositionHeaderValue, Windows.Web.Http.Headers.HttpContentDispositionHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.Equals(Windows.Web.Http.Headers.HttpContentDispositionHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.WinRT.IWinRTObject.QueryInterfaceCache.get

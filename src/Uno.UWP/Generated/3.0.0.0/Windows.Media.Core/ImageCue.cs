@@ -100,12 +100,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.ImageCue.ImageCue()
-		// Forced skipping of method Windows.Media.Core.ImageCue.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.ImageCue.operator ==(Windows.Media.Core.ImageCue, Windows.Media.Core.ImageCue)
-		// Forced skipping of method Windows.Media.Core.ImageCue.operator !=(Windows.Media.Core.ImageCue, Windows.Media.Core.ImageCue)
-		// Forced skipping of method Windows.Media.Core.ImageCue.Equals(Windows.Media.Core.ImageCue)
-		// Forced skipping of method Windows.Media.Core.ImageCue.Equals(object)
-		// Forced skipping of method Windows.Media.Core.ImageCue.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.ImageCue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.ImageCue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.ImageCue.WinRT.IWinRTObject.QueryInterfaceCache.get

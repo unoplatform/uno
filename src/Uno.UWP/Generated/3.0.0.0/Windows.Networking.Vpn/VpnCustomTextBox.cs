@@ -72,12 +72,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.VpnCustomTextBox()
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.operator ==(Windows.Networking.Vpn.VpnCustomTextBox, Windows.Networking.Vpn.VpnCustomTextBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.operator !=(Windows.Networking.Vpn.VpnCustomTextBox, Windows.Networking.Vpn.VpnCustomTextBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Equals(Windows.Networking.Vpn.VpnCustomTextBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.WinRT.IWinRTObject.QueryInterfaceCache.get

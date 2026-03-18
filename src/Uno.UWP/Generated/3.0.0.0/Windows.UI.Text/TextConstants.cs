@@ -88,7 +88,6 @@ namespace Windows.UI.Text
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.TextConstants.As<I>()
 		// Forced skipping of method Windows.UI.Text.TextConstants.AutoColor.get
 		// Forced skipping of method Windows.UI.Text.TextConstants.MaxUnitCount.get
 		// Forced skipping of method Windows.UI.Text.TextConstants.MinUnitCount.get

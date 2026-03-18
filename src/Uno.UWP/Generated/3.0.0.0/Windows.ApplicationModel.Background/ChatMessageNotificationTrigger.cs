@@ -16,12 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageNotificationTrigger.ChatMessageNotificationTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageNotificationTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageNotificationTrigger.operator ==(Windows.ApplicationModel.Background.ChatMessageNotificationTrigger, Windows.ApplicationModel.Background.ChatMessageNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageNotificationTrigger.operator !=(Windows.ApplicationModel.Background.ChatMessageNotificationTrigger, Windows.ApplicationModel.Background.ChatMessageNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageNotificationTrigger.Equals(Windows.ApplicationModel.Background.ChatMessageNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageNotificationTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageNotificationTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageNotificationTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageNotificationTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.ChatMessageNotificationTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

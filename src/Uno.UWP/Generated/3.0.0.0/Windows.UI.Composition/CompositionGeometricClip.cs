@@ -41,19 +41,12 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometricClip.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometricClip.operator ==(Windows.UI.Composition.CompositionGeometricClip, Windows.UI.Composition.CompositionGeometricClip)
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometricClip.operator !=(Windows.UI.Composition.CompositionGeometricClip, Windows.UI.Composition.CompositionGeometricClip)
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometricClip.Equals(Windows.UI.Composition.CompositionGeometricClip)
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometricClip.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometricClip.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometricClip.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometricClip.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometricClip.Geometry.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometricClip.Geometry.set
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometricClip.ViewBox.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometricClip.ViewBox.set
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometricClip.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometricClip.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

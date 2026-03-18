@@ -55,12 +55,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.operator ==(Windows.UI.Composition.CompositionVisualSurface, Windows.UI.Composition.CompositionVisualSurface)
-		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.operator !=(Windows.UI.Composition.CompositionVisualSurface, Windows.UI.Composition.CompositionVisualSurface)
-		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.Equals(Windows.UI.Composition.CompositionVisualSurface)
-		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceOffset.get
@@ -69,7 +63,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceSize.set
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceVisual.get
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceVisual.set
-		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Composition.ICompositionSurface
 	}

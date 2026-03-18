@@ -16,18 +16,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property TemplateSettings
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.NavigationViewItemPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.NavigationViewItemPresenter()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.IconProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.InfoBadgeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.TemplateSettingsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.NavigationViewItemPresenter(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.operator ==(Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter, Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.operator !=(Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter, Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.Equals(Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.NavigationViewItemPresenter(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.Icon.get
@@ -35,7 +26,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.InfoBadge.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.InfoBadge.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

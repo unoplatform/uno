@@ -13,12 +13,6 @@ namespace Windows.UI.Input.Inking
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkSynchronizer.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Inking.InkSynchronizer.operator ==(Windows.UI.Input.Inking.InkSynchronizer, Windows.UI.Input.Inking.InkSynchronizer)
-		// Forced skipping of method Windows.UI.Input.Inking.InkSynchronizer.operator !=(Windows.UI.Input.Inking.InkSynchronizer, Windows.UI.Input.Inking.InkSynchronizer)
-		// Forced skipping of method Windows.UI.Input.Inking.InkSynchronizer.Equals(Windows.UI.Input.Inking.InkSynchronizer)
-		// Forced skipping of method Windows.UI.Input.Inking.InkSynchronizer.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Inking.InkSynchronizer.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Inking.InkSynchronizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkSynchronizer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkSynchronizer.WinRT.IWinRTObject.QueryInterfaceCache.get

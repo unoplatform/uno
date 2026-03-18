@@ -16,13 +16,5 @@ namespace Microsoft.UI.Xaml.Data
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Data.BindableCustomProperty.BindableCustomProperty(bool, bool, string, System.Type, System.Func<object, object>, System.Action<object, object>, System.Func<object, object, object>, System.Action<object, object, object>)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindableCustomProperty.Microsoft.UI.Xaml.Data.ICustomProperty.CanRead.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindableCustomProperty.Microsoft.UI.Xaml.Data.ICustomProperty.CanWrite.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindableCustomProperty.Microsoft.UI.Xaml.Data.ICustomProperty.Name.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindableCustomProperty.Microsoft.UI.Xaml.Data.ICustomProperty.Type.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindableCustomProperty.Microsoft.UI.Xaml.Data.ICustomProperty.GetIndexedValue(object, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindableCustomProperty.Microsoft.UI.Xaml.Data.ICustomProperty.GetValue(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindableCustomProperty.Microsoft.UI.Xaml.Data.ICustomProperty.SetIndexedValue(object, object, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindableCustomProperty.Microsoft.UI.Xaml.Data.ICustomProperty.SetValue(object, object)
 	}
 }

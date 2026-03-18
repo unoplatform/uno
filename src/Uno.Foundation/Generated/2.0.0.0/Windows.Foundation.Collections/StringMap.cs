@@ -15,12 +15,6 @@ namespace Windows.Foundation.Collections
 		// Skipping already declared property this[]
 		// Skipping already declared method Windows.Foundation.Collections.StringMap.StringMap()
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.StringMap()
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.FromAbi(nint)
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.operator ==(Windows.Foundation.Collections.StringMap, Windows.Foundation.Collections.StringMap)
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.operator !=(Windows.Foundation.Collections.StringMap, Windows.Foundation.Collections.StringMap)
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.Equals(Windows.Foundation.Collections.StringMap)
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.Equals(object)
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.GetHashCode()
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.WinRT.IWinRTObject.QueryInterfaceCache.get

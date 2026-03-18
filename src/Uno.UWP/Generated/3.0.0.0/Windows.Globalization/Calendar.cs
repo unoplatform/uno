@@ -54,12 +54,6 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.Calendar.Calendar(System.Collections.Generic.IEnumerable<string>, string, string)
 		// Skipping already declared method Windows.Globalization.Calendar.Calendar(System.Collections.Generic.IEnumerable<string>, string, string, string)
 		// Forced skipping of method Windows.Globalization.Calendar.Calendar(System.Collections.Generic.IEnumerable<string>, string, string, string)
-		// Forced skipping of method Windows.Globalization.Calendar.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.Calendar.operator ==(Windows.Globalization.Calendar, Windows.Globalization.Calendar)
-		// Forced skipping of method Windows.Globalization.Calendar.operator !=(Windows.Globalization.Calendar, Windows.Globalization.Calendar)
-		// Forced skipping of method Windows.Globalization.Calendar.Equals(Windows.Globalization.Calendar)
-		// Forced skipping of method Windows.Globalization.Calendar.Equals(object)
-		// Forced skipping of method Windows.Globalization.Calendar.GetHashCode()
 		// Forced skipping of method Windows.Globalization.Calendar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.Calendar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.Calendar.WinRT.IWinRTObject.QueryInterfaceCache.get

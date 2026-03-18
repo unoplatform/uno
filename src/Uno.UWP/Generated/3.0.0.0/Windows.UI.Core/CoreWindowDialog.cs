@@ -124,12 +124,6 @@ namespace Windows.UI.Core
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreWindowDialog.CoreWindowDialog(string)
-		// Forced skipping of method Windows.UI.Core.CoreWindowDialog.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.CoreWindowDialog.operator ==(Windows.UI.Core.CoreWindowDialog, Windows.UI.Core.CoreWindowDialog)
-		// Forced skipping of method Windows.UI.Core.CoreWindowDialog.operator !=(Windows.UI.Core.CoreWindowDialog, Windows.UI.Core.CoreWindowDialog)
-		// Forced skipping of method Windows.UI.Core.CoreWindowDialog.Equals(Windows.UI.Core.CoreWindowDialog)
-		// Forced skipping of method Windows.UI.Core.CoreWindowDialog.Equals(object)
-		// Forced skipping of method Windows.UI.Core.CoreWindowDialog.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.CoreWindowDialog.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.CoreWindowDialog.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.CoreWindowDialog.WinRT.IWinRTObject.QueryInterfaceCache.get

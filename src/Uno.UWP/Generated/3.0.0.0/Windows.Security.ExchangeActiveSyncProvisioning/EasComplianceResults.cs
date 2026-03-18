@@ -113,12 +113,6 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.FromAbi(nint)
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.operator ==(Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults, Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults)
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.operator !=(Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults, Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults)
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.Equals(Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults)
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.Equals(object)
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.GetHashCode()
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.WinRT.IWinRTObject.QueryInterfaceCache.get

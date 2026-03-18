@@ -70,7 +70,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.VirtualizingStackPanel()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.VirtualizingStackPanel()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Controls.VirtualizationMode GetVirtualizationMode(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -96,12 +95,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.IsVirtualizingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.OrientationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.VirtualizationModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.operator ==(Microsoft.UI.Xaml.Controls.VirtualizingStackPanel, Microsoft.UI.Xaml.Controls.VirtualizingStackPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.operator !=(Microsoft.UI.Xaml.Controls.VirtualizingStackPanel, Microsoft.UI.Xaml.Controls.VirtualizingStackPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.Equals(Microsoft.UI.Xaml.Controls.VirtualizingStackPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.CleanUpVirtualizedItemEvent.add
@@ -113,12 +106,10 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.VirtualizingStackPanel", "void VirtualizingStackPanel.OnCleanUpVirtualizedItem(CleanUpVirtualizedItemEventArgs e)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.Microsoft.UI.Xaml.Controls.IVirtualizingStackPanelOverrides.OnCleanUpVirtualizedItem(Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.AreScrollSnapPointsRegular.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.AreScrollSnapPointsRegular.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.Orientation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.Orientation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

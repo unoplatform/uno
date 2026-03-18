@@ -405,12 +405,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo, Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo, Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.Equals(Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

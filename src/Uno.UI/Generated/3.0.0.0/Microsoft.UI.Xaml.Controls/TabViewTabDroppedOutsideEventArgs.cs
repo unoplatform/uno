@@ -10,12 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Item
 		// Skipping already declared property Tab
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs, Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs, Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.Equals(Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

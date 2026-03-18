@@ -134,14 +134,6 @@ namespace Windows.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.ScenePbrMaterial(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.operator ==(Windows.UI.Composition.Scenes.ScenePbrMaterial, Windows.UI.Composition.Scenes.ScenePbrMaterial)
-		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.operator !=(Windows.UI.Composition.Scenes.ScenePbrMaterial, Windows.UI.Composition.Scenes.ScenePbrMaterial)
-		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.Equals(Windows.UI.Composition.Scenes.ScenePbrMaterial)
-		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.ScenePbrMaterial(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.AlphaCutoff.get
@@ -162,7 +154,6 @@ namespace Windows.UI.Composition.Scenes
 		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.OcclusionInput.set
 		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.OcclusionStrength.get
 		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.OcclusionStrength.set
-		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.Scenes.ScenePbrMaterial.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

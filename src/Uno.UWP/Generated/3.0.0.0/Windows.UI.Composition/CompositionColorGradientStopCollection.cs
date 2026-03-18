@@ -47,12 +47,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.operator ==(Windows.UI.Composition.CompositionColorGradientStopCollection, Windows.UI.Composition.CompositionColorGradientStopCollection)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.operator !=(Windows.UI.Composition.CompositionColorGradientStopCollection, Windows.UI.Composition.CompositionColorGradientStopCollection)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.Equals(Windows.UI.Composition.CompositionColorGradientStopCollection)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

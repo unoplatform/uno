@@ -138,7 +138,6 @@ namespace Windows.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.SystemProperties.As<I>()
 		// Forced skipping of method Windows.Storage.SystemProperties.Audio.get
 		// Forced skipping of method Windows.Storage.SystemProperties.Author.get
 		// Forced skipping of method Windows.Storage.SystemProperties.Comment.get

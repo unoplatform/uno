@@ -76,22 +76,14 @@ namespace Microsoft.UI.Xaml.Automation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.AutomationAnnotation(Microsoft.UI.Xaml.Automation.AnnotationType, Microsoft.UI.Xaml.UIElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.ElementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.TypeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.operator ==(Microsoft.UI.Xaml.Automation.AutomationAnnotation, Microsoft.UI.Xaml.Automation.AutomationAnnotation)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.operator !=(Microsoft.UI.Xaml.Automation.AutomationAnnotation, Microsoft.UI.Xaml.Automation.AutomationAnnotation)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Equals(Microsoft.UI.Xaml.Automation.AutomationAnnotation)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Element.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Element.set
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Type.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Type.set
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

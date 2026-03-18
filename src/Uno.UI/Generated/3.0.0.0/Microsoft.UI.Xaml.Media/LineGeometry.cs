@@ -60,22 +60,14 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.LineGeometry()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.EndPointProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.StartPointProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.operator ==(Microsoft.UI.Xaml.Media.LineGeometry, Microsoft.UI.Xaml.Media.LineGeometry)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.operator !=(Microsoft.UI.Xaml.Media.LineGeometry, Microsoft.UI.Xaml.Media.LineGeometry)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.Equals(Microsoft.UI.Xaml.Media.LineGeometry)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.EndPoint.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.EndPoint.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.StartPoint.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.StartPoint.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

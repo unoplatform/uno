@@ -63,12 +63,6 @@ namespace Windows.UI.Core.AnimationMetrics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.PropertyAnimation.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.PropertyAnimation.operator ==(Windows.UI.Core.AnimationMetrics.PropertyAnimation, Windows.UI.Core.AnimationMetrics.PropertyAnimation)
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.PropertyAnimation.operator !=(Windows.UI.Core.AnimationMetrics.PropertyAnimation, Windows.UI.Core.AnimationMetrics.PropertyAnimation)
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.PropertyAnimation.Equals(Windows.UI.Core.AnimationMetrics.PropertyAnimation)
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.PropertyAnimation.Equals(object)
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.PropertyAnimation.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.PropertyAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.PropertyAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.PropertyAnimation.WinRT.IWinRTObject.QueryInterfaceCache.get

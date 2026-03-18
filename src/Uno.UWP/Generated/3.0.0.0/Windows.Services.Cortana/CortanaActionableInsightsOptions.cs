@@ -44,12 +44,6 @@ namespace Windows.Services.Cortana
 		}
 #endif
 		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.CortanaActionableInsightsOptions()
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.operator ==(Windows.Services.Cortana.CortanaActionableInsightsOptions, Windows.Services.Cortana.CortanaActionableInsightsOptions)
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.operator !=(Windows.Services.Cortana.CortanaActionableInsightsOptions, Windows.Services.Cortana.CortanaActionableInsightsOptions)
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.Equals(Windows.Services.Cortana.CortanaActionableInsightsOptions)
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.Equals(object)
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.GetHashCode()
 		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

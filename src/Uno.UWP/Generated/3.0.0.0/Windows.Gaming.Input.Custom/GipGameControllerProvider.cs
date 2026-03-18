@@ -63,12 +63,6 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.operator ==(Windows.Gaming.Input.Custom.GipGameControllerProvider, Windows.Gaming.Input.Custom.GipGameControllerProvider)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.operator !=(Windows.Gaming.Input.Custom.GipGameControllerProvider, Windows.Gaming.Input.Custom.GipGameControllerProvider)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.Equals(Windows.Gaming.Input.Custom.GipGameControllerProvider)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.WinRT.IWinRTObject.QueryInterfaceCache.get

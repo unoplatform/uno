@@ -63,12 +63,6 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.operator ==(Windows.Graphics.Holographic.HolographicFramePresentationReport, Windows.Graphics.Holographic.HolographicFramePresentationReport)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.operator !=(Windows.Graphics.Holographic.HolographicFramePresentationReport, Windows.Graphics.Holographic.HolographicFramePresentationReport)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.Equals(Windows.Graphics.Holographic.HolographicFramePresentationReport)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.Equals(object)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.WinRT.IWinRTObject.QueryInterfaceCache.get

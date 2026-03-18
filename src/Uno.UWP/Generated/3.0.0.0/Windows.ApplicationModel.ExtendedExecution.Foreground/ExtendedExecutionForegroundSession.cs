@@ -44,12 +44,6 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.ExtendedExecutionForegroundSession()
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.operator ==(Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession, Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.operator !=(Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession, Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Equals(Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.WinRT.IWinRTObject.QueryInterfaceCache.get

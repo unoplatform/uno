@@ -13,12 +13,6 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.operator ==(Windows.Security.Authentication.Web.Core.WebAccountMonitor, Windows.Security.Authentication.Web.Core.WebAccountMonitor)
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.operator !=(Windows.Security.Authentication.Web.Core.WebAccountMonitor, Windows.Security.Authentication.Web.Core.WebAccountMonitor)
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Equals(Windows.Security.Authentication.Web.Core.WebAccountMonitor)
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Equals(object)
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.GetHashCode()
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.WinRT.IWinRTObject.QueryInterfaceCache.get

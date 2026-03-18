@@ -73,12 +73,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs, Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs, Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

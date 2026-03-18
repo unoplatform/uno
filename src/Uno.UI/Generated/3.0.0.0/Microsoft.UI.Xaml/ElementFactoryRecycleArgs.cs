@@ -44,14 +44,6 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.ElementFactoryRecycleArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.ElementFactoryRecycleArgs(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.operator ==(Microsoft.UI.Xaml.ElementFactoryRecycleArgs, Microsoft.UI.Xaml.ElementFactoryRecycleArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.operator !=(Microsoft.UI.Xaml.ElementFactoryRecycleArgs, Microsoft.UI.Xaml.ElementFactoryRecycleArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.Equals(Microsoft.UI.Xaml.ElementFactoryRecycleArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.ElementFactoryRecycleArgs(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -60,7 +52,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.Element.set
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.Parent.get
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.Parent.set
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,12 +23,6 @@ namespace Windows.Services.TargetedContent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentChangedEventArgs.operator ==(Windows.Services.TargetedContent.TargetedContentChangedEventArgs, Windows.Services.TargetedContent.TargetedContentChangedEventArgs)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentChangedEventArgs.operator !=(Windows.Services.TargetedContent.TargetedContentChangedEventArgs, Windows.Services.TargetedContent.TargetedContentChangedEventArgs)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentChangedEventArgs.Equals(Windows.Services.TargetedContent.TargetedContentChangedEventArgs)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

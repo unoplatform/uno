@@ -13,12 +13,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryCollection.GeometryCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.GeometryCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.operator ==(Microsoft.UI.Xaml.Media.GeometryCollection, Microsoft.UI.Xaml.Media.GeometryCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.operator !=(Microsoft.UI.Xaml.Media.GeometryCollection, Microsoft.UI.Xaml.Media.GeometryCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.Equals(Microsoft.UI.Xaml.Media.GeometryCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

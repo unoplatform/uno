@@ -8,12 +8,6 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionPropertySet : global::Microsoft.UI.Composition.CompositionObject
 	{
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPropertySet.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPropertySet.operator ==(Microsoft.UI.Composition.CompositionPropertySet, Microsoft.UI.Composition.CompositionPropertySet)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPropertySet.operator !=(Microsoft.UI.Composition.CompositionPropertySet, Microsoft.UI.Composition.CompositionPropertySet)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPropertySet.Equals(Microsoft.UI.Composition.CompositionPropertySet)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPropertySet.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPropertySet.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionPropertySet.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionPropertySet.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.CompositionPropertySet.InsertColor(string, Windows.UI.Color)
@@ -34,7 +28,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared method Microsoft.UI.Composition.CompositionPropertySet.TryGetVector4(string, out System.Numerics.Vector4)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionPropertySet.InsertBoolean(string, bool)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionPropertySet.TryGetBoolean(string, out bool)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPropertySet.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionPropertySet.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

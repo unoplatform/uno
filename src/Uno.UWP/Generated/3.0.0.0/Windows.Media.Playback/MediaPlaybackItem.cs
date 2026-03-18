@@ -154,7 +154,6 @@ namespace Windows.Media.Playback
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.MediaPlaybackItem(Windows.Media.Core.MediaSource, System.TimeSpan, System.TimeSpan)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Playback.MediaPlaybackItem FindFromMediaSource(global::Windows.Media.Core.MediaSource source)
@@ -162,12 +161,6 @@ namespace Windows.Media.Playback
 			throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaPlaybackItem.FindFromMediaSource(MediaSource source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20MediaPlaybackItem.FindFromMediaSource%28MediaSource%20source%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.operator ==(Windows.Media.Playback.MediaPlaybackItem, Windows.Media.Playback.MediaPlaybackItem)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.operator !=(Windows.Media.Playback.MediaPlaybackItem, Windows.Media.Playback.MediaPlaybackItem)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.Equals(Windows.Media.Playback.MediaPlaybackItem)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.Equals(object)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.GetHashCode()
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.WinRT.IWinRTObject.QueryInterfaceCache.get

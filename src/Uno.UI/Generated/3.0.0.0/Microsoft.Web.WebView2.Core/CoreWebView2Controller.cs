@@ -154,14 +154,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.CoreWebView2Controller(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2Controller, Microsoft.Web.WebView2.Core.CoreWebView2Controller)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2Controller, Microsoft.Web.WebView2.Core.CoreWebView2Controller)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.Equals(Microsoft.Web.WebView2.Core.CoreWebView2Controller)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.GetHashCode()
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.CoreWebView2Controller(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -226,7 +218,6 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ShouldDetectMonitorScaleChanges.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ZoomFactor.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ZoomFactor.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

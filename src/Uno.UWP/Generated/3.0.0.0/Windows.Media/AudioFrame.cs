@@ -102,12 +102,6 @@ namespace Windows.Media
 		}
 #endif
 		// Forced skipping of method Windows.Media.AudioFrame.AudioFrame(uint)
-		// Forced skipping of method Windows.Media.AudioFrame.FromAbi(nint)
-		// Forced skipping of method Windows.Media.AudioFrame.operator ==(Windows.Media.AudioFrame, Windows.Media.AudioFrame)
-		// Forced skipping of method Windows.Media.AudioFrame.operator !=(Windows.Media.AudioFrame, Windows.Media.AudioFrame)
-		// Forced skipping of method Windows.Media.AudioFrame.Equals(Windows.Media.AudioFrame)
-		// Forced skipping of method Windows.Media.AudioFrame.Equals(object)
-		// Forced skipping of method Windows.Media.AudioFrame.GetHashCode()
 		// Forced skipping of method Windows.Media.AudioFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.AudioFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.AudioFrame.WinRT.IWinRTObject.QueryInterfaceCache.get

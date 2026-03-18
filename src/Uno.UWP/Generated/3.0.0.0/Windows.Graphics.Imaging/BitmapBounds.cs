@@ -17,11 +17,6 @@ namespace Windows.Graphics.Imaging
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapBounds.BitmapBounds(uint, uint, uint, uint)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapBounds.operator ==(Windows.Graphics.Imaging.BitmapBounds, Windows.Graphics.Imaging.BitmapBounds)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapBounds.operator !=(Windows.Graphics.Imaging.BitmapBounds, Windows.Graphics.Imaging.BitmapBounds)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapBounds.Equals(Windows.Graphics.Imaging.BitmapBounds)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapBounds.Equals(object)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapBounds.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint X;
 #endif

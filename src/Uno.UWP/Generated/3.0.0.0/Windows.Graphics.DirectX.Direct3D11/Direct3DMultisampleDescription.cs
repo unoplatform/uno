@@ -17,11 +17,6 @@ namespace Windows.Graphics.DirectX.Direct3D11
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription.Direct3DMultisampleDescription(int, int)
-		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription.operator ==(Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription, Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription)
-		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription.operator !=(Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription, Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription)
-		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription.Equals(Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription)
-		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription.Equals(object)
-		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int Count;
 #endif

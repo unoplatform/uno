@@ -91,7 +91,6 @@ namespace Microsoft.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.As<I>()
 		// Skipping already declared method Microsoft.UI.Composition.Interactions.InteractionTracker.Create(Microsoft.UI.Composition.Compositor)
 		// Skipping already declared method Microsoft.UI.Composition.Interactions.InteractionTracker.CreateWithOwner(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.Interactions.IInteractionTrackerOwner)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -108,12 +107,6 @@ namespace Microsoft.UI.Composition.Interactions
 			throw new global::System.NotImplementedException("The member InteractionBindingAxisModes InteractionTracker.GetBindingMode(InteractionTracker boundTracker1, InteractionTracker boundTracker2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionBindingAxisModes%20InteractionTracker.GetBindingMode%28InteractionTracker%20boundTracker1%2C%20InteractionTracker%20boundTracker2%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.operator ==(Microsoft.UI.Composition.Interactions.InteractionTracker, Microsoft.UI.Composition.Interactions.InteractionTracker)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.operator !=(Microsoft.UI.Composition.Interactions.InteractionTracker, Microsoft.UI.Composition.Interactions.InteractionTracker)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.Equals(Microsoft.UI.Composition.Interactions.InteractionTracker)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -234,7 +227,6 @@ namespace Microsoft.UI.Composition.Interactions
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.ScaleInertiaDecayRate.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.ScaleInertiaDecayRate.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.ScaleVelocityInPercentPerSecond.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

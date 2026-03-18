@@ -13,12 +13,6 @@ namespace Windows.UI.WindowManagement
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.operator ==(Windows.UI.WindowManagement.AppWindowFrame, Windows.UI.WindowManagement.AppWindowFrame)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.operator !=(Windows.UI.WindowManagement.AppWindowFrame, Windows.UI.WindowManagement.AppWindowFrame)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.Equals(Windows.UI.WindowManagement.AppWindowFrame)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.Equals(object)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.GetHashCode()
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowFrame.WinRT.IWinRTObject.QueryInterfaceCache.get

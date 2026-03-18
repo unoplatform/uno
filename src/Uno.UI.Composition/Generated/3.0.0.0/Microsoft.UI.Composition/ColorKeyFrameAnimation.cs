@@ -27,12 +27,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.operator ==(Microsoft.UI.Composition.ColorKeyFrameAnimation, Microsoft.UI.Composition.ColorKeyFrameAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.operator !=(Microsoft.UI.Composition.ColorKeyFrameAnimation, Microsoft.UI.Composition.ColorKeyFrameAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.Equals(Microsoft.UI.Composition.ColorKeyFrameAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -51,7 +45,6 @@ namespace Microsoft.UI.Composition
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.InterpolationColorSpace.get
 		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.InterpolationColorSpace.set
-		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

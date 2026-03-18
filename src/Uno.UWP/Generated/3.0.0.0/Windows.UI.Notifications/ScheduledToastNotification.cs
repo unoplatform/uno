@@ -125,12 +125,6 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.ScheduledToastNotification(Windows.Data.Xml.Dom.XmlDocument, System.DateTimeOffset, System.TimeSpan, uint)
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.operator ==(Windows.UI.Notifications.ScheduledToastNotification, Windows.UI.Notifications.ScheduledToastNotification)
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.operator !=(Windows.UI.Notifications.ScheduledToastNotification, Windows.UI.Notifications.ScheduledToastNotification)
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Equals(Windows.UI.Notifications.ScheduledToastNotification)
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Equals(object)
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.GetHashCode()
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.WinRT.IWinRTObject.QueryInterfaceCache.get

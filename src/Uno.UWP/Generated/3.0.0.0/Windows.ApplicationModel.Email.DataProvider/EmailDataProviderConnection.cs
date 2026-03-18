@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.operator ==(Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.operator !=(Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.Equals(Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.WinRT.IWinRTObject.QueryInterfaceCache.get

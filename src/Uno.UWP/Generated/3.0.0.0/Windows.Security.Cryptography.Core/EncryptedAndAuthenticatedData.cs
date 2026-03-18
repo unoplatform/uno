@@ -33,12 +33,6 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData.operator ==(Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData, Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData)
-		// Forced skipping of method Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData.operator !=(Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData, Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData)
-		// Forced skipping of method Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData.Equals(Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData)
-		// Forced skipping of method Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData.Equals(object)
-		// Forced skipping of method Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData.GetHashCode()
 		// Forced skipping of method Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData.WinRT.IWinRTObject.QueryInterfaceCache.get

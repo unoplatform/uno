@@ -69,12 +69,6 @@ namespace Windows.UI.Text.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.operator ==(Windows.UI.Text.Core.CoreTextEditContext, Windows.UI.Text.Core.CoreTextEditContext)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.operator !=(Windows.UI.Text.Core.CoreTextEditContext, Windows.UI.Text.Core.CoreTextEditContext)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.Equals(Windows.UI.Text.Core.CoreTextEditContext)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.Equals(object)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.GetHashCode()
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.WinRT.IWinRTObject.QueryInterfaceCache.get

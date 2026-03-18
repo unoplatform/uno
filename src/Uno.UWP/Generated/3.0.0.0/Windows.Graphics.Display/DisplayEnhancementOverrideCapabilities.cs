@@ -33,12 +33,6 @@ namespace Windows.Graphics.Display
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.operator ==(Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities, Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities)
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.operator !=(Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities, Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities)
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.Equals(Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities)
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.Equals(object)
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get

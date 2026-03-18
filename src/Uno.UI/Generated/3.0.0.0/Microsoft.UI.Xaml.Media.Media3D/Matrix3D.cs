@@ -67,12 +67,6 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.ToString()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.ToString(System.IFormatProvider)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.System.IFormattable.ToString(string, System.IFormatProvider)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.Equals(Microsoft.UI.Xaml.Media.Media3D.Matrix3D)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.operator ==(Microsoft.UI.Xaml.Media.Media3D.Matrix3D, Microsoft.UI.Xaml.Media.Media3D.Matrix3D)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.operator !=(Microsoft.UI.Xaml.Media.Media3D.Matrix3D, Microsoft.UI.Xaml.Media.Media3D.Matrix3D)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.operator *(Microsoft.UI.Xaml.Media.Media3D.Matrix3D, Microsoft.UI.Xaml.Media.Media3D.Matrix3D)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.HasInverse.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Media3D.Matrix3D.Invert()
 	}

@@ -165,12 +165,6 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.operator ==(Windows.Graphics.Holographic.HolographicCamera, Windows.Graphics.Holographic.HolographicCamera)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.operator !=(Windows.Graphics.Holographic.HolographicCamera, Windows.Graphics.Holographic.HolographicCamera)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.Equals(Windows.Graphics.Holographic.HolographicCamera)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.Equals(object)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.WinRT.IWinRTObject.QueryInterfaceCache.get

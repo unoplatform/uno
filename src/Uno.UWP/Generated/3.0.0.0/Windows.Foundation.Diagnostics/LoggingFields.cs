@@ -16,12 +16,6 @@ namespace Windows.Foundation.Diagnostics
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingFields.LoggingFields()
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingFields.FromAbi(nint)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingFields.operator ==(Windows.Foundation.Diagnostics.LoggingFields, Windows.Foundation.Diagnostics.LoggingFields)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingFields.operator !=(Windows.Foundation.Diagnostics.LoggingFields, Windows.Foundation.Diagnostics.LoggingFields)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingFields.Equals(Windows.Foundation.Diagnostics.LoggingFields)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingFields.Equals(object)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingFields.GetHashCode()
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingFields.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingFields.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingFields.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -23,12 +23,6 @@ namespace Windows.Devices.Geolocation.Geofencing
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.Geofence(string, Windows.Devices.Geolocation.IGeoshape, Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates, bool, System.TimeSpan)
 		// Skipping already declared method Windows.Devices.Geolocation.Geofencing.Geofence.Geofence(string, Windows.Devices.Geolocation.IGeoshape, Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates, bool, System.TimeSpan, System.DateTimeOffset, System.TimeSpan)
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.Geofence(string, Windows.Devices.Geolocation.IGeoshape, Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates, bool, System.TimeSpan, System.DateTimeOffset, System.TimeSpan)
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.operator ==(Windows.Devices.Geolocation.Geofencing.Geofence, Windows.Devices.Geolocation.Geofencing.Geofence)
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.operator !=(Windows.Devices.Geolocation.Geofencing.Geofence, Windows.Devices.Geolocation.Geofencing.Geofence)
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.Equals(Windows.Devices.Geolocation.Geofencing.Geofence)
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.Equals(object)
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.GetHashCode()
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.WinRT.IWinRTObject.QueryInterfaceCache.get

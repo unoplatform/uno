@@ -13,12 +13,6 @@ namespace Windows.Devices.Display.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTaskPool.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTaskPool.operator ==(Windows.Devices.Display.Core.DisplayTaskPool, Windows.Devices.Display.Core.DisplayTaskPool)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTaskPool.operator !=(Windows.Devices.Display.Core.DisplayTaskPool, Windows.Devices.Display.Core.DisplayTaskPool)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTaskPool.Equals(Windows.Devices.Display.Core.DisplayTaskPool)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTaskPool.Equals(object)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayTaskPool.GetHashCode()
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayTaskPool.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayTaskPool.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayTaskPool.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -103,12 +103,6 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapFrame.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapFrame.operator ==(Windows.Graphics.Imaging.BitmapFrame, Windows.Graphics.Imaging.BitmapFrame)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapFrame.operator !=(Windows.Graphics.Imaging.BitmapFrame, Windows.Graphics.Imaging.BitmapFrame)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapFrame.Equals(Windows.Graphics.Imaging.BitmapFrame)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapFrame.Equals(object)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapFrame.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapFrame.WinRT.IWinRTObject.QueryInterfaceCache.get

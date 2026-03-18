@@ -143,7 +143,6 @@ namespace Windows.Gaming.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.RawGameController.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Gaming.Input.RawGameController FromGameController(global::Windows.Gaming.Input.IGameController gameController)
@@ -156,12 +155,6 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.RawGameControllerRemoved.add
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.RawGameControllerRemoved.remove
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.RawGameControllers.get
-		// Forced skipping of method Windows.Gaming.Input.RawGameController.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Input.RawGameController.operator ==(Windows.Gaming.Input.RawGameController, Windows.Gaming.Input.RawGameController)
-		// Forced skipping of method Windows.Gaming.Input.RawGameController.operator !=(Windows.Gaming.Input.RawGameController, Windows.Gaming.Input.RawGameController)
-		// Forced skipping of method Windows.Gaming.Input.RawGameController.Equals(Windows.Gaming.Input.RawGameController)
-		// Forced skipping of method Windows.Gaming.Input.RawGameController.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.RawGameController.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.WinRT.IWinRTObject.QueryInterfaceCache.get

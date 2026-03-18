@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.Preview.Notes
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NoteVisibilityChangedPreviewEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NoteVisibilityChangedPreviewEventArgs.operator ==(Windows.ApplicationModel.Preview.Notes.NoteVisibilityChangedPreviewEventArgs, Windows.ApplicationModel.Preview.Notes.NoteVisibilityChangedPreviewEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NoteVisibilityChangedPreviewEventArgs.operator !=(Windows.ApplicationModel.Preview.Notes.NoteVisibilityChangedPreviewEventArgs, Windows.ApplicationModel.Preview.Notes.NoteVisibilityChangedPreviewEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NoteVisibilityChangedPreviewEventArgs.Equals(Windows.ApplicationModel.Preview.Notes.NoteVisibilityChangedPreviewEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NoteVisibilityChangedPreviewEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NoteVisibilityChangedPreviewEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NoteVisibilityChangedPreviewEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NoteVisibilityChangedPreviewEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NoteVisibilityChangedPreviewEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

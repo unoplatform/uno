@@ -13,14 +13,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.UIElementWeakCollection.UIElementWeakCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.UIElementWeakCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.UIElementWeakCollection(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.operator ==(Microsoft.UI.Xaml.UIElementWeakCollection, Microsoft.UI.Xaml.UIElementWeakCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.operator !=(Microsoft.UI.Xaml.UIElementWeakCollection, Microsoft.UI.Xaml.UIElementWeakCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.Equals(Microsoft.UI.Xaml.UIElementWeakCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.UIElementWeakCollection(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -39,7 +31,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.UIElementWeakCollection.Remove(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElementWeakCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.UIElement>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.UIElementWeakCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.UIElement>.set_Item(int, Microsoft.UI.Xaml.UIElement)

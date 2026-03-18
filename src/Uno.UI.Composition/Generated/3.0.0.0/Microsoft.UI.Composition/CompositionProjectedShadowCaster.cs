@@ -41,19 +41,12 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.operator ==(Microsoft.UI.Composition.CompositionProjectedShadowCaster, Microsoft.UI.Composition.CompositionProjectedShadowCaster)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.operator !=(Microsoft.UI.Composition.CompositionProjectedShadowCaster, Microsoft.UI.Composition.CompositionProjectedShadowCaster)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.Equals(Microsoft.UI.Composition.CompositionProjectedShadowCaster)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.Brush.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.Brush.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.CastingVisual.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.CastingVisual.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

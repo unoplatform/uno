@@ -40,12 +40,6 @@ namespace Windows.Devices.Gpio
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCounter.GpioChangeCounter(Windows.Devices.Gpio.GpioPin)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCounter.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCounter.operator ==(Windows.Devices.Gpio.GpioChangeCounter, Windows.Devices.Gpio.GpioChangeCounter)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCounter.operator !=(Windows.Devices.Gpio.GpioChangeCounter, Windows.Devices.Gpio.GpioChangeCounter)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCounter.Equals(Windows.Devices.Gpio.GpioChangeCounter)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCounter.Equals(object)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCounter.GetHashCode()
 		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCounter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCounter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCounter.WinRT.IWinRTObject.QueryInterfaceCache.get

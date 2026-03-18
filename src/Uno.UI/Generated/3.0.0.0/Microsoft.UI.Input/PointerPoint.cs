@@ -15,12 +15,6 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property Position
 		// Skipping already declared property Properties
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.operator ==(Microsoft.UI.Input.PointerPoint, Microsoft.UI.Input.PointerPoint)
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.operator !=(Microsoft.UI.Input.PointerPoint, Microsoft.UI.Input.PointerPoint)
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Equals(Microsoft.UI.Input.PointerPoint)
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.PointerPoint.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPoint.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPoint.WinRT.IWinRTObject.QueryInterfaceCache.get

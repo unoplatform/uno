@@ -78,7 +78,6 @@ namespace Windows.Media.MediaProperties
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.ImageEncodingProperties()
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateJpeg()
@@ -121,12 +120,6 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.CreateHeif() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageEncodingProperties%20ImageEncodingProperties.CreateHeif%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.operator ==(Windows.Media.MediaProperties.ImageEncodingProperties, Windows.Media.MediaProperties.ImageEncodingProperties)
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.operator !=(Windows.Media.MediaProperties.ImageEncodingProperties, Windows.Media.MediaProperties.ImageEncodingProperties)
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Equals(Windows.Media.MediaProperties.ImageEncodingProperties)
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Equals(object)
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.GetHashCode()
 		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

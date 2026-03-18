@@ -17,11 +17,6 @@ namespace Windows.Devices.Scanners
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Scanners.ImageScannerResolution.ImageScannerResolution(float, float)
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerResolution.operator ==(Windows.Devices.Scanners.ImageScannerResolution, Windows.Devices.Scanners.ImageScannerResolution)
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerResolution.operator !=(Windows.Devices.Scanners.ImageScannerResolution, Windows.Devices.Scanners.ImageScannerResolution)
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerResolution.Equals(Windows.Devices.Scanners.ImageScannerResolution)
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerResolution.Equals(object)
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerResolution.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public float DpiX;
 #endif

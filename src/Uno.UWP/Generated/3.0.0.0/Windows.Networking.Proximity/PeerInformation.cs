@@ -63,12 +63,6 @@ namespace Windows.Networking.Proximity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.operator ==(Windows.Networking.Proximity.PeerInformation, Windows.Networking.Proximity.PeerInformation)
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.operator !=(Windows.Networking.Proximity.PeerInformation, Windows.Networking.Proximity.PeerInformation)
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.Equals(Windows.Networking.Proximity.PeerInformation)
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.Equals(object)
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.GetHashCode()
 		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.WinRT.IWinRTObject.QueryInterfaceCache.get

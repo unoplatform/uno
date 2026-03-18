@@ -13,12 +13,6 @@ namespace Microsoft.UI.Dispatching
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.operator ==(Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs, Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.operator !=(Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs, Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.Equals(Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

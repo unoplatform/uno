@@ -173,7 +173,6 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutDataView.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynAboutDataView> GetDataBySessionPortAsync(string uniqueName, global::Windows.Devices.AllJoyn.AllJoynBusAttachment busAttachment, ushort sessionPort)
@@ -188,12 +187,6 @@ namespace Windows.Devices.AllJoyn
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynAboutDataView> AllJoynAboutDataView.GetDataBySessionPortAsync(string uniqueName, AllJoynBusAttachment busAttachment, ushort sessionPort, Language language) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAllJoynAboutDataView%3E%20AllJoynAboutDataView.GetDataBySessionPortAsync%28string%20uniqueName%2C%20AllJoynBusAttachment%20busAttachment%2C%20ushort%20sessionPort%2C%20Language%20language%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutDataView.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutDataView.operator ==(Windows.Devices.AllJoyn.AllJoynAboutDataView, Windows.Devices.AllJoyn.AllJoynAboutDataView)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutDataView.operator !=(Windows.Devices.AllJoyn.AllJoynAboutDataView, Windows.Devices.AllJoyn.AllJoynAboutDataView)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutDataView.Equals(Windows.Devices.AllJoyn.AllJoynAboutDataView)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutDataView.Equals(object)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutDataView.GetHashCode()
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutDataView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutDataView.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutDataView.WinRT.IWinRTObject.QueryInterfaceCache.get

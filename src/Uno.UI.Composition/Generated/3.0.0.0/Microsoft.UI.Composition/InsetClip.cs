@@ -12,12 +12,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property LeftInset
 		// Skipping already declared property RightInset
 		// Skipping already declared property TopInset
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.operator ==(Microsoft.UI.Composition.InsetClip, Microsoft.UI.Composition.InsetClip)
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.operator !=(Microsoft.UI.Composition.InsetClip, Microsoft.UI.Composition.InsetClip)
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.Equals(Microsoft.UI.Composition.InsetClip)
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.BottomInset.get
@@ -28,7 +22,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.RightInset.set
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.TopInset.get
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.TopInset.set
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

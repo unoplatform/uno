@@ -33,7 +33,6 @@ namespace Windows.Devices.WiFiDirect
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -62,12 +61,6 @@ namespace Windows.Devices.WiFiDirect
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectDevice> WiFiDirectDevice.FromIdAsync(string deviceId, WiFiDirectConnectionParameters connectionParameters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiDirectDevice%3E%20WiFiDirectDevice.FromIdAsync%28string%20deviceId%2C%20WiFiDirectConnectionParameters%20connectionParameters%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.operator ==(Windows.Devices.WiFiDirect.WiFiDirectDevice, Windows.Devices.WiFiDirect.WiFiDirectDevice)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.operator !=(Windows.Devices.WiFiDirect.WiFiDirectDevice, Windows.Devices.WiFiDirect.WiFiDirectDevice)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.Equals(Windows.Devices.WiFiDirect.WiFiDirectDevice)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.Equals(object)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.GetHashCode()
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.WinRT.IWinRTObject.QueryInterfaceCache.get

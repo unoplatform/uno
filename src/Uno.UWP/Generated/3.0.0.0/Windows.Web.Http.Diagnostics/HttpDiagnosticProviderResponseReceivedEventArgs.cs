@@ -43,12 +43,6 @@ namespace Windows.Web.Http.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.operator ==(Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs, Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.operator !=(Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs, Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.Equals(Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

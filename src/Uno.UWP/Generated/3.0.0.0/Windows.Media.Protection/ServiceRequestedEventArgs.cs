@@ -43,12 +43,6 @@ namespace Windows.Media.Protection
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.operator ==(Windows.Media.Protection.ServiceRequestedEventArgs, Windows.Media.Protection.ServiceRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.operator !=(Windows.Media.Protection.ServiceRequestedEventArgs, Windows.Media.Protection.ServiceRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.Equals(Windows.Media.Protection.ServiceRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -16,12 +16,6 @@ namespace Windows.System.Display
 		}
 #endif
 		// Forced skipping of method Windows.System.Display.DisplayRequest.DisplayRequest()
-		// Forced skipping of method Windows.System.Display.DisplayRequest.FromAbi(nint)
-		// Forced skipping of method Windows.System.Display.DisplayRequest.operator ==(Windows.System.Display.DisplayRequest, Windows.System.Display.DisplayRequest)
-		// Forced skipping of method Windows.System.Display.DisplayRequest.operator !=(Windows.System.Display.DisplayRequest, Windows.System.Display.DisplayRequest)
-		// Forced skipping of method Windows.System.Display.DisplayRequest.Equals(Windows.System.Display.DisplayRequest)
-		// Forced skipping of method Windows.System.Display.DisplayRequest.Equals(object)
-		// Forced skipping of method Windows.System.Display.DisplayRequest.GetHashCode()
 		// Forced skipping of method Windows.System.Display.DisplayRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Display.DisplayRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Display.DisplayRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

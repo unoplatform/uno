@@ -44,12 +44,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.VpnRoute(Windows.Networking.HostName, byte)
-		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.operator ==(Windows.Networking.Vpn.VpnRoute, Windows.Networking.Vpn.VpnRoute)
-		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.operator !=(Windows.Networking.Vpn.VpnRoute, Windows.Networking.Vpn.VpnRoute)
-		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.Equals(Windows.Networking.Vpn.VpnRoute)
-		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.WinRT.IWinRTObject.QueryInterfaceCache.get

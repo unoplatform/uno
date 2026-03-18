@@ -63,12 +63,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.operator ==(Windows.Media.Devices.ExposureCompensationControl, Windows.Media.Devices.ExposureCompensationControl)
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.operator !=(Windows.Media.Devices.ExposureCompensationControl, Windows.Media.Devices.ExposureCompensationControl)
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Equals(Windows.Media.Devices.ExposureCompensationControl)
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.WinRT.IWinRTObject.QueryInterfaceCache.get

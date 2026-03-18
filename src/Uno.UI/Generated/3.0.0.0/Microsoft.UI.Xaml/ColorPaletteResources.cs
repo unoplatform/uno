@@ -394,14 +394,6 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ColorPaletteResources()
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ColorPaletteResources(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.operator ==(Microsoft.UI.Xaml.ColorPaletteResources, Microsoft.UI.Xaml.ColorPaletteResources)
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.operator !=(Microsoft.UI.Xaml.ColorPaletteResources, Microsoft.UI.Xaml.ColorPaletteResources)
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.Equals(Microsoft.UI.Xaml.ColorPaletteResources)
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ColorPaletteResources(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.Accent.get
@@ -458,7 +450,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ListLow.set
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ListMedium.get
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.ListMedium.set
-		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.ColorPaletteResources.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

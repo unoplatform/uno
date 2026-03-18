@@ -58,12 +58,6 @@ namespace Windows.Networking.NetworkOperators
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.NetworkOperatorTetheringAccessPointConfiguration()
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.operator ==(Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration, Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.operator !=(Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration, Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Equals(Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -100,12 +100,6 @@ namespace Windows.ApplicationModel.Calls
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.PhoneDialOptions()
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.operator ==(Windows.ApplicationModel.Calls.PhoneDialOptions, Windows.ApplicationModel.Calls.PhoneDialOptions)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.operator !=(Windows.ApplicationModel.Calls.PhoneDialOptions, Windows.ApplicationModel.Calls.PhoneDialOptions)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.Equals(Windows.ApplicationModel.Calls.PhoneDialOptions)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

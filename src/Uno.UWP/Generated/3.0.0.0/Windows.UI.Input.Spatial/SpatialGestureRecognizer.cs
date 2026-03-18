@@ -26,12 +26,6 @@ namespace Windows.UI.Input.Spatial
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.SpatialGestureRecognizer(Windows.UI.Input.Spatial.SpatialGestureSettings)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.operator ==(Windows.UI.Input.Spatial.SpatialGestureRecognizer, Windows.UI.Input.Spatial.SpatialGestureRecognizer)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.operator !=(Windows.UI.Input.Spatial.SpatialGestureRecognizer, Windows.UI.Input.Spatial.SpatialGestureRecognizer)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.Equals(Windows.UI.Input.Spatial.SpatialGestureRecognizer)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.WinRT.IWinRTObject.QueryInterfaceCache.get

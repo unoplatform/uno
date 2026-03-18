@@ -24,7 +24,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Text
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeItem.SwipeItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.SwipeItem()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.BackgroundProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.BehaviorOnInvokedProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.CommandParameterProperty.get
@@ -32,14 +31,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.ForegroundProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.IconSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.TextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.SwipeItem(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.operator ==(Microsoft.UI.Xaml.Controls.SwipeItem, Microsoft.UI.Xaml.Controls.SwipeItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.operator !=(Microsoft.UI.Xaml.Controls.SwipeItem, Microsoft.UI.Xaml.Controls.SwipeItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Equals(Microsoft.UI.Xaml.Controls.SwipeItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.SwipeItem(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Invoked.add
@@ -58,7 +49,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.IconSource.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Text.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.Text.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.SwipeItem.Invoked
 	}

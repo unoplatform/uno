@@ -109,12 +109,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

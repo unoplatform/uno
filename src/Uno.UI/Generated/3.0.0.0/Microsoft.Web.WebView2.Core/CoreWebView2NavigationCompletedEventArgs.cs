@@ -12,12 +12,6 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared property IsSuccess
 		// Skipping already declared property NavigationId
 		// Skipping already declared property WebErrorStatus
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

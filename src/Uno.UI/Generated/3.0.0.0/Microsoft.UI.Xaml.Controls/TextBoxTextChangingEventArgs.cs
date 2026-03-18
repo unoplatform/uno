@@ -9,12 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class TextBoxTextChangingEventArgs
 	{
 		// Skipping already declared property IsContentChanging
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs, Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs, Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs.Equals(Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxTextChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

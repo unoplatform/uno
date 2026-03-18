@@ -67,7 +67,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession> FromDeviceIdAsync(global::Windows.Devices.Bluetooth.BluetoothDeviceId deviceId)
@@ -75,12 +74,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GattSession> GattSession.FromDeviceIdAsync(BluetoothDeviceId deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattSession%3E%20GattSession.FromDeviceIdAsync%28BluetoothDeviceId%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession, Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession, Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.WinRT.IWinRTObject.QueryInterfaceCache.get

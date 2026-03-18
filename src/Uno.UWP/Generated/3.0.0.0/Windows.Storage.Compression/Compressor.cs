@@ -24,12 +24,6 @@ namespace Windows.Storage.Compression
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Compression.Compressor.Compressor(Windows.Storage.Streams.IOutputStream, Windows.Storage.Compression.CompressAlgorithm, uint)
-		// Forced skipping of method Windows.Storage.Compression.Compressor.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Compression.Compressor.operator ==(Windows.Storage.Compression.Compressor, Windows.Storage.Compression.Compressor)
-		// Forced skipping of method Windows.Storage.Compression.Compressor.operator !=(Windows.Storage.Compression.Compressor, Windows.Storage.Compression.Compressor)
-		// Forced skipping of method Windows.Storage.Compression.Compressor.Equals(Windows.Storage.Compression.Compressor)
-		// Forced skipping of method Windows.Storage.Compression.Compressor.Equals(object)
-		// Forced skipping of method Windows.Storage.Compression.Compressor.GetHashCode()
 		// Forced skipping of method Windows.Storage.Compression.Compressor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Compression.Compressor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Compression.Compressor.WinRT.IWinRTObject.QueryInterfaceCache.get

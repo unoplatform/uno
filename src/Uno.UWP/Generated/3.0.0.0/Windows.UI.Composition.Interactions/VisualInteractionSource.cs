@@ -214,7 +214,6 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Composition.Interactions.VisualInteractionSource Create(global::Windows.UI.Composition.Visual source)
@@ -229,14 +228,6 @@ namespace Windows.UI.Composition.Interactions
 			throw new global::System.NotImplementedException("The member VisualInteractionSource VisualInteractionSource.CreateFromIVisualElement(IVisualElement source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualInteractionSource%20VisualInteractionSource.CreateFromIVisualElement%28IVisualElement%20source%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.VisualInteractionSource(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.operator ==(Windows.UI.Composition.Interactions.VisualInteractionSource, Windows.UI.Composition.Interactions.VisualInteractionSource)
-		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.operator !=(Windows.UI.Composition.Interactions.VisualInteractionSource, Windows.UI.Composition.Interactions.VisualInteractionSource)
-		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.Equals(Windows.UI.Composition.Interactions.VisualInteractionSource)
-		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.VisualInteractionSource(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.TryRedirectForManipulation(Windows.UI.Input.PointerPoint)
@@ -301,7 +292,6 @@ namespace Windows.UI.Composition.Interactions
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.ScaleSourceMode.set
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.ScaleVelocity.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.Source.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Composition.Interactions.ICompositionInteractionSource
 	}

@@ -51,12 +51,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.operator ==(Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings, Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings)
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.operator !=(Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings, Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings)
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.Equals(Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings)
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

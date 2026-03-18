@@ -82,16 +82,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.PopInThemeAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.FromHorizontalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.FromVerticalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.TargetNameProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation, Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation, Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.FromHorizontalOffset.get
@@ -100,7 +93,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.FromVerticalOffset.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.TargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

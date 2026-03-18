@@ -17,11 +17,6 @@ namespace Microsoft.UI.Input
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.ManipulationVelocities.ManipulationVelocities(Windows.Foundation.Point, float, float)
-		// Forced skipping of method Microsoft.UI.Input.ManipulationVelocities.operator ==(Microsoft.UI.Input.ManipulationVelocities, Microsoft.UI.Input.ManipulationVelocities)
-		// Forced skipping of method Microsoft.UI.Input.ManipulationVelocities.operator !=(Microsoft.UI.Input.ManipulationVelocities, Microsoft.UI.Input.ManipulationVelocities)
-		// Forced skipping of method Microsoft.UI.Input.ManipulationVelocities.Equals(Microsoft.UI.Input.ManipulationVelocities)
-		// Forced skipping of method Microsoft.UI.Input.ManipulationVelocities.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.ManipulationVelocities.GetHashCode()
 		// Skipping already declared field Microsoft.UI.Input.ManipulationVelocities.Linear
 		// Skipping already declared field Microsoft.UI.Input.ManipulationVelocities.Angular
 		// Skipping already declared field Microsoft.UI.Input.ManipulationVelocities.Expansion

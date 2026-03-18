@@ -58,7 +58,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties.As<I>()
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties.AvailableVideoProfiles.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties.CameraIntrinsics.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties.IsMirrored.get

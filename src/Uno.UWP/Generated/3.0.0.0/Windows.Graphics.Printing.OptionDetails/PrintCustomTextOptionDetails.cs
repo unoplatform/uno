@@ -127,12 +127,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

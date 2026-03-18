@@ -37,12 +37,6 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.operator ==(Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs, Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.operator !=(Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs, Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.Equals(Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

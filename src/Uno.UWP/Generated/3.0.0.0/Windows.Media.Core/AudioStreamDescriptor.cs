@@ -106,12 +106,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.AudioStreamDescriptor(Windows.Media.MediaProperties.AudioEncodingProperties)
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.operator ==(Windows.Media.Core.AudioStreamDescriptor, Windows.Media.Core.AudioStreamDescriptor)
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.operator !=(Windows.Media.Core.AudioStreamDescriptor, Windows.Media.Core.AudioStreamDescriptor)
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Equals(Windows.Media.Core.AudioStreamDescriptor)
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Equals(object)
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get

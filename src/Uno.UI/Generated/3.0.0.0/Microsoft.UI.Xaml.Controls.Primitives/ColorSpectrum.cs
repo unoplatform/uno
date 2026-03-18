@@ -30,7 +30,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property Shape
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.ColorSpectrum()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.ColorSpectrum()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.ColorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.ComponentsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.HsvColorProperty.get
@@ -41,14 +40,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.MinSaturationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.MinValueProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.ShapeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.ColorSpectrum(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum, Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum, Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.Equals(Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.ColorSpectrum(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.ColorChanged.add
@@ -73,7 +64,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.MinValue.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.Shape.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.Shape.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum.ColorChanged
 	}

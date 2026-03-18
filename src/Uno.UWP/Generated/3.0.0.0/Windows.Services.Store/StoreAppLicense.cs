@@ -113,12 +113,6 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.operator ==(Windows.Services.Store.StoreAppLicense, Windows.Services.Store.StoreAppLicense)
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.operator !=(Windows.Services.Store.StoreAppLicense, Windows.Services.Store.StoreAppLicense)
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.Equals(Windows.Services.Store.StoreAppLicense)
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.Equals(object)
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.GetHashCode()
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.WinRT.IWinRTObject.QueryInterfaceCache.get

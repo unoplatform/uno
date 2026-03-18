@@ -29,12 +29,6 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationUpdate.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationUpdate.operator ==(Windows.Devices.Enumeration.DeviceInformationUpdate, Windows.Devices.Enumeration.DeviceInformationUpdate)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationUpdate.operator !=(Windows.Devices.Enumeration.DeviceInformationUpdate, Windows.Devices.Enumeration.DeviceInformationUpdate)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationUpdate.Equals(Windows.Devices.Enumeration.DeviceInformationUpdate)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationUpdate.Equals(object)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationUpdate.GetHashCode()
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationUpdate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationUpdate.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationUpdate.WinRT.IWinRTObject.QueryInterfaceCache.get

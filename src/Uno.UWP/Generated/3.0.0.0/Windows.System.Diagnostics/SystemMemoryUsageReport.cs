@@ -43,12 +43,6 @@ namespace Windows.System.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.FromAbi(nint)
-		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.operator ==(Windows.System.Diagnostics.SystemMemoryUsageReport, Windows.System.Diagnostics.SystemMemoryUsageReport)
-		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.operator !=(Windows.System.Diagnostics.SystemMemoryUsageReport, Windows.System.Diagnostics.SystemMemoryUsageReport)
-		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.Equals(Windows.System.Diagnostics.SystemMemoryUsageReport)
-		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.Equals(object)
-		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.GetHashCode()
 		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.WinRT.IWinRTObject.QueryInterfaceCache.get

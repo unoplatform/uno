@@ -50,12 +50,6 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.BrushCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.operator ==(Microsoft.UI.Xaml.Media.BrushCollection, Microsoft.UI.Xaml.Media.BrushCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.operator !=(Microsoft.UI.Xaml.Media.BrushCollection, Microsoft.UI.Xaml.Media.BrushCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.Equals(Microsoft.UI.Xaml.Media.BrushCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

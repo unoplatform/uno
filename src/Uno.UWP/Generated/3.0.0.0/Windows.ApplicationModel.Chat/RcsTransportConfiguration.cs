@@ -73,12 +73,6 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.operator ==(Windows.ApplicationModel.Chat.RcsTransportConfiguration, Windows.ApplicationModel.Chat.RcsTransportConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.operator !=(Windows.ApplicationModel.Chat.RcsTransportConfiguration, Windows.ApplicationModel.Chat.RcsTransportConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.Equals(Windows.ApplicationModel.Chat.RcsTransportConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

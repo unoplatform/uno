@@ -103,12 +103,6 @@ namespace Windows.Graphics.Display
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.operator ==(Windows.Graphics.Display.AdvancedColorInfo, Windows.Graphics.Display.AdvancedColorInfo)
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.operator !=(Windows.Graphics.Display.AdvancedColorInfo, Windows.Graphics.Display.AdvancedColorInfo)
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.Equals(Windows.Graphics.Display.AdvancedColorInfo)
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.Equals(object)
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

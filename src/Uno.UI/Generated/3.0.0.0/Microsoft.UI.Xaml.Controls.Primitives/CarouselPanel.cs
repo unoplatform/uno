@@ -132,14 +132,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.CarouselPanel()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.CarouselPanel()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.CarouselPanel(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.operator ==(Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel, Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.operator !=(Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel, Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.Equals(Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.CarouselPanel(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -279,7 +271,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.VerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.ViewportHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.ViewportWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if false || false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

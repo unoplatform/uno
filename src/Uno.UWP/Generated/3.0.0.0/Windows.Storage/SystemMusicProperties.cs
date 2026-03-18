@@ -93,12 +93,6 @@ namespace Windows.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.SystemMusicProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.SystemMusicProperties.operator ==(Windows.Storage.SystemMusicProperties, Windows.Storage.SystemMusicProperties)
-		// Forced skipping of method Windows.Storage.SystemMusicProperties.operator !=(Windows.Storage.SystemMusicProperties, Windows.Storage.SystemMusicProperties)
-		// Forced skipping of method Windows.Storage.SystemMusicProperties.Equals(Windows.Storage.SystemMusicProperties)
-		// Forced skipping of method Windows.Storage.SystemMusicProperties.Equals(object)
-		// Forced skipping of method Windows.Storage.SystemMusicProperties.GetHashCode()
 		// Forced skipping of method Windows.Storage.SystemMusicProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.SystemMusicProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.SystemMusicProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

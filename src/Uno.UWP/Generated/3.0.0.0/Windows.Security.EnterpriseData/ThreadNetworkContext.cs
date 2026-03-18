@@ -13,12 +13,6 @@ namespace Windows.Security.EnterpriseData
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Security.EnterpriseData.ThreadNetworkContext.FromAbi(nint)
-		// Forced skipping of method Windows.Security.EnterpriseData.ThreadNetworkContext.operator ==(Windows.Security.EnterpriseData.ThreadNetworkContext, Windows.Security.EnterpriseData.ThreadNetworkContext)
-		// Forced skipping of method Windows.Security.EnterpriseData.ThreadNetworkContext.operator !=(Windows.Security.EnterpriseData.ThreadNetworkContext, Windows.Security.EnterpriseData.ThreadNetworkContext)
-		// Forced skipping of method Windows.Security.EnterpriseData.ThreadNetworkContext.Equals(Windows.Security.EnterpriseData.ThreadNetworkContext)
-		// Forced skipping of method Windows.Security.EnterpriseData.ThreadNetworkContext.Equals(object)
-		// Forced skipping of method Windows.Security.EnterpriseData.ThreadNetworkContext.GetHashCode()
 		// Forced skipping of method Windows.Security.EnterpriseData.ThreadNetworkContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ThreadNetworkContext.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ThreadNetworkContext.WinRT.IWinRTObject.QueryInterfaceCache.get

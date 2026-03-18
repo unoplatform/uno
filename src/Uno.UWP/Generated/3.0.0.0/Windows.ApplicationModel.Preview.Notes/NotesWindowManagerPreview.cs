@@ -23,7 +23,6 @@ namespace Windows.ApplicationModel.Preview.Notes
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview GetForCurrentApp()
@@ -31,12 +30,6 @@ namespace Windows.ApplicationModel.Preview.Notes
 			throw new global::System.NotImplementedException("The member NotesWindowManagerPreview NotesWindowManagerPreview.GetForCurrentApp() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NotesWindowManagerPreview%20NotesWindowManagerPreview.GetForCurrentApp%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview.operator ==(Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview, Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview.operator !=(Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview, Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview.Equals(Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreview.WinRT.IWinRTObject.QueryInterfaceCache.get

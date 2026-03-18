@@ -16,12 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.StorageLibraryChangeTrackerTrigger(Windows.Storage.StorageLibraryChangeTracker)
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.operator ==(Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger, Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.operator !=(Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger, Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.Equals(Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

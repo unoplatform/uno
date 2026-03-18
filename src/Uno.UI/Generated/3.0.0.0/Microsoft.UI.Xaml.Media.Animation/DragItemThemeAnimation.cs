@@ -38,19 +38,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.DragItemThemeAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.TargetNameProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation, Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation, Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.TargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

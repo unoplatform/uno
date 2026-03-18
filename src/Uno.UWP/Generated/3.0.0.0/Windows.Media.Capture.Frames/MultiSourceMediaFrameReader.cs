@@ -27,12 +27,6 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.operator ==(Windows.Media.Capture.Frames.MultiSourceMediaFrameReader, Windows.Media.Capture.Frames.MultiSourceMediaFrameReader)
-		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.operator !=(Windows.Media.Capture.Frames.MultiSourceMediaFrameReader, Windows.Media.Capture.Frames.MultiSourceMediaFrameReader)
-		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.Equals(Windows.Media.Capture.Frames.MultiSourceMediaFrameReader)
-		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.WinRT.IWinRTObject.QueryInterfaceCache.get

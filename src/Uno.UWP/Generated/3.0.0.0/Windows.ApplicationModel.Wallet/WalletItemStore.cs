@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Wallet
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemStore.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemStore.operator ==(Windows.ApplicationModel.Wallet.WalletItemStore, Windows.ApplicationModel.Wallet.WalletItemStore)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemStore.operator !=(Windows.ApplicationModel.Wallet.WalletItemStore, Windows.ApplicationModel.Wallet.WalletItemStore)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemStore.Equals(Windows.ApplicationModel.Wallet.WalletItemStore)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemStore.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemStore.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemStore.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemStore.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemStore.WinRT.IWinRTObject.QueryInterfaceCache.get

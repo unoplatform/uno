@@ -43,12 +43,6 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.operator ==(Windows.Networking.Connectivity.ProviderNetworkUsage, Windows.Networking.Connectivity.ProviderNetworkUsage)
-		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.operator !=(Windows.Networking.Connectivity.ProviderNetworkUsage, Windows.Networking.Connectivity.ProviderNetworkUsage)
-		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.Equals(Windows.Networking.Connectivity.ProviderNetworkUsage)
-		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.Equals(object)
-		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.GetHashCode()
 		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.ProviderNetworkUsage.WinRT.IWinRTObject.QueryInterfaceCache.get

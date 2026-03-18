@@ -8,7 +8,6 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 	public static partial class AppointmentManager
 	{
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<string> ShowAddAppointmentAsync(global::Windows.ApplicationModel.Appointments.Appointment appointment, global::Windows.Foundation.Rect selection)

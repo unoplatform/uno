@@ -17,11 +17,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.RawElementProviderRuntimeId(uint, uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.operator ==(Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId, Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.operator !=(Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId, Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Equals(Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.GetHashCode()
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Part1
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Part2
 	}

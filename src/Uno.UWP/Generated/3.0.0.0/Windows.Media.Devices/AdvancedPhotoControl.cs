@@ -43,12 +43,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.operator ==(Windows.Media.Devices.AdvancedPhotoControl, Windows.Media.Devices.AdvancedPhotoControl)
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.operator !=(Windows.Media.Devices.AdvancedPhotoControl, Windows.Media.Devices.AdvancedPhotoControl)
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.Equals(Windows.Media.Devices.AdvancedPhotoControl)
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.WinRT.IWinRTObject.QueryInterfaceCache.get

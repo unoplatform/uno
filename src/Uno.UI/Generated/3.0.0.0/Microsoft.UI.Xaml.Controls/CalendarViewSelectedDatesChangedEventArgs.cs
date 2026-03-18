@@ -10,12 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property AddedDates
 		// Skipping already declared property RemovedDates
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs, Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs, Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

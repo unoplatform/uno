@@ -10,12 +10,6 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		// Skipping already declared property AcceptedFormatId
 		// Skipping already declared property Operation
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.operator ==(Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs, Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.operator !=(Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs, Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.Equals(Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

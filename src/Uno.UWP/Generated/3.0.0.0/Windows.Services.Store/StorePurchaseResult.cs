@@ -33,12 +33,6 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.operator ==(Windows.Services.Store.StorePurchaseResult, Windows.Services.Store.StorePurchaseResult)
-		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.operator !=(Windows.Services.Store.StorePurchaseResult, Windows.Services.Store.StorePurchaseResult)
-		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.Equals(Windows.Services.Store.StorePurchaseResult)
-		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.Equals(object)
-		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.GetHashCode()
 		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.WinRT.IWinRTObject.QueryInterfaceCache.get

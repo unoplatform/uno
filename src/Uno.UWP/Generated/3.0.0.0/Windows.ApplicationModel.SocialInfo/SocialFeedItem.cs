@@ -168,12 +168,6 @@ namespace Windows.ApplicationModel.SocialInfo
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.SocialFeedItem()
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.operator ==(Windows.ApplicationModel.SocialInfo.SocialFeedItem, Windows.ApplicationModel.SocialInfo.SocialFeedItem)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.operator !=(Windows.ApplicationModel.SocialInfo.SocialFeedItem, Windows.ApplicationModel.SocialInfo.SocialFeedItem)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.Equals(Windows.ApplicationModel.SocialInfo.SocialFeedItem)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.WinRT.IWinRTObject.QueryInterfaceCache.get

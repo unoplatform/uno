@@ -33,12 +33,6 @@ namespace Windows.System.Profile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.FromAbi(nint)
-		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.operator ==(Windows.System.Profile.SystemIdentificationInfo, Windows.System.Profile.SystemIdentificationInfo)
-		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.operator !=(Windows.System.Profile.SystemIdentificationInfo, Windows.System.Profile.SystemIdentificationInfo)
-		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.Equals(Windows.System.Profile.SystemIdentificationInfo)
-		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.Equals(object)
-		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.GetHashCode()
 		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -99,7 +99,6 @@ namespace Windows.ApplicationModel.Search
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Search.SearchPane GetForCurrentView()
@@ -114,12 +113,6 @@ namespace Windows.ApplicationModel.Search
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.SearchPane", "void SearchPane.HideThisApplication()");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.operator ==(Windows.ApplicationModel.Search.SearchPane, Windows.ApplicationModel.Search.SearchPane)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.operator !=(Windows.ApplicationModel.Search.SearchPane, Windows.ApplicationModel.Search.SearchPane)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.Equals(Windows.ApplicationModel.Search.SearchPane)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -37,12 +37,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs, Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs, Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs.Equals(Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

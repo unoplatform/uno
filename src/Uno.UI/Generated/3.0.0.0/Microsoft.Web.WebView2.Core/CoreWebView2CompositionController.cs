@@ -37,13 +37,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.As<I>()
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2CompositionController, Microsoft.Web.WebView2.Core.CoreWebView2CompositionController)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2CompositionController, Microsoft.Web.WebView2.Core.CoreWebView2CompositionController)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.Equals(Microsoft.Web.WebView2.Core.CoreWebView2CompositionController)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -109,7 +102,6 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.Cursor.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.RootVisualTarget.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.RootVisualTarget.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

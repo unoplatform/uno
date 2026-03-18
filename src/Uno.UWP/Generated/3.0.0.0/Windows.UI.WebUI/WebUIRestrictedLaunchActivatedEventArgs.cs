@@ -73,12 +73,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs, Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs, Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIRestrictedLaunchActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

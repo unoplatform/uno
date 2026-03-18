@@ -83,12 +83,6 @@ namespace Windows.UI.Input.Inking.Analysis
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion.operator ==(Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion, Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion)
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion.operator !=(Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion, Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion)
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion.Equals(Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion)
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion.WinRT.IWinRTObject.QueryInterfaceCache.get

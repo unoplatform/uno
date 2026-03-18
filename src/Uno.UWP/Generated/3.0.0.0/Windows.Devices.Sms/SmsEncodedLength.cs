@@ -17,11 +17,6 @@ namespace Windows.Devices.Sms
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.SmsEncodedLength(uint, uint, uint, uint, uint)
-		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.operator ==(Windows.Devices.Sms.SmsEncodedLength, Windows.Devices.Sms.SmsEncodedLength)
-		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.operator !=(Windows.Devices.Sms.SmsEncodedLength, Windows.Devices.Sms.SmsEncodedLength)
-		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.Equals(Windows.Devices.Sms.SmsEncodedLength)
-		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.Equals(object)
-		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint SegmentCount;
 #endif

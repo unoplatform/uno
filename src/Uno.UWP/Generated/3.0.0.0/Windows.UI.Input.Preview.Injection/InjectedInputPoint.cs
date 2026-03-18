@@ -17,11 +17,6 @@ namespace Windows.UI.Input.Preview.Injection
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPoint.InjectedInputPoint(int, int)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPoint.operator ==(Windows.UI.Input.Preview.Injection.InjectedInputPoint, Windows.UI.Input.Preview.Injection.InjectedInputPoint)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPoint.operator !=(Windows.UI.Input.Preview.Injection.InjectedInputPoint, Windows.UI.Input.Preview.Injection.InjectedInputPoint)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPoint.Equals(Windows.UI.Input.Preview.Injection.InjectedInputPoint)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPoint.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPoint.GetHashCode()
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPoint.PositionX
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPoint.PositionY
 	}

@@ -40,12 +40,6 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.TileFlyoutNotification(Windows.Data.Xml.Dom.XmlDocument)
-		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.operator ==(Windows.UI.Notifications.TileFlyoutNotification, Windows.UI.Notifications.TileFlyoutNotification)
-		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.operator !=(Windows.UI.Notifications.TileFlyoutNotification, Windows.UI.Notifications.TileFlyoutNotification)
-		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.Equals(Windows.UI.Notifications.TileFlyoutNotification)
-		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.Equals(object)
-		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.GetHashCode()
 		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.WinRT.IWinRTObject.QueryInterfaceCache.get

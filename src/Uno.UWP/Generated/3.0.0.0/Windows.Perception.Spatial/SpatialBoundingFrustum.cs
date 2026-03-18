@@ -17,11 +17,6 @@ namespace Windows.Perception.Spatial
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingFrustum.SpatialBoundingFrustum(System.Numerics.Plane, System.Numerics.Plane, System.Numerics.Plane, System.Numerics.Plane, System.Numerics.Plane, System.Numerics.Plane)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingFrustum.operator ==(Windows.Perception.Spatial.SpatialBoundingFrustum, Windows.Perception.Spatial.SpatialBoundingFrustum)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingFrustum.operator !=(Windows.Perception.Spatial.SpatialBoundingFrustum, Windows.Perception.Spatial.SpatialBoundingFrustum)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingFrustum.Equals(Windows.Perception.Spatial.SpatialBoundingFrustum)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingFrustum.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingFrustum.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Plane Near;
 #endif

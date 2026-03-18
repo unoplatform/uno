@@ -16,12 +16,6 @@ namespace Windows.Media
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaExtensionManager.MediaExtensionManager()
-		// Forced skipping of method Windows.Media.MediaExtensionManager.FromAbi(nint)
-		// Forced skipping of method Windows.Media.MediaExtensionManager.operator ==(Windows.Media.MediaExtensionManager, Windows.Media.MediaExtensionManager)
-		// Forced skipping of method Windows.Media.MediaExtensionManager.operator !=(Windows.Media.MediaExtensionManager, Windows.Media.MediaExtensionManager)
-		// Forced skipping of method Windows.Media.MediaExtensionManager.Equals(Windows.Media.MediaExtensionManager)
-		// Forced skipping of method Windows.Media.MediaExtensionManager.Equals(object)
-		// Forced skipping of method Windows.Media.MediaExtensionManager.GetHashCode()
 		// Forced skipping of method Windows.Media.MediaExtensionManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.MediaExtensionManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.MediaExtensionManager.WinRT.IWinRTObject.QueryInterfaceCache.get

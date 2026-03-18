@@ -63,12 +63,6 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.operator ==(Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs, Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.operator !=(Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs, Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.Equals(Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

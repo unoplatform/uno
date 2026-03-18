@@ -9,14 +9,7 @@ namespace Microsoft.UI.Dispatching
 	public partial class DispatcherQueue
 	{
 		// Skipping already declared property HasThreadAccess
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.As<I>()
 		// Skipping already declared method Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread()
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.operator ==(Microsoft.UI.Dispatching.DispatcherQueue, Microsoft.UI.Dispatching.DispatcherQueue)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.operator !=(Microsoft.UI.Dispatching.DispatcherQueue, Microsoft.UI.Dispatching.DispatcherQueue)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.Equals(Microsoft.UI.Dispatching.DispatcherQueue)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.Equals(object)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.WinRT.IWinRTObject.QueryInterfaceCache.get

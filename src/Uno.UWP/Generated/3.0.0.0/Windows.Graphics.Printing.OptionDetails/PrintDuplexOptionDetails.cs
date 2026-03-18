@@ -109,12 +109,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintDuplexOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

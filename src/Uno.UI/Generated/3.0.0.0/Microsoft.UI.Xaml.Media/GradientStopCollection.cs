@@ -13,12 +13,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GradientStopCollection.GradientStopCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.GradientStopCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.operator ==(Microsoft.UI.Xaml.Media.GradientStopCollection, Microsoft.UI.Xaml.Media.GradientStopCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.operator !=(Microsoft.UI.Xaml.Media.GradientStopCollection, Microsoft.UI.Xaml.Media.GradientStopCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.Equals(Microsoft.UI.Xaml.Media.GradientStopCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

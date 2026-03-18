@@ -73,12 +73,6 @@ namespace Windows.System.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.FromAbi(nint)
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.operator ==(Windows.System.Diagnostics.ProcessDiskUsageReport, Windows.System.Diagnostics.ProcessDiskUsageReport)
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.operator !=(Windows.System.Diagnostics.ProcessDiskUsageReport, Windows.System.Diagnostics.ProcessDiskUsageReport)
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.Equals(Windows.System.Diagnostics.ProcessDiskUsageReport)
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.Equals(object)
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.GetHashCode()
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.WinRT.IWinRTObject.QueryInterfaceCache.get

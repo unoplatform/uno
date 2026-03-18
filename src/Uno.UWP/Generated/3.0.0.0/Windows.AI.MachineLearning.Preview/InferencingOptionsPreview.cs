@@ -83,12 +83,6 @@ namespace Windows.AI.MachineLearning.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.FromAbi(nint)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.operator ==(Windows.AI.MachineLearning.Preview.InferencingOptionsPreview, Windows.AI.MachineLearning.Preview.InferencingOptionsPreview)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.operator !=(Windows.AI.MachineLearning.Preview.InferencingOptionsPreview, Windows.AI.MachineLearning.Preview.InferencingOptionsPreview)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.Equals(Windows.AI.MachineLearning.Preview.InferencingOptionsPreview)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.Equals(object)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.GetHashCode()
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.WinRT.IWinRTObject.QueryInterfaceCache.get

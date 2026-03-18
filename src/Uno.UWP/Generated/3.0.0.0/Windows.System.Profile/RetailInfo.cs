@@ -28,7 +28,6 @@ namespace Windows.System.Profile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.RetailInfo.As<I>()
 		// Forced skipping of method Windows.System.Profile.RetailInfo.IsDemoModeEnabled.get
 		// Forced skipping of method Windows.System.Profile.RetailInfo.Properties.get
 	}

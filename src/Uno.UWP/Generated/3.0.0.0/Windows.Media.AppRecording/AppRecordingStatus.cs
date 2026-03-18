@@ -53,12 +53,6 @@ namespace Windows.Media.AppRecording
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatus.FromAbi(nint)
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatus.operator ==(Windows.Media.AppRecording.AppRecordingStatus, Windows.Media.AppRecording.AppRecordingStatus)
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatus.operator !=(Windows.Media.AppRecording.AppRecordingStatus, Windows.Media.AppRecording.AppRecordingStatus)
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatus.Equals(Windows.Media.AppRecording.AppRecordingStatus)
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatus.Equals(object)
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatus.GetHashCode()
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatus.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatus.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatus.WinRT.IWinRTObject.QueryInterfaceCache.get

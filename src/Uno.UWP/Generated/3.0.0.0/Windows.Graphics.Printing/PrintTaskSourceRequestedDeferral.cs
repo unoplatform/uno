@@ -13,12 +13,6 @@ namespace Windows.Graphics.Printing
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedDeferral.operator ==(Windows.Graphics.Printing.PrintTaskSourceRequestedDeferral, Windows.Graphics.Printing.PrintTaskSourceRequestedDeferral)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedDeferral.operator !=(Windows.Graphics.Printing.PrintTaskSourceRequestedDeferral, Windows.Graphics.Printing.PrintTaskSourceRequestedDeferral)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedDeferral.Equals(Windows.Graphics.Printing.PrintTaskSourceRequestedDeferral)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedDeferral.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedDeferral.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTaskSourceRequestedDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

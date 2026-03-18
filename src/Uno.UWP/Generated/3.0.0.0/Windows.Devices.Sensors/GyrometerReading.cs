@@ -32,12 +32,6 @@ namespace Windows.Devices.Sensors
 		}
 #endif
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.operator ==(Windows.Devices.Sensors.GyrometerReading, Windows.Devices.Sensors.GyrometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.operator !=(Windows.Devices.Sensors.GyrometerReading, Windows.Devices.Sensors.GyrometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.Equals(Windows.Devices.Sensors.GyrometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.WinRT.IWinRTObject.QueryInterfaceCache.get

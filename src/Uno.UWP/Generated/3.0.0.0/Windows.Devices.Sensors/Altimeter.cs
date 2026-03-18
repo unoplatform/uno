@@ -71,7 +71,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sensors.Altimeter GetDefault()
@@ -79,12 +78,6 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member Altimeter Altimeter.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Altimeter%20Altimeter.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.operator ==(Windows.Devices.Sensors.Altimeter, Windows.Devices.Sensors.Altimeter)
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.operator !=(Windows.Devices.Sensors.Altimeter, Windows.Devices.Sensors.Altimeter)
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.Equals(Windows.Devices.Sensors.Altimeter)
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.Altimeter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Altimeter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Altimeter.WinRT.IWinRTObject.QueryInterfaceCache.get

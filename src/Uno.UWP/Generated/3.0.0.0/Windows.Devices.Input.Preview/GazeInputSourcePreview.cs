@@ -13,7 +13,6 @@ namespace Windows.Devices.Input.Preview
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.Preview.GazeInputSourcePreview GetForCurrentView()
@@ -28,12 +27,6 @@ namespace Windows.Devices.Input.Preview
 			throw new global::System.NotImplementedException("The member GazeDeviceWatcherPreview GazeInputSourcePreview.CreateWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GazeDeviceWatcherPreview%20GazeInputSourcePreview.CreateWatcher%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.operator ==(Windows.Devices.Input.Preview.GazeInputSourcePreview, Windows.Devices.Input.Preview.GazeInputSourcePreview)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.operator !=(Windows.Devices.Input.Preview.GazeInputSourcePreview, Windows.Devices.Input.Preview.GazeInputSourcePreview)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.Equals(Windows.Devices.Input.Preview.GazeInputSourcePreview)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.Equals(object)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GetHashCode()
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.WinRT.IWinRTObject.QueryInterfaceCache.get

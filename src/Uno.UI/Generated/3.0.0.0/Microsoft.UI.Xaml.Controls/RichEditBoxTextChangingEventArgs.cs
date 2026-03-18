@@ -23,12 +23,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs, Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs, Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs.Equals(Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -27,7 +27,6 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.KeyboardDeliveryInterceptor GetForCurrentView()
@@ -35,12 +34,6 @@ namespace Windows.UI.Input
 			throw new global::System.NotImplementedException("The member KeyboardDeliveryInterceptor KeyboardDeliveryInterceptor.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyboardDeliveryInterceptor%20KeyboardDeliveryInterceptor.GetForCurrentView%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.operator ==(Windows.UI.Input.KeyboardDeliveryInterceptor, Windows.UI.Input.KeyboardDeliveryInterceptor)
-		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.operator !=(Windows.UI.Input.KeyboardDeliveryInterceptor, Windows.UI.Input.KeyboardDeliveryInterceptor)
-		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.Equals(Windows.UI.Input.KeyboardDeliveryInterceptor)
-		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.Equals(object)
-		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.WinRT.IWinRTObject.QueryInterfaceCache.get

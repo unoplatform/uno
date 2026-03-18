@@ -197,7 +197,6 @@ namespace Windows.Media.Streaming.Adaptive
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsContentTypeSupported(string contentType)
@@ -233,12 +232,6 @@ namespace Windows.Media.Streaming.Adaptive
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AdaptiveMediaSourceCreationResult> AdaptiveMediaSource.CreateFromStreamAsync(IInputStream stream, Uri uri, string contentType, HttpClient httpClient) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdaptiveMediaSourceCreationResult%3E%20AdaptiveMediaSource.CreateFromStreamAsync%28IInputStream%20stream%2C%20Uri%20uri%2C%20string%20contentType%2C%20HttpClient%20httpClient%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.operator ==(Windows.Media.Streaming.Adaptive.AdaptiveMediaSource, Windows.Media.Streaming.Adaptive.AdaptiveMediaSource)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.operator !=(Windows.Media.Streaming.Adaptive.AdaptiveMediaSource, Windows.Media.Streaming.Adaptive.AdaptiveMediaSource)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.Equals(Windows.Media.Streaming.Adaptive.AdaptiveMediaSource)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.Equals(object)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.GetHashCode()
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.WinRT.IWinRTObject.QueryInterfaceCache.get

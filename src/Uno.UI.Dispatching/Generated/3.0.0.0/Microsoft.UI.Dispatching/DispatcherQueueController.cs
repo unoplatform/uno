@@ -23,7 +23,6 @@ namespace Microsoft.UI.Dispatching
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueController.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Dispatching.DispatcherQueueController CreateOnDedicatedThread()
@@ -38,12 +37,6 @@ namespace Microsoft.UI.Dispatching
 			throw new global::System.NotImplementedException("The member DispatcherQueueController DispatcherQueueController.CreateOnCurrentThread() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueueController%20DispatcherQueueController.CreateOnCurrentThread%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueController.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueController.operator ==(Microsoft.UI.Dispatching.DispatcherQueueController, Microsoft.UI.Dispatching.DispatcherQueueController)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueController.operator !=(Microsoft.UI.Dispatching.DispatcherQueueController, Microsoft.UI.Dispatching.DispatcherQueueController)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueController.Equals(Microsoft.UI.Dispatching.DispatcherQueueController)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueController.Equals(object)
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueController.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueController.WinRT.IWinRTObject.QueryInterfaceCache.get

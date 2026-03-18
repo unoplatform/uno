@@ -13,12 +13,6 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiContinueMessage.MidiContinueMessage()
 		// Forced skipping of method Windows.Devices.Midi.MidiContinueMessage.MidiContinueMessage()
-		// Forced skipping of method Windows.Devices.Midi.MidiContinueMessage.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Midi.MidiContinueMessage.operator ==(Windows.Devices.Midi.MidiContinueMessage, Windows.Devices.Midi.MidiContinueMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiContinueMessage.operator !=(Windows.Devices.Midi.MidiContinueMessage, Windows.Devices.Midi.MidiContinueMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiContinueMessage.Equals(Windows.Devices.Midi.MidiContinueMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiContinueMessage.Equals(object)
-		// Forced skipping of method Windows.Devices.Midi.MidiContinueMessage.GetHashCode()
 		// Forced skipping of method Windows.Devices.Midi.MidiContinueMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Midi.MidiContinueMessage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Midi.MidiContinueMessage.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -96,12 +96,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters.GattLocalCharacteristicParameters()
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters, Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters, Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters.WinRT.IWinRTObject.QueryInterfaceCache.get

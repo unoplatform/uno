@@ -33,12 +33,6 @@ namespace Windows.Networking.XboxLive
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs.operator ==(Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs, Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs.operator !=(Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs, Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs.Equals(Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

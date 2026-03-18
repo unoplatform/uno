@@ -43,7 +43,6 @@ namespace Windows.Devices.Enumeration.Pnp
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.Pnp.PnpObject> CreateFromIdAsync(global::Windows.Devices.Enumeration.Pnp.PnpObjectType type, string id, global::System.Collections.Generic.IEnumerable<string> requestedProperties)
@@ -79,12 +78,6 @@ namespace Windows.Devices.Enumeration.Pnp
 			throw new global::System.NotImplementedException("The member PnpObjectWatcher PnpObject.CreateWatcher(PnpObjectType type, IEnumerable<string> requestedProperties, string aqsFilter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PnpObjectWatcher%20PnpObject.CreateWatcher%28PnpObjectType%20type%2C%20IEnumerable%3Cstring%3E%20requestedProperties%2C%20string%20aqsFilter%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.operator ==(Windows.Devices.Enumeration.Pnp.PnpObject, Windows.Devices.Enumeration.Pnp.PnpObject)
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.operator !=(Windows.Devices.Enumeration.Pnp.PnpObject, Windows.Devices.Enumeration.Pnp.PnpObject)
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.Equals(Windows.Devices.Enumeration.Pnp.PnpObject)
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.Equals(object)
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.GetHashCode()
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -80,12 +80,6 @@ namespace Windows.Security.EnterpriseData
 		}
 #endif
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo.ProtectionPolicyAuditInfo(Windows.Security.EnterpriseData.ProtectionPolicyAuditAction, string)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo.operator ==(Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo, Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo.operator !=(Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo, Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo.Equals(Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo.Equals(object)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo.GetHashCode()
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

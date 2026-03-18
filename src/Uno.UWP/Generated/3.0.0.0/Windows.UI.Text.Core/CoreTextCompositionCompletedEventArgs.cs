@@ -33,12 +33,6 @@ namespace Windows.UI.Text.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.operator ==(Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs, Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.operator !=(Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs, Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.Equals(Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

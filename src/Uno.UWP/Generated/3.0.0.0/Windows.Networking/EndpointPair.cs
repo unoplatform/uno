@@ -72,12 +72,6 @@ namespace Windows.Networking
 		}
 #endif
 		// Forced skipping of method Windows.Networking.EndpointPair.EndpointPair(Windows.Networking.HostName, string, Windows.Networking.HostName, string)
-		// Forced skipping of method Windows.Networking.EndpointPair.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.EndpointPair.operator ==(Windows.Networking.EndpointPair, Windows.Networking.EndpointPair)
-		// Forced skipping of method Windows.Networking.EndpointPair.operator !=(Windows.Networking.EndpointPair, Windows.Networking.EndpointPair)
-		// Forced skipping of method Windows.Networking.EndpointPair.Equals(Windows.Networking.EndpointPair)
-		// Forced skipping of method Windows.Networking.EndpointPair.Equals(object)
-		// Forced skipping of method Windows.Networking.EndpointPair.GetHashCode()
 		// Forced skipping of method Windows.Networking.EndpointPair.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.EndpointPair.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.EndpointPair.WinRT.IWinRTObject.QueryInterfaceCache.get

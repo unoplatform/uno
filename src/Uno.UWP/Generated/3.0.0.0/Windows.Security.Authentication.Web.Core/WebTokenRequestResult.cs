@@ -43,12 +43,6 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.operator ==(Windows.Security.Authentication.Web.Core.WebTokenRequestResult, Windows.Security.Authentication.Web.Core.WebTokenRequestResult)
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.operator !=(Windows.Security.Authentication.Web.Core.WebTokenRequestResult, Windows.Security.Authentication.Web.Core.WebTokenRequestResult)
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.Equals(Windows.Security.Authentication.Web.Core.WebTokenRequestResult)
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.Equals(object)
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.GetHashCode()
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -13,12 +13,6 @@ namespace Windows.Media.Capture
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.operator ==(Windows.Media.Capture.AdvancedPhotoCapture, Windows.Media.Capture.AdvancedPhotoCapture)
-		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.operator !=(Windows.Media.Capture.AdvancedPhotoCapture, Windows.Media.Capture.AdvancedPhotoCapture)
-		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.Equals(Windows.Media.Capture.AdvancedPhotoCapture)
-		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.WinRT.IWinRTObject.QueryInterfaceCache.get

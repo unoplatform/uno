@@ -62,12 +62,6 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage()
 		// Skipping already declared method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage(Windows.Web.Http.HttpMethod, System.Uri)
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage(Windows.Web.Http.HttpMethod, System.Uri)
-		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.operator ==(Windows.Web.Http.HttpRequestMessage, Windows.Web.Http.HttpRequestMessage)
-		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.operator !=(Windows.Web.Http.HttpRequestMessage, Windows.Web.Http.HttpRequestMessage)
-		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.Equals(Windows.Web.Http.HttpRequestMessage)
-		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.Equals(object)
-		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -11,12 +11,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.operator ==(Microsoft.UI.Xaml.Documents.BlockCollection, Microsoft.UI.Xaml.Documents.BlockCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.operator !=(Microsoft.UI.Xaml.Documents.BlockCollection, Microsoft.UI.Xaml.Documents.BlockCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.Equals(Microsoft.UI.Xaml.Documents.BlockCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

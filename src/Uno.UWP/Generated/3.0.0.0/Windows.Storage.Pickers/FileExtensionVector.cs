@@ -11,12 +11,6 @@ namespace Windows.Storage.Pickers
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.operator ==(Windows.Storage.Pickers.FileExtensionVector, Windows.Storage.Pickers.FileExtensionVector)
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.operator !=(Windows.Storage.Pickers.FileExtensionVector, Windows.Storage.Pickers.FileExtensionVector)
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.Equals(Windows.Storage.Pickers.FileExtensionVector)
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.Equals(object)
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.GetHashCode()
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.WinRT.IWinRTObject.QueryInterfaceCache.get

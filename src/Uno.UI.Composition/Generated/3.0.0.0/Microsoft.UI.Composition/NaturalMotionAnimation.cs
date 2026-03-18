@@ -50,14 +50,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.NaturalMotionAnimation(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.operator ==(Microsoft.UI.Composition.NaturalMotionAnimation, Microsoft.UI.Composition.NaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.operator !=(Microsoft.UI.Composition.NaturalMotionAnimation, Microsoft.UI.Composition.NaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.Equals(Microsoft.UI.Composition.NaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.NaturalMotionAnimation(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.DelayBehavior.get
@@ -66,7 +58,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.DelayTime.set
 		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.StopBehavior.get
 		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.StopBehavior.set
-		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.NaturalMotionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,12 +23,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureFocusChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureFocusChangedEventArgs.operator ==(Windows.Media.Capture.MediaCaptureFocusChangedEventArgs, Windows.Media.Capture.MediaCaptureFocusChangedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureFocusChangedEventArgs.operator !=(Windows.Media.Capture.MediaCaptureFocusChangedEventArgs, Windows.Media.Capture.MediaCaptureFocusChangedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureFocusChangedEventArgs.Equals(Windows.Media.Capture.MediaCaptureFocusChangedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureFocusChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureFocusChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureFocusChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureFocusChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureFocusChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

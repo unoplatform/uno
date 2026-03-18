@@ -33,12 +33,6 @@ namespace Windows.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.SystemImageProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.SystemImageProperties.operator ==(Windows.Storage.SystemImageProperties, Windows.Storage.SystemImageProperties)
-		// Forced skipping of method Windows.Storage.SystemImageProperties.operator !=(Windows.Storage.SystemImageProperties, Windows.Storage.SystemImageProperties)
-		// Forced skipping of method Windows.Storage.SystemImageProperties.Equals(Windows.Storage.SystemImageProperties)
-		// Forced skipping of method Windows.Storage.SystemImageProperties.Equals(object)
-		// Forced skipping of method Windows.Storage.SystemImageProperties.GetHashCode()
 		// Forced skipping of method Windows.Storage.SystemImageProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.SystemImageProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.SystemImageProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

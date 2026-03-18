@@ -48,16 +48,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Visible
 		// Skipping already declared method Microsoft.UI.Xaml.Window.Window()
 		// Forced skipping of method Microsoft.UI.Xaml.Window.Window()
-		// Forced skipping of method Microsoft.UI.Xaml.Window.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Window.Current.get
-		// Forced skipping of method Microsoft.UI.Xaml.Window.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Window.Window(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Window.operator ==(Microsoft.UI.Xaml.Window, Microsoft.UI.Xaml.Window)
-		// Forced skipping of method Microsoft.UI.Xaml.Window.operator !=(Microsoft.UI.Xaml.Window, Microsoft.UI.Xaml.Window)
-		// Forced skipping of method Microsoft.UI.Xaml.Window.Equals(Microsoft.UI.Xaml.Window)
-		// Forced skipping of method Microsoft.UI.Xaml.Window.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Window.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Window.Window(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Window.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Window.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Window.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -88,7 +79,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Window.Title.get
 		// Forced skipping of method Microsoft.UI.Xaml.Window.Title.set
 		// Forced skipping of method Microsoft.UI.Xaml.Window.Visible.get
-		// Forced skipping of method Microsoft.UI.Xaml.Window.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Window.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Window.Activated
 		// Skipping already declared event Microsoft.UI.Xaml.Window.Closed

@@ -11,12 +11,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.operator ==(Microsoft.UI.Composition.CompositionShapeCollection, Microsoft.UI.Composition.CompositionShapeCollection)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.operator !=(Microsoft.UI.Composition.CompositionShapeCollection, Microsoft.UI.Composition.CompositionShapeCollection)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.Equals(Microsoft.UI.Composition.CompositionShapeCollection)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.Count.get
@@ -33,7 +27,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared method Microsoft.UI.Composition.CompositionShapeCollection.Remove(Microsoft.UI.Composition.CompositionShape)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionShapeCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.System.Collections.Generic.IList<Microsoft.UI.Composition.CompositionShape>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.System.Collections.Generic.IList<Microsoft.UI.Composition.CompositionShape>.set_Item(int, Microsoft.UI.Composition.CompositionShape)

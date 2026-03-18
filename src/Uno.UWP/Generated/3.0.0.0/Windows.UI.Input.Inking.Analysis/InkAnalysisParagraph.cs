@@ -83,12 +83,6 @@ namespace Windows.UI.Input.Inking.Analysis
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph.operator ==(Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph, Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph)
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph.operator !=(Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph, Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph)
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph.Equals(Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph)
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisParagraph.WinRT.IWinRTObject.QueryInterfaceCache.get

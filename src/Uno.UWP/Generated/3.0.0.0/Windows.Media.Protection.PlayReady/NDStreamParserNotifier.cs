@@ -16,12 +16,6 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStreamParserNotifier.NDStreamParserNotifier()
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStreamParserNotifier.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStreamParserNotifier.operator ==(Windows.Media.Protection.PlayReady.NDStreamParserNotifier, Windows.Media.Protection.PlayReady.NDStreamParserNotifier)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStreamParserNotifier.operator !=(Windows.Media.Protection.PlayReady.NDStreamParserNotifier, Windows.Media.Protection.PlayReady.NDStreamParserNotifier)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStreamParserNotifier.Equals(Windows.Media.Protection.PlayReady.NDStreamParserNotifier)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStreamParserNotifier.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStreamParserNotifier.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStreamParserNotifier.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStreamParserNotifier.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStreamParserNotifier.WinRT.IWinRTObject.QueryInterfaceCache.get

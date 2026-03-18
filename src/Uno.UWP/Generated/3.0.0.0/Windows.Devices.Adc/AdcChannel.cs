@@ -23,12 +23,6 @@ namespace Windows.Devices.Adc
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Adc.AdcChannel.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Adc.AdcChannel.operator ==(Windows.Devices.Adc.AdcChannel, Windows.Devices.Adc.AdcChannel)
-		// Forced skipping of method Windows.Devices.Adc.AdcChannel.operator !=(Windows.Devices.Adc.AdcChannel, Windows.Devices.Adc.AdcChannel)
-		// Forced skipping of method Windows.Devices.Adc.AdcChannel.Equals(Windows.Devices.Adc.AdcChannel)
-		// Forced skipping of method Windows.Devices.Adc.AdcChannel.Equals(object)
-		// Forced skipping of method Windows.Devices.Adc.AdcChannel.GetHashCode()
 		// Forced skipping of method Windows.Devices.Adc.AdcChannel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Adc.AdcChannel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Adc.AdcChannel.WinRT.IWinRTObject.QueryInterfaceCache.get

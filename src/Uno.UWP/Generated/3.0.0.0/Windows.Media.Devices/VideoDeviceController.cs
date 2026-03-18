@@ -371,12 +371,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.operator ==(Windows.Media.Devices.VideoDeviceController, Windows.Media.Devices.VideoDeviceController)
-		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.operator !=(Windows.Media.Devices.VideoDeviceController, Windows.Media.Devices.VideoDeviceController)
-		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.Equals(Windows.Media.Devices.VideoDeviceController)
-		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.WinRT.IWinRTObject.QueryInterfaceCache.get

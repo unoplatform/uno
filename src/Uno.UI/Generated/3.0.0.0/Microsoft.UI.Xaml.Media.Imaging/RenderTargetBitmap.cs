@@ -14,15 +14,8 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		// Skipping already declared property PixelWidth
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.RenderTargetBitmap()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.RenderTargetBitmap()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.PixelHeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.PixelWidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.operator ==(Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.operator !=(Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.Equals(Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.RenderAsync(Microsoft.UI.Xaml.UIElement)
@@ -30,7 +23,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.GetPixelsAsync()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.PixelHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.PixelWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

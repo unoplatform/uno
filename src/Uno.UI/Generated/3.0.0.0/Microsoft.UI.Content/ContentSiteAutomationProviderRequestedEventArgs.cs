@@ -41,12 +41,6 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.operator ==(Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs, Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.operator !=(Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs, Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.Equals(Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

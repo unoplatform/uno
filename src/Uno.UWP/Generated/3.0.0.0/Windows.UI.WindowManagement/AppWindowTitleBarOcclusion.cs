@@ -23,12 +23,6 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.operator ==(Windows.UI.WindowManagement.AppWindowTitleBarOcclusion, Windows.UI.WindowManagement.AppWindowTitleBarOcclusion)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.operator !=(Windows.UI.WindowManagement.AppWindowTitleBarOcclusion, Windows.UI.WindowManagement.AppWindowTitleBarOcclusion)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.Equals(Windows.UI.WindowManagement.AppWindowTitleBarOcclusion)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.Equals(object)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.GetHashCode()
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.WinRT.IWinRTObject.QueryInterfaceCache.get

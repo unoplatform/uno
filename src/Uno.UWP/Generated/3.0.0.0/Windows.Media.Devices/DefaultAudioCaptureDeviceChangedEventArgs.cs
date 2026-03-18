@@ -33,12 +33,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs.operator ==(Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs, Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs)
-		// Forced skipping of method Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs.operator !=(Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs, Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs)
-		// Forced skipping of method Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs.Equals(Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs)
-		// Forced skipping of method Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.DefaultAudioCaptureDeviceChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

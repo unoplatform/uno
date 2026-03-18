@@ -68,7 +68,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionFrameSourceProperties.As<I>()
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionFrameSourceProperties.DeviceId.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionFrameSourceProperties.DeviceModelVersion.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionFrameSourceProperties.EnclosureLocation.get

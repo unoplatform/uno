@@ -10,12 +10,6 @@ namespace Windows.Devices.Enumeration
 	{
 		// Skipping already declared property Count
 		// Skipping already declared property this[]
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.operator ==(Windows.Devices.Enumeration.DeviceInformationCollection, Windows.Devices.Enumeration.DeviceInformationCollection)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.operator !=(Windows.Devices.Enumeration.DeviceInformationCollection, Windows.Devices.Enumeration.DeviceInformationCollection)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.Equals(Windows.Devices.Enumeration.DeviceInformationCollection)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.Equals(object)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.GetHashCode()
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -55,12 +55,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionRoundedRectangleGeometry.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionRoundedRectangleGeometry.operator ==(Windows.UI.Composition.CompositionRoundedRectangleGeometry, Windows.UI.Composition.CompositionRoundedRectangleGeometry)
-		// Forced skipping of method Windows.UI.Composition.CompositionRoundedRectangleGeometry.operator !=(Windows.UI.Composition.CompositionRoundedRectangleGeometry, Windows.UI.Composition.CompositionRoundedRectangleGeometry)
-		// Forced skipping of method Windows.UI.Composition.CompositionRoundedRectangleGeometry.Equals(Windows.UI.Composition.CompositionRoundedRectangleGeometry)
-		// Forced skipping of method Windows.UI.Composition.CompositionRoundedRectangleGeometry.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionRoundedRectangleGeometry.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionRoundedRectangleGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionRoundedRectangleGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionRoundedRectangleGeometry.CornerRadius.get
@@ -69,7 +63,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionRoundedRectangleGeometry.Offset.set
 		// Forced skipping of method Windows.UI.Composition.CompositionRoundedRectangleGeometry.Size.get
 		// Forced skipping of method Windows.UI.Composition.CompositionRoundedRectangleGeometry.Size.set
-		// Forced skipping of method Windows.UI.Composition.CompositionRoundedRectangleGeometry.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionRoundedRectangleGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

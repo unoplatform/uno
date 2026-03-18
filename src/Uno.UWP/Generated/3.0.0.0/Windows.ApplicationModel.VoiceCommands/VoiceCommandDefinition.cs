@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.VoiceCommands
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.operator ==(Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition, Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.operator !=(Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition, Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.Equals(Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get

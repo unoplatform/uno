@@ -395,12 +395,6 @@ namespace Windows.Devices.Scanners
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerFeederConfiguration.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerFeederConfiguration.operator ==(Windows.Devices.Scanners.ImageScannerFeederConfiguration, Windows.Devices.Scanners.ImageScannerFeederConfiguration)
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerFeederConfiguration.operator !=(Windows.Devices.Scanners.ImageScannerFeederConfiguration, Windows.Devices.Scanners.ImageScannerFeederConfiguration)
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerFeederConfiguration.Equals(Windows.Devices.Scanners.ImageScannerFeederConfiguration)
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerFeederConfiguration.Equals(object)
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerFeederConfiguration.GetHashCode()
 		// Forced skipping of method Windows.Devices.Scanners.ImageScannerFeederConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Scanners.ImageScannerFeederConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Scanners.ImageScannerFeederConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -13,7 +13,6 @@ namespace Windows.Devices.Spi
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Spi.SpiController.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Spi.SpiController> GetDefaultAsync()
@@ -28,12 +27,6 @@ namespace Windows.Devices.Spi
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<SpiController>> SpiController.GetControllersAsync(ISpiProvider provider) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CSpiController%3E%3E%20SpiController.GetControllersAsync%28ISpiProvider%20provider%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Spi.SpiController.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Spi.SpiController.operator ==(Windows.Devices.Spi.SpiController, Windows.Devices.Spi.SpiController)
-		// Forced skipping of method Windows.Devices.Spi.SpiController.operator !=(Windows.Devices.Spi.SpiController, Windows.Devices.Spi.SpiController)
-		// Forced skipping of method Windows.Devices.Spi.SpiController.Equals(Windows.Devices.Spi.SpiController)
-		// Forced skipping of method Windows.Devices.Spi.SpiController.Equals(object)
-		// Forced skipping of method Windows.Devices.Spi.SpiController.GetHashCode()
 		// Forced skipping of method Windows.Devices.Spi.SpiController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Spi.SpiController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Spi.SpiController.WinRT.IWinRTObject.QueryInterfaceCache.get

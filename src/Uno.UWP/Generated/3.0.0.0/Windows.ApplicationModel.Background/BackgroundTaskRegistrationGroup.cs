@@ -54,12 +54,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.BackgroundTaskRegistrationGroup(string, string)
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.operator ==(Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup, Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup)
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.operator !=(Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup, Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup)
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.Equals(Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup)
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -125,7 +125,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.WebUI.WebUIView> CreateAsync()
@@ -140,12 +139,6 @@ namespace Windows.UI.WebUI
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WebUIView> WebUIView.CreateAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebUIView%3E%20WebUIView.CreateAsync%28Uri%20uri%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.operator ==(Windows.UI.WebUI.WebUIView, Windows.UI.WebUI.WebUIView)
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.operator !=(Windows.UI.WebUI.WebUIView, Windows.UI.WebUI.WebUIView)
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.Equals(Windows.UI.WebUI.WebUIView)
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUIView.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Contacts
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardDelayedDataLoader.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardDelayedDataLoader.operator ==(Windows.ApplicationModel.Contacts.ContactCardDelayedDataLoader, Windows.ApplicationModel.Contacts.ContactCardDelayedDataLoader)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardDelayedDataLoader.operator !=(Windows.ApplicationModel.Contacts.ContactCardDelayedDataLoader, Windows.ApplicationModel.Contacts.ContactCardDelayedDataLoader)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardDelayedDataLoader.Equals(Windows.ApplicationModel.Contacts.ContactCardDelayedDataLoader)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardDelayedDataLoader.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardDelayedDataLoader.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardDelayedDataLoader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardDelayedDataLoader.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardDelayedDataLoader.WinRT.IWinRTObject.QueryInterfaceCache.get

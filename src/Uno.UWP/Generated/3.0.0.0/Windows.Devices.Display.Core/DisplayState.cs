@@ -63,12 +63,6 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.operator ==(Windows.Devices.Display.Core.DisplayState, Windows.Devices.Display.Core.DisplayState)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.operator !=(Windows.Devices.Display.Core.DisplayState, Windows.Devices.Display.Core.DisplayState)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.Equals(Windows.Devices.Display.Core.DisplayState)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.Equals(object)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.GetHashCode()
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayState.WinRT.IWinRTObject.QueryInterfaceCache.get

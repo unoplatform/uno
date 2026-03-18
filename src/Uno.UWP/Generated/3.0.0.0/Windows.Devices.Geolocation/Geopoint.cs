@@ -48,12 +48,6 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.Geopoint(Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.AltitudeReferenceSystem, uint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.operator ==(Windows.Devices.Geolocation.Geopoint, Windows.Devices.Geolocation.Geopoint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.operator !=(Windows.Devices.Geolocation.Geopoint, Windows.Devices.Geolocation.Geopoint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.Equals(Windows.Devices.Geolocation.Geopoint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.Equals(object)
-		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.GetHashCode()
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.WinRT.IWinRTObject.QueryInterfaceCache.get

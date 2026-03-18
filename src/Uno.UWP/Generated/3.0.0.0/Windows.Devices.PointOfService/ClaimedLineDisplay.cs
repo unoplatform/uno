@@ -133,7 +133,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedLineDisplay> FromIdAsync(string deviceId)
@@ -155,12 +154,6 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member string ClaimedLineDisplay.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ClaimedLineDisplay.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.operator ==(Windows.Devices.PointOfService.ClaimedLineDisplay, Windows.Devices.PointOfService.ClaimedLineDisplay)
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.operator !=(Windows.Devices.PointOfService.ClaimedLineDisplay, Windows.Devices.PointOfService.ClaimedLineDisplay)
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.Equals(Windows.Devices.PointOfService.ClaimedLineDisplay)
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.WinRT.IWinRTObject.QueryInterfaceCache.get

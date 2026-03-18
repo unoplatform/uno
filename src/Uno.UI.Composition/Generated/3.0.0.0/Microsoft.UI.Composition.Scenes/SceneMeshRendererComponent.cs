@@ -51,7 +51,6 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent Create(global::Microsoft.UI.Composition.Compositor compositor)
@@ -59,12 +58,6 @@ namespace Microsoft.UI.Composition.Scenes
 			throw new global::System.NotImplementedException("The member SceneMeshRendererComponent SceneMeshRendererComponent.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMeshRendererComponent%20SceneMeshRendererComponent.Create%28Compositor%20compositor%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.operator ==(Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent, Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.operator !=(Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent, Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Equals(Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Material.get
@@ -72,7 +65,6 @@ namespace Microsoft.UI.Composition.Scenes
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Mesh.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Mesh.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.UVMappings.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

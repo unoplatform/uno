@@ -180,12 +180,6 @@ namespace Windows.System
 		}
 #endif
 		// Forced skipping of method Windows.System.LauncherOptions.LauncherOptions()
-		// Forced skipping of method Windows.System.LauncherOptions.FromAbi(nint)
-		// Forced skipping of method Windows.System.LauncherOptions.operator ==(Windows.System.LauncherOptions, Windows.System.LauncherOptions)
-		// Forced skipping of method Windows.System.LauncherOptions.operator !=(Windows.System.LauncherOptions, Windows.System.LauncherOptions)
-		// Forced skipping of method Windows.System.LauncherOptions.Equals(Windows.System.LauncherOptions)
-		// Forced skipping of method Windows.System.LauncherOptions.Equals(object)
-		// Forced skipping of method Windows.System.LauncherOptions.GetHashCode()
 		// Forced skipping of method Windows.System.LauncherOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.LauncherOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.LauncherOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -33,12 +33,6 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.operator ==(Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs, Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.operator !=(Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs, Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.Equals(Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

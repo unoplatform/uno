@@ -17,11 +17,6 @@ namespace Windows.Devices.Gpio
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCount.GpioChangeCount(ulong, System.TimeSpan)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCount.operator ==(Windows.Devices.Gpio.GpioChangeCount, Windows.Devices.Gpio.GpioChangeCount)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCount.operator !=(Windows.Devices.Gpio.GpioChangeCount, Windows.Devices.Gpio.GpioChangeCount)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCount.Equals(Windows.Devices.Gpio.GpioChangeCount)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCount.Equals(object)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeCount.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong Count;
 #endif

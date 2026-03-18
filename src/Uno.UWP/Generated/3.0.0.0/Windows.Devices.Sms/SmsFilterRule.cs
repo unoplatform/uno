@@ -150,12 +150,6 @@ namespace Windows.Devices.Sms
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.SmsFilterRule(Windows.Devices.Sms.SmsMessageType)
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.operator ==(Windows.Devices.Sms.SmsFilterRule, Windows.Devices.Sms.SmsFilterRule)
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.operator !=(Windows.Devices.Sms.SmsFilterRule, Windows.Devices.Sms.SmsFilterRule)
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.Equals(Windows.Devices.Sms.SmsFilterRule)
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.Equals(object)
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WinRT.IWinRTObject.QueryInterfaceCache.get

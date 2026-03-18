@@ -23,12 +23,6 @@ namespace Windows.Devices.PointOfService.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.operator ==(Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader, Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.operator !=(Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader, Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.Equals(Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader.WinRT.IWinRTObject.QueryInterfaceCache.get

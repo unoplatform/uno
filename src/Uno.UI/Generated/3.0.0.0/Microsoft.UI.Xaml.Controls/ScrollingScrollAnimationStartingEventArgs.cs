@@ -12,12 +12,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property CorrelationId
 		// Skipping already declared property EndPosition
 		// Skipping already declared property StartPosition
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs, Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs, Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.Equals(Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

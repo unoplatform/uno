@@ -14,19 +14,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.SymbolIcon()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SymbolIcon.SymbolIcon(Microsoft.UI.Xaml.Controls.Symbol)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.SymbolIcon(Microsoft.UI.Xaml.Controls.Symbol)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.SymbolProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.operator ==(Microsoft.UI.Xaml.Controls.SymbolIcon, Microsoft.UI.Xaml.Controls.SymbolIcon)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.operator !=(Microsoft.UI.Xaml.Controls.SymbolIcon, Microsoft.UI.Xaml.Controls.SymbolIcon)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.Equals(Microsoft.UI.Xaml.Controls.SymbolIcon)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.Symbol.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.Symbol.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIcon.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

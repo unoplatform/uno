@@ -63,12 +63,6 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.operator ==(Windows.UI.WindowManagement.DisplayRegion, Windows.UI.WindowManagement.DisplayRegion)
-		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.operator !=(Windows.UI.WindowManagement.DisplayRegion, Windows.UI.WindowManagement.DisplayRegion)
-		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.Equals(Windows.UI.WindowManagement.DisplayRegion)
-		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.Equals(object)
-		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.GetHashCode()
 		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.WinRT.IWinRTObject.QueryInterfaceCache.get

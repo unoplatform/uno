@@ -103,12 +103,6 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.operator ==(Windows.Networking.Connectivity.ConnectionProfile, Windows.Networking.Connectivity.ConnectionProfile)
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.operator !=(Windows.Networking.Connectivity.ConnectionProfile, Windows.Networking.Connectivity.ConnectionProfile)
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.Equals(Windows.Networking.Connectivity.ConnectionProfile)
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.Equals(object)
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.GetHashCode()
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.WinRT.IWinRTObject.QueryInterfaceCache.get

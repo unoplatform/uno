@@ -31,11 +31,5 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.ToString()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.ToString(System.IFormatProvider)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.System.IFormattable.ToString(string, System.IFormatProvider)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Equals(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Equals(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.operator ==(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.operator !=(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior)
 	}
 }

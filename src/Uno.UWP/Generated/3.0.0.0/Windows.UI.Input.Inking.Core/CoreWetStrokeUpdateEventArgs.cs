@@ -47,12 +47,6 @@ namespace Windows.UI.Input.Inking.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.operator ==(Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs, Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs)
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.operator !=(Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs, Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs)
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.Equals(Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs)
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -73,7 +73,6 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateAudioGraphResult> CreateAsync(global::Windows.Media.Audio.AudioGraphSettings settings)
@@ -81,12 +80,6 @@ namespace Windows.Media.Audio
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioGraphResult> AudioGraph.CreateAsync(AudioGraphSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCreateAudioGraphResult%3E%20AudioGraph.CreateAsync%28AudioGraphSettings%20settings%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.operator ==(Windows.Media.Audio.AudioGraph, Windows.Media.Audio.AudioGraph)
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.operator !=(Windows.Media.Audio.AudioGraph, Windows.Media.Audio.AudioGraph)
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.Equals(Windows.Media.Audio.AudioGraph)
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.Equals(object)
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.GetHashCode()
 		// Forced skipping of method Windows.Media.Audio.AudioGraph.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraph.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraph.WinRT.IWinRTObject.QueryInterfaceCache.get

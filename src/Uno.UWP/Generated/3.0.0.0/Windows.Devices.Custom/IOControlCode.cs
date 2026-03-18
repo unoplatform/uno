@@ -66,12 +66,6 @@ namespace Windows.Devices.Custom
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Custom.IOControlCode.IOControlCode(ushort, ushort, Windows.Devices.Custom.IOControlAccessMode, Windows.Devices.Custom.IOControlBufferingMethod)
-		// Forced skipping of method Windows.Devices.Custom.IOControlCode.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Custom.IOControlCode.operator ==(Windows.Devices.Custom.IOControlCode, Windows.Devices.Custom.IOControlCode)
-		// Forced skipping of method Windows.Devices.Custom.IOControlCode.operator !=(Windows.Devices.Custom.IOControlCode, Windows.Devices.Custom.IOControlCode)
-		// Forced skipping of method Windows.Devices.Custom.IOControlCode.Equals(Windows.Devices.Custom.IOControlCode)
-		// Forced skipping of method Windows.Devices.Custom.IOControlCode.Equals(object)
-		// Forced skipping of method Windows.Devices.Custom.IOControlCode.GetHashCode()
 		// Forced skipping of method Windows.Devices.Custom.IOControlCode.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Custom.IOControlCode.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Custom.IOControlCode.WinRT.IWinRTObject.QueryInterfaceCache.get

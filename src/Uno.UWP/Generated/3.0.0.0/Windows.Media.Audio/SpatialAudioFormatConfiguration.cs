@@ -27,7 +27,6 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Audio.SpatialAudioFormatConfiguration GetDefault()
@@ -35,12 +34,6 @@ namespace Windows.Media.Audio
 			throw new global::System.NotImplementedException("The member SpatialAudioFormatConfiguration SpatialAudioFormatConfiguration.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialAudioFormatConfiguration%20SpatialAudioFormatConfiguration.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.operator ==(Windows.Media.Audio.SpatialAudioFormatConfiguration, Windows.Media.Audio.SpatialAudioFormatConfiguration)
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.operator !=(Windows.Media.Audio.SpatialAudioFormatConfiguration, Windows.Media.Audio.SpatialAudioFormatConfiguration)
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.Equals(Windows.Media.Audio.SpatialAudioFormatConfiguration)
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.Equals(object)
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.GetHashCode()
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

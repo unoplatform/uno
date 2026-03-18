@@ -23,12 +23,6 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs.operator ==(Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs, Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs.operator !=(Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs, Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs.Equals(Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

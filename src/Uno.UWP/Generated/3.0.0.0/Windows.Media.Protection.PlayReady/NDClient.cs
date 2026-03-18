@@ -16,12 +16,6 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.NDClient(Windows.Media.Protection.PlayReady.INDDownloadEngine, Windows.Media.Protection.PlayReady.INDStreamParser, Windows.Media.Protection.PlayReady.INDMessenger)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.operator ==(Windows.Media.Protection.PlayReady.NDClient, Windows.Media.Protection.PlayReady.NDClient)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.operator !=(Windows.Media.Protection.PlayReady.NDClient, Windows.Media.Protection.PlayReady.NDClient)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.Equals(Windows.Media.Protection.PlayReady.NDClient)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.WinRT.IWinRTObject.QueryInterfaceCache.get

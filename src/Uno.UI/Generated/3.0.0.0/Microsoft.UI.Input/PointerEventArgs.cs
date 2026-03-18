@@ -11,12 +11,6 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property CurrentPoint
 		// Skipping already declared property Handled
 		// Skipping already declared property KeyModifiers
-		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.operator ==(Microsoft.UI.Input.PointerEventArgs, Microsoft.UI.Input.PointerEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.operator !=(Microsoft.UI.Input.PointerEventArgs, Microsoft.UI.Input.PointerEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.Equals(Microsoft.UI.Input.PointerEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.PointerEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -14,12 +14,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property VerticalAnchorRatio
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.ItemsRepeaterScrollHost()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.ItemsRepeaterScrollHost()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.operator ==(Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost, Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.operator !=(Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost, Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.Equals(Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.CurrentAnchor.get
@@ -29,7 +23,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.ScrollViewer.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.VerticalAnchorRatio.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.VerticalAnchorRatio.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

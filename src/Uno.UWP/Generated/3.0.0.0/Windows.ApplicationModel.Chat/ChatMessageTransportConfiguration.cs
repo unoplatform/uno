@@ -63,12 +63,6 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.operator ==(Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration, Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.operator !=(Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration, Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.Equals(Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -61,12 +61,6 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.operator ==(Windows.Media.Playback.MediaItemDisplayProperties, Windows.Media.Playback.MediaItemDisplayProperties)
-		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.operator !=(Windows.Media.Playback.MediaItemDisplayProperties, Windows.Media.Playback.MediaItemDisplayProperties)
-		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.Equals(Windows.Media.Playback.MediaItemDisplayProperties)
-		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.Equals(object)
-		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.GetHashCode()
 		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

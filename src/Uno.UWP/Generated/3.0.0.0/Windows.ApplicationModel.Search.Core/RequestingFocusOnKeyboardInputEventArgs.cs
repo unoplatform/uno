@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Search.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs.operator ==(Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs, Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs.operator !=(Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs, Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs.Equals(Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

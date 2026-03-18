@@ -218,7 +218,6 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.As<I>()
 		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.DsaSha1.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.DsaSha256.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames.EcdsaP256Sha256.get

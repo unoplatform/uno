@@ -36,7 +36,6 @@ namespace Windows.Devices.Bluetooth
 		// Skipping already declared property RunningWalkingOnShoe
 		// Skipping already declared property SportsWatch
 		// Skipping already declared property ThermometerEar
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceSubcategories.As<I>()
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceSubcategories.BarcodeScanner.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceSubcategories.BloodPressureArm.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceSubcategories.BloodPressureWrist.get

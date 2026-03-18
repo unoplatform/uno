@@ -37,12 +37,6 @@ namespace Windows.Devices.Printers.Extensions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintNotificationEventDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintNotificationEventDetails.operator ==(Windows.Devices.Printers.Extensions.PrintNotificationEventDetails, Windows.Devices.Printers.Extensions.PrintNotificationEventDetails)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintNotificationEventDetails.operator !=(Windows.Devices.Printers.Extensions.PrintNotificationEventDetails, Windows.Devices.Printers.Extensions.PrintNotificationEventDetails)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintNotificationEventDetails.Equals(Windows.Devices.Printers.Extensions.PrintNotificationEventDetails)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintNotificationEventDetails.Equals(object)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintNotificationEventDetails.GetHashCode()
 		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintNotificationEventDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintNotificationEventDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintNotificationEventDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

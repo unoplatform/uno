@@ -28,7 +28,6 @@ namespace Windows.System.Profile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.SharedModeSettings.As<I>()
 		// Forced skipping of method Windows.System.Profile.SharedModeSettings.IsEnabled.get
 		// Forced skipping of method Windows.System.Profile.SharedModeSettings.ShouldAvoidLocalStorage.get
 	}

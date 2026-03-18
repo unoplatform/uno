@@ -13,12 +13,6 @@ namespace Windows.Devices.Geolocation
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Geolocation.GeovisitTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Geolocation.GeovisitTriggerDetails.operator ==(Windows.Devices.Geolocation.GeovisitTriggerDetails, Windows.Devices.Geolocation.GeovisitTriggerDetails)
-		// Forced skipping of method Windows.Devices.Geolocation.GeovisitTriggerDetails.operator !=(Windows.Devices.Geolocation.GeovisitTriggerDetails, Windows.Devices.Geolocation.GeovisitTriggerDetails)
-		// Forced skipping of method Windows.Devices.Geolocation.GeovisitTriggerDetails.Equals(Windows.Devices.Geolocation.GeovisitTriggerDetails)
-		// Forced skipping of method Windows.Devices.Geolocation.GeovisitTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.Devices.Geolocation.GeovisitTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

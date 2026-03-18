@@ -13,12 +13,6 @@ namespace Windows.Media.Capture
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.LowLagPhotoSequenceCapture.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.LowLagPhotoSequenceCapture.operator ==(Windows.Media.Capture.LowLagPhotoSequenceCapture, Windows.Media.Capture.LowLagPhotoSequenceCapture)
-		// Forced skipping of method Windows.Media.Capture.LowLagPhotoSequenceCapture.operator !=(Windows.Media.Capture.LowLagPhotoSequenceCapture, Windows.Media.Capture.LowLagPhotoSequenceCapture)
-		// Forced skipping of method Windows.Media.Capture.LowLagPhotoSequenceCapture.Equals(Windows.Media.Capture.LowLagPhotoSequenceCapture)
-		// Forced skipping of method Windows.Media.Capture.LowLagPhotoSequenceCapture.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.LowLagPhotoSequenceCapture.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.LowLagPhotoSequenceCapture.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.LowLagPhotoSequenceCapture.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.LowLagPhotoSequenceCapture.WinRT.IWinRTObject.QueryInterfaceCache.get

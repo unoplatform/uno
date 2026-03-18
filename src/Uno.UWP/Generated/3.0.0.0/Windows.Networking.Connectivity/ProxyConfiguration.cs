@@ -33,12 +33,6 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.operator ==(Windows.Networking.Connectivity.ProxyConfiguration, Windows.Networking.Connectivity.ProxyConfiguration)
-		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.operator !=(Windows.Networking.Connectivity.ProxyConfiguration, Windows.Networking.Connectivity.ProxyConfiguration)
-		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.Equals(Windows.Networking.Connectivity.ProxyConfiguration)
-		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.Equals(object)
-		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.GetHashCode()
 		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

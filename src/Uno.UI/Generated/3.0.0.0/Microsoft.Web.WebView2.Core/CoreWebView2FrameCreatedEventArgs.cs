@@ -23,12 +23,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -43,7 +43,6 @@ namespace Windows.Networking.Proximity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -65,12 +64,6 @@ namespace Windows.Networking.Proximity
 			throw new global::System.NotImplementedException("The member ProximityDevice ProximityDevice.FromId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProximityDevice%20ProximityDevice.FromId%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.operator ==(Windows.Networking.Proximity.ProximityDevice, Windows.Networking.Proximity.ProximityDevice)
-		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.operator !=(Windows.Networking.Proximity.ProximityDevice, Windows.Networking.Proximity.ProximityDevice)
-		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.Equals(Windows.Networking.Proximity.ProximityDevice)
-		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.Equals(object)
-		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.GetHashCode()
 		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.WinRT.IWinRTObject.QueryInterfaceCache.get

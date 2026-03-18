@@ -57,12 +57,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -23,12 +23,6 @@ namespace Windows.Web.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.WebViewControlPermissionRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Web.UI.WebViewControlPermissionRequestedEventArgs.operator ==(Windows.Web.UI.WebViewControlPermissionRequestedEventArgs, Windows.Web.UI.WebViewControlPermissionRequestedEventArgs)
-		// Forced skipping of method Windows.Web.UI.WebViewControlPermissionRequestedEventArgs.operator !=(Windows.Web.UI.WebViewControlPermissionRequestedEventArgs, Windows.Web.UI.WebViewControlPermissionRequestedEventArgs)
-		// Forced skipping of method Windows.Web.UI.WebViewControlPermissionRequestedEventArgs.Equals(Windows.Web.UI.WebViewControlPermissionRequestedEventArgs)
-		// Forced skipping of method Windows.Web.UI.WebViewControlPermissionRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Web.UI.WebViewControlPermissionRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Web.UI.WebViewControlPermissionRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlPermissionRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlPermissionRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

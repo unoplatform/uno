@@ -33,12 +33,6 @@ namespace Windows.UI.ViewManagement.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.operator ==(Windows.UI.ViewManagement.Core.CoreInputViewOcclusion, Windows.UI.ViewManagement.Core.CoreInputViewOcclusion)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.operator !=(Windows.UI.ViewManagement.Core.CoreInputViewOcclusion, Windows.UI.ViewManagement.Core.CoreInputViewOcclusion)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.Equals(Windows.UI.ViewManagement.Core.CoreInputViewOcclusion)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.Equals(object)
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.GetHashCode()
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusion.WinRT.IWinRTObject.QueryInterfaceCache.get

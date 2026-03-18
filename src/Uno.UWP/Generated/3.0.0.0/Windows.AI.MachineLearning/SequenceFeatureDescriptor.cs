@@ -63,12 +63,6 @@ namespace Windows.AI.MachineLearning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.FromAbi(nint)
-		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.operator ==(Windows.AI.MachineLearning.SequenceFeatureDescriptor, Windows.AI.MachineLearning.SequenceFeatureDescriptor)
-		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.operator !=(Windows.AI.MachineLearning.SequenceFeatureDescriptor, Windows.AI.MachineLearning.SequenceFeatureDescriptor)
-		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.Equals(Windows.AI.MachineLearning.SequenceFeatureDescriptor)
-		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.Equals(object)
-		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.GetHashCode()
 		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get

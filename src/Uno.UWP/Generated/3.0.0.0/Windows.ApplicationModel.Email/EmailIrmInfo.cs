@@ -192,12 +192,6 @@ namespace Windows.ApplicationModel.Email
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmInfo.EmailIrmInfo(System.DateTimeOffset, Windows.ApplicationModel.Email.EmailIrmTemplate)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmInfo.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmInfo.operator ==(Windows.ApplicationModel.Email.EmailIrmInfo, Windows.ApplicationModel.Email.EmailIrmInfo)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmInfo.operator !=(Windows.ApplicationModel.Email.EmailIrmInfo, Windows.ApplicationModel.Email.EmailIrmInfo)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmInfo.Equals(Windows.ApplicationModel.Email.EmailIrmInfo)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmInfo.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmInfo.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

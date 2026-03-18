@@ -23,13 +23,7 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.LowLightFusionResult.FromAbi(nint)
 		// Forced skipping of method Windows.Media.Core.LowLightFusionResult.~LowLightFusionResult()
-		// Forced skipping of method Windows.Media.Core.LowLightFusionResult.operator ==(Windows.Media.Core.LowLightFusionResult, Windows.Media.Core.LowLightFusionResult)
-		// Forced skipping of method Windows.Media.Core.LowLightFusionResult.operator !=(Windows.Media.Core.LowLightFusionResult, Windows.Media.Core.LowLightFusionResult)
-		// Forced skipping of method Windows.Media.Core.LowLightFusionResult.Equals(Windows.Media.Core.LowLightFusionResult)
-		// Forced skipping of method Windows.Media.Core.LowLightFusionResult.Equals(object)
-		// Forced skipping of method Windows.Media.Core.LowLightFusionResult.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.LowLightFusionResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.LowLightFusionResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.LowLightFusionResult.WinRT.IWinRTObject.QueryInterfaceCache.get

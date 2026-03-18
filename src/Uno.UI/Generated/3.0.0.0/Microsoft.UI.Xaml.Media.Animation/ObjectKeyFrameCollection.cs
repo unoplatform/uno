@@ -13,12 +13,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.ObjectKeyFrameCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.ObjectKeyFrameCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.operator ==(Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection, Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.operator !=(Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection, Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.Equals(Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

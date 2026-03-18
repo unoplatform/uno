@@ -32,12 +32,6 @@ namespace Windows.Networking.BackgroundTransfer
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.BackgroundTransferContentPart(string, string)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.operator ==(Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart, Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.operator !=(Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart, Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.Equals(Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.Equals(object)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.GetHashCode()
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.WinRT.IWinRTObject.QueryInterfaceCache.get

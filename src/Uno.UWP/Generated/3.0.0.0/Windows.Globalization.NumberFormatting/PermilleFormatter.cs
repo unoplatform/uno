@@ -48,12 +48,6 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.PermilleFormatter(System.Collections.Generic.IEnumerable<string>, string)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.operator ==(Windows.Globalization.NumberFormatting.PermilleFormatter, Windows.Globalization.NumberFormatting.PermilleFormatter)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.operator !=(Windows.Globalization.NumberFormatting.PermilleFormatter, Windows.Globalization.NumberFormatting.PermilleFormatter)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.Equals(Windows.Globalization.NumberFormatting.PermilleFormatter)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.Equals(object)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.GetHashCode()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.WinRT.IWinRTObject.QueryInterfaceCache.get

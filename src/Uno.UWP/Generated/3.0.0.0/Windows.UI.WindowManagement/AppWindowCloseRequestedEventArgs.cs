@@ -27,12 +27,6 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs.operator ==(Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs, Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs.operator !=(Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs, Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs.Equals(Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowCloseRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

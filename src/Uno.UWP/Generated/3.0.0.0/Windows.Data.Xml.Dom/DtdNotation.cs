@@ -25,12 +25,6 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared property PreviousSibling
 		// Skipping already declared property PublicId
 		// Skipping already declared property SystemId
-		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.operator ==(Windows.Data.Xml.Dom.DtdNotation, Windows.Data.Xml.Dom.DtdNotation)
-		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.operator !=(Windows.Data.Xml.Dom.DtdNotation, Windows.Data.Xml.Dom.DtdNotation)
-		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.Equals(Windows.Data.Xml.Dom.DtdNotation)
-		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.Equals(object)
-		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.GetHashCode()
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.WinRT.IWinRTObject.QueryInterfaceCache.get

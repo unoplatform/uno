@@ -32,12 +32,6 @@ namespace Windows.System.Threading.Core
 		}
 #endif
 		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.PreallocatedWorkItem(Windows.System.Threading.WorkItemHandler, Windows.System.Threading.WorkItemPriority, Windows.System.Threading.WorkItemOptions)
-		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.FromAbi(nint)
-		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.operator ==(Windows.System.Threading.Core.PreallocatedWorkItem, Windows.System.Threading.Core.PreallocatedWorkItem)
-		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.operator !=(Windows.System.Threading.Core.PreallocatedWorkItem, Windows.System.Threading.Core.PreallocatedWorkItem)
-		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.Equals(Windows.System.Threading.Core.PreallocatedWorkItem)
-		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.Equals(object)
-		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.GetHashCode()
 		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.WinRT.IWinRTObject.QueryInterfaceCache.get

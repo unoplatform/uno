@@ -78,12 +78,6 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.ScheduledTileNotification(Windows.Data.Xml.Dom.XmlDocument, System.DateTimeOffset)
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.operator ==(Windows.UI.Notifications.ScheduledTileNotification, Windows.UI.Notifications.ScheduledTileNotification)
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.operator !=(Windows.UI.Notifications.ScheduledTileNotification, Windows.UI.Notifications.ScheduledTileNotification)
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Equals(Windows.UI.Notifications.ScheduledTileNotification)
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Equals(object)
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.GetHashCode()
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.WinRT.IWinRTObject.QueryInterfaceCache.get

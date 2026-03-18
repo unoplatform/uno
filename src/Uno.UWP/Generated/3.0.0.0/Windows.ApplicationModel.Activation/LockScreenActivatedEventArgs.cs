@@ -63,12 +63,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs, Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs, Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

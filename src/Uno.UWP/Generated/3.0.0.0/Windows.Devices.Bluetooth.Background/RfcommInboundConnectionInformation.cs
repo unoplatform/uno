@@ -55,12 +55,6 @@ namespace Windows.Devices.Bluetooth.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.operator ==(Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation, Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation)
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.operator !=(Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation, Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation)
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.Equals(Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation)
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -13,7 +13,6 @@ namespace Windows.Graphics.Printing
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Printing.PrintManager GetForCurrentView()
@@ -35,12 +34,6 @@ namespace Windows.Graphics.Printing
 			throw new global::System.NotImplementedException("The member bool PrintManager.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintManager.IsSupported%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintManager.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.PrintManager.operator ==(Windows.Graphics.Printing.PrintManager, Windows.Graphics.Printing.PrintManager)
-		// Forced skipping of method Windows.Graphics.Printing.PrintManager.operator !=(Windows.Graphics.Printing.PrintManager, Windows.Graphics.Printing.PrintManager)
-		// Forced skipping of method Windows.Graphics.Printing.PrintManager.Equals(Windows.Graphics.Printing.PrintManager)
-		// Forced skipping of method Windows.Graphics.Printing.PrintManager.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.PrintManager.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.PrintManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintManager.WinRT.IWinRTObject.QueryInterfaceCache.get

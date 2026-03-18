@@ -53,7 +53,6 @@ namespace Windows.Gaming.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.As<I>()
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeStickAdded.add
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeStickAdded.remove
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeStickRemoved.add
@@ -66,12 +65,6 @@ namespace Windows.Gaming.Input
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.ArcadeSticks.get
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.operator ==(Windows.Gaming.Input.ArcadeStick, Windows.Gaming.Input.ArcadeStick)
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.operator !=(Windows.Gaming.Input.ArcadeStick, Windows.Gaming.Input.ArcadeStick)
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.Equals(Windows.Gaming.Input.ArcadeStick)
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStick.WinRT.IWinRTObject.QueryInterfaceCache.get

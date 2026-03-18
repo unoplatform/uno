@@ -123,12 +123,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.FlashControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.FlashControl.operator ==(Windows.Media.Devices.FlashControl, Windows.Media.Devices.FlashControl)
-		// Forced skipping of method Windows.Media.Devices.FlashControl.operator !=(Windows.Media.Devices.FlashControl, Windows.Media.Devices.FlashControl)
-		// Forced skipping of method Windows.Media.Devices.FlashControl.Equals(Windows.Media.Devices.FlashControl)
-		// Forced skipping of method Windows.Media.Devices.FlashControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.FlashControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.FlashControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.FlashControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.FlashControl.WinRT.IWinRTObject.QueryInterfaceCache.get

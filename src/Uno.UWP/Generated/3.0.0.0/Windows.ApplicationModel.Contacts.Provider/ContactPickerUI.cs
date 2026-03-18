@@ -43,12 +43,6 @@ namespace Windows.ApplicationModel.Contacts.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.operator ==(Windows.ApplicationModel.Contacts.Provider.ContactPickerUI, Windows.ApplicationModel.Contacts.Provider.ContactPickerUI)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.operator !=(Windows.ApplicationModel.Contacts.Provider.ContactPickerUI, Windows.ApplicationModel.Contacts.Provider.ContactPickerUI)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.Equals(Windows.ApplicationModel.Contacts.Provider.ContactPickerUI)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.WinRT.IWinRTObject.QueryInterfaceCache.get

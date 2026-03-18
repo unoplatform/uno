@@ -42,7 +42,6 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.ContentPrefetcher.As<I>()
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.ContentPrefetcher.ContentUris.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.ContentPrefetcher.IndirectContentUri.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.ContentPrefetcher.IndirectContentUri.set

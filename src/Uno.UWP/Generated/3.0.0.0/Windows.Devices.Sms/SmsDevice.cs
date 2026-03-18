@@ -53,7 +53,6 @@ namespace Windows.Devices.Sms
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -82,12 +81,6 @@ namespace Windows.Devices.Sms
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SmsDevice> SmsDevice.FromNetworkAccountIdAsync(string networkAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmsDevice%3E%20SmsDevice.FromNetworkAccountIdAsync%28string%20networkAccountId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice.operator ==(Windows.Devices.Sms.SmsDevice, Windows.Devices.Sms.SmsDevice)
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice.operator !=(Windows.Devices.Sms.SmsDevice, Windows.Devices.Sms.SmsDevice)
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice.Equals(Windows.Devices.Sms.SmsDevice)
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice.Equals(object)
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sms.SmsDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsDevice.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsDevice.WinRT.IWinRTObject.QueryInterfaceCache.get

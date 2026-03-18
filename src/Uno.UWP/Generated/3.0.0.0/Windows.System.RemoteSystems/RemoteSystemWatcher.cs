@@ -23,12 +23,6 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.FromAbi(nint)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.operator ==(Windows.System.RemoteSystems.RemoteSystemWatcher, Windows.System.RemoteSystems.RemoteSystemWatcher)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.operator !=(Windows.System.RemoteSystems.RemoteSystemWatcher, Windows.System.RemoteSystems.RemoteSystemWatcher)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.Equals(Windows.System.RemoteSystems.RemoteSystemWatcher)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.Equals(object)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.GetHashCode()
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get

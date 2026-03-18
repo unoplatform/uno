@@ -17,12 +17,6 @@ namespace Microsoft.UI.Composition.Interactions
 		// Skipping already declared property PositionVelocityInPixelsPerSecond
 		// Skipping already declared property RequestId
 		// Skipping already declared property ScaleVelocityInPercentPerSecond
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.operator ==(Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs, Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.operator !=(Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs, Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.Equals(Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

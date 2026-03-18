@@ -25,7 +25,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TransportControls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaPlayerElement.MediaPlayerElement()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.MediaPlayerElement()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.AreTransportControlsEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.AutoPlayProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.IsFullWindowProperty.get
@@ -33,14 +32,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.PosterSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.SourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.StretchProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.MediaPlayerElement(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.operator ==(Microsoft.UI.Xaml.Controls.MediaPlayerElement, Microsoft.UI.Xaml.Controls.MediaPlayerElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.operator !=(Microsoft.UI.Xaml.Controls.MediaPlayerElement, Microsoft.UI.Xaml.Controls.MediaPlayerElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.Equals(Microsoft.UI.Xaml.Controls.MediaPlayerElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.MediaPlayerElement(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaPlayerElement.SetMediaPlayer(Windows.Media.Playback.MediaPlayer)
@@ -59,7 +50,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.Stretch.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.TransportControls.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.TransportControls.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

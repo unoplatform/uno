@@ -44,12 +44,6 @@ namespace Windows.Web.UI.Interop
 		}
 #endif
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.WebViewControlProcessOptions()
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.FromAbi(nint)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.operator ==(Windows.Web.UI.Interop.WebViewControlProcessOptions, Windows.Web.UI.Interop.WebViewControlProcessOptions)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.operator !=(Windows.Web.UI.Interop.WebViewControlProcessOptions, Windows.Web.UI.Interop.WebViewControlProcessOptions)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.Equals(Windows.Web.UI.Interop.WebViewControlProcessOptions)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.Equals(object)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.GetHashCode()
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcessOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

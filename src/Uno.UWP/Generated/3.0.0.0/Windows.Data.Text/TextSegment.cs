@@ -17,11 +17,6 @@ namespace Windows.Data.Text
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.TextSegment.TextSegment(uint, uint)
-		// Forced skipping of method Windows.Data.Text.TextSegment.operator ==(Windows.Data.Text.TextSegment, Windows.Data.Text.TextSegment)
-		// Forced skipping of method Windows.Data.Text.TextSegment.operator !=(Windows.Data.Text.TextSegment, Windows.Data.Text.TextSegment)
-		// Forced skipping of method Windows.Data.Text.TextSegment.Equals(Windows.Data.Text.TextSegment)
-		// Forced skipping of method Windows.Data.Text.TextSegment.Equals(object)
-		// Forced skipping of method Windows.Data.Text.TextSegment.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint StartPosition;
 #endif

@@ -133,12 +133,6 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageStatus.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.PackageStatus.operator ==(Windows.ApplicationModel.PackageStatus, Windows.ApplicationModel.PackageStatus)
-		// Forced skipping of method Windows.ApplicationModel.PackageStatus.operator !=(Windows.ApplicationModel.PackageStatus, Windows.ApplicationModel.PackageStatus)
-		// Forced skipping of method Windows.ApplicationModel.PackageStatus.Equals(Windows.ApplicationModel.PackageStatus)
-		// Forced skipping of method Windows.ApplicationModel.PackageStatus.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.PackageStatus.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.PackageStatus.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.PackageStatus.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.PackageStatus.WinRT.IWinRTObject.QueryInterfaceCache.get

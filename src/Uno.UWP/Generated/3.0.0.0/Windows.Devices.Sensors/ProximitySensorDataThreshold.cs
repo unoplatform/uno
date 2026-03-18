@@ -16,12 +16,6 @@ namespace Windows.Devices.Sensors
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDataThreshold.ProximitySensorDataThreshold(Windows.Devices.Sensors.ProximitySensor)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDataThreshold.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDataThreshold.operator ==(Windows.Devices.Sensors.ProximitySensorDataThreshold, Windows.Devices.Sensors.ProximitySensorDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDataThreshold.operator !=(Windows.Devices.Sensors.ProximitySensorDataThreshold, Windows.Devices.Sensors.ProximitySensorDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDataThreshold.Equals(Windows.Devices.Sensors.ProximitySensorDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDataThreshold.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDataThreshold.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDataThreshold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDataThreshold.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDataThreshold.WinRT.IWinRTObject.QueryInterfaceCache.get

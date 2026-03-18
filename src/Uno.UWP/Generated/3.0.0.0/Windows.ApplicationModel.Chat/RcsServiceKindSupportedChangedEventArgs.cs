@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs.operator ==(Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs, Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs.operator !=(Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs, Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs.Equals(Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

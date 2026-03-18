@@ -27,12 +27,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property IsSealed
 		// Skipping already declared method Microsoft.UI.Xaml.SetterBaseCollection.SetterBaseCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.SetterBaseCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.operator ==(Microsoft.UI.Xaml.SetterBaseCollection, Microsoft.UI.Xaml.SetterBaseCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.operator !=(Microsoft.UI.Xaml.SetterBaseCollection, Microsoft.UI.Xaml.SetterBaseCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.Equals(Microsoft.UI.Xaml.SetterBaseCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

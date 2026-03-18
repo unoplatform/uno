@@ -15,12 +15,6 @@ namespace Windows.Storage
 		// Skipping already declared property this[]
 		// Skipping already declared method Windows.Storage.ApplicationDataCompositeValue.ApplicationDataCompositeValue()
 		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.ApplicationDataCompositeValue()
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.operator ==(Windows.Storage.ApplicationDataCompositeValue, Windows.Storage.ApplicationDataCompositeValue)
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.operator !=(Windows.Storage.ApplicationDataCompositeValue, Windows.Storage.ApplicationDataCompositeValue)
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.Equals(Windows.Storage.ApplicationDataCompositeValue)
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.Equals(object)
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.GetHashCode()
 		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.WinRT.IWinRTObject.QueryInterfaceCache.get

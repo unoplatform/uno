@@ -33,7 +33,6 @@ namespace Windows.Devices.SmartCards
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardEmulator.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardEmulator> GetDefaultAsync()
@@ -70,12 +69,6 @@ namespace Windows.Devices.SmartCards
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardEmulator.MaxAppletIdGroupRegistrations.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardEmulator.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardEmulator.operator ==(Windows.Devices.SmartCards.SmartCardEmulator, Windows.Devices.SmartCards.SmartCardEmulator)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardEmulator.operator !=(Windows.Devices.SmartCards.SmartCardEmulator, Windows.Devices.SmartCards.SmartCardEmulator)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardEmulator.Equals(Windows.Devices.SmartCards.SmartCardEmulator)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardEmulator.Equals(object)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardEmulator.GetHashCode()
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardEmulator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardEmulator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardEmulator.WinRT.IWinRTObject.QueryInterfaceCache.get

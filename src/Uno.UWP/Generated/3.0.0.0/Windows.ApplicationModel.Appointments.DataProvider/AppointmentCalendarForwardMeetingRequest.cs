@@ -83,12 +83,6 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.operator ==(Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest, Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.operator !=(Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest, Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.Equals(Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -68,12 +68,6 @@ namespace Windows.Storage.Search
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.IndexableContent()
-		// Forced skipping of method Windows.Storage.Search.IndexableContent.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Search.IndexableContent.operator ==(Windows.Storage.Search.IndexableContent, Windows.Storage.Search.IndexableContent)
-		// Forced skipping of method Windows.Storage.Search.IndexableContent.operator !=(Windows.Storage.Search.IndexableContent, Windows.Storage.Search.IndexableContent)
-		// Forced skipping of method Windows.Storage.Search.IndexableContent.Equals(Windows.Storage.Search.IndexableContent)
-		// Forced skipping of method Windows.Storage.Search.IndexableContent.Equals(object)
-		// Forced skipping of method Windows.Storage.Search.IndexableContent.GetHashCode()
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.WinRT.IWinRTObject.QueryInterfaceCache.get

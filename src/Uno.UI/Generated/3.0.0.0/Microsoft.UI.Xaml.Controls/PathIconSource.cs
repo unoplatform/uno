@@ -12,21 +12,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Data
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PathIconSource.PathIconSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.PathIconSource()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.DataProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.PathIconSource(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.operator ==(Microsoft.UI.Xaml.Controls.PathIconSource, Microsoft.UI.Xaml.Controls.PathIconSource)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.operator !=(Microsoft.UI.Xaml.Controls.PathIconSource, Microsoft.UI.Xaml.Controls.PathIconSource)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.Equals(Microsoft.UI.Xaml.Controls.PathIconSource)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.PathIconSource(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.Data.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.Data.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs.operator ==(Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs, Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs.operator !=(Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs, Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs.Equals(Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.TargetApplicationChosenEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

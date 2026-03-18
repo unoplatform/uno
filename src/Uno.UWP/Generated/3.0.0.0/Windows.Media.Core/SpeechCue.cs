@@ -100,12 +100,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.SpeechCue.SpeechCue()
-		// Forced skipping of method Windows.Media.Core.SpeechCue.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.SpeechCue.operator ==(Windows.Media.Core.SpeechCue, Windows.Media.Core.SpeechCue)
-		// Forced skipping of method Windows.Media.Core.SpeechCue.operator !=(Windows.Media.Core.SpeechCue, Windows.Media.Core.SpeechCue)
-		// Forced skipping of method Windows.Media.Core.SpeechCue.Equals(Windows.Media.Core.SpeechCue)
-		// Forced skipping of method Windows.Media.Core.SpeechCue.Equals(object)
-		// Forced skipping of method Windows.Media.Core.SpeechCue.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.SpeechCue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.SpeechCue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.SpeechCue.WinRT.IWinRTObject.QueryInterfaceCache.get

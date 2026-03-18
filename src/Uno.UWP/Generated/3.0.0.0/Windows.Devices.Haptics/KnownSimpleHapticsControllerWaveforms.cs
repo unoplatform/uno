@@ -13,7 +13,6 @@ namespace Windows.Devices.Haptics
 		// Skipping already declared property Press
 		// Skipping already declared property Release
 		// Skipping already declared property RumbleContinuous
-		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.As<I>()
 		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.BuzzContinuous.get
 		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Click.get
 		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Press.get

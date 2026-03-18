@@ -103,12 +103,6 @@ namespace Windows.ApplicationModel.Store.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.operator ==(Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo, Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.operator !=(Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo, Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.Equals(Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

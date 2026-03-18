@@ -66,7 +66,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ZoomMode
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.ScrollView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.ScrollView()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.ComputedHorizontalScrollBarVisibilityProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.ComputedHorizontalScrollModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.ComputedVerticalScrollBarVisibilityProperty.get
@@ -89,14 +88,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.VerticalScrollRailModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.ZoomChainModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.ZoomModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.ScrollView(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.operator ==(Microsoft.UI.Xaml.Controls.ScrollView, Microsoft.UI.Xaml.Controls.ScrollView)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.operator !=(Microsoft.UI.Xaml.Controls.ScrollView, Microsoft.UI.Xaml.Controls.ScrollView)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.Equals(Microsoft.UI.Xaml.Controls.ScrollView)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.ScrollView(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.RegisterAnchorCandidate(Microsoft.UI.Xaml.UIElement)
@@ -180,7 +171,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.ZoomFactor.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.ZoomMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.ZoomMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollView.AnchorRequested
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollView.BringingIntoView

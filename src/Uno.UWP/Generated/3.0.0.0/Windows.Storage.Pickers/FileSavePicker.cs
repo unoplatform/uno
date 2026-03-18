@@ -64,7 +64,6 @@ namespace Windows.Storage.Pickers
 #endif
 		// Skipping already declared method Windows.Storage.Pickers.FileSavePicker.FileSavePicker()
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.FileSavePicker()
-		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Pickers.FileSavePicker CreateForUser(global::Windows.System.User user)
@@ -72,12 +71,6 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotImplementedException("The member FileSavePicker FileSavePicker.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileSavePicker%20FileSavePicker.CreateForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.operator ==(Windows.Storage.Pickers.FileSavePicker, Windows.Storage.Pickers.FileSavePicker)
-		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.operator !=(Windows.Storage.Pickers.FileSavePicker, Windows.Storage.Pickers.FileSavePicker)
-		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.Equals(Windows.Storage.Pickers.FileSavePicker)
-		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.Equals(object)
-		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.GetHashCode()
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.WinRT.IWinRTObject.QueryInterfaceCache.get

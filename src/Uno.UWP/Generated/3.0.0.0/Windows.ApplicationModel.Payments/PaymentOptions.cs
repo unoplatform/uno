@@ -86,12 +86,6 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.PaymentOptions()
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.operator ==(Windows.ApplicationModel.Payments.PaymentOptions, Windows.ApplicationModel.Payments.PaymentOptions)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.operator !=(Windows.ApplicationModel.Payments.PaymentOptions, Windows.ApplicationModel.Payments.PaymentOptions)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.Equals(Windows.ApplicationModel.Payments.PaymentOptions)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

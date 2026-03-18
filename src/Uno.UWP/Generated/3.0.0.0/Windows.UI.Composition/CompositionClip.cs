@@ -106,14 +106,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionClip.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionClip.CompositionClip(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.CompositionClip.operator ==(Windows.UI.Composition.CompositionClip, Windows.UI.Composition.CompositionClip)
-		// Forced skipping of method Windows.UI.Composition.CompositionClip.operator !=(Windows.UI.Composition.CompositionClip, Windows.UI.Composition.CompositionClip)
-		// Forced skipping of method Windows.UI.Composition.CompositionClip.Equals(Windows.UI.Composition.CompositionClip)
-		// Forced skipping of method Windows.UI.Composition.CompositionClip.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionClip.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.CompositionClip.CompositionClip(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.CompositionClip.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionClip.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionClip.AnchorPoint.get
@@ -130,7 +122,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionClip.Scale.set
 		// Forced skipping of method Windows.UI.Composition.CompositionClip.TransformMatrix.get
 		// Forced skipping of method Windows.UI.Composition.CompositionClip.TransformMatrix.set
-		// Forced skipping of method Windows.UI.Composition.CompositionClip.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionClip.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

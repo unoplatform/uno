@@ -171,7 +171,6 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryUnsnapToFullscreen()
@@ -215,12 +214,6 @@ namespace Windows.UI.ViewManagement
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.TerminateAppOnFinalViewClose.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.TerminateAppOnFinalViewClose.set
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.Value.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.operator ==(Windows.UI.ViewManagement.ApplicationView, Windows.UI.ViewManagement.ApplicationView)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.operator !=(Windows.UI.ViewManagement.ApplicationView, Windows.UI.ViewManagement.ApplicationView)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.Equals(Windows.UI.ViewManagement.ApplicationView)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.Equals(object)
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.GetHashCode()
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.WinRT.IWinRTObject.QueryInterfaceCache.get

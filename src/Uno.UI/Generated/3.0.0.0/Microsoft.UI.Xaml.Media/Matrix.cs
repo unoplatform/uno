@@ -37,10 +37,5 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.ToString(System.IFormatProvider)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.System.IFormattable.ToString(string, System.IFormatProvider)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.Transform(Windows.Foundation.Point)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.Equals(Microsoft.UI.Xaml.Media.Matrix)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.operator ==(Microsoft.UI.Xaml.Media.Matrix, Microsoft.UI.Xaml.Media.Matrix)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.operator !=(Microsoft.UI.Xaml.Media.Matrix, Microsoft.UI.Xaml.Media.Matrix)
 	}
 }

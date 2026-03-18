@@ -228,7 +228,6 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.As<I>()
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.AdvertisingInterval.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.Appearance.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.CompleteLocalName.get

@@ -16,12 +16,6 @@ namespace Windows.Storage.Compression
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Compression.Decompressor.Decompressor(Windows.Storage.Streams.IInputStream)
-		// Forced skipping of method Windows.Storage.Compression.Decompressor.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Compression.Decompressor.operator ==(Windows.Storage.Compression.Decompressor, Windows.Storage.Compression.Decompressor)
-		// Forced skipping of method Windows.Storage.Compression.Decompressor.operator !=(Windows.Storage.Compression.Decompressor, Windows.Storage.Compression.Decompressor)
-		// Forced skipping of method Windows.Storage.Compression.Decompressor.Equals(Windows.Storage.Compression.Decompressor)
-		// Forced skipping of method Windows.Storage.Compression.Decompressor.Equals(object)
-		// Forced skipping of method Windows.Storage.Compression.Decompressor.GetHashCode()
 		// Forced skipping of method Windows.Storage.Compression.Decompressor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Compression.Decompressor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Compression.Decompressor.WinRT.IWinRTObject.QueryInterfaceCache.get

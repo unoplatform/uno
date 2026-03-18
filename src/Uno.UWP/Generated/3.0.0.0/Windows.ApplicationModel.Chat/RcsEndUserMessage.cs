@@ -63,12 +63,6 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.operator ==(Windows.ApplicationModel.Chat.RcsEndUserMessage, Windows.ApplicationModel.Chat.RcsEndUserMessage)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.operator !=(Windows.ApplicationModel.Chat.RcsEndUserMessage, Windows.ApplicationModel.Chat.RcsEndUserMessage)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.Equals(Windows.ApplicationModel.Chat.RcsEndUserMessage)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.WinRT.IWinRTObject.QueryInterfaceCache.get

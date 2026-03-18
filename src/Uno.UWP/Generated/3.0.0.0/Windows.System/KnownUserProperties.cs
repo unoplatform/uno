@@ -98,7 +98,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.KnownUserProperties.As<I>()
 		// Forced skipping of method Windows.System.KnownUserProperties.AccountName.get
 		// Forced skipping of method Windows.System.KnownUserProperties.DisplayName.get
 		// Forced skipping of method Windows.System.KnownUserProperties.DomainName.get

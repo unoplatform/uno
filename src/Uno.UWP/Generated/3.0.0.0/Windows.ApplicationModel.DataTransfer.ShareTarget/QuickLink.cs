@@ -78,12 +78,6 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.QuickLink()
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.operator ==(Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink, Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.operator !=(Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink, Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Equals(Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.WinRT.IWinRTObject.QueryInterfaceCache.get

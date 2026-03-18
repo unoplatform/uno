@@ -20,7 +20,6 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		}
 #endif
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader(string, string)
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDefaultResourceFilePath()
@@ -28,12 +27,6 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 			throw new global::System.NotImplementedException("The member string ResourceLoader.GetDefaultResourceFilePath() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ResourceLoader.GetDefaultResourceFilePath%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.FromAbi(nint)
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.operator ==(Microsoft.Windows.ApplicationModel.Resources.ResourceLoader, Microsoft.Windows.ApplicationModel.Resources.ResourceLoader)
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.operator !=(Microsoft.Windows.ApplicationModel.Resources.ResourceLoader, Microsoft.Windows.ApplicationModel.Resources.ResourceLoader)
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.Equals(Microsoft.Windows.ApplicationModel.Resources.ResourceLoader)
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.Equals(object)
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.GetHashCode()
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.WinRT.IWinRTObject.QueryInterfaceCache.get

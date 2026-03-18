@@ -126,12 +126,6 @@ namespace Windows.Globalization.Fonts
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.LanguageFontGroup(string)
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.operator ==(Windows.Globalization.Fonts.LanguageFontGroup, Windows.Globalization.Fonts.LanguageFontGroup)
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.operator !=(Windows.Globalization.Fonts.LanguageFontGroup, Windows.Globalization.Fonts.LanguageFontGroup)
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.Equals(Windows.Globalization.Fonts.LanguageFontGroup)
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.Equals(object)
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.GetHashCode()
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.WinRT.IWinRTObject.QueryInterfaceCache.get

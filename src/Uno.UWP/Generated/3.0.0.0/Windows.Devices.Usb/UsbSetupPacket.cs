@@ -94,12 +94,6 @@ namespace Windows.Devices.Usb
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.UsbSetupPacket(Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.operator ==(Windows.Devices.Usb.UsbSetupPacket, Windows.Devices.Usb.UsbSetupPacket)
-		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.operator !=(Windows.Devices.Usb.UsbSetupPacket, Windows.Devices.Usb.UsbSetupPacket)
-		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.Equals(Windows.Devices.Usb.UsbSetupPacket)
-		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.Equals(object)
-		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.GetHashCode()
 		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.WinRT.IWinRTObject.QueryInterfaceCache.get

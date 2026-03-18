@@ -13,7 +13,6 @@ namespace Windows.UI.Input
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.EdgeGesture.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.EdgeGesture GetForCurrentView()
@@ -21,12 +20,6 @@ namespace Windows.UI.Input
 			throw new global::System.NotImplementedException("The member EdgeGesture EdgeGesture.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EdgeGesture%20EdgeGesture.GetForCurrentView%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.EdgeGesture.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.EdgeGesture.operator ==(Windows.UI.Input.EdgeGesture, Windows.UI.Input.EdgeGesture)
-		// Forced skipping of method Windows.UI.Input.EdgeGesture.operator !=(Windows.UI.Input.EdgeGesture, Windows.UI.Input.EdgeGesture)
-		// Forced skipping of method Windows.UI.Input.EdgeGesture.Equals(Windows.UI.Input.EdgeGesture)
-		// Forced skipping of method Windows.UI.Input.EdgeGesture.Equals(object)
-		// Forced skipping of method Windows.UI.Input.EdgeGesture.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -78,12 +78,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.VideoStreamDescriptor(Windows.Media.MediaProperties.VideoEncodingProperties)
-		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.operator ==(Windows.Media.Core.VideoStreamDescriptor, Windows.Media.Core.VideoStreamDescriptor)
-		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.operator !=(Windows.Media.Core.VideoStreamDescriptor, Windows.Media.Core.VideoStreamDescriptor)
-		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Equals(Windows.Media.Core.VideoStreamDescriptor)
-		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Equals(object)
-		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get

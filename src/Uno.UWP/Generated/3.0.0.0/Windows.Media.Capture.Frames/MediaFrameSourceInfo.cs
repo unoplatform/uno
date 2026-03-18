@@ -103,12 +103,6 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.operator ==(Windows.Media.Capture.Frames.MediaFrameSourceInfo, Windows.Media.Capture.Frames.MediaFrameSourceInfo)
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.operator !=(Windows.Media.Capture.Frames.MediaFrameSourceInfo, Windows.Media.Capture.Frames.MediaFrameSourceInfo)
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.Equals(Windows.Media.Capture.Frames.MediaFrameSourceInfo)
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

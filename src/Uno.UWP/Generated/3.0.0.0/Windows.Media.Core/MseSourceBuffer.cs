@@ -89,12 +89,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.operator ==(Windows.Media.Core.MseSourceBuffer, Windows.Media.Core.MseSourceBuffer)
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.operator !=(Windows.Media.Core.MseSourceBuffer, Windows.Media.Core.MseSourceBuffer)
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Equals(Windows.Media.Core.MseSourceBuffer)
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Equals(object)
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.WinRT.IWinRTObject.QueryInterfaceCache.get

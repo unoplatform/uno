@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs.operator ==(Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs, Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs.operator !=(Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs, Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs.Equals(Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

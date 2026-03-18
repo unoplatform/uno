@@ -82,16 +82,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.SwipeHintThemeAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.TargetNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.ToHorizontalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.ToVerticalOffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation, Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation, Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.TargetName.get
@@ -100,7 +93,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.ToHorizontalOffset.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.ToVerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.ToVerticalOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

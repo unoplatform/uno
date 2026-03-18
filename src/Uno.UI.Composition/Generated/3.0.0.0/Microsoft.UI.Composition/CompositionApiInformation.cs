@@ -18,7 +18,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionApiInformation.As<I>()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionApiInformation.ApiVersion.get
 	}
 }

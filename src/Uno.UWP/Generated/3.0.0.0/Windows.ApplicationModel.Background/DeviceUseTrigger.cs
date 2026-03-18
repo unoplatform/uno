@@ -16,12 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.DeviceUseTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.operator ==(Windows.ApplicationModel.Background.DeviceUseTrigger, Windows.ApplicationModel.Background.DeviceUseTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.operator !=(Windows.ApplicationModel.Background.DeviceUseTrigger, Windows.ApplicationModel.Background.DeviceUseTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.Equals(Windows.ApplicationModel.Background.DeviceUseTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

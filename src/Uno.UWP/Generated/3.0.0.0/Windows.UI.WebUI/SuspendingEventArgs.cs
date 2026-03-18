@@ -23,12 +23,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.SuspendingEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.SuspendingEventArgs.operator ==(Windows.UI.WebUI.SuspendingEventArgs, Windows.UI.WebUI.SuspendingEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.SuspendingEventArgs.operator !=(Windows.UI.WebUI.SuspendingEventArgs, Windows.UI.WebUI.SuspendingEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.SuspendingEventArgs.Equals(Windows.UI.WebUI.SuspendingEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.SuspendingEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.SuspendingEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.SuspendingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.SuspendingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.SuspendingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

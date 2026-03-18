@@ -63,12 +63,6 @@ namespace Windows.ApplicationModel.AppExtensions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.operator ==(Windows.ApplicationModel.AppExtensions.AppExtension, Windows.ApplicationModel.AppExtensions.AppExtension)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.operator !=(Windows.ApplicationModel.AppExtensions.AppExtension, Windows.ApplicationModel.AppExtensions.AppExtension)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.Equals(Windows.ApplicationModel.AppExtensions.AppExtension)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -97,12 +97,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.DropShadow.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.DropShadow.operator ==(Windows.UI.Composition.DropShadow, Windows.UI.Composition.DropShadow)
-		// Forced skipping of method Windows.UI.Composition.DropShadow.operator !=(Windows.UI.Composition.DropShadow, Windows.UI.Composition.DropShadow)
-		// Forced skipping of method Windows.UI.Composition.DropShadow.Equals(Windows.UI.Composition.DropShadow)
-		// Forced skipping of method Windows.UI.Composition.DropShadow.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.DropShadow.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.DropShadow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.DropShadow.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.DropShadow.BlurRadius.get
@@ -117,7 +111,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.DropShadow.Opacity.set
 		// Forced skipping of method Windows.UI.Composition.DropShadow.SourcePolicy.get
 		// Forced skipping of method Windows.UI.Composition.DropShadow.SourcePolicy.set
-		// Forced skipping of method Windows.UI.Composition.DropShadow.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.DropShadow.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

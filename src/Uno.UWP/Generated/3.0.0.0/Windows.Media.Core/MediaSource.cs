@@ -109,7 +109,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Skipping already declared property Uri
-		// Forced skipping of method Windows.Media.Core.MediaSource.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.MediaSource CreateFromAdaptiveMediaSource(global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSource mediaSource)
@@ -181,12 +180,6 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromDownloadOperation(DownloadOperation downloadOperation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromDownloadOperation%28DownloadOperation%20downloadOperation%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaSource.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.MediaSource.operator ==(Windows.Media.Core.MediaSource, Windows.Media.Core.MediaSource)
-		// Forced skipping of method Windows.Media.Core.MediaSource.operator !=(Windows.Media.Core.MediaSource, Windows.Media.Core.MediaSource)
-		// Forced skipping of method Windows.Media.Core.MediaSource.Equals(Windows.Media.Core.MediaSource)
-		// Forced skipping of method Windows.Media.Core.MediaSource.Equals(object)
-		// Forced skipping of method Windows.Media.Core.MediaSource.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.MediaSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.MediaSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.MediaSource.WinRT.IWinRTObject.QueryInterfaceCache.get

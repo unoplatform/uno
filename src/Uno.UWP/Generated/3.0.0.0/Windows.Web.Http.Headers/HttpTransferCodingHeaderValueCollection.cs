@@ -47,12 +47,6 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection.operator ==(Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection, Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection.operator !=(Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection, Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection.Equals(Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

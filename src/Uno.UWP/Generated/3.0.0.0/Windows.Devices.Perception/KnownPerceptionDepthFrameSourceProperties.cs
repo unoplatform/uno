@@ -28,7 +28,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionDepthFrameSourceProperties.As<I>()
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionDepthFrameSourceProperties.MaxDepth.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionDepthFrameSourceProperties.MinDepth.get
 	}

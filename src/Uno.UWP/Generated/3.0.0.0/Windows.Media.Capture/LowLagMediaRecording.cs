@@ -13,12 +13,6 @@ namespace Windows.Media.Capture
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.LowLagMediaRecording.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.LowLagMediaRecording.operator ==(Windows.Media.Capture.LowLagMediaRecording, Windows.Media.Capture.LowLagMediaRecording)
-		// Forced skipping of method Windows.Media.Capture.LowLagMediaRecording.operator !=(Windows.Media.Capture.LowLagMediaRecording, Windows.Media.Capture.LowLagMediaRecording)
-		// Forced skipping of method Windows.Media.Capture.LowLagMediaRecording.Equals(Windows.Media.Capture.LowLagMediaRecording)
-		// Forced skipping of method Windows.Media.Capture.LowLagMediaRecording.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.LowLagMediaRecording.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.LowLagMediaRecording.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.LowLagMediaRecording.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.LowLagMediaRecording.WinRT.IWinRTObject.QueryInterfaceCache.get

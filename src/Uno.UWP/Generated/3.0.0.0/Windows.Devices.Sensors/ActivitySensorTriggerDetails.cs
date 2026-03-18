@@ -13,12 +13,6 @@ namespace Windows.Devices.Sensors
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.operator ==(Windows.Devices.Sensors.ActivitySensorTriggerDetails, Windows.Devices.Sensors.ActivitySensorTriggerDetails)
-		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.operator !=(Windows.Devices.Sensors.ActivitySensorTriggerDetails, Windows.Devices.Sensors.ActivitySensorTriggerDetails)
-		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.Equals(Windows.Devices.Sensors.ActivitySensorTriggerDetails)
-		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

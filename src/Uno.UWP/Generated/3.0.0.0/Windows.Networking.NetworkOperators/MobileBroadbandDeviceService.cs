@@ -33,12 +33,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandDeviceService, Windows.Networking.NetworkOperators.MobileBroadbandDeviceService)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandDeviceService, Windows.Networking.NetworkOperators.MobileBroadbandDeviceService)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.Equals(Windows.Networking.NetworkOperators.MobileBroadbandDeviceService)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.WinRT.IWinRTObject.QueryInterfaceCache.get

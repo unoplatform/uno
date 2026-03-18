@@ -69,12 +69,6 @@ namespace Windows.ApplicationModel.SocialInfo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.operator ==(Windows.ApplicationModel.SocialInfo.SocialUserInfo, Windows.ApplicationModel.SocialInfo.SocialUserInfo)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.operator !=(Windows.ApplicationModel.SocialInfo.SocialUserInfo, Windows.ApplicationModel.SocialInfo.SocialUserInfo)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.Equals(Windows.ApplicationModel.SocialInfo.SocialUserInfo)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

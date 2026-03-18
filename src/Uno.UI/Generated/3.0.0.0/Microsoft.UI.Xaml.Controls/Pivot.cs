@@ -95,7 +95,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TitleTemplate
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Pivot.Pivot()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Pivot()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Controls.PivotSlideInAnimationGroup GetSlideInAnimationGroup(global::Microsoft.UI.Xaml.FrameworkElement element)
@@ -123,14 +122,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SlideInAnimationGroupProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Pivot(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.operator ==(Microsoft.UI.Xaml.Controls.Pivot, Microsoft.UI.Xaml.Controls.Pivot)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.operator !=(Microsoft.UI.Xaml.Controls.Pivot, Microsoft.UI.Xaml.Controls.Pivot)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Equals(Microsoft.UI.Xaml.Controls.Pivot)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Pivot(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoaded.add
@@ -167,7 +158,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Title.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleTemplate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoaded
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoading

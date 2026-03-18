@@ -272,7 +272,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TextWrapping
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBlock.TextBlock()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextBlock()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.CharacterSpacingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontFamilyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontSizeProperty.get
@@ -300,12 +299,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextReadingOrderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextTrimmingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextWrappingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.operator ==(Microsoft.UI.Xaml.Controls.TextBlock, Microsoft.UI.Xaml.Controls.TextBlock)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.operator !=(Microsoft.UI.Xaml.Controls.TextBlock, Microsoft.UI.Xaml.Controls.TextBlock)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Equals(Microsoft.UI.Xaml.Controls.TextBlock)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
@@ -401,7 +394,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextTrimming.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextWrapping.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextWrapping.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]

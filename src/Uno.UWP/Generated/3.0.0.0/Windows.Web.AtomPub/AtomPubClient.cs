@@ -94,12 +94,6 @@ namespace Windows.Web.AtomPub
 		}
 #endif
 		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.AtomPubClient(Windows.Security.Credentials.PasswordCredential)
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.FromAbi(nint)
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.operator ==(Windows.Web.AtomPub.AtomPubClient, Windows.Web.AtomPub.AtomPubClient)
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.operator !=(Windows.Web.AtomPub.AtomPubClient, Windows.Web.AtomPub.AtomPubClient)
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.Equals(Windows.Web.AtomPub.AtomPubClient)
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.Equals(object)
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.GetHashCode()
 		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.WinRT.IWinRTObject.QueryInterfaceCache.get

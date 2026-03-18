@@ -22,15 +22,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.PrimaryTextProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.SecondaryTextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.operator ==(Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem, Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.operator !=(Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem, Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.Equals(Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -59,7 +52,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.SecondaryText.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.SecondaryText.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.Type.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Data.ICustomPropertyProvider
 	}

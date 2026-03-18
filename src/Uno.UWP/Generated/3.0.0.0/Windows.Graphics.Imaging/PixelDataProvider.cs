@@ -13,12 +13,6 @@ namespace Windows.Graphics.Imaging
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.operator ==(Windows.Graphics.Imaging.PixelDataProvider, Windows.Graphics.Imaging.PixelDataProvider)
-		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.operator !=(Windows.Graphics.Imaging.PixelDataProvider, Windows.Graphics.Imaging.PixelDataProvider)
-		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.Equals(Windows.Graphics.Imaging.PixelDataProvider)
-		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.Equals(object)
-		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.WinRT.IWinRTObject.QueryInterfaceCache.get

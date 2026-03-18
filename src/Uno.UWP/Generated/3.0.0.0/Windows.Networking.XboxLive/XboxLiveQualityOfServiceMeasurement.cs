@@ -174,7 +174,6 @@ namespace Windows.Networking.XboxLive
 		}
 #endif
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.XboxLiveQualityOfServiceMeasurement()
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void PublishPrivatePayloadBytes(byte[] payload)
@@ -198,12 +197,6 @@ namespace Windows.Networking.XboxLive
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.MaxSimultaneousProbeConnections.set
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.PublishedPrivatePayload.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.PublishedPrivatePayload.set
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.operator ==(Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement, Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.operator !=(Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement, Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.Equals(Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.Equals(object)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.GetHashCode()
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.WinRT.IWinRTObject.QueryInterfaceCache.get

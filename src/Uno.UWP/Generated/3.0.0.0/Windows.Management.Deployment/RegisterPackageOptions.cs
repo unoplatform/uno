@@ -176,12 +176,6 @@ namespace Windows.Management.Deployment
 		}
 #endif
 		// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.RegisterPackageOptions()
-		// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.FromAbi(nint)
-		// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.operator ==(Windows.Management.Deployment.RegisterPackageOptions, Windows.Management.Deployment.RegisterPackageOptions)
-		// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.operator !=(Windows.Management.Deployment.RegisterPackageOptions, Windows.Management.Deployment.RegisterPackageOptions)
-		// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.Equals(Windows.Management.Deployment.RegisterPackageOptions)
-		// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.Equals(object)
-		// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.GetHashCode()
 		// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

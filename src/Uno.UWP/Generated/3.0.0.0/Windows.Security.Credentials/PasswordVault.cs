@@ -10,12 +10,6 @@ namespace Windows.Security.Credentials
 	{
 		// Skipping already declared method Windows.Security.Credentials.PasswordVault.PasswordVault()
 		// Forced skipping of method Windows.Security.Credentials.PasswordVault.PasswordVault()
-		// Forced skipping of method Windows.Security.Credentials.PasswordVault.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Credentials.PasswordVault.operator ==(Windows.Security.Credentials.PasswordVault, Windows.Security.Credentials.PasswordVault)
-		// Forced skipping of method Windows.Security.Credentials.PasswordVault.operator !=(Windows.Security.Credentials.PasswordVault, Windows.Security.Credentials.PasswordVault)
-		// Forced skipping of method Windows.Security.Credentials.PasswordVault.Equals(Windows.Security.Credentials.PasswordVault)
-		// Forced skipping of method Windows.Security.Credentials.PasswordVault.Equals(object)
-		// Forced skipping of method Windows.Security.Credentials.PasswordVault.GetHashCode()
 		// Forced skipping of method Windows.Security.Credentials.PasswordVault.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Credentials.PasswordVault.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Credentials.PasswordVault.WinRT.IWinRTObject.QueryInterfaceCache.get

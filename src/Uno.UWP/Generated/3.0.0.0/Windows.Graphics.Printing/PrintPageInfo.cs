@@ -86,12 +86,6 @@ namespace Windows.Graphics.Printing
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.PrintPageInfo()
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.operator ==(Windows.Graphics.Printing.PrintPageInfo, Windows.Graphics.Printing.PrintPageInfo)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.operator !=(Windows.Graphics.Printing.PrintPageInfo, Windows.Graphics.Printing.PrintPageInfo)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.Equals(Windows.Graphics.Printing.PrintPageInfo)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

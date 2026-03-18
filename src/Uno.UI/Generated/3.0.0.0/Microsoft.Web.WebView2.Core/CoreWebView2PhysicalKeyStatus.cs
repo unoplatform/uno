@@ -17,11 +17,6 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus.CoreWebView2PhysicalKeyStatus(uint, uint, int, int, int, int)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus, Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus, Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus.Equals(Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint RepeatCount;
 #endif

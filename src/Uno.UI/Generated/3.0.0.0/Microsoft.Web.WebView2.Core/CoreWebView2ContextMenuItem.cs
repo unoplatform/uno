@@ -111,12 +111,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem, Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem, Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem.WinRT.IWinRTObject.QueryInterfaceCache.get

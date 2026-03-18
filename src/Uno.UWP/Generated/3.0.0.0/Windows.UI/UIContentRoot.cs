@@ -23,12 +23,6 @@ namespace Windows.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.UIContentRoot.FromAbi(nint)
-		// Forced skipping of method Windows.UI.UIContentRoot.operator ==(Windows.UI.UIContentRoot, Windows.UI.UIContentRoot)
-		// Forced skipping of method Windows.UI.UIContentRoot.operator !=(Windows.UI.UIContentRoot, Windows.UI.UIContentRoot)
-		// Forced skipping of method Windows.UI.UIContentRoot.Equals(Windows.UI.UIContentRoot)
-		// Forced skipping of method Windows.UI.UIContentRoot.Equals(object)
-		// Forced skipping of method Windows.UI.UIContentRoot.GetHashCode()
 		// Forced skipping of method Windows.UI.UIContentRoot.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.UIContentRoot.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.UIContentRoot.WinRT.IWinRTObject.QueryInterfaceCache.get

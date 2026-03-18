@@ -49,12 +49,6 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.operator ==(Windows.UI.Input.PointerPointProperties, Windows.UI.Input.PointerPointProperties)
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.operator !=(Windows.UI.Input.PointerPointProperties, Windows.UI.Input.PointerPointProperties)
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Equals(Windows.UI.Input.PointerPointProperties)
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Equals(object)
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.PointerPointProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.PointerPointProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.PointerPointProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

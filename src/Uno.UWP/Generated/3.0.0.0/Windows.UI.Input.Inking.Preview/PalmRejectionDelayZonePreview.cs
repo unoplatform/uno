@@ -13,15 +13,8 @@ namespace Windows.UI.Input.Inking.Preview
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.As<I>()
 		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.CreateForVisual(Windows.UI.Composition.Visual, Windows.Foundation.Rect)
 		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.CreateForVisual(Windows.UI.Composition.Visual, Windows.Foundation.Rect, Windows.UI.Composition.Visual, Windows.Foundation.Rect)
-		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.operator ==(Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview, Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview)
-		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.operator !=(Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview, Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview)
-		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.Equals(Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview)
-		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.WinRT.IWinRTObject.QueryInterfaceCache.get

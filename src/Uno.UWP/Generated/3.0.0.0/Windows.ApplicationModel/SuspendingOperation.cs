@@ -9,12 +9,6 @@ namespace Windows.ApplicationModel
 	public partial class SuspendingOperation : global::Windows.ApplicationModel.ISuspendingOperation
 	{
 		// Skipping already declared property Deadline
-		// Forced skipping of method Windows.ApplicationModel.SuspendingOperation.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.SuspendingOperation.operator ==(Windows.ApplicationModel.SuspendingOperation, Windows.ApplicationModel.SuspendingOperation)
-		// Forced skipping of method Windows.ApplicationModel.SuspendingOperation.operator !=(Windows.ApplicationModel.SuspendingOperation, Windows.ApplicationModel.SuspendingOperation)
-		// Forced skipping of method Windows.ApplicationModel.SuspendingOperation.Equals(Windows.ApplicationModel.SuspendingOperation)
-		// Forced skipping of method Windows.ApplicationModel.SuspendingOperation.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.SuspendingOperation.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.SuspendingOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.SuspendingOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.SuspendingOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

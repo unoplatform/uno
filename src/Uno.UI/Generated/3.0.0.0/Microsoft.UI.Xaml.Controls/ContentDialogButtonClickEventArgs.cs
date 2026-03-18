@@ -9,12 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ContentDialogButtonClickEventArgs
 	{
 		// Skipping already declared property Cancel
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs, Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs, Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.Equals(Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

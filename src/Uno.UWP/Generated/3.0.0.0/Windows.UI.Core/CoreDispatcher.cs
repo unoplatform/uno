@@ -10,12 +10,6 @@ namespace Windows.UI.Core
 	{
 		// Skipping already declared property CurrentPriority
 		// Skipping already declared property HasThreadAccess
-		// Forced skipping of method Windows.UI.Core.CoreDispatcher.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.CoreDispatcher.operator ==(Windows.UI.Core.CoreDispatcher, Windows.UI.Core.CoreDispatcher)
-		// Forced skipping of method Windows.UI.Core.CoreDispatcher.operator !=(Windows.UI.Core.CoreDispatcher, Windows.UI.Core.CoreDispatcher)
-		// Forced skipping of method Windows.UI.Core.CoreDispatcher.Equals(Windows.UI.Core.CoreDispatcher)
-		// Forced skipping of method Windows.UI.Core.CoreDispatcher.Equals(object)
-		// Forced skipping of method Windows.UI.Core.CoreDispatcher.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.WinRT.IWinRTObject.QueryInterfaceCache.get

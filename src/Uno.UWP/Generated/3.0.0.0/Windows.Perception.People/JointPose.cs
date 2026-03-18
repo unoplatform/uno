@@ -17,11 +17,6 @@ namespace Windows.Perception.People
 		}
 #endif
 		// Forced skipping of method Windows.Perception.People.JointPose.JointPose(System.Numerics.Quaternion, System.Numerics.Vector3, float, Windows.Perception.People.JointPoseAccuracy)
-		// Forced skipping of method Windows.Perception.People.JointPose.operator ==(Windows.Perception.People.JointPose, Windows.Perception.People.JointPose)
-		// Forced skipping of method Windows.Perception.People.JointPose.operator !=(Windows.Perception.People.JointPose, Windows.Perception.People.JointPose)
-		// Forced skipping of method Windows.Perception.People.JointPose.Equals(Windows.Perception.People.JointPose)
-		// Forced skipping of method Windows.Perception.People.JointPose.Equals(object)
-		// Forced skipping of method Windows.Perception.People.JointPose.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Quaternion Orientation;
 #endif

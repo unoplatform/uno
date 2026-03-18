@@ -13,13 +13,7 @@ namespace Windows.Media.Editing
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Editing.EmbeddedAudioTrack.FromAbi(nint)
 		// Forced skipping of method Windows.Media.Editing.EmbeddedAudioTrack.~EmbeddedAudioTrack()
-		// Forced skipping of method Windows.Media.Editing.EmbeddedAudioTrack.operator ==(Windows.Media.Editing.EmbeddedAudioTrack, Windows.Media.Editing.EmbeddedAudioTrack)
-		// Forced skipping of method Windows.Media.Editing.EmbeddedAudioTrack.operator !=(Windows.Media.Editing.EmbeddedAudioTrack, Windows.Media.Editing.EmbeddedAudioTrack)
-		// Forced skipping of method Windows.Media.Editing.EmbeddedAudioTrack.Equals(Windows.Media.Editing.EmbeddedAudioTrack)
-		// Forced skipping of method Windows.Media.Editing.EmbeddedAudioTrack.Equals(object)
-		// Forced skipping of method Windows.Media.Editing.EmbeddedAudioTrack.GetHashCode()
 		// Forced skipping of method Windows.Media.Editing.EmbeddedAudioTrack.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Editing.EmbeddedAudioTrack.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Editing.EmbeddedAudioTrack.WinRT.IWinRTObject.QueryInterfaceCache.get

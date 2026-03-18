@@ -33,12 +33,6 @@ namespace Windows.Security.EnterpriseData
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerImportResult.FromAbi(nint)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerImportResult.operator ==(Windows.Security.EnterpriseData.ProtectedContainerImportResult, Windows.Security.EnterpriseData.ProtectedContainerImportResult)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerImportResult.operator !=(Windows.Security.EnterpriseData.ProtectedContainerImportResult, Windows.Security.EnterpriseData.ProtectedContainerImportResult)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerImportResult.Equals(Windows.Security.EnterpriseData.ProtectedContainerImportResult)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerImportResult.Equals(object)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerImportResult.GetHashCode()
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerImportResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerImportResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerImportResult.WinRT.IWinRTObject.QueryInterfaceCache.get

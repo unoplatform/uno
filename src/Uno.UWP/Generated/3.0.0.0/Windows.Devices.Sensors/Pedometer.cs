@@ -52,7 +52,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Pedometer.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Pedometer> FromIdAsync(string deviceId)
@@ -89,12 +88,6 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IReadOnlyList<PedometerReading> Pedometer.GetReadingsFromTriggerDetails(SensorDataThresholdTriggerDetails triggerDetails) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPedometerReading%3E%20Pedometer.GetReadingsFromTriggerDetails%28SensorDataThresholdTriggerDetails%20triggerDetails%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Pedometer.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.Pedometer.operator ==(Windows.Devices.Sensors.Pedometer, Windows.Devices.Sensors.Pedometer)
-		// Forced skipping of method Windows.Devices.Sensors.Pedometer.operator !=(Windows.Devices.Sensors.Pedometer, Windows.Devices.Sensors.Pedometer)
-		// Forced skipping of method Windows.Devices.Sensors.Pedometer.Equals(Windows.Devices.Sensors.Pedometer)
-		// Forced skipping of method Windows.Devices.Sensors.Pedometer.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.Pedometer.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.Pedometer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Pedometer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Pedometer.WinRT.IWinRTObject.QueryInterfaceCache.get

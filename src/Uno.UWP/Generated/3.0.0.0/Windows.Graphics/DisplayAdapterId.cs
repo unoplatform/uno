@@ -17,11 +17,6 @@ namespace Windows.Graphics
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.DisplayAdapterId.DisplayAdapterId(uint, int)
-		// Forced skipping of method Windows.Graphics.DisplayAdapterId.operator ==(Windows.Graphics.DisplayAdapterId, Windows.Graphics.DisplayAdapterId)
-		// Forced skipping of method Windows.Graphics.DisplayAdapterId.operator !=(Windows.Graphics.DisplayAdapterId, Windows.Graphics.DisplayAdapterId)
-		// Forced skipping of method Windows.Graphics.DisplayAdapterId.Equals(Windows.Graphics.DisplayAdapterId)
-		// Forced skipping of method Windows.Graphics.DisplayAdapterId.Equals(object)
-		// Forced skipping of method Windows.Graphics.DisplayAdapterId.GetHashCode()
 		// Skipping already declared field Windows.Graphics.DisplayAdapterId.LowPart
 		// Skipping already declared field Windows.Graphics.DisplayAdapterId.HighPart
 	}

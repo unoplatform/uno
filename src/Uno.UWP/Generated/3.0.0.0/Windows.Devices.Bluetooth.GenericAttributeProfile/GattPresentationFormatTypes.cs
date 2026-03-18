@@ -278,7 +278,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.As<I>()
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Bit2.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.Boolean.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes.DUInt16.get

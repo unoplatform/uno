@@ -41,12 +41,6 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.FromAbi(nint)
-		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.operator ==(Windows.Media.MediaProperties.MediaRatio, Windows.Media.MediaProperties.MediaRatio)
-		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.operator !=(Windows.Media.MediaProperties.MediaRatio, Windows.Media.MediaProperties.MediaRatio)
-		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.Equals(Windows.Media.MediaProperties.MediaRatio)
-		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.Equals(object)
-		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.GetHashCode()
 		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -16,12 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger.TetheringEntitlementCheckTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger.operator ==(Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger, Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger.operator !=(Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger, Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger.Equals(Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.TetheringEntitlementCheckTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

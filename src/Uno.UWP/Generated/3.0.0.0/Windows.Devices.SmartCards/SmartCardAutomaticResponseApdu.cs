@@ -128,12 +128,6 @@ namespace Windows.Devices.SmartCards
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.SmartCardAutomaticResponseApdu(Windows.Storage.Streams.IBuffer, Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.operator ==(Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu, Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.operator !=(Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu, Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.Equals(Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.Equals(object)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.GetHashCode()
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.WinRT.IWinRTObject.QueryInterfaceCache.get

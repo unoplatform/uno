@@ -37,12 +37,6 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.NotificationVisual.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Notifications.NotificationVisual.operator ==(Windows.UI.Notifications.NotificationVisual, Windows.UI.Notifications.NotificationVisual)
-		// Forced skipping of method Windows.UI.Notifications.NotificationVisual.operator !=(Windows.UI.Notifications.NotificationVisual, Windows.UI.Notifications.NotificationVisual)
-		// Forced skipping of method Windows.UI.Notifications.NotificationVisual.Equals(Windows.UI.Notifications.NotificationVisual)
-		// Forced skipping of method Windows.UI.Notifications.NotificationVisual.Equals(object)
-		// Forced skipping of method Windows.UI.Notifications.NotificationVisual.GetHashCode()
 		// Forced skipping of method Windows.UI.Notifications.NotificationVisual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.NotificationVisual.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.NotificationVisual.WinRT.IWinRTObject.QueryInterfaceCache.get

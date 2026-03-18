@@ -123,7 +123,6 @@ namespace Windows.Devices.Bluetooth
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -145,12 +144,6 @@ namespace Windows.Devices.Bluetooth
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BluetoothAdapter> BluetoothAdapter.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBluetoothAdapter%3E%20BluetoothAdapter.GetDefaultAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.operator ==(Windows.Devices.Bluetooth.BluetoothAdapter, Windows.Devices.Bluetooth.BluetoothAdapter)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.operator !=(Windows.Devices.Bluetooth.BluetoothAdapter, Windows.Devices.Bluetooth.BluetoothAdapter)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.Equals(Windows.Devices.Bluetooth.BluetoothAdapter)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.WinRT.IWinRTObject.QueryInterfaceCache.get

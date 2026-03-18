@@ -13,7 +13,6 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.UserActivities.UserActivityChannel GetDefault()
@@ -42,12 +41,6 @@ namespace Windows.ApplicationModel.UserActivities
 			throw new global::System.NotImplementedException("The member UserActivityChannel UserActivityChannel.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivityChannel%20UserActivityChannel.GetForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.operator ==(Windows.ApplicationModel.UserActivities.UserActivityChannel, Windows.ApplicationModel.UserActivities.UserActivityChannel)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.operator !=(Windows.ApplicationModel.UserActivities.UserActivityChannel, Windows.ApplicationModel.UserActivities.UserActivityChannel)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.Equals(Windows.ApplicationModel.UserActivities.UserActivityChannel)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.WinRT.IWinRTObject.QueryInterfaceCache.get

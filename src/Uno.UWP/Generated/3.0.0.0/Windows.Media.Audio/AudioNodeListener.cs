@@ -72,12 +72,6 @@ namespace Windows.Media.Audio
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.AudioNodeListener()
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.operator ==(Windows.Media.Audio.AudioNodeListener, Windows.Media.Audio.AudioNodeListener)
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.operator !=(Windows.Media.Audio.AudioNodeListener, Windows.Media.Audio.AudioNodeListener)
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Equals(Windows.Media.Audio.AudioNodeListener)
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Equals(object)
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.GetHashCode()
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.WinRT.IWinRTObject.QueryInterfaceCache.get

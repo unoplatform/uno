@@ -27,12 +27,6 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanel.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanel.operator ==(Windows.ApplicationModel.Contacts.ContactPanel, Windows.ApplicationModel.Contacts.ContactPanel)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanel.operator !=(Windows.ApplicationModel.Contacts.ContactPanel, Windows.ApplicationModel.Contacts.ContactPanel)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanel.Equals(Windows.ApplicationModel.Contacts.ContactPanel)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanel.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanel.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPanel.WinRT.IWinRTObject.QueryInterfaceCache.get

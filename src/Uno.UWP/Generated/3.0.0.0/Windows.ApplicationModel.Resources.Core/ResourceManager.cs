@@ -53,7 +53,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsResourceReference(string resourceReference)
@@ -62,12 +61,6 @@ namespace Windows.ApplicationModel.Resources.Core
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.Current.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.operator ==(Windows.ApplicationModel.Resources.Core.ResourceManager, Windows.ApplicationModel.Resources.Core.ResourceManager)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.operator !=(Windows.ApplicationModel.Resources.Core.ResourceManager, Windows.ApplicationModel.Resources.Core.ResourceManager)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.Equals(Windows.ApplicationModel.Resources.Core.ResourceManager)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.WinRT.IWinRTObject.QueryInterfaceCache.get

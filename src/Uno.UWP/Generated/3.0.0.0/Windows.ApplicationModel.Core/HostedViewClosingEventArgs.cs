@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.operator ==(Windows.ApplicationModel.Core.HostedViewClosingEventArgs, Windows.ApplicationModel.Core.HostedViewClosingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.operator !=(Windows.ApplicationModel.Core.HostedViewClosingEventArgs, Windows.ApplicationModel.Core.HostedViewClosingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.Equals(Windows.ApplicationModel.Core.HostedViewClosingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Core.HostedViewClosingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

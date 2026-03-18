@@ -53,12 +53,6 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.operator ==(Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo, Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.operator !=(Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo, Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.Equals(Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

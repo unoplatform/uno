@@ -13,12 +13,6 @@ namespace Windows.Management.Deployment
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.FromAbi(nint)
-		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.operator ==(Windows.Management.Deployment.PackageManagerDebugSettings, Windows.Management.Deployment.PackageManagerDebugSettings)
-		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.operator !=(Windows.Management.Deployment.PackageManagerDebugSettings, Windows.Management.Deployment.PackageManagerDebugSettings)
-		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.Equals(Windows.Management.Deployment.PackageManagerDebugSettings)
-		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.Equals(object)
-		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.GetHashCode()
 		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -60,24 +60,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.PointKeyFrame()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.KeyTimeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.PointKeyFrame(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.PointKeyFrame, Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.PointKeyFrame, Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.PointKeyFrame(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.KeyTime.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.KeyTime.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Value.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

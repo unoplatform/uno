@@ -30,20 +30,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRing()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRing()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.IsActiveProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.IsIndeterminateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.MaximumProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.MinimumProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRing(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.operator ==(Microsoft.UI.Xaml.Controls.ProgressRing, Microsoft.UI.Xaml.Controls.ProgressRing)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.operator !=(Microsoft.UI.Xaml.Controls.ProgressRing, Microsoft.UI.Xaml.Controls.ProgressRing)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.Equals(Microsoft.UI.Xaml.Controls.ProgressRing)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRing(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.IsActive.get
@@ -57,7 +48,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.Value.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

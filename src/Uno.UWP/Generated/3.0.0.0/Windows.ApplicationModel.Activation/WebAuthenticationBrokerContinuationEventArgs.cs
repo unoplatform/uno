@@ -63,12 +63,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.operator ==(Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs, Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.operator !=(Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs, Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.Equals(Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

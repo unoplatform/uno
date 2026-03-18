@@ -16,12 +16,6 @@ namespace Windows.Media.Protection
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.ProtectionCapabilities()
-		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.operator ==(Windows.Media.Protection.ProtectionCapabilities, Windows.Media.Protection.ProtectionCapabilities)
-		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.operator !=(Windows.Media.Protection.ProtectionCapabilities, Windows.Media.Protection.ProtectionCapabilities)
-		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.Equals(Windows.Media.Protection.ProtectionCapabilities)
-		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.ProtectionCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get

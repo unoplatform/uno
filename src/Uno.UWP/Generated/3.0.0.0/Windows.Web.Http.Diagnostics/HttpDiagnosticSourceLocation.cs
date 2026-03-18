@@ -43,12 +43,6 @@ namespace Windows.Web.Http.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticSourceLocation.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticSourceLocation.operator ==(Windows.Web.Http.Diagnostics.HttpDiagnosticSourceLocation, Windows.Web.Http.Diagnostics.HttpDiagnosticSourceLocation)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticSourceLocation.operator !=(Windows.Web.Http.Diagnostics.HttpDiagnosticSourceLocation, Windows.Web.Http.Diagnostics.HttpDiagnosticSourceLocation)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticSourceLocation.Equals(Windows.Web.Http.Diagnostics.HttpDiagnosticSourceLocation)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticSourceLocation.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticSourceLocation.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticSourceLocation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticSourceLocation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticSourceLocation.WinRT.IWinRTObject.QueryInterfaceCache.get

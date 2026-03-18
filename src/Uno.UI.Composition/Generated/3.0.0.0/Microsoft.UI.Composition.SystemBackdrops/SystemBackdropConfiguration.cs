@@ -72,12 +72,6 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.SystemBackdropConfiguration()
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.operator ==(Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration, Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.operator !=(Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration, Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.Equals(Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

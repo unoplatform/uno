@@ -33,12 +33,6 @@ namespace Windows.Data.Text
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.operator ==(Windows.Data.Text.SelectableWordSegment, Windows.Data.Text.SelectableWordSegment)
-		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.operator !=(Windows.Data.Text.SelectableWordSegment, Windows.Data.Text.SelectableWordSegment)
-		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.Equals(Windows.Data.Text.SelectableWordSegment)
-		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.Equals(object)
-		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.GetHashCode()
 		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.WinRT.IWinRTObject.QueryInterfaceCache.get

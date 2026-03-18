@@ -14,24 +14,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property FlyoutPresenterStyle
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Flyout.Flyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.Flyout()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.ContentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.FlyoutPresenterStyleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.Flyout(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.operator ==(Microsoft.UI.Xaml.Controls.Flyout, Microsoft.UI.Xaml.Controls.Flyout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.operator !=(Microsoft.UI.Xaml.Controls.Flyout, Microsoft.UI.Xaml.Controls.Flyout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.Equals(Microsoft.UI.Xaml.Controls.Flyout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.Flyout(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.Content.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.FlyoutPresenterStyle.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.FlyoutPresenterStyle.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,12 +13,6 @@ namespace Windows.Devices.PointOfService
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrintJob.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrintJob.operator ==(Windows.Devices.PointOfService.ReceiptPrintJob, Windows.Devices.PointOfService.ReceiptPrintJob)
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrintJob.operator !=(Windows.Devices.PointOfService.ReceiptPrintJob, Windows.Devices.PointOfService.ReceiptPrintJob)
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrintJob.Equals(Windows.Devices.PointOfService.ReceiptPrintJob)
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrintJob.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrintJob.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrintJob.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrintJob.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrintJob.WinRT.IWinRTObject.QueryInterfaceCache.get

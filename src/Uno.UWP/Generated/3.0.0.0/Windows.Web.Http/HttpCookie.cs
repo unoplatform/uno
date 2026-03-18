@@ -17,12 +17,6 @@ namespace Windows.Web.Http
 		// Skipping already declared property Value
 		// Skipping already declared method Windows.Web.Http.HttpCookie.HttpCookie(string, string, string)
 		// Forced skipping of method Windows.Web.Http.HttpCookie.HttpCookie(string, string, string)
-		// Forced skipping of method Windows.Web.Http.HttpCookie.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.HttpCookie.operator ==(Windows.Web.Http.HttpCookie, Windows.Web.Http.HttpCookie)
-		// Forced skipping of method Windows.Web.Http.HttpCookie.operator !=(Windows.Web.Http.HttpCookie, Windows.Web.Http.HttpCookie)
-		// Forced skipping of method Windows.Web.Http.HttpCookie.Equals(Windows.Web.Http.HttpCookie)
-		// Forced skipping of method Windows.Web.Http.HttpCookie.Equals(object)
-		// Forced skipping of method Windows.Web.Http.HttpCookie.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.HttpCookie.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpCookie.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpCookie.WinRT.IWinRTObject.QueryInterfaceCache.get

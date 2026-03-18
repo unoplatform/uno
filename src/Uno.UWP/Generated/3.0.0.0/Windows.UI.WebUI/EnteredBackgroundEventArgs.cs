@@ -13,12 +13,6 @@ namespace Windows.UI.WebUI
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.EnteredBackgroundEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.EnteredBackgroundEventArgs.operator ==(Windows.UI.WebUI.EnteredBackgroundEventArgs, Windows.UI.WebUI.EnteredBackgroundEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.EnteredBackgroundEventArgs.operator !=(Windows.UI.WebUI.EnteredBackgroundEventArgs, Windows.UI.WebUI.EnteredBackgroundEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.EnteredBackgroundEventArgs.Equals(Windows.UI.WebUI.EnteredBackgroundEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.EnteredBackgroundEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.EnteredBackgroundEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.EnteredBackgroundEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.EnteredBackgroundEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.EnteredBackgroundEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

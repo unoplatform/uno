@@ -60,7 +60,6 @@ namespace Windows.Media.SpeechSynthesis
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.SpeechSynthesizer()
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> TrySetDefaultVoiceAsync(global::Windows.Media.SpeechSynthesis.VoiceInformation voice)
@@ -70,12 +69,6 @@ namespace Windows.Media.SpeechSynthesis
 #endif
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.AllVoices.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.DefaultVoice.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.FromAbi(nint)
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.operator ==(Windows.Media.SpeechSynthesis.SpeechSynthesizer, Windows.Media.SpeechSynthesis.SpeechSynthesizer)
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.operator !=(Windows.Media.SpeechSynthesis.SpeechSynthesizer, Windows.Media.SpeechSynthesis.SpeechSynthesizer)
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Equals(Windows.Media.SpeechSynthesis.SpeechSynthesizer)
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Equals(object)
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.GetHashCode()
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -55,7 +55,6 @@ namespace Windows.Services.Maps.Guidance
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Services.Maps.Guidance.GuidanceTelemetryCollector GetCurrent()
@@ -63,12 +62,6 @@ namespace Windows.Services.Maps.Guidance
 			throw new global::System.NotImplementedException("The member GuidanceTelemetryCollector GuidanceTelemetryCollector.GetCurrent() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GuidanceTelemetryCollector%20GuidanceTelemetryCollector.GetCurrent%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.operator ==(Windows.Services.Maps.Guidance.GuidanceTelemetryCollector, Windows.Services.Maps.Guidance.GuidanceTelemetryCollector)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.operator !=(Windows.Services.Maps.Guidance.GuidanceTelemetryCollector, Windows.Services.Maps.Guidance.GuidanceTelemetryCollector)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.Equals(Windows.Services.Maps.Guidance.GuidanceTelemetryCollector)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.Equals(object)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.GetHashCode()
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.WinRT.IWinRTObject.QueryInterfaceCache.get

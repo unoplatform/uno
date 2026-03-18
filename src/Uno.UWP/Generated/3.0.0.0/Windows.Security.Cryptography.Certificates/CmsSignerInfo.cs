@@ -54,12 +54,6 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.CmsSignerInfo()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.operator ==(Windows.Security.Cryptography.Certificates.CmsSignerInfo, Windows.Security.Cryptography.Certificates.CmsSignerInfo)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.operator !=(Windows.Security.Cryptography.Certificates.CmsSignerInfo, Windows.Security.Cryptography.Certificates.CmsSignerInfo)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.Equals(Windows.Security.Cryptography.Certificates.CmsSignerInfo)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.Equals(object)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.GetHashCode()
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

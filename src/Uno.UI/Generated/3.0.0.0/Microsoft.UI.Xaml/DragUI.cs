@@ -8,12 +8,6 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class DragUI
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.DragUI.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.DragUI.operator ==(Microsoft.UI.Xaml.DragUI, Microsoft.UI.Xaml.DragUI)
-		// Forced skipping of method Microsoft.UI.Xaml.DragUI.operator !=(Microsoft.UI.Xaml.DragUI, Microsoft.UI.Xaml.DragUI)
-		// Forced skipping of method Microsoft.UI.Xaml.DragUI.Equals(Microsoft.UI.Xaml.DragUI)
-		// Forced skipping of method Microsoft.UI.Xaml.DragUI.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.DragUI.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.DragUI.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DragUI.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DragUI.WinRT.IWinRTObject.QueryInterfaceCache.get

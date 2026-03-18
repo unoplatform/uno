@@ -53,12 +53,6 @@ namespace Windows.Gaming.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.operator ==(Windows.Gaming.UI.GameUIProviderActivatedEventArgs, Windows.Gaming.UI.GameUIProviderActivatedEventArgs)
-		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.operator !=(Windows.Gaming.UI.GameUIProviderActivatedEventArgs, Windows.Gaming.UI.GameUIProviderActivatedEventArgs)
-		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.Equals(Windows.Gaming.UI.GameUIProviderActivatedEventArgs)
-		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

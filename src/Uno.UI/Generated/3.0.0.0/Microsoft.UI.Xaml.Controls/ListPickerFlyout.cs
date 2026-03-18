@@ -196,7 +196,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ListPickerFlyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ListPickerFlyout()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.DisplayMemberPathProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemsSourceProperty.get
@@ -205,12 +204,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValuePathProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValueProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectionModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.operator ==(Microsoft.UI.Xaml.Controls.ListPickerFlyout, Microsoft.UI.Xaml.Controls.ListPickerFlyout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.operator !=(Microsoft.UI.Xaml.Controls.ListPickerFlyout, Microsoft.UI.Xaml.Controls.ListPickerFlyout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.Equals(Microsoft.UI.Xaml.Controls.ListPickerFlyout)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -239,7 +232,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValuePath.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectionMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectionMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

@@ -73,12 +73,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUICameraSettingsActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUICameraSettingsActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUICameraSettingsActivatedEventArgs, Windows.UI.WebUI.WebUICameraSettingsActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUICameraSettingsActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUICameraSettingsActivatedEventArgs, Windows.UI.WebUI.WebUICameraSettingsActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUICameraSettingsActivatedEventArgs.Equals(Windows.UI.WebUI.WebUICameraSettingsActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUICameraSettingsActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUICameraSettingsActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUICameraSettingsActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUICameraSettingsActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUICameraSettingsActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

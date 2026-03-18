@@ -32,19 +32,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.RepositionThemeTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.RepositionThemeTransition()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.IsStaggeringEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.operator ==(Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition, Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.operator !=(Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition, Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.Equals(Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.IsStaggeringEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.IsStaggeringEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

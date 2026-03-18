@@ -26,12 +26,6 @@ namespace Windows.Devices.AllJoyn
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.AllJoynProducerStoppedEventArgs(int)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.operator ==(Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs, Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.operator !=(Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs, Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.Equals(Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynProducerStoppedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

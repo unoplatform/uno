@@ -69,12 +69,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCloseAlarm.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCloseAlarm.operator ==(Windows.Devices.PointOfService.CashDrawerCloseAlarm, Windows.Devices.PointOfService.CashDrawerCloseAlarm)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCloseAlarm.operator !=(Windows.Devices.PointOfService.CashDrawerCloseAlarm, Windows.Devices.PointOfService.CashDrawerCloseAlarm)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCloseAlarm.Equals(Windows.Devices.PointOfService.CashDrawerCloseAlarm)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCloseAlarm.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCloseAlarm.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCloseAlarm.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCloseAlarm.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCloseAlarm.WinRT.IWinRTObject.QueryInterfaceCache.get

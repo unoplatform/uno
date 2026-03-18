@@ -36,12 +36,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger.DeviceManufacturerNotificationTrigger(string, bool)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger.operator ==(Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger, Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger.operator !=(Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger, Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger.Equals(Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

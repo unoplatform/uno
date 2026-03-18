@@ -55,12 +55,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionRadialGradientBrush.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionRadialGradientBrush.operator ==(Windows.UI.Composition.CompositionRadialGradientBrush, Windows.UI.Composition.CompositionRadialGradientBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionRadialGradientBrush.operator !=(Windows.UI.Composition.CompositionRadialGradientBrush, Windows.UI.Composition.CompositionRadialGradientBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionRadialGradientBrush.Equals(Windows.UI.Composition.CompositionRadialGradientBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionRadialGradientBrush.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionRadialGradientBrush.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionRadialGradientBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionRadialGradientBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionRadialGradientBrush.EllipseCenter.get
@@ -69,7 +63,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionRadialGradientBrush.EllipseRadius.set
 		// Forced skipping of method Windows.UI.Composition.CompositionRadialGradientBrush.GradientOriginOffset.get
 		// Forced skipping of method Windows.UI.Composition.CompositionRadialGradientBrush.GradientOriginOffset.set
-		// Forced skipping of method Windows.UI.Composition.CompositionRadialGradientBrush.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionRadialGradientBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -114,19 +114,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.AnnotatedScrollBar()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.DetailLabelTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.LabelTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.LabelsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.SmallChangeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.AnnotatedScrollBar(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.operator ==(Microsoft.UI.Xaml.Controls.AnnotatedScrollBar, Microsoft.UI.Xaml.Controls.AnnotatedScrollBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.operator !=(Microsoft.UI.Xaml.Controls.AnnotatedScrollBar, Microsoft.UI.Xaml.Controls.AnnotatedScrollBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.Equals(Microsoft.UI.Xaml.Controls.AnnotatedScrollBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.AnnotatedScrollBar(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.DetailLabelRequested.add
@@ -142,7 +133,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.ScrollController.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.SmallChange.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.SmallChange.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

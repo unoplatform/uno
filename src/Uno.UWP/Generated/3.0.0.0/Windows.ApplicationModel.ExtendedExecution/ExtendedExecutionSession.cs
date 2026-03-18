@@ -58,12 +58,6 @@ namespace Windows.ApplicationModel.ExtendedExecution
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.ExtendedExecutionSession()
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.operator ==(Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession, Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.operator !=(Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession, Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.Equals(Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.WinRT.IWinRTObject.QueryInterfaceCache.get

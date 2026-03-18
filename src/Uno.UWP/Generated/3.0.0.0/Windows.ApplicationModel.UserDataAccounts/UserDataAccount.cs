@@ -157,12 +157,6 @@ namespace Windows.ApplicationModel.UserDataAccounts
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.operator ==(Windows.ApplicationModel.UserDataAccounts.UserDataAccount, Windows.ApplicationModel.UserDataAccounts.UserDataAccount)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.operator !=(Windows.ApplicationModel.UserDataAccounts.UserDataAccount, Windows.ApplicationModel.UserDataAccounts.UserDataAccount)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.Equals(Windows.ApplicationModel.UserDataAccounts.UserDataAccount)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.WinRT.IWinRTObject.QueryInterfaceCache.get

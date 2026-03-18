@@ -8,7 +8,6 @@ namespace Windows.ApplicationModel.Email
 #endif
 	public static partial class EmailManager
 	{
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailManager.As<I>()
 		// Skipping already declared method Windows.ApplicationModel.Email.EmailManager.ShowComposeNewEmailAsync(Windows.ApplicationModel.Email.EmailMessage)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

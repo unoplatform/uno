@@ -103,12 +103,6 @@ namespace Windows.Web.Http.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.operator ==(Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps, Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.operator !=(Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps, Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.Equals(Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.WinRT.IWinRTObject.QueryInterfaceCache.get

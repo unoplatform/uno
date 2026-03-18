@@ -17,11 +17,6 @@ namespace Windows.Gaming.Input.Custom
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.GameControllerVersionInfo(ushort, ushort, ushort, ushort)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.operator ==(Windows.Gaming.Input.Custom.GameControllerVersionInfo, Windows.Gaming.Input.Custom.GameControllerVersionInfo)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.operator !=(Windows.Gaming.Input.Custom.GameControllerVersionInfo, Windows.Gaming.Input.Custom.GameControllerVersionInfo)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.Equals(Windows.Gaming.Input.Custom.GameControllerVersionInfo)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ushort Major;
 #endif

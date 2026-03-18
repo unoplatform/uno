@@ -17,11 +17,6 @@ namespace Windows.Gaming.Input
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.GamepadVibration(double, double, double, double)
-		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.operator ==(Windows.Gaming.Input.GamepadVibration, Windows.Gaming.Input.GamepadVibration)
-		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.operator !=(Windows.Gaming.Input.GamepadVibration, Windows.Gaming.Input.GamepadVibration)
-		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.Equals(Windows.Gaming.Input.GamepadVibration)
-		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.GamepadVibration.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double LeftMotor;
 #endif

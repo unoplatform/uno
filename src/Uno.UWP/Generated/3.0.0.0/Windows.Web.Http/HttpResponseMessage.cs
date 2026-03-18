@@ -128,12 +128,6 @@ namespace Windows.Web.Http
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.HttpResponseMessage(Windows.Web.Http.HttpStatusCode)
-		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.operator ==(Windows.Web.Http.HttpResponseMessage, Windows.Web.Http.HttpResponseMessage)
-		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.operator !=(Windows.Web.Http.HttpResponseMessage, Windows.Web.Http.HttpResponseMessage)
-		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.Equals(Windows.Web.Http.HttpResponseMessage)
-		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.Equals(object)
-		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -87,12 +87,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.VideoTrack.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.VideoTrack.operator ==(Windows.Media.Core.VideoTrack, Windows.Media.Core.VideoTrack)
-		// Forced skipping of method Windows.Media.Core.VideoTrack.operator !=(Windows.Media.Core.VideoTrack, Windows.Media.Core.VideoTrack)
-		// Forced skipping of method Windows.Media.Core.VideoTrack.Equals(Windows.Media.Core.VideoTrack)
-		// Forced skipping of method Windows.Media.Core.VideoTrack.Equals(object)
-		// Forced skipping of method Windows.Media.Core.VideoTrack.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.VideoTrack.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.VideoTrack.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.VideoTrack.WinRT.IWinRTObject.QueryInterfaceCache.get

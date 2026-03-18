@@ -47,12 +47,6 @@ namespace Windows.Devices.Gpio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Gpio.GpioPin.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Gpio.GpioPin.operator ==(Windows.Devices.Gpio.GpioPin, Windows.Devices.Gpio.GpioPin)
-		// Forced skipping of method Windows.Devices.Gpio.GpioPin.operator !=(Windows.Devices.Gpio.GpioPin, Windows.Devices.Gpio.GpioPin)
-		// Forced skipping of method Windows.Devices.Gpio.GpioPin.Equals(Windows.Devices.Gpio.GpioPin)
-		// Forced skipping of method Windows.Devices.Gpio.GpioPin.Equals(object)
-		// Forced skipping of method Windows.Devices.Gpio.GpioPin.GetHashCode()
 		// Forced skipping of method Windows.Devices.Gpio.GpioPin.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Gpio.GpioPin.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Gpio.GpioPin.WinRT.IWinRTObject.QueryInterfaceCache.get

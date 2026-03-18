@@ -30,7 +30,6 @@ namespace Windows.ApplicationModel.Core
 		}
 #endif
 		// Skipping already declared property Views
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplication.As<I>()
 		// Skipping already declared method Windows.ApplicationModel.Core.CoreApplication.GetCurrentView()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

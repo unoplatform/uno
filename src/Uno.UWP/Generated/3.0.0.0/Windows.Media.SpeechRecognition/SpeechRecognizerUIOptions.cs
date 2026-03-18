@@ -12,12 +12,6 @@ namespace Windows.Media.SpeechRecognition
 		// Skipping already declared property ExampleText
 		// Skipping already declared property IsReadBackEnabled
 		// Skipping already declared property ShowConfirmation
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.FromAbi(nint)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.operator ==(Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions, Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.operator !=(Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions, Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.Equals(Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.Equals(object)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.GetHashCode()
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

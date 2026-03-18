@@ -17,11 +17,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextPadding.TimedTextPadding(double, double, double, double, Windows.Media.Core.TimedTextUnit)
-		// Forced skipping of method Windows.Media.Core.TimedTextPadding.operator ==(Windows.Media.Core.TimedTextPadding, Windows.Media.Core.TimedTextPadding)
-		// Forced skipping of method Windows.Media.Core.TimedTextPadding.operator !=(Windows.Media.Core.TimedTextPadding, Windows.Media.Core.TimedTextPadding)
-		// Forced skipping of method Windows.Media.Core.TimedTextPadding.Equals(Windows.Media.Core.TimedTextPadding)
-		// Forced skipping of method Windows.Media.Core.TimedTextPadding.Equals(object)
-		// Forced skipping of method Windows.Media.Core.TimedTextPadding.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double Before;
 #endif

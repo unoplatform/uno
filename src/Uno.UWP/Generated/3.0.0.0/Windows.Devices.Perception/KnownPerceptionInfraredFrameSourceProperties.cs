@@ -78,7 +78,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.As<I>()
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.ActiveIlluminationEnabled.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.AmbientSubtractionEnabled.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.AutoExposureEnabled.get

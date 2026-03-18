@@ -19,12 +19,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Velocities
 		// Skipping already declared method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.ManipulationInertiaStartingRoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.ManipulationInertiaStartingRoutedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.operator ==(Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs, Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.operator !=(Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs, Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Equals(Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Container.get
@@ -40,7 +34,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.TranslationBehavior.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.TranslationBehavior.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.Velocities.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

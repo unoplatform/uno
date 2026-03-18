@@ -63,12 +63,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.AudioDeviceModule.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.AudioDeviceModule.operator ==(Windows.Media.Devices.AudioDeviceModule, Windows.Media.Devices.AudioDeviceModule)
-		// Forced skipping of method Windows.Media.Devices.AudioDeviceModule.operator !=(Windows.Media.Devices.AudioDeviceModule, Windows.Media.Devices.AudioDeviceModule)
-		// Forced skipping of method Windows.Media.Devices.AudioDeviceModule.Equals(Windows.Media.Devices.AudioDeviceModule)
-		// Forced skipping of method Windows.Media.Devices.AudioDeviceModule.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.AudioDeviceModule.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModule.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModule.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModule.WinRT.IWinRTObject.QueryInterfaceCache.get

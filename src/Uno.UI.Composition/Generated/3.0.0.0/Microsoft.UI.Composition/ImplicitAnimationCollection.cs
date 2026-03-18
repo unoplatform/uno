@@ -67,12 +67,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.operator ==(Microsoft.UI.Composition.ImplicitAnimationCollection, Microsoft.UI.Composition.ImplicitAnimationCollection)
-		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.operator !=(Microsoft.UI.Composition.ImplicitAnimationCollection, Microsoft.UI.Composition.ImplicitAnimationCollection)
-		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.Equals(Microsoft.UI.Composition.ImplicitAnimationCollection)
-		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -146,7 +140,6 @@ namespace Microsoft.UI.Composition
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Microsoft.UI.Composition.ICompositionAnimationBase>>.Remove(System.Collections.Generic.KeyValuePair<string, Microsoft.UI.Composition.ICompositionAnimationBase>)
-		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Microsoft.UI.Composition.ICompositionAnimationBase>>
 		// Processing: System.Collections.IEnumerable

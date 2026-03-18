@@ -46,12 +46,6 @@ namespace Windows.Devices.Perception.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.PerceptionCorrelation(string, System.Numerics.Vector3, System.Numerics.Quaternion)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.operator ==(Windows.Devices.Perception.Provider.PerceptionCorrelation, Windows.Devices.Perception.Provider.PerceptionCorrelation)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.operator !=(Windows.Devices.Perception.Provider.PerceptionCorrelation, Windows.Devices.Perception.Provider.PerceptionCorrelation)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.Equals(Windows.Devices.Perception.Provider.PerceptionCorrelation)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.WinRT.IWinRTObject.QueryInterfaceCache.get

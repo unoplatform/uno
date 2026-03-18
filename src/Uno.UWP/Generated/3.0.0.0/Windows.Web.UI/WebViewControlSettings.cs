@@ -55,12 +55,6 @@ namespace Windows.Web.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.FromAbi(nint)
-		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.operator ==(Windows.Web.UI.WebViewControlSettings, Windows.Web.UI.WebViewControlSettings)
-		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.operator !=(Windows.Web.UI.WebViewControlSettings, Windows.Web.UI.WebViewControlSettings)
-		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.Equals(Windows.Web.UI.WebViewControlSettings)
-		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.Equals(object)
-		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.GetHashCode()
 		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

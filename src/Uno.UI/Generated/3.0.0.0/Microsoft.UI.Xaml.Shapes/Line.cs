@@ -18,17 +18,10 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Skipping already declared property Y2
 		// Skipping already declared method Microsoft.UI.Xaml.Shapes.Line.Line()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.Line()
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.X1Property.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.X2Property.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.Y1Property.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.Y2Property.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.operator ==(Microsoft.UI.Xaml.Shapes.Line, Microsoft.UI.Xaml.Shapes.Line)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.operator !=(Microsoft.UI.Xaml.Shapes.Line, Microsoft.UI.Xaml.Shapes.Line)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.Equals(Microsoft.UI.Xaml.Shapes.Line)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.X1.get
@@ -39,7 +32,6 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.Y1.set
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.Y2.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.Y2.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

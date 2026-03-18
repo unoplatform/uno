@@ -20,12 +20,6 @@ namespace Windows.Storage.FileProperties
 		}
 #endif
 		// Skipping already declared property Size
-		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.operator ==(Windows.Storage.FileProperties.BasicProperties, Windows.Storage.FileProperties.BasicProperties)
-		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.operator !=(Windows.Storage.FileProperties.BasicProperties, Windows.Storage.FileProperties.BasicProperties)
-		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.Equals(Windows.Storage.FileProperties.BasicProperties)
-		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.Equals(object)
-		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.GetHashCode()
 		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

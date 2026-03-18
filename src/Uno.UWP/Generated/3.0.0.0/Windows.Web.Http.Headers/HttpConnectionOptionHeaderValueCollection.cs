@@ -47,12 +47,6 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection.operator ==(Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection, Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection.operator !=(Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection, Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection.Equals(Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

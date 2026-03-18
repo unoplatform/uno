@@ -8,12 +8,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 	public partial class CoreWebView2HttpRequestHeaders : global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>, global::System.Collections.IEnumerable
 	{
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders, Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders, Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.Equals(Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.WinRT.IWinRTObject.QueryInterfaceCache.get

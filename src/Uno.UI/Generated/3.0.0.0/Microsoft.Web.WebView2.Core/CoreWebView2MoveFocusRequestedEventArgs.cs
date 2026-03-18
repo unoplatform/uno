@@ -37,12 +37,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

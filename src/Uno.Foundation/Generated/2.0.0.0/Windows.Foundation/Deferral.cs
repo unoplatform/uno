@@ -10,12 +10,6 @@ namespace Windows.Foundation
 	{
 		// Skipping already declared method Windows.Foundation.Deferral.Deferral(Windows.Foundation.DeferralCompletedHandler)
 		// Forced skipping of method Windows.Foundation.Deferral.Deferral(Windows.Foundation.DeferralCompletedHandler)
-		// Forced skipping of method Windows.Foundation.Deferral.FromAbi(nint)
-		// Forced skipping of method Windows.Foundation.Deferral.operator ==(Windows.Foundation.Deferral, Windows.Foundation.Deferral)
-		// Forced skipping of method Windows.Foundation.Deferral.operator !=(Windows.Foundation.Deferral, Windows.Foundation.Deferral)
-		// Forced skipping of method Windows.Foundation.Deferral.Equals(Windows.Foundation.Deferral)
-		// Forced skipping of method Windows.Foundation.Deferral.Equals(object)
-		// Forced skipping of method Windows.Foundation.Deferral.GetHashCode()
 		// Forced skipping of method Windows.Foundation.Deferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Foundation.Deferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Foundation.Deferral.WinRT.IWinRTObject.QueryInterfaceCache.get

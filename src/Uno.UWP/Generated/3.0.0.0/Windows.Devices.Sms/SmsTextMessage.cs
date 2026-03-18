@@ -132,7 +132,6 @@ namespace Windows.Devices.Sms
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.SmsTextMessage()
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sms.SmsTextMessage FromBinaryMessage(global::Windows.Devices.Sms.SmsBinaryMessage binaryMessage)
@@ -147,12 +146,6 @@ namespace Windows.Devices.Sms
 			throw new global::System.NotImplementedException("The member SmsTextMessage SmsTextMessage.FromBinaryData(SmsDataFormat format, byte[] value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsTextMessage%20SmsTextMessage.FromBinaryData%28SmsDataFormat%20format%2C%20byte%5B%5D%20value%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.operator ==(Windows.Devices.Sms.SmsTextMessage, Windows.Devices.Sms.SmsTextMessage)
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.operator !=(Windows.Devices.Sms.SmsTextMessage, Windows.Devices.Sms.SmsTextMessage)
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.Equals(Windows.Devices.Sms.SmsTextMessage)
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.Equals(object)
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.WinRT.IWinRTObject.QueryInterfaceCache.get

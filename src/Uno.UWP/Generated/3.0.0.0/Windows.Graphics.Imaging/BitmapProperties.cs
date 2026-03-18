@@ -13,12 +13,6 @@ namespace Windows.Graphics.Imaging
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapProperties.operator ==(Windows.Graphics.Imaging.BitmapProperties, Windows.Graphics.Imaging.BitmapProperties)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapProperties.operator !=(Windows.Graphics.Imaging.BitmapProperties, Windows.Graphics.Imaging.BitmapProperties)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapProperties.Equals(Windows.Graphics.Imaging.BitmapProperties)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapProperties.Equals(object)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapProperties.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

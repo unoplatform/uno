@@ -111,12 +111,6 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.operator ==(Windows.Graphics.Holographic.HolographicViewConfiguration, Windows.Graphics.Holographic.HolographicViewConfiguration)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.operator !=(Windows.Graphics.Holographic.HolographicViewConfiguration, Windows.Graphics.Holographic.HolographicViewConfiguration)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.Equals(Windows.Graphics.Holographic.HolographicViewConfiguration)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.Equals(object)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

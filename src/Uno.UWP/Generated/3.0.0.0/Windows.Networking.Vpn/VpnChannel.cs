@@ -67,7 +67,6 @@ namespace Windows.Networking.Vpn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ProcessEventAsync(object thirdPartyPlugIn, object @event)
@@ -75,12 +74,6 @@ namespace Windows.Networking.Vpn
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.ProcessEventAsync(object thirdPartyPlugIn, object @event)");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.operator ==(Windows.Networking.Vpn.VpnChannel, Windows.Networking.Vpn.VpnChannel)
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.operator !=(Windows.Networking.Vpn.VpnChannel, Windows.Networking.Vpn.VpnChannel)
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.Equals(Windows.Networking.Vpn.VpnChannel)
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.WinRT.IWinRTObject.QueryInterfaceCache.get

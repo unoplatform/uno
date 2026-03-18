@@ -100,7 +100,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.As<I>()
 		// Skipping already declared method Windows.Devices.Sensors.Accelerometer.GetDefault()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -123,12 +122,6 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member string Accelerometer.GetDeviceSelector(AccelerometerReadingType readingType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Accelerometer.GetDeviceSelector%28AccelerometerReadingType%20readingType%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.operator ==(Windows.Devices.Sensors.Accelerometer, Windows.Devices.Sensors.Accelerometer)
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.operator !=(Windows.Devices.Sensors.Accelerometer, Windows.Devices.Sensors.Accelerometer)
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.Equals(Windows.Devices.Sensors.Accelerometer)
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.WinRT.IWinRTObject.QueryInterfaceCache.get

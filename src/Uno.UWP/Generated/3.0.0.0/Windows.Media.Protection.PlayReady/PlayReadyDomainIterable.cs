@@ -16,12 +16,6 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterable.PlayReadyDomainIterable(System.Guid)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterable.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterable.operator ==(Windows.Media.Protection.PlayReady.PlayReadyDomainIterable, Windows.Media.Protection.PlayReady.PlayReadyDomainIterable)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterable.operator !=(Windows.Media.Protection.PlayReady.PlayReadyDomainIterable, Windows.Media.Protection.PlayReady.PlayReadyDomainIterable)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterable.Equals(Windows.Media.Protection.PlayReady.PlayReadyDomainIterable)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterable.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterable.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterable.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterable.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterable.WinRT.IWinRTObject.QueryInterfaceCache.get

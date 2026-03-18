@@ -68,7 +68,6 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactPicker.ContactPicker()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.ContactPicker()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Contacts.ContactPicker CreateForUser(global::Windows.System.User user)
@@ -77,12 +76,6 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactPicker.IsSupportedAsync()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.operator ==(Windows.ApplicationModel.Contacts.ContactPicker, Windows.ApplicationModel.Contacts.ContactPicker)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.operator !=(Windows.ApplicationModel.Contacts.ContactPicker, Windows.ApplicationModel.Contacts.ContactPicker)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.Equals(Windows.ApplicationModel.Contacts.ContactPicker)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactPicker.WinRT.IWinRTObject.QueryInterfaceCache.get

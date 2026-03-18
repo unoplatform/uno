@@ -53,7 +53,6 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryRegisterForAllInboundPairingRequests(global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported)
@@ -68,12 +67,6 @@ namespace Windows.Devices.Enumeration
 			throw new global::System.NotImplementedException("The member bool DeviceInformationPairing.TryRegisterForAllInboundPairingRequestsWithProtectionLevel(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceInformationPairing.TryRegisterForAllInboundPairingRequestsWithProtectionLevel%28DevicePairingKinds%20pairingKindsSupported%2C%20DevicePairingProtectionLevel%20minProtectionLevel%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.operator ==(Windows.Devices.Enumeration.DeviceInformationPairing, Windows.Devices.Enumeration.DeviceInformationPairing)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.operator !=(Windows.Devices.Enumeration.DeviceInformationPairing, Windows.Devices.Enumeration.DeviceInformationPairing)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.Equals(Windows.Devices.Enumeration.DeviceInformationPairing)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.Equals(object)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.GetHashCode()
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationPairing.WinRT.IWinRTObject.QueryInterfaceCache.get

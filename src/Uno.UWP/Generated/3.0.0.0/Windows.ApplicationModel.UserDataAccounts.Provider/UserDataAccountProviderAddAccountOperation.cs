@@ -43,12 +43,6 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.operator ==(Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation, Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.operator !=(Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation, Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.Equals(Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

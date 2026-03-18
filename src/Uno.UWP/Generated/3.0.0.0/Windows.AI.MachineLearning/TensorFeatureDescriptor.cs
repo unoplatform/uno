@@ -73,12 +73,6 @@ namespace Windows.AI.MachineLearning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.TensorFeatureDescriptor.FromAbi(nint)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorFeatureDescriptor.operator ==(Windows.AI.MachineLearning.TensorFeatureDescriptor, Windows.AI.MachineLearning.TensorFeatureDescriptor)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorFeatureDescriptor.operator !=(Windows.AI.MachineLearning.TensorFeatureDescriptor, Windows.AI.MachineLearning.TensorFeatureDescriptor)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorFeatureDescriptor.Equals(Windows.AI.MachineLearning.TensorFeatureDescriptor)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorFeatureDescriptor.Equals(object)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorFeatureDescriptor.GetHashCode()
 		// Forced skipping of method Windows.AI.MachineLearning.TensorFeatureDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.TensorFeatureDescriptor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.TensorFeatureDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get

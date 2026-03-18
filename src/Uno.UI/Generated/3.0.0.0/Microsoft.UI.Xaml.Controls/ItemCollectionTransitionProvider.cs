@@ -16,14 +16,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.ItemCollectionTransitionProvider()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.ItemCollectionTransitionProvider(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.operator ==(Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider, Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.operator !=(Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider, Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.Equals(Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.ItemCollectionTransitionProvider(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -51,7 +43,6 @@ namespace Microsoft.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member bool ItemCollectionTransitionProvider.ShouldAnimateCore(ItemCollectionTransition transition) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ItemCollectionTransitionProvider.ShouldAnimateCore%28ItemCollectionTransition%20transition%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.Microsoft.UI.Xaml.Controls.IItemCollectionTransitionProviderOverrides.ShouldAnimateCore(Microsoft.UI.Xaml.Controls.ItemCollectionTransition)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void StartTransitions(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.ItemCollectionTransition> transitions)
@@ -59,8 +50,6 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider", "void ItemCollectionTransitionProvider.StartTransitions(IList<ItemCollectionTransition> transitions)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.Microsoft.UI.Xaml.Controls.IItemCollectionTransitionProviderOverrides.StartTransitions(System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.ItemCollectionTransition>)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

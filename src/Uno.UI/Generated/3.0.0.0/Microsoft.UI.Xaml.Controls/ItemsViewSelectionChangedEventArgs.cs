@@ -13,12 +13,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs, Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs, Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewSelectionChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

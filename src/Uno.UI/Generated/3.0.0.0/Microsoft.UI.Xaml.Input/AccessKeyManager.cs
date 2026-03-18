@@ -37,7 +37,6 @@ namespace Microsoft.UI.Xaml.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ExitDisplayMode()
@@ -57,12 +56,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.AreKeyTipsEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.AreKeyTipsEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.IsDisplayModeEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.operator ==(Microsoft.UI.Xaml.Input.AccessKeyManager, Microsoft.UI.Xaml.Input.AccessKeyManager)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.operator !=(Microsoft.UI.Xaml.Input.AccessKeyManager, Microsoft.UI.Xaml.Input.AccessKeyManager)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.Equals(Microsoft.UI.Xaml.Input.AccessKeyManager)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.WinRT.IWinRTObject.QueryInterfaceCache.get

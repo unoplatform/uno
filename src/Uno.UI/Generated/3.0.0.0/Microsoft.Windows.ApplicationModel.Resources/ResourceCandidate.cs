@@ -64,12 +64,6 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		}
 #endif
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.ResourceCandidate(byte[])
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.FromAbi(nint)
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.operator ==(Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate, Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate)
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.operator !=(Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate, Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate)
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.Equals(Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate)
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.Equals(object)
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.GetHashCode()
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.WinRT.IWinRTObject.QueryInterfaceCache.get

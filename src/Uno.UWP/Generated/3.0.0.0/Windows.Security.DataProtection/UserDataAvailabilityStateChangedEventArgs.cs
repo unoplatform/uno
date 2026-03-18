@@ -13,12 +13,6 @@ namespace Windows.Security.DataProtection
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs.operator ==(Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs, Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs)
-		// Forced skipping of method Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs.operator !=(Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs, Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs)
-		// Forced skipping of method Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs.Equals(Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs)
-		// Forced skipping of method Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

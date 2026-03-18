@@ -13,12 +13,6 @@ namespace Windows.Media.Audio
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.operator ==(Windows.Media.Audio.AudioGraphBatchUpdater, Windows.Media.Audio.AudioGraphBatchUpdater)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.operator !=(Windows.Media.Audio.AudioGraphBatchUpdater, Windows.Media.Audio.AudioGraphBatchUpdater)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.Equals(Windows.Media.Audio.AudioGraphBatchUpdater)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.Equals(object)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.GetHashCode()
 		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraphBatchUpdater.WinRT.IWinRTObject.QueryInterfaceCache.get

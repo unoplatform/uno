@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageBatch.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageBatch.operator ==(Windows.ApplicationModel.Email.EmailMessageBatch, Windows.ApplicationModel.Email.EmailMessageBatch)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageBatch.operator !=(Windows.ApplicationModel.Email.EmailMessageBatch, Windows.ApplicationModel.Email.EmailMessageBatch)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageBatch.Equals(Windows.ApplicationModel.Email.EmailMessageBatch)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageBatch.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageBatch.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageBatch.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageBatch.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageBatch.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -152,12 +152,6 @@ namespace Windows.Storage.Search
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.QueryOptions(Windows.Storage.Search.CommonFolderQuery)
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.operator ==(Windows.Storage.Search.QueryOptions, Windows.Storage.Search.QueryOptions)
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.operator !=(Windows.Storage.Search.QueryOptions, Windows.Storage.Search.QueryOptions)
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.Equals(Windows.Storage.Search.QueryOptions)
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.Equals(object)
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.GetHashCode()
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -90,7 +90,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.As<I>()
 		// Skipping already declared method Windows.Devices.Sensors.Gyrometer.GetDefault()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -106,12 +105,6 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Gyrometer> Gyrometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGyrometer%3E%20Gyrometer.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.operator ==(Windows.Devices.Sensors.Gyrometer, Windows.Devices.Sensors.Gyrometer)
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.operator !=(Windows.Devices.Sensors.Gyrometer, Windows.Devices.Sensors.Gyrometer)
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.Equals(Windows.Devices.Sensors.Gyrometer)
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.WinRT.IWinRTObject.QueryInterfaceCache.get

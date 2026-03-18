@@ -57,15 +57,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.As<I>()
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.MaxPlaybackRate.get
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.MinPlaybackRate.get
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.operator ==(Microsoft.UI.Composition.AnimationController, Microsoft.UI.Composition.AnimationController)
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.operator !=(Microsoft.UI.Composition.AnimationController, Microsoft.UI.Composition.AnimationController)
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.Equals(Microsoft.UI.Composition.AnimationController)
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.AnimationController.Pause()
@@ -76,7 +69,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.Progress.set
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.ProgressBehavior.get
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.ProgressBehavior.set
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -17,11 +17,6 @@ namespace Windows.Web.Http
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpProgress.HttpProgress(Windows.Web.Http.HttpProgressStage, ulong, ulong?, ulong, ulong?, uint)
-		// Forced skipping of method Windows.Web.Http.HttpProgress.operator ==(Windows.Web.Http.HttpProgress, Windows.Web.Http.HttpProgress)
-		// Forced skipping of method Windows.Web.Http.HttpProgress.operator !=(Windows.Web.Http.HttpProgress, Windows.Web.Http.HttpProgress)
-		// Forced skipping of method Windows.Web.Http.HttpProgress.Equals(Windows.Web.Http.HttpProgress)
-		// Forced skipping of method Windows.Web.Http.HttpProgress.Equals(object)
-		// Forced skipping of method Windows.Web.Http.HttpProgress.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Web.Http.HttpProgressStage Stage;
 #endif

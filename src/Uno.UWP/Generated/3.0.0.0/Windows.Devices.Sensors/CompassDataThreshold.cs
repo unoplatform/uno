@@ -27,12 +27,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.CompassDataThreshold.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.CompassDataThreshold.operator ==(Windows.Devices.Sensors.CompassDataThreshold, Windows.Devices.Sensors.CompassDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.CompassDataThreshold.operator !=(Windows.Devices.Sensors.CompassDataThreshold, Windows.Devices.Sensors.CompassDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.CompassDataThreshold.Equals(Windows.Devices.Sensors.CompassDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.CompassDataThreshold.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.CompassDataThreshold.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.CompassDataThreshold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassDataThreshold.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassDataThreshold.WinRT.IWinRTObject.QueryInterfaceCache.get

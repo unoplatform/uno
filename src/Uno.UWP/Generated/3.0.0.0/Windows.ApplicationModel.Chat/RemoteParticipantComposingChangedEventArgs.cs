@@ -43,12 +43,6 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.operator ==(Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs, Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.operator !=(Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs, Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.Equals(Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

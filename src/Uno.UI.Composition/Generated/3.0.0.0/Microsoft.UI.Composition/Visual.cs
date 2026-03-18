@@ -147,14 +147,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Scale
 		// Skipping already declared property Size
 		// Skipping already declared property TransformMatrix
-		// Forced skipping of method Microsoft.UI.Composition.Visual.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.Visual.Visual(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Composition.Visual.operator ==(Microsoft.UI.Composition.Visual, Microsoft.UI.Composition.Visual)
-		// Forced skipping of method Microsoft.UI.Composition.Visual.operator !=(Microsoft.UI.Composition.Visual, Microsoft.UI.Composition.Visual)
-		// Forced skipping of method Microsoft.UI.Composition.Visual.Equals(Microsoft.UI.Composition.Visual)
-		// Forced skipping of method Microsoft.UI.Composition.Visual.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.Visual.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Composition.Visual.Visual(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Composition.Visual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.AnchorPoint.get
@@ -200,7 +192,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Size.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.TransformMatrix.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.TransformMatrix.set
-		// Forced skipping of method Microsoft.UI.Composition.Visual.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.Visual.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -22,21 +22,12 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property UnsetImage
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.RatingItemImageInfo()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.RatingItemImageInfo()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.DisabledImageProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.ImageProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.PlaceholderImageProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.PointerOverImageProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.PointerOverPlaceholderImageProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.UnsetImageProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.RatingItemImageInfo(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.operator ==(Microsoft.UI.Xaml.Controls.RatingItemImageInfo, Microsoft.UI.Xaml.Controls.RatingItemImageInfo)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.operator !=(Microsoft.UI.Xaml.Controls.RatingItemImageInfo, Microsoft.UI.Xaml.Controls.RatingItemImageInfo)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.Equals(Microsoft.UI.Xaml.Controls.RatingItemImageInfo)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.RatingItemImageInfo(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.DisabledImage.get
@@ -51,7 +42,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.PointerOverPlaceholderImage.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.UnsetImage.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.UnsetImage.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

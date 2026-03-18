@@ -13,12 +13,6 @@ namespace Windows.System.Diagnostics
 		{
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsage.FromAbi(nint)
-		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsage.operator ==(Windows.System.Diagnostics.SystemCpuUsage, Windows.System.Diagnostics.SystemCpuUsage)
-		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsage.operator !=(Windows.System.Diagnostics.SystemCpuUsage, Windows.System.Diagnostics.SystemCpuUsage)
-		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsage.Equals(Windows.System.Diagnostics.SystemCpuUsage)
-		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsage.Equals(object)
-		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsage.GetHashCode()
 		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsage.WinRT.IWinRTObject.QueryInterfaceCache.get

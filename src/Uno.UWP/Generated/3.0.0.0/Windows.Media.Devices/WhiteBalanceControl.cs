@@ -73,12 +73,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.operator ==(Windows.Media.Devices.WhiteBalanceControl, Windows.Media.Devices.WhiteBalanceControl)
-		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.operator !=(Windows.Media.Devices.WhiteBalanceControl, Windows.Media.Devices.WhiteBalanceControl)
-		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Equals(Windows.Media.Devices.WhiteBalanceControl)
-		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.WinRT.IWinRTObject.QueryInterfaceCache.get

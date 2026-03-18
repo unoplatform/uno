@@ -16,12 +16,6 @@ namespace Windows.Foundation
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.MemoryBuffer.MemoryBuffer(uint)
-		// Forced skipping of method Windows.Foundation.MemoryBuffer.FromAbi(nint)
-		// Forced skipping of method Windows.Foundation.MemoryBuffer.operator ==(Windows.Foundation.MemoryBuffer, Windows.Foundation.MemoryBuffer)
-		// Forced skipping of method Windows.Foundation.MemoryBuffer.operator !=(Windows.Foundation.MemoryBuffer, Windows.Foundation.MemoryBuffer)
-		// Forced skipping of method Windows.Foundation.MemoryBuffer.Equals(Windows.Foundation.MemoryBuffer)
-		// Forced skipping of method Windows.Foundation.MemoryBuffer.Equals(object)
-		// Forced skipping of method Windows.Foundation.MemoryBuffer.GetHashCode()
 		// Forced skipping of method Windows.Foundation.MemoryBuffer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Foundation.MemoryBuffer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Foundation.MemoryBuffer.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -93,7 +93,6 @@ namespace Windows.System.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.System.Diagnostics.ProcessDiagnosticInfo> GetForProcesses()
@@ -115,12 +114,6 @@ namespace Windows.System.Diagnostics
 			throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.TryGetForProcessId(uint processId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessDiagnosticInfo%20ProcessDiagnosticInfo.TryGetForProcessId%28uint%20processId%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.FromAbi(nint)
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.operator ==(Windows.System.Diagnostics.ProcessDiagnosticInfo, Windows.System.Diagnostics.ProcessDiagnosticInfo)
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.operator !=(Windows.System.Diagnostics.ProcessDiagnosticInfo, Windows.System.Diagnostics.ProcessDiagnosticInfo)
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.Equals(Windows.System.Diagnostics.ProcessDiagnosticInfo)
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.Equals(object)
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.GetHashCode()
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

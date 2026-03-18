@@ -149,7 +149,6 @@ namespace Microsoft.UI
 		// Skipping already declared property WhiteSmoke
 		// Skipping already declared property Yellow
 		// Skipping already declared property YellowGreen
-		// Forced skipping of method Microsoft.UI.Colors.As<I>()
 		// Forced skipping of method Microsoft.UI.Colors.AliceBlue.get
 		// Forced skipping of method Microsoft.UI.Colors.AntiqueWhite.get
 		// Forced skipping of method Microsoft.UI.Colors.Aqua.get
@@ -291,12 +290,6 @@ namespace Microsoft.UI
 		// Forced skipping of method Microsoft.UI.Colors.WhiteSmoke.get
 		// Forced skipping of method Microsoft.UI.Colors.Yellow.get
 		// Forced skipping of method Microsoft.UI.Colors.YellowGreen.get
-		// Forced skipping of method Microsoft.UI.Colors.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Colors.operator ==(Microsoft.UI.Colors, Microsoft.UI.Colors)
-		// Forced skipping of method Microsoft.UI.Colors.operator !=(Microsoft.UI.Colors, Microsoft.UI.Colors)
-		// Forced skipping of method Microsoft.UI.Colors.Equals(Microsoft.UI.Colors)
-		// Forced skipping of method Microsoft.UI.Colors.Equals(object)
-		// Forced skipping of method Microsoft.UI.Colors.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Colors.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Colors.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Colors.WinRT.IWinRTObject.QueryInterfaceCache.get

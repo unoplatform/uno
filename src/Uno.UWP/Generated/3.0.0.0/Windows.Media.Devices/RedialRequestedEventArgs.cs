@@ -13,12 +13,6 @@ namespace Windows.Media.Devices
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.RedialRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.RedialRequestedEventArgs.operator ==(Windows.Media.Devices.RedialRequestedEventArgs, Windows.Media.Devices.RedialRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Devices.RedialRequestedEventArgs.operator !=(Windows.Media.Devices.RedialRequestedEventArgs, Windows.Media.Devices.RedialRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Devices.RedialRequestedEventArgs.Equals(Windows.Media.Devices.RedialRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Devices.RedialRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.RedialRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.RedialRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.RedialRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.RedialRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

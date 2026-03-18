@@ -111,12 +111,6 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.operator ==(Windows.Devices.Enumeration.DevicePickerAppearance, Windows.Devices.Enumeration.DevicePickerAppearance)
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.operator !=(Windows.Devices.Enumeration.DevicePickerAppearance, Windows.Devices.Enumeration.DevicePickerAppearance)
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.Equals(Windows.Devices.Enumeration.DevicePickerAppearance)
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.Equals(object)
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.GetHashCode()
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -19,12 +19,6 @@ namespace Windows.UI.Popups
 		// Forced skipping of method Windows.UI.Popups.UICommand.UICommand(string, Windows.UI.Popups.UICommandInvokedHandler)
 		// Skipping already declared method Windows.UI.Popups.UICommand.UICommand(string, Windows.UI.Popups.UICommandInvokedHandler, object)
 		// Forced skipping of method Windows.UI.Popups.UICommand.UICommand(string, Windows.UI.Popups.UICommandInvokedHandler, object)
-		// Forced skipping of method Windows.UI.Popups.UICommand.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Popups.UICommand.operator ==(Windows.UI.Popups.UICommand, Windows.UI.Popups.UICommand)
-		// Forced skipping of method Windows.UI.Popups.UICommand.operator !=(Windows.UI.Popups.UICommand, Windows.UI.Popups.UICommand)
-		// Forced skipping of method Windows.UI.Popups.UICommand.Equals(Windows.UI.Popups.UICommand)
-		// Forced skipping of method Windows.UI.Popups.UICommand.Equals(object)
-		// Forced skipping of method Windows.UI.Popups.UICommand.GetHashCode()
 		// Forced skipping of method Windows.UI.Popups.UICommand.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Popups.UICommand.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Popups.UICommand.WinRT.IWinRTObject.QueryInterfaceCache.get

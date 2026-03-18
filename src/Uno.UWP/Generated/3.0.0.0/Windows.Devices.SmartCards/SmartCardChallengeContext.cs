@@ -23,12 +23,6 @@ namespace Windows.Devices.SmartCards
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.operator ==(Windows.Devices.SmartCards.SmartCardChallengeContext, Windows.Devices.SmartCards.SmartCardChallengeContext)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.operator !=(Windows.Devices.SmartCards.SmartCardChallengeContext, Windows.Devices.SmartCards.SmartCardChallengeContext)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.Equals(Windows.Devices.SmartCards.SmartCardChallengeContext)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.Equals(object)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.GetHashCode()
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardChallengeContext.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -17,11 +17,6 @@ namespace Windows.Web.Syndication
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.TransferProgress.TransferProgress(uint, uint, uint, uint)
-		// Forced skipping of method Windows.Web.Syndication.TransferProgress.operator ==(Windows.Web.Syndication.TransferProgress, Windows.Web.Syndication.TransferProgress)
-		// Forced skipping of method Windows.Web.Syndication.TransferProgress.operator !=(Windows.Web.Syndication.TransferProgress, Windows.Web.Syndication.TransferProgress)
-		// Forced skipping of method Windows.Web.Syndication.TransferProgress.Equals(Windows.Web.Syndication.TransferProgress)
-		// Forced skipping of method Windows.Web.Syndication.TransferProgress.Equals(object)
-		// Forced skipping of method Windows.Web.Syndication.TransferProgress.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint BytesSent;
 #endif

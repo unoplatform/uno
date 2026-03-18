@@ -23,7 +23,6 @@ namespace Windows.Data.Json
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Data.Json.JsonValue.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Data.Json.JsonValue Parse(string input)
@@ -66,12 +65,6 @@ namespace Windows.Data.Json
 			throw new global::System.NotImplementedException("The member JsonValue JsonValue.CreateNullValue() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=JsonValue%20JsonValue.CreateNullValue%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Data.Json.JsonValue.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Json.JsonValue.operator ==(Windows.Data.Json.JsonValue, Windows.Data.Json.JsonValue)
-		// Forced skipping of method Windows.Data.Json.JsonValue.operator !=(Windows.Data.Json.JsonValue, Windows.Data.Json.JsonValue)
-		// Forced skipping of method Windows.Data.Json.JsonValue.Equals(Windows.Data.Json.JsonValue)
-		// Forced skipping of method Windows.Data.Json.JsonValue.Equals(object)
-		// Forced skipping of method Windows.Data.Json.JsonValue.GetHashCode()
 		// Forced skipping of method Windows.Data.Json.JsonValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Json.JsonValue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Json.JsonValue.WinRT.IWinRTObject.QueryInterfaceCache.get

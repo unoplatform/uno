@@ -23,12 +23,6 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs.operator ==(Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs, Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs.operator !=(Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs, Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs.Equals(Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

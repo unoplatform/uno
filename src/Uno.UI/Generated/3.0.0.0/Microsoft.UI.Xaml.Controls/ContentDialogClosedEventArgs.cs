@@ -9,12 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ContentDialogClosedEventArgs
 	{
 		// Skipping already declared property Result
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs, Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs, Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.Equals(Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

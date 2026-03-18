@@ -54,7 +54,6 @@ namespace Windows.Devices.WiFiDirect
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.WiFiDirectConnectionParameters()
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Enumeration.DevicePairingKinds GetDevicePairingKinds(global::Windows.Devices.WiFiDirect.WiFiDirectConfigurationMethod configurationMethod)
@@ -62,12 +61,6 @@ namespace Windows.Devices.WiFiDirect
 			throw new global::System.NotImplementedException("The member DevicePairingKinds WiFiDirectConnectionParameters.GetDevicePairingKinds(WiFiDirectConfigurationMethod configurationMethod) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DevicePairingKinds%20WiFiDirectConnectionParameters.GetDevicePairingKinds%28WiFiDirectConfigurationMethod%20configurationMethod%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.operator ==(Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters, Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.operator !=(Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters, Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.Equals(Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.Equals(object)
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.GetHashCode()
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.WinRT.IWinRTObject.QueryInterfaceCache.get

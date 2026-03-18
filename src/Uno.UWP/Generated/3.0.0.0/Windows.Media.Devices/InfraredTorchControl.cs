@@ -91,12 +91,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.operator ==(Windows.Media.Devices.InfraredTorchControl, Windows.Media.Devices.InfraredTorchControl)
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.operator !=(Windows.Media.Devices.InfraredTorchControl, Windows.Media.Devices.InfraredTorchControl)
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.Equals(Windows.Media.Devices.InfraredTorchControl)
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.WinRT.IWinRTObject.QueryInterfaceCache.get

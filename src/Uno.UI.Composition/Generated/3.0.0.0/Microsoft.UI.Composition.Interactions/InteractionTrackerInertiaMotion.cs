@@ -41,7 +41,6 @@ namespace Microsoft.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion Create(global::Microsoft.UI.Composition.Compositor compositor)
@@ -49,19 +48,12 @@ namespace Microsoft.UI.Composition.Interactions
 			throw new global::System.NotImplementedException("The member InteractionTrackerInertiaMotion InteractionTrackerInertiaMotion.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionTrackerInertiaMotion%20InteractionTrackerInertiaMotion.Create%28Compositor%20compositor%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.operator ==(Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion, Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.operator !=(Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion, Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.Equals(Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.Condition.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.Condition.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.Motion.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.Motion.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaMotion.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

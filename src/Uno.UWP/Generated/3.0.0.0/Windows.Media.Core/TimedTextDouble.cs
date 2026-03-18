@@ -17,11 +17,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextDouble.TimedTextDouble(double, Windows.Media.Core.TimedTextUnit)
-		// Forced skipping of method Windows.Media.Core.TimedTextDouble.operator ==(Windows.Media.Core.TimedTextDouble, Windows.Media.Core.TimedTextDouble)
-		// Forced skipping of method Windows.Media.Core.TimedTextDouble.operator !=(Windows.Media.Core.TimedTextDouble, Windows.Media.Core.TimedTextDouble)
-		// Forced skipping of method Windows.Media.Core.TimedTextDouble.Equals(Windows.Media.Core.TimedTextDouble)
-		// Forced skipping of method Windows.Media.Core.TimedTextDouble.Equals(object)
-		// Forced skipping of method Windows.Media.Core.TimedTextDouble.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double Value;
 #endif

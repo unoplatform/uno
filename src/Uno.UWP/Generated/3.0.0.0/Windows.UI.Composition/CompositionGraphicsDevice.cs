@@ -13,12 +13,6 @@ namespace Windows.UI.Composition
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionGraphicsDevice.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionGraphicsDevice.operator ==(Windows.UI.Composition.CompositionGraphicsDevice, Windows.UI.Composition.CompositionGraphicsDevice)
-		// Forced skipping of method Windows.UI.Composition.CompositionGraphicsDevice.operator !=(Windows.UI.Composition.CompositionGraphicsDevice, Windows.UI.Composition.CompositionGraphicsDevice)
-		// Forced skipping of method Windows.UI.Composition.CompositionGraphicsDevice.Equals(Windows.UI.Composition.CompositionGraphicsDevice)
-		// Forced skipping of method Windows.UI.Composition.CompositionGraphicsDevice.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionGraphicsDevice.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionGraphicsDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGraphicsDevice.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -58,7 +52,6 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionGraphicsDevice", "void CompositionGraphicsDevice.Trim()");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionGraphicsDevice.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionGraphicsDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

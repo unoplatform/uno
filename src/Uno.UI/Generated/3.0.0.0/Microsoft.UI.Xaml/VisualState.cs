@@ -14,12 +14,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Storyboard
 		// Skipping already declared method Microsoft.UI.Xaml.VisualState.VisualState()
 		// Forced skipping of method Microsoft.UI.Xaml.VisualState.VisualState()
-		// Forced skipping of method Microsoft.UI.Xaml.VisualState.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.VisualState.operator ==(Microsoft.UI.Xaml.VisualState, Microsoft.UI.Xaml.VisualState)
-		// Forced skipping of method Microsoft.UI.Xaml.VisualState.operator !=(Microsoft.UI.Xaml.VisualState, Microsoft.UI.Xaml.VisualState)
-		// Forced skipping of method Microsoft.UI.Xaml.VisualState.Equals(Microsoft.UI.Xaml.VisualState)
-		// Forced skipping of method Microsoft.UI.Xaml.VisualState.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.VisualState.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.VisualState.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualState.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualState.Name.get
@@ -27,7 +21,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.VisualState.StateTriggers.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualState.Storyboard.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualState.Storyboard.set
-		// Forced skipping of method Microsoft.UI.Xaml.VisualState.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.VisualState.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

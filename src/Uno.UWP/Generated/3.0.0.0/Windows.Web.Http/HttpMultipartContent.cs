@@ -42,12 +42,6 @@ namespace Windows.Web.Http
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.HttpMultipartContent(string, string)
-		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.operator ==(Windows.Web.Http.HttpMultipartContent, Windows.Web.Http.HttpMultipartContent)
-		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.operator !=(Windows.Web.Http.HttpMultipartContent, Windows.Web.Http.HttpMultipartContent)
-		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.Equals(Windows.Web.Http.HttpMultipartContent)
-		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.Equals(object)
-		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -26,7 +26,6 @@ namespace Windows.Media.Playlists
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playlists.Playlist.Playlist()
-		// Forced skipping of method Windows.Media.Playlists.Playlist.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Playlists.Playlist> LoadAsync(global::Windows.Storage.IStorageFile file)
@@ -34,12 +33,6 @@ namespace Windows.Media.Playlists
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Playlist> Playlist.LoadAsync(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPlaylist%3E%20Playlist.LoadAsync%28IStorageFile%20file%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playlists.Playlist.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Playlists.Playlist.operator ==(Windows.Media.Playlists.Playlist, Windows.Media.Playlists.Playlist)
-		// Forced skipping of method Windows.Media.Playlists.Playlist.operator !=(Windows.Media.Playlists.Playlist, Windows.Media.Playlists.Playlist)
-		// Forced skipping of method Windows.Media.Playlists.Playlist.Equals(Windows.Media.Playlists.Playlist)
-		// Forced skipping of method Windows.Media.Playlists.Playlist.Equals(object)
-		// Forced skipping of method Windows.Media.Playlists.Playlist.GetHashCode()
 		// Forced skipping of method Windows.Media.Playlists.Playlist.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Playlists.Playlist.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Playlists.Playlist.WinRT.IWinRTObject.QueryInterfaceCache.get

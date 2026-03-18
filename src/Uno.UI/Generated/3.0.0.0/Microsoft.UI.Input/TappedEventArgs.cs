@@ -11,12 +11,6 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
 		// Skipping already declared property TapCount
-		// Forced skipping of method Microsoft.UI.Input.TappedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.TappedEventArgs.operator ==(Microsoft.UI.Input.TappedEventArgs, Microsoft.UI.Input.TappedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.TappedEventArgs.operator !=(Microsoft.UI.Input.TappedEventArgs, Microsoft.UI.Input.TappedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.TappedEventArgs.Equals(Microsoft.UI.Input.TappedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.TappedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.TappedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.TappedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.TappedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.TappedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

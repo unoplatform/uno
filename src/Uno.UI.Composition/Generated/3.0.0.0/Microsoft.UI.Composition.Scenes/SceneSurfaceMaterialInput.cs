@@ -69,7 +69,6 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput Create(global::Microsoft.UI.Composition.Compositor compositor)
@@ -77,12 +76,6 @@ namespace Microsoft.UI.Composition.Scenes
 			throw new global::System.NotImplementedException("The member SceneSurfaceMaterialInput SceneSurfaceMaterialInput.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneSurfaceMaterialInput%20SceneSurfaceMaterialInput.Create%28Compositor%20compositor%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.operator ==(Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput, Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.operator !=(Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput, Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.Equals(Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.BitmapInterpolationMode.get
@@ -93,7 +86,6 @@ namespace Microsoft.UI.Composition.Scenes
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingUMode.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingVMode.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingVMode.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -153,12 +153,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.operator ==(Windows.UI.Composition.CompositionNineGridBrush, Windows.UI.Composition.CompositionNineGridBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.operator !=(Windows.UI.Composition.CompositionNineGridBrush, Windows.UI.Composition.CompositionNineGridBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.Equals(Windows.UI.Composition.CompositionNineGridBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -209,7 +203,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.TopInset.set
 		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.TopInsetScale.get
 		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.TopInsetScale.set
-		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

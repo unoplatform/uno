@@ -14,20 +14,12 @@ namespace Microsoft.UI.Xaml.Navigation
 		// Skipping already declared property SourcePageType
 		// Skipping already declared method Microsoft.UI.Xaml.Navigation.PageStackEntry.PageStackEntry(System.Type, object, Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo)
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.PageStackEntry(System.Type, object, Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo)
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.SourcePageTypeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.operator ==(Microsoft.UI.Xaml.Navigation.PageStackEntry, Microsoft.UI.Xaml.Navigation.PageStackEntry)
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.operator !=(Microsoft.UI.Xaml.Navigation.PageStackEntry, Microsoft.UI.Xaml.Navigation.PageStackEntry)
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.Equals(Microsoft.UI.Xaml.Navigation.PageStackEntry)
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.NavigationTransitionInfo.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.Parameter.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.SourcePageType.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

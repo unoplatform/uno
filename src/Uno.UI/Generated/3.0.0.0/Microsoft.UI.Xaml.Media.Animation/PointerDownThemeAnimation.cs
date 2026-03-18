@@ -38,19 +38,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.PointerDownThemeAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.TargetNameProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation, Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation, Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.TargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

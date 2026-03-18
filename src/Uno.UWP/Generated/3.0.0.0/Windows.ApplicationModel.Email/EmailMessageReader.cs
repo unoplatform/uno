@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Email
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageReader.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageReader.operator ==(Windows.ApplicationModel.Email.EmailMessageReader, Windows.ApplicationModel.Email.EmailMessageReader)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageReader.operator !=(Windows.ApplicationModel.Email.EmailMessageReader, Windows.ApplicationModel.Email.EmailMessageReader)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageReader.Equals(Windows.ApplicationModel.Email.EmailMessageReader)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageReader.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageReader.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageReader.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessageReader.WinRT.IWinRTObject.QueryInterfaceCache.get

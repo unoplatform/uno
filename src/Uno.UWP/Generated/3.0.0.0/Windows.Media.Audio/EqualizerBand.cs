@@ -55,12 +55,6 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.EqualizerBand.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Audio.EqualizerBand.operator ==(Windows.Media.Audio.EqualizerBand, Windows.Media.Audio.EqualizerBand)
-		// Forced skipping of method Windows.Media.Audio.EqualizerBand.operator !=(Windows.Media.Audio.EqualizerBand, Windows.Media.Audio.EqualizerBand)
-		// Forced skipping of method Windows.Media.Audio.EqualizerBand.Equals(Windows.Media.Audio.EqualizerBand)
-		// Forced skipping of method Windows.Media.Audio.EqualizerBand.Equals(object)
-		// Forced skipping of method Windows.Media.Audio.EqualizerBand.GetHashCode()
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.WinRT.IWinRTObject.QueryInterfaceCache.get

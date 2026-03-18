@@ -43,12 +43,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange, Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange, Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange.Equals(Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange.WinRT.IWinRTObject.QueryInterfaceCache.get

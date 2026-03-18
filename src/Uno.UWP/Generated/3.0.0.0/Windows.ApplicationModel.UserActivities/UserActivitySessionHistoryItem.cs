@@ -43,12 +43,6 @@ namespace Windows.ApplicationModel.UserActivities
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem.operator ==(Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem, Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem.operator !=(Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem, Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem.Equals(Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem.WinRT.IWinRTObject.QueryInterfaceCache.get

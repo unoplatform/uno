@@ -130,7 +130,6 @@ namespace Windows.ApplicationModel.UserActivities
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.UserActivity(string)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.UserActivities.UserActivity TryParseFromJson(string json)
@@ -152,12 +151,6 @@ namespace Windows.ApplicationModel.UserActivities
 			throw new global::System.NotImplementedException("The member string UserActivity.ToJsonArray(IEnumerable<UserActivity> activities) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivity.ToJsonArray%28IEnumerable%3CUserActivity%3E%20activities%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.operator ==(Windows.ApplicationModel.UserActivities.UserActivity, Windows.ApplicationModel.UserActivities.UserActivity)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.operator !=(Windows.ApplicationModel.UserActivities.UserActivity, Windows.ApplicationModel.UserActivities.UserActivity)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.Equals(Windows.ApplicationModel.UserActivities.UserActivity)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.WinRT.IWinRTObject.QueryInterfaceCache.get

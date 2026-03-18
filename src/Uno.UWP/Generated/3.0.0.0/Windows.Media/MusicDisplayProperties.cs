@@ -107,12 +107,6 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.operator ==(Windows.Media.MusicDisplayProperties, Windows.Media.MusicDisplayProperties)
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.operator !=(Windows.Media.MusicDisplayProperties, Windows.Media.MusicDisplayProperties)
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.Equals(Windows.Media.MusicDisplayProperties)
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.Equals(object)
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.GetHashCode()
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

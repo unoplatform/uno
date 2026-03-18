@@ -53,12 +53,6 @@ namespace Windows.Management
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.MdmSession.FromAbi(nint)
-		// Forced skipping of method Windows.Management.MdmSession.operator ==(Windows.Management.MdmSession, Windows.Management.MdmSession)
-		// Forced skipping of method Windows.Management.MdmSession.operator !=(Windows.Management.MdmSession, Windows.Management.MdmSession)
-		// Forced skipping of method Windows.Management.MdmSession.Equals(Windows.Management.MdmSession)
-		// Forced skipping of method Windows.Management.MdmSession.Equals(object)
-		// Forced skipping of method Windows.Management.MdmSession.GetHashCode()
 		// Forced skipping of method Windows.Management.MdmSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Management.MdmSession.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Management.MdmSession.WinRT.IWinRTObject.QueryInterfaceCache.get

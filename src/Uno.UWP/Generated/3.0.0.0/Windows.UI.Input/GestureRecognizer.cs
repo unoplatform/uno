@@ -340,12 +340,6 @@ namespace Windows.UI.Input
 #endif
 		// Skipping already declared method Windows.UI.Input.GestureRecognizer.GestureRecognizer()
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.GestureRecognizer()
-		// Forced skipping of method Windows.UI.Input.GestureRecognizer.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.GestureRecognizer.operator ==(Windows.UI.Input.GestureRecognizer, Windows.UI.Input.GestureRecognizer)
-		// Forced skipping of method Windows.UI.Input.GestureRecognizer.operator !=(Windows.UI.Input.GestureRecognizer, Windows.UI.Input.GestureRecognizer)
-		// Forced skipping of method Windows.UI.Input.GestureRecognizer.Equals(Windows.UI.Input.GestureRecognizer)
-		// Forced skipping of method Windows.UI.Input.GestureRecognizer.Equals(object)
-		// Forced skipping of method Windows.UI.Input.GestureRecognizer.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.WinRT.IWinRTObject.QueryInterfaceCache.get

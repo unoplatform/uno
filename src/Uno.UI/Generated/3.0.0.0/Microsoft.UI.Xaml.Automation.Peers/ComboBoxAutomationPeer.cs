@@ -19,14 +19,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property VisualState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.ComboBoxAutomationPeer(Microsoft.UI.Xaml.Controls.ComboBox)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.ComboBoxAutomationPeer(Microsoft.UI.Xaml.Controls.ComboBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.ComboBoxAutomationPeer(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.ComboBoxAutomationPeer(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.SetValue(string)
@@ -44,7 +36,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.Minimizable.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.VisualState.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IValueProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider

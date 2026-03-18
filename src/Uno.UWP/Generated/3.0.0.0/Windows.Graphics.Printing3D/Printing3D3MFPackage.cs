@@ -82,7 +82,6 @@ namespace Windows.Graphics.Printing3D
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3D3MFPackage.Printing3D3MFPackage()
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3D3MFPackage.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Printing3D.Printing3D3MFPackage> LoadAsync(global::Windows.Storage.Streams.IRandomAccessStream value)
@@ -90,12 +89,6 @@ namespace Windows.Graphics.Printing3D
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Printing3D3MFPackage> Printing3D3MFPackage.LoadAsync(IRandomAccessStream value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPrinting3D3MFPackage%3E%20Printing3D3MFPackage.LoadAsync%28IRandomAccessStream%20value%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3D3MFPackage.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3D3MFPackage.operator ==(Windows.Graphics.Printing3D.Printing3D3MFPackage, Windows.Graphics.Printing3D.Printing3D3MFPackage)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3D3MFPackage.operator !=(Windows.Graphics.Printing3D.Printing3D3MFPackage, Windows.Graphics.Printing3D.Printing3D3MFPackage)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3D3MFPackage.Equals(Windows.Graphics.Printing3D.Printing3D3MFPackage)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3D3MFPackage.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3D3MFPackage.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3D3MFPackage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3D3MFPackage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3D3MFPackage.WinRT.IWinRTObject.QueryInterfaceCache.get

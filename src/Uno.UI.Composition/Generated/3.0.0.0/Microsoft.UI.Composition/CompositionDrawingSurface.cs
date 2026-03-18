@@ -48,14 +48,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.CompositionDrawingSurface(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.operator ==(Microsoft.UI.Composition.CompositionDrawingSurface, Microsoft.UI.Composition.CompositionDrawingSurface)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.operator !=(Microsoft.UI.Composition.CompositionDrawingSurface, Microsoft.UI.Composition.CompositionDrawingSurface)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.Equals(Microsoft.UI.Composition.CompositionDrawingSurface)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.CompositionDrawingSurface(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -97,7 +89,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.PixelFormat.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.Size.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.SizeInt32.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Composition.ICompositionSurface
 	}

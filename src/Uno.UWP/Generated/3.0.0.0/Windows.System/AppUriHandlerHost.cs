@@ -38,12 +38,6 @@ namespace Windows.System
 		}
 #endif
 		// Forced skipping of method Windows.System.AppUriHandlerHost.AppUriHandlerHost(string)
-		// Forced skipping of method Windows.System.AppUriHandlerHost.FromAbi(nint)
-		// Forced skipping of method Windows.System.AppUriHandlerHost.operator ==(Windows.System.AppUriHandlerHost, Windows.System.AppUriHandlerHost)
-		// Forced skipping of method Windows.System.AppUriHandlerHost.operator !=(Windows.System.AppUriHandlerHost, Windows.System.AppUriHandlerHost)
-		// Forced skipping of method Windows.System.AppUriHandlerHost.Equals(Windows.System.AppUriHandlerHost)
-		// Forced skipping of method Windows.System.AppUriHandlerHost.Equals(object)
-		// Forced skipping of method Windows.System.AppUriHandlerHost.GetHashCode()
 		// Forced skipping of method Windows.System.AppUriHandlerHost.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.AppUriHandlerHost.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.AppUriHandlerHost.WinRT.IWinRTObject.QueryInterfaceCache.get

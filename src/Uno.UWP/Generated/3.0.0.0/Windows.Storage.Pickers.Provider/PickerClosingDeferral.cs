@@ -13,12 +13,6 @@ namespace Windows.Storage.Pickers.Provider
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingDeferral.operator ==(Windows.Storage.Pickers.Provider.PickerClosingDeferral, Windows.Storage.Pickers.Provider.PickerClosingDeferral)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingDeferral.operator !=(Windows.Storage.Pickers.Provider.PickerClosingDeferral, Windows.Storage.Pickers.Provider.PickerClosingDeferral)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingDeferral.Equals(Windows.Storage.Pickers.Provider.PickerClosingDeferral)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingDeferral.Equals(object)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingDeferral.GetHashCode()
 		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

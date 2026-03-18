@@ -146,12 +146,6 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.SubjectAlternativeNameInfo()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.operator ==(Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo, Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.operator !=(Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo, Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.Equals(Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.Equals(object)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.GetHashCode()
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

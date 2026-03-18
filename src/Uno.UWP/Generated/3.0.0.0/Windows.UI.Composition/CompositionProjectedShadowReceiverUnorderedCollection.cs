@@ -23,12 +23,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.operator ==(Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection, Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection)
-		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.operator !=(Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection, Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection)
-		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.Equals(Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection)
-		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -61,7 +55,6 @@ namespace Windows.UI.Composition
 #endif
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.Count.get
-		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Composition.CompositionProjectedShadowReceiver>
 		// Processing: System.Collections.IEnumerable

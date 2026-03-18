@@ -53,12 +53,6 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannel.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannel.operator ==(Windows.Media.Miracast.MiracastReceiverCursorImageChannel, Windows.Media.Miracast.MiracastReceiverCursorImageChannel)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannel.operator !=(Windows.Media.Miracast.MiracastReceiverCursorImageChannel, Windows.Media.Miracast.MiracastReceiverCursorImageChannel)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannel.Equals(Windows.Media.Miracast.MiracastReceiverCursorImageChannel)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannel.Equals(object)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannel.GetHashCode()
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannel.WinRT.IWinRTObject.QueryInterfaceCache.get

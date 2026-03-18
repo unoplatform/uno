@@ -13,12 +13,6 @@ namespace Windows.Media.Effects
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.operator ==(Windows.Media.Effects.AudioCaptureEffectsManager, Windows.Media.Effects.AudioCaptureEffectsManager)
-		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.operator !=(Windows.Media.Effects.AudioCaptureEffectsManager, Windows.Media.Effects.AudioCaptureEffectsManager)
-		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.Equals(Windows.Media.Effects.AudioCaptureEffectsManager)
-		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.Equals(object)
-		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.GetHashCode()
 		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.WinRT.IWinRTObject.QueryInterfaceCache.get

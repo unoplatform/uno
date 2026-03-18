@@ -53,12 +53,6 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.operator ==(Windows.Networking.Connectivity.WwanConnectionProfileDetails, Windows.Networking.Connectivity.WwanConnectionProfileDetails)
-		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.operator !=(Windows.Networking.Connectivity.WwanConnectionProfileDetails, Windows.Networking.Connectivity.WwanConnectionProfileDetails)
-		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.Equals(Windows.Networking.Connectivity.WwanConnectionProfileDetails)
-		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.Equals(object)
-		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.GetHashCode()
 		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

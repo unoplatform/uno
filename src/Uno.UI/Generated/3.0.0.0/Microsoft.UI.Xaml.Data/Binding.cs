@@ -21,14 +21,6 @@ namespace Microsoft.UI.Xaml.Data
 		// Skipping already declared property UpdateSourceTrigger
 		// Skipping already declared method Microsoft.UI.Xaml.Data.Binding.Binding()
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Binding()
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Binding(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.operator ==(Microsoft.UI.Xaml.Data.Binding, Microsoft.UI.Xaml.Data.Binding)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.operator !=(Microsoft.UI.Xaml.Data.Binding, Microsoft.UI.Xaml.Data.Binding)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Equals(Microsoft.UI.Xaml.Data.Binding)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Binding(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Converter.get
@@ -53,7 +45,6 @@ namespace Microsoft.UI.Xaml.Data
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.TargetNullValue.set
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.UpdateSourceTrigger.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.UpdateSourceTrigger.set
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

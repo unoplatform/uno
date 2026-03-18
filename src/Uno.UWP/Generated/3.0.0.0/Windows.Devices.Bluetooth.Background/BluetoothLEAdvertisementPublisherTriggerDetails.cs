@@ -43,12 +43,6 @@ namespace Windows.Devices.Bluetooth.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.operator ==(Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails, Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails)
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.operator !=(Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails, Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails)
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.Equals(Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails)
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -16,12 +16,6 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.NDTCPMessenger(string, uint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.operator ==(Windows.Media.Protection.PlayReady.NDTCPMessenger, Windows.Media.Protection.PlayReady.NDTCPMessenger)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.operator !=(Windows.Media.Protection.PlayReady.NDTCPMessenger, Windows.Media.Protection.PlayReady.NDTCPMessenger)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.Equals(Windows.Media.Protection.PlayReady.NDTCPMessenger)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDTCPMessenger.WinRT.IWinRTObject.QueryInterfaceCache.get

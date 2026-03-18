@@ -13,12 +13,6 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral.operator ==(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral, Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral.operator !=(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral, Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral.Equals(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral.Equals(object)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral.GetHashCode()
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadRequestedDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

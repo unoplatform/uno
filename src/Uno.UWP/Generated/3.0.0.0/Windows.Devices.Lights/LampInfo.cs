@@ -103,12 +103,6 @@ namespace Windows.Devices.Lights
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.operator ==(Windows.Devices.Lights.LampInfo, Windows.Devices.Lights.LampInfo)
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.operator !=(Windows.Devices.Lights.LampInfo, Windows.Devices.Lights.LampInfo)
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.Equals(Windows.Devices.Lights.LampInfo)
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.Equals(object)
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.GetHashCode()
 		// Forced skipping of method Windows.Devices.Lights.LampInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Lights.LampInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Lights.LampInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

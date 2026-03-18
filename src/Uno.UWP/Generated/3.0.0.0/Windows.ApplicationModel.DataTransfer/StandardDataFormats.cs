@@ -98,7 +98,6 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.As<I>()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.ApplicationLink.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Bitmap.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Html.get

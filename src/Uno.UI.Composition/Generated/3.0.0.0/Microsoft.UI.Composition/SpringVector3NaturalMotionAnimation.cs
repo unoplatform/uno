@@ -41,19 +41,12 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.operator ==(Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation, Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.operator !=(Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation, Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.Equals(Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation)
-		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.DampingRatio.get
 		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.DampingRatio.set
 		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.Period.get
 		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.Period.set
-		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

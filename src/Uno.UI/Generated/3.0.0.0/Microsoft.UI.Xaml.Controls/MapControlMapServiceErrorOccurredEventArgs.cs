@@ -23,12 +23,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs.operator ==(Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs, Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs.operator !=(Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs, Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs.Equals(Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

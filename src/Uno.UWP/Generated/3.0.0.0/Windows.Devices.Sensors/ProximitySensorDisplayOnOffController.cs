@@ -13,12 +13,6 @@ namespace Windows.Devices.Sensors
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.operator ==(Windows.Devices.Sensors.ProximitySensorDisplayOnOffController, Windows.Devices.Sensors.ProximitySensorDisplayOnOffController)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.operator !=(Windows.Devices.Sensors.ProximitySensorDisplayOnOffController, Windows.Devices.Sensors.ProximitySensorDisplayOnOffController)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.Equals(Windows.Devices.Sensors.ProximitySensorDisplayOnOffController)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorDisplayOnOffController.WinRT.IWinRTObject.QueryInterfaceCache.get

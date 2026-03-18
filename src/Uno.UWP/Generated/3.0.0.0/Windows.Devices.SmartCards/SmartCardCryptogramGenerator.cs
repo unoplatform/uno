@@ -63,7 +63,6 @@ namespace Windows.Devices.SmartCards
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramGenerator.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardCryptogramGenerator> GetSmartCardCryptogramGeneratorAsync()
@@ -78,12 +77,6 @@ namespace Windows.Devices.SmartCards
 			throw new global::System.NotImplementedException("The member bool SmartCardCryptogramGenerator.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SmartCardCryptogramGenerator.IsSupported%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramGenerator.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramGenerator.operator ==(Windows.Devices.SmartCards.SmartCardCryptogramGenerator, Windows.Devices.SmartCards.SmartCardCryptogramGenerator)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramGenerator.operator !=(Windows.Devices.SmartCards.SmartCardCryptogramGenerator, Windows.Devices.SmartCards.SmartCardCryptogramGenerator)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramGenerator.Equals(Windows.Devices.SmartCards.SmartCardCryptogramGenerator)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramGenerator.Equals(object)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramGenerator.GetHashCode()
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramGenerator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramGenerator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramGenerator.WinRT.IWinRTObject.QueryInterfaceCache.get

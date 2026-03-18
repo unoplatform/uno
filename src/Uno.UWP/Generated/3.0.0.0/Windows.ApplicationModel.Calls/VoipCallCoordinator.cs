@@ -13,7 +13,6 @@ namespace Windows.ApplicationModel.Calls
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Calls.VoipCallCoordinator GetDefault()
@@ -21,12 +20,6 @@ namespace Windows.ApplicationModel.Calls
 			throw new global::System.NotImplementedException("The member VoipCallCoordinator VoipCallCoordinator.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoipCallCoordinator%20VoipCallCoordinator.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.operator ==(Windows.ApplicationModel.Calls.VoipCallCoordinator, Windows.ApplicationModel.Calls.VoipCallCoordinator)
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.operator !=(Windows.ApplicationModel.Calls.VoipCallCoordinator, Windows.ApplicationModel.Calls.VoipCallCoordinator)
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.Equals(Windows.ApplicationModel.Calls.VoipCallCoordinator)
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.WinRT.IWinRTObject.QueryInterfaceCache.get

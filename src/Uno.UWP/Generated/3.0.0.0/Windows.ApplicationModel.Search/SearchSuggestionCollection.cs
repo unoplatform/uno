@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Search
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.operator ==(Windows.ApplicationModel.Search.SearchSuggestionCollection, Windows.ApplicationModel.Search.SearchSuggestionCollection)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.operator !=(Windows.ApplicationModel.Search.SearchSuggestionCollection, Windows.ApplicationModel.Search.SearchSuggestionCollection)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.Equals(Windows.ApplicationModel.Search.SearchSuggestionCollection)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

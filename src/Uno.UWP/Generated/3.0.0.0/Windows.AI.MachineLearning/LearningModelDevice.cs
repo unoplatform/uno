@@ -36,7 +36,6 @@ namespace Windows.AI.MachineLearning
 		}
 #endif
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.LearningModelDevice(Windows.AI.MachineLearning.LearningModelDeviceKind)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.AI.MachineLearning.LearningModelDevice CreateFromDirect3D11Device(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice device)
@@ -44,12 +43,6 @@ namespace Windows.AI.MachineLearning
 			throw new global::System.NotImplementedException("The member LearningModelDevice LearningModelDevice.CreateFromDirect3D11Device(IDirect3DDevice device) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LearningModelDevice%20LearningModelDevice.CreateFromDirect3D11Device%28IDirect3DDevice%20device%29");
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.FromAbi(nint)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.operator ==(Windows.AI.MachineLearning.LearningModelDevice, Windows.AI.MachineLearning.LearningModelDevice)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.operator !=(Windows.AI.MachineLearning.LearningModelDevice, Windows.AI.MachineLearning.LearningModelDevice)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.Equals(Windows.AI.MachineLearning.LearningModelDevice)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.Equals(object)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.GetHashCode()
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.WinRT.IWinRTObject.QueryInterfaceCache.get

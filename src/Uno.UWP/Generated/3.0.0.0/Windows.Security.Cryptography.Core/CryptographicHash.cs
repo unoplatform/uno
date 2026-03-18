@@ -13,12 +13,6 @@ namespace Windows.Security.Cryptography.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.operator ==(Windows.Security.Cryptography.Core.CryptographicHash, Windows.Security.Cryptography.Core.CryptographicHash)
-		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.operator !=(Windows.Security.Cryptography.Core.CryptographicHash, Windows.Security.Cryptography.Core.CryptographicHash)
-		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.Equals(Windows.Security.Cryptography.Core.CryptographicHash)
-		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.Equals(object)
-		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.GetHashCode()
 		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.CryptographicHash.WinRT.IWinRTObject.QueryInterfaceCache.get

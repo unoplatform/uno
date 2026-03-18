@@ -38,19 +38,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Source
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.WebView2()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.WebView2()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CanGoBackProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CanGoForwardProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.DefaultBackgroundColorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.SourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.WebView2(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.operator ==(Microsoft.UI.Xaml.Controls.WebView2, Microsoft.UI.Xaml.Controls.WebView2)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.operator !=(Microsoft.UI.Xaml.Controls.WebView2, Microsoft.UI.Xaml.Controls.WebView2)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.Equals(Microsoft.UI.Xaml.Controls.WebView2)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.WebView2(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.EnsureCoreWebView2Async()
@@ -99,7 +90,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.DefaultBackgroundColor.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.Source.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.Source.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.WebView2.CoreProcessFailed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.WebView2.CoreWebView2Initialized

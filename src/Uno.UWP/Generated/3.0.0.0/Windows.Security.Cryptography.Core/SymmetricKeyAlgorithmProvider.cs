@@ -33,7 +33,6 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider OpenAlgorithm(string algorithm)
@@ -41,12 +40,6 @@ namespace Windows.Security.Cryptography.Core
 			throw new global::System.NotImplementedException("The member SymmetricKeyAlgorithmProvider SymmetricKeyAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SymmetricKeyAlgorithmProvider%20SymmetricKeyAlgorithmProvider.OpenAlgorithm%28string%20algorithm%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.operator ==(Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider, Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider)
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.operator !=(Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider, Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider)
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.Equals(Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider)
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.Equals(object)
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.GetHashCode()
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -41,19 +41,12 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStop.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStop.operator ==(Windows.UI.Composition.CompositionColorGradientStop, Windows.UI.Composition.CompositionColorGradientStop)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStop.operator !=(Windows.UI.Composition.CompositionColorGradientStop, Windows.UI.Composition.CompositionColorGradientStop)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStop.Equals(Windows.UI.Composition.CompositionColorGradientStop)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStop.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStop.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStop.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStop.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStop.Color.get
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStop.Color.set
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStop.Offset.get
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStop.Offset.set
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStop.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStop.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

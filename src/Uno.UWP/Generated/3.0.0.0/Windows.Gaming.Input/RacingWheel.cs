@@ -113,7 +113,6 @@ namespace Windows.Gaming.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.As<I>()
 		// Forced skipping of method Windows.Gaming.Input.RacingWheel.RacingWheelAdded.add
 		// Forced skipping of method Windows.Gaming.Input.RacingWheel.RacingWheelAdded.remove
 		// Forced skipping of method Windows.Gaming.Input.RacingWheel.RacingWheelRemoved.add
@@ -126,12 +125,6 @@ namespace Windows.Gaming.Input
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.RacingWheel.RacingWheels.get
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.operator ==(Windows.Gaming.Input.RacingWheel, Windows.Gaming.Input.RacingWheel)
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.operator !=(Windows.Gaming.Input.RacingWheel, Windows.Gaming.Input.RacingWheel)
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.Equals(Windows.Gaming.Input.RacingWheel)
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Input.RacingWheel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.RacingWheel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.RacingWheel.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -169,12 +169,6 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.operator ==(Windows.Devices.AllJoyn.AllJoynAboutData, Windows.Devices.AllJoyn.AllJoynAboutData)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.operator !=(Windows.Devices.AllJoyn.AllJoynAboutData, Windows.Devices.AllJoyn.AllJoynAboutData)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.Equals(Windows.Devices.AllJoyn.AllJoynAboutData)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.Equals(object)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.GetHashCode()
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.WinRT.IWinRTObject.QueryInterfaceCache.get

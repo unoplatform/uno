@@ -17,11 +17,6 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.BasicGeoposition.BasicGeoposition(double, double, double)
-		// Forced skipping of method Windows.Devices.Geolocation.BasicGeoposition.operator ==(Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.BasicGeoposition)
-		// Forced skipping of method Windows.Devices.Geolocation.BasicGeoposition.operator !=(Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.BasicGeoposition)
-		// Forced skipping of method Windows.Devices.Geolocation.BasicGeoposition.Equals(Windows.Devices.Geolocation.BasicGeoposition)
-		// Forced skipping of method Windows.Devices.Geolocation.BasicGeoposition.Equals(object)
-		// Forced skipping of method Windows.Devices.Geolocation.BasicGeoposition.GetHashCode()
 		// Skipping already declared field Windows.Devices.Geolocation.BasicGeoposition.Latitude
 		// Skipping already declared field Windows.Devices.Geolocation.BasicGeoposition.Longitude
 		// Skipping already declared field Windows.Devices.Geolocation.BasicGeoposition.Altitude

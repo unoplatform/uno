@@ -109,12 +109,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintHolePunchOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

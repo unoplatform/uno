@@ -54,12 +54,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.VpnTrafficFilterAssignment()
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.operator ==(Windows.Networking.Vpn.VpnTrafficFilterAssignment, Windows.Networking.Vpn.VpnTrafficFilterAssignment)
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.operator !=(Windows.Networking.Vpn.VpnTrafficFilterAssignment, Windows.Networking.Vpn.VpnTrafficFilterAssignment)
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.Equals(Windows.Networking.Vpn.VpnTrafficFilterAssignment)
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Calls
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral.operator ==(Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral, Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral.operator !=(Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral, Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral.Equals(Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

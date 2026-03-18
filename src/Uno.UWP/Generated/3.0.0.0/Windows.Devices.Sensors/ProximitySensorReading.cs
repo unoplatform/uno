@@ -11,12 +11,6 @@ namespace Windows.Devices.Sensors
 		// Skipping already declared property DistanceInMillimeters
 		// Skipping already declared property IsDetected
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReading.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReading.operator ==(Windows.Devices.Sensors.ProximitySensorReading, Windows.Devices.Sensors.ProximitySensorReading)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReading.operator !=(Windows.Devices.Sensors.ProximitySensorReading, Windows.Devices.Sensors.ProximitySensorReading)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReading.Equals(Windows.Devices.Sensors.ProximitySensorReading)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReading.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReading.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReading.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReading.WinRT.IWinRTObject.QueryInterfaceCache.get

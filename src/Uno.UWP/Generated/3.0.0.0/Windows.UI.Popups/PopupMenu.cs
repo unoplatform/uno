@@ -20,12 +20,6 @@ namespace Windows.UI.Popups
 #endif
 		// Skipping already declared method Windows.UI.Popups.PopupMenu.PopupMenu()
 		// Forced skipping of method Windows.UI.Popups.PopupMenu.PopupMenu()
-		// Forced skipping of method Windows.UI.Popups.PopupMenu.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Popups.PopupMenu.operator ==(Windows.UI.Popups.PopupMenu, Windows.UI.Popups.PopupMenu)
-		// Forced skipping of method Windows.UI.Popups.PopupMenu.operator !=(Windows.UI.Popups.PopupMenu, Windows.UI.Popups.PopupMenu)
-		// Forced skipping of method Windows.UI.Popups.PopupMenu.Equals(Windows.UI.Popups.PopupMenu)
-		// Forced skipping of method Windows.UI.Popups.PopupMenu.Equals(object)
-		// Forced skipping of method Windows.UI.Popups.PopupMenu.GetHashCode()
 		// Forced skipping of method Windows.UI.Popups.PopupMenu.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Popups.PopupMenu.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Popups.PopupMenu.WinRT.IWinRTObject.QueryInterfaceCache.get

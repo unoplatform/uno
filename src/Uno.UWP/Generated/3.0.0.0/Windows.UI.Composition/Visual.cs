@@ -284,14 +284,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Visual.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.Visual.Visual(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.Visual.operator ==(Windows.UI.Composition.Visual, Windows.UI.Composition.Visual)
-		// Forced skipping of method Windows.UI.Composition.Visual.operator !=(Windows.UI.Composition.Visual, Windows.UI.Composition.Visual)
-		// Forced skipping of method Windows.UI.Composition.Visual.Equals(Windows.UI.Composition.Visual)
-		// Forced skipping of method Windows.UI.Composition.Visual.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.Visual.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.Visual.Visual(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.Visual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Visual.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Visual.AnchorPoint.get
@@ -333,7 +325,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.Visual.Size.set
 		// Forced skipping of method Windows.UI.Composition.Visual.TransformMatrix.get
 		// Forced skipping of method Windows.UI.Composition.Visual.TransformMatrix.set
-		// Forced skipping of method Windows.UI.Composition.Visual.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.Visual.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

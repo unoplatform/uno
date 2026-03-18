@@ -50,12 +50,6 @@ namespace Windows.Security.Authentication.OnlineId
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.OnlineIdAuthenticator()
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.operator ==(Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator, Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator)
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.operator !=(Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator, Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator)
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.Equals(Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator)
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.Equals(object)
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.GetHashCode()
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.WinRT.IWinRTObject.QueryInterfaceCache.get

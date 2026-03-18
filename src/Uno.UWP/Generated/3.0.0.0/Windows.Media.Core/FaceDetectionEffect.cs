@@ -41,12 +41,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.operator ==(Windows.Media.Core.FaceDetectionEffect, Windows.Media.Core.FaceDetectionEffect)
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.operator !=(Windows.Media.Core.FaceDetectionEffect, Windows.Media.Core.FaceDetectionEffect)
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.Equals(Windows.Media.Core.FaceDetectionEffect)
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.Equals(object)
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.WinRT.IWinRTObject.QueryInterfaceCache.get

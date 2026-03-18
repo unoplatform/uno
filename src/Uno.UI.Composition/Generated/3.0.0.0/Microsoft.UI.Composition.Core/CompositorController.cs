@@ -26,12 +26,6 @@ namespace Microsoft.UI.Composition.Core
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.CompositorController()
-		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.operator ==(Microsoft.UI.Composition.Core.CompositorController, Microsoft.UI.Composition.Core.CompositorController)
-		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.operator !=(Microsoft.UI.Composition.Core.CompositorController, Microsoft.UI.Composition.Core.CompositorController)
-		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.Equals(Microsoft.UI.Composition.Core.CompositorController)
-		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.WinRT.IWinRTObject.QueryInterfaceCache.get

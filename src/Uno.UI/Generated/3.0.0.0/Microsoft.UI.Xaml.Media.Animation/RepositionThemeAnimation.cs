@@ -76,16 +76,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.RepositionThemeAnimation()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.RepositionThemeAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.FromHorizontalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.FromVerticalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.TargetNameProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation, Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation, Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.FromHorizontalOffset.get
@@ -94,7 +87,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.FromVerticalOffset.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.TargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

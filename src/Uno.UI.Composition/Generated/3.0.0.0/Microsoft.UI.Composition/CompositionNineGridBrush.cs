@@ -18,12 +18,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Source
 		// Skipping already declared property TopInset
 		// Skipping already declared property TopInsetScale
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.operator ==(Microsoft.UI.Composition.CompositionNineGridBrush, Microsoft.UI.Composition.CompositionNineGridBrush)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.operator !=(Microsoft.UI.Composition.CompositionNineGridBrush, Microsoft.UI.Composition.CompositionNineGridBrush)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.Equals(Microsoft.UI.Composition.CompositionNineGridBrush)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.CompositionNineGridBrush.SetInsets(float)
@@ -50,7 +44,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInsetScale.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInsetScale.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

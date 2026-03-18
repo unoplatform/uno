@@ -13,12 +13,6 @@ namespace Windows.Perception.People
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Perception.People.HandPose.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.People.HandPose.operator ==(Windows.Perception.People.HandPose, Windows.Perception.People.HandPose)
-		// Forced skipping of method Windows.Perception.People.HandPose.operator !=(Windows.Perception.People.HandPose, Windows.Perception.People.HandPose)
-		// Forced skipping of method Windows.Perception.People.HandPose.Equals(Windows.Perception.People.HandPose)
-		// Forced skipping of method Windows.Perception.People.HandPose.Equals(object)
-		// Forced skipping of method Windows.Perception.People.HandPose.GetHashCode()
 		// Forced skipping of method Windows.Perception.People.HandPose.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.People.HandPose.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.People.HandPose.WinRT.IWinRTObject.QueryInterfaceCache.get

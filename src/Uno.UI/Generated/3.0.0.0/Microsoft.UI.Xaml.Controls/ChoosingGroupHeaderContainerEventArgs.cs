@@ -50,12 +50,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.ChoosingGroupHeaderContainerEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs, Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs, Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.Equals(Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

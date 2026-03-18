@@ -44,12 +44,6 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.ContactConnectedServiceAccount()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.operator ==(Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount, Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.operator !=(Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount, Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.Equals(Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.WinRT.IWinRTObject.QueryInterfaceCache.get

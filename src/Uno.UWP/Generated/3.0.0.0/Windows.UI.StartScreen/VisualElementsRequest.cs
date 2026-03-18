@@ -43,12 +43,6 @@ namespace Windows.UI.StartScreen
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.FromAbi(nint)
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.operator ==(Windows.UI.StartScreen.VisualElementsRequest, Windows.UI.StartScreen.VisualElementsRequest)
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.operator !=(Windows.UI.StartScreen.VisualElementsRequest, Windows.UI.StartScreen.VisualElementsRequest)
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.Equals(Windows.UI.StartScreen.VisualElementsRequest)
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.Equals(object)
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.GetHashCode()
 		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

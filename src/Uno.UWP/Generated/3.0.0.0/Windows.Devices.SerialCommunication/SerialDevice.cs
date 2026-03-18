@@ -243,7 +243,6 @@ namespace Windows.Devices.SerialCommunication
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -272,12 +271,6 @@ namespace Windows.Devices.SerialCommunication
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SerialDevice> SerialDevice.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSerialDevice%3E%20SerialDevice.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.operator ==(Windows.Devices.SerialCommunication.SerialDevice, Windows.Devices.SerialCommunication.SerialDevice)
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.operator !=(Windows.Devices.SerialCommunication.SerialDevice, Windows.Devices.SerialCommunication.SerialDevice)
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.Equals(Windows.Devices.SerialCommunication.SerialDevice)
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.Equals(object)
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.GetHashCode()
 		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WinRT.IWinRTObject.QueryInterfaceCache.get

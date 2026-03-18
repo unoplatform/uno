@@ -143,12 +143,6 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.operator ==(Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult, Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult)
-		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.operator !=(Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult, Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult)
-		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.Equals(Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult)
-		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.Equals(object)
-		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.GetHashCode()
 		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.WinRT.IWinRTObject.QueryInterfaceCache.get

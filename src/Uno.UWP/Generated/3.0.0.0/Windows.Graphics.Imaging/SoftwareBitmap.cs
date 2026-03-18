@@ -102,7 +102,6 @@ namespace Windows.Graphics.Imaging
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.SoftwareBitmap(Windows.Graphics.Imaging.BitmapPixelFormat, int, int, Windows.Graphics.Imaging.BitmapAlphaMode)
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.As<I>()
 #if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap Copy(global::Windows.Graphics.Imaging.SoftwareBitmap source)
@@ -152,13 +151,7 @@ namespace Windows.Graphics.Imaging
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SoftwareBitmap> SoftwareBitmap.CreateCopyFromSurfaceAsync(IDirect3DSurface surface, BitmapAlphaMode alpha) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSoftwareBitmap%3E%20SoftwareBitmap.CreateCopyFromSurfaceAsync%28IDirect3DSurface%20surface%2C%20BitmapAlphaMode%20alpha%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.FromAbi(nint)
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.~SoftwareBitmap()
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.operator ==(Windows.Graphics.Imaging.SoftwareBitmap, Windows.Graphics.Imaging.SoftwareBitmap)
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.operator !=(Windows.Graphics.Imaging.SoftwareBitmap, Windows.Graphics.Imaging.SoftwareBitmap)
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.Equals(Windows.Graphics.Imaging.SoftwareBitmap)
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.Equals(object)
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.WinRT.IWinRTObject.QueryInterfaceCache.get

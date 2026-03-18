@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection.operator ==(Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection, Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection.operator !=(Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection, Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection.Equals(Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection.WinRT.IWinRTObject.QueryInterfaceCache.get

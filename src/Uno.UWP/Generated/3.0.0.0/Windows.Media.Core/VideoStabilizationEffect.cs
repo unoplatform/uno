@@ -27,12 +27,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.operator ==(Windows.Media.Core.VideoStabilizationEffect, Windows.Media.Core.VideoStabilizationEffect)
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.operator !=(Windows.Media.Core.VideoStabilizationEffect, Windows.Media.Core.VideoStabilizationEffect)
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.Equals(Windows.Media.Core.VideoStabilizationEffect)
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.Equals(object)
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.WinRT.IWinRTObject.QueryInterfaceCache.get

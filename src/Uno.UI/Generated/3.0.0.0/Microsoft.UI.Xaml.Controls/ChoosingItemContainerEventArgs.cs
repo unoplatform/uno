@@ -64,12 +64,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.ChoosingItemContainerEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs, Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs, Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.Equals(Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

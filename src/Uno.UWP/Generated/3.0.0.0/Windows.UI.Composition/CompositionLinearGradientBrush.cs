@@ -41,19 +41,12 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.operator ==(Windows.UI.Composition.CompositionLinearGradientBrush, Windows.UI.Composition.CompositionLinearGradientBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.operator !=(Windows.UI.Composition.CompositionLinearGradientBrush, Windows.UI.Composition.CompositionLinearGradientBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.Equals(Windows.UI.Composition.CompositionLinearGradientBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.EndPoint.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.EndPoint.set
 		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.StartPoint.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.StartPoint.set
-		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

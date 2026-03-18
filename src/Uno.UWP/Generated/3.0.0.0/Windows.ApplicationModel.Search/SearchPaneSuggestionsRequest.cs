@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.Search
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest.operator ==(Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest, Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest.operator !=(Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest, Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest.Equals(Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

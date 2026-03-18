@@ -27,12 +27,6 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs.operator ==(Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs, Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs.operator !=(Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs, Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs.Equals(Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

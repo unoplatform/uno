@@ -26,12 +26,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.LocationTrigger.LocationTrigger(Windows.ApplicationModel.Background.LocationTriggerType)
-		// Forced skipping of method Windows.ApplicationModel.Background.LocationTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.LocationTrigger.operator ==(Windows.ApplicationModel.Background.LocationTrigger, Windows.ApplicationModel.Background.LocationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.LocationTrigger.operator !=(Windows.ApplicationModel.Background.LocationTrigger, Windows.ApplicationModel.Background.LocationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.LocationTrigger.Equals(Windows.ApplicationModel.Background.LocationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.LocationTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.LocationTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.LocationTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.LocationTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.LocationTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

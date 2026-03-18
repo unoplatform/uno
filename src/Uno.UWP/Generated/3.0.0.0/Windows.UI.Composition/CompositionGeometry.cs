@@ -50,14 +50,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.CompositionGeometry(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.operator ==(Windows.UI.Composition.CompositionGeometry, Windows.UI.Composition.CompositionGeometry)
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.operator !=(Windows.UI.Composition.CompositionGeometry, Windows.UI.Composition.CompositionGeometry)
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.Equals(Windows.UI.Composition.CompositionGeometry)
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.CompositionGeometry(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.TrimEnd.get
@@ -66,7 +58,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.TrimOffset.set
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.TrimStart.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.TrimStart.set
-		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

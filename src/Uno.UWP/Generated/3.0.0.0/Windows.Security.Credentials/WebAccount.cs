@@ -66,12 +66,6 @@ namespace Windows.Security.Credentials
 		}
 #endif
 		// Forced skipping of method Windows.Security.Credentials.WebAccount.WebAccount(Windows.Security.Credentials.WebAccountProvider, string, Windows.Security.Credentials.WebAccountState)
-		// Forced skipping of method Windows.Security.Credentials.WebAccount.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Credentials.WebAccount.operator ==(Windows.Security.Credentials.WebAccount, Windows.Security.Credentials.WebAccount)
-		// Forced skipping of method Windows.Security.Credentials.WebAccount.operator !=(Windows.Security.Credentials.WebAccount, Windows.Security.Credentials.WebAccount)
-		// Forced skipping of method Windows.Security.Credentials.WebAccount.Equals(Windows.Security.Credentials.WebAccount)
-		// Forced skipping of method Windows.Security.Credentials.WebAccount.Equals(object)
-		// Forced skipping of method Windows.Security.Credentials.WebAccount.GetHashCode()
 		// Forced skipping of method Windows.Security.Credentials.WebAccount.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccount.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccount.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -46,12 +46,6 @@ namespace Windows.Networking.Connectivity
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.RoutePolicy(Windows.Networking.Connectivity.ConnectionProfile, Windows.Networking.HostName, Windows.Networking.DomainNameType)
-		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.operator ==(Windows.Networking.Connectivity.RoutePolicy, Windows.Networking.Connectivity.RoutePolicy)
-		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.operator !=(Windows.Networking.Connectivity.RoutePolicy, Windows.Networking.Connectivity.RoutePolicy)
-		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.Equals(Windows.Networking.Connectivity.RoutePolicy)
-		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.Equals(object)
-		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.GetHashCode()
 		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.WinRT.IWinRTObject.QueryInterfaceCache.get

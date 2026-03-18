@@ -14,14 +14,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.ScrollingZoomOptions(Microsoft.UI.Xaml.Controls.ScrollingAnimationMode)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.ScrollingZoomOptions(Microsoft.UI.Xaml.Controls.ScrollingAnimationMode, Microsoft.UI.Xaml.Controls.ScrollingSnapPointsMode)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.ScrollingZoomOptions(Microsoft.UI.Xaml.Controls.ScrollingAnimationMode, Microsoft.UI.Xaml.Controls.ScrollingSnapPointsMode)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.ScrollingZoomOptions(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.operator ==(Microsoft.UI.Xaml.Controls.ScrollingZoomOptions, Microsoft.UI.Xaml.Controls.ScrollingZoomOptions)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.operator !=(Microsoft.UI.Xaml.Controls.ScrollingZoomOptions, Microsoft.UI.Xaml.Controls.ScrollingZoomOptions)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.Equals(Microsoft.UI.Xaml.Controls.ScrollingZoomOptions)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.ScrollingZoomOptions(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -30,7 +22,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.AnimationMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.SnapPointsMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.SnapPointsMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

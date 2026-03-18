@@ -63,12 +63,6 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.operator ==(Windows.Devices.Geolocation.CivicAddress, Windows.Devices.Geolocation.CivicAddress)
-		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.operator !=(Windows.Devices.Geolocation.CivicAddress, Windows.Devices.Geolocation.CivicAddress)
-		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.Equals(Windows.Devices.Geolocation.CivicAddress)
-		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.Equals(object)
-		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.GetHashCode()
 		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.WinRT.IWinRTObject.QueryInterfaceCache.get

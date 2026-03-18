@@ -80,12 +80,6 @@ namespace Windows.Media.Devices.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.FrameController()
-		// Forced skipping of method Windows.Media.Devices.Core.FrameController.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.Core.FrameController.operator ==(Windows.Media.Devices.Core.FrameController, Windows.Media.Devices.Core.FrameController)
-		// Forced skipping of method Windows.Media.Devices.Core.FrameController.operator !=(Windows.Media.Devices.Core.FrameController, Windows.Media.Devices.Core.FrameController)
-		// Forced skipping of method Windows.Media.Devices.Core.FrameController.Equals(Windows.Media.Devices.Core.FrameController)
-		// Forced skipping of method Windows.Media.Devices.Core.FrameController.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.Core.FrameController.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.WinRT.IWinRTObject.QueryInterfaceCache.get

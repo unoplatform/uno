@@ -135,12 +135,6 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketControl.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketControl.operator ==(Windows.Networking.Sockets.StreamSocketControl, Windows.Networking.Sockets.StreamSocketControl)
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketControl.operator !=(Windows.Networking.Sockets.StreamSocketControl, Windows.Networking.Sockets.StreamSocketControl)
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketControl.Equals(Windows.Networking.Sockets.StreamSocketControl)
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketControl.Equals(object)
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketControl.GetHashCode()
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketControl.WinRT.IWinRTObject.QueryInterfaceCache.get

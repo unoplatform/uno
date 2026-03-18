@@ -23,12 +23,6 @@ namespace Windows.Networking.Proximity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Proximity.PeerWatcher.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Proximity.PeerWatcher.operator ==(Windows.Networking.Proximity.PeerWatcher, Windows.Networking.Proximity.PeerWatcher)
-		// Forced skipping of method Windows.Networking.Proximity.PeerWatcher.operator !=(Windows.Networking.Proximity.PeerWatcher, Windows.Networking.Proximity.PeerWatcher)
-		// Forced skipping of method Windows.Networking.Proximity.PeerWatcher.Equals(Windows.Networking.Proximity.PeerWatcher)
-		// Forced skipping of method Windows.Networking.Proximity.PeerWatcher.Equals(object)
-		// Forced skipping of method Windows.Networking.Proximity.PeerWatcher.GetHashCode()
 		// Forced skipping of method Windows.Networking.Proximity.PeerWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerWatcher.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get

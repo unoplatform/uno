@@ -48,7 +48,6 @@ namespace Windows.Web.Http.Headers
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpNameValueHeaderValue.HttpNameValueHeaderValue(string, string)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpNameValueHeaderValue.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpNameValueHeaderValue Parse(string input)
@@ -63,12 +62,6 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpNameValueHeaderValue.TryParse(string input, out HttpNameValueHeaderValue nameValueHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpNameValueHeaderValue.TryParse%28string%20input%2C%20out%20HttpNameValueHeaderValue%20nameValueHeaderValue%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpNameValueHeaderValue.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpNameValueHeaderValue.operator ==(Windows.Web.Http.Headers.HttpNameValueHeaderValue, Windows.Web.Http.Headers.HttpNameValueHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpNameValueHeaderValue.operator !=(Windows.Web.Http.Headers.HttpNameValueHeaderValue, Windows.Web.Http.Headers.HttpNameValueHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpNameValueHeaderValue.Equals(Windows.Web.Http.Headers.HttpNameValueHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpNameValueHeaderValue.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpNameValueHeaderValue.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpNameValueHeaderValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpNameValueHeaderValue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpNameValueHeaderValue.WinRT.IWinRTObject.QueryInterfaceCache.get

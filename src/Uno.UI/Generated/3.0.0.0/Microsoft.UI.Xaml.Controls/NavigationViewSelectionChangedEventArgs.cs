@@ -12,12 +12,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property RecommendedNavigationTransitionInfo
 		// Skipping already declared property SelectedItem
 		// Skipping already declared property SelectedItemContainer
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

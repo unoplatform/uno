@@ -103,12 +103,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs, Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs, Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIDialReceiverActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

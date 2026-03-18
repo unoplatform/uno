@@ -73,12 +73,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.operator ==(Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs, Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.operator !=(Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs, Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.Equals(Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIWebAuthenticationBrokerContinuationEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

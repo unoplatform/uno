@@ -43,12 +43,6 @@ namespace Windows.Globalization
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Globalization.JapanesePhoneme.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.JapanesePhoneme.operator ==(Windows.Globalization.JapanesePhoneme, Windows.Globalization.JapanesePhoneme)
-		// Forced skipping of method Windows.Globalization.JapanesePhoneme.operator !=(Windows.Globalization.JapanesePhoneme, Windows.Globalization.JapanesePhoneme)
-		// Forced skipping of method Windows.Globalization.JapanesePhoneme.Equals(Windows.Globalization.JapanesePhoneme)
-		// Forced skipping of method Windows.Globalization.JapanesePhoneme.Equals(object)
-		// Forced skipping of method Windows.Globalization.JapanesePhoneme.GetHashCode()
 		// Forced skipping of method Windows.Globalization.JapanesePhoneme.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.JapanesePhoneme.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.JapanesePhoneme.WinRT.IWinRTObject.QueryInterfaceCache.get

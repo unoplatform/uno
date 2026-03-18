@@ -33,12 +33,6 @@ namespace Windows.Security.Isolation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentShareFolderResult.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentShareFolderResult.operator ==(Windows.Security.Isolation.IsolatedWindowsEnvironmentShareFolderResult, Windows.Security.Isolation.IsolatedWindowsEnvironmentShareFolderResult)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentShareFolderResult.operator !=(Windows.Security.Isolation.IsolatedWindowsEnvironmentShareFolderResult, Windows.Security.Isolation.IsolatedWindowsEnvironmentShareFolderResult)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentShareFolderResult.Equals(Windows.Security.Isolation.IsolatedWindowsEnvironmentShareFolderResult)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentShareFolderResult.Equals(object)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentShareFolderResult.GetHashCode()
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentShareFolderResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentShareFolderResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentShareFolderResult.WinRT.IWinRTObject.QueryInterfaceCache.get

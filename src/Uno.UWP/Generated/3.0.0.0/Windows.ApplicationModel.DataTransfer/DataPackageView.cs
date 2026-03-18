@@ -11,12 +11,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Skipping already declared property AvailableFormats
 		// Skipping already declared property Properties
 		// Skipping already declared property RequestedOperation
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.operator ==(Windows.ApplicationModel.DataTransfer.DataPackageView, Windows.ApplicationModel.DataTransfer.DataPackageView)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.operator !=(Windows.ApplicationModel.DataTransfer.DataPackageView, Windows.ApplicationModel.DataTransfer.DataPackageView)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.Equals(Windows.ApplicationModel.DataTransfer.DataPackageView)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.WinRT.IWinRTObject.QueryInterfaceCache.get

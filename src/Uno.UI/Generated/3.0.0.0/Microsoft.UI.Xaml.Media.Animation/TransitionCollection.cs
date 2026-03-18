@@ -22,12 +22,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.TransitionCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.TransitionCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.operator ==(Microsoft.UI.Xaml.Media.Animation.TransitionCollection, Microsoft.UI.Xaml.Media.Animation.TransitionCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.operator !=(Microsoft.UI.Xaml.Media.Animation.TransitionCollection, Microsoft.UI.Xaml.Media.Animation.TransitionCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.Equals(Microsoft.UI.Xaml.Media.Animation.TransitionCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

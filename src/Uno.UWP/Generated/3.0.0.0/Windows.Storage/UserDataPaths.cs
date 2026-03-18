@@ -203,7 +203,6 @@ namespace Windows.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.UserDataPaths.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.UserDataPaths GetForUser(global::Windows.System.User user)
@@ -218,12 +217,6 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member UserDataPaths UserDataPaths.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataPaths%20UserDataPaths.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.UserDataPaths.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.UserDataPaths.operator ==(Windows.Storage.UserDataPaths, Windows.Storage.UserDataPaths)
-		// Forced skipping of method Windows.Storage.UserDataPaths.operator !=(Windows.Storage.UserDataPaths, Windows.Storage.UserDataPaths)
-		// Forced skipping of method Windows.Storage.UserDataPaths.Equals(Windows.Storage.UserDataPaths)
-		// Forced skipping of method Windows.Storage.UserDataPaths.Equals(object)
-		// Forced skipping of method Windows.Storage.UserDataPaths.GetHashCode()
 		// Forced skipping of method Windows.Storage.UserDataPaths.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.UserDataPaths.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.UserDataPaths.WinRT.IWinRTObject.QueryInterfaceCache.get

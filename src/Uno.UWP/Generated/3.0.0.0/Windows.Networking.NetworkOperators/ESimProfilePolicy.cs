@@ -43,12 +43,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfilePolicy.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfilePolicy.operator ==(Windows.Networking.NetworkOperators.ESimProfilePolicy, Windows.Networking.NetworkOperators.ESimProfilePolicy)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfilePolicy.operator !=(Windows.Networking.NetworkOperators.ESimProfilePolicy, Windows.Networking.NetworkOperators.ESimProfilePolicy)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfilePolicy.Equals(Windows.Networking.NetworkOperators.ESimProfilePolicy)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfilePolicy.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfilePolicy.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfilePolicy.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfilePolicy.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfilePolicy.WinRT.IWinRTObject.QueryInterfaceCache.get

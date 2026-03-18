@@ -37,12 +37,6 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.operator ==(Windows.Media.Audio.AudioGraphConnection, Windows.Media.Audio.AudioGraphConnection)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.operator !=(Windows.Media.Audio.AudioGraphConnection, Windows.Media.Audio.AudioGraphConnection)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.Equals(Windows.Media.Audio.AudioGraphConnection)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.Equals(object)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.GetHashCode()
 		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.WinRT.IWinRTObject.QueryInterfaceCache.get

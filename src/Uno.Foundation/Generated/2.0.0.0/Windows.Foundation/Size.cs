@@ -23,11 +23,6 @@ namespace Windows.Foundation
 		// Forced skipping of method Windows.Foundation.Size.Height.set
 		// Forced skipping of method Windows.Foundation.Size.Empty.get
 		// Forced skipping of method Windows.Foundation.Size.IsEmpty.get
-		// Forced skipping of method Windows.Foundation.Size.operator ==(Windows.Foundation.Size, Windows.Foundation.Size)
-		// Forced skipping of method Windows.Foundation.Size.operator !=(Windows.Foundation.Size, Windows.Foundation.Size)
-		// Forced skipping of method Windows.Foundation.Size.Equals(object)
-		// Forced skipping of method Windows.Foundation.Size.Equals(Windows.Foundation.Size)
-		// Forced skipping of method Windows.Foundation.Size.GetHashCode()
 		// Skipping already declared method Windows.Foundation.Size.ToString()
 	}
 }

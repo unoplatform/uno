@@ -128,12 +128,6 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.ContactJobInfo()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.operator ==(Windows.ApplicationModel.Contacts.ContactJobInfo, Windows.ApplicationModel.Contacts.ContactJobInfo)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.operator !=(Windows.ApplicationModel.Contacts.ContactJobInfo, Windows.ApplicationModel.Contacts.ContactJobInfo)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Equals(Windows.ApplicationModel.Contacts.ContactJobInfo)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

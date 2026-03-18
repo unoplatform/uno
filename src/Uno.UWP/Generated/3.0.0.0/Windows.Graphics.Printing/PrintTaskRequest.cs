@@ -23,12 +23,6 @@ namespace Windows.Graphics.Printing
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskRequest.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskRequest.operator ==(Windows.Graphics.Printing.PrintTaskRequest, Windows.Graphics.Printing.PrintTaskRequest)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskRequest.operator !=(Windows.Graphics.Printing.PrintTaskRequest, Windows.Graphics.Printing.PrintTaskRequest)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskRequest.Equals(Windows.Graphics.Printing.PrintTaskRequest)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskRequest.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.PrintTaskRequest.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.PrintTaskRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTaskRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTaskRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

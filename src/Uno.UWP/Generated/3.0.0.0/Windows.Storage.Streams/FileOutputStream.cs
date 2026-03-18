@@ -8,12 +8,6 @@ namespace Windows.Storage.Streams
 #endif
 	public partial class FileOutputStream : global::Windows.Storage.Streams.IOutputStream, global::System.IDisposable
 	{
-		// Forced skipping of method Windows.Storage.Streams.FileOutputStream.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Streams.FileOutputStream.operator ==(Windows.Storage.Streams.FileOutputStream, Windows.Storage.Streams.FileOutputStream)
-		// Forced skipping of method Windows.Storage.Streams.FileOutputStream.operator !=(Windows.Storage.Streams.FileOutputStream, Windows.Storage.Streams.FileOutputStream)
-		// Forced skipping of method Windows.Storage.Streams.FileOutputStream.Equals(Windows.Storage.Streams.FileOutputStream)
-		// Forced skipping of method Windows.Storage.Streams.FileOutputStream.Equals(object)
-		// Forced skipping of method Windows.Storage.Streams.FileOutputStream.GetHashCode()
 		// Forced skipping of method Windows.Storage.Streams.FileOutputStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.FileOutputStream.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Streams.FileOutputStream.WinRT.IWinRTObject.QueryInterfaceCache.get

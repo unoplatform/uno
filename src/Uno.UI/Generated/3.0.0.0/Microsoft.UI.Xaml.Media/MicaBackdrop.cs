@@ -32,21 +32,11 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.MicaBackdrop.MicaBackdrop()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.MicaBackdrop()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.KindProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.MicaBackdrop(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.operator ==(Microsoft.UI.Xaml.Media.MicaBackdrop, Microsoft.UI.Xaml.Media.MicaBackdrop)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.operator !=(Microsoft.UI.Xaml.Media.MicaBackdrop, Microsoft.UI.Xaml.Media.MicaBackdrop)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.Equals(Microsoft.UI.Xaml.Media.MicaBackdrop)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.MicaBackdrop(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.Kind.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.Kind.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MicaBackdrop.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -68,12 +68,6 @@ namespace Windows.Devices.Haptics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.operator ==(Windows.Devices.Haptics.SimpleHapticsController, Windows.Devices.Haptics.SimpleHapticsController)
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.operator !=(Windows.Devices.Haptics.SimpleHapticsController, Windows.Devices.Haptics.SimpleHapticsController)
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.Equals(Windows.Devices.Haptics.SimpleHapticsController)
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.Equals(object)
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.GetHashCode()
 		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.WinRT.IWinRTObject.QueryInterfaceCache.get

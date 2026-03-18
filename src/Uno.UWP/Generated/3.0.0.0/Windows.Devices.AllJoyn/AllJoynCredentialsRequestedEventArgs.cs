@@ -53,12 +53,6 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.operator ==(Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs, Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.operator !=(Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs, Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.Equals(Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

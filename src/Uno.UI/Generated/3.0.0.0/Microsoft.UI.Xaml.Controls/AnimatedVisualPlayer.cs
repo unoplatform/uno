@@ -76,7 +76,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Stretch
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.AnimatedVisualPlayer()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.AnimatedVisualPlayer()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.AnimationOptimizationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.AutoPlayProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.DiagnosticsProperty.get
@@ -87,14 +86,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.PlaybackRateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.SourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.StretchProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.AnimatedVisualPlayer(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.operator ==(Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer, Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.operator !=(Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer, Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.Equals(Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.AnimatedVisualPlayer(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.Pause()
@@ -119,7 +110,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.Source.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.Stretch.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.Stretch.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

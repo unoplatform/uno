@@ -26,7 +26,6 @@ namespace Windows.Web.Http.Headers
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue.HttpConnectionOptionHeaderValue(string)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue Parse(string input)
@@ -41,12 +40,6 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpConnectionOptionHeaderValue.TryParse(string input, out HttpConnectionOptionHeaderValue connectionOptionHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpConnectionOptionHeaderValue.TryParse%28string%20input%2C%20out%20HttpConnectionOptionHeaderValue%20connectionOptionHeaderValue%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue.operator ==(Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue, Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue.operator !=(Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue, Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue.Equals(Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpConnectionOptionHeaderValue.WinRT.IWinRTObject.QueryInterfaceCache.get

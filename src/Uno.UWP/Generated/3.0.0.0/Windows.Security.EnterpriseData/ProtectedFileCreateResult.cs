@@ -43,12 +43,6 @@ namespace Windows.Security.EnterpriseData
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.FromAbi(nint)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.operator ==(Windows.Security.EnterpriseData.ProtectedFileCreateResult, Windows.Security.EnterpriseData.ProtectedFileCreateResult)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.operator !=(Windows.Security.EnterpriseData.ProtectedFileCreateResult, Windows.Security.EnterpriseData.ProtectedFileCreateResult)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.Equals(Windows.Security.EnterpriseData.ProtectedFileCreateResult)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.Equals(object)
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.GetHashCode()
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.WinRT.IWinRTObject.QueryInterfaceCache.get

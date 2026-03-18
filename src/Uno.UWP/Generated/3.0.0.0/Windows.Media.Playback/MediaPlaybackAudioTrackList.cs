@@ -47,12 +47,6 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackAudioTrackList.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackAudioTrackList.operator ==(Windows.Media.Playback.MediaPlaybackAudioTrackList, Windows.Media.Playback.MediaPlaybackAudioTrackList)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackAudioTrackList.operator !=(Windows.Media.Playback.MediaPlaybackAudioTrackList, Windows.Media.Playback.MediaPlaybackAudioTrackList)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackAudioTrackList.Equals(Windows.Media.Playback.MediaPlaybackAudioTrackList)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackAudioTrackList.Equals(object)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackAudioTrackList.GetHashCode()
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackAudioTrackList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackAudioTrackList.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackAudioTrackList.WinRT.IWinRTObject.QueryInterfaceCache.get

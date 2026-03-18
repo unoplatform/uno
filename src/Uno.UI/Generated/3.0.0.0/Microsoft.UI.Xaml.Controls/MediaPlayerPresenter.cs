@@ -16,18 +16,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Stretch
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.MediaPlayerPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.MediaPlayerPresenter()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.IsFullWindowProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.MediaPlayerProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.StretchProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.MediaPlayerPresenter(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.operator ==(Microsoft.UI.Xaml.Controls.MediaPlayerPresenter, Microsoft.UI.Xaml.Controls.MediaPlayerPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.operator !=(Microsoft.UI.Xaml.Controls.MediaPlayerPresenter, Microsoft.UI.Xaml.Controls.MediaPlayerPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.Equals(Microsoft.UI.Xaml.Controls.MediaPlayerPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.MediaPlayerPresenter(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.IsFullWindow.get
@@ -36,7 +27,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.MediaPlayer.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.Stretch.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.Stretch.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

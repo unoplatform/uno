@@ -64,15 +64,8 @@ namespace Windows.Graphics.Printing3D
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBaseMaterial.Printing3DBaseMaterial()
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBaseMaterial.As<I>()
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBaseMaterial.Abs.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBaseMaterial.Pla.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBaseMaterial.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBaseMaterial.operator ==(Windows.Graphics.Printing3D.Printing3DBaseMaterial, Windows.Graphics.Printing3D.Printing3DBaseMaterial)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBaseMaterial.operator !=(Windows.Graphics.Printing3D.Printing3DBaseMaterial, Windows.Graphics.Printing3D.Printing3DBaseMaterial)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBaseMaterial.Equals(Windows.Graphics.Printing3D.Printing3DBaseMaterial)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBaseMaterial.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBaseMaterial.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBaseMaterial.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBaseMaterial.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBaseMaterial.WinRT.IWinRTObject.QueryInterfaceCache.get

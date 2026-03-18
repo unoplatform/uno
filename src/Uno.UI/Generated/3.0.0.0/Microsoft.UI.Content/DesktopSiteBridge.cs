@@ -86,7 +86,6 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
@@ -94,14 +93,6 @@ namespace Microsoft.UI.Content
 			throw new global::System.NotImplementedException("The member bool DesktopSiteBridge.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopSiteBridge.IsSupported%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.DesktopSiteBridge(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.operator ==(Microsoft.UI.Content.DesktopSiteBridge, Microsoft.UI.Content.DesktopSiteBridge)
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.operator !=(Microsoft.UI.Content.DesktopSiteBridge, Microsoft.UI.Content.DesktopSiteBridge)
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.Equals(Microsoft.UI.Content.DesktopSiteBridge)
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.Equals(object)
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.DesktopSiteBridge(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -189,7 +180,6 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.OverrideScale.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.OverrideScale.set
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.WindowId.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

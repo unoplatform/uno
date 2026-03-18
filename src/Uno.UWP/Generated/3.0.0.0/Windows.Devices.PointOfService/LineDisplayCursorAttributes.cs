@@ -69,12 +69,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.operator ==(Windows.Devices.PointOfService.LineDisplayCursorAttributes, Windows.Devices.PointOfService.LineDisplayCursorAttributes)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.operator !=(Windows.Devices.PointOfService.LineDisplayCursorAttributes, Windows.Devices.PointOfService.LineDisplayCursorAttributes)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.Equals(Windows.Devices.PointOfService.LineDisplayCursorAttributes)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.WinRT.IWinRTObject.QueryInterfaceCache.get

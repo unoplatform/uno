@@ -27,12 +27,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.BarometerDataThreshold.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.BarometerDataThreshold.operator ==(Windows.Devices.Sensors.BarometerDataThreshold, Windows.Devices.Sensors.BarometerDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.BarometerDataThreshold.operator !=(Windows.Devices.Sensors.BarometerDataThreshold, Windows.Devices.Sensors.BarometerDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.BarometerDataThreshold.Equals(Windows.Devices.Sensors.BarometerDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.BarometerDataThreshold.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.BarometerDataThreshold.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.BarometerDataThreshold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.BarometerDataThreshold.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.BarometerDataThreshold.WinRT.IWinRTObject.QueryInterfaceCache.get

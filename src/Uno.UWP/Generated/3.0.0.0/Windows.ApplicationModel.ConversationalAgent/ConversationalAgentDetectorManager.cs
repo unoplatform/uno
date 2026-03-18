@@ -23,14 +23,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.As<I>()
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.Default.get
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.operator ==(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager, Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.operator !=(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager, Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.Equals(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -78,12 +78,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.VpnPacketBuffer(Windows.Networking.Vpn.VpnPacketBuffer, uint, uint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.operator ==(Windows.Networking.Vpn.VpnPacketBuffer, Windows.Networking.Vpn.VpnPacketBuffer)
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.operator !=(Windows.Networking.Vpn.VpnPacketBuffer, Windows.Networking.Vpn.VpnPacketBuffer)
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.Equals(Windows.Networking.Vpn.VpnPacketBuffer)
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.WinRT.IWinRTObject.QueryInterfaceCache.get

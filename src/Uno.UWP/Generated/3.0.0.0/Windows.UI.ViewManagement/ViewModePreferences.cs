@@ -36,7 +36,6 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.ViewManagement.ViewModePreferences CreateDefault(global::Windows.UI.ViewManagement.ApplicationViewMode mode)
@@ -44,12 +43,6 @@ namespace Windows.UI.ViewManagement
 			throw new global::System.NotImplementedException("The member ViewModePreferences ViewModePreferences.CreateDefault(ApplicationViewMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ViewModePreferences%20ViewModePreferences.CreateDefault%28ApplicationViewMode%20mode%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.FromAbi(nint)
-		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.operator ==(Windows.UI.ViewManagement.ViewModePreferences, Windows.UI.ViewManagement.ViewModePreferences)
-		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.operator !=(Windows.UI.ViewManagement.ViewModePreferences, Windows.UI.ViewManagement.ViewModePreferences)
-		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.Equals(Windows.UI.ViewManagement.ViewModePreferences)
-		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.Equals(object)
-		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.GetHashCode()
 		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.WinRT.IWinRTObject.QueryInterfaceCache.get

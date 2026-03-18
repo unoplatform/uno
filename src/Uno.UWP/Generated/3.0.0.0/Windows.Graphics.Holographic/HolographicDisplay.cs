@@ -83,7 +83,6 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Holographic.HolographicDisplay GetDefault()
@@ -91,12 +90,6 @@ namespace Windows.Graphics.Holographic
 			throw new global::System.NotImplementedException("The member HolographicDisplay HolographicDisplay.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicDisplay%20HolographicDisplay.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.operator ==(Windows.Graphics.Holographic.HolographicDisplay, Windows.Graphics.Holographic.HolographicDisplay)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.operator !=(Windows.Graphics.Holographic.HolographicDisplay, Windows.Graphics.Holographic.HolographicDisplay)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.Equals(Windows.Graphics.Holographic.HolographicDisplay)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.Equals(object)
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.WinRT.IWinRTObject.QueryInterfaceCache.get

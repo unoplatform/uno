@@ -83,12 +83,6 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.operator ==(Windows.Networking.Sockets.DatagramSocketControl, Windows.Networking.Sockets.DatagramSocketControl)
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.operator !=(Windows.Networking.Sockets.DatagramSocketControl, Windows.Networking.Sockets.DatagramSocketControl)
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.Equals(Windows.Networking.Sockets.DatagramSocketControl)
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.Equals(object)
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.GetHashCode()
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketControl.WinRT.IWinRTObject.QueryInterfaceCache.get

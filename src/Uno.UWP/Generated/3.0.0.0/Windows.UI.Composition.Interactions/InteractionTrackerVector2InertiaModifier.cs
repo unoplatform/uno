@@ -8,17 +8,8 @@ namespace Windows.UI.Composition.Interactions
 #endif
 	public partial class InteractionTrackerVector2InertiaModifier : global::Windows.UI.Composition.CompositionObject
 	{
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.InteractionTrackerVector2InertiaModifier(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.operator ==(Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier, Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.operator !=(Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier, Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.Equals(Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.InteractionTrackerVector2InertiaModifier(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

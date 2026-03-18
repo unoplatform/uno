@@ -153,12 +153,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.FocusControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.FocusControl.operator ==(Windows.Media.Devices.FocusControl, Windows.Media.Devices.FocusControl)
-		// Forced skipping of method Windows.Media.Devices.FocusControl.operator !=(Windows.Media.Devices.FocusControl, Windows.Media.Devices.FocusControl)
-		// Forced skipping of method Windows.Media.Devices.FocusControl.Equals(Windows.Media.Devices.FocusControl)
-		// Forced skipping of method Windows.Media.Devices.FocusControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.FocusControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.FocusControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.FocusControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.FocusControl.WinRT.IWinRTObject.QueryInterfaceCache.get

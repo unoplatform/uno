@@ -9,14 +9,7 @@ namespace Microsoft.UI.Xaml.Automation
 	public partial class TogglePatternIdentifiers
 	{
 		// Skipping already declared property ToggleStateProperty
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers.ToggleStateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers.operator ==(Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers, Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers.operator !=(Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers, Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers.Equals(Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TogglePatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get

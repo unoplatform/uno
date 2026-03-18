@@ -26,12 +26,6 @@ namespace Windows.UI.Composition
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.CompositionEffectSourceParameter.CompositionEffectSourceParameter(string)
-		// Forced skipping of method Windows.UI.Composition.CompositionEffectSourceParameter.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionEffectSourceParameter.operator ==(Windows.UI.Composition.CompositionEffectSourceParameter, Windows.UI.Composition.CompositionEffectSourceParameter)
-		// Forced skipping of method Windows.UI.Composition.CompositionEffectSourceParameter.operator !=(Windows.UI.Composition.CompositionEffectSourceParameter, Windows.UI.Composition.CompositionEffectSourceParameter)
-		// Forced skipping of method Windows.UI.Composition.CompositionEffectSourceParameter.Equals(Windows.UI.Composition.CompositionEffectSourceParameter)
-		// Forced skipping of method Windows.UI.Composition.CompositionEffectSourceParameter.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionEffectSourceParameter.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionEffectSourceParameter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionEffectSourceParameter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionEffectSourceParameter.WinRT.IWinRTObject.QueryInterfaceCache.get

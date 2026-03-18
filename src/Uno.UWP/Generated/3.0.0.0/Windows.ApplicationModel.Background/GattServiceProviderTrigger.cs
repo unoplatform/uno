@@ -47,7 +47,6 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.GattServiceProviderTriggerResult> CreateAsync(string triggerId, global::System.Guid serviceUuid)
@@ -55,12 +54,6 @@ namespace Windows.ApplicationModel.Background
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GattServiceProviderTriggerResult> GattServiceProviderTrigger.CreateAsync(string triggerId, Guid serviceUuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattServiceProviderTriggerResult%3E%20GattServiceProviderTrigger.CreateAsync%28string%20triggerId%2C%20Guid%20serviceUuid%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.operator ==(Windows.ApplicationModel.Background.GattServiceProviderTrigger, Windows.ApplicationModel.Background.GattServiceProviderTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.operator !=(Windows.ApplicationModel.Background.GattServiceProviderTrigger, Windows.ApplicationModel.Background.GattServiceProviderTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.Equals(Windows.ApplicationModel.Background.GattServiceProviderTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

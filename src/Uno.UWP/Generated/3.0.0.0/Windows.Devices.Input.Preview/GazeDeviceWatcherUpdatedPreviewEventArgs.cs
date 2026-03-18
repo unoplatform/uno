@@ -23,12 +23,6 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs.operator ==(Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs, Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs.operator !=(Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs, Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs.Equals(Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

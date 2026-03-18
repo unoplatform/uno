@@ -100,14 +100,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.DesktopAcrylicController()
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.DesktopAcrylicController()
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.As<I>()
 		// Skipping already declared method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsSupported()
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.operator ==(Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController, Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.operator !=(Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController, Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.Equals(Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.WinRT.IWinRTObject.QueryInterfaceCache.get

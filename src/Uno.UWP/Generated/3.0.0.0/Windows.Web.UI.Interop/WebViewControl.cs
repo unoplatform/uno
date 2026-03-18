@@ -153,12 +153,6 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.FromAbi(nint)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.operator ==(Windows.Web.UI.Interop.WebViewControl, Windows.Web.UI.Interop.WebViewControl)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.operator !=(Windows.Web.UI.Interop.WebViewControl, Windows.Web.UI.Interop.WebViewControl)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.Equals(Windows.Web.UI.Interop.WebViewControl)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.Equals(object)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.GetHashCode()
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControl.WinRT.IWinRTObject.QueryInterfaceCache.get

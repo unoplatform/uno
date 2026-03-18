@@ -39,12 +39,6 @@ namespace Windows.UI.Notifications
 #endif
 		// Skipping already declared method Windows.UI.Notifications.TileNotification.TileNotification(Windows.Data.Xml.Dom.XmlDocument)
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.TileNotification(Windows.Data.Xml.Dom.XmlDocument)
-		// Forced skipping of method Windows.UI.Notifications.TileNotification.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Notifications.TileNotification.operator ==(Windows.UI.Notifications.TileNotification, Windows.UI.Notifications.TileNotification)
-		// Forced skipping of method Windows.UI.Notifications.TileNotification.operator !=(Windows.UI.Notifications.TileNotification, Windows.UI.Notifications.TileNotification)
-		// Forced skipping of method Windows.UI.Notifications.TileNotification.Equals(Windows.UI.Notifications.TileNotification)
-		// Forced skipping of method Windows.UI.Notifications.TileNotification.Equals(object)
-		// Forced skipping of method Windows.UI.Notifications.TileNotification.GetHashCode()
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.WinRT.IWinRTObject.QueryInterfaceCache.get

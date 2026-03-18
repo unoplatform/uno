@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Calls
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.operator ==(Windows.ApplicationModel.Calls.PhoneCallHistoryStore, Windows.ApplicationModel.Calls.PhoneCallHistoryStore)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.operator !=(Windows.ApplicationModel.Calls.PhoneCallHistoryStore, Windows.ApplicationModel.Calls.PhoneCallHistoryStore)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.Equals(Windows.ApplicationModel.Calls.PhoneCallHistoryStore)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryStore.WinRT.IWinRTObject.QueryInterfaceCache.get

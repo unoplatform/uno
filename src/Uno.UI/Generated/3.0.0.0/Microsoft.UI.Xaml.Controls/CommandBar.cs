@@ -23,21 +23,12 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SecondaryCommands
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.CommandBar.CommandBar()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.CommandBar()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.CommandBarOverflowPresenterStyleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.DefaultLabelPositionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.IsDynamicOverflowEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.OverflowButtonVisibilityProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.PrimaryCommandsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.SecondaryCommandsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.CommandBar(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.operator ==(Microsoft.UI.Xaml.Controls.CommandBar, Microsoft.UI.Xaml.Controls.CommandBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.operator !=(Microsoft.UI.Xaml.Controls.CommandBar, Microsoft.UI.Xaml.Controls.CommandBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.Equals(Microsoft.UI.Xaml.Controls.CommandBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.CommandBar(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.DynamicOverflowItemsChanging.add
@@ -53,7 +44,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.OverflowButtonVisibility.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.PrimaryCommands.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.SecondaryCommands.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.CommandBar.DynamicOverflowItemsChanging
 	}

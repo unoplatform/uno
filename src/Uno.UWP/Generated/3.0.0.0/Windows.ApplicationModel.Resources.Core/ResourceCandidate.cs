@@ -50,12 +50,6 @@ namespace Windows.ApplicationModel.Resources.Core
 #endif
 		// Skipping already declared property Qualifiers
 		// Skipping already declared property ValueAsString
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.operator ==(Windows.ApplicationModel.Resources.Core.ResourceCandidate, Windows.ApplicationModel.Resources.Core.ResourceCandidate)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.operator !=(Windows.ApplicationModel.Resources.Core.ResourceCandidate, Windows.ApplicationModel.Resources.Core.ResourceCandidate)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.Equals(Windows.ApplicationModel.Resources.Core.ResourceCandidate)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.AppExtensions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs.operator ==(Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs, Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs.operator !=(Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs, Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs.Equals(Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

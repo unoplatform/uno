@@ -21,18 +21,11 @@ namespace Microsoft.UI.Windowing
 		// Skipping already declared property PreferredMinimumHeight
 		// Skipping already declared property PreferredMinimumWidth
 		// Skipping already declared property State
-		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.As<I>()
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.Create()
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.CreateForContextMenu()
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.CreateForDialog()
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.CreateForToolWindow()
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.RequestedStartupState.get
-		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.operator ==(Microsoft.UI.Windowing.OverlappedPresenter, Microsoft.UI.Windowing.OverlappedPresenter)
-		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.operator !=(Microsoft.UI.Windowing.OverlappedPresenter, Microsoft.UI.Windowing.OverlappedPresenter)
-		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.Equals(Microsoft.UI.Windowing.OverlappedPresenter)
-		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.Equals(object)
-		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.Maximize()
@@ -62,7 +55,6 @@ namespace Microsoft.UI.Windowing
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.PreferredMinimumWidth.get
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.PreferredMinimumWidth.set
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.State.get
-		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

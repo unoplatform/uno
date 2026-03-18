@@ -9,14 +9,7 @@ namespace Microsoft.UI.Input
 	public partial class InputNonClientPointerSource
 	{
 		// Skipping already declared property DispatcherQueue
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.As<I>()
 		// Skipping already declared method Microsoft.UI.Input.InputNonClientPointerSource.GetForWindowId(Microsoft.UI.WindowId)
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.operator ==(Microsoft.UI.Input.InputNonClientPointerSource, Microsoft.UI.Input.InputNonClientPointerSource)
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.operator !=(Microsoft.UI.Input.InputNonClientPointerSource, Microsoft.UI.Input.InputNonClientPointerSource)
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.Equals(Microsoft.UI.Input.InputNonClientPointerSource)
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.WinRT.IWinRTObject.QueryInterfaceCache.get

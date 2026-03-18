@@ -93,7 +93,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModem.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -115,12 +114,6 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member MobileBroadbandModem MobileBroadbandModem.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandModem%20MobileBroadbandModem.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModem.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModem.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandModem, Windows.Networking.NetworkOperators.MobileBroadbandModem)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModem.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandModem, Windows.Networking.NetworkOperators.MobileBroadbandModem)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModem.Equals(Windows.Networking.NetworkOperators.MobileBroadbandModem)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModem.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModem.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModem.WinRT.IWinRTObject.QueryInterfaceCache.get

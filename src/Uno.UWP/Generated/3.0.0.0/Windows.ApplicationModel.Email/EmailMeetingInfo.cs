@@ -208,12 +208,6 @@ namespace Windows.ApplicationModel.Email
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.EmailMeetingInfo()
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.operator ==(Windows.ApplicationModel.Email.EmailMeetingInfo, Windows.ApplicationModel.Email.EmailMeetingInfo)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.operator !=(Windows.ApplicationModel.Email.EmailMeetingInfo, Windows.ApplicationModel.Email.EmailMeetingInfo)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.Equals(Windows.ApplicationModel.Email.EmailMeetingInfo)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

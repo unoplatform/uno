@@ -130,12 +130,6 @@ namespace Windows.Media.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.VideoTransformEffectDefinition()
-		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.operator ==(Windows.Media.Effects.VideoTransformEffectDefinition, Windows.Media.Effects.VideoTransformEffectDefinition)
-		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.operator !=(Windows.Media.Effects.VideoTransformEffectDefinition, Windows.Media.Effects.VideoTransformEffectDefinition)
-		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.Equals(Windows.Media.Effects.VideoTransformEffectDefinition)
-		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.Equals(object)
-		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.GetHashCode()
 		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get

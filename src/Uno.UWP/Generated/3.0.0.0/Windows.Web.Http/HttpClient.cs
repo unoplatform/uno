@@ -34,12 +34,6 @@ namespace Windows.Web.Http
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpClient.HttpClient(Windows.Web.Http.Filters.IHttpFilter)
-		// Forced skipping of method Windows.Web.Http.HttpClient.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.HttpClient.operator ==(Windows.Web.Http.HttpClient, Windows.Web.Http.HttpClient)
-		// Forced skipping of method Windows.Web.Http.HttpClient.operator !=(Windows.Web.Http.HttpClient, Windows.Web.Http.HttpClient)
-		// Forced skipping of method Windows.Web.Http.HttpClient.Equals(Windows.Web.Http.HttpClient)
-		// Forced skipping of method Windows.Web.Http.HttpClient.Equals(object)
-		// Forced skipping of method Windows.Web.Http.HttpClient.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.HttpClient.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpClient.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpClient.WinRT.IWinRTObject.QueryInterfaceCache.get

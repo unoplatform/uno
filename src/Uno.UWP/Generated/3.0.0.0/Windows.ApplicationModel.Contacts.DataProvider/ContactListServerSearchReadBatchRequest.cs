@@ -53,12 +53,6 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.operator ==(Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest, Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.operator !=(Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest, Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.Equals(Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

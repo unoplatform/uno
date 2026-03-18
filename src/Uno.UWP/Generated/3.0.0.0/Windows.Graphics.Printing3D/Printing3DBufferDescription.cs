@@ -17,11 +17,6 @@ namespace Windows.Graphics.Printing3D
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBufferDescription.Printing3DBufferDescription(Windows.Graphics.Printing3D.Printing3DBufferFormat, uint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBufferDescription.operator ==(Windows.Graphics.Printing3D.Printing3DBufferDescription, Windows.Graphics.Printing3D.Printing3DBufferDescription)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBufferDescription.operator !=(Windows.Graphics.Printing3D.Printing3DBufferDescription, Windows.Graphics.Printing3D.Printing3DBufferDescription)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBufferDescription.Equals(Windows.Graphics.Printing3D.Printing3DBufferDescription)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBufferDescription.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DBufferDescription.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Graphics.Printing3D.Printing3DBufferFormat Format;
 #endif

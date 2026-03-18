@@ -108,7 +108,6 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.As<I>()
 		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.Baseline.get
 		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.ConstrainedBaseline.get
 		// Forced skipping of method Windows.Media.MediaProperties.H264ProfileIds.Extended.get

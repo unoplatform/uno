@@ -55,12 +55,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.operator ==(Windows.Devices.PointOfService.LineDisplayMarquee, Windows.Devices.PointOfService.LineDisplayMarquee)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.operator !=(Windows.Devices.PointOfService.LineDisplayMarquee, Windows.Devices.PointOfService.LineDisplayMarquee)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.Equals(Windows.Devices.PointOfService.LineDisplayMarquee)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.WinRT.IWinRTObject.QueryInterfaceCache.get

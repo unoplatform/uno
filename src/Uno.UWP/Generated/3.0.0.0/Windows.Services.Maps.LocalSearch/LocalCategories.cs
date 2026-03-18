@@ -88,7 +88,6 @@ namespace Windows.Services.Maps.LocalSearch
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalCategories.As<I>()
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalCategories.All.get
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalCategories.BankAndCreditUnions.get
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalCategories.EatDrink.get

@@ -93,12 +93,6 @@ namespace Windows.AI.MachineLearning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.FromAbi(nint)
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.operator ==(Windows.AI.MachineLearning.ImageFeatureDescriptor, Windows.AI.MachineLearning.ImageFeatureDescriptor)
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.operator !=(Windows.AI.MachineLearning.ImageFeatureDescriptor, Windows.AI.MachineLearning.ImageFeatureDescriptor)
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.Equals(Windows.AI.MachineLearning.ImageFeatureDescriptor)
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.Equals(object)
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.GetHashCode()
 		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get

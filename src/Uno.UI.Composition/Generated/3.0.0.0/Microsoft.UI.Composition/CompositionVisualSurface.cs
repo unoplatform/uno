@@ -11,12 +11,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property SourceOffset
 		// Skipping already declared property SourceSize
 		// Skipping already declared property SourceVisual
-		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.operator ==(Microsoft.UI.Composition.CompositionVisualSurface, Microsoft.UI.Composition.CompositionVisualSurface)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.operator !=(Microsoft.UI.Composition.CompositionVisualSurface, Microsoft.UI.Composition.CompositionVisualSurface)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.Equals(Microsoft.UI.Composition.CompositionVisualSurface)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceOffset.get
@@ -25,7 +19,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceSize.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceVisual.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceVisual.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Composition.ICompositionSurface
 	}

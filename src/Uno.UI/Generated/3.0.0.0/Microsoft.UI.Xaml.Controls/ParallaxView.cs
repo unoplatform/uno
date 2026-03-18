@@ -325,7 +325,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.ParallaxView()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.ChildProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.HorizontalShiftProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.HorizontalSourceEndOffsetProperty.get
@@ -340,14 +339,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.VerticalSourceEndOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.VerticalSourceOffsetKindProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.VerticalSourceStartOffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.ParallaxView(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.operator ==(Microsoft.UI.Xaml.Controls.ParallaxView, Microsoft.UI.Xaml.Controls.ParallaxView)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.operator !=(Microsoft.UI.Xaml.Controls.ParallaxView, Microsoft.UI.Xaml.Controls.ParallaxView)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.Equals(Microsoft.UI.Xaml.Controls.ParallaxView)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.ParallaxView(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -392,7 +383,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.VerticalSourceOffsetKind.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.VerticalSourceStartOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.VerticalSourceStartOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ParallaxView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

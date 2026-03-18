@@ -13,12 +13,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PathSegmentCollection.PathSegmentCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.PathSegmentCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.operator ==(Microsoft.UI.Xaml.Media.PathSegmentCollection, Microsoft.UI.Xaml.Media.PathSegmentCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.operator !=(Microsoft.UI.Xaml.Media.PathSegmentCollection, Microsoft.UI.Xaml.Media.PathSegmentCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.Equals(Microsoft.UI.Xaml.Media.PathSegmentCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

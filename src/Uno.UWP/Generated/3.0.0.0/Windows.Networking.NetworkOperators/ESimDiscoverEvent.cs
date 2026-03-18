@@ -33,12 +33,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDiscoverEvent.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDiscoverEvent.operator ==(Windows.Networking.NetworkOperators.ESimDiscoverEvent, Windows.Networking.NetworkOperators.ESimDiscoverEvent)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDiscoverEvent.operator !=(Windows.Networking.NetworkOperators.ESimDiscoverEvent, Windows.Networking.NetworkOperators.ESimDiscoverEvent)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDiscoverEvent.Equals(Windows.Networking.NetworkOperators.ESimDiscoverEvent)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDiscoverEvent.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDiscoverEvent.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDiscoverEvent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDiscoverEvent.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDiscoverEvent.WinRT.IWinRTObject.QueryInterfaceCache.get

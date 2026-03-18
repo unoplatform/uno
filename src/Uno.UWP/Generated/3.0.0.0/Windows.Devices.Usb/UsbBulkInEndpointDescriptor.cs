@@ -43,12 +43,6 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.operator ==(Windows.Devices.Usb.UsbBulkInEndpointDescriptor, Windows.Devices.Usb.UsbBulkInEndpointDescriptor)
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.operator !=(Windows.Devices.Usb.UsbBulkInEndpointDescriptor, Windows.Devices.Usb.UsbBulkInEndpointDescriptor)
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.Equals(Windows.Devices.Usb.UsbBulkInEndpointDescriptor)
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.Equals(object)
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.GetHashCode()
 		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get

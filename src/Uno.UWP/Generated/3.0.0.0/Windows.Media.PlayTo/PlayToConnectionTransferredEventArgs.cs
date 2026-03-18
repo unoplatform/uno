@@ -33,12 +33,6 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.operator ==(Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs, Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.operator !=(Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs, Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.Equals(Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

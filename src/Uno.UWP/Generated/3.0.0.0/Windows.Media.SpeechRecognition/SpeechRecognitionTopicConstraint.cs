@@ -96,12 +96,6 @@ namespace Windows.Media.SpeechRecognition
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.SpeechRecognitionTopicConstraint(Windows.Media.SpeechRecognition.SpeechRecognitionScenario, string, string)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.FromAbi(nint)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.operator ==(Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint, Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.operator !=(Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint, Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.Equals(Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.Equals(object)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.GetHashCode()
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.WinRT.IWinRTObject.QueryInterfaceCache.get

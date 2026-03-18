@@ -33,12 +33,6 @@ namespace Windows.Perception.People
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.operator ==(Windows.Perception.People.HandMeshVertexState, Windows.Perception.People.HandMeshVertexState)
-		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.operator !=(Windows.Perception.People.HandMeshVertexState, Windows.Perception.People.HandMeshVertexState)
-		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.Equals(Windows.Perception.People.HandMeshVertexState)
-		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.Equals(object)
-		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.GetHashCode()
 		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.WinRT.IWinRTObject.QueryInterfaceCache.get

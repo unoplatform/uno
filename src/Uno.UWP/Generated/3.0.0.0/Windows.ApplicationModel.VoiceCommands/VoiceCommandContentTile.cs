@@ -128,12 +128,6 @@ namespace Windows.ApplicationModel.VoiceCommands
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.VoiceCommandContentTile()
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.operator ==(Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile, Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.operator !=(Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile, Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.Equals(Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.WinRT.IWinRTObject.QueryInterfaceCache.get

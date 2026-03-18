@@ -83,12 +83,6 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.operator ==(Windows.Networking.Sockets.StreamSocketListenerControl, Windows.Networking.Sockets.StreamSocketListenerControl)
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.operator !=(Windows.Networking.Sockets.StreamSocketListenerControl, Windows.Networking.Sockets.StreamSocketListenerControl)
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.Equals(Windows.Networking.Sockets.StreamSocketListenerControl)
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.Equals(object)
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.GetHashCode()
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.WinRT.IWinRTObject.QueryInterfaceCache.get

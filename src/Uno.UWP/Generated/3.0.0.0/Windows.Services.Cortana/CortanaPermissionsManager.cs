@@ -13,7 +13,6 @@ namespace Windows.Services.Cortana
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Services.Cortana.CortanaPermissionsManager GetDefault()
@@ -21,12 +20,6 @@ namespace Windows.Services.Cortana
 			throw new global::System.NotImplementedException("The member CortanaPermissionsManager CortanaPermissionsManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CortanaPermissionsManager%20CortanaPermissionsManager.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.operator ==(Windows.Services.Cortana.CortanaPermissionsManager, Windows.Services.Cortana.CortanaPermissionsManager)
-		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.operator !=(Windows.Services.Cortana.CortanaPermissionsManager, Windows.Services.Cortana.CortanaPermissionsManager)
-		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.Equals(Windows.Services.Cortana.CortanaPermissionsManager)
-		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.Equals(object)
-		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.GetHashCode()
 		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Cortana.CortanaPermissionsManager.WinRT.IWinRTObject.QueryInterfaceCache.get

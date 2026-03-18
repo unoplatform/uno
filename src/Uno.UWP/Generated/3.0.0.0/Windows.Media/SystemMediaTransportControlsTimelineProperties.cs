@@ -86,12 +86,6 @@ namespace Windows.Media
 		}
 #endif
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.SystemMediaTransportControlsTimelineProperties()
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.operator ==(Windows.Media.SystemMediaTransportControlsTimelineProperties, Windows.Media.SystemMediaTransportControlsTimelineProperties)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.operator !=(Windows.Media.SystemMediaTransportControlsTimelineProperties, Windows.Media.SystemMediaTransportControlsTimelineProperties)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.Equals(Windows.Media.SystemMediaTransportControlsTimelineProperties)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.Equals(object)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.GetHashCode()
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

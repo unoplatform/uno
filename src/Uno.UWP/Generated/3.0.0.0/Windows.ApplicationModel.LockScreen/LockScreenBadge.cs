@@ -53,12 +53,6 @@ namespace Windows.ApplicationModel.LockScreen
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.operator ==(Windows.ApplicationModel.LockScreen.LockScreenBadge, Windows.ApplicationModel.LockScreen.LockScreenBadge)
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.operator !=(Windows.ApplicationModel.LockScreen.LockScreenBadge, Windows.ApplicationModel.LockScreen.LockScreenBadge)
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.Equals(Windows.ApplicationModel.LockScreen.LockScreenBadge)
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.WinRT.IWinRTObject.QueryInterfaceCache.get

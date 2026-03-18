@@ -13,12 +13,6 @@ namespace Windows.Devices.Printers
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Printers.PrintSchema.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Printers.PrintSchema.operator ==(Windows.Devices.Printers.PrintSchema, Windows.Devices.Printers.PrintSchema)
-		// Forced skipping of method Windows.Devices.Printers.PrintSchema.operator !=(Windows.Devices.Printers.PrintSchema, Windows.Devices.Printers.PrintSchema)
-		// Forced skipping of method Windows.Devices.Printers.PrintSchema.Equals(Windows.Devices.Printers.PrintSchema)
-		// Forced skipping of method Windows.Devices.Printers.PrintSchema.Equals(object)
-		// Forced skipping of method Windows.Devices.Printers.PrintSchema.GetHashCode()
 		// Forced skipping of method Windows.Devices.Printers.PrintSchema.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Printers.PrintSchema.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Printers.PrintSchema.WinRT.IWinRTObject.QueryInterfaceCache.get

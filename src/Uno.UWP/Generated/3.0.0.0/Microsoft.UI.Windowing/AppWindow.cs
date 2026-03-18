@@ -41,7 +41,6 @@ namespace Microsoft.UI.Windowing
 		// Skipping already declared property Size
 		// Skipping already declared property Title
 		// Skipping already declared property TitleBar
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.AppWindow Create()
@@ -71,12 +70,6 @@ namespace Microsoft.UI.Windowing
 			throw new global::System.NotImplementedException("The member AppWindow AppWindow.Create(AppWindowPresenter appWindowPresenter, WindowId ownerWindowId, DispatcherQueue DispatcherQueue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindow%20AppWindow.Create%28AppWindowPresenter%20appWindowPresenter%2C%20WindowId%20ownerWindowId%2C%20DispatcherQueue%20DispatcherQueue%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.operator ==(Microsoft.UI.Windowing.AppWindow, Microsoft.UI.Windowing.AppWindow)
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.operator !=(Microsoft.UI.Windowing.AppWindow, Microsoft.UI.Windowing.AppWindow)
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Equals(Microsoft.UI.Windowing.AppWindow)
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Equals(object)
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.WinRT.IWinRTObject.QueryInterfaceCache.get

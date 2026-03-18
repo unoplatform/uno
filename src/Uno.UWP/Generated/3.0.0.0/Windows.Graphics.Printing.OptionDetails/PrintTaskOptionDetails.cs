@@ -33,7 +33,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails GetFromPrintTaskOptions(global::Windows.Graphics.Printing.PrintTaskOptions printTaskOptions)
@@ -41,12 +40,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 			throw new global::System.NotImplementedException("The member PrintTaskOptionDetails PrintTaskOptionDetails.GetFromPrintTaskOptions(PrintTaskOptions printTaskOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTaskOptionDetails%20PrintTaskOptionDetails.GetFromPrintTaskOptions%28PrintTaskOptions%20printTaskOptions%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -163,12 +163,6 @@ namespace Windows.Storage.BulkAccess
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.operator ==(Windows.Storage.BulkAccess.FolderInformation, Windows.Storage.BulkAccess.FolderInformation)
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.operator !=(Windows.Storage.BulkAccess.FolderInformation, Windows.Storage.BulkAccess.FolderInformation)
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Equals(Windows.Storage.BulkAccess.FolderInformation)
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Equals(object)
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.GetHashCode()
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -83,12 +83,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.operator ==(Windows.UI.Composition.StepEasingFunction, Windows.UI.Composition.StepEasingFunction)
-		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.operator !=(Windows.UI.Composition.StepEasingFunction, Windows.UI.Composition.StepEasingFunction)
-		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.Equals(Windows.UI.Composition.StepEasingFunction)
-		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.FinalStep.get
@@ -101,7 +95,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.IsInitialStepSingleFrame.set
 		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.StepCount.get
 		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.StepCount.set
-		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -86,12 +86,6 @@ namespace Windows.ApplicationModel.Wallet
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WalletItemCustomProperty(string, string)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.operator ==(Windows.ApplicationModel.Wallet.WalletItemCustomProperty, Windows.ApplicationModel.Wallet.WalletItemCustomProperty)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.operator !=(Windows.ApplicationModel.Wallet.WalletItemCustomProperty, Windows.ApplicationModel.Wallet.WalletItemCustomProperty)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.Equals(Windows.ApplicationModel.Wallet.WalletItemCustomProperty)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WinRT.IWinRTObject.QueryInterfaceCache.get

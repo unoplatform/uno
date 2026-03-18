@@ -16,12 +16,6 @@ namespace Windows.Networking.Sockets
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.WebSocketKeepAlive.WebSocketKeepAlive()
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketKeepAlive.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketKeepAlive.operator ==(Windows.Networking.Sockets.WebSocketKeepAlive, Windows.Networking.Sockets.WebSocketKeepAlive)
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketKeepAlive.operator !=(Windows.Networking.Sockets.WebSocketKeepAlive, Windows.Networking.Sockets.WebSocketKeepAlive)
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketKeepAlive.Equals(Windows.Networking.Sockets.WebSocketKeepAlive)
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketKeepAlive.Equals(object)
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketKeepAlive.GetHashCode()
 		// Forced skipping of method Windows.Networking.Sockets.WebSocketKeepAlive.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Sockets.WebSocketKeepAlive.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Sockets.WebSocketKeepAlive.WinRT.IWinRTObject.QueryInterfaceCache.get

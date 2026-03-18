@@ -30,12 +30,6 @@ namespace Windows.Devices.Sensors
 		}
 #endif
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.operator ==(Windows.Devices.Sensors.LightSensorReading, Windows.Devices.Sensors.LightSensorReading)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.operator !=(Windows.Devices.Sensors.LightSensorReading, Windows.Devices.Sensors.LightSensorReading)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.Equals(Windows.Devices.Sensors.LightSensorReading)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.WinRT.IWinRTObject.QueryInterfaceCache.get

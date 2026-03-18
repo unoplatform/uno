@@ -16,12 +16,6 @@ namespace Windows.Media.Protection
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.HdcpSession.HdcpSession()
-		// Forced skipping of method Windows.Media.Protection.HdcpSession.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.HdcpSession.operator ==(Windows.Media.Protection.HdcpSession, Windows.Media.Protection.HdcpSession)
-		// Forced skipping of method Windows.Media.Protection.HdcpSession.operator !=(Windows.Media.Protection.HdcpSession, Windows.Media.Protection.HdcpSession)
-		// Forced skipping of method Windows.Media.Protection.HdcpSession.Equals(Windows.Media.Protection.HdcpSession)
-		// Forced skipping of method Windows.Media.Protection.HdcpSession.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.HdcpSession.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.HdcpSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.HdcpSession.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.HdcpSession.WinRT.IWinRTObject.QueryInterfaceCache.get

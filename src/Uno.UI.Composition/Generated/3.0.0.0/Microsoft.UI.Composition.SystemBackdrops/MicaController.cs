@@ -100,14 +100,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.SystemBackdrops.MicaController.MicaController()
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.MicaController()
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.As<I>()
 		// Skipping already declared method Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported()
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.operator ==(Microsoft.UI.Composition.SystemBackdrops.MicaController, Microsoft.UI.Composition.SystemBackdrops.MicaController)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.operator !=(Microsoft.UI.Composition.SystemBackdrops.MicaController, Microsoft.UI.Composition.SystemBackdrops.MicaController)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.Equals(Microsoft.UI.Composition.SystemBackdrops.MicaController)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.WinRT.IWinRTObject.QueryInterfaceCache.get

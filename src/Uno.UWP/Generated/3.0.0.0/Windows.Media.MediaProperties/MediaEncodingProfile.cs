@@ -58,7 +58,6 @@ namespace Windows.Media.MediaProperties
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.MediaEncodingProfile()
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.MediaEncodingProfile CreateM4a(global::Windows.Media.MediaProperties.AudioEncodingQuality quality)
@@ -143,12 +142,6 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotImplementedException("The member MediaEncodingProfile MediaEncodingProfile.CreateHevc(VideoEncodingQuality quality) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaEncodingProfile%20MediaEncodingProfile.CreateHevc%28VideoEncodingQuality%20quality%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.FromAbi(nint)
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.operator ==(Windows.Media.MediaProperties.MediaEncodingProfile, Windows.Media.MediaProperties.MediaEncodingProfile)
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.operator !=(Windows.Media.MediaProperties.MediaEncodingProfile, Windows.Media.MediaProperties.MediaEncodingProfile)
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.Equals(Windows.Media.MediaProperties.MediaEncodingProfile)
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.Equals(object)
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.GetHashCode()
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.WinRT.IWinRTObject.QueryInterfaceCache.get

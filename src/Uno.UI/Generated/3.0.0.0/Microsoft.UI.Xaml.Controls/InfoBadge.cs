@@ -16,18 +16,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.InfoBadge.InfoBadge()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.InfoBadge()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.IconSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.TemplateSettingsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.InfoBadge(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.operator ==(Microsoft.UI.Xaml.Controls.InfoBadge, Microsoft.UI.Xaml.Controls.InfoBadge)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.operator !=(Microsoft.UI.Xaml.Controls.InfoBadge, Microsoft.UI.Xaml.Controls.InfoBadge)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.Equals(Microsoft.UI.Xaml.Controls.InfoBadge)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.InfoBadge(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.IconSource.get
@@ -35,7 +26,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.Value.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

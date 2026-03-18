@@ -23,12 +23,6 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.operator ==(Windows.UI.Notifications.BadgeUpdateManagerForUser, Windows.UI.Notifications.BadgeUpdateManagerForUser)
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.operator !=(Windows.UI.Notifications.BadgeUpdateManagerForUser, Windows.UI.Notifications.BadgeUpdateManagerForUser)
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.Equals(Windows.UI.Notifications.BadgeUpdateManagerForUser)
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.Equals(object)
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.GetHashCode()
 		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.WinRT.IWinRTObject.QueryInterfaceCache.get

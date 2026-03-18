@@ -83,12 +83,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.operator ==(Windows.Devices.Sensors.InclinometerReading, Windows.Devices.Sensors.InclinometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.operator !=(Windows.Devices.Sensors.InclinometerReading, Windows.Devices.Sensors.InclinometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.Equals(Windows.Devices.Sensors.InclinometerReading)
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.WinRT.IWinRTObject.QueryInterfaceCache.get

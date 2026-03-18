@@ -17,11 +17,6 @@ namespace Windows.Graphics.Printing
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageDescription.PrintPageDescription(Windows.Foundation.Size, Windows.Foundation.Rect, uint, uint)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageDescription.operator ==(Windows.Graphics.Printing.PrintPageDescription, Windows.Graphics.Printing.PrintPageDescription)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageDescription.operator !=(Windows.Graphics.Printing.PrintPageDescription, Windows.Graphics.Printing.PrintPageDescription)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageDescription.Equals(Windows.Graphics.Printing.PrintPageDescription)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageDescription.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageDescription.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Foundation.Size PageSize;
 #endif

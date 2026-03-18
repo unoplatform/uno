@@ -183,7 +183,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property VerticalContentAlignment
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentPresenter.ContentPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.ContentPresenter()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.BackgroundProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.BackgroundSizingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.BorderBrushProperty.get
@@ -210,20 +209,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.TextLineBoundsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.TextWrappingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.VerticalContentAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.ContentPresenter(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.operator ==(Microsoft.UI.Xaml.Controls.ContentPresenter, Microsoft.UI.Xaml.Controls.ContentPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.operator !=(Microsoft.UI.Xaml.Controls.ContentPresenter, Microsoft.UI.Xaml.Controls.ContentPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.Equals(Microsoft.UI.Xaml.Controls.ContentPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.ContentPresenter(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentPresenter.OnContentTemplateChanged(Microsoft.UI.Xaml.DataTemplate, Microsoft.UI.Xaml.DataTemplate)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.Microsoft.UI.Xaml.Controls.IContentPresenterOverrides.OnContentTemplateChanged(Microsoft.UI.Xaml.DataTemplate, Microsoft.UI.Xaml.DataTemplate)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentPresenter.OnContentTemplateSelectorChanged(Microsoft.UI.Xaml.Controls.DataTemplateSelector, Microsoft.UI.Xaml.Controls.DataTemplateSelector)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.Microsoft.UI.Xaml.Controls.IContentPresenterOverrides.OnContentTemplateSelectorChanged(Microsoft.UI.Xaml.Controls.DataTemplateSelector, Microsoft.UI.Xaml.Controls.DataTemplateSelector)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.Background.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.Background.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.BackgroundSizing.get
@@ -278,7 +267,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.TextWrapping.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.VerticalContentAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.VerticalContentAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -28,7 +28,6 @@ namespace Windows.Devices.SmartCards
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SmartCards.KnownSmartCardAppletIds.As<I>()
 		// Forced skipping of method Windows.Devices.SmartCards.KnownSmartCardAppletIds.PaymentSystemEnvironment.get
 		// Forced skipping of method Windows.Devices.SmartCards.KnownSmartCardAppletIds.ProximityPaymentSystemEnvironment.get
 	}

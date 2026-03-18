@@ -23,12 +23,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.operator ==(Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher, Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.operator !=(Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher, Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.Equals(Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameSourceWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get

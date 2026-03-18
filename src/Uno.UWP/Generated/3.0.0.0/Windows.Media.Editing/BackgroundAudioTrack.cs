@@ -109,7 +109,6 @@ namespace Windows.Media.Editing
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Editing.BackgroundAudioTrack CreateFromEmbeddedAudioTrack(global::Windows.Media.Editing.EmbeddedAudioTrack embeddedAudioTrack)
@@ -124,13 +123,7 @@ namespace Windows.Media.Editing
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BackgroundAudioTrack> BackgroundAudioTrack.CreateFromFileAsync(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBackgroundAudioTrack%3E%20BackgroundAudioTrack.CreateFromFileAsync%28IStorageFile%20file%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.FromAbi(nint)
 		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.~BackgroundAudioTrack()
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.operator ==(Windows.Media.Editing.BackgroundAudioTrack, Windows.Media.Editing.BackgroundAudioTrack)
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.operator !=(Windows.Media.Editing.BackgroundAudioTrack, Windows.Media.Editing.BackgroundAudioTrack)
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.Equals(Windows.Media.Editing.BackgroundAudioTrack)
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.Equals(object)
-		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.GetHashCode()
 		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -13,12 +13,6 @@ namespace Windows.UI.Notifications
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdater.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdater.operator ==(Windows.UI.Notifications.BadgeUpdater, Windows.UI.Notifications.BadgeUpdater)
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdater.operator !=(Windows.UI.Notifications.BadgeUpdater, Windows.UI.Notifications.BadgeUpdater)
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdater.Equals(Windows.UI.Notifications.BadgeUpdater)
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdater.Equals(object)
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdater.GetHashCode()
 		// Forced skipping of method Windows.UI.Notifications.BadgeUpdater.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.BadgeUpdater.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Notifications.BadgeUpdater.WinRT.IWinRTObject.QueryInterfaceCache.get

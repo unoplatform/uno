@@ -13,12 +13,6 @@ namespace Windows.UI.Input
 		// Skipping already declared property HoldingState
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.operator ==(Windows.UI.Input.HoldingEventArgs, Windows.UI.Input.HoldingEventArgs)
-		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.operator !=(Windows.UI.Input.HoldingEventArgs, Windows.UI.Input.HoldingEventArgs)
-		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.Equals(Windows.UI.Input.HoldingEventArgs)
-		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

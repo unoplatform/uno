@@ -33,12 +33,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs.operator ==(Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs, Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs.operator !=(Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs, Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs.Equals(Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastCameraCaptureStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

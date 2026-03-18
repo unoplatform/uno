@@ -200,12 +200,6 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.Certificate(Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.operator ==(Windows.Security.Cryptography.Certificates.Certificate, Windows.Security.Cryptography.Certificates.Certificate)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.operator !=(Windows.Security.Cryptography.Certificates.Certificate, Windows.Security.Cryptography.Certificates.Certificate)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.Equals(Windows.Security.Cryptography.Certificates.Certificate)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.Equals(object)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.GetHashCode()
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.WinRT.IWinRTObject.QueryInterfaceCache.get

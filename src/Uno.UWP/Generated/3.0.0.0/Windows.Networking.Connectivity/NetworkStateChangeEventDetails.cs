@@ -93,12 +93,6 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.operator ==(Windows.Networking.Connectivity.NetworkStateChangeEventDetails, Windows.Networking.Connectivity.NetworkStateChangeEventDetails)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.operator !=(Windows.Networking.Connectivity.NetworkStateChangeEventDetails, Windows.Networking.Connectivity.NetworkStateChangeEventDetails)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.Equals(Windows.Networking.Connectivity.NetworkStateChangeEventDetails)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.Equals(object)
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.GetHashCode()
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkStateChangeEventDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

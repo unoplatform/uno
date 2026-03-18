@@ -53,12 +53,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugIn.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugIn.operator ==(Windows.Media.Capture.AppBroadcastPlugIn, Windows.Media.Capture.AppBroadcastPlugIn)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugIn.operator !=(Windows.Media.Capture.AppBroadcastPlugIn, Windows.Media.Capture.AppBroadcastPlugIn)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugIn.Equals(Windows.Media.Capture.AppBroadcastPlugIn)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugIn.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugIn.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugIn.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugIn.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugIn.WinRT.IWinRTObject.QueryInterfaceCache.get

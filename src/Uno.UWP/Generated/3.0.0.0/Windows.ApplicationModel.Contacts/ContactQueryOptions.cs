@@ -73,12 +73,6 @@ namespace Windows.ApplicationModel.Contacts
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string)
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string, Windows.ApplicationModel.Contacts.ContactQuerySearchFields)
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string, Windows.ApplicationModel.Contacts.ContactQuerySearchFields)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.operator ==(Windows.ApplicationModel.Contacts.ContactQueryOptions, Windows.ApplicationModel.Contacts.ContactQueryOptions)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.operator !=(Windows.ApplicationModel.Contacts.ContactQueryOptions, Windows.ApplicationModel.Contacts.ContactQueryOptions)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.Equals(Windows.ApplicationModel.Contacts.ContactQueryOptions)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

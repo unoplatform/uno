@@ -73,12 +73,6 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest.operator ==(Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest, Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest.operator !=(Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest, Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest.Equals(Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCancelMeetingRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

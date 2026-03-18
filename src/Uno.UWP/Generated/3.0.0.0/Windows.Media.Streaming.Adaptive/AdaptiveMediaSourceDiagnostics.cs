@@ -13,12 +13,6 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics.operator ==(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics, Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics.operator !=(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics, Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics.Equals(Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics.Equals(object)
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics.GetHashCode()
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics.WinRT.IWinRTObject.QueryInterfaceCache.get

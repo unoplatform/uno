@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.CallAnswerEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.CallAnswerEventArgs.operator ==(Windows.ApplicationModel.Calls.CallAnswerEventArgs, Windows.ApplicationModel.Calls.CallAnswerEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Calls.CallAnswerEventArgs.operator !=(Windows.ApplicationModel.Calls.CallAnswerEventArgs, Windows.ApplicationModel.Calls.CallAnswerEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Calls.CallAnswerEventArgs.Equals(Windows.ApplicationModel.Calls.CallAnswerEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Calls.CallAnswerEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.CallAnswerEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.CallAnswerEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.CallAnswerEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.CallAnswerEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -158,14 +158,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.CompositionGradientBrush(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.operator ==(Windows.UI.Composition.CompositionGradientBrush, Windows.UI.Composition.CompositionGradientBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.operator !=(Windows.UI.Composition.CompositionGradientBrush, Windows.UI.Composition.CompositionGradientBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.Equals(Windows.UI.Composition.CompositionGradientBrush)
-		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.CompositionGradientBrush(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.AnchorPoint.get
@@ -189,7 +181,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.Scale.set
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.TransformMatrix.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.TransformMatrix.set
-		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

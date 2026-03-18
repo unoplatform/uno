@@ -57,12 +57,6 @@ namespace Windows.Devices.Sms
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.operator ==(Windows.Devices.Sms.GetSmsDeviceOperation, Windows.Devices.Sms.GetSmsDeviceOperation)
-		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.operator !=(Windows.Devices.Sms.GetSmsDeviceOperation, Windows.Devices.Sms.GetSmsDeviceOperation)
-		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.Equals(Windows.Devices.Sms.GetSmsDeviceOperation)
-		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.Equals(object)
-		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

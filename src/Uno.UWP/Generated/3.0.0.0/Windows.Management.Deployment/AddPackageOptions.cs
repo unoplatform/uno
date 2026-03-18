@@ -238,12 +238,6 @@ namespace Windows.Management.Deployment
 		}
 #endif
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.AddPackageOptions()
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.FromAbi(nint)
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.operator ==(Windows.Management.Deployment.AddPackageOptions, Windows.Management.Deployment.AddPackageOptions)
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.operator !=(Windows.Management.Deployment.AddPackageOptions, Windows.Management.Deployment.AddPackageOptions)
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.Equals(Windows.Management.Deployment.AddPackageOptions)
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.Equals(object)
-		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.GetHashCode()
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

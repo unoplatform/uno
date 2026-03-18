@@ -13,12 +13,6 @@ namespace Windows.Gaming.XboxLive.Storage
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfoQuery.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfoQuery.operator ==(Windows.Gaming.XboxLive.Storage.GameSaveContainerInfoQuery, Windows.Gaming.XboxLive.Storage.GameSaveContainerInfoQuery)
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfoQuery.operator !=(Windows.Gaming.XboxLive.Storage.GameSaveContainerInfoQuery, Windows.Gaming.XboxLive.Storage.GameSaveContainerInfoQuery)
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfoQuery.Equals(Windows.Gaming.XboxLive.Storage.GameSaveContainerInfoQuery)
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfoQuery.Equals(object)
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfoQuery.GetHashCode()
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfoQuery.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfoQuery.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfoQuery.WinRT.IWinRTObject.QueryInterfaceCache.get

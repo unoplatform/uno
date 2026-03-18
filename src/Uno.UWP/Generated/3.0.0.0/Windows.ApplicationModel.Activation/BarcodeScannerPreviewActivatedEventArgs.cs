@@ -63,12 +63,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs, Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs, Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.BarcodeScannerPreviewActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -67,12 +67,6 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.operator ==(Windows.Graphics.Imaging.ImageStream, Windows.Graphics.Imaging.ImageStream)
-		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.operator !=(Windows.Graphics.Imaging.ImageStream, Windows.Graphics.Imaging.ImageStream)
-		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.Equals(Windows.Graphics.Imaging.ImageStream)
-		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.Equals(object)
-		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.ImageStream.WinRT.IWinRTObject.QueryInterfaceCache.get

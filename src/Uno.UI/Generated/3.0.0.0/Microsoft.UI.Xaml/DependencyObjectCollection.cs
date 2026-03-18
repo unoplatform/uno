@@ -13,14 +13,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.DependencyObjectCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.DependencyObjectCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.DependencyObjectCollection(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.operator ==(Microsoft.UI.Xaml.DependencyObjectCollection, Microsoft.UI.Xaml.DependencyObjectCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.operator !=(Microsoft.UI.Xaml.DependencyObjectCollection, Microsoft.UI.Xaml.DependencyObjectCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.Equals(Microsoft.UI.Xaml.DependencyObjectCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.DependencyObjectCollection(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.VectorChanged.add
@@ -39,7 +31,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.Remove(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.DependencyObject>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.DependencyObject>.set_Item(int, Microsoft.UI.Xaml.DependencyObject)

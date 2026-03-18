@@ -22,12 +22,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.TransformCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.TransformCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.operator ==(Microsoft.UI.Xaml.Media.TransformCollection, Microsoft.UI.Xaml.Media.TransformCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.operator !=(Microsoft.UI.Xaml.Media.TransformCollection, Microsoft.UI.Xaml.Media.TransformCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.Equals(Microsoft.UI.Xaml.Media.TransformCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

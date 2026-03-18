@@ -58,12 +58,6 @@ namespace Windows.Devices.I2c
 		}
 #endif
 		// Forced skipping of method Windows.Devices.I2c.I2cConnectionSettings.I2cConnectionSettings(int)
-		// Forced skipping of method Windows.Devices.I2c.I2cConnectionSettings.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.I2c.I2cConnectionSettings.operator ==(Windows.Devices.I2c.I2cConnectionSettings, Windows.Devices.I2c.I2cConnectionSettings)
-		// Forced skipping of method Windows.Devices.I2c.I2cConnectionSettings.operator !=(Windows.Devices.I2c.I2cConnectionSettings, Windows.Devices.I2c.I2cConnectionSettings)
-		// Forced skipping of method Windows.Devices.I2c.I2cConnectionSettings.Equals(Windows.Devices.I2c.I2cConnectionSettings)
-		// Forced skipping of method Windows.Devices.I2c.I2cConnectionSettings.Equals(object)
-		// Forced skipping of method Windows.Devices.I2c.I2cConnectionSettings.GetHashCode()
 		// Forced skipping of method Windows.Devices.I2c.I2cConnectionSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.I2c.I2cConnectionSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.I2c.I2cConnectionSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

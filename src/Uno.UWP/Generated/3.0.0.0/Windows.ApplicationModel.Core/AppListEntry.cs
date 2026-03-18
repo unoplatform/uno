@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.operator ==(Windows.ApplicationModel.Core.AppListEntry, Windows.ApplicationModel.Core.AppListEntry)
-		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.operator !=(Windows.ApplicationModel.Core.AppListEntry, Windows.ApplicationModel.Core.AppListEntry)
-		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.Equals(Windows.ApplicationModel.Core.AppListEntry)
-		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.WinRT.IWinRTObject.QueryInterfaceCache.get

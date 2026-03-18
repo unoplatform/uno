@@ -36,12 +36,6 @@ namespace Windows.Media.DialProtocol
 		}
 #endif
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DialDevicePicker()
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.FromAbi(nint)
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.operator ==(Windows.Media.DialProtocol.DialDevicePicker, Windows.Media.DialProtocol.DialDevicePicker)
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.operator !=(Windows.Media.DialProtocol.DialDevicePicker, Windows.Media.DialProtocol.DialDevicePicker)
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.Equals(Windows.Media.DialProtocol.DialDevicePicker)
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.Equals(object)
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.GetHashCode()
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.WinRT.IWinRTObject.QueryInterfaceCache.get

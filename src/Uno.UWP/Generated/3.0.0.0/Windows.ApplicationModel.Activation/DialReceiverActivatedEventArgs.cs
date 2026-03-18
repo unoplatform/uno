@@ -103,12 +103,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs, Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs, Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

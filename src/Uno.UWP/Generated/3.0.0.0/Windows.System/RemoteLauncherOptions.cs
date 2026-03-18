@@ -40,12 +40,6 @@ namespace Windows.System
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteLauncherOptions.RemoteLauncherOptions()
-		// Forced skipping of method Windows.System.RemoteLauncherOptions.FromAbi(nint)
-		// Forced skipping of method Windows.System.RemoteLauncherOptions.operator ==(Windows.System.RemoteLauncherOptions, Windows.System.RemoteLauncherOptions)
-		// Forced skipping of method Windows.System.RemoteLauncherOptions.operator !=(Windows.System.RemoteLauncherOptions, Windows.System.RemoteLauncherOptions)
-		// Forced skipping of method Windows.System.RemoteLauncherOptions.Equals(Windows.System.RemoteLauncherOptions)
-		// Forced skipping of method Windows.System.RemoteLauncherOptions.Equals(object)
-		// Forced skipping of method Windows.System.RemoteLauncherOptions.GetHashCode()
 		// Forced skipping of method Windows.System.RemoteLauncherOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.RemoteLauncherOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.RemoteLauncherOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

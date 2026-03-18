@@ -9,7 +9,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public static partial class CommandBarFlyoutCommandBarAutomationProperties
 	{
 		// Skipping already declared property ControlTypeProperty
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBarAutomationProperties.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBarAutomationProperties.GetControlType(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBarAutomationProperties.SetControlType(Microsoft.UI.Xaml.UIElement, Microsoft.UI.Xaml.Automation.Peers.AutomationControlType)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBarAutomationProperties.ControlTypeProperty.get

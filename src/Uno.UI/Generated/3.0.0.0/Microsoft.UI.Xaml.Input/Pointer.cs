@@ -12,12 +12,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property IsInRange
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property PointerId
-		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.operator ==(Microsoft.UI.Xaml.Input.Pointer, Microsoft.UI.Xaml.Input.Pointer)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.operator !=(Microsoft.UI.Xaml.Input.Pointer, Microsoft.UI.Xaml.Input.Pointer)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.Equals(Microsoft.UI.Xaml.Input.Pointer)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.WinRT.IWinRTObject.QueryInterfaceCache.get

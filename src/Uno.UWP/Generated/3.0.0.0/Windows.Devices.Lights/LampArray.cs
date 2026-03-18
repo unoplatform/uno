@@ -141,7 +141,6 @@ namespace Windows.Devices.Lights
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Lights.LampArray.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -156,12 +155,6 @@ namespace Windows.Devices.Lights
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LampArray> LampArray.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLampArray%3E%20LampArray.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Lights.LampArray.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Lights.LampArray.operator ==(Windows.Devices.Lights.LampArray, Windows.Devices.Lights.LampArray)
-		// Forced skipping of method Windows.Devices.Lights.LampArray.operator !=(Windows.Devices.Lights.LampArray, Windows.Devices.Lights.LampArray)
-		// Forced skipping of method Windows.Devices.Lights.LampArray.Equals(Windows.Devices.Lights.LampArray)
-		// Forced skipping of method Windows.Devices.Lights.LampArray.Equals(object)
-		// Forced skipping of method Windows.Devices.Lights.LampArray.GetHashCode()
 		// Forced skipping of method Windows.Devices.Lights.LampArray.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Lights.LampArray.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Lights.LampArray.WinRT.IWinRTObject.QueryInterfaceCache.get

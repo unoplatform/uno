@@ -16,12 +16,6 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.NDStorageFileHelper()
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.operator ==(Windows.Media.Protection.PlayReady.NDStorageFileHelper, Windows.Media.Protection.PlayReady.NDStorageFileHelper)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.operator !=(Windows.Media.Protection.PlayReady.NDStorageFileHelper, Windows.Media.Protection.PlayReady.NDStorageFileHelper)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.Equals(Windows.Media.Protection.PlayReady.NDStorageFileHelper)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.WinRT.IWinRTObject.QueryInterfaceCache.get

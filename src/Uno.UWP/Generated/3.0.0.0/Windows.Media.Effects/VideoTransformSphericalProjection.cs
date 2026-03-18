@@ -83,12 +83,6 @@ namespace Windows.Media.Effects
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Effects.VideoTransformSphericalProjection.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Effects.VideoTransformSphericalProjection.operator ==(Windows.Media.Effects.VideoTransformSphericalProjection, Windows.Media.Effects.VideoTransformSphericalProjection)
-		// Forced skipping of method Windows.Media.Effects.VideoTransformSphericalProjection.operator !=(Windows.Media.Effects.VideoTransformSphericalProjection, Windows.Media.Effects.VideoTransformSphericalProjection)
-		// Forced skipping of method Windows.Media.Effects.VideoTransformSphericalProjection.Equals(Windows.Media.Effects.VideoTransformSphericalProjection)
-		// Forced skipping of method Windows.Media.Effects.VideoTransformSphericalProjection.Equals(object)
-		// Forced skipping of method Windows.Media.Effects.VideoTransformSphericalProjection.GetHashCode()
 		// Forced skipping of method Windows.Media.Effects.VideoTransformSphericalProjection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Effects.VideoTransformSphericalProjection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Effects.VideoTransformSphericalProjection.WinRT.IWinRTObject.QueryInterfaceCache.get

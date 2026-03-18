@@ -23,7 +23,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.CallControl.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Devices.CallControl GetDefault()
@@ -38,12 +37,6 @@ namespace Windows.Media.Devices
 			throw new global::System.NotImplementedException("The member CallControl CallControl.FromId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CallControl%20CallControl.FromId%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.CallControl.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.CallControl.operator ==(Windows.Media.Devices.CallControl, Windows.Media.Devices.CallControl)
-		// Forced skipping of method Windows.Media.Devices.CallControl.operator !=(Windows.Media.Devices.CallControl, Windows.Media.Devices.CallControl)
-		// Forced skipping of method Windows.Media.Devices.CallControl.Equals(Windows.Media.Devices.CallControl)
-		// Forced skipping of method Windows.Media.Devices.CallControl.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.CallControl.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.CallControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.CallControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.CallControl.WinRT.IWinRTObject.QueryInterfaceCache.get

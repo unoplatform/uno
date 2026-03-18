@@ -14,12 +14,6 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.BluetoothLEManufacturerData()
 		// Skipping already declared method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.BluetoothLEManufacturerData(ushort, Windows.Storage.Streams.IBuffer)
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.BluetoothLEManufacturerData(ushort, Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.operator ==(Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData, Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData)
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.operator !=(Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData, Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData)
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.Equals(Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData)
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.Equals(object)
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.GetHashCode()
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData.WinRT.IWinRTObject.QueryInterfaceCache.get

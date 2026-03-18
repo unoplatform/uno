@@ -33,12 +33,6 @@ namespace Windows.Graphics.Printing.Workflow
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.operator ==(Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation, Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.operator !=(Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation, Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.Equals(Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

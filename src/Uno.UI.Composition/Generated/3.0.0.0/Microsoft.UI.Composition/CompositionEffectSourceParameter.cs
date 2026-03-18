@@ -11,12 +11,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Name
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEffectSourceParameter.CompositionEffectSourceParameter(string)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.CompositionEffectSourceParameter(string)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.operator ==(Microsoft.UI.Composition.CompositionEffectSourceParameter, Microsoft.UI.Composition.CompositionEffectSourceParameter)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.operator !=(Microsoft.UI.Composition.CompositionEffectSourceParameter, Microsoft.UI.Composition.CompositionEffectSourceParameter)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.Equals(Microsoft.UI.Composition.CompositionEffectSourceParameter)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -23,12 +23,6 @@ namespace Windows.Devices.PointOfService.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerHideVideoPreviewRequestEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerHideVideoPreviewRequestEventArgs.operator ==(Windows.Devices.PointOfService.Provider.BarcodeScannerHideVideoPreviewRequestEventArgs, Windows.Devices.PointOfService.Provider.BarcodeScannerHideVideoPreviewRequestEventArgs)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerHideVideoPreviewRequestEventArgs.operator !=(Windows.Devices.PointOfService.Provider.BarcodeScannerHideVideoPreviewRequestEventArgs, Windows.Devices.PointOfService.Provider.BarcodeScannerHideVideoPreviewRequestEventArgs)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerHideVideoPreviewRequestEventArgs.Equals(Windows.Devices.PointOfService.Provider.BarcodeScannerHideVideoPreviewRequestEventArgs)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerHideVideoPreviewRequestEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerHideVideoPreviewRequestEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerHideVideoPreviewRequestEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerHideVideoPreviewRequestEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerHideVideoPreviewRequestEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

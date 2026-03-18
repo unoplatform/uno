@@ -82,12 +82,6 @@ namespace Windows.Media.PlayTo
 		}
 #endif
 		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.PlayToReceiver()
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.FromAbi(nint)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.operator ==(Windows.Media.PlayTo.PlayToReceiver, Windows.Media.PlayTo.PlayToReceiver)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.operator !=(Windows.Media.PlayTo.PlayToReceiver, Windows.Media.PlayTo.PlayToReceiver)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.Equals(Windows.Media.PlayTo.PlayToReceiver)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.Equals(object)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.GetHashCode()
 		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.WinRT.IWinRTObject.QueryInterfaceCache.get

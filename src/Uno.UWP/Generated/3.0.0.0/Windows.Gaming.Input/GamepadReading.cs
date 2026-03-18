@@ -17,11 +17,6 @@ namespace Windows.Gaming.Input
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.GamepadReading.GamepadReading(ulong, Windows.Gaming.Input.GamepadButtons, double, double, double, double, double, double)
-		// Forced skipping of method Windows.Gaming.Input.GamepadReading.operator ==(Windows.Gaming.Input.GamepadReading, Windows.Gaming.Input.GamepadReading)
-		// Forced skipping of method Windows.Gaming.Input.GamepadReading.operator !=(Windows.Gaming.Input.GamepadReading, Windows.Gaming.Input.GamepadReading)
-		// Forced skipping of method Windows.Gaming.Input.GamepadReading.Equals(Windows.Gaming.Input.GamepadReading)
-		// Forced skipping of method Windows.Gaming.Input.GamepadReading.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.GamepadReading.GetHashCode()
 		// Skipping already declared field Windows.Gaming.Input.GamepadReading.Timestamp
 		// Skipping already declared field Windows.Gaming.Input.GamepadReading.Buttons
 		// Skipping already declared field Windows.Gaming.Input.GamepadReading.LeftTrigger

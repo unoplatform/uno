@@ -58,12 +58,6 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.AppUpdateOptions()
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.operator ==(Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions, Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.operator !=(Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions, Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.Equals(Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

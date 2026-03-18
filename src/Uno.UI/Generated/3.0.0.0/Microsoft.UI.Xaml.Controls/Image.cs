@@ -36,16 +36,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Stretch
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Image.Image()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Image()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.NineGridProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.SourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.StretchProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.operator ==(Microsoft.UI.Xaml.Controls.Image, Microsoft.UI.Xaml.Controls.Image)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.operator !=(Microsoft.UI.Xaml.Controls.Image, Microsoft.UI.Xaml.Controls.Image)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Equals(Microsoft.UI.Xaml.Controls.Image)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -72,7 +65,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Source.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Stretch.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Stretch.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Image.ImageFailed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Image.ImageOpened

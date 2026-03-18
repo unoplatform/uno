@@ -27,7 +27,6 @@ namespace Windows.Management.Update
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Management.Update.PreviewBuildsManager GetDefault()
@@ -42,12 +41,6 @@ namespace Windows.Management.Update
 			throw new global::System.NotImplementedException("The member bool PreviewBuildsManager.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PreviewBuildsManager.IsSupported%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.FromAbi(nint)
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.operator ==(Windows.Management.Update.PreviewBuildsManager, Windows.Management.Update.PreviewBuildsManager)
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.operator !=(Windows.Management.Update.PreviewBuildsManager, Windows.Management.Update.PreviewBuildsManager)
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.Equals(Windows.Management.Update.PreviewBuildsManager)
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.Equals(object)
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.GetHashCode()
 		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.WinRT.IWinRTObject.QueryInterfaceCache.get

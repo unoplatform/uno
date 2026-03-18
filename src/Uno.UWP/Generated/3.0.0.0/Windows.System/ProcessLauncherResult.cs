@@ -23,12 +23,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.ProcessLauncherResult.FromAbi(nint)
-		// Forced skipping of method Windows.System.ProcessLauncherResult.operator ==(Windows.System.ProcessLauncherResult, Windows.System.ProcessLauncherResult)
-		// Forced skipping of method Windows.System.ProcessLauncherResult.operator !=(Windows.System.ProcessLauncherResult, Windows.System.ProcessLauncherResult)
-		// Forced skipping of method Windows.System.ProcessLauncherResult.Equals(Windows.System.ProcessLauncherResult)
-		// Forced skipping of method Windows.System.ProcessLauncherResult.Equals(object)
-		// Forced skipping of method Windows.System.ProcessLauncherResult.GetHashCode()
 		// Forced skipping of method Windows.System.ProcessLauncherResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.ProcessLauncherResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.ProcessLauncherResult.WinRT.IWinRTObject.QueryInterfaceCache.get

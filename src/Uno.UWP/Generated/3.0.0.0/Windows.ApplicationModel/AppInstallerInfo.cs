@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppInstallerInfo.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.AppInstallerInfo.operator ==(Windows.ApplicationModel.AppInstallerInfo, Windows.ApplicationModel.AppInstallerInfo)
-		// Forced skipping of method Windows.ApplicationModel.AppInstallerInfo.operator !=(Windows.ApplicationModel.AppInstallerInfo, Windows.ApplicationModel.AppInstallerInfo)
-		// Forced skipping of method Windows.ApplicationModel.AppInstallerInfo.Equals(Windows.ApplicationModel.AppInstallerInfo)
-		// Forced skipping of method Windows.ApplicationModel.AppInstallerInfo.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.AppInstallerInfo.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.AppInstallerInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppInstallerInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppInstallerInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

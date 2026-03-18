@@ -43,12 +43,6 @@ namespace Windows.Security.Isolation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentStartProcessResult.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentStartProcessResult.operator ==(Windows.Security.Isolation.IsolatedWindowsEnvironmentStartProcessResult, Windows.Security.Isolation.IsolatedWindowsEnvironmentStartProcessResult)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentStartProcessResult.operator !=(Windows.Security.Isolation.IsolatedWindowsEnvironmentStartProcessResult, Windows.Security.Isolation.IsolatedWindowsEnvironmentStartProcessResult)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentStartProcessResult.Equals(Windows.Security.Isolation.IsolatedWindowsEnvironmentStartProcessResult)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentStartProcessResult.Equals(object)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentStartProcessResult.GetHashCode()
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentStartProcessResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentStartProcessResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentStartProcessResult.WinRT.IWinRTObject.QueryInterfaceCache.get

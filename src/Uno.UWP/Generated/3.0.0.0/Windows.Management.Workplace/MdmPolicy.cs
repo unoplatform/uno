@@ -8,7 +8,6 @@ namespace Windows.Management.Workplace
 #endif
 	public static partial class MdmPolicy
 	{
-		// Forced skipping of method Windows.Management.Workplace.MdmPolicy.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsBrowserAllowed()

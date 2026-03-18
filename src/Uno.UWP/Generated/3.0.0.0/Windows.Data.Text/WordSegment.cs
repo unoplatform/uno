@@ -43,12 +43,6 @@ namespace Windows.Data.Text
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Data.Text.WordSegment.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Text.WordSegment.operator ==(Windows.Data.Text.WordSegment, Windows.Data.Text.WordSegment)
-		// Forced skipping of method Windows.Data.Text.WordSegment.operator !=(Windows.Data.Text.WordSegment, Windows.Data.Text.WordSegment)
-		// Forced skipping of method Windows.Data.Text.WordSegment.Equals(Windows.Data.Text.WordSegment)
-		// Forced skipping of method Windows.Data.Text.WordSegment.Equals(object)
-		// Forced skipping of method Windows.Data.Text.WordSegment.GetHashCode()
 		// Forced skipping of method Windows.Data.Text.WordSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Text.WordSegment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Text.WordSegment.WinRT.IWinRTObject.QueryInterfaceCache.get

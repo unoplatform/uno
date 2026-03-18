@@ -16,12 +16,6 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.PaymentMediator()
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.operator ==(Windows.ApplicationModel.Payments.PaymentMediator, Windows.ApplicationModel.Payments.PaymentMediator)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.operator !=(Windows.ApplicationModel.Payments.PaymentMediator, Windows.ApplicationModel.Payments.PaymentMediator)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.Equals(Windows.ApplicationModel.Payments.PaymentMediator)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMediator.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -17,11 +17,6 @@ namespace Windows.Gaming.Input
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.ArcadeStickReading(ulong, Windows.Gaming.Input.ArcadeStickButtons)
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.operator ==(Windows.Gaming.Input.ArcadeStickReading, Windows.Gaming.Input.ArcadeStickReading)
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.operator !=(Windows.Gaming.Input.ArcadeStickReading, Windows.Gaming.Input.ArcadeStickReading)
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.Equals(Windows.Gaming.Input.ArcadeStickReading)
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong Timestamp;
 #endif

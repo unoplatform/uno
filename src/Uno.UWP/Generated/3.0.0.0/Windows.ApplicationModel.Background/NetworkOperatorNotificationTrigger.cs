@@ -26,12 +26,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger.NetworkOperatorNotificationTrigger(string)
-		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger.operator ==(Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger, Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger.operator !=(Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger, Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger.Equals(Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorNotificationTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

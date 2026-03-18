@@ -43,12 +43,6 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.operator ==(Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails, Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.operator !=(Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails, Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.Equals(Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

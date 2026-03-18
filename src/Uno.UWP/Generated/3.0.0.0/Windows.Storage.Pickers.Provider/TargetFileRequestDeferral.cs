@@ -13,12 +13,6 @@ namespace Windows.Storage.Pickers.Provider
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.operator ==(Windows.Storage.Pickers.Provider.TargetFileRequestDeferral, Windows.Storage.Pickers.Provider.TargetFileRequestDeferral)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.operator !=(Windows.Storage.Pickers.Provider.TargetFileRequestDeferral, Windows.Storage.Pickers.Provider.TargetFileRequestDeferral)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.Equals(Windows.Storage.Pickers.Provider.TargetFileRequestDeferral)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.Equals(object)
-		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.GetHashCode()
 		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

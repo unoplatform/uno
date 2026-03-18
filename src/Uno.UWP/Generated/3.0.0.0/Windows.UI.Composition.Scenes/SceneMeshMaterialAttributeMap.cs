@@ -67,12 +67,6 @@ namespace Windows.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.operator ==(Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap, Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap)
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.operator !=(Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap, Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap)
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.Equals(Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap)
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.Keys.get
@@ -146,7 +140,6 @@ namespace Windows.UI.Composition.Scenes
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IDictionary<string, Windows.UI.Composition.Scenes.SceneAttributeSemantic>
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.Scenes.SceneAttributeSemantic>>

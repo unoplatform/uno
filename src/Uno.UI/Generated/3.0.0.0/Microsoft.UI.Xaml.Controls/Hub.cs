@@ -201,7 +201,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.Hub()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.DefaultSectionIndexProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.HeaderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.HeaderTemplateProperty.get
@@ -209,14 +208,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.IsZoomedInViewProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.OrientationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.SemanticZoomOwnerProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.Hub(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.operator ==(Microsoft.UI.Xaml.Controls.Hub, Microsoft.UI.Xaml.Controls.Hub)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.operator !=(Microsoft.UI.Xaml.Controls.Hub, Microsoft.UI.Xaml.Controls.Hub)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.Equals(Microsoft.UI.Xaml.Controls.Hub)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.Hub(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -296,7 +287,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.SectionsInView.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.SemanticZoomOwner.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.SemanticZoomOwner.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

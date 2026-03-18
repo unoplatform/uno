@@ -33,12 +33,6 @@ namespace Windows.Services.Maps.LocalSearch
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationFinderResult.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationFinderResult.operator ==(Windows.Services.Maps.LocalSearch.LocalLocationFinderResult, Windows.Services.Maps.LocalSearch.LocalLocationFinderResult)
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationFinderResult.operator !=(Windows.Services.Maps.LocalSearch.LocalLocationFinderResult, Windows.Services.Maps.LocalSearch.LocalLocationFinderResult)
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationFinderResult.Equals(Windows.Services.Maps.LocalSearch.LocalLocationFinderResult)
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationFinderResult.Equals(object)
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationFinderResult.GetHashCode()
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationFinderResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationFinderResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationFinderResult.WinRT.IWinRTObject.QueryInterfaceCache.get

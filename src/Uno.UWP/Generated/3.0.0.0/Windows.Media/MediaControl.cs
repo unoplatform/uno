@@ -74,7 +74,6 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaControl.As<I>()
 		// Forced skipping of method Windows.Media.MediaControl.ChannelDownPressed.add
 		// Forced skipping of method Windows.Media.MediaControl.ChannelDownPressed.remove
 		// Forced skipping of method Windows.Media.MediaControl.ChannelUpPressed.add

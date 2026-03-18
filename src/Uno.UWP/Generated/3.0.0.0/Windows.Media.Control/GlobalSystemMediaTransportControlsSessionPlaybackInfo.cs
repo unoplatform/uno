@@ -73,12 +73,6 @@ namespace Windows.Media.Control
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.operator ==(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo, Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo)
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.operator !=(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo, Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo)
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.Equals(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo)
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.Equals(object)
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.GetHashCode()
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

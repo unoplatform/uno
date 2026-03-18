@@ -1308,7 +1308,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.ListViewItemPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.ListViewItemPresenter()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.CheckBoxBorderBrushProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.CheckBoxBrushProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.CheckBoxCornerRadiusProperty.get
@@ -1368,14 +1367,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.SelectionIndicatorPointerOverBrushProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.SelectionIndicatorPressedBrushProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.SelectionIndicatorVisualEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.ListViewItemPresenter(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter, Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter, Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.Equals(Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.ListViewItemPresenter(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.CheckBoxBorderBrush.get
@@ -1496,7 +1487,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.SelectionIndicatorPressedBrush.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.SelectionIndicatorVisualEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.SelectionIndicatorVisualEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

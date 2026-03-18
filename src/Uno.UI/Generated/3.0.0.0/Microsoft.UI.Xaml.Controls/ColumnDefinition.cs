@@ -17,16 +17,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Width
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ColumnDefinition.ColumnDefinition()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.ColumnDefinition()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.MaxWidthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.MinWidthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.WidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.operator ==(Microsoft.UI.Xaml.Controls.ColumnDefinition, Microsoft.UI.Xaml.Controls.ColumnDefinition)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.operator !=(Microsoft.UI.Xaml.Controls.ColumnDefinition, Microsoft.UI.Xaml.Controls.ColumnDefinition)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.Equals(Microsoft.UI.Xaml.Controls.ColumnDefinition)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.ActualWidth.get
@@ -36,7 +29,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.MinWidth.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.Width.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.Width.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

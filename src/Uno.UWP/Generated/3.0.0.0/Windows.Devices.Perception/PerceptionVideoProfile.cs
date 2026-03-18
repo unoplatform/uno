@@ -63,12 +63,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.operator ==(Windows.Devices.Perception.PerceptionVideoProfile, Windows.Devices.Perception.PerceptionVideoProfile)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.operator !=(Windows.Devices.Perception.PerceptionVideoProfile, Windows.Devices.Perception.PerceptionVideoProfile)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.Equals(Windows.Devices.Perception.PerceptionVideoProfile)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.WinRT.IWinRTObject.QueryInterfaceCache.get

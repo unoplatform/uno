@@ -73,12 +73,6 @@ namespace Windows.Management.Policies
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.FromAbi(nint)
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.operator ==(Windows.Management.Policies.NamedPolicyData, Windows.Management.Policies.NamedPolicyData)
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.operator !=(Windows.Management.Policies.NamedPolicyData, Windows.Management.Policies.NamedPolicyData)
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.Equals(Windows.Management.Policies.NamedPolicyData)
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.Equals(object)
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.GetHashCode()
 		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.WinRT.IWinRTObject.QueryInterfaceCache.get

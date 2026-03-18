@@ -44,12 +44,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.VpnNamespaceAssignment()
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.operator ==(Windows.Networking.Vpn.VpnNamespaceAssignment, Windows.Networking.Vpn.VpnNamespaceAssignment)
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.operator !=(Windows.Networking.Vpn.VpnNamespaceAssignment, Windows.Networking.Vpn.VpnNamespaceAssignment)
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.Equals(Windows.Networking.Vpn.VpnNamespaceAssignment)
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.WinRT.IWinRTObject.QueryInterfaceCache.get

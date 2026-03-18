@@ -10,12 +10,6 @@ namespace Windows.Storage.Pickers
 	{
 		// Skipping already declared property Count
 		// Skipping already declared property this[]
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.operator ==(Windows.Storage.Pickers.FilePickerSelectedFilesArray, Windows.Storage.Pickers.FilePickerSelectedFilesArray)
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.operator !=(Windows.Storage.Pickers.FilePickerSelectedFilesArray, Windows.Storage.Pickers.FilePickerSelectedFilesArray)
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.Equals(Windows.Storage.Pickers.FilePickerSelectedFilesArray)
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.Equals(object)
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.GetHashCode()
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.WinRT.IWinRTObject.QueryInterfaceCache.get

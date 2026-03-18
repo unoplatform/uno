@@ -89,12 +89,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.operator ==(Microsoft.UI.Composition.CompositionProjectedShadow, Microsoft.UI.Composition.CompositionProjectedShadow)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.operator !=(Microsoft.UI.Composition.CompositionProjectedShadow, Microsoft.UI.Composition.CompositionProjectedShadow)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.Equals(Microsoft.UI.Composition.CompositionProjectedShadow)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.BlurRadiusMultiplier.get
@@ -107,7 +101,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.MinBlurRadius.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.MinBlurRadius.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.Receivers.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

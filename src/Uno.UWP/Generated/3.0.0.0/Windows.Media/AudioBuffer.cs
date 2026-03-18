@@ -37,13 +37,7 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.AudioBuffer.FromAbi(nint)
 		// Forced skipping of method Windows.Media.AudioBuffer.~AudioBuffer()
-		// Forced skipping of method Windows.Media.AudioBuffer.operator ==(Windows.Media.AudioBuffer, Windows.Media.AudioBuffer)
-		// Forced skipping of method Windows.Media.AudioBuffer.operator !=(Windows.Media.AudioBuffer, Windows.Media.AudioBuffer)
-		// Forced skipping of method Windows.Media.AudioBuffer.Equals(Windows.Media.AudioBuffer)
-		// Forced skipping of method Windows.Media.AudioBuffer.Equals(object)
-		// Forced skipping of method Windows.Media.AudioBuffer.GetHashCode()
 		// Forced skipping of method Windows.Media.AudioBuffer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.AudioBuffer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.AudioBuffer.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -17,11 +17,6 @@ namespace Windows.UI.Core
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreProximityEvaluation.CoreProximityEvaluation(int, Windows.Foundation.Point)
-		// Forced skipping of method Windows.UI.Core.CoreProximityEvaluation.operator ==(Windows.UI.Core.CoreProximityEvaluation, Windows.UI.Core.CoreProximityEvaluation)
-		// Forced skipping of method Windows.UI.Core.CoreProximityEvaluation.operator !=(Windows.UI.Core.CoreProximityEvaluation, Windows.UI.Core.CoreProximityEvaluation)
-		// Forced skipping of method Windows.UI.Core.CoreProximityEvaluation.Equals(Windows.UI.Core.CoreProximityEvaluation)
-		// Forced skipping of method Windows.UI.Core.CoreProximityEvaluation.Equals(object)
-		// Forced skipping of method Windows.UI.Core.CoreProximityEvaluation.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int Score;
 #endif

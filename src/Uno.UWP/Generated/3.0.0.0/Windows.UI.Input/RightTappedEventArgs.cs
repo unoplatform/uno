@@ -11,12 +11,6 @@ namespace Windows.UI.Input
 		// Skipping already declared property ContactCount
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.operator ==(Windows.UI.Input.RightTappedEventArgs, Windows.UI.Input.RightTappedEventArgs)
-		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.operator !=(Windows.UI.Input.RightTappedEventArgs, Windows.UI.Input.RightTappedEventArgs)
-		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.Equals(Windows.UI.Input.RightTappedEventArgs)
-		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

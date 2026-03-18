@@ -10,12 +10,6 @@ namespace Microsoft.UI.Input
 	{
 		// Skipping already declared property Request
 		// Skipping already declared property Result
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.operator ==(Microsoft.UI.Input.FocusNavigationRequestEventArgs, Microsoft.UI.Input.FocusNavigationRequestEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.operator !=(Microsoft.UI.Input.FocusNavigationRequestEventArgs, Microsoft.UI.Input.FocusNavigationRequestEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.Equals(Microsoft.UI.Input.FocusNavigationRequestEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

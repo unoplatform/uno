@@ -105,7 +105,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sensors.Inclinometer GetDefault()
@@ -141,12 +140,6 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Inclinometer> Inclinometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CInclinometer%3E%20Inclinometer.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.operator ==(Windows.Devices.Sensors.Inclinometer, Windows.Devices.Sensors.Inclinometer)
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.operator !=(Windows.Devices.Sensors.Inclinometer, Windows.Devices.Sensors.Inclinometer)
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.Equals(Windows.Devices.Sensors.Inclinometer)
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.WinRT.IWinRTObject.QueryInterfaceCache.get

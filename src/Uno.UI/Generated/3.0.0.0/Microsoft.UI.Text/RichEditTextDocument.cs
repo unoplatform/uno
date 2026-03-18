@@ -93,12 +93,6 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.operator ==(Microsoft.UI.Text.RichEditTextDocument, Microsoft.UI.Text.RichEditTextDocument)
-		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.operator !=(Microsoft.UI.Text.RichEditTextDocument, Microsoft.UI.Text.RichEditTextDocument)
-		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.Equals(Microsoft.UI.Text.RichEditTextDocument)
-		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.Equals(object)
-		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.WinRT.IWinRTObject.QueryInterfaceCache.get

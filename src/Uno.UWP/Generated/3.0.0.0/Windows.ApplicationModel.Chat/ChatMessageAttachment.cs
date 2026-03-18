@@ -114,12 +114,6 @@ namespace Windows.ApplicationModel.Chat
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.ChatMessageAttachment(string, Windows.Storage.Streams.IRandomAccessStreamReference)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.operator ==(Windows.ApplicationModel.Chat.ChatMessageAttachment, Windows.ApplicationModel.Chat.ChatMessageAttachment)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.operator !=(Windows.ApplicationModel.Chat.ChatMessageAttachment, Windows.ApplicationModel.Chat.ChatMessageAttachment)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.Equals(Windows.ApplicationModel.Chat.ChatMessageAttachment)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.WinRT.IWinRTObject.QueryInterfaceCache.get

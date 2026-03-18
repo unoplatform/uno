@@ -398,12 +398,6 @@ namespace Windows.ApplicationModel.Email
 		// Skipping already declared property To
 		// Skipping already declared method Windows.ApplicationModel.Email.EmailMessage.EmailMessage()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessage.EmailMessage()
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessage.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessage.operator ==(Windows.ApplicationModel.Email.EmailMessage, Windows.ApplicationModel.Email.EmailMessage)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessage.operator !=(Windows.ApplicationModel.Email.EmailMessage, Windows.ApplicationModel.Email.EmailMessage)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessage.Equals(Windows.ApplicationModel.Email.EmailMessage)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessage.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessage.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessage.WinRT.IWinRTObject.QueryInterfaceCache.get

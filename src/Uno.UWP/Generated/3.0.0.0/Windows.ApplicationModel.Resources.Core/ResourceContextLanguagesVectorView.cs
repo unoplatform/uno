@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.operator ==(Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView, Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.operator !=(Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView, Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.Equals(Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContextLanguagesVectorView.WinRT.IWinRTObject.QueryInterfaceCache.get

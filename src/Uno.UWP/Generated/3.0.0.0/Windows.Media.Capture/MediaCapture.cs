@@ -76,7 +76,6 @@ namespace Windows.Media.Capture
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.MediaCapture.MediaCapture()
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsVideoProfileSupported(string videoDeviceId)
@@ -105,12 +104,6 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfile> MediaCapture.FindKnownVideoProfiles(string videoDeviceId, KnownVideoProfile name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaCaptureVideoProfile%3E%20MediaCapture.FindKnownVideoProfiles%28string%20videoDeviceId%2C%20KnownVideoProfile%20name%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.operator ==(Windows.Media.Capture.MediaCapture, Windows.Media.Capture.MediaCapture)
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.operator !=(Windows.Media.Capture.MediaCapture, Windows.Media.Capture.MediaCapture)
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.Equals(Windows.Media.Capture.MediaCapture)
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.MediaCapture.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.MediaCapture.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.MediaCapture.WinRT.IWinRTObject.QueryInterfaceCache.get

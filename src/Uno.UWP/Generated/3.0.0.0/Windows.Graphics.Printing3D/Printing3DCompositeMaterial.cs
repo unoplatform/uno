@@ -26,12 +26,6 @@ namespace Windows.Graphics.Printing3D
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterial.Printing3DCompositeMaterial()
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterial.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterial.operator ==(Windows.Graphics.Printing3D.Printing3DCompositeMaterial, Windows.Graphics.Printing3D.Printing3DCompositeMaterial)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterial.operator !=(Windows.Graphics.Printing3D.Printing3DCompositeMaterial, Windows.Graphics.Printing3D.Printing3DCompositeMaterial)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterial.Equals(Windows.Graphics.Printing3D.Printing3DCompositeMaterial)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterial.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterial.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterial.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterial.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterial.WinRT.IWinRTObject.QueryInterfaceCache.get

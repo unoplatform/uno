@@ -13,12 +13,6 @@ namespace Windows.UI.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.CoreWindowPopupShowingEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.CoreWindowPopupShowingEventArgs.operator ==(Windows.UI.Core.CoreWindowPopupShowingEventArgs, Windows.UI.Core.CoreWindowPopupShowingEventArgs)
-		// Forced skipping of method Windows.UI.Core.CoreWindowPopupShowingEventArgs.operator !=(Windows.UI.Core.CoreWindowPopupShowingEventArgs, Windows.UI.Core.CoreWindowPopupShowingEventArgs)
-		// Forced skipping of method Windows.UI.Core.CoreWindowPopupShowingEventArgs.Equals(Windows.UI.Core.CoreWindowPopupShowingEventArgs)
-		// Forced skipping of method Windows.UI.Core.CoreWindowPopupShowingEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Core.CoreWindowPopupShowingEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.CoreWindowPopupShowingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.CoreWindowPopupShowingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.CoreWindowPopupShowingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

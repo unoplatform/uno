@@ -9,12 +9,6 @@ namespace Windows.Devices.Enumeration
 	public partial class DeviceWatcher
 	{
 		// Skipping already declared property Status
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.operator ==(Windows.Devices.Enumeration.DeviceWatcher, Windows.Devices.Enumeration.DeviceWatcher)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.operator !=(Windows.Devices.Enumeration.DeviceWatcher, Windows.Devices.Enumeration.DeviceWatcher)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Equals(Windows.Devices.Enumeration.DeviceWatcher)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Equals(object)
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.GetHashCode()
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get

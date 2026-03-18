@@ -27,12 +27,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs.operator ==(Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs, Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs.operator !=(Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs, Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs.Equals(Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

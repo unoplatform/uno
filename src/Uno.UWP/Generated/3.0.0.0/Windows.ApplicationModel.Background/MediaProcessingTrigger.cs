@@ -16,12 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.MediaProcessingTrigger.MediaProcessingTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.MediaProcessingTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.MediaProcessingTrigger.operator ==(Windows.ApplicationModel.Background.MediaProcessingTrigger, Windows.ApplicationModel.Background.MediaProcessingTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.MediaProcessingTrigger.operator !=(Windows.ApplicationModel.Background.MediaProcessingTrigger, Windows.ApplicationModel.Background.MediaProcessingTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.MediaProcessingTrigger.Equals(Windows.ApplicationModel.Background.MediaProcessingTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.MediaProcessingTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.MediaProcessingTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.MediaProcessingTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.MediaProcessingTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.MediaProcessingTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

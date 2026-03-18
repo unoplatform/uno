@@ -13,12 +13,6 @@ namespace Windows.Media.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceStartingRequestDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceStartingRequestDeferral.operator ==(Windows.Media.Core.MediaStreamSourceStartingRequestDeferral, Windows.Media.Core.MediaStreamSourceStartingRequestDeferral)
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceStartingRequestDeferral.operator !=(Windows.Media.Core.MediaStreamSourceStartingRequestDeferral, Windows.Media.Core.MediaStreamSourceStartingRequestDeferral)
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceStartingRequestDeferral.Equals(Windows.Media.Core.MediaStreamSourceStartingRequestDeferral)
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceStartingRequestDeferral.Equals(object)
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceStartingRequestDeferral.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceStartingRequestDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceStartingRequestDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceStartingRequestDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

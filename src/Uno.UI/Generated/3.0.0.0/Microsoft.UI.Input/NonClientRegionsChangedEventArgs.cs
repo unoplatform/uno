@@ -9,12 +9,6 @@ namespace Microsoft.UI.Input
 	public partial class NonClientRegionsChangedEventArgs
 	{
 		// Skipping already declared property ChangedRegions
-		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.operator ==(Microsoft.UI.Input.NonClientRegionsChangedEventArgs, Microsoft.UI.Input.NonClientRegionsChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.operator !=(Microsoft.UI.Input.NonClientRegionsChangedEventArgs, Microsoft.UI.Input.NonClientRegionsChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.Equals(Microsoft.UI.Input.NonClientRegionsChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

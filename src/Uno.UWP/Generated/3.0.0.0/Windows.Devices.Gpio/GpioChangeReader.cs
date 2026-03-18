@@ -88,12 +88,6 @@ namespace Windows.Devices.Gpio
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.GpioChangeReader(Windows.Devices.Gpio.GpioPin, int)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.operator ==(Windows.Devices.Gpio.GpioChangeReader, Windows.Devices.Gpio.GpioChangeReader)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.operator !=(Windows.Devices.Gpio.GpioChangeReader, Windows.Devices.Gpio.GpioChangeReader)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.Equals(Windows.Devices.Gpio.GpioChangeReader)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.Equals(object)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.GetHashCode()
 		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.WinRT.IWinRTObject.QueryInterfaceCache.get

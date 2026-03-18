@@ -16,12 +16,6 @@ namespace Windows.Gaming.UI
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.UI.GameChatOverlayMessageSource.GameChatOverlayMessageSource()
-		// Forced skipping of method Windows.Gaming.UI.GameChatOverlayMessageSource.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.UI.GameChatOverlayMessageSource.operator ==(Windows.Gaming.UI.GameChatOverlayMessageSource, Windows.Gaming.UI.GameChatOverlayMessageSource)
-		// Forced skipping of method Windows.Gaming.UI.GameChatOverlayMessageSource.operator !=(Windows.Gaming.UI.GameChatOverlayMessageSource, Windows.Gaming.UI.GameChatOverlayMessageSource)
-		// Forced skipping of method Windows.Gaming.UI.GameChatOverlayMessageSource.Equals(Windows.Gaming.UI.GameChatOverlayMessageSource)
-		// Forced skipping of method Windows.Gaming.UI.GameChatOverlayMessageSource.Equals(object)
-		// Forced skipping of method Windows.Gaming.UI.GameChatOverlayMessageSource.GetHashCode()
 		// Forced skipping of method Windows.Gaming.UI.GameChatOverlayMessageSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.UI.GameChatOverlayMessageSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.UI.GameChatOverlayMessageSource.WinRT.IWinRTObject.QueryInterfaceCache.get

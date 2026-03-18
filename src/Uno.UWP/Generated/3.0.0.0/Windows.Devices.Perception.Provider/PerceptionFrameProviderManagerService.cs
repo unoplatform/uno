@@ -8,7 +8,6 @@ namespace Windows.Devices.Perception.Provider
 #endif
 	public static partial class PerceptionFrameProviderManagerService
 	{
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderManagerService.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void RegisterFrameProviderInfo(global::Windows.Devices.Perception.Provider.IPerceptionFrameProviderManager manager, global::Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo frameProviderInfo)

@@ -93,7 +93,6 @@ namespace Windows.Networking.XboxLive
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate GetTemplateByName(string name)
@@ -102,12 +101,6 @@ namespace Windows.Networking.XboxLive
 		}
 #endif
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.Templates.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.operator ==(Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate, Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.operator !=(Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate, Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.Equals(Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.Equals(object)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.GetHashCode()
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.WinRT.IWinRTObject.QueryInterfaceCache.get

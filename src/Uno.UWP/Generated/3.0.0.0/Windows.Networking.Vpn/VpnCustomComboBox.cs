@@ -82,12 +82,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.VpnCustomComboBox()
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.operator ==(Windows.Networking.Vpn.VpnCustomComboBox, Windows.Networking.Vpn.VpnCustomComboBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.operator !=(Windows.Networking.Vpn.VpnCustomComboBox, Windows.Networking.Vpn.VpnCustomComboBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Equals(Windows.Networking.Vpn.VpnCustomComboBox)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.WinRT.IWinRTObject.QueryInterfaceCache.get

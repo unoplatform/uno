@@ -8,7 +8,6 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class VisualTreeHelper
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.VisualTreeHelper.FindElementsInHostCoordinates(Windows.Foundation.Point, Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.VisualTreeHelper.FindElementsInHostCoordinates(Windows.Foundation.Rect, Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.VisualTreeHelper.FindElementsInHostCoordinates(Windows.Foundation.Point, Microsoft.UI.Xaml.UIElement, bool)
@@ -19,12 +18,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.VisualTreeHelper.DisconnectChildrenRecursive(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopups(Microsoft.UI.Xaml.Window)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(Microsoft.UI.Xaml.XamlRoot)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.operator ==(Microsoft.UI.Xaml.Media.VisualTreeHelper, Microsoft.UI.Xaml.Media.VisualTreeHelper)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.operator !=(Microsoft.UI.Xaml.Media.VisualTreeHelper, Microsoft.UI.Xaml.Media.VisualTreeHelper)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.Equals(Microsoft.UI.Xaml.Media.VisualTreeHelper)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.WinRT.IWinRTObject.QueryInterfaceCache.get

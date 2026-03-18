@@ -17,12 +17,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Velocities
 		// Skipping already declared method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.ManipulationCompletedRoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.ManipulationCompletedRoutedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.operator ==(Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs, Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.operator !=(Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs, Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Equals(Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Container.get
@@ -33,7 +27,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Position.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Velocities.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

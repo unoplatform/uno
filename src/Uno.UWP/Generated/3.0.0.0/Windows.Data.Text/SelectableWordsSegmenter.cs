@@ -26,12 +26,6 @@ namespace Windows.Data.Text
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.SelectableWordsSegmenter(string)
-		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.operator ==(Windows.Data.Text.SelectableWordsSegmenter, Windows.Data.Text.SelectableWordsSegmenter)
-		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.operator !=(Windows.Data.Text.SelectableWordsSegmenter, Windows.Data.Text.SelectableWordsSegmenter)
-		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.Equals(Windows.Data.Text.SelectableWordsSegmenter)
-		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.Equals(object)
-		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.GetHashCode()
 		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.WinRT.IWinRTObject.QueryInterfaceCache.get

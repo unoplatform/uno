@@ -22,12 +22,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Key
 		// Skipping already declared property KeyStatus
 		// Skipping already declared property OriginalKey
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.operator ==(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.operator !=(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.Equals(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.DeviceId.get
@@ -36,7 +30,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.Key.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.KeyStatus.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.OriginalKey.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

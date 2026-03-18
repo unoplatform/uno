@@ -51,12 +51,6 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.FromAbi(nint)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.operator ==(Windows.Media.PlayTo.PlayToSource, Windows.Media.PlayTo.PlayToSource)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.operator !=(Windows.Media.PlayTo.PlayToSource, Windows.Media.PlayTo.PlayToSource)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.Equals(Windows.Media.PlayTo.PlayToSource)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.Equals(object)
-		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.GetHashCode()
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.WinRT.IWinRTObject.QueryInterfaceCache.get

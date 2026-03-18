@@ -233,7 +233,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TitleBar()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.ContentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IconSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonEnabledProperty.get
@@ -244,14 +243,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.SubtitleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TemplateSettingsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TitleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TitleBar(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.operator ==(Microsoft.UI.Xaml.Controls.TitleBar, Microsoft.UI.Xaml.Controls.TitleBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.operator !=(Microsoft.UI.Xaml.Controls.TitleBar, Microsoft.UI.Xaml.Controls.TitleBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Equals(Microsoft.UI.Xaml.Controls.TitleBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TitleBar(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.BackRequested.add
@@ -277,7 +268,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Title.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Title.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

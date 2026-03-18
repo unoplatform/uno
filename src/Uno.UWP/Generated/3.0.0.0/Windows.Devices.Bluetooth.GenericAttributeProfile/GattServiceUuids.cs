@@ -228,7 +228,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.As<I>()
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.AlertNotification.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.Battery.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.BloodPressure.get

@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStore.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStore.operator ==(Windows.ApplicationModel.Chat.ChatMessageStore, Windows.ApplicationModel.Chat.ChatMessageStore)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStore.operator !=(Windows.ApplicationModel.Chat.ChatMessageStore, Windows.ApplicationModel.Chat.ChatMessageStore)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStore.Equals(Windows.ApplicationModel.Chat.ChatMessageStore)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStore.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStore.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStore.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStore.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStore.WinRT.IWinRTObject.QueryInterfaceCache.get

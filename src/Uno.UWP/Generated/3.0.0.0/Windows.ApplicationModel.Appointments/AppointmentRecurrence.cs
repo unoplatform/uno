@@ -162,12 +162,6 @@ namespace Windows.ApplicationModel.Appointments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.AppointmentRecurrence()
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.operator ==(Windows.ApplicationModel.Appointments.AppointmentRecurrence, Windows.ApplicationModel.Appointments.AppointmentRecurrence)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.operator !=(Windows.ApplicationModel.Appointments.AppointmentRecurrence, Windows.ApplicationModel.Appointments.AppointmentRecurrence)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.Equals(Windows.ApplicationModel.Appointments.AppointmentRecurrence)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.WinRT.IWinRTObject.QueryInterfaceCache.get

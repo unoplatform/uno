@@ -63,12 +63,6 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest.operator ==(Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest, Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest.operator !=(Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest, Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest.Equals(Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

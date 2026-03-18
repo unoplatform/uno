@@ -63,7 +63,6 @@ namespace Windows.Devices.HumanInterfaceDevice
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector(ushort usagePage, ushort usageId)
@@ -85,12 +84,6 @@ namespace Windows.Devices.HumanInterfaceDevice
 			throw new global::System.NotImplementedException("The member IAsyncOperation<HidDevice> HidDevice.FromIdAsync(string deviceId, FileAccessMode accessMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CHidDevice%3E%20HidDevice.FromIdAsync%28string%20deviceId%2C%20FileAccessMode%20accessMode%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.operator ==(Windows.Devices.HumanInterfaceDevice.HidDevice, Windows.Devices.HumanInterfaceDevice.HidDevice)
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.operator !=(Windows.Devices.HumanInterfaceDevice.HidDevice, Windows.Devices.HumanInterfaceDevice.HidDevice)
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.Equals(Windows.Devices.HumanInterfaceDevice.HidDevice)
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.Equals(object)
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.GetHashCode()
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.WinRT.IWinRTObject.QueryInterfaceCache.get

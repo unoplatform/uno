@@ -63,12 +63,6 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.operator ==(Windows.Gaming.Input.Custom.XusbGameControllerProvider, Windows.Gaming.Input.Custom.XusbGameControllerProvider)
-		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.operator !=(Windows.Gaming.Input.Custom.XusbGameControllerProvider, Windows.Gaming.Input.Custom.XusbGameControllerProvider)
-		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.Equals(Windows.Gaming.Input.Custom.XusbGameControllerProvider)
-		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.XusbGameControllerProvider.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -43,12 +43,6 @@ namespace Windows.ApplicationModel.Calls.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.operator ==(Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails, Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.operator !=(Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails, Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.Equals(Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

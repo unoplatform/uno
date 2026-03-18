@@ -55,12 +55,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.operator ==(Windows.Devices.Sensors.AccelerometerDataThreshold, Windows.Devices.Sensors.AccelerometerDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.operator !=(Windows.Devices.Sensors.AccelerometerDataThreshold, Windows.Devices.Sensors.AccelerometerDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.Equals(Windows.Devices.Sensors.AccelerometerDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.WinRT.IWinRTObject.QueryInterfaceCache.get

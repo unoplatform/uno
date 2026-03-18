@@ -44,12 +44,6 @@ namespace Windows.ApplicationModel.UserDataTasks
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.UserDataTaskQueryOptions()
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.operator ==(Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions, Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.operator !=(Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions, Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.Equals(Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

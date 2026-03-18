@@ -75,15 +75,8 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.AnimationController.As<I>()
 		// Forced skipping of method Windows.UI.Composition.AnimationController.MaxPlaybackRate.get
 		// Forced skipping of method Windows.UI.Composition.AnimationController.MinPlaybackRate.get
-		// Forced skipping of method Windows.UI.Composition.AnimationController.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.AnimationController.operator ==(Windows.UI.Composition.AnimationController, Windows.UI.Composition.AnimationController)
-		// Forced skipping of method Windows.UI.Composition.AnimationController.operator !=(Windows.UI.Composition.AnimationController, Windows.UI.Composition.AnimationController)
-		// Forced skipping of method Windows.UI.Composition.AnimationController.Equals(Windows.UI.Composition.AnimationController)
-		// Forced skipping of method Windows.UI.Composition.AnimationController.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.AnimationController.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.AnimationController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.AnimationController.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -106,7 +99,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.AnimationController.Progress.set
 		// Forced skipping of method Windows.UI.Composition.AnimationController.ProgressBehavior.get
 		// Forced skipping of method Windows.UI.Composition.AnimationController.ProgressBehavior.set
-		// Forced skipping of method Windows.UI.Composition.AnimationController.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.AnimationController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

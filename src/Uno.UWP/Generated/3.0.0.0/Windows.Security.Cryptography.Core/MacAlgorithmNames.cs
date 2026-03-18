@@ -68,7 +68,6 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmNames.As<I>()
 		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmNames.AesCmac.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmNames.HmacMd5.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmNames.HmacSha1.get

@@ -11,12 +11,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Handled
 		// Skipping already declared method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.AccessKeyInvokedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.AccessKeyInvokedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.operator ==(Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs, Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.operator !=(Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs, Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.Equals(Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

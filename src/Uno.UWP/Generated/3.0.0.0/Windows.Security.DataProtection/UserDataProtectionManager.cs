@@ -13,7 +13,6 @@ namespace Windows.Security.DataProtection
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Security.DataProtection.UserDataProtectionManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.DataProtection.UserDataProtectionManager TryGetDefault()
@@ -28,12 +27,6 @@ namespace Windows.Security.DataProtection
 			throw new global::System.NotImplementedException("The member UserDataProtectionManager UserDataProtectionManager.TryGetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataProtectionManager%20UserDataProtectionManager.TryGetForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.DataProtection.UserDataProtectionManager.FromAbi(nint)
-		// Forced skipping of method Windows.Security.DataProtection.UserDataProtectionManager.operator ==(Windows.Security.DataProtection.UserDataProtectionManager, Windows.Security.DataProtection.UserDataProtectionManager)
-		// Forced skipping of method Windows.Security.DataProtection.UserDataProtectionManager.operator !=(Windows.Security.DataProtection.UserDataProtectionManager, Windows.Security.DataProtection.UserDataProtectionManager)
-		// Forced skipping of method Windows.Security.DataProtection.UserDataProtectionManager.Equals(Windows.Security.DataProtection.UserDataProtectionManager)
-		// Forced skipping of method Windows.Security.DataProtection.UserDataProtectionManager.Equals(object)
-		// Forced skipping of method Windows.Security.DataProtection.UserDataProtectionManager.GetHashCode()
 		// Forced skipping of method Windows.Security.DataProtection.UserDataProtectionManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.DataProtection.UserDataProtectionManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.DataProtection.UserDataProtectionManager.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -18,14 +18,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.VirtualizingPanel(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.operator ==(Microsoft.UI.Xaml.Controls.VirtualizingPanel, Microsoft.UI.Xaml.Controls.VirtualizingPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.operator !=(Microsoft.UI.Xaml.Controls.VirtualizingPanel, Microsoft.UI.Xaml.Controls.VirtualizingPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.Equals(Microsoft.UI.Xaml.Controls.VirtualizingPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.VirtualizingPanel(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -56,7 +48,6 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.VirtualizingPanel", "void VirtualizingPanel.OnItemsChanged(object sender, ItemsChangedEventArgs args)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.Microsoft.UI.Xaml.Controls.IVirtualizingPanelOverrides.OnItemsChanged(object, Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void OnClearChildren()
@@ -64,7 +55,6 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.VirtualizingPanel", "void VirtualizingPanel.OnClearChildren()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.Microsoft.UI.Xaml.Controls.IVirtualizingPanelOverrides.OnClearChildren()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void BringIndexIntoView(int index)
@@ -72,9 +62,7 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.VirtualizingPanel", "void VirtualizingPanel.BringIndexIntoView(int index)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.Microsoft.UI.Xaml.Controls.IVirtualizingPanelOverrides.BringIndexIntoView(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.ItemContainerGenerator.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingPanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

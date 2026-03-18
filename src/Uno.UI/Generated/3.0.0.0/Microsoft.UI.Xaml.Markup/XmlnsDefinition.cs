@@ -17,11 +17,6 @@ namespace Microsoft.UI.Xaml.Markup
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XmlnsDefinition.XmlnsDefinition(string, string)
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XmlnsDefinition.operator ==(Microsoft.UI.Xaml.Markup.XmlnsDefinition, Microsoft.UI.Xaml.Markup.XmlnsDefinition)
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XmlnsDefinition.operator !=(Microsoft.UI.Xaml.Markup.XmlnsDefinition, Microsoft.UI.Xaml.Markup.XmlnsDefinition)
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XmlnsDefinition.Equals(Microsoft.UI.Xaml.Markup.XmlnsDefinition)
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XmlnsDefinition.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XmlnsDefinition.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public string XmlNamespace;
 #endif

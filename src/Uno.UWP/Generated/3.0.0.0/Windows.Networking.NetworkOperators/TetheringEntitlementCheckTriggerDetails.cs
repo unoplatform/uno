@@ -23,12 +23,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.operator ==(Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails, Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails)
-		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.operator !=(Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails, Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails)
-		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.Equals(Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails)
-		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

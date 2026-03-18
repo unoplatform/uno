@@ -8,7 +8,6 @@ namespace Windows.Networking.Connectivity
 #endif
 	public static partial class NetworkInformation
 	{
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkInformation.As<I>()
 #if false || false || false || IS_UNIT_TESTS || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.ConnectionProfile> GetConnectionProfiles()

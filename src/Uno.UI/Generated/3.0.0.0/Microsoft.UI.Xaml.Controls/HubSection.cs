@@ -105,19 +105,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HubSection()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.ContentTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HeaderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HeaderTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.IsHeaderInteractiveProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HubSection(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.operator ==(Microsoft.UI.Xaml.Controls.HubSection, Microsoft.UI.Xaml.Controls.HubSection)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.operator !=(Microsoft.UI.Xaml.Controls.HubSection, Microsoft.UI.Xaml.Controls.HubSection)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.Equals(Microsoft.UI.Xaml.Controls.HubSection)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HubSection(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.ContentTemplate.get
@@ -128,7 +119,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HeaderTemplate.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.IsHeaderInteractive.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.IsHeaderInteractive.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

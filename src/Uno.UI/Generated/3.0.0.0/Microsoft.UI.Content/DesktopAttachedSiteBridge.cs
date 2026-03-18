@@ -109,7 +109,6 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopAttachedSiteBridge.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.DesktopAttachedSiteBridge CreateFromWindowId(global::Microsoft.UI.Dispatching.DispatcherQueue queue, global::Microsoft.UI.WindowId windowId)
@@ -117,12 +116,6 @@ namespace Microsoft.UI.Content
 			throw new global::System.NotImplementedException("The member DesktopAttachedSiteBridge DesktopAttachedSiteBridge.CreateFromWindowId(DispatcherQueue queue, WindowId windowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DesktopAttachedSiteBridge%20DesktopAttachedSiteBridge.CreateFromWindowId%28DispatcherQueue%20queue%2C%20WindowId%20windowId%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopAttachedSiteBridge.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Content.DesktopAttachedSiteBridge.operator ==(Microsoft.UI.Content.DesktopAttachedSiteBridge, Microsoft.UI.Content.DesktopAttachedSiteBridge)
-		// Forced skipping of method Microsoft.UI.Content.DesktopAttachedSiteBridge.operator !=(Microsoft.UI.Content.DesktopAttachedSiteBridge, Microsoft.UI.Content.DesktopAttachedSiteBridge)
-		// Forced skipping of method Microsoft.UI.Content.DesktopAttachedSiteBridge.Equals(Microsoft.UI.Content.DesktopAttachedSiteBridge)
-		// Forced skipping of method Microsoft.UI.Content.DesktopAttachedSiteBridge.Equals(object)
-		// Forced skipping of method Microsoft.UI.Content.DesktopAttachedSiteBridge.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Content.DesktopAttachedSiteBridge.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopAttachedSiteBridge.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopAttachedSiteBridge.WinRT.IWinRTObject.QueryInterfaceCache.get

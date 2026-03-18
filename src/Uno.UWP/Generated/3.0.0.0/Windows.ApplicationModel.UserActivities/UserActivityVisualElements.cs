@@ -97,12 +97,6 @@ namespace Windows.ApplicationModel.UserActivities
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.operator ==(Windows.ApplicationModel.UserActivities.UserActivityVisualElements, Windows.ApplicationModel.UserActivities.UserActivityVisualElements)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.operator !=(Windows.ApplicationModel.UserActivities.UserActivityVisualElements, Windows.ApplicationModel.UserActivities.UserActivityVisualElements)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Equals(Windows.ApplicationModel.UserActivities.UserActivityVisualElements)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.WinRT.IWinRTObject.QueryInterfaceCache.get

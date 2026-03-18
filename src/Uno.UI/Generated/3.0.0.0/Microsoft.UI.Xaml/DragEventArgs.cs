@@ -15,12 +15,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property DragUIOverride
 		// Skipping already declared property Handled
 		// Skipping already declared property Modifiers
-		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.operator ==(Microsoft.UI.Xaml.DragEventArgs, Microsoft.UI.Xaml.DragEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.operator !=(Microsoft.UI.Xaml.DragEventArgs, Microsoft.UI.Xaml.DragEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.Equals(Microsoft.UI.Xaml.DragEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.DragEventArgs.GetDeferral()
@@ -35,7 +29,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.Modifiers.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

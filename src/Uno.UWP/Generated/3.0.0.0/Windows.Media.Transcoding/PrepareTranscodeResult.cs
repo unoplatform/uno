@@ -33,12 +33,6 @@ namespace Windows.Media.Transcoding
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.operator ==(Windows.Media.Transcoding.PrepareTranscodeResult, Windows.Media.Transcoding.PrepareTranscodeResult)
-		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.operator !=(Windows.Media.Transcoding.PrepareTranscodeResult, Windows.Media.Transcoding.PrepareTranscodeResult)
-		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.Equals(Windows.Media.Transcoding.PrepareTranscodeResult)
-		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.Equals(object)
-		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.GetHashCode()
 		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.WinRT.IWinRTObject.QueryInterfaceCache.get

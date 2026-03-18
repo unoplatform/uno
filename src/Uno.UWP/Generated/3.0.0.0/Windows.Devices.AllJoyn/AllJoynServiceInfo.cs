@@ -46,7 +46,6 @@ namespace Windows.Devices.AllJoyn
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.AllJoynServiceInfo(string, string, ushort)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynServiceInfo> FromIdAsync(string deviceId)
@@ -54,12 +53,6 @@ namespace Windows.Devices.AllJoyn
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynServiceInfo> AllJoynServiceInfo.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAllJoynServiceInfo%3E%20AllJoynServiceInfo.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.operator ==(Windows.Devices.AllJoyn.AllJoynServiceInfo, Windows.Devices.AllJoyn.AllJoynServiceInfo)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.operator !=(Windows.Devices.AllJoyn.AllJoynServiceInfo, Windows.Devices.AllJoyn.AllJoynServiceInfo)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.Equals(Windows.Devices.AllJoyn.AllJoynServiceInfo)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.Equals(object)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.GetHashCode()
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

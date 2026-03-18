@@ -69,7 +69,6 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.RadialControllerConfiguration GetForCurrentView()
@@ -81,12 +80,6 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.AppController.set
 		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.IsAppControllerEnabled.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.IsAppControllerEnabled.set
-		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.operator ==(Windows.UI.Input.RadialControllerConfiguration, Windows.UI.Input.RadialControllerConfiguration)
-		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.operator !=(Windows.UI.Input.RadialControllerConfiguration, Windows.UI.Input.RadialControllerConfiguration)
-		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.Equals(Windows.UI.Input.RadialControllerConfiguration)
-		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.Equals(object)
-		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get

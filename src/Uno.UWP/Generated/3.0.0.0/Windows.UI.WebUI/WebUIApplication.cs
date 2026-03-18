@@ -8,7 +8,6 @@ namespace Windows.UI.WebUI
 #endif
 	public static partial class WebUIApplication
 	{
-		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.As<I>()
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.Activated.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.Activated.remove
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.Navigated.add

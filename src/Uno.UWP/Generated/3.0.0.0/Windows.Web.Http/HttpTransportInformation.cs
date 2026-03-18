@@ -53,12 +53,6 @@ namespace Windows.Web.Http
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.HttpTransportInformation.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.HttpTransportInformation.operator ==(Windows.Web.Http.HttpTransportInformation, Windows.Web.Http.HttpTransportInformation)
-		// Forced skipping of method Windows.Web.Http.HttpTransportInformation.operator !=(Windows.Web.Http.HttpTransportInformation, Windows.Web.Http.HttpTransportInformation)
-		// Forced skipping of method Windows.Web.Http.HttpTransportInformation.Equals(Windows.Web.Http.HttpTransportInformation)
-		// Forced skipping of method Windows.Web.Http.HttpTransportInformation.Equals(object)
-		// Forced skipping of method Windows.Web.Http.HttpTransportInformation.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.HttpTransportInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpTransportInformation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.HttpTransportInformation.WinRT.IWinRTObject.QueryInterfaceCache.get

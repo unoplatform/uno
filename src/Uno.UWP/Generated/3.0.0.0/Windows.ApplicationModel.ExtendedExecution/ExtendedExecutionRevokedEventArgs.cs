@@ -23,12 +23,6 @@ namespace Windows.ApplicationModel.ExtendedExecution
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.operator ==(Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs, Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.operator !=(Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs, Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.Equals(Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

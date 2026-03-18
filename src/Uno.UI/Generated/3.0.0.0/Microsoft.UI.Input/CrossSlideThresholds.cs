@@ -17,11 +17,6 @@ namespace Microsoft.UI.Input
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.CrossSlideThresholds.CrossSlideThresholds(float, float, float, float)
-		// Forced skipping of method Microsoft.UI.Input.CrossSlideThresholds.operator ==(Microsoft.UI.Input.CrossSlideThresholds, Microsoft.UI.Input.CrossSlideThresholds)
-		// Forced skipping of method Microsoft.UI.Input.CrossSlideThresholds.operator !=(Microsoft.UI.Input.CrossSlideThresholds, Microsoft.UI.Input.CrossSlideThresholds)
-		// Forced skipping of method Microsoft.UI.Input.CrossSlideThresholds.Equals(Microsoft.UI.Input.CrossSlideThresholds)
-		// Forced skipping of method Microsoft.UI.Input.CrossSlideThresholds.Equals(object)
-		// Forced skipping of method Microsoft.UI.Input.CrossSlideThresholds.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public float SelectionStart;
 #endif

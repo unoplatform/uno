@@ -40,12 +40,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextLine.TimedTextLine()
-		// Forced skipping of method Windows.Media.Core.TimedTextLine.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.TimedTextLine.operator ==(Windows.Media.Core.TimedTextLine, Windows.Media.Core.TimedTextLine)
-		// Forced skipping of method Windows.Media.Core.TimedTextLine.operator !=(Windows.Media.Core.TimedTextLine, Windows.Media.Core.TimedTextLine)
-		// Forced skipping of method Windows.Media.Core.TimedTextLine.Equals(Windows.Media.Core.TimedTextLine)
-		// Forced skipping of method Windows.Media.Core.TimedTextLine.Equals(object)
-		// Forced skipping of method Windows.Media.Core.TimedTextLine.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.TimedTextLine.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.TimedTextLine.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.TimedTextLine.WinRT.IWinRTObject.QueryInterfaceCache.get

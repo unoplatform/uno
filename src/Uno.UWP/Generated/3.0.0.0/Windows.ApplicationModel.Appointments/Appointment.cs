@@ -256,12 +256,6 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 		// Skipping already declared method Windows.ApplicationModel.Appointments.Appointment.Appointment()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.Appointment()
-		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.operator ==(Windows.ApplicationModel.Appointments.Appointment, Windows.ApplicationModel.Appointments.Appointment)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.operator !=(Windows.ApplicationModel.Appointments.Appointment, Windows.ApplicationModel.Appointments.Appointment)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.Equals(Windows.ApplicationModel.Appointments.Appointment)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.WinRT.IWinRTObject.QueryInterfaceCache.get

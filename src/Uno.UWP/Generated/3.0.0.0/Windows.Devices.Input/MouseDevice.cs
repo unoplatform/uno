@@ -13,7 +13,6 @@ namespace Windows.Devices.Input
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.MouseDevice.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.MouseDevice GetForCurrentView()
@@ -21,12 +20,6 @@ namespace Windows.Devices.Input
 			throw new global::System.NotImplementedException("The member MouseDevice MouseDevice.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MouseDevice%20MouseDevice.GetForCurrentView%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.MouseDevice.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Input.MouseDevice.operator ==(Windows.Devices.Input.MouseDevice, Windows.Devices.Input.MouseDevice)
-		// Forced skipping of method Windows.Devices.Input.MouseDevice.operator !=(Windows.Devices.Input.MouseDevice, Windows.Devices.Input.MouseDevice)
-		// Forced skipping of method Windows.Devices.Input.MouseDevice.Equals(Windows.Devices.Input.MouseDevice)
-		// Forced skipping of method Windows.Devices.Input.MouseDevice.Equals(object)
-		// Forced skipping of method Windows.Devices.Input.MouseDevice.GetHashCode()
 		// Forced skipping of method Windows.Devices.Input.MouseDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Input.MouseDevice.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Input.MouseDevice.WinRT.IWinRTObject.QueryInterfaceCache.get

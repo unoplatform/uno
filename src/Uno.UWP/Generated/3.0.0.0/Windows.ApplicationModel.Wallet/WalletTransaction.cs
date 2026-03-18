@@ -100,12 +100,6 @@ namespace Windows.ApplicationModel.Wallet
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.WalletTransaction()
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.operator ==(Windows.ApplicationModel.Wallet.WalletTransaction, Windows.ApplicationModel.Wallet.WalletTransaction)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.operator !=(Windows.ApplicationModel.Wallet.WalletTransaction, Windows.ApplicationModel.Wallet.WalletTransaction)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.Equals(Windows.ApplicationModel.Wallet.WalletTransaction)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.WinRT.IWinRTObject.QueryInterfaceCache.get

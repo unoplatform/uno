@@ -13,12 +13,6 @@ namespace Windows.Devices.Perception
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.operator ==(Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper, Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.operator !=(Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper, Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.Equals(Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.WinRT.IWinRTObject.QueryInterfaceCache.get

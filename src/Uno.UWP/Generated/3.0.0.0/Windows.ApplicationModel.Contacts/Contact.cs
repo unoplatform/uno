@@ -250,12 +250,6 @@ namespace Windows.ApplicationModel.Contacts
 		// Skipping already declared property YomiGivenName
 		// Skipping already declared method Windows.ApplicationModel.Contacts.Contact.Contact()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.Contact()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.operator ==(Windows.ApplicationModel.Contacts.Contact, Windows.ApplicationModel.Contacts.Contact)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.operator !=(Windows.ApplicationModel.Contacts.Contact, Windows.ApplicationModel.Contacts.Contact)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.Equals(Windows.ApplicationModel.Contacts.Contact)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -55,13 +55,6 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 		// Forced skipping of method System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer.Windows.Storage.Streams.IBuffer.Capacity.get
 		// Forced skipping of method System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer.Windows.Storage.Streams.IBuffer.Length.get
 		// Forced skipping of method System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer.Windows.Storage.Streams.IBuffer.Length.set
-		// Forced skipping of method System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer.Windows.Storage.Streams.IBufferByteAccess.Buffer.get
-		// Forced skipping of method System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer.Com.IMarshal.DisconnectObject(uint)
-		// Forced skipping of method System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer.Com.IMarshal.GetMarshalSizeMax(System.Guid*, nint, Com.MSHCTX, nint, Com.MSHLFLAGS, uint*)
-		// Forced skipping of method System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer.Com.IMarshal.GetUnmarshalClass(System.Guid*, nint, Com.MSHCTX, nint, Com.MSHLFLAGS, System.Guid*)
-		// Forced skipping of method System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer.Com.IMarshal.MarshalInterface(nint, System.Guid*, nint, Com.MSHCTX, nint, Com.MSHLFLAGS)
-		// Forced skipping of method System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer.Com.IMarshal.ReleaseMarshalData(nint)
-		// Forced skipping of method System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer.Com.IMarshal.UnmarshalInterface(nint, System.Guid*, nint*)
 		// Processing: Windows.Storage.Streams.IBuffer
 	}
 }

@@ -42,17 +42,10 @@ namespace Windows.Globalization.DateTimeFormatting
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.DateTimeFormatter(Windows.Globalization.DateTimeFormatting.YearFormat, Windows.Globalization.DateTimeFormatting.MonthFormat, Windows.Globalization.DateTimeFormatting.DayFormat, Windows.Globalization.DateTimeFormatting.DayOfWeekFormat, Windows.Globalization.DateTimeFormatting.HourFormat, Windows.Globalization.DateTimeFormatting.MinuteFormat, Windows.Globalization.DateTimeFormatting.SecondFormat, System.Collections.Generic.IEnumerable<string>)
 		// Skipping already declared method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.DateTimeFormatter(Windows.Globalization.DateTimeFormatting.YearFormat, Windows.Globalization.DateTimeFormatting.MonthFormat, Windows.Globalization.DateTimeFormatting.DayFormat, Windows.Globalization.DateTimeFormatting.DayOfWeekFormat, Windows.Globalization.DateTimeFormatting.HourFormat, Windows.Globalization.DateTimeFormatting.MinuteFormat, Windows.Globalization.DateTimeFormatting.SecondFormat, System.Collections.Generic.IEnumerable<string>, string, string, string)
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.DateTimeFormatter(Windows.Globalization.DateTimeFormatting.YearFormat, Windows.Globalization.DateTimeFormatting.MonthFormat, Windows.Globalization.DateTimeFormatting.DayFormat, Windows.Globalization.DateTimeFormatting.DayOfWeekFormat, Windows.Globalization.DateTimeFormatting.HourFormat, Windows.Globalization.DateTimeFormatting.MinuteFormat, Windows.Globalization.DateTimeFormatting.SecondFormat, System.Collections.Generic.IEnumerable<string>, string, string, string)
-		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.As<I>()
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.LongDate.get
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.LongTime.get
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.ShortDate.get
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.ShortTime.get
-		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.operator ==(Windows.Globalization.DateTimeFormatting.DateTimeFormatter, Windows.Globalization.DateTimeFormatting.DateTimeFormatter)
-		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.operator !=(Windows.Globalization.DateTimeFormatting.DateTimeFormatter, Windows.Globalization.DateTimeFormatting.DateTimeFormatter)
-		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.Equals(Windows.Globalization.DateTimeFormatting.DateTimeFormatter)
-		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.Equals(object)
-		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.GetHashCode()
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.WinRT.IWinRTObject.QueryInterfaceCache.get

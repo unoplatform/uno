@@ -17,11 +17,6 @@ namespace Windows.Services.Store
 		}
 #endif
 		// Forced skipping of method Windows.Services.Store.StorePackageUpdateStatus.StorePackageUpdateStatus(string, ulong, ulong, double, double, Windows.Services.Store.StorePackageUpdateState)
-		// Forced skipping of method Windows.Services.Store.StorePackageUpdateStatus.operator ==(Windows.Services.Store.StorePackageUpdateStatus, Windows.Services.Store.StorePackageUpdateStatus)
-		// Forced skipping of method Windows.Services.Store.StorePackageUpdateStatus.operator !=(Windows.Services.Store.StorePackageUpdateStatus, Windows.Services.Store.StorePackageUpdateStatus)
-		// Forced skipping of method Windows.Services.Store.StorePackageUpdateStatus.Equals(Windows.Services.Store.StorePackageUpdateStatus)
-		// Forced skipping of method Windows.Services.Store.StorePackageUpdateStatus.Equals(object)
-		// Forced skipping of method Windows.Services.Store.StorePackageUpdateStatus.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public string PackageFamilyName;
 #endif

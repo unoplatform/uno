@@ -55,12 +55,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.operator ==(Windows.Devices.Sensors.MagnetometerDataThreshold, Windows.Devices.Sensors.MagnetometerDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.operator !=(Windows.Devices.Sensors.MagnetometerDataThreshold, Windows.Devices.Sensors.MagnetometerDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.Equals(Windows.Devices.Sensors.MagnetometerDataThreshold)
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.WinRT.IWinRTObject.QueryInterfaceCache.get

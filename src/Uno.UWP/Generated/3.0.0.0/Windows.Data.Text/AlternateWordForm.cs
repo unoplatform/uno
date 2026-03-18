@@ -43,12 +43,6 @@ namespace Windows.Data.Text
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Data.Text.AlternateWordForm.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Text.AlternateWordForm.operator ==(Windows.Data.Text.AlternateWordForm, Windows.Data.Text.AlternateWordForm)
-		// Forced skipping of method Windows.Data.Text.AlternateWordForm.operator !=(Windows.Data.Text.AlternateWordForm, Windows.Data.Text.AlternateWordForm)
-		// Forced skipping of method Windows.Data.Text.AlternateWordForm.Equals(Windows.Data.Text.AlternateWordForm)
-		// Forced skipping of method Windows.Data.Text.AlternateWordForm.Equals(object)
-		// Forced skipping of method Windows.Data.Text.AlternateWordForm.GetHashCode()
 		// Forced skipping of method Windows.Data.Text.AlternateWordForm.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Text.AlternateWordForm.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Text.AlternateWordForm.WinRT.IWinRTObject.QueryInterfaceCache.get

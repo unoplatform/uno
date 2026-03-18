@@ -43,12 +43,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs, Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs, Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.Equals(Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

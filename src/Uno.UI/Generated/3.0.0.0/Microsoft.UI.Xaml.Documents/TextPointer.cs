@@ -53,12 +53,6 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.operator ==(Microsoft.UI.Xaml.Documents.TextPointer, Microsoft.UI.Xaml.Documents.TextPointer)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.operator !=(Microsoft.UI.Xaml.Documents.TextPointer, Microsoft.UI.Xaml.Documents.TextPointer)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.Equals(Microsoft.UI.Xaml.Documents.TextPointer)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.WinRT.IWinRTObject.QueryInterfaceCache.get

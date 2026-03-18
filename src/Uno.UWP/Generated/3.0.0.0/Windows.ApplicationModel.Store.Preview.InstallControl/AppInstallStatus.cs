@@ -93,12 +93,6 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.operator ==(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus, Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.operator !=(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus, Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.Equals(Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.WinRT.IWinRTObject.QueryInterfaceCache.get

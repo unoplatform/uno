@@ -47,12 +47,6 @@ namespace Windows.Media.Casting
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.operator ==(Windows.Media.Casting.CastingConnection, Windows.Media.Casting.CastingConnection)
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.operator !=(Windows.Media.Casting.CastingConnection, Windows.Media.Casting.CastingConnection)
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.Equals(Windows.Media.Casting.CastingConnection)
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.Equals(object)
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.GetHashCode()
 		// Forced skipping of method Windows.Media.Casting.CastingConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Casting.CastingConnection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Casting.CastingConnection.WinRT.IWinRTObject.QueryInterfaceCache.get

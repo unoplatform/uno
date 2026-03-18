@@ -23,12 +23,6 @@ namespace Windows.Graphics.Printing.Workflow
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.operator ==(Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession, Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.operator !=(Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession, Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.Equals(Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.WinRT.IWinRTObject.QueryInterfaceCache.get

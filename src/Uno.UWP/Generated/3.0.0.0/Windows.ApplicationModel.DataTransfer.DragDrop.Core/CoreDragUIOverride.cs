@@ -12,12 +12,6 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		// Skipping already declared property IsCaptionVisible
 		// Skipping already declared property IsContentVisible
 		// Skipping already declared property IsGlyphVisible
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.operator ==(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride, Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.operator !=(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride, Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.Equals(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.WinRT.IWinRTObject.QueryInterfaceCache.get

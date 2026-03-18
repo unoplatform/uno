@@ -179,12 +179,6 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.operator ==(Windows.Devices.Display.Core.DisplayPath, Windows.Devices.Display.Core.DisplayPath)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.operator !=(Windows.Devices.Display.Core.DisplayPath, Windows.Devices.Display.Core.DisplayPath)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Equals(Windows.Devices.Display.Core.DisplayPath)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Equals(object)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.GetHashCode()
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -33,12 +33,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdReply.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdReply.operator ==(Windows.Networking.NetworkOperators.UssdReply, Windows.Networking.NetworkOperators.UssdReply)
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdReply.operator !=(Windows.Networking.NetworkOperators.UssdReply, Windows.Networking.NetworkOperators.UssdReply)
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdReply.Equals(Windows.Networking.NetworkOperators.UssdReply)
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdReply.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdReply.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.UssdReply.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.UssdReply.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.UssdReply.WinRT.IWinRTObject.QueryInterfaceCache.get

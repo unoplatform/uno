@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.operator ==(Windows.ApplicationModel.UserDataTasks.UserDataTaskReader, Windows.ApplicationModel.UserDataTasks.UserDataTaskReader)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.operator !=(Windows.ApplicationModel.UserDataTasks.UserDataTaskReader, Windows.ApplicationModel.UserDataTasks.UserDataTaskReader)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.Equals(Windows.ApplicationModel.UserDataTasks.UserDataTaskReader)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskReader.WinRT.IWinRTObject.QueryInterfaceCache.get

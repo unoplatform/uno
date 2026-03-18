@@ -143,12 +143,6 @@ namespace Windows.Web.AtomPub
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.AtomPub.ResourceCollection.FromAbi(nint)
-		// Forced skipping of method Windows.Web.AtomPub.ResourceCollection.operator ==(Windows.Web.AtomPub.ResourceCollection, Windows.Web.AtomPub.ResourceCollection)
-		// Forced skipping of method Windows.Web.AtomPub.ResourceCollection.operator !=(Windows.Web.AtomPub.ResourceCollection, Windows.Web.AtomPub.ResourceCollection)
-		// Forced skipping of method Windows.Web.AtomPub.ResourceCollection.Equals(Windows.Web.AtomPub.ResourceCollection)
-		// Forced skipping of method Windows.Web.AtomPub.ResourceCollection.Equals(object)
-		// Forced skipping of method Windows.Web.AtomPub.ResourceCollection.GetHashCode()
 		// Forced skipping of method Windows.Web.AtomPub.ResourceCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.AtomPub.ResourceCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.AtomPub.ResourceCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

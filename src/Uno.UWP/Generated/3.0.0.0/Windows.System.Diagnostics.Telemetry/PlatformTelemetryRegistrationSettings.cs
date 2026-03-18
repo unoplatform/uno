@@ -44,12 +44,6 @@ namespace Windows.System.Diagnostics.Telemetry
 		}
 #endif
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.PlatformTelemetryRegistrationSettings()
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.FromAbi(nint)
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.operator ==(Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings, Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings)
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.operator !=(Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings, Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings)
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.Equals(Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings)
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.Equals(object)
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.GetHashCode()
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

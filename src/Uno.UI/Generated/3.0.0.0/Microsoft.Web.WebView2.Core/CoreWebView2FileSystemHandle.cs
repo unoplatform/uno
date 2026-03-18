@@ -43,12 +43,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle, Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle, Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle.Equals(Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle.WinRT.IWinRTObject.QueryInterfaceCache.get

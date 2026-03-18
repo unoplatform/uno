@@ -13,7 +13,6 @@ namespace Windows.Media.AppBroadcasting
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.AppBroadcasting.AppBroadcastingUI GetDefault()
@@ -28,12 +27,6 @@ namespace Windows.Media.AppBroadcasting
 			throw new global::System.NotImplementedException("The member AppBroadcastingUI AppBroadcastingUI.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastingUI%20AppBroadcastingUI.GetForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.FromAbi(nint)
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.operator ==(Windows.Media.AppBroadcasting.AppBroadcastingUI, Windows.Media.AppBroadcasting.AppBroadcastingUI)
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.operator !=(Windows.Media.AppBroadcasting.AppBroadcastingUI, Windows.Media.AppBroadcasting.AppBroadcastingUI)
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.Equals(Windows.Media.AppBroadcasting.AppBroadcastingUI)
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.Equals(object)
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.GetHashCode()
 		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -83,12 +83,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIContactPanelActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUIContactPanelActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIContactPanelActivatedEventArgs, Windows.UI.WebUI.WebUIContactPanelActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIContactPanelActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIContactPanelActivatedEventArgs, Windows.UI.WebUI.WebUIContactPanelActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIContactPanelActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIContactPanelActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUIContactPanelActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUIContactPanelActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUIContactPanelActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIContactPanelActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIContactPanelActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

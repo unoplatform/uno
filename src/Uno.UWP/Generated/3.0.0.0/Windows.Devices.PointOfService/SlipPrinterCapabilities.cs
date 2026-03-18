@@ -313,12 +313,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.operator ==(Windows.Devices.PointOfService.SlipPrinterCapabilities, Windows.Devices.PointOfService.SlipPrinterCapabilities)
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.operator !=(Windows.Devices.PointOfService.SlipPrinterCapabilities, Windows.Devices.PointOfService.SlipPrinterCapabilities)
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.Equals(Windows.Devices.PointOfService.SlipPrinterCapabilities)
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.SlipPrinterCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get

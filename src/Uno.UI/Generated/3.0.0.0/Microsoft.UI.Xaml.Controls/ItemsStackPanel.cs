@@ -104,18 +104,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsStackPanel.ItemsStackPanel()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.ItemsStackPanel()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.AreStickyGroupHeadersEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.CacheLengthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.GroupHeaderPlacementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.GroupPaddingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.OrientationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.operator ==(Microsoft.UI.Xaml.Controls.ItemsStackPanel, Microsoft.UI.Xaml.Controls.ItemsStackPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.operator !=(Microsoft.UI.Xaml.Controls.ItemsStackPanel, Microsoft.UI.Xaml.Controls.ItemsStackPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.Equals(Microsoft.UI.Xaml.Controls.ItemsStackPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.AreStickyGroupHeadersEnabled.get
@@ -135,7 +128,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.Orientation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.Orientation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.ScrollingDirection.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

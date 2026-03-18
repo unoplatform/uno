@@ -23,7 +23,6 @@ namespace Windows.Graphics.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFramePool.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Capture.Direct3D11CaptureFramePool Create(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice device, global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat, int numberOfBuffers, global::Windows.Graphics.SizeInt32 size)
@@ -38,12 +37,6 @@ namespace Windows.Graphics.Capture
 			throw new global::System.NotImplementedException("The member Direct3D11CaptureFramePool Direct3D11CaptureFramePool.CreateFreeThreaded(IDirect3DDevice device, DirectXPixelFormat pixelFormat, int numberOfBuffers, SizeInt32 size) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Direct3D11CaptureFramePool%20Direct3D11CaptureFramePool.CreateFreeThreaded%28IDirect3DDevice%20device%2C%20DirectXPixelFormat%20pixelFormat%2C%20int%20numberOfBuffers%2C%20SizeInt32%20size%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFramePool.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFramePool.operator ==(Windows.Graphics.Capture.Direct3D11CaptureFramePool, Windows.Graphics.Capture.Direct3D11CaptureFramePool)
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFramePool.operator !=(Windows.Graphics.Capture.Direct3D11CaptureFramePool, Windows.Graphics.Capture.Direct3D11CaptureFramePool)
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFramePool.Equals(Windows.Graphics.Capture.Direct3D11CaptureFramePool)
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFramePool.Equals(object)
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFramePool.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFramePool.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFramePool.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFramePool.WinRT.IWinRTObject.QueryInterfaceCache.get

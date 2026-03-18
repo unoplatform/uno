@@ -28,7 +28,6 @@ namespace Windows.Gaming.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.UI.GameBar.As<I>()
 		// Forced skipping of method Windows.Gaming.UI.GameBar.IsInputRedirectedChanged.add
 		// Forced skipping of method Windows.Gaming.UI.GameBar.IsInputRedirectedChanged.remove
 		// Forced skipping of method Windows.Gaming.UI.GameBar.VisibilityChanged.add

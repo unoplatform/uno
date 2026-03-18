@@ -13,7 +13,6 @@ namespace Windows.Devices.Display.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Display.Core.DisplayManager Create(global::Windows.Devices.Display.Core.DisplayManagerOptions options)
@@ -21,12 +20,6 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member DisplayManager DisplayManager.Create(DisplayManagerOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayManager%20DisplayManager.Create%28DisplayManagerOptions%20options%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.operator ==(Windows.Devices.Display.Core.DisplayManager, Windows.Devices.Display.Core.DisplayManager)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.operator !=(Windows.Devices.Display.Core.DisplayManager, Windows.Devices.Display.Core.DisplayManager)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Equals(Windows.Devices.Display.Core.DisplayManager)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Equals(object)
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.GetHashCode()
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.WinRT.IWinRTObject.QueryInterfaceCache.get

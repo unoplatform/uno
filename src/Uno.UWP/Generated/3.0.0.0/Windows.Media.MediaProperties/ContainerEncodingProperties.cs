@@ -50,12 +50,6 @@ namespace Windows.Media.MediaProperties
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.ContainerEncodingProperties()
-		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.operator ==(Windows.Media.MediaProperties.ContainerEncodingProperties, Windows.Media.MediaProperties.ContainerEncodingProperties)
-		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.operator !=(Windows.Media.MediaProperties.ContainerEncodingProperties, Windows.Media.MediaProperties.ContainerEncodingProperties)
-		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.Equals(Windows.Media.MediaProperties.ContainerEncodingProperties)
-		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.Equals(object)
-		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.GetHashCode()
 		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

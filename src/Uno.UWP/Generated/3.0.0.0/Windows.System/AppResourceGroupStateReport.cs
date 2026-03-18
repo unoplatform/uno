@@ -33,12 +33,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppResourceGroupStateReport.FromAbi(nint)
-		// Forced skipping of method Windows.System.AppResourceGroupStateReport.operator ==(Windows.System.AppResourceGroupStateReport, Windows.System.AppResourceGroupStateReport)
-		// Forced skipping of method Windows.System.AppResourceGroupStateReport.operator !=(Windows.System.AppResourceGroupStateReport, Windows.System.AppResourceGroupStateReport)
-		// Forced skipping of method Windows.System.AppResourceGroupStateReport.Equals(Windows.System.AppResourceGroupStateReport)
-		// Forced skipping of method Windows.System.AppResourceGroupStateReport.Equals(object)
-		// Forced skipping of method Windows.System.AppResourceGroupStateReport.GetHashCode()
 		// Forced skipping of method Windows.System.AppResourceGroupStateReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.AppResourceGroupStateReport.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.AppResourceGroupStateReport.WinRT.IWinRTObject.QueryInterfaceCache.get

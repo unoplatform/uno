@@ -93,7 +93,6 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession> GetCurrentSessionAsync()
@@ -108,12 +107,6 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			throw new global::System.NotImplementedException("The member ConversationalAgentSession ConversationalAgentSession.GetCurrentSessionSync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConversationalAgentSession%20ConversationalAgentSession.GetCurrentSessionSync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.operator ==(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession, Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.operator !=(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession, Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.Equals(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.WinRT.IWinRTObject.QueryInterfaceCache.get

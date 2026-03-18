@@ -33,12 +33,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackError.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackError.operator ==(Windows.Media.Core.TimedMetadataTrackError, Windows.Media.Core.TimedMetadataTrackError)
-		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackError.operator !=(Windows.Media.Core.TimedMetadataTrackError, Windows.Media.Core.TimedMetadataTrackError)
-		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackError.Equals(Windows.Media.Core.TimedMetadataTrackError)
-		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackError.Equals(object)
-		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackError.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackError.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackError.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackError.WinRT.IWinRTObject.QueryInterfaceCache.get

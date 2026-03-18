@@ -24,12 +24,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.ToastNotificationHistoryChangedTrigger(string)
-		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.operator ==(Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger, Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.operator !=(Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger, Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.Equals(Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

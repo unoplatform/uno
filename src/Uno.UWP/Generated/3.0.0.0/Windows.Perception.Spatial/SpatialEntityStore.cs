@@ -23,7 +23,6 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityStore.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Perception.Spatial.SpatialEntityStore TryGet(global::Windows.System.RemoteSystems.RemoteSystemSession session)
@@ -32,12 +31,6 @@ namespace Windows.Perception.Spatial
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityStore.IsSupported.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityStore.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityStore.operator ==(Windows.Perception.Spatial.SpatialEntityStore, Windows.Perception.Spatial.SpatialEntityStore)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityStore.operator !=(Windows.Perception.Spatial.SpatialEntityStore, Windows.Perception.Spatial.SpatialEntityStore)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityStore.Equals(Windows.Perception.Spatial.SpatialEntityStore)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityStore.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityStore.GetHashCode()
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityStore.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityStore.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityStore.WinRT.IWinRTObject.QueryInterfaceCache.get

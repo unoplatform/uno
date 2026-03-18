@@ -10,12 +10,6 @@ namespace Microsoft.UI.Xaml.Input
 	{
 		// Skipping already declared property CorrelationId
 		// Skipping already declared property OldFocusedElement
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs.operator ==(Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs, Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs.operator !=(Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs, Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs.Equals(Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

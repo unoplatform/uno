@@ -8,7 +8,6 @@ namespace Windows.UI.Input.Preview.Injection
 #endif
 	public partial class InputInjector
 	{
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.As<I>()
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.TryCreate()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -17,12 +16,6 @@ namespace Windows.UI.Input.Preview.Injection
 			throw new global::System.NotImplementedException("The member InputInjector InputInjector.TryCreateForAppBroadcastOnly() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputInjector%20InputInjector.TryCreateForAppBroadcastOnly%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.operator ==(Windows.UI.Input.Preview.Injection.InputInjector, Windows.UI.Input.Preview.Injection.InputInjector)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.operator !=(Windows.UI.Input.Preview.Injection.InputInjector, Windows.UI.Input.Preview.Injection.InputInjector)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.Equals(Windows.UI.Input.Preview.Injection.InputInjector)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -63,12 +63,6 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.operator ==(Windows.ApplicationModel.PackageStagingEventArgs, Windows.ApplicationModel.PackageStagingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.operator !=(Windows.ApplicationModel.PackageStagingEventArgs, Windows.ApplicationModel.PackageStagingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.Equals(Windows.ApplicationModel.PackageStagingEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

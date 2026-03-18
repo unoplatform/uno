@@ -73,12 +73,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.operator ==(Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs, Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.operator !=(Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs, Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.Equals(Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

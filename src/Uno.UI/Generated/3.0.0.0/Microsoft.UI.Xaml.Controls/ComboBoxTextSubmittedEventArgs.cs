@@ -10,12 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property Text
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs, Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs, Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs.Equals(Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

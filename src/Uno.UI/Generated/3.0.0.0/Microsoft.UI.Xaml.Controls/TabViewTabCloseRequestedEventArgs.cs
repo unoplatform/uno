@@ -10,12 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Item
 		// Skipping already declared property Tab
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs, Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs, Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs.Equals(Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

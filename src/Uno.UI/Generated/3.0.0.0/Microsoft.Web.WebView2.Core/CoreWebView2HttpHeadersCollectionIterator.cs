@@ -19,12 +19,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator, Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator, Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.Equals(Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.WinRT.IWinRTObject.QueryInterfaceCache.get

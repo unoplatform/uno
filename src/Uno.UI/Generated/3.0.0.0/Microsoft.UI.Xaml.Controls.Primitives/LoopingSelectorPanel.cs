@@ -10,12 +10,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	{
 		// Skipping already declared property AreHorizontalSnapPointsRegular
 		// Skipping already declared property AreVerticalSnapPointsRegular
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.operator ==(Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel, Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.operator !=(Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel, Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.Equals(Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.GetIrregularSnapPoints(Microsoft.UI.Xaml.Controls.Orientation, Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment)
@@ -26,7 +20,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.VerticalSnapPointsChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.AreHorizontalSnapPointsRegular.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.AreVerticalSnapPointsRegular.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.HorizontalSnapPointsChanged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorPanel.VerticalSnapPointsChanged

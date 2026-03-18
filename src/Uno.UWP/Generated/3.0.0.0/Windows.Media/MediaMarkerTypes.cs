@@ -18,7 +18,6 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaMarkerTypes.As<I>()
 		// Forced skipping of method Windows.Media.MediaMarkerTypes.Bookmark.get
 	}
 }

@@ -33,7 +33,6 @@ namespace Microsoft.UI.System
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.System.ThemeSettings.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.System.ThemeSettings CreateForWindowId(global::Microsoft.UI.WindowId windowId)
@@ -41,12 +40,6 @@ namespace Microsoft.UI.System
 			throw new global::System.NotImplementedException("The member ThemeSettings ThemeSettings.CreateForWindowId(WindowId windowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ThemeSettings%20ThemeSettings.CreateForWindowId%28WindowId%20windowId%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.System.ThemeSettings.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.System.ThemeSettings.operator ==(Microsoft.UI.System.ThemeSettings, Microsoft.UI.System.ThemeSettings)
-		// Forced skipping of method Microsoft.UI.System.ThemeSettings.operator !=(Microsoft.UI.System.ThemeSettings, Microsoft.UI.System.ThemeSettings)
-		// Forced skipping of method Microsoft.UI.System.ThemeSettings.Equals(Microsoft.UI.System.ThemeSettings)
-		// Forced skipping of method Microsoft.UI.System.ThemeSettings.Equals(object)
-		// Forced skipping of method Microsoft.UI.System.ThemeSettings.GetHashCode()
 		// Forced skipping of method Microsoft.UI.System.ThemeSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.System.ThemeSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.System.ThemeSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

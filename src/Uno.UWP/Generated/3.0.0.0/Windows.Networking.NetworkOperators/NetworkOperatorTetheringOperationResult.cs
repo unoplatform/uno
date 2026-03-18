@@ -33,12 +33,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.operator ==(Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult, Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.operator !=(Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult, Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.Equals(Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.WinRT.IWinRTObject.QueryInterfaceCache.get

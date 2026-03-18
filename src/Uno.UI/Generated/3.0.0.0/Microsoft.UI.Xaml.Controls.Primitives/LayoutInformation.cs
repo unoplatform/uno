@@ -8,7 +8,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class LayoutInformation
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.UIElement GetLayoutExceptionElement(object dispatcher)
@@ -18,12 +17,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation.GetLayoutSlot(Microsoft.UI.Xaml.FrameworkElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize(Microsoft.UI.Xaml.UIElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation.operator ==(Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation, Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation.operator !=(Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation, Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation.Equals(Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -43,7 +43,6 @@ namespace Windows.AI.MachineLearning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.TensorFloat16Bit.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.AI.MachineLearning.TensorFloat16Bit Create()
@@ -86,12 +85,6 @@ namespace Windows.AI.MachineLearning
 			throw new global::System.NotImplementedException("The member TensorFloat16Bit TensorFloat16Bit.CreateFromBuffer(long[] shape, IBuffer buffer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TensorFloat16Bit%20TensorFloat16Bit.CreateFromBuffer%28long%5B%5D%20shape%2C%20IBuffer%20buffer%29");
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.TensorFloat16Bit.FromAbi(nint)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorFloat16Bit.operator ==(Windows.AI.MachineLearning.TensorFloat16Bit, Windows.AI.MachineLearning.TensorFloat16Bit)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorFloat16Bit.operator !=(Windows.AI.MachineLearning.TensorFloat16Bit, Windows.AI.MachineLearning.TensorFloat16Bit)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorFloat16Bit.Equals(Windows.AI.MachineLearning.TensorFloat16Bit)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorFloat16Bit.Equals(object)
-		// Forced skipping of method Windows.AI.MachineLearning.TensorFloat16Bit.GetHashCode()
 		// Forced skipping of method Windows.AI.MachineLearning.TensorFloat16Bit.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.TensorFloat16Bit.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.TensorFloat16Bit.WinRT.IWinRTObject.QueryInterfaceCache.get

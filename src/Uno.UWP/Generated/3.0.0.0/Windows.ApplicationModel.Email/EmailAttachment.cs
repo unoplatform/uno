@@ -164,12 +164,6 @@ namespace Windows.ApplicationModel.Email
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.EmailAttachment(string, Windows.Storage.Streams.IRandomAccessStreamReference, string)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.operator ==(Windows.ApplicationModel.Email.EmailAttachment, Windows.ApplicationModel.Email.EmailAttachment)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.operator !=(Windows.ApplicationModel.Email.EmailAttachment, Windows.ApplicationModel.Email.EmailAttachment)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.Equals(Windows.ApplicationModel.Email.EmailAttachment)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.WinRT.IWinRTObject.QueryInterfaceCache.get

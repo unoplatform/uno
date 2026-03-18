@@ -23,7 +23,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppDiagnosticInfo.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo>> RequestInfoAsync()
@@ -66,12 +65,6 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<AppDiagnosticInfo>> AppDiagnosticInfo.RequestInfoForAppAsync(string appUserModelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIList%3CAppDiagnosticInfo%3E%3E%20AppDiagnosticInfo.RequestInfoForAppAsync%28string%20appUserModelId%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.AppDiagnosticInfo.FromAbi(nint)
-		// Forced skipping of method Windows.System.AppDiagnosticInfo.operator ==(Windows.System.AppDiagnosticInfo, Windows.System.AppDiagnosticInfo)
-		// Forced skipping of method Windows.System.AppDiagnosticInfo.operator !=(Windows.System.AppDiagnosticInfo, Windows.System.AppDiagnosticInfo)
-		// Forced skipping of method Windows.System.AppDiagnosticInfo.Equals(Windows.System.AppDiagnosticInfo)
-		// Forced skipping of method Windows.System.AppDiagnosticInfo.Equals(object)
-		// Forced skipping of method Windows.System.AppDiagnosticInfo.GetHashCode()
 		// Forced skipping of method Windows.System.AppDiagnosticInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.AppDiagnosticInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.AppDiagnosticInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

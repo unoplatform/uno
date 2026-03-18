@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Contacts
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChangedEventArgs.operator ==(Windows.ApplicationModel.Contacts.ContactChangedEventArgs, Windows.ApplicationModel.Contacts.ContactChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChangedEventArgs.operator !=(Windows.ApplicationModel.Contacts.ContactChangedEventArgs, Windows.ApplicationModel.Contacts.ContactChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChangedEventArgs.Equals(Windows.ApplicationModel.Contacts.ContactChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

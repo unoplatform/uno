@@ -58,12 +58,6 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.ContactSignificantOther()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.operator ==(Windows.ApplicationModel.Contacts.ContactSignificantOther, Windows.ApplicationModel.Contacts.ContactSignificantOther)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.operator !=(Windows.ApplicationModel.Contacts.ContactSignificantOther, Windows.ApplicationModel.Contacts.ContactSignificantOther)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.Equals(Windows.ApplicationModel.Contacts.ContactSignificantOther)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactSignificantOther.WinRT.IWinRTObject.QueryInterfaceCache.get

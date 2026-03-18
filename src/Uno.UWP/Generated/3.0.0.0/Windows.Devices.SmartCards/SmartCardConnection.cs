@@ -13,12 +13,6 @@ namespace Windows.Devices.SmartCards
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.operator ==(Windows.Devices.SmartCards.SmartCardConnection, Windows.Devices.SmartCards.SmartCardConnection)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.operator !=(Windows.Devices.SmartCards.SmartCardConnection, Windows.Devices.SmartCards.SmartCardConnection)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.Equals(Windows.Devices.SmartCards.SmartCardConnection)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.Equals(object)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.GetHashCode()
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardConnection.WinRT.IWinRTObject.QueryInterfaceCache.get

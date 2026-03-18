@@ -16,12 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ContactStoreNotificationTrigger.ContactStoreNotificationTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.ContactStoreNotificationTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.ContactStoreNotificationTrigger.operator ==(Windows.ApplicationModel.Background.ContactStoreNotificationTrigger, Windows.ApplicationModel.Background.ContactStoreNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ContactStoreNotificationTrigger.operator !=(Windows.ApplicationModel.Background.ContactStoreNotificationTrigger, Windows.ApplicationModel.Background.ContactStoreNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ContactStoreNotificationTrigger.Equals(Windows.ApplicationModel.Background.ContactStoreNotificationTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.ContactStoreNotificationTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.ContactStoreNotificationTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.ContactStoreNotificationTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.ContactStoreNotificationTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.ContactStoreNotificationTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get

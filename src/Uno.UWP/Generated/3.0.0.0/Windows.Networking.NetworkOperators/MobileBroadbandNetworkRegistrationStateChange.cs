@@ -33,12 +33,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange, Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange, Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange.Equals(Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange.WinRT.IWinRTObject.QueryInterfaceCache.get

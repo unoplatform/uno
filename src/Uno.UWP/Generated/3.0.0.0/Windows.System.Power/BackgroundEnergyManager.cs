@@ -88,7 +88,6 @@ namespace Windows.System.Power
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.As<I>()
 		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.RecentEnergyUsageIncreased.add
 		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.RecentEnergyUsageIncreased.remove
 		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.RecentEnergyUsageReturnedToLow.add

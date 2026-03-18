@@ -17,11 +17,6 @@ namespace Windows.Networking.NetworkOperators
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ProfileUsage.ProfileUsage(uint, System.DateTimeOffset)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProfileUsage.operator ==(Windows.Networking.NetworkOperators.ProfileUsage, Windows.Networking.NetworkOperators.ProfileUsage)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProfileUsage.operator !=(Windows.Networking.NetworkOperators.ProfileUsage, Windows.Networking.NetworkOperators.ProfileUsage)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProfileUsage.Equals(Windows.Networking.NetworkOperators.ProfileUsage)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProfileUsage.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProfileUsage.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint UsageInMegabytes;
 #endif

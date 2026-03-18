@@ -132,12 +132,6 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.ContactLocationField(string, Windows.ApplicationModel.Contacts.ContactFieldCategory, string, string, string, string, string)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.operator ==(Windows.ApplicationModel.Contacts.ContactLocationField, Windows.ApplicationModel.Contacts.ContactLocationField)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.operator !=(Windows.ApplicationModel.Contacts.ContactLocationField, Windows.ApplicationModel.Contacts.ContactLocationField)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Equals(Windows.ApplicationModel.Contacts.ContactLocationField)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.WinRT.IWinRTObject.QueryInterfaceCache.get

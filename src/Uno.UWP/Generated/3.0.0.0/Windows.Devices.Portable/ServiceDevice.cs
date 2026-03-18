@@ -8,7 +8,6 @@ namespace Windows.Devices.Portable
 #endif
 	public static partial class ServiceDevice
 	{
-		// Forced skipping of method Windows.Devices.Portable.ServiceDevice.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector(global::Windows.Devices.Portable.ServiceDeviceType serviceType)

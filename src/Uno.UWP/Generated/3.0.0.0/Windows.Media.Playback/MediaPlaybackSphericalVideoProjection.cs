@@ -83,12 +83,6 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.operator ==(Windows.Media.Playback.MediaPlaybackSphericalVideoProjection, Windows.Media.Playback.MediaPlaybackSphericalVideoProjection)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.operator !=(Windows.Media.Playback.MediaPlaybackSphericalVideoProjection, Windows.Media.Playback.MediaPlaybackSphericalVideoProjection)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.Equals(Windows.Media.Playback.MediaPlaybackSphericalVideoProjection)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.Equals(object)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.GetHashCode()
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.WinRT.IWinRTObject.QueryInterfaceCache.get

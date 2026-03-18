@@ -30,12 +30,6 @@ namespace Windows.ApplicationModel.Preview.Notes
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions.NotesWindowManagerPreviewShowNoteOptions()
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions.operator ==(Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions, Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions.operator !=(Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions, Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions.Equals(Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotesWindowManagerPreviewShowNoteOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

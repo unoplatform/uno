@@ -23,12 +23,6 @@ namespace Windows.Devices.Printers.Extensions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.operator ==(Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs, Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.operator !=(Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs, Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.Equals(Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

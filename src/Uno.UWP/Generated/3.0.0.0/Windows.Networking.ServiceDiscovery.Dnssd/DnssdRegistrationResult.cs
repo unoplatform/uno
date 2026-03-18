@@ -46,12 +46,6 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		}
 #endif
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.DnssdRegistrationResult()
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.operator ==(Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult, Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult)
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.operator !=(Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult, Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult)
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.Equals(Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult)
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.Equals(object)
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.GetHashCode()
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.WinRT.IWinRTObject.QueryInterfaceCache.get

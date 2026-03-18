@@ -58,12 +58,6 @@ namespace Windows.Devices.Lights.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.LampArrayCustomEffect(Windows.Devices.Lights.LampArray, int[])
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.operator ==(Windows.Devices.Lights.Effects.LampArrayCustomEffect, Windows.Devices.Lights.Effects.LampArrayCustomEffect)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.operator !=(Windows.Devices.Lights.Effects.LampArrayCustomEffect, Windows.Devices.Lights.Effects.LampArrayCustomEffect)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.Equals(Windows.Devices.Lights.Effects.LampArrayCustomEffect)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.Equals(object)
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.GetHashCode()
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.WinRT.IWinRTObject.QueryInterfaceCache.get

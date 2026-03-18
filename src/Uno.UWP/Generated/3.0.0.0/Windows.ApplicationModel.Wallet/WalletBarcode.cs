@@ -44,12 +44,6 @@ namespace Windows.ApplicationModel.Wallet
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.WalletBarcode(Windows.Storage.Streams.IRandomAccessStreamReference)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.operator ==(Windows.ApplicationModel.Wallet.WalletBarcode, Windows.ApplicationModel.Wallet.WalletBarcode)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.operator !=(Windows.ApplicationModel.Wallet.WalletBarcode, Windows.ApplicationModel.Wallet.WalletBarcode)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.Equals(Windows.ApplicationModel.Wallet.WalletBarcode)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.WinRT.IWinRTObject.QueryInterfaceCache.get

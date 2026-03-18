@@ -26,12 +26,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.DoubleKeyFrameCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.DoubleKeyFrameCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.operator ==(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.operator !=(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Equals(Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

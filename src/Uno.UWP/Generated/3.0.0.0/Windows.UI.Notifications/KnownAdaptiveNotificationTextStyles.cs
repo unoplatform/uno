@@ -198,7 +198,6 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.As<I>()
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Base.get
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.BaseSubtle.get
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles.Body.get

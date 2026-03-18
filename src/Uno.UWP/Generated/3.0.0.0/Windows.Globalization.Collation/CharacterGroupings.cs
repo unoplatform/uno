@@ -44,12 +44,6 @@ namespace Windows.Globalization.Collation
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.CharacterGroupings(string)
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.operator ==(Windows.Globalization.Collation.CharacterGroupings, Windows.Globalization.Collation.CharacterGroupings)
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.operator !=(Windows.Globalization.Collation.CharacterGroupings, Windows.Globalization.Collation.CharacterGroupings)
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.Equals(Windows.Globalization.Collation.CharacterGroupings)
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.Equals(object)
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.GetHashCode()
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.WinRT.IWinRTObject.QueryInterfaceCache.get

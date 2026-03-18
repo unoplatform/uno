@@ -86,12 +86,6 @@ namespace Windows.Data.Xml.Dom
 		}
 #endif
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.XmlLoadSettings()
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.FromAbi(nint)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.operator ==(Windows.Data.Xml.Dom.XmlLoadSettings, Windows.Data.Xml.Dom.XmlLoadSettings)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.operator !=(Windows.Data.Xml.Dom.XmlLoadSettings, Windows.Data.Xml.Dom.XmlLoadSettings)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.Equals(Windows.Data.Xml.Dom.XmlLoadSettings)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.Equals(object)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.GetHashCode()
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -43,12 +43,6 @@ namespace Windows.Services.Maps.Guidance
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.operator ==(Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs, Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.operator !=(Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs, Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.Equals(Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

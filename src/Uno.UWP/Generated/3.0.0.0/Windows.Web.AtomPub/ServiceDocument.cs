@@ -113,12 +113,6 @@ namespace Windows.Web.AtomPub
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.FromAbi(nint)
-		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.operator ==(Windows.Web.AtomPub.ServiceDocument, Windows.Web.AtomPub.ServiceDocument)
-		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.operator !=(Windows.Web.AtomPub.ServiceDocument, Windows.Web.AtomPub.ServiceDocument)
-		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.Equals(Windows.Web.AtomPub.ServiceDocument)
-		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.Equals(object)
-		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.GetHashCode()
 		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.WinRT.IWinRTObject.QueryInterfaceCache.get

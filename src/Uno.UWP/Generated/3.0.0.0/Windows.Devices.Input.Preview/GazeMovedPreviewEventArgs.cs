@@ -37,12 +37,6 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs.operator ==(Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs, Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs.operator !=(Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs, Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs.Equals(Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

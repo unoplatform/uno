@@ -53,12 +53,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.SensorQuaternion.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.SensorQuaternion.operator ==(Windows.Devices.Sensors.SensorQuaternion, Windows.Devices.Sensors.SensorQuaternion)
-		// Forced skipping of method Windows.Devices.Sensors.SensorQuaternion.operator !=(Windows.Devices.Sensors.SensorQuaternion, Windows.Devices.Sensors.SensorQuaternion)
-		// Forced skipping of method Windows.Devices.Sensors.SensorQuaternion.Equals(Windows.Devices.Sensors.SensorQuaternion)
-		// Forced skipping of method Windows.Devices.Sensors.SensorQuaternion.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.SensorQuaternion.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.SensorQuaternion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.SensorQuaternion.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.SensorQuaternion.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -10,12 +10,6 @@ namespace Microsoft.UI.Xaml
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property WindowActivationState
-		// Forced skipping of method Microsoft.UI.Xaml.WindowActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.WindowActivatedEventArgs.operator ==(Microsoft.UI.Xaml.WindowActivatedEventArgs, Microsoft.UI.Xaml.WindowActivatedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.WindowActivatedEventArgs.operator !=(Microsoft.UI.Xaml.WindowActivatedEventArgs, Microsoft.UI.Xaml.WindowActivatedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.WindowActivatedEventArgs.Equals(Microsoft.UI.Xaml.WindowActivatedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.WindowActivatedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.WindowActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.WindowActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.WindowActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.WindowActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -53,12 +53,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.operator ==(Windows.UI.Composition.CompositionMipmapSurface, Windows.UI.Composition.CompositionMipmapSurface)
-		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.operator !=(Windows.UI.Composition.CompositionMipmapSurface, Windows.UI.Composition.CompositionMipmapSurface)
-		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.Equals(Windows.UI.Composition.CompositionMipmapSurface)
-		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -72,7 +66,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.LevelCount.get
 		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.PixelFormat.get
 		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.SizeInt32.get
-		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Composition.ICompositionSurface
 	}

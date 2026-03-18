@@ -22,7 +22,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property SelectedIndex
 		// Skipping already declared property SelectedItem
 		// Skipping already declared property ShouldLoop
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.ItemHeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.ItemTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.ItemWidthProperty.get
@@ -30,12 +29,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.SelectedIndexProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.SelectedItemProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.ShouldLoopProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.operator ==(Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector, Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.operator !=(Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector, Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.Equals(Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.SelectionChanged.add
@@ -54,7 +47,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.SelectedItem.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.ShouldLoop.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.ShouldLoop.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector.SelectionChanged
 	}

@@ -43,7 +43,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Networking.NetworkOperators.TetheringCapability GetTetheringCapability(string networkAccountId)
@@ -114,12 +113,6 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member IAsyncAction NetworkOperatorTetheringManager.DisableNoConnectionsTimeoutAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20NetworkOperatorTetheringManager.DisableNoConnectionsTimeoutAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager.operator ==(Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager, Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager.operator !=(Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager, Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager.Equals(Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager.WinRT.IWinRTObject.QueryInterfaceCache.get

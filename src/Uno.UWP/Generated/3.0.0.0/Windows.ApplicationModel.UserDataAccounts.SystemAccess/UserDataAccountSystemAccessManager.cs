@@ -8,7 +8,6 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 	public static partial class UserDataAccountSystemAccessManager
 	{
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.UserDataAccountSystemAccessManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> AddAndShowDeviceAccountsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration> accounts)

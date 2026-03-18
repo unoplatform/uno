@@ -114,12 +114,6 @@ namespace Windows.Networking.Connectivity
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.CellularApnContext()
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.operator ==(Windows.Networking.Connectivity.CellularApnContext, Windows.Networking.Connectivity.CellularApnContext)
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.operator !=(Windows.Networking.Connectivity.CellularApnContext, Windows.Networking.Connectivity.CellularApnContext)
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.Equals(Windows.Networking.Connectivity.CellularApnContext)
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.Equals(object)
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.GetHashCode()
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.WinRT.IWinRTObject.QueryInterfaceCache.get

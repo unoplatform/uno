@@ -195,14 +195,6 @@ namespace Microsoft.UI.Content
 		}
 #endif
 		// Skipping already declared property View
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ContentSite(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.operator ==(Microsoft.UI.Content.ContentSite, Microsoft.UI.Content.ContentSite)
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.operator !=(Microsoft.UI.Content.ContentSite, Microsoft.UI.Content.ContentSite)
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.Equals(Microsoft.UI.Content.ContentSite)
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.Equals(object)
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ContentSite(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -258,7 +250,6 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.ShouldApplyRasterizationScale.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.ShouldApplyRasterizationScale.set
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.View.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

@@ -13,7 +13,6 @@ namespace Windows.System.Diagnostics.DevicePortal
 		{
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.DevicePortal.DevicePortalConnection GetForAppServiceConnection(global::Windows.ApplicationModel.AppService.AppServiceConnection appServiceConnection)
@@ -21,12 +20,6 @@ namespace Windows.System.Diagnostics.DevicePortal
 			throw new global::System.NotImplementedException("The member DevicePortalConnection DevicePortalConnection.GetForAppServiceConnection(AppServiceConnection appServiceConnection) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DevicePortalConnection%20DevicePortalConnection.GetForAppServiceConnection%28AppServiceConnection%20appServiceConnection%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.FromAbi(nint)
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.operator ==(Windows.System.Diagnostics.DevicePortal.DevicePortalConnection, Windows.System.Diagnostics.DevicePortal.DevicePortalConnection)
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.operator !=(Windows.System.Diagnostics.DevicePortal.DevicePortalConnection, Windows.System.Diagnostics.DevicePortal.DevicePortalConnection)
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.Equals(Windows.System.Diagnostics.DevicePortal.DevicePortalConnection)
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.Equals(object)
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.GetHashCode()
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.WinRT.IWinRTObject.QueryInterfaceCache.get

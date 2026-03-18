@@ -9,14 +9,7 @@ namespace Windows.System
 	public partial class DispatcherQueue
 	{
 		// Skipping already declared property HasThreadAccess
-		// Forced skipping of method Windows.System.DispatcherQueue.As<I>()
 		// Skipping already declared method Windows.System.DispatcherQueue.GetForCurrentThread()
-		// Forced skipping of method Windows.System.DispatcherQueue.FromAbi(nint)
-		// Forced skipping of method Windows.System.DispatcherQueue.operator ==(Windows.System.DispatcherQueue, Windows.System.DispatcherQueue)
-		// Forced skipping of method Windows.System.DispatcherQueue.operator !=(Windows.System.DispatcherQueue, Windows.System.DispatcherQueue)
-		// Forced skipping of method Windows.System.DispatcherQueue.Equals(Windows.System.DispatcherQueue)
-		// Forced skipping of method Windows.System.DispatcherQueue.Equals(object)
-		// Forced skipping of method Windows.System.DispatcherQueue.GetHashCode()
 		// Forced skipping of method Windows.System.DispatcherQueue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.DispatcherQueue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.DispatcherQueue.WinRT.IWinRTObject.QueryInterfaceCache.get

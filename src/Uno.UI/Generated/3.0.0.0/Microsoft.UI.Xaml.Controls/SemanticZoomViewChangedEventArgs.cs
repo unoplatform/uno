@@ -58,12 +58,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs.SemanticZoomViewChangedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs, Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs, Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

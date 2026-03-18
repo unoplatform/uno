@@ -99,7 +99,6 @@ namespace Windows.UI.StartScreen
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.As<I>()
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.StartScreen.JumpListItem CreateWithArguments(string arguments, string displayName)
@@ -114,12 +113,6 @@ namespace Windows.UI.StartScreen
 			throw new global::System.NotImplementedException("The member JumpListItem JumpListItem.CreateSeparator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=JumpListItem%20JumpListItem.CreateSeparator%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.FromAbi(nint)
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.operator ==(Windows.UI.StartScreen.JumpListItem, Windows.UI.StartScreen.JumpListItem)
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.operator !=(Windows.UI.StartScreen.JumpListItem, Windows.UI.StartScreen.JumpListItem)
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Equals(Windows.UI.StartScreen.JumpListItem)
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Equals(object)
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.GetHashCode()
 		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -93,12 +93,6 @@ namespace Windows.AI.MachineLearning.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.FromAbi(nint)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.operator ==(Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview, Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.operator !=(Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview, Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.Equals(Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.Equals(object)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.GetHashCode()
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.WinRT.IWinRTObject.QueryInterfaceCache.get

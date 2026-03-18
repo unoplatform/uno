@@ -67,12 +67,6 @@ namespace Windows.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.operator ==(Windows.Storage.ApplicationDataContainerSettings, Windows.Storage.ApplicationDataContainerSettings)
-		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.operator !=(Windows.Storage.ApplicationDataContainerSettings, Windows.Storage.ApplicationDataContainerSettings)
-		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.Equals(Windows.Storage.ApplicationDataContainerSettings)
-		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.Equals(object)
-		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.GetHashCode()
 		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

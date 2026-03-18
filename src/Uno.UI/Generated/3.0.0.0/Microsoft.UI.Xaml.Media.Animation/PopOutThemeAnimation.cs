@@ -38,19 +38,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.PopOutThemeAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.TargetNameProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation, Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation, Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.TargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

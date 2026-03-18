@@ -12,12 +12,6 @@ namespace Windows.Globalization.NumberFormatting
 		// Skipping already declared property SignificantDigits
 		// Skipping already declared method Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder.SignificantDigitsNumberRounder()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder.SignificantDigitsNumberRounder()
-		// Forced skipping of method Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder.FromAbi(nint)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder.operator ==(Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder, Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder.operator !=(Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder, Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder.Equals(Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder.Equals(object)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder.GetHashCode()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder.WinRT.IWinRTObject.QueryInterfaceCache.get

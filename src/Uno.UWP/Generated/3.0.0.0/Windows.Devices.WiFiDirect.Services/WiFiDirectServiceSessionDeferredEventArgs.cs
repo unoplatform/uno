@@ -23,12 +23,6 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs.operator ==(Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs, Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs)
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs.operator !=(Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs, Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs)
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs.Equals(Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs)
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

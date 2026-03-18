@@ -33,12 +33,6 @@ namespace Windows.Devices.Enumeration.Pnp
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.operator ==(Windows.Devices.Enumeration.Pnp.PnpObjectCollection, Windows.Devices.Enumeration.Pnp.PnpObjectCollection)
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.operator !=(Windows.Devices.Enumeration.Pnp.PnpObjectCollection, Windows.Devices.Enumeration.Pnp.PnpObjectCollection)
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.Equals(Windows.Devices.Enumeration.Pnp.PnpObjectCollection)
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.Equals(object)
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.GetHashCode()
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

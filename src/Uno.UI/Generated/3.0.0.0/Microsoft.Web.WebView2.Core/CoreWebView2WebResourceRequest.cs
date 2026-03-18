@@ -12,12 +12,6 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared property Headers
 		// Skipping already declared property Method
 		// Skipping already declared property Uri
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Equals(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

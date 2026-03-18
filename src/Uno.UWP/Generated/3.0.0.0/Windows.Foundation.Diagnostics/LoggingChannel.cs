@@ -72,12 +72,6 @@ namespace Windows.Foundation.Diagnostics
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannel.LoggingChannel(string, Windows.Foundation.Diagnostics.LoggingChannelOptions, System.Guid)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannel.FromAbi(nint)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannel.operator ==(Windows.Foundation.Diagnostics.LoggingChannel, Windows.Foundation.Diagnostics.LoggingChannel)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannel.operator !=(Windows.Foundation.Diagnostics.LoggingChannel, Windows.Foundation.Diagnostics.LoggingChannel)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannel.Equals(Windows.Foundation.Diagnostics.LoggingChannel)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannel.Equals(object)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannel.GetHashCode()
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannel.WinRT.IWinRTObject.QueryInterfaceCache.get

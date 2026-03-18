@@ -38,7 +38,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms.As<I>()
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms.ExtendedBase.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms.None.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms.TripleDesDukpt.get

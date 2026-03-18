@@ -61,12 +61,6 @@ namespace Windows.Web.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.operator ==(Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs, Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs)
-		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.operator !=(Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs, Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs)
-		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.Equals(Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs)
-		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

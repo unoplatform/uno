@@ -9,12 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ItemsRepeaterElementClearingEventArgs
 	{
 		// Skipping already declared property Element
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs, Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs, Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.Equals(Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

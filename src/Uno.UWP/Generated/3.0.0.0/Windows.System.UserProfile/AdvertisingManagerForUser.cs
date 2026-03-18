@@ -33,12 +33,6 @@ namespace Windows.System.UserProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.FromAbi(nint)
-		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.operator ==(Windows.System.UserProfile.AdvertisingManagerForUser, Windows.System.UserProfile.AdvertisingManagerForUser)
-		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.operator !=(Windows.System.UserProfile.AdvertisingManagerForUser, Windows.System.UserProfile.AdvertisingManagerForUser)
-		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.Equals(Windows.System.UserProfile.AdvertisingManagerForUser)
-		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.Equals(object)
-		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.GetHashCode()
 		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.WinRT.IWinRTObject.QueryInterfaceCache.get

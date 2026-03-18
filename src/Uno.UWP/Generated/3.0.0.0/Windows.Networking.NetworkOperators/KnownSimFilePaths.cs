@@ -48,7 +48,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.KnownSimFilePaths.As<I>()
 		// Forced skipping of method Windows.Networking.NetworkOperators.KnownSimFilePaths.EFOns.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.KnownSimFilePaths.EFSpn.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.KnownSimFilePaths.Gid1.get

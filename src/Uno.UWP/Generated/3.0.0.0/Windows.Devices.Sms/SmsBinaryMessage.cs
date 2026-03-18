@@ -50,12 +50,6 @@ namespace Windows.Devices.Sms
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.SmsBinaryMessage()
-		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.operator ==(Windows.Devices.Sms.SmsBinaryMessage, Windows.Devices.Sms.SmsBinaryMessage)
-		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.operator !=(Windows.Devices.Sms.SmsBinaryMessage, Windows.Devices.Sms.SmsBinaryMessage)
-		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.Equals(Windows.Devices.Sms.SmsBinaryMessage)
-		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.Equals(object)
-		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.WinRT.IWinRTObject.QueryInterfaceCache.get

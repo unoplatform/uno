@@ -8,14 +8,7 @@ namespace Windows.UI.Core.Preview
 #endif
 	public partial class SystemNavigationManagerPreview
 	{
-		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.As<I>()
 		// Skipping already declared method Windows.UI.Core.Preview.SystemNavigationManagerPreview.GetForCurrentView()
-		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.operator ==(Windows.UI.Core.Preview.SystemNavigationManagerPreview, Windows.UI.Core.Preview.SystemNavigationManagerPreview)
-		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.operator !=(Windows.UI.Core.Preview.SystemNavigationManagerPreview, Windows.UI.Core.Preview.SystemNavigationManagerPreview)
-		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.Equals(Windows.UI.Core.Preview.SystemNavigationManagerPreview)
-		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.Equals(object)
-		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.GetHashCode()
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.WinRT.IWinRTObject.QueryInterfaceCache.get

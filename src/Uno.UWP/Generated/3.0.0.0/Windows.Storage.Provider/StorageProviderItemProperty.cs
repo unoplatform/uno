@@ -58,12 +58,6 @@ namespace Windows.Storage.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderItemProperty.StorageProviderItemProperty()
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderItemProperty.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderItemProperty.operator ==(Windows.Storage.Provider.StorageProviderItemProperty, Windows.Storage.Provider.StorageProviderItemProperty)
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderItemProperty.operator !=(Windows.Storage.Provider.StorageProviderItemProperty, Windows.Storage.Provider.StorageProviderItemProperty)
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderItemProperty.Equals(Windows.Storage.Provider.StorageProviderItemProperty)
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderItemProperty.Equals(object)
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderItemProperty.GetHashCode()
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderItemProperty.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderItemProperty.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderItemProperty.WinRT.IWinRTObject.QueryInterfaceCache.get

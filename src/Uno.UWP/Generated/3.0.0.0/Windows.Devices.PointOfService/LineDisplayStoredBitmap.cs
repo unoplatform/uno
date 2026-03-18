@@ -23,12 +23,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStoredBitmap.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStoredBitmap.operator ==(Windows.Devices.PointOfService.LineDisplayStoredBitmap, Windows.Devices.PointOfService.LineDisplayStoredBitmap)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStoredBitmap.operator !=(Windows.Devices.PointOfService.LineDisplayStoredBitmap, Windows.Devices.PointOfService.LineDisplayStoredBitmap)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStoredBitmap.Equals(Windows.Devices.PointOfService.LineDisplayStoredBitmap)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStoredBitmap.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStoredBitmap.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStoredBitmap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStoredBitmap.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStoredBitmap.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -152,18 +152,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.RichTextBlockOverflow()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.RichTextBlockOverflow()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.HasOverflowContentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsTextTrimmedProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.MaxLinesProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.OverflowContentTargetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.PaddingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.operator ==(Microsoft.UI.Xaml.Controls.RichTextBlockOverflow, Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.operator !=(Microsoft.UI.Xaml.Controls.RichTextBlockOverflow, Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.Equals(Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -187,7 +180,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.OverflowContentTarget.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.Padding.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.Padding.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

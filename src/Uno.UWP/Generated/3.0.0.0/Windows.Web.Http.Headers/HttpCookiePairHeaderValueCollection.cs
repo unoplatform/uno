@@ -47,12 +47,6 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection.operator ==(Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection, Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection.operator !=(Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection, Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection.Equals(Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection.WinRT.IWinRTObject.QueryInterfaceCache.get

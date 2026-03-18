@@ -93,12 +93,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs, Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs, Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs.Equals(Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs)
-		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

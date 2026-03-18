@@ -53,12 +53,6 @@ namespace Windows.ApplicationModel.Search.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.operator ==(Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs, Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.operator !=(Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs, Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.Equals(Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -33,12 +33,6 @@ namespace Windows.UI.Accessibility
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs.operator ==(Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs, Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs)
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs.operator !=(Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs, Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs)
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs.Equals(Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs)
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

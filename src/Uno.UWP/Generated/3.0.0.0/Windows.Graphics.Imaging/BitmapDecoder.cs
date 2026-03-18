@@ -223,7 +223,6 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Imaging.BitmapCodecInformation> GetDecoderInformationEnumerator()
@@ -254,12 +253,6 @@ namespace Windows.Graphics.Imaging
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.PngDecoderId.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.TiffDecoderId.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.WebpDecoderId.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.operator ==(Windows.Graphics.Imaging.BitmapDecoder, Windows.Graphics.Imaging.BitmapDecoder)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.operator !=(Windows.Graphics.Imaging.BitmapDecoder, Windows.Graphics.Imaging.BitmapDecoder)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.Equals(Windows.Graphics.Imaging.BitmapDecoder)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.Equals(object)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapDecoder.WinRT.IWinRTObject.QueryInterfaceCache.get

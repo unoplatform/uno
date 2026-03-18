@@ -149,12 +149,6 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.operator ==(Windows.Networking.BackgroundTransfer.DownloadOperation, Windows.Networking.BackgroundTransfer.DownloadOperation)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.operator !=(Windows.Networking.BackgroundTransfer.DownloadOperation, Windows.Networking.BackgroundTransfer.DownloadOperation)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Equals(Windows.Networking.BackgroundTransfer.DownloadOperation)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Equals(object)
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.GetHashCode()
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

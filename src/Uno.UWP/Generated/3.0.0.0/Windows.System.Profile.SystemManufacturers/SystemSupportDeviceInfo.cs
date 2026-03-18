@@ -83,12 +83,6 @@ namespace Windows.System.Profile.SystemManufacturers
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.FromAbi(nint)
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.operator ==(Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo, Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo)
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.operator !=(Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo, Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo)
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.Equals(Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo)
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.Equals(object)
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.GetHashCode()
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

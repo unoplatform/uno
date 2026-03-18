@@ -108,7 +108,6 @@ namespace Windows.Security.Cryptography.Certificates
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.As<I>()
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Dsa.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Ecdh.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Ecdh256.get

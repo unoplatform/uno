@@ -243,7 +243,6 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.SystemMediaTransportControls GetForCurrentView()
@@ -251,12 +250,6 @@ namespace Windows.Media
 			throw new global::System.NotImplementedException("The member SystemMediaTransportControls SystemMediaTransportControls.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemMediaTransportControls%20SystemMediaTransportControls.GetForCurrentView%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.FromAbi(nint)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.operator ==(Windows.Media.SystemMediaTransportControls, Windows.Media.SystemMediaTransportControls)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.operator !=(Windows.Media.SystemMediaTransportControls, Windows.Media.SystemMediaTransportControls)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.Equals(Windows.Media.SystemMediaTransportControls)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.Equals(object)
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.GetHashCode()
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -43,12 +43,6 @@ namespace Windows.System.Profile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.HardwareToken.FromAbi(nint)
-		// Forced skipping of method Windows.System.Profile.HardwareToken.operator ==(Windows.System.Profile.HardwareToken, Windows.System.Profile.HardwareToken)
-		// Forced skipping of method Windows.System.Profile.HardwareToken.operator !=(Windows.System.Profile.HardwareToken, Windows.System.Profile.HardwareToken)
-		// Forced skipping of method Windows.System.Profile.HardwareToken.Equals(Windows.System.Profile.HardwareToken)
-		// Forced skipping of method Windows.System.Profile.HardwareToken.Equals(object)
-		// Forced skipping of method Windows.System.Profile.HardwareToken.GetHashCode()
 		// Forced skipping of method Windows.System.Profile.HardwareToken.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Profile.HardwareToken.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Profile.HardwareToken.WinRT.IWinRTObject.QueryInterfaceCache.get

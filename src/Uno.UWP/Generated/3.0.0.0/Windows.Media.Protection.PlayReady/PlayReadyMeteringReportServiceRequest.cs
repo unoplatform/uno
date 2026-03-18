@@ -88,12 +88,6 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.PlayReadyMeteringReportServiceRequest()
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.operator ==(Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest, Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.operator !=(Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest, Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.Equals(Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.WinRT.IWinRTObject.QueryInterfaceCache.get

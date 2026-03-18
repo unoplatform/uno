@@ -16,12 +16,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.MediaSourceAppServiceConnection(Windows.ApplicationModel.AppService.AppServiceConnection)
-		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.operator ==(Windows.Media.Core.MediaSourceAppServiceConnection, Windows.Media.Core.MediaSourceAppServiceConnection)
-		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.operator !=(Windows.Media.Core.MediaSourceAppServiceConnection, Windows.Media.Core.MediaSourceAppServiceConnection)
-		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.Equals(Windows.Media.Core.MediaSourceAppServiceConnection)
-		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.Equals(object)
-		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.WinRT.IWinRTObject.QueryInterfaceCache.get

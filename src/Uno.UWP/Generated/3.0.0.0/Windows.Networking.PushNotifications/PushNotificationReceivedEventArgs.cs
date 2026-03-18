@@ -77,12 +77,6 @@ namespace Windows.Networking.PushNotifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.operator ==(Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs, Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs)
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.operator !=(Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs, Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs)
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.Equals(Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs)
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

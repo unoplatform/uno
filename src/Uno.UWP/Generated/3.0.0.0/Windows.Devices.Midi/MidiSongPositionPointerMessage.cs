@@ -14,12 +14,6 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiSongPositionPointerMessage.MidiSongPositionPointerMessage(ushort)
 		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.MidiSongPositionPointerMessage(ushort)
-		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.operator ==(Windows.Devices.Midi.MidiSongPositionPointerMessage, Windows.Devices.Midi.MidiSongPositionPointerMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.operator !=(Windows.Devices.Midi.MidiSongPositionPointerMessage, Windows.Devices.Midi.MidiSongPositionPointerMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.Equals(Windows.Devices.Midi.MidiSongPositionPointerMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.Equals(object)
-		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.GetHashCode()
 		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -109,12 +109,6 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails.operator ==(Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails.operator !=(Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails, Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails.Equals(Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintOrientationOptionDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

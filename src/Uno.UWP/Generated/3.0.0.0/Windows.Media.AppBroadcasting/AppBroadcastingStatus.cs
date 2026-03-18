@@ -33,12 +33,6 @@ namespace Windows.Media.AppBroadcasting
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.FromAbi(nint)
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.operator ==(Windows.Media.AppBroadcasting.AppBroadcastingStatus, Windows.Media.AppBroadcasting.AppBroadcastingStatus)
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.operator !=(Windows.Media.AppBroadcasting.AppBroadcastingStatus, Windows.Media.AppBroadcasting.AppBroadcastingStatus)
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.Equals(Windows.Media.AppBroadcasting.AppBroadcastingStatus)
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.Equals(object)
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.GetHashCode()
 		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.WinRT.IWinRTObject.QueryInterfaceCache.get

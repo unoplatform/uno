@@ -13,7 +13,6 @@ namespace Windows.Devices.Input
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.PenButtonListener.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.PenButtonListener GetDefault()
@@ -21,12 +20,6 @@ namespace Windows.Devices.Input
 			throw new global::System.NotImplementedException("The member PenButtonListener PenButtonListener.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PenButtonListener%20PenButtonListener.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.PenButtonListener.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Input.PenButtonListener.operator ==(Windows.Devices.Input.PenButtonListener, Windows.Devices.Input.PenButtonListener)
-		// Forced skipping of method Windows.Devices.Input.PenButtonListener.operator !=(Windows.Devices.Input.PenButtonListener, Windows.Devices.Input.PenButtonListener)
-		// Forced skipping of method Windows.Devices.Input.PenButtonListener.Equals(Windows.Devices.Input.PenButtonListener)
-		// Forced skipping of method Windows.Devices.Input.PenButtonListener.Equals(object)
-		// Forced skipping of method Windows.Devices.Input.PenButtonListener.GetHashCode()
 		// Forced skipping of method Windows.Devices.Input.PenButtonListener.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Input.PenButtonListener.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Input.PenButtonListener.WinRT.IWinRTObject.QueryInterfaceCache.get

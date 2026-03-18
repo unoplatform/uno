@@ -11,11 +11,6 @@ namespace Microsoft.UI
 		// Forced skipping of method Microsoft.UI.WindowId.WindowId()
 		// Skipping already declared method Microsoft.UI.WindowId.WindowId(ulong)
 		// Forced skipping of method Microsoft.UI.WindowId.WindowId(ulong)
-		// Forced skipping of method Microsoft.UI.WindowId.operator ==(Microsoft.UI.WindowId, Microsoft.UI.WindowId)
-		// Forced skipping of method Microsoft.UI.WindowId.operator !=(Microsoft.UI.WindowId, Microsoft.UI.WindowId)
-		// Forced skipping of method Microsoft.UI.WindowId.Equals(Microsoft.UI.WindowId)
-		// Forced skipping of method Microsoft.UI.WindowId.Equals(object)
-		// Forced skipping of method Microsoft.UI.WindowId.GetHashCode()
 		// Skipping already declared field Microsoft.UI.WindowId.Value
 	}
 }

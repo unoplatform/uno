@@ -20,12 +20,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property StrokeMiterLimit
 		// Skipping already declared property StrokeStartCap
 		// Skipping already declared property StrokeThickness
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.operator ==(Microsoft.UI.Composition.CompositionSpriteShape, Microsoft.UI.Composition.CompositionSpriteShape)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.operator !=(Microsoft.UI.Composition.CompositionSpriteShape, Microsoft.UI.Composition.CompositionSpriteShape)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.Equals(Microsoft.UI.Composition.CompositionSpriteShape)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.Equals(object)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.FillBrush.get
@@ -51,7 +45,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeStartCap.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeThickness.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeThickness.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

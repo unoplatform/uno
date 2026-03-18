@@ -113,12 +113,6 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.operator ==(Windows.UI.Input.Inking.InkStroke, Windows.UI.Input.Inking.InkStroke)
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.operator !=(Windows.UI.Input.Inking.InkStroke, Windows.UI.Input.Inking.InkStroke)
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Equals(Windows.UI.Input.Inking.InkStroke)
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.WinRT.IWinRTObject.QueryInterfaceCache.get

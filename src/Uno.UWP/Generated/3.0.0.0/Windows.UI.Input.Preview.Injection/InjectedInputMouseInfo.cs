@@ -15,12 +15,6 @@ namespace Windows.UI.Input.Preview.Injection
 		// Skipping already declared property TimeOffsetInMilliseconds
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.InjectedInputMouseInfo()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.InjectedInputMouseInfo()
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.operator ==(Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo, Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.operator !=(Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo, Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.Equals(Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.Equals(object)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.GetHashCode()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.WinRT.IWinRTObject.QueryInterfaceCache.get

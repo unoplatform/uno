@@ -34,22 +34,14 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Skipping already declared property Points
 		// Skipping already declared method Microsoft.UI.Xaml.Shapes.Polygon.Polygon()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.Polygon()
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.FillRuleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.PointsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.operator ==(Microsoft.UI.Xaml.Shapes.Polygon, Microsoft.UI.Xaml.Shapes.Polygon)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.operator !=(Microsoft.UI.Xaml.Shapes.Polygon, Microsoft.UI.Xaml.Shapes.Polygon)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.Equals(Microsoft.UI.Xaml.Shapes.Polygon)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.FillRule.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.FillRule.set
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.Points.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.Points.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -44,12 +44,6 @@ namespace Windows.Services.Maps
 		}
 #endif
 		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.PlaceInfoCreateOptions()
-		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.operator ==(Windows.Services.Maps.PlaceInfoCreateOptions, Windows.Services.Maps.PlaceInfoCreateOptions)
-		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.operator !=(Windows.Services.Maps.PlaceInfoCreateOptions, Windows.Services.Maps.PlaceInfoCreateOptions)
-		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.Equals(Windows.Services.Maps.PlaceInfoCreateOptions)
-		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.Equals(object)
-		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.GetHashCode()
 		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

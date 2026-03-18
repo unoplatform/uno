@@ -33,7 +33,6 @@ namespace Windows.Gaming.XboxLive.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Gaming.XboxLive.Storage.GameSaveProviderGetResult> GetForUserAsync(global::Windows.System.User user, string serviceConfigId)
@@ -48,12 +47,6 @@ namespace Windows.Gaming.XboxLive.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GameSaveProviderGetResult> GameSaveProvider.GetSyncOnDemandForUserAsync(User user, string serviceConfigId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGameSaveProviderGetResult%3E%20GameSaveProvider.GetSyncOnDemandForUserAsync%28User%20user%2C%20string%20serviceConfigId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.operator ==(Windows.Gaming.XboxLive.Storage.GameSaveProvider, Windows.Gaming.XboxLive.Storage.GameSaveProvider)
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.operator !=(Windows.Gaming.XboxLive.Storage.GameSaveProvider, Windows.Gaming.XboxLive.Storage.GameSaveProvider)
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.Equals(Windows.Gaming.XboxLive.Storage.GameSaveProvider)
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.Equals(object)
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.GetHashCode()
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.WinRT.IWinRTObject.QueryInterfaceCache.get

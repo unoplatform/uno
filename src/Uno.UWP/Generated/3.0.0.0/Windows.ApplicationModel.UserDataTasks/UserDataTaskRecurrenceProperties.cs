@@ -128,12 +128,6 @@ namespace Windows.ApplicationModel.UserDataTasks
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.UserDataTaskRecurrenceProperties()
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.operator ==(Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties, Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.operator !=(Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties, Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.Equals(Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -23,12 +23,6 @@ namespace Windows.Graphics.Printing3D
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskSourceChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskSourceChangedEventArgs.operator ==(Windows.Graphics.Printing3D.Print3DTaskSourceChangedEventArgs, Windows.Graphics.Printing3D.Print3DTaskSourceChangedEventArgs)
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskSourceChangedEventArgs.operator !=(Windows.Graphics.Printing3D.Print3DTaskSourceChangedEventArgs, Windows.Graphics.Printing3D.Print3DTaskSourceChangedEventArgs)
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskSourceChangedEventArgs.Equals(Windows.Graphics.Printing3D.Print3DTaskSourceChangedEventArgs)
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskSourceChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskSourceChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskSourceChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskSourceChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskSourceChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

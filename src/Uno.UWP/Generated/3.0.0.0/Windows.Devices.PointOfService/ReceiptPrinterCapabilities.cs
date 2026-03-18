@@ -323,12 +323,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.operator ==(Windows.Devices.PointOfService.ReceiptPrinterCapabilities, Windows.Devices.PointOfService.ReceiptPrinterCapabilities)
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.operator !=(Windows.Devices.PointOfService.ReceiptPrinterCapabilities, Windows.Devices.PointOfService.ReceiptPrinterCapabilities)
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.Equals(Windows.Devices.PointOfService.ReceiptPrinterCapabilities)
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get

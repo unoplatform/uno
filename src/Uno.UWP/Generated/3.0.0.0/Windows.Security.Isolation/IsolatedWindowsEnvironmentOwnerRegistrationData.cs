@@ -56,12 +56,6 @@ namespace Windows.Security.Isolation
 		}
 #endif
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.IsolatedWindowsEnvironmentOwnerRegistrationData()
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.operator ==(Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData, Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.operator !=(Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData, Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.Equals(Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.Equals(object)
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.GetHashCode()
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -23,12 +23,6 @@ namespace Windows.Graphics.Printing3D
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.operator ==(Windows.Graphics.Printing3D.Print3DTask, Windows.Graphics.Printing3D.Print3DTask)
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.operator !=(Windows.Graphics.Printing3D.Print3DTask, Windows.Graphics.Printing3D.Print3DTask)
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.Equals(Windows.Graphics.Printing3D.Print3DTask)
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.WinRT.IWinRTObject.QueryInterfaceCache.get

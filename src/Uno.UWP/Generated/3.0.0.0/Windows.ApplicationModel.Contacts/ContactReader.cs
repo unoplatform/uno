@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Contacts
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactReader.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactReader.operator ==(Windows.ApplicationModel.Contacts.ContactReader, Windows.ApplicationModel.Contacts.ContactReader)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactReader.operator !=(Windows.ApplicationModel.Contacts.ContactReader, Windows.ApplicationModel.Contacts.ContactReader)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactReader.Equals(Windows.ApplicationModel.Contacts.ContactReader)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactReader.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactReader.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactReader.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactReader.WinRT.IWinRTObject.QueryInterfaceCache.get

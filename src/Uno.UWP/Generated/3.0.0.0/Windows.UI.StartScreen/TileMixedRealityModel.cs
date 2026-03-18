@@ -55,12 +55,6 @@ namespace Windows.UI.StartScreen
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.FromAbi(nint)
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.operator ==(Windows.UI.StartScreen.TileMixedRealityModel, Windows.UI.StartScreen.TileMixedRealityModel)
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.operator !=(Windows.UI.StartScreen.TileMixedRealityModel, Windows.UI.StartScreen.TileMixedRealityModel)
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.Equals(Windows.UI.StartScreen.TileMixedRealityModel)
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.Equals(object)
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.GetHashCode()
 		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -53,7 +53,6 @@ namespace Windows.Networking.XboxLive
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Networking.XboxLive.XboxLiveDeviceAddress CreateFromSnapshotBase64(string base64)
@@ -83,12 +82,6 @@ namespace Windows.Networking.XboxLive
 		}
 #endif
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.MaxSnapshotBytesSize.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.operator ==(Windows.Networking.XboxLive.XboxLiveDeviceAddress, Windows.Networking.XboxLive.XboxLiveDeviceAddress)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.operator !=(Windows.Networking.XboxLive.XboxLiveDeviceAddress, Windows.Networking.XboxLive.XboxLiveDeviceAddress)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.Equals(Windows.Networking.XboxLive.XboxLiveDeviceAddress)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.Equals(object)
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.GetHashCode()
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.WinRT.IWinRTObject.QueryInterfaceCache.get

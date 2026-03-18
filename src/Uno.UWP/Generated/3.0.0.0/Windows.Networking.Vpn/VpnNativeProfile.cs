@@ -202,12 +202,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.VpnNativeProfile()
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.operator ==(Windows.Networking.Vpn.VpnNativeProfile, Windows.Networking.Vpn.VpnNativeProfile)
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.operator !=(Windows.Networking.Vpn.VpnNativeProfile, Windows.Networking.Vpn.VpnNativeProfile)
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.Equals(Windows.Networking.Vpn.VpnNativeProfile)
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.Equals(object)
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.GetHashCode()
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.WinRT.IWinRTObject.QueryInterfaceCache.get

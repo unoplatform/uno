@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Appointments
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral.operator ==(Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral, Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral.operator !=(Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral, Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral.Equals(Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChangedDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get

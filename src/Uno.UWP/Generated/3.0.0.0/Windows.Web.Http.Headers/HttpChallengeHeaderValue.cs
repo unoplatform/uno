@@ -54,7 +54,6 @@ namespace Windows.Web.Http.Headers
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.HttpChallengeHeaderValue(string, string)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpChallengeHeaderValue Parse(string input)
@@ -69,12 +68,6 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpChallengeHeaderValue.TryParse(string input, out HttpChallengeHeaderValue challengeHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpChallengeHeaderValue.TryParse%28string%20input%2C%20out%20HttpChallengeHeaderValue%20challengeHeaderValue%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.FromAbi(nint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.operator ==(Windows.Web.Http.Headers.HttpChallengeHeaderValue, Windows.Web.Http.Headers.HttpChallengeHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.operator !=(Windows.Web.Http.Headers.HttpChallengeHeaderValue, Windows.Web.Http.Headers.HttpChallengeHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.Equals(Windows.Web.Http.Headers.HttpChallengeHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.Equals(object)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.GetHashCode()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.WinRT.IWinRTObject.QueryInterfaceCache.get

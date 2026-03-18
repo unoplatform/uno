@@ -88,7 +88,6 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.As<I>()
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Desktop.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Holographic.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Hub.get

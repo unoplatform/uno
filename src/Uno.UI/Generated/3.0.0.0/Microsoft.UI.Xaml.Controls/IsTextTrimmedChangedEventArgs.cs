@@ -13,12 +13,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs, Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs, Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

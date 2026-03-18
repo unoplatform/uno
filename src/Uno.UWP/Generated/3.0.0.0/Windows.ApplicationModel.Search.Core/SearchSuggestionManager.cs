@@ -54,12 +54,6 @@ namespace Windows.ApplicationModel.Search.Core
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.SearchSuggestionManager()
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.operator ==(Windows.ApplicationModel.Search.Core.SearchSuggestionManager, Windows.ApplicationModel.Search.Core.SearchSuggestionManager)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.operator !=(Windows.ApplicationModel.Search.Core.SearchSuggestionManager, Windows.ApplicationModel.Search.Core.SearchSuggestionManager)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.Equals(Windows.ApplicationModel.Search.Core.SearchSuggestionManager)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.WinRT.IWinRTObject.QueryInterfaceCache.get

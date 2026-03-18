@@ -47,7 +47,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Capture.AppBroadcastPlugInManager GetDefault()
@@ -62,12 +61,6 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member AppBroadcastPlugInManager AppBroadcastPlugInManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastPlugInManager%20AppBroadcastPlugInManager.GetForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.operator ==(Windows.Media.Capture.AppBroadcastPlugInManager, Windows.Media.Capture.AppBroadcastPlugInManager)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.operator !=(Windows.Media.Capture.AppBroadcastPlugInManager, Windows.Media.Capture.AppBroadcastPlugInManager)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.Equals(Windows.Media.Capture.AppBroadcastPlugInManager)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.WinRT.IWinRTObject.QueryInterfaceCache.get

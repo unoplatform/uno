@@ -46,12 +46,6 @@ namespace Windows.Graphics.Printing3D
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup.Printing3DMultiplePropertyMaterialGroup(uint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup.FromAbi(nint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup.operator ==(Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup, Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup.operator !=(Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup, Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup.Equals(Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup.Equals(object)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup.GetHashCode()
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMultiplePropertyMaterialGroup.WinRT.IWinRTObject.QueryInterfaceCache.get

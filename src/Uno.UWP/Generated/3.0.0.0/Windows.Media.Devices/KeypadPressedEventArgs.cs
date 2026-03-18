@@ -23,12 +23,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.KeypadPressedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Devices.KeypadPressedEventArgs.operator ==(Windows.Media.Devices.KeypadPressedEventArgs, Windows.Media.Devices.KeypadPressedEventArgs)
-		// Forced skipping of method Windows.Media.Devices.KeypadPressedEventArgs.operator !=(Windows.Media.Devices.KeypadPressedEventArgs, Windows.Media.Devices.KeypadPressedEventArgs)
-		// Forced skipping of method Windows.Media.Devices.KeypadPressedEventArgs.Equals(Windows.Media.Devices.KeypadPressedEventArgs)
-		// Forced skipping of method Windows.Media.Devices.KeypadPressedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Devices.KeypadPressedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Devices.KeypadPressedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Devices.KeypadPressedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Devices.KeypadPressedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

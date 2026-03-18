@@ -55,12 +55,6 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.operator ==(Windows.ApplicationModel.Email.EmailMailboxSyncManager, Windows.ApplicationModel.Email.EmailMailboxSyncManager)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.operator !=(Windows.ApplicationModel.Email.EmailMailboxSyncManager, Windows.ApplicationModel.Email.EmailMailboxSyncManager)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.Equals(Windows.ApplicationModel.Email.EmailMailboxSyncManager)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxSyncManager.WinRT.IWinRTObject.QueryInterfaceCache.get

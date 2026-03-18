@@ -55,12 +55,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.LauncherUIOptions.FromAbi(nint)
-		// Forced skipping of method Windows.System.LauncherUIOptions.operator ==(Windows.System.LauncherUIOptions, Windows.System.LauncherUIOptions)
-		// Forced skipping of method Windows.System.LauncherUIOptions.operator !=(Windows.System.LauncherUIOptions, Windows.System.LauncherUIOptions)
-		// Forced skipping of method Windows.System.LauncherUIOptions.Equals(Windows.System.LauncherUIOptions)
-		// Forced skipping of method Windows.System.LauncherUIOptions.Equals(object)
-		// Forced skipping of method Windows.System.LauncherUIOptions.GetHashCode()
 		// Forced skipping of method Windows.System.LauncherUIOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.LauncherUIOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.LauncherUIOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

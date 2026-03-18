@@ -90,7 +90,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.As<I>()
 		// Skipping already declared method Windows.Devices.Sensors.Magnetometer.GetDefault()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -106,12 +105,6 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Magnetometer> Magnetometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMagnetometer%3E%20Magnetometer.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.operator ==(Windows.Devices.Sensors.Magnetometer, Windows.Devices.Sensors.Magnetometer)
-		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.operator !=(Windows.Devices.Sensors.Magnetometer, Windows.Devices.Sensors.Magnetometer)
-		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.Equals(Windows.Devices.Sensors.Magnetometer)
-		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.WinRT.IWinRTObject.QueryInterfaceCache.get

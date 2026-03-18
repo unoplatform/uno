@@ -16,12 +16,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.CodecQuery.CodecQuery()
-		// Forced skipping of method Windows.Media.Core.CodecQuery.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Core.CodecQuery.operator ==(Windows.Media.Core.CodecQuery, Windows.Media.Core.CodecQuery)
-		// Forced skipping of method Windows.Media.Core.CodecQuery.operator !=(Windows.Media.Core.CodecQuery, Windows.Media.Core.CodecQuery)
-		// Forced skipping of method Windows.Media.Core.CodecQuery.Equals(Windows.Media.Core.CodecQuery)
-		// Forced skipping of method Windows.Media.Core.CodecQuery.Equals(object)
-		// Forced skipping of method Windows.Media.Core.CodecQuery.GetHashCode()
 		// Forced skipping of method Windows.Media.Core.CodecQuery.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Core.CodecQuery.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Core.CodecQuery.WinRT.IWinRTObject.QueryInterfaceCache.get

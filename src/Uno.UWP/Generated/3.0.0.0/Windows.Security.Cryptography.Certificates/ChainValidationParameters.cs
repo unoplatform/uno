@@ -44,12 +44,6 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.ChainValidationParameters()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.FromAbi(nint)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.operator ==(Windows.Security.Cryptography.Certificates.ChainValidationParameters, Windows.Security.Cryptography.Certificates.ChainValidationParameters)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.operator !=(Windows.Security.Cryptography.Certificates.ChainValidationParameters, Windows.Security.Cryptography.Certificates.ChainValidationParameters)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.Equals(Windows.Security.Cryptography.Certificates.ChainValidationParameters)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.Equals(object)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.GetHashCode()
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.WinRT.IWinRTObject.QueryInterfaceCache.get

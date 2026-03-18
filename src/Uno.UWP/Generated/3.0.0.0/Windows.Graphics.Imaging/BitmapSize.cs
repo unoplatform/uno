@@ -17,11 +17,6 @@ namespace Windows.Graphics.Imaging
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapSize.BitmapSize(uint, uint)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapSize.operator ==(Windows.Graphics.Imaging.BitmapSize, Windows.Graphics.Imaging.BitmapSize)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapSize.operator !=(Windows.Graphics.Imaging.BitmapSize, Windows.Graphics.Imaging.BitmapSize)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapSize.Equals(Windows.Graphics.Imaging.BitmapSize)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapSize.Equals(object)
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapSize.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint Width;
 #endif

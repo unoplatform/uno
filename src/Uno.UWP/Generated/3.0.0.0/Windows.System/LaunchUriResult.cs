@@ -19,12 +19,6 @@ namespace Windows.System
 		}
 #endif
 		// Skipping already declared property Status
-		// Forced skipping of method Windows.System.LaunchUriResult.FromAbi(nint)
-		// Forced skipping of method Windows.System.LaunchUriResult.operator ==(Windows.System.LaunchUriResult, Windows.System.LaunchUriResult)
-		// Forced skipping of method Windows.System.LaunchUriResult.operator !=(Windows.System.LaunchUriResult, Windows.System.LaunchUriResult)
-		// Forced skipping of method Windows.System.LaunchUriResult.Equals(Windows.System.LaunchUriResult)
-		// Forced skipping of method Windows.System.LaunchUriResult.Equals(object)
-		// Forced skipping of method Windows.System.LaunchUriResult.GetHashCode()
 		// Forced skipping of method Windows.System.LaunchUriResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.LaunchUriResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.LaunchUriResult.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -33,7 +33,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppCapture.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Capture.AppCapture GetForCurrentView()
@@ -48,12 +47,6 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member IAsyncAction AppCapture.SetAllowedAsync(bool allowed) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppCapture.SetAllowedAsync%28bool%20allowed%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppCapture.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.AppCapture.operator ==(Windows.Media.Capture.AppCapture, Windows.Media.Capture.AppCapture)
-		// Forced skipping of method Windows.Media.Capture.AppCapture.operator !=(Windows.Media.Capture.AppCapture, Windows.Media.Capture.AppCapture)
-		// Forced skipping of method Windows.Media.Capture.AppCapture.Equals(Windows.Media.Capture.AppCapture)
-		// Forced skipping of method Windows.Media.Capture.AppCapture.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.AppCapture.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.AppCapture.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppCapture.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.AppCapture.WinRT.IWinRTObject.QueryInterfaceCache.get

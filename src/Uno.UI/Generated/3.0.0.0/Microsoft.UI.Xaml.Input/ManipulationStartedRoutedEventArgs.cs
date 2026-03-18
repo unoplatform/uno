@@ -15,14 +15,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Position
 		// Skipping already declared method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.ManipulationStartedRoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.ManipulationStartedRoutedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.ManipulationStartedRoutedEventArgs(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.operator ==(Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs, Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.operator !=(Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs, Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.Equals(Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.ManipulationStartedRoutedEventArgs(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.Complete()
@@ -32,7 +24,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.Position.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

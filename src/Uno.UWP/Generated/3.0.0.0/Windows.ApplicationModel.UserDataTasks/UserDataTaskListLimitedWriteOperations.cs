@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations.operator ==(Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations, Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations.operator !=(Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations, Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations.Equals(Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListLimitedWriteOperations.WinRT.IWinRTObject.QueryInterfaceCache.get

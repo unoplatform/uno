@@ -16,12 +16,6 @@ namespace Windows.System.RemoteSystems
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener.RemoteSystemSessionInvitationListener()
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener.FromAbi(nint)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener.operator ==(Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener, Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener.operator !=(Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener, Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener.Equals(Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener.Equals(object)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener.GetHashCode()
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionInvitationListener.WinRT.IWinRTObject.QueryInterfaceCache.get

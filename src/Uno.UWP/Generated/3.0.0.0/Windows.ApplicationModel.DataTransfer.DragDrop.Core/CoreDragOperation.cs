@@ -54,12 +54,6 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.CoreDragOperation()
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.operator ==(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation, Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.operator !=(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation, Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.Equals(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.WinRT.IWinRTObject.QueryInterfaceCache.get

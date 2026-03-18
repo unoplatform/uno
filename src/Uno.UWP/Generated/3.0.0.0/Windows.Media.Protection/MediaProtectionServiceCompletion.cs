@@ -13,12 +13,6 @@ namespace Windows.Media.Protection
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.operator ==(Windows.Media.Protection.MediaProtectionServiceCompletion, Windows.Media.Protection.MediaProtectionServiceCompletion)
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.operator !=(Windows.Media.Protection.MediaProtectionServiceCompletion, Windows.Media.Protection.MediaProtectionServiceCompletion)
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.Equals(Windows.Media.Protection.MediaProtectionServiceCompletion)
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.MediaProtectionServiceCompletion.WinRT.IWinRTObject.QueryInterfaceCache.get

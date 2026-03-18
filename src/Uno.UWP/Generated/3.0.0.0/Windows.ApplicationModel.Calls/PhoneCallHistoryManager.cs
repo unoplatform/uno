@@ -8,7 +8,6 @@ namespace Windows.ApplicationModel.Calls
 #endif
 	public static partial class PhoneCallHistoryManager
 	{
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryManager.As<I>()
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallHistoryStore> RequestStoreAsync(global::Windows.ApplicationModel.Calls.PhoneCallHistoryStoreAccessType accessType)

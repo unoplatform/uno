@@ -13,12 +13,6 @@ namespace Windows.ApplicationModel.Email
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs.operator ==(Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs, Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs.operator !=(Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs, Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs.Equals(Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

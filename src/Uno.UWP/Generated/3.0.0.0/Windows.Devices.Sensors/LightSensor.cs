@@ -76,7 +76,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.As<I>()
 		// Skipping already declared method Windows.Devices.Sensors.LightSensor.GetDefault()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -92,12 +91,6 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LightSensor> LightSensor.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLightSensor%3E%20LightSensor.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.operator ==(Windows.Devices.Sensors.LightSensor, Windows.Devices.Sensors.LightSensor)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.operator !=(Windows.Devices.Sensors.LightSensor, Windows.Devices.Sensors.LightSensor)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.Equals(Windows.Devices.Sensors.LightSensor)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.LightSensor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensor.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -15,12 +15,6 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiChannelPressureMessage.MidiChannelPressureMessage(byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.MidiChannelPressureMessage(byte, byte)
-		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.operator ==(Windows.Devices.Midi.MidiChannelPressureMessage, Windows.Devices.Midi.MidiChannelPressureMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.operator !=(Windows.Devices.Midi.MidiChannelPressureMessage, Windows.Devices.Midi.MidiChannelPressureMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.Equals(Windows.Devices.Midi.MidiChannelPressureMessage)
-		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.Equals(object)
-		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.GetHashCode()
 		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Midi.MidiChannelPressureMessage.WinRT.IWinRTObject.QueryInterfaceCache.get

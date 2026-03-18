@@ -13,12 +13,6 @@ namespace Windows.Networking.Connectivity
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.WlanConnectionProfileDetails.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.Connectivity.WlanConnectionProfileDetails.operator ==(Windows.Networking.Connectivity.WlanConnectionProfileDetails, Windows.Networking.Connectivity.WlanConnectionProfileDetails)
-		// Forced skipping of method Windows.Networking.Connectivity.WlanConnectionProfileDetails.operator !=(Windows.Networking.Connectivity.WlanConnectionProfileDetails, Windows.Networking.Connectivity.WlanConnectionProfileDetails)
-		// Forced skipping of method Windows.Networking.Connectivity.WlanConnectionProfileDetails.Equals(Windows.Networking.Connectivity.WlanConnectionProfileDetails)
-		// Forced skipping of method Windows.Networking.Connectivity.WlanConnectionProfileDetails.Equals(object)
-		// Forced skipping of method Windows.Networking.Connectivity.WlanConnectionProfileDetails.GetHashCode()
 		// Forced skipping of method Windows.Networking.Connectivity.WlanConnectionProfileDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.WlanConnectionProfileDetails.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.Connectivity.WlanConnectionProfileDetails.WinRT.IWinRTObject.QueryInterfaceCache.get

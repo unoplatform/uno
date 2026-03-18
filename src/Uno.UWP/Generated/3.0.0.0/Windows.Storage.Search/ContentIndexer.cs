@@ -23,7 +23,6 @@ namespace Windows.Storage.Search
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Search.ContentIndexer.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Search.ContentIndexer GetIndexer(string indexName)
@@ -38,12 +37,6 @@ namespace Windows.Storage.Search
 			throw new global::System.NotImplementedException("The member ContentIndexer ContentIndexer.GetIndexer() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIndexer%20ContentIndexer.GetIndexer%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Search.ContentIndexer.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.Search.ContentIndexer.operator ==(Windows.Storage.Search.ContentIndexer, Windows.Storage.Search.ContentIndexer)
-		// Forced skipping of method Windows.Storage.Search.ContentIndexer.operator !=(Windows.Storage.Search.ContentIndexer, Windows.Storage.Search.ContentIndexer)
-		// Forced skipping of method Windows.Storage.Search.ContentIndexer.Equals(Windows.Storage.Search.ContentIndexer)
-		// Forced skipping of method Windows.Storage.Search.ContentIndexer.Equals(object)
-		// Forced skipping of method Windows.Storage.Search.ContentIndexer.GetHashCode()
 		// Forced skipping of method Windows.Storage.Search.ContentIndexer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.Search.ContentIndexer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.Search.ContentIndexer.WinRT.IWinRTObject.QueryInterfaceCache.get

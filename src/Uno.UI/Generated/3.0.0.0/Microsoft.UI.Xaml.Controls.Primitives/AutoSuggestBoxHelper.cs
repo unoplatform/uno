@@ -21,7 +21,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void SetKeepInteriorCornersSquare(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox autoSuggestBox, bool value)
@@ -37,12 +36,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.KeepInteriorCornersSquareProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.operator ==(Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper, Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.operator !=(Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper, Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.Equals(Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.WinRT.IWinRTObject.QueryInterfaceCache.get

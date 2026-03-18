@@ -93,12 +93,6 @@ namespace Windows.System.Update
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Update.SystemUpdateItem.FromAbi(nint)
-		// Forced skipping of method Windows.System.Update.SystemUpdateItem.operator ==(Windows.System.Update.SystemUpdateItem, Windows.System.Update.SystemUpdateItem)
-		// Forced skipping of method Windows.System.Update.SystemUpdateItem.operator !=(Windows.System.Update.SystemUpdateItem, Windows.System.Update.SystemUpdateItem)
-		// Forced skipping of method Windows.System.Update.SystemUpdateItem.Equals(Windows.System.Update.SystemUpdateItem)
-		// Forced skipping of method Windows.System.Update.SystemUpdateItem.Equals(object)
-		// Forced skipping of method Windows.System.Update.SystemUpdateItem.GetHashCode()
 		// Forced skipping of method Windows.System.Update.SystemUpdateItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.Update.SystemUpdateItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.Update.SystemUpdateItem.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -73,12 +73,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.operator ==(Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs, Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.operator !=(Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs, Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.Equals(Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

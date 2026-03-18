@@ -113,12 +113,6 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicense.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicense.operator ==(Windows.Media.Protection.PlayReady.PlayReadyLicense, Windows.Media.Protection.PlayReady.PlayReadyLicense)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicense.operator !=(Windows.Media.Protection.PlayReady.PlayReadyLicense, Windows.Media.Protection.PlayReady.PlayReadyLicense)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicense.Equals(Windows.Media.Protection.PlayReady.PlayReadyLicense)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicense.Equals(object)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicense.GetHashCode()
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicense.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicense.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicense.WinRT.IWinRTObject.QueryInterfaceCache.get

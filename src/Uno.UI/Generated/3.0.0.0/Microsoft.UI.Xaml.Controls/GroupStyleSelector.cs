@@ -16,14 +16,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.GroupStyleSelector()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.GroupStyleSelector(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.operator ==(Microsoft.UI.Xaml.Controls.GroupStyleSelector, Microsoft.UI.Xaml.Controls.GroupStyleSelector)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.operator !=(Microsoft.UI.Xaml.Controls.GroupStyleSelector, Microsoft.UI.Xaml.Controls.GroupStyleSelector)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.Equals(Microsoft.UI.Xaml.Controls.GroupStyleSelector)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.GroupStyleSelector(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.WinRT.IWinRTObject.QueryInterfaceCache.get
@@ -42,8 +34,6 @@ namespace Microsoft.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member GroupStyle GroupStyleSelector.SelectGroupStyleCore(object group, uint level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GroupStyle%20GroupStyleSelector.SelectGroupStyleCore%28object%20group%2C%20uint%20level%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.Microsoft.UI.Xaml.Controls.IGroupStyleSelectorOverrides.SelectGroupStyleCore(object, uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

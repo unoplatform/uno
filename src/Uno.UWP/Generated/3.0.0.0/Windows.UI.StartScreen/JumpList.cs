@@ -32,7 +32,6 @@ namespace Windows.UI.StartScreen
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.As<I>()
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.StartScreen.JumpList> LoadCurrentAsync()
@@ -41,12 +40,6 @@ namespace Windows.UI.StartScreen
 		}
 #endif
 		// Skipping already declared method Windows.UI.StartScreen.JumpList.IsSupported()
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.FromAbi(nint)
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.operator ==(Windows.UI.StartScreen.JumpList, Windows.UI.StartScreen.JumpList)
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.operator !=(Windows.UI.StartScreen.JumpList, Windows.UI.StartScreen.JumpList)
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.Equals(Windows.UI.StartScreen.JumpList)
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.Equals(object)
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.GetHashCode()
 		// Forced skipping of method Windows.UI.StartScreen.JumpList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.StartScreen.JumpList.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.StartScreen.JumpList.WinRT.IWinRTObject.QueryInterfaceCache.get

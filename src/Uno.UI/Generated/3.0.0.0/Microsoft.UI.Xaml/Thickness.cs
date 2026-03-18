@@ -26,10 +26,5 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Thickness.Bottom.get
 		// Forced skipping of method Microsoft.UI.Xaml.Thickness.Bottom.set
 		// Skipping already declared method Microsoft.UI.Xaml.Thickness.ToString()
-		// Forced skipping of method Microsoft.UI.Xaml.Thickness.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Thickness.Equals(Microsoft.UI.Xaml.Thickness)
-		// Forced skipping of method Microsoft.UI.Xaml.Thickness.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Thickness.operator ==(Microsoft.UI.Xaml.Thickness, Microsoft.UI.Xaml.Thickness)
-		// Forced skipping of method Microsoft.UI.Xaml.Thickness.operator !=(Microsoft.UI.Xaml.Thickness, Microsoft.UI.Xaml.Thickness)
 	}
 }

@@ -12,12 +12,6 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared property Headers
 		// Skipping already declared property ReasonPhrase
 		// Skipping already declared property StatusCode
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.FromAbi(nint)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.Equals(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.Equals(object)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.GetHashCode()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.WinRT.IWinRTObject.QueryInterfaceCache.get

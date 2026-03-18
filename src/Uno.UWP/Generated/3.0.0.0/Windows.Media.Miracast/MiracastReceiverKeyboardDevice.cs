@@ -47,12 +47,6 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.operator ==(Windows.Media.Miracast.MiracastReceiverKeyboardDevice, Windows.Media.Miracast.MiracastReceiverKeyboardDevice)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.operator !=(Windows.Media.Miracast.MiracastReceiverKeyboardDevice, Windows.Media.Miracast.MiracastReceiverKeyboardDevice)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.Equals(Windows.Media.Miracast.MiracastReceiverKeyboardDevice)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.Equals(object)
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.GetHashCode()
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -22,21 +22,12 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property UnsetGlyph
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.RatingItemFontInfo()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.RatingItemFontInfo()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.DisabledGlyphProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.GlyphProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.PlaceholderGlyphProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.PointerOverGlyphProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.PointerOverPlaceholderGlyphProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.UnsetGlyphProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.RatingItemFontInfo(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.operator ==(Microsoft.UI.Xaml.Controls.RatingItemFontInfo, Microsoft.UI.Xaml.Controls.RatingItemFontInfo)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.operator !=(Microsoft.UI.Xaml.Controls.RatingItemFontInfo, Microsoft.UI.Xaml.Controls.RatingItemFontInfo)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.Equals(Microsoft.UI.Xaml.Controls.RatingItemFontInfo)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.RatingItemFontInfo(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.DisabledGlyph.get
@@ -51,7 +42,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.PointerOverPlaceholderGlyph.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.UnsetGlyph.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.UnsetGlyph.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

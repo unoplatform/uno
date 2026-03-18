@@ -25,7 +25,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TemplateSettings
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AppBarButton.AppBarButton()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.AppBarButton()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.DynamicOverflowOrderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.IconProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.IsCompactProperty.get
@@ -33,14 +32,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.KeyboardAcceleratorTextOverrideProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.LabelPositionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.LabelProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.AppBarButton(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.operator ==(Microsoft.UI.Xaml.Controls.AppBarButton, Microsoft.UI.Xaml.Controls.AppBarButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.operator !=(Microsoft.UI.Xaml.Controls.AppBarButton, Microsoft.UI.Xaml.Controls.AppBarButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.Equals(Microsoft.UI.Xaml.Controls.AppBarButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.AppBarButton(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.DynamicOverflowOrder.get
@@ -57,7 +48,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.LabelPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.LabelPosition.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarButton.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Controls.ICommandBarElement
 	}

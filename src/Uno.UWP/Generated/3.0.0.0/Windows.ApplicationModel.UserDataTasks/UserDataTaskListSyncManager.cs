@@ -55,12 +55,6 @@ namespace Windows.ApplicationModel.UserDataTasks
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.operator ==(Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager, Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.operator !=(Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager, Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.Equals(Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.WinRT.IWinRTObject.QueryInterfaceCache.get

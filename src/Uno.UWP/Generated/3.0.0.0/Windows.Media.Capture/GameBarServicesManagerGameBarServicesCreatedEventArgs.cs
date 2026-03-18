@@ -23,12 +23,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs.operator ==(Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs, Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs.operator !=(Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs, Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs.Equals(Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs)
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

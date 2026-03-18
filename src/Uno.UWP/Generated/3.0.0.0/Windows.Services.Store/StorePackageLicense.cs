@@ -33,12 +33,6 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StorePackageLicense.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Store.StorePackageLicense.operator ==(Windows.Services.Store.StorePackageLicense, Windows.Services.Store.StorePackageLicense)
-		// Forced skipping of method Windows.Services.Store.StorePackageLicense.operator !=(Windows.Services.Store.StorePackageLicense, Windows.Services.Store.StorePackageLicense)
-		// Forced skipping of method Windows.Services.Store.StorePackageLicense.Equals(Windows.Services.Store.StorePackageLicense)
-		// Forced skipping of method Windows.Services.Store.StorePackageLicense.Equals(object)
-		// Forced skipping of method Windows.Services.Store.StorePackageLicense.GetHashCode()
 		// Forced skipping of method Windows.Services.Store.StorePackageLicense.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Store.StorePackageLicense.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Store.StorePackageLicense.WinRT.IWinRTObject.QueryInterfaceCache.get

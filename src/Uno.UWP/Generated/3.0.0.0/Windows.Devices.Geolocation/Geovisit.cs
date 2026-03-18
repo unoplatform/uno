@@ -43,12 +43,6 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Geolocation.Geovisit.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geovisit.operator ==(Windows.Devices.Geolocation.Geovisit, Windows.Devices.Geolocation.Geovisit)
-		// Forced skipping of method Windows.Devices.Geolocation.Geovisit.operator !=(Windows.Devices.Geolocation.Geovisit, Windows.Devices.Geolocation.Geovisit)
-		// Forced skipping of method Windows.Devices.Geolocation.Geovisit.Equals(Windows.Devices.Geolocation.Geovisit)
-		// Forced skipping of method Windows.Devices.Geolocation.Geovisit.Equals(object)
-		// Forced skipping of method Windows.Devices.Geolocation.Geovisit.GetHashCode()
 		// Forced skipping of method Windows.Devices.Geolocation.Geovisit.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geovisit.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geovisit.WinRT.IWinRTObject.QueryInterfaceCache.get

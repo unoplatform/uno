@@ -23,12 +23,6 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs.operator ==(Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs, Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs.operator !=(Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs, Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs.Equals(Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -33,12 +33,6 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.operator ==(Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult, Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.operator !=(Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult, Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.Equals(Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.WinRT.IWinRTObject.QueryInterfaceCache.get

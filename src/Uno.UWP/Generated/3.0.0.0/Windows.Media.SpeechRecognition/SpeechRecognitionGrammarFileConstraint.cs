@@ -86,12 +86,6 @@ namespace Windows.Media.SpeechRecognition
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint.SpeechRecognitionGrammarFileConstraint(Windows.Storage.StorageFile, string)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint.FromAbi(nint)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint.operator ==(Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint, Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint.operator !=(Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint, Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint.Equals(Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint.Equals(object)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint.GetHashCode()
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint.WinRT.IWinRTObject.QueryInterfaceCache.get

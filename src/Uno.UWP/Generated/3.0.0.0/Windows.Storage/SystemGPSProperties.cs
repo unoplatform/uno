@@ -33,12 +33,6 @@ namespace Windows.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.SystemGPSProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Storage.SystemGPSProperties.operator ==(Windows.Storage.SystemGPSProperties, Windows.Storage.SystemGPSProperties)
-		// Forced skipping of method Windows.Storage.SystemGPSProperties.operator !=(Windows.Storage.SystemGPSProperties, Windows.Storage.SystemGPSProperties)
-		// Forced skipping of method Windows.Storage.SystemGPSProperties.Equals(Windows.Storage.SystemGPSProperties)
-		// Forced skipping of method Windows.Storage.SystemGPSProperties.Equals(object)
-		// Forced skipping of method Windows.Storage.SystemGPSProperties.GetHashCode()
 		// Forced skipping of method Windows.Storage.SystemGPSProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Storage.SystemGPSProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Storage.SystemGPSProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

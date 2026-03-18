@@ -198,7 +198,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Width
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement()
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement()
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void DeferTree(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -232,14 +231,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.TagProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.VerticalAlignmentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.WidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement(WinRT.IObjectReference)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.operator ==(Microsoft.UI.Xaml.FrameworkElement, Microsoft.UI.Xaml.FrameworkElement)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.operator !=(Microsoft.UI.Xaml.FrameworkElement, Microsoft.UI.Xaml.FrameworkElement)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Equals(Microsoft.UI.Xaml.FrameworkElement)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.GetHashCode()
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.FindName(string)
@@ -263,13 +254,9 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Unloaded.remove
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.InvalidateViewport()
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.MeasureOverride(Windows.Foundation.Size)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Microsoft.UI.Xaml.IFrameworkElementOverrides.MeasureOverride(Windows.Foundation.Size)
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.ArrangeOverride(Windows.Foundation.Size)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Microsoft.UI.Xaml.IFrameworkElementOverrides.ArrangeOverride(Windows.Foundation.Size)
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.OnApplyTemplate()
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Microsoft.UI.Xaml.IFrameworkElementOverrides.OnApplyTemplate()
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.GoToElementStateCore(string, bool)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Microsoft.UI.Xaml.IFrameworkElementOverrides.GoToElementStateCore(string, bool)
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualTheme.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualWidth.get
@@ -325,7 +312,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.VerticalAlignment.set
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Width.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Width.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.EffectiveViewportChanged

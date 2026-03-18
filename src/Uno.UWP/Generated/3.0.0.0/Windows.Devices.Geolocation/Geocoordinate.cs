@@ -20,12 +20,6 @@ namespace Windows.Devices.Geolocation
 		// Skipping already declared property SatelliteData
 		// Skipping already declared property Speed
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.operator ==(Windows.Devices.Geolocation.Geocoordinate, Windows.Devices.Geolocation.Geocoordinate)
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.operator !=(Windows.Devices.Geolocation.Geocoordinate, Windows.Devices.Geolocation.Geocoordinate)
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Equals(Windows.Devices.Geolocation.Geocoordinate)
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Equals(object)
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.GetHashCode()
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.WinRT.IWinRTObject.QueryInterfaceCache.get

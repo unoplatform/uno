@@ -18,7 +18,6 @@ namespace Windows.UI.Text.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesConstants.As<I>()
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesConstants.HiddenCharacter.get
 	}
 }

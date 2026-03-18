@@ -16,12 +16,6 @@ namespace Windows.UI.Shell
 		}
 #endif
 		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.SecurityAppManager()
-		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.operator ==(Windows.UI.Shell.SecurityAppManager, Windows.UI.Shell.SecurityAppManager)
-		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.operator !=(Windows.UI.Shell.SecurityAppManager, Windows.UI.Shell.SecurityAppManager)
-		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.Equals(Windows.UI.Shell.SecurityAppManager)
-		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.Equals(object)
-		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.GetHashCode()
 		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.WinRT.IWinRTObject.QueryInterfaceCache.get

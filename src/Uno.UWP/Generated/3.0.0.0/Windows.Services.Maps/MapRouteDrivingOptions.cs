@@ -86,12 +86,6 @@ namespace Windows.Services.Maps
 		}
 #endif
 		// Forced skipping of method Windows.Services.Maps.MapRouteDrivingOptions.MapRouteDrivingOptions()
-		// Forced skipping of method Windows.Services.Maps.MapRouteDrivingOptions.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Maps.MapRouteDrivingOptions.operator ==(Windows.Services.Maps.MapRouteDrivingOptions, Windows.Services.Maps.MapRouteDrivingOptions)
-		// Forced skipping of method Windows.Services.Maps.MapRouteDrivingOptions.operator !=(Windows.Services.Maps.MapRouteDrivingOptions, Windows.Services.Maps.MapRouteDrivingOptions)
-		// Forced skipping of method Windows.Services.Maps.MapRouteDrivingOptions.Equals(Windows.Services.Maps.MapRouteDrivingOptions)
-		// Forced skipping of method Windows.Services.Maps.MapRouteDrivingOptions.Equals(object)
-		// Forced skipping of method Windows.Services.Maps.MapRouteDrivingOptions.GetHashCode()
 		// Forced skipping of method Windows.Services.Maps.MapRouteDrivingOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteDrivingOptions.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteDrivingOptions.WinRT.IWinRTObject.QueryInterfaceCache.get

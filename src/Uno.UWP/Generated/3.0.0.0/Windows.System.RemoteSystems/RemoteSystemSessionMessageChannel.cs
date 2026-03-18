@@ -34,12 +34,6 @@ namespace Windows.System.RemoteSystems
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.RemoteSystemSessionMessageChannel(Windows.System.RemoteSystems.RemoteSystemSession, string, Windows.System.RemoteSystems.RemoteSystemSessionMessageChannelReliability)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.FromAbi(nint)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.operator ==(Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel, Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.operator !=(Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel, Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.Equals(Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.Equals(object)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.GetHashCode()
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.WinRT.IWinRTObject.QueryInterfaceCache.get

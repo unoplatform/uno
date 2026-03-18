@@ -236,7 +236,6 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Glyphs()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.ColorFontPaletteIndexProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FillProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FontRenderingEmSizeProperty.get
@@ -247,12 +246,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.OriginYProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.StyleSimulationsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.UnicodeStringProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.operator ==(Microsoft.UI.Xaml.Documents.Glyphs, Microsoft.UI.Xaml.Documents.Glyphs)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.operator !=(Microsoft.UI.Xaml.Documents.Glyphs, Microsoft.UI.Xaml.Documents.Glyphs)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Equals(Microsoft.UI.Xaml.Documents.Glyphs)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.ColorFontPaletteIndex.get
@@ -275,7 +268,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.StyleSimulations.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.UnicodeString.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.UnicodeString.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

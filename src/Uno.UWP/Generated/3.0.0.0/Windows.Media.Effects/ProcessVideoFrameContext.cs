@@ -33,13 +33,7 @@ namespace Windows.Media.Effects
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.FromAbi(nint)
 		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.~ProcessVideoFrameContext()
-		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.operator ==(Windows.Media.Effects.ProcessVideoFrameContext, Windows.Media.Effects.ProcessVideoFrameContext)
-		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.operator !=(Windows.Media.Effects.ProcessVideoFrameContext, Windows.Media.Effects.ProcessVideoFrameContext)
-		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.Equals(Windows.Media.Effects.ProcessVideoFrameContext)
-		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.Equals(object)
-		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.GetHashCode()
 		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.WinRT.IWinRTObject.QueryInterfaceCache.get

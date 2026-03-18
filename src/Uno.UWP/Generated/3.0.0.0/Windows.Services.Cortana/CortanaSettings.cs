@@ -37,7 +37,6 @@ namespace Windows.Services.Cortana
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
@@ -52,12 +51,6 @@ namespace Windows.Services.Cortana
 			throw new global::System.NotImplementedException("The member CortanaSettings CortanaSettings.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CortanaSettings%20CortanaSettings.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.operator ==(Windows.Services.Cortana.CortanaSettings, Windows.Services.Cortana.CortanaSettings)
-		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.operator !=(Windows.Services.Cortana.CortanaSettings, Windows.Services.Cortana.CortanaSettings)
-		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.Equals(Windows.Services.Cortana.CortanaSettings)
-		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.Equals(object)
-		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.GetHashCode()
 		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.WinRT.IWinRTObject.QueryInterfaceCache.get

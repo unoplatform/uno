@@ -43,7 +43,6 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchor.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Perception.Spatial.SpatialAnchor TryCreateRelativeTo(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
@@ -65,12 +64,6 @@ namespace Windows.Perception.Spatial
 			throw new global::System.NotImplementedException("The member SpatialAnchor SpatialAnchor.TryCreateRelativeTo(SpatialCoordinateSystem coordinateSystem, Vector3 position, Quaternion orientation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialAnchor%20SpatialAnchor.TryCreateRelativeTo%28SpatialCoordinateSystem%20coordinateSystem%2C%20Vector3%20position%2C%20Quaternion%20orientation%29");
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchor.FromAbi(nint)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchor.operator ==(Windows.Perception.Spatial.SpatialAnchor, Windows.Perception.Spatial.SpatialAnchor)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchor.operator !=(Windows.Perception.Spatial.SpatialAnchor, Windows.Perception.Spatial.SpatialAnchor)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchor.Equals(Windows.Perception.Spatial.SpatialAnchor)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchor.Equals(object)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchor.GetHashCode()
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchor.WinRT.IWinRTObject.QueryInterfaceCache.get

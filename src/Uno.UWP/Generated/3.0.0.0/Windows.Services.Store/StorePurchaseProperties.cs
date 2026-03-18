@@ -52,12 +52,6 @@ namespace Windows.Services.Store
 		}
 #endif
 		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.StorePurchaseProperties(string)
-		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.FromAbi(nint)
-		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.operator ==(Windows.Services.Store.StorePurchaseProperties, Windows.Services.Store.StorePurchaseProperties)
-		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.operator !=(Windows.Services.Store.StorePurchaseProperties, Windows.Services.Store.StorePurchaseProperties)
-		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.Equals(Windows.Services.Store.StorePurchaseProperties)
-		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.Equals(object)
-		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.GetHashCode()
 		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.WinRT.IWinRTObject.QueryInterfaceCache.get

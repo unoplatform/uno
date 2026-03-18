@@ -37,12 +37,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.operator ==(Windows.Devices.Perception.PerceptionColorFrameReader, Windows.Devices.Perception.PerceptionColorFrameReader)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.operator !=(Windows.Devices.Perception.PerceptionColorFrameReader, Windows.Devices.Perception.PerceptionColorFrameReader)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.Equals(Windows.Devices.Perception.PerceptionColorFrameReader)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.Equals(object)
-		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.GetHashCode()
 		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.WinRT.IWinRTObject.QueryInterfaceCache.get

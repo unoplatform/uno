@@ -113,12 +113,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.operator ==(Windows.Devices.PointOfService.BarcodeSymbologyAttributes, Windows.Devices.PointOfService.BarcodeSymbologyAttributes)
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.operator !=(Windows.Devices.PointOfService.BarcodeSymbologyAttributes, Windows.Devices.PointOfService.BarcodeSymbologyAttributes)
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.Equals(Windows.Devices.PointOfService.BarcodeSymbologyAttributes)
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.Equals(object)
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.GetHashCode()
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -62,7 +62,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ContinuumNavigationTransitionInfo()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetIsEntranceElement(global::Microsoft.UI.Xaml.UIElement element)
@@ -109,17 +108,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsEntranceElementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsExitElementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.FromAbi(nint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.operator ==(Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo, Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.operator !=(Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo, Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.Equals(Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.Equals(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.GetHashCode()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

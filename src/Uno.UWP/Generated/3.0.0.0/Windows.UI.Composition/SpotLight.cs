@@ -237,12 +237,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.SpotLight.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.SpotLight.operator ==(Windows.UI.Composition.SpotLight, Windows.UI.Composition.SpotLight)
-		// Forced skipping of method Windows.UI.Composition.SpotLight.operator !=(Windows.UI.Composition.SpotLight, Windows.UI.Composition.SpotLight)
-		// Forced skipping of method Windows.UI.Composition.SpotLight.Equals(Windows.UI.Composition.SpotLight)
-		// Forced skipping of method Windows.UI.Composition.SpotLight.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.SpotLight.GetHashCode()
 		// Forced skipping of method Windows.UI.Composition.SpotLight.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.SpotLight.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.SpotLight.ConstantAttenuation.get
@@ -277,7 +271,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.SpotLight.OuterConeIntensity.set
 		// Forced skipping of method Windows.UI.Composition.SpotLight.QuadraticAttenuation.get
 		// Forced skipping of method Windows.UI.Composition.SpotLight.QuadraticAttenuation.set
-		// Forced skipping of method Windows.UI.Composition.SpotLight.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.SpotLight.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

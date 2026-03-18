@@ -50,12 +50,6 @@ namespace Windows.Gaming.Input.ForceFeedback
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.ConditionForceEffect(Windows.Gaming.Input.ForceFeedback.ConditionForceEffectKind)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.FromAbi(nint)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.operator ==(Windows.Gaming.Input.ForceFeedback.ConditionForceEffect, Windows.Gaming.Input.ForceFeedback.ConditionForceEffect)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.operator !=(Windows.Gaming.Input.ForceFeedback.ConditionForceEffect, Windows.Gaming.Input.ForceFeedback.ConditionForceEffect)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Equals(Windows.Gaming.Input.ForceFeedback.ConditionForceEffect)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Equals(object)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.GetHashCode()
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.WinRT.IWinRTObject.QueryInterfaceCache.get

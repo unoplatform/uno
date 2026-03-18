@@ -17,11 +17,6 @@ namespace Windows.Management.Deployment
 		}
 #endif
 		// Forced skipping of method Windows.Management.Deployment.DeploymentProgress.DeploymentProgress(Windows.Management.Deployment.DeploymentProgressState, uint)
-		// Forced skipping of method Windows.Management.Deployment.DeploymentProgress.operator ==(Windows.Management.Deployment.DeploymentProgress, Windows.Management.Deployment.DeploymentProgress)
-		// Forced skipping of method Windows.Management.Deployment.DeploymentProgress.operator !=(Windows.Management.Deployment.DeploymentProgress, Windows.Management.Deployment.DeploymentProgress)
-		// Forced skipping of method Windows.Management.Deployment.DeploymentProgress.Equals(Windows.Management.Deployment.DeploymentProgress)
-		// Forced skipping of method Windows.Management.Deployment.DeploymentProgress.Equals(object)
-		// Forced skipping of method Windows.Management.Deployment.DeploymentProgress.GetHashCode()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Management.Deployment.DeploymentProgressState state;
 #endif

@@ -43,7 +43,6 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Activation.IActivatedEventArgs GetActivatedEventArgs()
@@ -73,12 +72,6 @@ namespace Windows.ApplicationModel
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.AppInstance.RecommendedInstance.get
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.operator ==(Windows.ApplicationModel.AppInstance, Windows.ApplicationModel.AppInstance)
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.operator !=(Windows.ApplicationModel.AppInstance, Windows.ApplicationModel.AppInstance)
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.Equals(Windows.ApplicationModel.AppInstance)
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.AppInstance.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppInstance.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.AppInstance.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -92,14 +92,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionShape.FromAbi(nint)
-		// Forced skipping of method Windows.UI.Composition.CompositionShape.CompositionShape(WinRT.IObjectReference)
-		// Forced skipping of method Windows.UI.Composition.CompositionShape.operator ==(Windows.UI.Composition.CompositionShape, Windows.UI.Composition.CompositionShape)
-		// Forced skipping of method Windows.UI.Composition.CompositionShape.operator !=(Windows.UI.Composition.CompositionShape, Windows.UI.Composition.CompositionShape)
-		// Forced skipping of method Windows.UI.Composition.CompositionShape.Equals(Windows.UI.Composition.CompositionShape)
-		// Forced skipping of method Windows.UI.Composition.CompositionShape.Equals(object)
-		// Forced skipping of method Windows.UI.Composition.CompositionShape.GetHashCode()
-		// Forced skipping of method Windows.UI.Composition.CompositionShape.CompositionShape(WinRT.DerivedComposed)
 		// Forced skipping of method Windows.UI.Composition.CompositionShape.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionShape.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionShape.CenterPoint.get
@@ -114,7 +106,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionShape.Scale.set
 		// Forced skipping of method Windows.UI.Composition.CompositionShape.TransformMatrix.get
 		// Forced skipping of method Windows.UI.Composition.CompositionShape.TransformMatrix.set
-		// Forced skipping of method Windows.UI.Composition.CompositionShape.IsOverridableInterface(System.Guid)
 		// Forced skipping of method Windows.UI.Composition.CompositionShape.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

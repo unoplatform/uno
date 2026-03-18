@@ -53,12 +53,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.operator ==(Windows.Devices.Sensors.AltimeterReading, Windows.Devices.Sensors.AltimeterReading)
-		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.operator !=(Windows.Devices.Sensors.AltimeterReading, Windows.Devices.Sensors.AltimeterReading)
-		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.Equals(Windows.Devices.Sensors.AltimeterReading)
-		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.Equals(object)
-		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.GetHashCode()
 		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.WinRT.IWinRTObject.QueryInterfaceCache.get

@@ -93,12 +93,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.FromAbi(nint)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandCellCdma, Windows.Networking.NetworkOperators.MobileBroadbandCellCdma)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandCellCdma, Windows.Networking.NetworkOperators.MobileBroadbandCellCdma)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.Equals(Windows.Networking.NetworkOperators.MobileBroadbandCellCdma)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.Equals(object)
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.GetHashCode()
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellCdma.WinRT.IWinRTObject.QueryInterfaceCache.get

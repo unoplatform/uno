@@ -68,7 +68,6 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.As<I>()
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DTSHeadphoneX.get
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DTSXUltra.get
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DolbyAtmosForHeadphones.get

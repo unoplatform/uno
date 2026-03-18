@@ -23,12 +23,6 @@ namespace Windows.Devices.Printers.Extensions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.FromAbi(nint)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.operator ==(Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs, Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.operator !=(Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs, Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.Equals(Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.Equals(object)
-		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.GetHashCode()
 		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get

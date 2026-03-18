@@ -98,12 +98,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.BluetoothLEAdvertisementWatcherTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.FromAbi(nint)
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.operator ==(Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger, Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.operator !=(Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger, Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.Equals(Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger)
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.Equals(object)
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.GetHashCode()
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementWatcherTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
