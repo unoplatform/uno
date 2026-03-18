@@ -72,6 +72,28 @@ namespace Uno.UI
 			public static bool UseSimpleAccessibility { get; set; }
 		}
 
+		public static class AccentColor
+		{
+			private static Windows.UI.Color? _overrideAccentColor;
+
+			/// <summary>
+			/// Override the system accent color. Shade variants are computed automatically.
+			/// Set to null to revert to the OS accent color (or default blue if unavailable).
+			/// </summary>
+			public static Windows.UI.Color? OverrideAccentColor
+			{
+				get => _overrideAccentColor;
+				set
+				{
+					_overrideAccentColor = value;
+					Uno.Helpers.Theming.AccentColorHelper.SetOverridePalette(
+						value is { } color
+							? Uno.Helpers.Theming.AccentColorPalette.FromAccentColor(color)
+							: null);
+				}
+			}
+		}
+
 		public static class ComboBox
 		{
 			/// <summary>

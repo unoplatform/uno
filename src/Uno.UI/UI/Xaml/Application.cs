@@ -310,6 +310,8 @@ namespace Microsoft.UI.Xaml
 			}
 
 			SystemThemeHelper.SystemThemeChanged += OnSystemThemeChanged;
+			AccentColorHelper.AccentColorChanged += OnAccentColorChanged;
+			AccentColorResourceUpdater.UpdateAccentColorResources();
 
 			_initializationComplete = true;
 
@@ -336,7 +338,17 @@ namespace Microsoft.UI.Xaml
 				SetRequestedTheme(theme);
 			}
 
+			// Some platforms piggyback accent color changes on theme change events.
+			AccentColorHelper.RefreshAccentColor();
+
 			UISettings.OnColorValuesChanged();
+		}
+
+		private void OnAccentColorChanged(object sender, EventArgs e)
+		{
+			AccentColorResourceUpdater.UpdateAccentColorResources();
+			UISettings.OnColorValuesChanged();
+			OnResourcesChanged(ResourceUpdateReason.ThemeResource);
 		}
 
 #if __WASM__ || __SKIA__
