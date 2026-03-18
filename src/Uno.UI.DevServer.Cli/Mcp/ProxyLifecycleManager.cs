@@ -517,6 +517,7 @@ internal class ProxyLifecycleManager
 
 		var fileName = Path.GetFileName(path);
 		return string.Equals(fileName, "global.json", StringComparison.OrdinalIgnoreCase)
+			|| string.Equals(fileName, "project.assets.json", StringComparison.OrdinalIgnoreCase)
 			|| string.Equals(Path.GetExtension(path), ".sln", StringComparison.OrdinalIgnoreCase)
 			|| string.Equals(Path.GetExtension(path), ".slnx", StringComparison.OrdinalIgnoreCase);
 	}
@@ -1164,20 +1165,16 @@ internal class ProxyLifecycleManager
 
 		_devServerMonitor.ServerFailed += () =>
 		{
-			_logger.LogError("DevServer failed to start, stopping stdio server");
+			var discovery = _devServerMonitor.LastDiscoveryInfo;
+			_logger.LogError(
+				"DevServer host failed to start after retries; bridge stays alive for diagnostics via uno_health. " +
+				"Host={HostPath}, SDK={SdkVersion}, Solution={Solution}, AddIns={AddInCount}",
+				discovery?.HostPath ?? "<not resolved>",
+				discovery?.UnoSdkVersion ?? "<unknown>",
+				_workspaceResolution?.SelectedSolutionPath ?? "<none>",
+				discovery?.AddIns?.Count ?? 0);
 			SetConnectionState(ConnectionState.Degraded);
 			FailToolCachePriming();
-			_ = Task.Run(async () =>
-			{
-				try
-				{
-					await host.StopAsync().ConfigureAwait(false);
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError(ex, "Error while stopping stdio server host after DevServer failure.");
-				}
-			});
 		};
 
 		try

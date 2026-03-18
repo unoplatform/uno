@@ -512,8 +512,11 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 
 		args.AddRange(_forwardedArgs);
 
+		// CRITICAL: redirectInput MUST be true when the CLI runs as an MCP stdio bridge.
+		// Without it, the child process inherits our stdin — the MCP message pipe from
+		// the AI agent — and steals incoming JSON-RPC messages, causing random hangs.
 		var startInfo =
-			DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput: true);
+			DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput: true, redirectInput: true);
 
 		_logger.LogDebug("Starting server process: {File} {Args}", startInfo.FileName,
 			startInfo.Arguments);
@@ -550,6 +553,13 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 
 		try
 		{
+			// Close the redirected stdin immediately — the host doesn't read from it,
+			// and leaving it open can prevent the process from exiting cleanly.
+			if (startInfo.RedirectStandardInput)
+			{
+				process.StandardInput.Close();
+			}
+
 			if (startInfo.RedirectStandardOutput)
 			{
 				process.BeginOutputReadLine();
