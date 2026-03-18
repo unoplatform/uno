@@ -110,14 +110,28 @@ If you do not have `uno-devserver` installed globally, you can run the same comm
 ### Common examples
 
 ```bash
+# Check registration state across all detected clients
 uno-devserver mcp status
+
+# Install for a specific client
 uno-devserver mcp install copilot-vscode
 uno-devserver mcp install gemini-antigravity
 uno-devserver mcp install copilot-vs
+
+# Uninstall from a specific client
 uno-devserver mcp uninstall cursor
+
+# Install for all detected clients at once
+uno-devserver mcp install --all-ides
+
+# Preview changes without writing anything
+uno-devserver mcp install cursor --dry-run
+
+# Get machine-readable JSON output
+uno-devserver mcp status --json
 ```
 
-Equivalent transient usage:
+Equivalent transient usage (when `uno-devserver` is not installed globally):
 
 ```bash
 dnx -y uno.devserver mcp status
@@ -135,6 +149,41 @@ Those flags select the Uno MCP definition variant. Any `dnx --prerelease` or `dn
 
 > [!TIP]
 > The legacy `uno-devserver --mcp-app` entry point remains valid. It is still the command ultimately used to expose the local App MCP over stdio.
+
+### Command reference
+
+#### Shared options
+
+| Option | Applies to | Description |
+|---|---|---|
+| `<client>` | install, uninstall | Client identifier (positional). Required for install/uninstall unless `--all-ides` is used. Optional for status (reports all clients when omitted). |
+| `--workspace <path>` | status, install, uninstall | Workspace root directory. Defaults to the current working directory. Must be an existing non-root directory. |
+| `--channel <stable\|prerelease>` | status, install | Select the expected Uno MCP definition channel. Auto-detected from the tool version when omitted. |
+| `--tool-version <ver>` | status, install | Pin a specific tool version in the server definition. Mutually exclusive with `--channel`. |
+| `--servers <list>` | install, uninstall | Comma-separated server names (e.g. `UnoApp,UnoDocs`). Defaults to all servers. |
+| `--all-ides` | install, uninstall | Target all detected clients instead of a single one. |
+| `--all-scopes` | uninstall | Remove matching registrations from every config path, not just the write target. |
+| `--dry-run` | install, uninstall | Preview operations without writing any files. |
+| `--json` | status, install, uninstall | Emit JSON output to stdout instead of human-readable text. |
+
+#### Exit codes
+
+| Code | Meaning |
+|---|---|
+| 0 | Success (at least one operation succeeded, or status completed) |
+| 1 | Runtime error (unknown client, definitions file not found, all operations failed) |
+| 2 | Usage error (missing argument, invalid option, empty value, mutually exclusive flags) |
+
+#### Reading `mcp status` output
+
+When run without `--json`, `mcp status` prints a human-readable table showing:
+
+- **Detected clients**: clients whose config directory exists on disk
+- **Per-server, per-client status**: `registered` (matches expected), `outdated` (found but different), or `missing`
+- **Locations**: the config file path and variant for each found entry
+- **Warnings**: duplicate registrations across files or within the same file
+
+Use `--json` for machine-readable output suitable for automation and IDE extensions.
 
 ### MCP Roots Compatibility
 

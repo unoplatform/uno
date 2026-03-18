@@ -60,6 +60,18 @@ This guide walks you through configuring the Uno Platform MCPs for Google Antigr
     > [!NOTE]
     > `--force-roots-fallback` exposes the `uno_app_set_roots` tool so Antigravity, which does not yet provide [MCP roots](https://modelcontextprotocol.io/specification/2025-06-18/client/roots), can initialize.
 
+    You can verify the registration state at any time:
+
+    ```bash
+    dnx -y uno.devserver mcp status gemini-antigravity
+    ```
+
+    To remove the Uno MCP entries from Antigravity's config:
+
+    ```bash
+    dnx -y uno.devserver mcp uninstall gemini-antigravity
+    ```
+
     See [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs) for additional details about MCP registration and diagnostics.
 
 ## Next Steps

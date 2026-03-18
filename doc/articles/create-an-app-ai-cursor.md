@@ -46,6 +46,18 @@ uid: Uno.GettingStarted.CreateAnApp.AI.Cursor
     }
     ```
 
+    You can verify the registration state at any time:
+
+    ```bash
+    dnx -y uno.devserver mcp status cursor
+    ```
+
+    To remove the Uno MCP entries from Cursor's config:
+
+    ```bash
+    dnx -y uno.devserver mcp uninstall cursor
+    ```
+
     See [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs) for additional details about MCP registration and diagnostics.
 
 ## Next Steps

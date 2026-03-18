@@ -40,9 +40,11 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `uno-devserver disco`: Inspect the environment — see [Diagnostics (disco)](xref:Uno.Features.DevServerDisco)
 - `uno-devserver cleanup`: Terminate stale Dev Server processes
 - `uno-devserver login`: Open the Uno Platform settings application
-- `uno-devserver mcp status`: Inspect Uno MCP registration state across supported clients
-- `uno-devserver mcp install <client>`: Register the Uno MCP entries for a supported client
-- `uno-devserver mcp uninstall <client>`: Remove the Uno MCP entries for a supported client
+- `uno-devserver mcp status [<client>]`: Inspect Uno MCP registration state across supported clients
+- `uno-devserver mcp install <client> | --all-ides`: Register the Uno MCP entries for a supported client (or all detected clients)
+- `uno-devserver mcp uninstall <client> | --all-ides`: Remove the Uno MCP entries for a supported client (or all detected clients)
+
+  These commands accept additional flags: `--workspace`, `--channel`, `--tool-version`, `--servers`, `--all-scopes`, `--dry-run`, `--json`. See [The Uno Platform MCPs — Command reference](xref:Uno.Features.Uno.MCPs) for details.
 - `--mcp-app`: Run an MCP proxy mode for integration with MCP-based tooling
 - `--port | -p <int>`: Optional port value for MCP proxy mode
 - `--mcp-wait-tools-list`: Wait for the upstream Uno App tools to become available before responding to clients. Use this when working with MCP agents that do not react to `tools/list_changed` (for example, Codex or Claude Code).
