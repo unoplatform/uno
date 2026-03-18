@@ -1366,7 +1366,7 @@ namespace Uno.UWPSyncGenerator
 						b.AppendLineInvariant($"// Skipping already declared method {method}");
 					}
 				}
-				else
+				else if (!IsWinRTInfrastructureMember(method))
 				{
 					b.AppendLineInvariant($"// Forced skipping of method {method}");
 				}
@@ -1499,6 +1499,52 @@ namespace Uno.UWPSyncGenerator
 				&& method.Parameters[0].Type.ToDisplayString() == "Microsoft.UI.Input.Experimental.ExpPointerPoint")
 			{
 				// This member uses the experimental input layer from UWP
+				return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Identifies WinRT CsWinRT projection infrastructure members that should be
+		/// silently skipped without emitting "Forced skipping" comments.
+		/// </summary>
+		private static bool IsWinRTInfrastructureMember(IMethodSymbol method)
+		{
+			// WinRT projection method names
+			if (method.Name is "FromAbi" or "IsOverridableInterface" or "IsInterfaceImplemented"
+				or "GetInterfaceImplementation" or "GetHashCode" or "Equals")
+			{
+				return true;
+			}
+
+			// Generic As<I>() method
+			if (method.Name == "As" && method.TypeParameters.Length == 1
+				&& method.TypeParameters[0].Name == "I")
+			{
+				return true;
+			}
+
+			// CsWinRT-generated equality/comparison operators (operator ==, operator !=)
+			if (method.MethodKind == MethodKind.UserDefinedOperator)
+			{
+				return true;
+			}
+
+			// WinRT interop constructors (IObjectReference, DerivedComposed)
+			if (method.MethodKind == MethodKind.Constructor
+				&& method.Parameters.Length == 1
+				&& method.Parameters[0].Type.Name is "IObjectReference" or "DerivedComposed")
+			{
+				return true;
+			}
+
+			// Explicit interface implementations of non-public interfaces
+			// (e.g., ICustomQueryInterface.GetInterface, IWinRTObject property accessors)
+			if (!method.ExplicitInterfaceImplementations.IsEmpty
+				&& method.ExplicitInterfaceImplementations.All(
+					m => m.ContainingType.DeclaredAccessibility != Accessibility.Public))
+			{
 				return true;
 			}
 
