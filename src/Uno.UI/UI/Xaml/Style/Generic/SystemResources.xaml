@@ -15,7 +15,7 @@
 			<Color x:Key="SystemAccentColorLight3">#FFA6D8FF</Color>
 			<Color x:Key="SystemColorButtonFaceColor">#FFF0F0F0</Color>
 			<Color x:Key="SystemColorButtonTextColor">#FF000000</Color>
-			<SolidColorBrush x:Key="SystemColorControlAccentBrush" Color="{StaticResource SystemAccentColor}" />
+			<SolidColorBrush x:Key="SystemColorControlAccentBrush" Color="{ThemeResource SystemAccentColor}" />
 			<Color x:Key="SystemColorGrayTextColor">#FF6D6D6D</Color>
 			<Color x:Key="SystemColorHighlightColor">#FF3399FF</Color>
 			<Color x:Key="SystemColorHighlightTextColor">#FFFFFFFF</Color>
@@ -36,7 +36,7 @@
 			<Color x:Key="SystemAccentColorLight3">#FFA6D8FF</Color>
 			<Color x:Key="SystemColorButtonFaceColor">#FF000000</Color>
 			<Color x:Key="SystemColorButtonTextColor">#FFFFFFFF</Color>
-			<SolidColorBrush x:Key="SystemColorControlAccentBrush" Color="{StaticResource SystemAccentColor}" />
+			<SolidColorBrush x:Key="SystemColorControlAccentBrush" Color="{ThemeResource SystemAccentColor}" />
 			<Color x:Key="SystemColorGrayTextColor">#FF3FF23F</Color>
 			<Color x:Key="SystemColorHighlightColor">#FF1AEBFF</Color>
 			<Color x:Key="SystemColorHighlightTextColor">#FF000000</Color>
@@ -57,7 +57,7 @@
 			<Color x:Key="SystemAccentColorLight3">#FFA6D8FF</Color>
 			<Color x:Key="SystemColorButtonFaceColor">#FF000000</Color>
 			<Color x:Key="SystemColorButtonTextColor">#FFFFFFFF</Color>
-			<SolidColorBrush x:Key="SystemColorControlAccentBrush" Color="{StaticResource SystemAccentColor}" />
+			<SolidColorBrush x:Key="SystemColorControlAccentBrush" Color="{ThemeResource SystemAccentColor}" />
 			<Color x:Key="SystemColorGrayTextColor">#FF3FF23F</Color>
 			<Color x:Key="SystemColorHighlightColor">#FF1AEBFF</Color>
 			<Color x:Key="SystemColorHighlightTextColor">#FF000000</Color>
