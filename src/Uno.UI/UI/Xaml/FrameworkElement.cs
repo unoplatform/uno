@@ -432,7 +432,16 @@ namespace Microsoft.UI.Xaml
 				// first Measure pass.
 				if (GetTheme() == Theme.None && parent != null && parent.GetTheme() != Theme.None)
 				{
+#if __IOS__ || __ANDROID__
+					// On native iOS/Android, the visual tree loads leaf-first
+					// (child's didMoveToWindow fires before parent is notified).
+					// When a subtree is added to a themed ancestor, deeper descendants
+					// may have already loaded with Theme.None. Use NotifyThemeChanged
+					// so the inherited theme propagates to those already-loaded children.
+					NotifyThemeChanged(parent.GetTheme());
+#else
 					SetTheme(parent.GetTheme());
+#endif
 				}
 			}
 			else
