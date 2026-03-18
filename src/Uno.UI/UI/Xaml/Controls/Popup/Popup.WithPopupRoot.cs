@@ -113,7 +113,16 @@ public partial class Popup
 				var popupTheme = GetTheme();
 				if (popupTheme != Theme.None && Child is FrameworkElement feChild)
 				{
+#if __IOS__ || __ANDROID__
+					// On native iOS/Android, the child (presenter) may already have this
+					// theme stored from ForwardThemeToPresenter (which set RequestedTheme
+					// before the popup opened), but its template content loaded leaf-first
+					// without the theme. Force refresh so the theme propagates to already-
+					// loaded descendants even when the presenter's stored theme matches.
+					feChild.NotifyThemeChanged(popupTheme, forceRefresh: true);
+#else
 					feChild.NotifyThemeChanged(popupTheme);
+#endif
 				}
 
 			}
