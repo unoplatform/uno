@@ -14,8 +14,14 @@ namespace Microsoft.UI.Xaml.Media;
 
 public partial class AcrylicBrush
 {
+	private static Lazy<SkiaSharp.SKImage?> _noiseImage = new(() =>
+	{
+		using Stream? imgStream = typeof(AcrylicBrush).Assembly.GetManifestResourceStream(NoiseAssetResourceName);
+		return imgStream is not null
+			? SkiaSharp.SKImage.FromEncodedData(imgStream)
+			: null;
+	});
 	private CompositionEffectBrush? _noiseBrush;
-	private SkiaSharp.SKImage? _noiseImage;
 	private CompositionBrush? _brush;
 	private bool _isUsingOpaqueBrush;
 	private bool _isConnected;
@@ -108,11 +114,11 @@ public partial class AcrylicBrush
 		CompositionBrush = _brush;
 	}
 
-	#region Direct SkiaAcrylicBrush path (default)
+	#region Direct SkiaAcrylicBrush path
 
 	private CompositionBrush CreateAcrylicBrushDirect(Compositor compositor)
 	{
-		if (!EnsureNoiseImage())
+		if (_noiseImage.Value is null)
 		{
 			return compositor.CreateColorBrush(FallbackColor);
 		}
@@ -125,29 +131,15 @@ public partial class AcrylicBrush
 		var skLuminosity = new SkiaSharp.SKColor(luminosityColor.R, luminosityColor.G, luminosityColor.B, luminosityColor.A);
 		var skTint = new SkiaSharp.SKColor(tintColor.R, tintColor.G, tintColor.B, tintColor.A);
 
-		var existingBrush = new SkiaAcrylicBrush();
+		var existingBrush = new SkiaAcrylicBrush(Compositor.GetSharedCompositor());
 		existingBrush.IsOpaque = _isUsingOpaqueBrush;
 		existingBrush.LuminosityColor = skLuminosity;
 		existingBrush.TintColor = skTint;
 		existingBrush.BlurSigma = BlurRadius;
 		existingBrush.NoiseOpacity = NoiseOpacity;
-		existingBrush.NoiseImage = _noiseImage;
+		existingBrush.NoiseImage = _noiseImage.Value;
 
 		return existingBrush;
-	}
-
-	private bool EnsureNoiseImage()
-	{
-		if (_noiseImage is null)
-		{
-			using Stream? imgStream = GetType().Assembly.GetManifestResourceStream(NoiseAssetResourceName);
-			if (imgStream is not null)
-			{
-				_noiseImage = SkiaSharp.SKImage.FromEncodedData(imgStream);
-			}
-		}
-
-		return _noiseImage is not null;
 	}
 
 	#endregion

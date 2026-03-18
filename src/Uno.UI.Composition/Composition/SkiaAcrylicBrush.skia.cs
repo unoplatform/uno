@@ -20,6 +20,10 @@ internal class SkiaAcrylicBrush : CompositionBrush
 	private SKPaint? _opaqueTintPaint;
 	private SKColor _tintColor;
 
+	public SkiaAcrylicBrush(Compositor compositor) : base(compositor)
+	{
+	}
+
 	public float BlurSigma
 	{
 		get => _blurSigma;
@@ -129,6 +133,7 @@ internal class SkiaAcrylicBrush : CompositionBrush
 			case nameof(IsOpaque):
 			case nameof(LuminosityColor):
 			case nameof(TintColor):
+			case nameof(BlurSigma):
 				_filter?.Dispose();
 				_filter = null;
 				break;
@@ -165,7 +170,6 @@ internal class SkiaAcrylicBrush : CompositionBrush
 
 		_filter?.Dispose();
 
-		var sigma = _blurSigma;
 		const int blurPadding = 100;
 		var blurBounds = bounds with
 		{
@@ -175,11 +179,11 @@ internal class SkiaAcrylicBrush : CompositionBrush
 			Bottom = bounds.Bottom + blurPadding
 		};
 
-		var scaleFactor = Math.Max(1, (int)(sigma / 8));
+		var scaleFactor = Math.Max(1, (int)(_blurSigma / 8));
 		if (scaleFactor <= 1)
 		{
 			// 1. Blur
-			var blurFilter = SKImageFilter.CreateBlur(sigma, sigma, null, blurBounds);
+			var blurFilter = SKImageFilter.CreateBlur(_blurSigma, _blurSigma, null, blurBounds);
 
 			// 2. Luminosity blend
 			var luminositySource = SKImageFilter.CreateColorFilter(
@@ -201,7 +205,7 @@ internal class SkiaAcrylicBrush : CompositionBrush
 
 			// 1. Blur at reduced resolution
 			var downscaled = SKImageFilter.CreateMatrix(SKMatrix.CreateScale(inv, inv), sampling);
-			var blurred = SKImageFilter.CreateBlur(sigma * inv, sigma * inv, downscaled);
+			var blurred = SKImageFilter.CreateBlur(_blurSigma * inv, _blurSigma * inv, downscaled);
 
 			// 2. Luminosity blend at reduced resolution
 			var luminositySource = SKImageFilter.CreateColorFilter(
