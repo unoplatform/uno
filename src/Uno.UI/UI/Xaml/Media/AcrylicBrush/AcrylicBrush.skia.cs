@@ -8,7 +8,6 @@ using Windows.Graphics.Effects;
 using Microsoft.Graphics.Canvas;
 using System.Collections.Generic;
 using Microsoft.Graphics.Canvas.Effects;
-using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Media;
 
@@ -74,6 +73,12 @@ public partial class AcrylicBrush
 	{
 		base.OnPropertyChanged2(args);
 
+		if (args.Property == AcrylicBrushExtensions.UseCompositionEffectBrushProperty)
+		{
+			UpdateAcrylicBrush();
+			return;
+		}
+
 		switch (args.Property.Name)
 		{
 			case nameof(TintColor):
@@ -100,6 +105,7 @@ public partial class AcrylicBrush
 	{
 		Compositor compositor = Compositor.GetSharedCompositor();
 
+		_brush?.Dispose();
 		if (forceCreateAcrylicBrush)
 		{
 			_brush = AcrylicBrushExtensions.GetUseCompositionEffectBrush(this)
@@ -148,13 +154,7 @@ public partial class AcrylicBrush
 
 	private CompositionBrush CreateAcrylicBrushViaCompositionEffect(Compositor compositor, bool useCrossFadeEffect)
 	{
-		if
-		(
-#if UNO_DISABLE_ACRYLIC_ON_CPU
-			compositor.IsSoftwareRenderer is true ||
-#endif
-			!EnsureNoiseBrush() || _noiseBrush is null
-		)
+		if (!EnsureNoiseBrush() || _noiseBrush is null)
 		{
 			return compositor.CreateColorBrush(FallbackColor);
 		}

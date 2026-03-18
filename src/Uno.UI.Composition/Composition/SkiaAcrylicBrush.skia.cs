@@ -124,19 +124,20 @@ internal class SkiaAcrylicBrush : CompositionBrush
 			case nameof(NoiseImage):
 				if (_noisePaint is not null)
 				{
+					_noisePaint.Shader?.Dispose();
 					_noisePaint.Shader = _noiseImage?.ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat);
 				}
 				break;
 			case nameof(NoiseOpacity):
 				if (_noisePaint is not null)
 				{
+					_noisePaint.ColorFilter?.Dispose();
 					_noisePaint.ColorFilter = SKColorFilter.CreateColorMatrix(new[]
 					{
-						1, 0, 0, 0,
-						0, 0, 1, 0,
-						0, 0, 0, 0,
-						1, 0, 0, 0,
-						0, 0, _noiseOpacity, 0
+						1, 0, 0, 0, 0,
+						0, 1, 0, 0, 0,
+						0, 0, 1, 0, 0,
+						0, 0, 0, _noiseOpacity, 0
 					});
 				}
 				break;
@@ -196,16 +197,16 @@ internal class SkiaAcrylicBrush : CompositionBrush
 		if (scaleFactor <= 1)
 		{
 			// 1. Blur
-			var blurFilter = SKImageFilter.CreateBlur(_blurSigma, _blurSigma, null, blurBounds);
+			using var blurFilter = SKImageFilter.CreateBlur(_blurSigma, _blurSigma, null, blurBounds);
 
 			// 2. Luminosity blend
-			var luminositySource = SKImageFilter.CreateColorFilter(
+			using var luminositySource = SKImageFilter.CreateColorFilter(
 				SKColorFilter.CreateBlendMode(_luminosityColor, SKBlendMode.Src), null, bounds);
-			var luminosityBlend = SKImageFilter.CreateBlendMode(
+			using var luminosityBlend = SKImageFilter.CreateBlendMode(
 				SKBlendMode.Luminosity, blurFilter, luminositySource, bounds);
 
 			// 3. Tint blend
-			var tintSource = SKImageFilter.CreateColorFilter(
+			using var tintSource = SKImageFilter.CreateColorFilter(
 				SKColorFilter.CreateBlendMode(_tintColor, SKBlendMode.Src), null, bounds);
 			_filter = SKImageFilter.CreateBlendMode(
 				SKBlendMode.Color, luminosityBlend, tintSource, bounds);
@@ -217,23 +218,23 @@ internal class SkiaAcrylicBrush : CompositionBrush
 			var sampling = new SKSamplingOptions(SKFilterMode.Linear);
 
 			// 1. Blur at reduced resolution
-			var downscaled = SKImageFilter.CreateMatrix(SKMatrix.CreateScale(inv, inv), sampling);
-			var blurred = SKImageFilter.CreateBlur(_blurSigma * inv, _blurSigma * inv, downscaled);
+			using var downscaled = SKImageFilter.CreateMatrix(SKMatrix.CreateScale(inv, inv), sampling);
+			using var blurred = SKImageFilter.CreateBlur(_blurSigma * inv, _blurSigma * inv, downscaled);
 
 			// 2. Luminosity blend at reduced resolution
-			var luminositySource = SKImageFilter.CreateColorFilter(
+			using var luminositySource = SKImageFilter.CreateColorFilter(
 				SKColorFilter.CreateBlendMode(_luminosityColor, SKBlendMode.Src), null);
-			var luminosityBlend = SKImageFilter.CreateBlendMode(
+			using var luminosityBlend = SKImageFilter.CreateBlendMode(
 				SKBlendMode.Luminosity, blurred, luminositySource);
 
 			// 3. Tint blend at reduced resolution
-			var tintSource = SKImageFilter.CreateColorFilter(
+			using var tintSource = SKImageFilter.CreateColorFilter(
 				SKColorFilter.CreateBlendMode(_tintColor, SKBlendMode.Src), null);
-			var tintBlend = SKImageFilter.CreateBlendMode(
+			using var tintBlend = SKImageFilter.CreateBlendMode(
 				SKBlendMode.Color, luminosityBlend, tintSource);
 
 			// 4. Upscale back to full resolution
-			var upscaled = SKImageFilter.CreateMatrix(
+			using var upscaled = SKImageFilter.CreateMatrix(
 				SKMatrix.CreateScale(scaleFactor, scaleFactor), sampling, tintBlend);
 			_filter = SKImageFilter.CreateMerge([upscaled], blurBounds);
 		}
