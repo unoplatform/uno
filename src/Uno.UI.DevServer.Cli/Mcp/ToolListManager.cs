@@ -214,7 +214,15 @@ internal class ToolListManager(
 		// If the upstream client is already available, use it directly
 		if (upstreamTask.IsCompletedSuccessfully)
 		{
-			return await FetchToolsFromUpstreamAsync(upstreamTask.Result, ct);
+			try
+			{
+				return await FetchToolsFromUpstreamAsync(upstreamTask.Result, ct);
+			}
+			catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+			{
+				logger.LogWarning("Timed out fetching tools from upstream after {Timeout}ms, returning empty tool list", UpstreamCallTimeoutMs);
+				return new() { Tools = [] };
+			}
 		}
 
 		// If we have cached tools, return them immediately without waiting

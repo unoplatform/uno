@@ -22,13 +22,13 @@ public class Given_ToolListManager
 		await using var fixture = await SlowMcpFixture.CreateAsync();
 
 		// Call without CT — simulates the bug
-		var listTask = fixture.Client.ListToolsAsync();
+		var listTaskInstance = fixture.Client.ListToolsAsync().AsTask();
 
 		// Should hang (not complete within 3s), proving the bug exists
-		var winner = await Task.WhenAny(listTask.AsTask(), Task.Delay(3_000));
+		var winner = await Task.WhenAny(listTaskInstance, Task.Delay(3_000));
 
 		winner.Should().NotBeSameAs(
-			listTask.AsTask(),
+			listTaskInstance,
 			"ListToolsAsync without CT hangs on a slow server");
 	}
 
@@ -59,15 +59,15 @@ public class Given_ToolListManager
 		await using var fixture = await SlowMcpFixture.CreateAsync();
 
 		// Call a tool — upstream accepts but never responds
-		var callTask = fixture.Client.CallToolAsync(
+		var callTaskInstance = fixture.Client.CallToolAsync(
 			"uno_app_start",
-			new Dictionary<string, object?>());
+			new Dictionary<string, object?>()).AsTask();
 
 		// Should hang (not complete within 3s), proving the bug exists
-		var winner = await Task.WhenAny(callTask.AsTask(), Task.Delay(3_000));
+		var winner = await Task.WhenAny(callTaskInstance, Task.Delay(3_000));
 
 		winner.Should().NotBeSameAs(
-			callTask.AsTask(),
+			callTaskInstance,
 			"CallToolAsync without timeout hangs on a slow server");
 	}
 
