@@ -69,11 +69,16 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private Theme _theme = Theme.None;
 
-		/// <summary>
-		/// Flag to prevent infinite recursion during theme walk.
-		/// Matches WinUI's protection against re-entrant theme notifications.
-		/// </summary>
-		private bool _isProcessingThemeWalk;
+		// WinUI stores fIsProcessingEnterLeave (bit 15) and fIsProcessingThemeWalk (bit 16)
+		// in a DependencyObjectBitFields uint on CDependencyObject (corep.h:224-348).
+		[Flags]
+		private enum UIElementFlag : uint
+		{
+			IsProcessingEnterLeave = 1 << 15, // WinUI CDependencyObject bit 15
+			IsProcessingThemeWalk = 1 << 16,  // WinUI CDependencyObject bit 16
+		}
+
+		private UIElementFlag _uiElementFlags;
 
 		/// <summary>
 		/// Gets the current theme value for this element.
@@ -88,12 +93,22 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Gets whether this element is currently processing a theme walk.
 		/// </summary>
-		internal bool IsProcessingThemeWalk => _isProcessingThemeWalk;
+		internal bool IsProcessingThemeWalk => (_uiElementFlags & UIElementFlag.IsProcessingThemeWalk) != 0;
 
 		/// <summary>
 		/// Sets whether this element is currently processing a theme walk.
 		/// </summary>
-		internal void SetIsProcessingThemeWalk(bool value) => _isProcessingThemeWalk = value;
+		internal void SetIsProcessingThemeWalk(bool value)
+		{
+			if (value)
+			{
+				_uiElementFlags |= UIElementFlag.IsProcessingThemeWalk;
+			}
+			else
+			{
+				_uiElementFlags &= ~UIElementFlag.IsProcessingThemeWalk;
+			}
+		}
 
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
 
