@@ -57,6 +57,7 @@ public class MacOSHost : UnoPlatformHost, IApplicationHost
 		MacOSNativeWindowFactoryExtension.Register();
 		MacOSSystemThemeHelperExtension.Register();
 		MacOSTextScaleFactorExtension.Register();
+		MacOSAccentColorExtension.Register();
 		MacOSNativeOpenGLWrapper.Register();
 		MacOSNativeWebViewProvider.Register();
 		MacOSMediaPlayerExtension.Register();
