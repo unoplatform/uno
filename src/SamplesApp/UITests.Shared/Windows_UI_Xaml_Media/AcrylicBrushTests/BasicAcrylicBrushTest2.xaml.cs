@@ -20,5 +20,10 @@ namespace UITests.Windows_UI_Xaml_Media.AcrylicBrushTests
 		{
 			InteractiveAcrylic.TintLuminosityOpacity = e.NewValue;
 		}
+
+		private void ElementOpacitySlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+		{
+			AcrylicPanel.Opacity = e.NewValue;
+		}
 	}
 }

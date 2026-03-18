@@ -184,6 +184,16 @@
                             <Run Text="{Binding Value, ElementName=TintLuminosityOpacitySlider}" />
                         </TextBlock>
                     </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+                        <TextBlock Text="Element Opacity:" VerticalAlignment="Center" FontSize="14" Width="150" />
+                        <Slider x:Name="ElementOpacitySlider"
+                                Minimum="0" Maximum="1" StepFrequency="0.05"
+                                Value="1" Width="300"
+                                ValueChanged="ElementOpacitySlider_ValueChanged" />
+                        <TextBlock VerticalAlignment="Center" FontSize="14">
+                            <Run Text="{Binding Value, ElementName=ElementOpacitySlider}" />
+                        </TextBlock>
+                    </StackPanel>
                 </StackPanel>
 
                 <!-- Background with content to blur through -->
@@ -212,7 +222,8 @@
                     </StackPanel>
 
                     <!-- Acrylic overlay controlled by slider -->
-                    <Grid HorizontalAlignment="Center"
+                    <Grid x:Name="AcrylicPanel"
+                          HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           Width="400" Height="180"
                           CornerRadius="16"

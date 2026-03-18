@@ -17,6 +17,7 @@ internal class SkiaAcrylicBrush : CompositionBrush
 	private float _noiseOpacity;
 
 	private SKPaint? _noisePaint;
+	private SKPaint? _opacityPaint;
 	private SKPaint? _opaqueTintPaint;
 	private SKColor _tintColor;
 
@@ -68,29 +69,28 @@ internal class SkiaAcrylicBrush : CompositionBrush
 	{
 		if (_isOpaque)
 		{
-			PaintOpaque(canvas, bounds);
+			PaintOpaque(canvas, opacity, bounds);
 		}
 		else
 		{
-			PaintTranslucent(canvas, bounds);
+			PaintTranslucent(canvas, opacity, bounds);
 		}
 	}
 
-	private void PaintOpaque(SKCanvas canvas, SKRect bounds)
+	private void PaintOpaque(SKCanvas canvas, float opacity, SKRect bounds)
 	{
 		// Opaque tint: no backdrop blur or luminosity needed — just solid tint + noise.
-		if (_opaqueTintPaint is null || _opaqueTintPaint.Color != _tintColor)
-		{
-			_opaqueTintPaint?.Dispose();
-			_opaqueTintPaint = new SKPaint { Color = _tintColor };
-		}
+		_opaqueTintPaint ??= new SKPaint();
+		_opaqueTintPaint.Color = opacity < 1
+			? new SKColor(_tintColor.Red, _tintColor.Green, _tintColor.Blue, (byte)(_tintColor.Alpha * opacity))
+			: _tintColor;
 
 		canvas.DrawRect(bounds, _opaqueTintPaint);
 
-		DrawNoise(canvas, bounds);
+		DrawNoise(canvas, opacity, bounds);
 	}
 
-	private void PaintTranslucent(SKCanvas canvas, SKRect bounds)
+	private void PaintTranslucent(SKCanvas canvas, float opacity, SKRect bounds)
 	{
 		EnsureFilter(bounds);
 
@@ -98,9 +98,19 @@ internal class SkiaAcrylicBrush : CompositionBrush
 		// SaveLayer with Backdrop filters the canvas content behind and the layer
 		// itself starts empty, so blend-mode canvas draws would not interact with
 		// the blurred content. Instead, all blending is done in the filter chain.
-		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter });
+		// When opacity < 1, the SaveLayerRec paint modulates the entire layer
+		// (filtered backdrop + noise) when composited back onto the canvas.
+		var rec = new SKCanvasSaveLayerRec { Backdrop = _filter };
+		if (opacity < 1)
+		{
+			_opacityPaint ??= new SKPaint();
+			_opacityPaint.Color = new SKColor(0xFF, 0xFF, 0xFF, (byte)(0xFF * opacity));
+			rec.Paint = _opacityPaint;
+		}
 
-		DrawNoise(canvas, bounds);
+		canvas.SaveLayer(rec);
+
+		DrawNoise(canvas, 1f, bounds);
 
 		canvas.Restore();
 	}
@@ -140,7 +150,7 @@ internal class SkiaAcrylicBrush : CompositionBrush
 		}
 	}
 
-	private void DrawNoise(SKCanvas canvas, SKRect bounds)
+	private void DrawNoise(SKCanvas canvas, float opacity, SKRect bounds)
 	{
 		if (_noiseImage is not null)
 		{
@@ -157,6 +167,9 @@ internal class SkiaAcrylicBrush : CompositionBrush
 				});
 			}
 
+			// Paint Color alpha modulates shader + color filter output,
+			// giving us effective alpha = noiseTextureAlpha * _noiseOpacity * opacity.
+			_noisePaint.Color = new SKColor(0xFF, 0xFF, 0xFF, (byte)(0xFF * opacity));
 			canvas.DrawRect(bounds, _noisePaint);
 		}
 	}
@@ -234,6 +247,7 @@ internal class SkiaAcrylicBrush : CompositionBrush
 		base.DisposeInternal();
 		_filter?.Dispose();
 		_noisePaint?.Dispose();
+		_opacityPaint?.Dispose();
 		_opaqueTintPaint?.Dispose();
 	}
 }
