@@ -125,7 +125,7 @@ Or in C#:
 
 ```csharp
 var brush = new AcrylicBrush { TintColor = Colors.Blue, TintOpacity = 0.8 };
-AcrylicBrushExtensions.SetUseCompositionEffectBrush(brush, true);
+AcrylicBrushExtensions.SetUseCompositionEffectBrush(brush, false);
 ```
 
 This property has no effect on non-Skia targets.
