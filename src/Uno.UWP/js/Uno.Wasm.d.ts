@@ -278,20 +278,6 @@ declare namespace Windows.Graphics.Display {
     export {};
 }
 declare namespace Uno.Helpers.Theming {
-    class AccentColorHelper {
-        private static dispatchAccentColorChange;
-        private static _probeElement;
-        /**
-         * Reads the CSS AccentColor system color keyword and returns it as an "#RRGGBB" hex string,
-         * or null if the browser does not support it.
-         */
-        static getAccentColor(): string;
-        static observeAccentColor(): void;
-        private static getProbeElement;
-        private static toHex;
-    }
-}
-declare namespace Uno.Helpers.Theming {
     enum SystemTheme {
         Light = "Light",
         Dark = "Dark"
