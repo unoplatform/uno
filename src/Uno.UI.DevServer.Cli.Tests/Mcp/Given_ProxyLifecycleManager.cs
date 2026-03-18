@@ -1390,6 +1390,44 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
+	[Timeout(15_000)]
+	[Description("Rapid FSW buffer-overflow errors must be debounced; without the fix each error spawns a separate workspace scan (issue #22828)")]
+	public async Task When_WatcherReportsRapidErrors_FindSolutionFiles_IsBounded()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			var finder = new CountingSolutionFileFinder([]);
+			var created = CreateSubject(solutionFileFinder: finder);
+			var subject = created.Subject;
+			SetPrivateField(subject, "_currentDirectory", root);
+
+			var method = typeof(ProxyLifecycleManager)
+				.GetMethod("OnWorkspaceMutationWatcherError", BindingFlags.Instance | BindingFlags.NonPublic);
+			method.Should().NotBeNull();
+
+			// Simulate 10 rapid buffer-overflow events (the bug causes 10 separate workspace scans).
+			for (var i = 0; i < 10; i++)
+			{
+				method!.Invoke(subject, [subject, new ErrorEventArgs(new InternalBufferOverflowException("simulated overflow"))]);
+			}
+
+			// Wait well beyond the 250 ms debounce window.
+			await Task.Delay(700);
+
+			// With the fix, only the final debounced task runs the workspace scan → ≤ 2 calls.
+			// (≤ 2 instead of 1 to tolerate a single timing edge case where two tasks slip through.)
+			finder.CallCount.Should().BeLessThanOrEqualTo(2,
+				"rapid FSW errors must be debounced; without the fix each error spawns a separate workspace scan");
+		}
+		finally
+		{
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
 	[Description("Replacing the workspace debounce source installs the newest token source and cancels the previous one without disposing the superseded source yet")]
 	public void ReplaceWorkspaceMutationDebounceSource_WhenCalled_ReplacesAndCancelsPrevious()
 	{
@@ -1668,12 +1706,13 @@ public class Given_ProxyLifecycleManager
 	private sealed class CountingSolutionFileFinder(string[] solutions) : ISolutionFileFinder
 	{
 		private readonly string[] _solutions = solutions;
+		private int _callCount;
 
-		public int CallCount { get; private set; }
+		public int CallCount => Volatile.Read(ref _callCount);
 
 		public string[] FindSolutionFiles(string directory, int maxDepth = 3)
 		{
-			CallCount++;
+			Interlocked.Increment(ref _callCount);
 			return [.. _solutions];
 		}
 	}
