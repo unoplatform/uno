@@ -792,9 +792,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			await UITestHelper.Load(container);
 			var screenshot = await UITestHelper.ScreenShot(container);
 
-			// At 90 degrees, the miter tip extends about halfWidth/sin(45) ~ 14.14px
-			// above the vertex in the bisector direction. The mitered stroke should
-			// be visible around (100, 20).
+			// The miter tip extends above the vertex along the bisector direction.
+			// The mitered stroke should be visible at (100, 20), which is within
+			// the miter protrusion.
 			ImageAssert.HasColorAt(screenshot, 100, 20, Colors.Red, tolerance: 30);
 		}
 

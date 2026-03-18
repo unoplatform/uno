@@ -102,7 +102,15 @@ namespace Microsoft.UI.Composition
 						{
 							dashValues[i] *= StrokeThickness;
 						}
-						strokePaint.PathEffect = SKPathEffect.CreateDash(dashValues, StrokeDashOffset * StrokeThickness);
+						var dashEffect = SKPathEffect.CreateDash(dashValues, StrokeDashOffset * StrokeThickness);
+						if (dashEffect is not null)
+						{
+							strokePaint.PathEffect = dashEffect;
+						}
+						else
+						{
+							dashValues = null;
+						}
 					}
 					else if (!needsCustomCaps)
 					{
@@ -261,7 +269,15 @@ namespace Microsoft.UI.Composition
 						{
 							dashValues[i] *= StrokeThickness;
 						}
-						strokePaint.PathEffect = SKPathEffect.CreateDash(dashValues, StrokeDashOffset * StrokeThickness);
+						var dashEffect = SKPathEffect.CreateDash(dashValues, StrokeDashOffset * StrokeThickness);
+						if (dashEffect is not null)
+						{
+							strokePaint.PathEffect = dashEffect;
+						}
+						else
+						{
+							dashValues = null;
+						}
 					}
 					else if (!needsCustomCaps)
 					{
