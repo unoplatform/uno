@@ -100,7 +100,7 @@ public class Given_CliManager
 		var manager = CreateManager();
 		var workspace = CreateWorkspacePath();
 
-		var result = manager.RunMcpSubcommand(["status", "--channel", "stable", "--tool-version", "5.5.0"], workspace, null);
+		var result = manager.RunMcpSubcommand(["status", "--channel", "stable", "--tool-version", "5.5.0"], workspace);
 
 		result.Should().Be(2);
 	}
@@ -111,7 +111,7 @@ public class Given_CliManager
 		var manager = CreateManager();
 		var workspace = CreateWorkspacePath();
 
-		var result = manager.RunMcpSubcommand(["status", "--channel", "nightly"], workspace, null);
+		var result = manager.RunMcpSubcommand(["status", "--channel", "nightly"], workspace);
 
 		result.Should().Be(2);
 	}
@@ -129,7 +129,7 @@ public class Given_CliManager
 
 		try
 		{
-			var result = manager.RunMcpSubcommand(["status", "unknown", "--json"], workspace, null);
+			var result = manager.RunMcpSubcommand(["status", "unknown", "--json"], workspace);
 
 			result.Should().Be(0);
 			writer.ToString().Should().Contain("\"callerIde\": \"unknown\"");
@@ -155,7 +155,7 @@ public class Given_CliManager
 
 		try
 		{
-			var result = manager.RunMcpSubcommand(["install", "--all-ides", "--json"], workspace, null);
+			var result = manager.RunMcpSubcommand(["install", "--all-ides", "--json"], workspace);
 
 			result.Should().Be(0);
 			var output = writer.ToString();
@@ -181,7 +181,7 @@ public class Given_CliManager
 
 		try
 		{
-			var result = manager.RunMcpSubcommand(["install", "--all-ides", "--json"], workspace, null);
+			var result = manager.RunMcpSubcommand(["install", "--all-ides", "--json"], workspace);
 
 			result.Should().Be(0);
 			var output = writer.ToString();
@@ -208,7 +208,7 @@ public class Given_CliManager
 
 		try
 		{
-			var result = manager.RunMcpSubcommand(["install", "--all-ides", "--json"], workspace, null);
+			var result = manager.RunMcpSubcommand(["install", "--all-ides", "--json"], workspace);
 
 			result.Should().Be(0);
 			writer.ToString().Should().Contain("\"ide\": \"copilot-vscode\"");
@@ -227,7 +227,7 @@ public class Given_CliManager
 		fs.AddDirectory(workspace);
 		var manager = CreateManager(fs);
 
-		var result = manager.RunMcpSubcommand(["install", "cursor", "--channel", "prerelease"], workspace, null);
+		var result = manager.RunMcpSubcommand(["install", "cursor", "--channel", "prerelease"], workspace);
 
 		result.Should().Be(0);
 		var content = fs.GetFileContent(Path.Combine(workspace, ".cursor", "mcp.json"));
@@ -243,7 +243,7 @@ public class Given_CliManager
 		fs.AddDirectory(workspace);
 		var manager = CreateManager(fs);
 
-		var result = manager.RunMcpSubcommand(["install", "cursor", "--tool-version", "5.5.0"], workspace, null);
+		var result = manager.RunMcpSubcommand(["install", "cursor", "--tool-version", "5.5.0"], workspace);
 
 		result.Should().Be(0);
 		var content = fs.GetFileContent(Path.Combine(workspace, ".cursor", "mcp.json"));
@@ -259,7 +259,7 @@ public class Given_CliManager
 		fs.AddDirectory(workspace);
 		var manager = CreateManager(fs);
 
-		var result = manager.RunMcpSubcommand(["install", "copilot-vs", "--servers", "UnoApp"], workspace, null);
+		var result = manager.RunMcpSubcommand(["install", "copilot-vs", "--servers", "UnoApp"], workspace);
 
 		result.Should().Be(0);
 		var content = fs.GetFileContent(Path.Combine(workspace, ".vs", "mcp.json"));
@@ -280,7 +280,7 @@ public class Given_CliManager
 
 		try
 		{
-			var result = manager.RunMcpSubcommand(["install", "copilot-cli", "--json"], workspace, null);
+			var result = manager.RunMcpSubcommand(["install", "copilot-cli", "--json"], workspace);
 
 			result.Should().Be(1);
 			var output = writer.ToString();
@@ -306,7 +306,7 @@ public class Given_CliManager
 
 		try
 		{
-			var result = manager.RunMcpSubcommand(["status", "--json"], workspace, null);
+			var result = manager.RunMcpSubcommand(["status", "--json"], workspace);
 
 			result.Should().Be(0);
 			var output = writer.ToString();
@@ -342,7 +342,7 @@ public class Given_CliManager
 
 		try
 		{
-			var result = manager.RunMcpSubcommand(["uninstall", "--all-ides", "--json"], workspace, null);
+			var result = manager.RunMcpSubcommand(["uninstall", "--all-ides", "--json"], workspace);
 
 			result.Should().Be(0);
 			var output = writer.ToString();
@@ -364,7 +364,7 @@ public class Given_CliManager
 		fs.AddDirectory(Path.Combine(workspace, ".cursor"));
 		var manager = CreateManager(fs);
 
-		var result = manager.RunMcpSubcommand(["install", "--json"], workspace, null);
+		var result = manager.RunMcpSubcommand(["install", "--json"], workspace);
 
 		result.Should().Be(2);
 	}
@@ -378,7 +378,7 @@ public class Given_CliManager
 		fs.AddDirectory(Path.Combine(workspace, ".cursor"));
 		var manager = CreateManager(fs);
 
-		var result = manager.RunMcpSubcommand(["uninstall", "--json"], workspace, null);
+		var result = manager.RunMcpSubcommand(["uninstall", "--json"], workspace);
 
 		result.Should().Be(2);
 	}
@@ -400,7 +400,7 @@ public class Given_CliManager
 		var manager = CreateManager(new FileSystem());
 		var missingPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
 
-		var result = manager.RunMcpSubcommand(["status", "cursor", "--workspace", missingPath, "--json"], "/project", null);
+		var result = manager.RunMcpSubcommand(["status", "cursor", "--workspace", missingPath, "--json"], "/project");
 
 		result.Should().Be(2);
 	}
@@ -411,7 +411,7 @@ public class Given_CliManager
 		var manager = CreateManager(new FileSystem());
 		var rootPath = Path.GetPathRoot(Environment.CurrentDirectory)!;
 
-		var result = manager.RunMcpSubcommand(["status", "cursor", "--workspace", rootPath, "--json"], "/project", null);
+		var result = manager.RunMcpSubcommand(["status", "cursor", "--workspace", rootPath, "--json"], "/project");
 
 		result.Should().Be(2);
 	}

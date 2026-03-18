@@ -61,7 +61,7 @@ internal class CliManager
 					return await RunMcpProxyAsync(mcpArgs[1..], requestedWorkingDirectory, mcpWorkspaceResolution);
 				}
 
-				return RunMcpSubcommand(mcpArgs, requestedWorkingDirectory, solutionDirParseResult.SolutionDirectory);
+				return RunMcpSubcommand(mcpArgs, requestedWorkingDirectory);
 			}
 
 			if (originalArgs.Contains("--mcp-app"))
@@ -447,7 +447,7 @@ internal class CliManager
 		return (true, filteredArgs.ToArray(), normalizedSolutionDirectory);
 	}
 
-	internal int RunMcpSubcommand(string[] args, string workingDirectory, string? solutionDirectory)
+	internal int RunMcpSubcommand(string[] args, string workingDirectory)
 	{
 		if (args.Length == 0)
 		{
