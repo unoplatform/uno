@@ -423,7 +423,15 @@ namespace Microsoft.UI.Xaml
 			// Inherit theme from parent if we don't have explicit RequestedTheme
 			if (RequestedTheme == ElementTheme.Default)
 			{
-				var parent = this.GetParent() as UIElement;
+				var parent = this.GetParent() as UIElement
+#if __IOS__ || __ANDROID__
+					// On native platforms, ContentControl.RegisterContentTemplateRoot uses
+					// AddSubview directly (not AddChild), so Store.Parent may not be set
+					// when MovedToWindow fires leaf-first. Fall back to the native visual
+					// tree parent so template children can still inherit the parent's theme.
+					?? VisualTreeHelper.GetParent(this) as UIElement
+#endif
+					;
 				// Only inherit if our theme hasn't already been set (e.g., by
 				// NotifyThemeChanged from Popup open code before this deferred
 				// Loading fires). Without this guard, popup content that was
@@ -481,7 +489,11 @@ namespace Microsoft.UI.Xaml
 				// Without a theme boundary, foreground inheritance works normally via the DP system.
 				if (RequestedTheme == ElementTheme.Default && effectiveTheme != Theme.None)
 				{
-					var parent = this.GetParent() as FrameworkElement;
+					var parent = this.GetParent() as FrameworkElement
+#if __IOS__ || __ANDROID__
+						?? VisualTreeHelper.GetParent(this) as FrameworkElement
+#endif
+						;
 					if (parent?._themeForeground is { } parentFg)
 					{
 						EnsureThemeForeground(parentFg);

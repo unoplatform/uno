@@ -204,7 +204,11 @@ public partial class FrameworkElement
 				// For children inheriting theme (RequestedTheme == Default),
 				// pull the frozen foreground from the parent, just as WinUI children
 				// pull from parent's TextFormatting during EnsureTextFormatting.
-				var parent = this.GetParent() as FrameworkElement;
+				var parent = this.GetParent() as FrameworkElement
+#if __IOS__ || __ANDROID__
+					?? VisualTreeHelper.GetParent(this) as FrameworkElement
+#endif
+					;
 				var parentFg = parent?._themeForeground;
 				if (parentFg is not null)
 				{
