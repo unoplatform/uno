@@ -201,6 +201,67 @@ public class Given_WorkspaceTransitionDecisions
 		WorkspaceTransitionDecisions.IsSameWorkspace(left, right).Should().BeTrue();
 	}
 
+	[TestMethod]
+	public void WhenSdkVersionChanges_ActionIsRestart()
+	{
+		var workspace = CreatePath("repo", "src");
+		var solution = CreatePath("repo", "src", "App.slnx");
+		var previous = CreateResolved(workspace, solution, "6.5.29");
+		var current = CreateResolved(workspace, solution, "6.6.0-dev.146");
+
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: true);
+
+		action.Should().Be(WorkspaceTransitionAction.Restart);
+	}
+
+	[TestMethod]
+	public void WhenSdkVersionChanges_UserSelectionActionIsRestart()
+	{
+		var workspace = CreatePath("repo", "src");
+		var solution = CreatePath("repo", "src", "App.slnx");
+		var previous = CreateResolved(workspace, solution, "6.5.29");
+		var current = CreateResolved(workspace, solution, "6.6.0-dev.146");
+
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.UserSelection, devServerStarted: true);
+
+		action.Should().Be(WorkspaceTransitionAction.Restart);
+	}
+
+	[TestMethod]
+	public void WhenSdkVersionIsUnchanged_ActionIsRefresh()
+	{
+		var workspace = CreatePath("repo", "src");
+		var solution = CreatePath("repo", "src", "App.slnx");
+		var previous = CreateResolved(workspace, solution, "6.6.0-dev.1");
+		var current = CreateResolved(workspace, solution, "6.6.0-dev.1");
+
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: true);
+
+		action.Should().Be(WorkspaceTransitionAction.Refresh);
+	}
+
+	[TestMethod]
+	public void WhenSdkVersionDiffers_IsSameWorkspaceReturnsFalse()
+	{
+		var workspace = CreatePath("repo", "src");
+		var solution = CreatePath("repo", "src", "App.slnx");
+		var left = CreateResolved(workspace, solution, "6.5.29");
+		var right = CreateResolved(workspace, solution, "6.6.0-dev.146");
+
+		WorkspaceTransitionDecisions.IsSameWorkspace(left, right).Should().BeFalse();
+	}
+
+	[TestMethod]
+	public void WhenBothSdkVersionsAreNull_IsSameWorkspaceReturnsTrue()
+	{
+		var workspace = CreatePath("repo", "src");
+		var solution = CreatePath("repo", "src", "App.slnx");
+		var left = CreateResolved(workspace, solution);
+		var right = CreateResolved(workspace, solution);
+
+		WorkspaceTransitionDecisions.IsSameWorkspace(left, right).Should().BeTrue();
+	}
+
 	private static WorkspaceResolution CreateResolved(string workspaceDirectory, string solutionPath)
 		=> new()
 		{
@@ -208,6 +269,19 @@ public class Given_WorkspaceTransitionDecisions
 			EffectiveWorkspaceDirectory = workspaceDirectory,
 			SelectedSolutionPath = solutionPath,
 			SelectedGlobalJsonPath = Path.Combine(workspaceDirectory, "global.json"),
+			ResolutionKind = WorkspaceResolutionKind.AutoDiscovered,
+			CandidateSolutions = [solutionPath],
+		};
+
+	private static WorkspaceResolution CreateResolved(string workspaceDirectory, string solutionPath, string unoSdkVersion)
+		=> new()
+		{
+			RequestedWorkingDirectory = workspaceDirectory,
+			EffectiveWorkspaceDirectory = workspaceDirectory,
+			SelectedSolutionPath = solutionPath,
+			SelectedGlobalJsonPath = Path.Combine(workspaceDirectory, "global.json"),
+			UnoSdkPackage = "Uno.Sdk",
+			UnoSdkVersion = unoSdkVersion,
 			ResolutionKind = WorkspaceResolutionKind.AutoDiscovered,
 			CandidateSolutions = [solutionPath],
 		};

@@ -213,6 +213,58 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
+	[Description("Selecting the same solution after a global.json SDK version change restarts the DevServer")]
+	public async Task WhenSelectingSameSolutionAfterSdkVersionChange_DevServerRestarts()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+		DevServerMonitor? monitor = null;
+
+		try
+		{
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "StudioLive.slnx", "6.5.29");
+			var solutionPath = Path.Combine(workspaceDirectory, "StudioLive.slnx");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var workspaceResolution = await resolver.ResolveAsync(root);
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", workspaceResolution with { SelectionSource = WorkspaceSelectionSource.UserSelected });
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			monitor.StartMonitoring(workspaceDirectory, port: 0, forwardedArgs: [], workspaceResolution);
+			healthService.DevServerStarted = true;
+
+			// Change the SDK version in global.json
+			await File.WriteAllTextAsync(
+				Path.Combine(workspaceDirectory, "global.json"),
+				"""{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.146"}}""");
+
+			// Re-select the same solution — should detect version drift and restart
+			var result = await subject.SelectSolutionAsync(solutionPath);
+
+			result.Status.Should().Be("restarted");
+			result.DevServerAction.Should().Be("Restart");
+			result.SelectedSolutionPath.Should().Be(solutionPath);
+			var updatedResolution = GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution");
+			updatedResolution.UnoSdkVersion.Should().Be("6.6.0-dev.146");
+		}
+		finally
+		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
 	[Description("Selecting a different valid Uno solution restarts the DevServer on the newly selected workspace")]
 	public async Task WhenSelectingDifferentUnoSolution_DevServerRestartsOnSelectedWorkspace()
 	{
@@ -848,6 +900,64 @@ public class Given_ProxyLifecycleManager
 
 			GetPrivateField<Task?>(monitor, "_monitor").Should().NotBeNull();
 			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").EffectiveWorkspaceDirectory.Should().Be(workspace);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("A live workspace watcher restarts the DevServer when the Uno SDK version in global.json changes")]
+	public async Task WhenWatcherSeesUnoSdkVersionChange_DevServerRestarts()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var workspace = await CreateUnoWorkspaceAsync(root, "src", "App.slnx", "6.5.29");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var resolvedWorkspace = await resolver.ResolveAsync(workspace);
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			var monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", resolvedWorkspace);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			monitor.StartMonitoring(workspace, port: 0, forwardedArgs: [], resolvedWorkspace);
+			healthService.DevServerStarted = true;
+
+			subject.StartWorkspaceMutationWatcher();
+			await WaitUntilAsync(() =>
+				PathComparison.PathsEqual(
+					GetPrivateField<string?>(subject, "_workspaceMutationWatcherRoot"),
+					root));
+
+			// Change the SDK version in global.json
+			await File.WriteAllTextAsync(
+				Path.Combine(workspace, "global.json"),
+				"""{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.146"}}""");
+
+			// Wait for the watcher to detect the change and trigger a restart
+			await WaitUntilAsync(() =>
+			{
+				var resolution = GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution");
+				return resolution.UnoSdkVersion == "6.6.0-dev.146";
+			});
+
+			var updatedResolution = GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution");
+			updatedResolution.UnoSdkVersion.Should().Be("6.6.0-dev.146");
+			healthService.DevServerStarted.Should().BeTrue();
 		}
 		finally
 		{
