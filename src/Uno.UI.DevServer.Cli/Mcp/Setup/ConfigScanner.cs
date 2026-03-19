@@ -96,6 +96,10 @@ internal sealed class ConfigScanner(IFileSystem fs)
 		try
 		{
 			content = fs.ReadAllText(configPath);
+			if (string.IsNullOrWhiteSpace(content))
+			{
+				return; // Empty file is a valid initial state, not a warning
+			}
 		}
 		catch (Exception ex)
 		{

@@ -406,34 +406,51 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		ServerDefinition serverDef,
 		IReadOnlyDictionary<string, ServerDefinition> servers)
 	{
-		using var doc = System.Text.Json.JsonDocument.Parse(content, new System.Text.Json.JsonDocumentOptions
-		{
-			CommentHandling = System.Text.Json.JsonCommentHandling.Skip,
-			AllowTrailingCommas = true,
-		});
-		var cleanJson = System.Text.Json.JsonSerializer.Serialize(doc.RootElement);
-		var root = JsonNode.Parse(cleanJson)?.AsObject();
-
-		if (root?[rootKey] is not JsonObject serversObj)
+		if (string.IsNullOrWhiteSpace(content))
 		{
 			return null;
 		}
 
-		foreach (var (keyName, value) in serversObj)
+		System.Text.Json.JsonDocument doc;
+		try
 		{
-			if (value is not JsonObject entryJson)
+			doc = System.Text.Json.JsonDocument.Parse(content, new System.Text.Json.JsonDocumentOptions
 			{
-				continue;
-			}
-
-			var match = DuplicateDetector.FindMatchingServer(keyName, entryJson, servers);
-			if (match == serverName)
-			{
-				return keyName;
-			}
+				CommentHandling = System.Text.Json.JsonCommentHandling.Skip,
+				AllowTrailingCommas = true,
+			});
+		}
+		catch (System.Text.Json.JsonException)
+		{
+			return null;
 		}
 
-		return null;
+		using (doc)
+		{
+			var cleanJson = System.Text.Json.JsonSerializer.Serialize(doc.RootElement);
+			var root = JsonNode.Parse(cleanJson)?.AsObject();
+
+			if (root?[rootKey] is not JsonObject serversObj)
+			{
+				return null;
+			}
+
+			foreach (var (keyName, value) in serversObj)
+			{
+				if (value is not JsonObject entryJson)
+				{
+					continue;
+				}
+
+				var match = DuplicateDetector.FindMatchingServer(keyName, entryJson, servers);
+				if (match == serverName)
+				{
+					return keyName;
+				}
+			}
+
+			return null;
+		}
 	}
 
 	private static IReadOnlyDictionary<string, JsonObject> BuildExpectedDefinitions(
