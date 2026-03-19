@@ -95,6 +95,7 @@ The fallback is transparent — if the agent CLI is not found in PATH or returns
 | Gemini CLI | `gemini` | Runs `gemini mcp add -s project` |
 | Cursor | `cursor-agent` | File-based (CLI is read-only) |
 | OpenCode | `opencode` | File-based for install, CLI for uninstall |
+| JetBrains Air | — | File-based (`.air/mcp.json`) |
 | All others | — | File-based |
 
 > [!TIP]
@@ -213,10 +214,16 @@ The App MCP uses [MCP roots](https://modelcontextprotocol.io/docs/concepts/roots
 | copilot-vscode | Yes |
 | copilot-vs | Yes |
 | Cursor | Yes |
+| Kiro | Yes |
+| gemini-cli | Yes |
+| copilot-cli | Yes |
+| codex-cli | Yes |
 | gemini-antigravity | No |
 | Claude Desktop | No |
 | Windsurf | No |
 | junie-rider | No |
+| JetBrains Air | No |
+| OpenCode | Unknown |
 
 For agents without roots support, the DevServer CLI uses the `--force-roots-fallback` flag to expose a `uno_app_set_roots` tool, allowing the agent to specify the workspace directory manually.
 

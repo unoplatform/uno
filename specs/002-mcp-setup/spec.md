@@ -36,7 +36,7 @@ uno.devserver mcp uninstall  # Remove servers from client configs
 
 ### Scope
 
-- 13 MCP client profiles in v1 (`copilot-vscode`, `copilot-vs`, `copilot-cli`, `cursor`, `windsurf`, `kiro`, `gemini-antigravity`, `gemini-cli`, `junie-rider`, `claude-code`, `claude-desktop`, `opencode`, `unknown`)
+- 15 MCP client profiles in v1 (`copilot-vscode`, `copilot-vs`, `copilot-cli`, `codex-cli`, `cursor`, `windsurf`, `kiro`, `gemini-antigravity`, `gemini-cli`, `junie-rider`, `jetbrains-air`, `claude-code`, `claude-desktop`, `opencode`, `unknown`)
 - 2 MCP servers (UnoApp stdio, UnoDocs HTTP) — extensible without protocol changes
 - 3 operations: status, install, uninstall
 - Config file merge with preservation of existing entries
@@ -118,7 +118,7 @@ uno.devserver mcp uninstall <client> [--workspace <path>] [--servers UnoApp,UnoD
 
 ### Client Identifiers
 
-`copilot-vscode`, `copilot-vs`, `copilot-cli`, `cursor`, `windsurf`, `kiro`, `gemini-antigravity`, `gemini-cli`, `junie-rider`, `claude-code`, `claude-desktop`, `opencode`, `unknown`
+`copilot-vscode`, `copilot-vs`, `copilot-cli`, `codex-cli`, `cursor`, `windsurf`, `kiro`, `gemini-antigravity`, `gemini-cli`, `junie-rider`, `jetbrains-air`, `claude-code`, `claude-desktop`, `opencode`, `unknown`
 
 > **v2 (deferred):** `continue`, `zed` — excluded from initial implementation due to non-standard config formats (see [Client Profiles §5](#5-client-profiles)).
 
@@ -494,7 +494,7 @@ Each MCP client has a profile that defines config file locations, write targets,
 | **copilot-vscode** | `{ws}/.vscode/mcp.json`, `~/.vscode/mcp.json`, global OS path | `{ws}/.vscode/mcp.json` | `servers` |
 | **copilot-vs** | `{ws}/.vs/mcp.json`, `{ws}/.vscode/mcp.json` | `{ws}/.vs/mcp.json` | `servers` |
 | **Cursor** | `{ws}/.cursor/mcp.json`, `~/.cursor/mcp.json` | `{ws}/.cursor/mcp.json` | `mcpServers` |
-| **Windsurf** | `{ws}/.windsurf/mcp.json`, `~/.codeium/windsurf/mcp_config.json` | `{ws}/.windsurf/mcp.json` | `mcpServers` with `serverUrl` for HTTP servers |
+| **Windsurf** | `~/.codeium/windsurf/mcp_config.json` | `~/.codeium/windsurf/mcp_config.json` | `mcpServers` with `serverUrl` for HTTP servers |
 | **Kiro** | `{ws}/.kiro/settings/mcp.json`, `~/.kiro/settings/mcp.json` | `{ws}/.kiro/settings/mcp.json` | `mcpServers` |
 | **gemini-antigravity** | `~/.gemini/antigravity/mcp_config.json` | same (global only) | `mcpServers` with `type` and `serverUrl` |
 
@@ -518,8 +518,10 @@ VS Code global OS paths:
 | Agent | Config Locations | Write Target | JSON Format |
 |-------|------------------|--------------|-------------|
 | **Claude Code** | `{ws}/.mcp.json`, `~/.claude.json` | `{ws}/.mcp.json` | `mcpServers` |
-| **copilot-cli** | *(no file-backed config contract in v1)* | *(native/manual registration only)* | Native/manual flow |
+| **copilot-cli** | `~/.copilot/mcp-config.json` | `~/.copilot/mcp-config.json` | `mcpServers` with `type` |
+| **Codex CLI** | *(native CLI: `codex mcp add/list/remove`)* | *(CLI-first, TOML config not file-scannable)* | Native CLI with `--json` |
 | **OpenCode** | `{ws}/opencode.json`, `{ws}/opencode.jsonc` | `{ws}/opencode.json` | `mcp` with `type` and command-array format |
+| **JetBrains Air** | `{ws}/.air/mcp.json`, `{ws}/.mcp.json`, `{appdata}/JetBrains/Air/mcp.json` | `{ws}/.air/mcp.json` | `mcpServers` |
 | **Continue** *(v2)* | `{ws}/.continue/config.json` (MCP section) | same | `mcpServers` (nested) |
 | **Zed** *(v2)* | `{ws}/.zed/settings.json` (section) | same | `context_servers` |
 
@@ -535,7 +537,7 @@ VS Code global OS paths:
 
 Some clients expose a native registration workflow instead of a stable writable config-file contract. In v1:
 
-- `copilot-cli` is a **supported native/manual client**
+- `codex-cli` is a **supported native/CLI client** — its MCP config uses TOML format not directly scannable by the JSON-based file scanner, but its CLI (`codex mcp add/list/remove`) is used for registration and status detection
 - `status --json` exposes it in `supportedIdes` with `strategy: "native"`
 - `install` / `uninstall` return guidance instead of pretending to edit a config file
 
@@ -1455,6 +1457,7 @@ Added as an optional `cli` field in `ide-profiles.json`:
 | Codex CLI | ✅ | ✅ | ✅ | `codex` | `--json` on list, global scope only |
 | Cursor | — | ✅ | — | `cursor-agent` | Read-only verification |
 | OpenCode | — | ✅ | ✅ | `opencode` | List + remove only |
+| JetBrains Air | — | — | — | — | File-based only, no CLI |
 | Others | — | — | — | — | File-based only |
 
 ### Status Coherence
