@@ -120,10 +120,9 @@
   },
   "windsurf": {
     "configPaths": [
-      "{workspace}/.windsurf/mcp.json",
       "{home}/.codeium/windsurf/mcp_config.json"
     ],
-    "writeTarget": "{workspace}/.windsurf/mcp.json",
+    "writeTarget": "{home}/.codeium/windsurf/mcp_config.json",
     "jsonRootKey": "mcpServers",
     "urlKey": "serverUrl"
   },
