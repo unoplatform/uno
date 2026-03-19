@@ -43,11 +43,11 @@ internal sealed class ConfigScanner(IFileSystem fs)
 				ScanConfigFile(configPath, profile.JsonRootKey, serverName, serverDef, servers, locations, warnings, ref effectiveEntry);
 			}
 
-			var distinctConfigPathCount = locations
+			var distinctPaths = locations
 				.Select(static location => location.Path)
 				.Distinct(pathComparer)
-				.Count();
-			if (distinctConfigPathCount > 1)
+				.ToList();
+			if (distinctPaths.Count > 1)
 			{
 				warnings.Add("Registered in multiple config files");
 			}

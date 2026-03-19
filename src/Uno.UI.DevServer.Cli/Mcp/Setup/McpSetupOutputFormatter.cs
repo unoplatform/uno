@@ -40,6 +40,21 @@ internal static class McpSetupOutputFormatter
 					new Markup($"[{valColor}]{Escape(transport)}[/]"),
 					new Markup($"[{valColor}]{Escape(variant)}[/]"));
 
+				// Show additional locations beyond the first
+				if (ide.Locations is { Count: > 1 })
+				{
+					foreach (var extra in ide.Locations.Skip(1))
+					{
+						table.AddRow(
+							new Markup(""),
+							new Markup(""),
+							new Markup(""),
+							new Markup($"[grey]{Escape(ShortenPath(extra.Path, workspace))}[/]"),
+							new Markup($"[grey]{Escape(extra.Transport)}[/]"),
+							new Markup($"[grey]{Escape(extra.Variant)}[/]"));
+					}
+				}
+
 				if (ide.Warnings is { Count: > 0 })
 				{
 					foreach (var warning in ide.Warnings)

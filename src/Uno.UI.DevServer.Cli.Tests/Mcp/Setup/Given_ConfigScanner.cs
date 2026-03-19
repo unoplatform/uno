@@ -180,7 +180,7 @@ public class Given_ConfigScanner
 		var result = scanner.Scan(CursorProfile, "/project", TestServers, expectedDefs);
 
 		result.ServerResults["UnoApp"].Locations.Should().HaveCount(2);
-		result.ServerResults["UnoApp"].Warnings.Should().Contain("Registered in multiple config files");
+		result.ServerResults["UnoApp"].Warnings.Should().ContainMatch("Registered in multiple config files*");
 	}
 
 	[TestMethod]
@@ -204,7 +204,7 @@ public class Given_ConfigScanner
 
 		result.ServerResults["UnoApp"].Locations.Should().HaveCount(2);
 		result.ServerResults["UnoApp"].Warnings.Should().Contain("Multiple entries found in the same config file");
-		result.ServerResults["UnoApp"].Warnings.Should().NotContain("Registered in multiple config files");
+		result.ServerResults["UnoApp"].Warnings.Should().NotContainMatch("Registered in multiple config files*");
 	}
 
 	// ── IDE detection ──
