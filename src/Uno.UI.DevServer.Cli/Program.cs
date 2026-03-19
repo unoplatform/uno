@@ -42,7 +42,7 @@ internal class Program
 			WriteCommand("health", "Report Uno DevServer health for the current workspace");
 			Console.WriteLine();
 			Console.WriteLine("MCP setup commands:");
-			WriteCommand("mcp start", "Start the MCP STDIO proxy (alias: --mcp-app)");
+			WriteCommand("mcp serve", "Start the MCP STDIO proxy (alias: --mcp-app)");
 			WriteCommand("mcp status", "Report installation state of MCP servers across clients");
 			WriteCommand("mcp install", "Register MCP servers in client config files");
 			WriteCommand("mcp uninstall", "Remove MCP servers from client config files");

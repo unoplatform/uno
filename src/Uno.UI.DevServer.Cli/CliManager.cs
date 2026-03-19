@@ -53,8 +53,8 @@ internal class CliManager
 				string.Equals(originalArgs[0], "mcp", StringComparison.OrdinalIgnoreCase))
 			{
 				var mcpArgs = originalArgs[1..];
-				// "mcp start" is an alias for --mcp-app and needs workspace resolution
-				if (mcpArgs is { Length: > 0 } && string.Equals(mcpArgs[0], "start", StringComparison.OrdinalIgnoreCase))
+				// "mcp serve" is the MCP STDIO proxy
+				if (mcpArgs is { Length: > 0 } && string.Equals(mcpArgs[0], "serve", StringComparison.OrdinalIgnoreCase))
 				{
 					var mcpWorkspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
 					LogVersionBanner();
@@ -451,21 +451,21 @@ internal class CliManager
 	{
 		if (args.Length == 0)
 		{
-			_logger.LogError("Missing mcp subcommand. Use: mcp start|status|install|uninstall");
+			_logger.LogError("Missing mcp subcommand. Use: mcp serve|status|install|uninstall");
 			return 2;
 		}
 
 		var subcommand = args[0].ToLowerInvariant();
 
-		if (subcommand == "start")
+		if (subcommand == "serve")
 		{
-			_logger.LogError("The 'mcp start' subcommand should be routed through RunAsync");
+			_logger.LogError("The 'mcp serve' subcommand should be routed through RunAsync");
 			return 2;
 		}
 
 		if (subcommand is not ("status" or "install" or "uninstall"))
 		{
-			_logger.LogError("Unknown mcp subcommand '{Subcommand}'. Use: start|status|install|uninstall", subcommand);
+			_logger.LogError("Unknown mcp subcommand '{Subcommand}'. Use: serve|status|install|uninstall", subcommand);
 			return 2;
 		}
 

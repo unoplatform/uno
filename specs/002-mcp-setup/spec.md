@@ -21,7 +21,7 @@ The DevServer CLI (`uno.devserver`) gains MCP setup subcommands that **scan, reg
 All MCP functionality is unified under a single `mcp` command group:
 
 ```
-uno.devserver mcp start      # STDIO proxy (was --mcp-app)
+uno.devserver mcp serve      # STDIO proxy (alias: --mcp-app)
 uno.devserver mcp status     # Report installation state of MCP servers across clients
 uno.devserver mcp install    # Register servers in client configs
 uno.devserver mcp uninstall  # Remove servers from client configs
@@ -32,7 +32,7 @@ uno.devserver mcp uninstall  # Remove servers from client configs
 - **The tool is the canonical source of truth for Uno definitions**: The CLI owns the list of Uno MCP servers and the canonical definitions it writes. The VS Code extension (and any future client integration) does not hardcode server names, transports, or definitions — it processes whatever `status` returns. `status` must also recognize compatible registrations that were persisted by the client's own tooling in the profile's documented config files.
 - **Adding servers requires no extension update**: Adding, removing, or modifying servers is done entirely in the tool.
 - **Works for all editors**: Config-file-based registration works for every editor, regardless of whether it exposes a programmatic API.
-- **Backward compatible**: `--mcp-app` continues to work as an alias for `mcp start`.
+- **Backward compatible**: `--mcp-app` continues to work as an alias for `mcp serve`.
 
 ### Scope
 
@@ -66,12 +66,12 @@ uno.devserver mcp <subcommand> [options]
 
 ### Wire Format Stability
 
-The server definitions written to client config files use `--mcp-app` (not `mcp start`) in the args array. This is the **stable wire format** — it works with all versions of the tool, including versions that predate the `mcp` command group. The `mcp start` syntax is CLI sugar for interactive use only and is never written to config files.
+The server definitions written to client config files use `--mcp-app` (not `mcp serve`) in the args array. This is the **stable wire format** — it works with all versions of the tool, including versions that predate the `mcp` command group. The `mcp serve` syntax is CLI sugar for interactive use only and is never written to config files.
 
-### Subcommand: `mcp start`
+### Subcommand: `mcp serve`
 
 ```
-uno.devserver mcp start [--port <port>] [--mcp-wait-tools-list] [--force-roots-fallback] [--force-generate-tool-cache] [--solution-dir <path>]
+uno.devserver mcp serve [--port <port>] [--mcp-wait-tools-list] [--force-roots-fallback] [--force-generate-tool-cache] [--solution-dir <path>]
 ```
 
 This is the existing MCP STDIO proxy. All current options remain:
@@ -990,7 +990,7 @@ All new code under `src/Uno.UI.DevServer.Cli/Mcp/Setup/`:
 
 | File | Change |
 |------|--------|
-| `CliManager.cs` | `RunMcpSubcommand()` dispatcher: routes `status/install/uninstall` to orchestrator. `mcp start` routed in `RunAsync()` via workspace resolution. `--mcp-app` remains as alias |
+| `CliManager.cs` | `RunMcpSubcommand()` dispatcher: routes `status/install/uninstall` to orchestrator. `mcp serve` routed in `RunAsync()` via workspace resolution. `--mcp-app` remains as alias |
 | `Program.cs` | DI registration for `IFileSystem`, `CliCommandRunner`, and `McpSetupOrchestrator`. Updated help text with `mcp` command group |
 
 ### Testability
