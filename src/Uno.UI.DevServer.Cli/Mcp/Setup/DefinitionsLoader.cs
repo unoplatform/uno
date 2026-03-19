@@ -113,6 +113,9 @@ internal static class DefinitionsLoader
 			var supportedTransports = element.TryGetProperty("supportedTransports", out var stElement)
 				? stElement.Deserialize<string[]>(_options)
 				: null;
+			var extraArgs = element.TryGetProperty("extraArgs", out var eaElement)
+				? eaElement.Deserialize<string[]>(_options)
+				: null;
 
 			result[key] = new IdeProfile(
 				configPaths,
@@ -126,7 +129,8 @@ internal static class DefinitionsLoader
 				manualRegistrationMessage,
 				excludeFromDetection,
 				cli,
-				supportedTransports);
+				supportedTransports,
+				extraArgs);
 		}
 
 		return result;

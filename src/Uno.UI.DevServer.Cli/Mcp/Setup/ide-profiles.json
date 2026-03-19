@@ -6,7 +6,8 @@
     "writeTarget": "{home}/.gemini/antigravity/mcp_config.json",
     "jsonRootKey": "mcpServers",
     "includeType": true,
-    "urlKey": "serverUrl"
+    "urlKey": "serverUrl",
+    "extraArgs": ["--force-roots-fallback"]
   },
   "gemini-cli": {
     "configPaths": [
@@ -54,7 +55,8 @@
     ],
     "writeTarget": "{appdata}/Claude/claude_desktop_config.json",
     "jsonRootKey": "mcpServers",
-    "supportedTransports": ["stdio"]
+    "supportedTransports": ["stdio"],
+    "extraArgs": ["--force-roots-fallback"]
   },
   "codex-cli": {
     "configPaths": [],
@@ -97,7 +99,8 @@
       "{workspace}/.idea/mcpServers.json"
     ],
     "writeTarget": "{workspace}/.idea/mcpServers.json",
-    "jsonRootKey": "mcpServers"
+    "jsonRootKey": "mcpServers",
+    "extraArgs": ["--force-roots-fallback"]
   },
   "copilot-vscode": {
     "configPaths": [
@@ -124,7 +127,8 @@
     ],
     "writeTarget": "{home}/.codeium/windsurf/mcp_config.json",
     "jsonRootKey": "mcpServers",
-    "urlKey": "serverUrl"
+    "urlKey": "serverUrl",
+    "extraArgs": ["--force-roots-fallback"]
   },
   "opencode": {
     "configPaths": [

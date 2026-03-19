@@ -25,7 +25,8 @@ internal sealed record IdeProfile(
 	string? ManualRegistrationMessage = null,
 	bool ExcludeFromDetection = false,
 	CliProfile? Cli = null,
-	string[]? SupportedTransports = null);
+	string[]? SupportedTransports = null,
+	string[]? ExtraArgs = null);
 
 /// <summary>
 /// Defines how to drive a native CLI for MCP registration.

@@ -38,7 +38,8 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		foreach (var (ideName, profile) in defs.Ides)
 		{
 			progress?.Invoke($"Scanning {ideName}...");
-			var scanResult = scanner.Scan(profile, workspace, defs.Servers, expectedDefinitions);
+			var profileExpectedDefs = ApplyProfileTransforms(expectedDefinitions, profile);
+			var scanResult = scanner.Scan(profile, workspace, defs.Servers, profileExpectedDefs);
 			var cliServerNames = cliResults.TryGetValue(ideName, out var names) ? names : [];
 
 			if ((scanResult.Detected || cliServerNames.Count > 0) && !profile.ExcludeFromDetection)
@@ -126,7 +127,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 
 		var operations = new List<OperationEntry>();
 		var scanner = new ConfigScanner(_fs);
-		var expectedDefinitions = BuildExpectedDefinitions(defs.Servers, expectedVariant);
+		var expectedDefinitions = ApplyProfileTransforms(BuildExpectedDefinitions(defs.Servers, expectedVariant), profile);
 		var scanResult = scanner.Scan(profile, workspace, defs.Servers, expectedDefinitions);
 
 		// Backup the original file BEFORE any writes so the .bak reflects the true pre-install state
@@ -338,7 +339,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		var isUpdate = serverResult is not null && serverResult.Status == "outdated";
 		var action = isUpdate ? "updated" : "created";
 
-		// Apply client-specific transformations
+		// Apply client-specific transformations (extraArgs already applied via ApplyProfileTransforms)
 		var installDef = profile.MergeCommandArgs ? MergeCommandAndArgs(definition) : definition;
 		var transportLabel = profile.TypeMap is not null
 			&& profile.TypeMap.TryGetValue(serverDef.Transport, out var mapped)
@@ -378,6 +379,54 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			}
 
 			clone["command"] = cmdArray;
+		}
+
+		return clone;
+	}
+
+	/// <summary>
+	/// Builds per-profile expected definitions by applying extraArgs and mergeCommandArgs.
+	/// This ensures status comparison detects missing flags as "outdated".
+	/// </summary>
+	/// <summary>
+	/// Applies per-profile transforms to expected definitions for comparison.
+	/// Only applies extraArgs (not MergeCommandArgs which is a write-time format transform).
+	/// </summary>
+	private static IReadOnlyDictionary<string, JsonObject> ApplyProfileTransforms(
+		IReadOnlyDictionary<string, JsonObject> baseDefs, IdeProfile profile)
+	{
+		if (profile.ExtraArgs is not { Length: > 0 })
+		{
+			return baseDefs;
+		}
+
+		var result = new Dictionary<string, JsonObject>();
+		foreach (var (name, def) in baseDefs)
+		{
+			result[name] = AppendExtraArgs(def, profile.ExtraArgs);
+		}
+
+		return result;
+	}
+
+	private static JsonObject AppendExtraArgs(JsonObject definition, string[]? extraArgs)
+	{
+		if (extraArgs is not { Length: > 0 })
+		{
+			return definition;
+		}
+
+		// Only applies to stdio definitions that have an "args" array
+		if (definition["args"] is not JsonArray)
+		{
+			return definition;
+		}
+
+		var clone = definition.DeepClone().AsObject();
+		var args = clone["args"]!.AsArray();
+		foreach (var extra in extraArgs)
+		{
+			args.Add(JsonValue.Create(extra));
 		}
 
 		return clone;
