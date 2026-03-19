@@ -125,7 +125,12 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		var scanner = new ConfigScanner(_fs);
 		var expectedDefinitions = BuildExpectedDefinitions(defs.Servers, expectedVariant);
 		var scanResult = scanner.Scan(profile, workspace, defs.Servers, expectedDefinitions);
-		var backedUpFiles = new HashSet<string>(FileSystem.PathComparer);
+
+		// Backup the original file BEFORE any writes so the .bak reflects the true pre-install state
+		if (!dryRun && _fs.FileExists(scanResult.ResolvedWriteTarget))
+		{
+			_fs.BackupFile(scanResult.ResolvedWriteTarget);
+		}
 		foreach (var (serverName, serverDef) in defs.Servers)
 		{
 			if (serverFilter is not null && !serverFilter.Contains(serverName, StringComparer.OrdinalIgnoreCase))
@@ -148,7 +153,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			try
 			{
 				var entry = InstallServer(
-					targetIde, profile, scanResult, serverName, serverDef, serverResult, definition, defs.Servers, dryRun, backedUpFiles);
+					targetIde, profile, scanResult, serverName, serverDef, serverResult, definition, defs.Servers, dryRun);
 				operations.Add(entry);
 			}
 			catch (Exception ex)
@@ -190,7 +195,20 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		var scanner = new ConfigScanner(_fs);
 		var home = _fs.GetUserHomePath();
 		var appdata = _fs.GetAppDataPath();
-		var backedUpFiles = new HashSet<string>(FileSystem.PathComparer);
+
+		// Backup all writable target files BEFORE any writes so .bak reflects the true pre-uninstall state
+		if (!dryRun)
+		{
+			var uninstallPaths = allScopes ? profile.ConfigPaths : [profile.WriteTarget];
+			foreach (var configTemplate in uninstallPaths.Distinct(FileSystem.PathComparer))
+			{
+				var configPath = ConfigScanner.ResolvePath(configTemplate, workspace, home, appdata);
+				if (_fs.FileExists(configPath) && !_fs.IsReadOnly(configPath))
+				{
+					_fs.BackupFile(configPath);
+				}
+			}
+		}
 
 		foreach (var (serverName, serverDef) in defs.Servers)
 		{
@@ -252,11 +270,6 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 
 					if (!dryRun)
 					{
-						if (backedUpFiles.Add(configPath))
-						{
-							_fs.BackupFile(configPath);
-						}
-
 						_fs.WriteAllText(configPath, updatedContent);
 					}
 
@@ -289,8 +302,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		ServerScanResult? serverResult,
 		JsonObject definition,
 		IReadOnlyDictionary<string, ServerDefinition> allServers,
-		bool dryRun,
-		HashSet<string> backedUpFiles)
+		bool dryRun)
 	{
 		var targetPath = scanResult.ResolvedWriteTarget;
 
@@ -341,11 +353,6 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 
 		if (!dryRun)
 		{
-			if (existingContent is not null && backedUpFiles.Add(targetPath))
-			{
-				_fs.BackupFile(targetPath);
-			}
-
 			_fs.WriteAllText(targetPath, updated);
 		}
 
@@ -483,8 +490,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 				var scanner = new ConfigScanner(_fs);
 				var scanResult = scanner.Scan(profile, workspace, defs.Servers, expectedDefinitions);
 				var serverResult = scanResult.ServerResults.TryGetValue(serverName, out var sr) ? sr : null;
-				var backedUp = new HashSet<string>(FileSystem.PathComparer);
-				operations.Add(InstallServer(targetIde, profile, scanResult, serverName, serverDef, serverResult, definition, defs.Servers, dryRun, backedUp));
+				operations.Add(InstallServer(targetIde, profile, scanResult, serverName, serverDef, serverResult, definition, defs.Servers, dryRun));
 			}
 		}
 
