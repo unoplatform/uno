@@ -64,7 +64,8 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 				if (status == "missing" && cliServerNames.Contains(serverName))
 				{
 					status = "registered";
-					locations = [new LocationEntry($"(via {profile.Cli!.Executable} CLI)", serverName, "cli")];
+					var serverDef = defs.Servers.TryGetValue(serverName, out var sd) ? sd : null;
+					locations = [new LocationEntry($"(via {profile.Cli!.Executable} CLI)", serverDef?.Transport ?? "-", "-")];
 				}
 
 				map[ideName] = new ServerIdeStatus(
@@ -385,12 +386,9 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 	}
 
 	/// <summary>
-	/// Builds per-profile expected definitions by applying extraArgs and mergeCommandArgs.
-	/// This ensures status comparison detects missing flags as "outdated".
-	/// </summary>
-	/// <summary>
-	/// Applies per-profile transforms to expected definitions for comparison.
-	/// Only applies extraArgs (not MergeCommandArgs which is a write-time format transform).
+	/// Applies per-profile extra args to expected definitions for comparison.
+	/// This ensures status detects missing flags (e.g. <c>--force-roots-fallback</c>) as "outdated".
+	/// Does not apply MergeCommandArgs which is a write-time format transform.
 	/// </summary>
 	private static IReadOnlyDictionary<string, JsonObject> ApplyProfileTransforms(
 		IReadOnlyDictionary<string, JsonObject> baseDefs, IdeProfile profile)
@@ -529,7 +527,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		bool dryRun)
 	{
 		var operations = new List<OperationEntry>();
-		var expectedDefinitions = BuildExpectedDefinitions(defs.Servers, expectedVariant);
+		var expectedDefinitions = ApplyProfileTransforms(BuildExpectedDefinitions(defs.Servers, expectedVariant), profile);
 
 		foreach (var (serverName, serverDef) in defs.Servers)
 		{
@@ -718,10 +716,14 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			.ToList();
 
 		var perExecutable = new System.Collections.Concurrent.ConcurrentDictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+		var progressLock = new object();
 
 		Parallel.ForEach(cliGroups, group =>
 		{
-			progress?.Invoke($"Querying {group.Key}...");
+			if (progress is not null)
+			{
+				lock (progressLock) { progress($"Querying {group.Key}..."); }
+			}
 			var representative = group.First().Value;
 			var found = QueryCliList(representative, workspace);
 			if (found.Count > 0)

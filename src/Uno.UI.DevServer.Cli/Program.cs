@@ -48,7 +48,7 @@ internal class Program
 			WriteCommand("mcp uninstall", "Remove MCP servers from client config files");
 			Console.WriteLine();
 			Console.WriteLine("MCP setup options:");
-			WriteOption("<client>", "Target client (positional, or use --all-ides): copilot-vscode, copilot-vs, copilot-cli, cursor, windsurf, kiro, gemini-antigravity, gemini-cli, junie-rider, claude-code, claude-desktop, opencode, unknown");
+			WriteOption("<client>", "Target client (positional, or use --all-ides): copilot-vscode, copilot-vs, copilot-cli, cursor, windsurf, kiro, gemini-antigravity, gemini-cli, junie-rider, claude-code, claude-desktop, codex-cli, jetbrains-air, opencode, unknown");
 			WriteOption("--workspace <path>", "Workspace root (default: current directory)");
 			WriteOption("--channel <stable|prerelease>", "Select the Uno MCP definition channel");
 			WriteOption("--tool-version <ver>", "Pin the Uno MCP tool definition to a specific version");

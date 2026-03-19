@@ -109,8 +109,6 @@ The `uno-devserver mcp` commands are useful when you want to:
 - Inspect the current registration state across all supported clients
 - Remove Uno MCP entries that were previously written
 
-### Dev Server MCP setup commands
-
 The `Uno.DevServer` tool exposes the following MCP setup commands:
 
 | Command | Purpose |
