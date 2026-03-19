@@ -981,13 +981,15 @@ All new code under `src/Uno.UI.DevServer.Cli/Mcp/Setup/`:
 | `IFileSystem.cs` | I/O abstraction: `FileExists`, `DirectoryExists`, `ReadAllText`, `WriteAllText`, `CreateDirectory`, `IsReadOnly`, `GetUserHomePath`, `GetAppDataPath` |
 | `FileSystem.cs` | Production `IFileSystem` wrapping `System.IO` |
 | `McpSetupOrchestrator.cs` | `Status()`, `Install()`, `Uninstall()` — orchestrates scanner + writer via `IFileSystem` |
+| `CliCommandRunner.cs` | Detects agent CLIs in PATH, expands argument templates with placeholders (`{name}`, `{command}`, `{args...}`, `{url}`), executes processes, captures output. Used by orchestrator for CLI-first registration |
+| `McpSetupModels.cs` | *(updated)* Added `CliProfile` record (`Executable`, `Detect`, `AddStdio`, `AddHttp`, `List`, `Remove`) and optional `Cli` field on `IdeProfile` |
 
 ### Modified Files
 
 | File | Change |
 |------|--------|
 | `CliManager.cs` | `RunMcpSubcommand()` dispatcher: routes `status/install/uninstall` to orchestrator. `mcp start` routed in `RunAsync()` via workspace resolution. `--mcp-app` remains as alias |
-| `Program.cs` | DI registration for `IFileSystem` and `McpSetupOrchestrator`. Updated help text with `mcp` command group |
+| `Program.cs` | DI registration for `IFileSystem`, `CliCommandRunner`, and `McpSetupOrchestrator`. Updated help text with `mcp` command group |
 
 ### Testability
 
@@ -1001,6 +1003,8 @@ Single I/O seam via `IFileSystem`. All business logic is fully testable with an 
 | `Given_ConfigScanner.cs` | Registered/outdated/missing status per client |
 | `Given_McpSetupOrchestrator.cs` | End-to-end status/install/uninstall with `InMemoryFileSystem` |
 | `Given_DefinitionsLoader.cs` | Embedded loading, external override, malformed JSON handling, schema validation |
+| `Given_CliCommandRunner.cs` | Placeholder expansion (`{name}`, `{command}`, `{args...}`, `{url}`), `IsAvailable` detection |
+| `Given_McpCliStrategy.cs` | CLI-first delegation, fallback on CLI failure/unavailability, dry-run, uninstall with null Remove |
 
 ### Design Principles
 
@@ -1386,3 +1390,77 @@ internal sealed record DetectionPatterns(
 | `ConfigScanner.cs` | Takes `IdeProfile` from registry | Takes `IdeProfile` from `DefinitionsLoader.Load()` |
 | `McpSetupOrchestrator.cs` | Depends on both registries | Depends on `DefinitionsLoader` (single data source) |
 | `CliManager.cs` | Passes no definitions arg | Reads `--ide-definitions` and `--server-definitions` and passes to `DefinitionsLoader.Load()` |
+
+---
+
+## 14. CLI-First Registration Strategy
+
+### Motivation
+
+Some agents expose their own CLI for MCP management (e.g., `claude mcp add`, `codex mcp add`, `gemini mcp add`). Using the agent's own CLI for registration:
+
+- Delegates format ownership to the agent (eliminates format mismatch bugs)
+- Provides better forward-compatibility when agents update their config format
+- Enables bidirectional validation: our `mcp status` can verify CLI-registered servers, and agent CLIs can verify our file writes
+
+### Flow
+
+```
+mcp install <client>
+  │
+  ├─ profile.Strategy == "native"?  → return manual registration message
+  │
+  ├─ profile.Cli != null AND executable in PATH?
+  │   ├─ YES: execute agent CLI (e.g., `claude mcp add ...`)
+  │   │   ├─ exit 0 → report "created" (via CLI)
+  │   │   └─ exit ≠ 0 → log warning, fall through to file
+  │   └─ NO: fall through to file
+  │
+  └─ File-based: ConfigWriter.MergeServer (existing behavior)
+```
+
+The same pattern applies to `mcp uninstall`: CLI first if `cli.Remove` is defined, otherwise file-based.
+
+### CliProfile Schema
+
+Added as an optional `cli` field in `ide-profiles.json`:
+
+```json
+{
+  "cli": {
+    "executable": "claude",
+    "detect": ["--version"],
+    "addStdio": ["mcp", "add", "--scope", "project", "--transport", "stdio", "{name}", "--", "{command}", "{args...}"],
+    "addHttp": ["mcp", "add", "--scope", "project", "--transport", "http", "{name}", "{url}"],
+    "list": ["mcp", "list"],
+    "remove": ["mcp", "remove", "{name}"]
+  }
+}
+```
+
+**Placeholders:**
+| Placeholder | Type | Description |
+|---|---|---|
+| `{name}` | string | Server name (e.g., `UnoApp`, `UnoDocs`) |
+| `{command}` | string | Executable command (e.g., `dnx`) |
+| `{args...}` | string[] | Arguments expanded in-place as individual items |
+| `{url}` | string | HTTP server URL |
+
+### Agent CLI Support Matrix
+
+| Agent | add | list | remove | Executable | Notes |
+|-------|:---:|:----:|:------:|------------|-------|
+| Claude Code | ✅ | ✅ | ✅ | `claude` | `--scope project`, full bidirectional |
+| Gemini CLI | ✅ | ✅ | ✅ | `gemini` | `-s project`, full bidirectional |
+| Codex CLI | ✅ | ✅ | ✅ | `codex` | `--json` on list, global scope only |
+| Cursor | — | ✅ | — | `cursor-agent` | Read-only verification |
+| OpenCode | — | ✅ | ✅ | `opencode` | List + remove only |
+| Others | — | — | — | — | File-based only |
+
+### Status Coherence
+
+`mcp status` always scans on-disk config files as the source of truth. When a server is registered via the agent's CLI:
+
+- **Claude Code** (`--scope project`): writes to `{workspace}/.mcp.json` — already in our `configPaths`, detected automatically
+- **Gemini CLI** (`-s project`): writes to `{workspace}/.gemini/settings.json` — added to `configPaths` in this update
+- **Codex CLI**: writes to `~/.codex/config.toml` (TOML format) — not scannable by our JSON scanner. Future work: use `codex mcp list --json` for status

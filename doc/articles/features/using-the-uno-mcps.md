@@ -79,16 +79,34 @@ The Pro license App MCP app tools are:
 
 ## Registering and diagnosing Uno MCPs
 
-There are two valid ways to register the Uno Platform MCPs:
+The `uno-devserver mcp install` command automatically picks the best registration strategy for each agent:
 
-- Use the native MCP registration flow of your client when it provides one, such as Claude Code, Codex CLI, or GitHub Copilot CLI
-- Use the `uno-devserver mcp` commands as a diagnostic tool and as an alternative registration flow for file-backed clients such as `copilot-vscode`, `copilot-vs`, `cursor`, `gemini-antigravity`, `opencode`, or `claude-desktop`
+- **CLI-first**: For agents that provide their own MCP CLI (`claude`, `codex`, `gemini`), the tool delegates registration to the agent's own command. This ensures the config format is always correct and forward-compatible.
+- **File-based fallback**: For agents without a CLI (or when the CLI is not installed), the tool writes directly to the agent's config file.
 
-The `uno-devserver mcp` commands are particularly useful when you want to:
+The fallback is transparent — if the agent CLI is not found in PATH or returns an error, file-based registration is used automatically.
 
-- Inspect the current registration state across supported clients
-- Install the Uno MCP entries into a supported config file without editing JSON by hand
-- Remove Uno MCP entries that were previously written to a supported config file
+### Agents with CLI support
+
+| Agent | CLI executable | What `mcp install` does |
+|---|---|---|
+| Claude Code | `claude` | Runs `claude mcp add --scope project` |
+| Codex CLI | `codex` | Runs `codex mcp add` |
+| Gemini CLI | `gemini` | Runs `gemini mcp add -s project` |
+| Cursor | `cursor-agent` | File-based (CLI is read-only) |
+| OpenCode | `opencode` | File-based for install, CLI for uninstall |
+| All others | — | File-based |
+
+> [!TIP]
+> You can always use the agent's own CLI directly instead of `uno-devserver mcp install`. Both approaches produce compatible registrations that `mcp status` can detect.
+
+### Dev Server MCP setup commands
+
+The `uno-devserver mcp` commands are useful when you want to:
+
+- Register Uno MCPs across multiple agents at once (`--all-ides`)
+- Inspect the current registration state across all supported clients
+- Remove Uno MCP entries that were previously written
 
 ### Dev Server MCP setup commands
 
