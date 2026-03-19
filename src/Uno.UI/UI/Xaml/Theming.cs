@@ -43,7 +43,7 @@ internal static class Theming
 	// Theme::HighContrastBlack:    0x01100
 	// Theme::HighContrastCustom:   0x10000
 	public static Theme GetBaseValue(Theme theme)
-		=> (Theme)((byte)theme & 0x03);
+		=> (Theme)((byte)theme & (byte)Theme.BaseMask);
 
 	public static Theme FromElementTheme(ElementTheme elementTheme) => elementTheme switch
 	{

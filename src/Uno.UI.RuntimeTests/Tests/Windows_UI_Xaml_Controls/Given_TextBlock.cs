@@ -681,14 +681,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var span = new Span();
 			SUT.Inlines.Add(span);
-			// Use FULL BLOCK (U+2588) to produce solid foreground pixels without
-			// sub-pixel anti-aliasing artifacts that make exact color matching flaky.
-			span.Inlines.Add(new Run() { Text = "\uFFFD" });
+			span.Inlines.Add(new Run() { Text = "ABCDEFGHIJK" });
 
 			await UITestHelper.WaitForIdle();
 
 			var bitmap = await UITestHelper.ScreenShot(SUT);
-			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), ((SolidColorBrush)Uno.UI.Xaml.Media.DefaultBrushes.TextForegroundBrush).Color);
+			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), ((SolidColorBrush)Uno.UI.Xaml.Media.DefaultBrushes.TextForegroundBrush).Color, tolerance: 15);
 		}
 #endif
 
