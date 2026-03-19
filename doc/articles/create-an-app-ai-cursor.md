@@ -30,6 +30,9 @@ uid: Uno.GettingStarted.CreateAnApp.AI.Cursor
     dnx -y uno.devserver mcp install cursor
     ```
 
+    > [!IMPORTANT]
+    > After running `mcp install`, open Cursor's **Settings > Tools & MCP** and verify that the UnoApp and UnoDocs servers are **enabled** (toggle on). Cursor does not automatically enable newly registered MCP servers.
+
     Manual configuration example:
 
     ```json
