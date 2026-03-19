@@ -33,11 +33,15 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		foreach (var (ideName, profile) in defs.Ides)
 		{
 			var scanResult = scanner.Scan(profile, workspace, defs.Servers, expectedDefinitions);
-			if (scanResult.Detected && !profile.ExcludeFromDetection)
+			var cliServerNames = QueryCliList(profile, workspace);
+
+			if ((scanResult.Detected || cliServerNames.Count > 0) && !profile.ExcludeFromDetection)
 			{
 				detectedIdes.Add(ideName);
 			}
-			supportedIdes.Add(new SupportedIdeEntry(ideName, profile.Strategy, scanResult.Detected && !profile.ExcludeFromDetection));
+			supportedIdes.Add(new SupportedIdeEntry(
+				ideName, profile.Strategy,
+				(scanResult.Detected || cliServerNames.Count > 0) && !profile.ExcludeFromDetection));
 
 			foreach (var (serverName, serverResult) in scanResult.ServerResults)
 			{
@@ -47,10 +51,19 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 					ideStatusMap[serverName] = map;
 				}
 
+				// If file scan says missing but CLI list found it, upgrade to registered
+				var status = serverResult.Status;
+				var locations = serverResult.Locations;
+				if (status == "missing" && cliServerNames.Contains(serverName))
+				{
+					status = "registered";
+					locations = [new LocationEntry($"(via {profile.Cli!.Executable} CLI)", serverName, "cli")];
+				}
+
 				map[ideName] = new ServerIdeStatus(
 					ideName,
-					serverResult.Status,
-					serverResult.Locations.Count > 0 ? serverResult.Locations : null,
+					status,
+					locations.Count > 0 ? locations : null,
 					serverResult.Warnings.Count > 0 ? serverResult.Warnings : null);
 			}
 		}
@@ -606,6 +619,58 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 	{
 		return profile.SupportedTransports is null
 			|| profile.SupportedTransports.Any(t => string.Equals(t, serverDef.Transport, StringComparison.OrdinalIgnoreCase));
+	}
+
+	/// <summary>
+	/// Queries the agent's CLI list command to discover registered server names.
+	/// Returns an empty set if the CLI is unavailable or the command fails.
+	/// </summary>
+	private HashSet<string> QueryCliList(IdeProfile profile, string workspace)
+	{
+		if (profile.Cli is not { List: not null } cli
+			|| _cliRunner is null
+			|| !_cliRunner.IsAvailable(cli))
+		{
+			return [];
+		}
+
+		try
+		{
+			var (exitCode, stdout, _) = _cliRunner.Execute(
+				cli.Executable, cli.List, new Dictionary<string, object>(), workspace, TimeSpan.FromSeconds(15));
+
+			if (exitCode != 0 || string.IsNullOrWhiteSpace(stdout))
+			{
+				return [];
+			}
+
+			// Match known server names in the output (case-insensitive text search)
+			var found = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			foreach (var line in stdout.Split('\n'))
+			{
+				var trimmed = line.Trim();
+				if (trimmed.Contains("UnoApp", StringComparison.OrdinalIgnoreCase)
+					|| trimmed.Contains("uno-app", StringComparison.OrdinalIgnoreCase)
+					|| trimmed.Contains("uno_app", StringComparison.OrdinalIgnoreCase))
+				{
+					found.Add("UnoApp");
+				}
+
+				if (trimmed.Contains("UnoDocs", StringComparison.OrdinalIgnoreCase)
+					|| trimmed.Contains("uno-docs", StringComparison.OrdinalIgnoreCase)
+					|| trimmed.Contains("uno_docs", StringComparison.OrdinalIgnoreCase))
+				{
+					found.Add("UnoDocs");
+				}
+			}
+
+			return found;
+		}
+		catch (Exception ex) when (ex is not OutOfMemoryException)
+		{
+			_logger.LogDebug(ex, "Failed to query CLI list for {Executable}", cli.Executable);
+			return [];
+		}
 	}
 
 	private static OperationResponse ErrorResponse(string message) =>
