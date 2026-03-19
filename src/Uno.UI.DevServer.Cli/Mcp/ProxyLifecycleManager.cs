@@ -896,17 +896,40 @@ internal class ProxyLifecycleManager
 		_logger.LogWarning(args.GetException(),
 			"Workspace mutation watcher failed; restarting watcher and reevaluating the workspace");
 
+		var debounceCts = ReplaceWorkspaceMutationDebounceSource(ref _workspaceMutationDebounceCts);
+
 		_ = Task.Run(async () =>
 		{
 			try
 			{
+				await Task.Delay(TimeSpan.FromMilliseconds(250), debounceCts.Token);
+
+				// StopWorkspaceMutationWatcherAsync cancels _workspaceMutationDebounceCts (which may be
+				// debounceCts itself). Use CancellationToken.None for the reevaluation to avoid being
+				// cancelled by that cleanup.
 				await StopWorkspaceMutationWatcherAsync();
 				StartWorkspaceMutationWatcher();
 				await ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
 			}
+			catch (OperationCanceledException)
+			{
+				// Superseded by a newer error event — expected.
+			}
 			catch (Exception ex)
 			{
 				_logger.LogWarning(ex, "Workspace reevaluation failed after watcher error");
+			}
+			finally
+			{
+				var clearedCurrent = ClearCompletedWorkspaceMutationDebounceSource(
+					ref _workspaceMutationDebounceCts,
+					debounceCts);
+				if (clearedCurrent)
+				{
+					TryCancel(debounceCts);
+				}
+
+				TryDispose(debounceCts);
 			}
 		}, CancellationToken.None);
 	}

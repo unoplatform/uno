@@ -1390,6 +1390,52 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
+	[Timeout(15_000)]
+	[Description("Rapid FSW buffer-overflow errors must be debounced; without the fix each error spawns a separate workspace scan (issue #22828)")]
+	public async Task When_WatcherReportsRapidErrors_FindSolutionFiles_IsBounded()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var finder = new CountingSolutionFileFinder([]);
+			var created = CreateSubject(solutionFileFinder: finder);
+			subject = created.Subject;
+			SetPrivateField(subject, "_currentDirectory", root);
+
+			var method = typeof(ProxyLifecycleManager)
+				.GetMethod("OnWorkspaceMutationWatcherError", BindingFlags.Instance | BindingFlags.NonPublic);
+			method.Should().NotBeNull();
+
+			// Simulate 10 rapid buffer-overflow events (the bug causes 10 separate workspace scans).
+			for (var i = 0; i < 10; i++)
+			{
+				method!.Invoke(subject, [subject, new ErrorEventArgs(new InternalBufferOverflowException("simulated overflow"))]);
+			}
+
+			// Wait for at least one scan to complete (adaptive, up to 5s), then allow 300ms for
+			// any concurrent calls to land so the count stabilizes before asserting.
+			await WaitUntilAsync(() => finder.CallCount >= 1, timeoutMs: 5000);
+			await Task.Delay(300);
+
+			// With the fix, only the final debounced task runs the workspace scan → ≤ 2 calls.
+			// (≤ 2 instead of 1 to tolerate a single timing edge case where two tasks slip through.)
+			finder.CallCount.Should().BeLessThanOrEqualTo(2,
+				"rapid FSW errors must be debounced; without the fix each error spawns a separate workspace scan");
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
 	[Description("Replacing the workspace debounce source installs the newest token source and cancels the previous one without disposing the superseded source yet")]
 	public void ReplaceWorkspaceMutationDebounceSource_WhenCalled_ReplacesAndCancelsPrevious()
 	{
@@ -1668,12 +1714,13 @@ public class Given_ProxyLifecycleManager
 	private sealed class CountingSolutionFileFinder(string[] solutions) : ISolutionFileFinder
 	{
 		private readonly string[] _solutions = solutions;
+		private int _callCount;
 
-		public int CallCount { get; private set; }
+		public int CallCount => Volatile.Read(ref _callCount);
 
 		public string[] FindSolutionFiles(string directory, int maxDepth = 3)
 		{
-			CallCount++;
+			Interlocked.Increment(ref _callCount);
 			return [.. _solutions];
 		}
 	}
