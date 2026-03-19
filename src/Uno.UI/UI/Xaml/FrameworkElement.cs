@@ -420,18 +420,11 @@ namespace Microsoft.UI.Xaml
 		{
 			this.StoreTryEnableHardReferences();
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			// Inherit theme from parent if we don't have explicit RequestedTheme
 			if (RequestedTheme == ElementTheme.Default)
 			{
-				var parent = this.GetParent() as UIElement
-#if __IOS__ || __ANDROID__
-					// On native platforms, ContentControl.RegisterContentTemplateRoot uses
-					// AddSubview directly (not AddChild), so Store.Parent may not be set
-					// when MovedToWindow fires leaf-first. Fall back to the native visual
-					// tree parent so template children can still inherit the parent's theme.
-					?? VisualTreeHelper.GetParent(this) as UIElement
-#endif
-					;
+				var parent = this.GetParent() as UIElement;
 				// Only inherit if our theme hasn't already been set (e.g., by
 				// NotifyThemeChanged from Popup open code before this deferred
 				// Loading fires). Without this guard, popup content that was
@@ -440,16 +433,7 @@ namespace Microsoft.UI.Xaml
 				// first Measure pass.
 				if (GetTheme() == Theme.None && parent != null && parent.GetTheme() != Theme.None)
 				{
-#if __IOS__ || __ANDROID__
-					// On native iOS/Android, the visual tree loads leaf-first
-					// (child's didMoveToWindow fires before parent is notified).
-					// When a subtree is added to a themed ancestor, deeper descendants
-					// may have already loaded with Theme.None. Use NotifyThemeChanged
-					// so the inherited theme propagates to those already-loaded children.
-					NotifyThemeChanged(parent.GetTheme());
-#else
 					SetTheme(parent.GetTheme());
-#endif
 				}
 			}
 			else
@@ -504,11 +488,7 @@ namespace Microsoft.UI.Xaml
 				// Without a theme boundary, foreground inheritance works normally via the DP system.
 				if (RequestedTheme == ElementTheme.Default && effectiveTheme != Theme.None)
 				{
-					var parent = this.GetParent() as FrameworkElement
-#if __IOS__ || __ANDROID__
-						?? VisualTreeHelper.GetParent(this) as FrameworkElement
-#endif
-						;
+					var parent = this.GetParent() as FrameworkElement;
 					if (parent?._themeForeground is { } parentFg)
 					{
 						EnsureThemeForeground(parentFg);
@@ -522,11 +502,21 @@ namespace Microsoft.UI.Xaml
 					ResourceDictionary.PopRequestedThemeForSubTree();
 				}
 			}
+#else
+			if (RequestedTheme is not ElementTheme.Default)
+			{
+				SyncRootRequestedTheme();
+			}
+			ApplyStyles();
+			this.UpdateResourceBindings();
+#endif
 		}
 
 		partial void OnUnloadedPartial()
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			ClearThemeStateOnUnloaded();
+#endif
 			this.StoreDisableHardReferences();
 		}
 

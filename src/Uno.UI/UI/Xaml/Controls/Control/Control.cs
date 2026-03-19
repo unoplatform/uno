@@ -287,19 +287,6 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						RegisterContentTemplateRoot();
 
-#if __IOS__ || __ANDROID__
-						// On native iOS/Android, RegisterContentTemplateRoot uses AddSubview
-						// which triggers MovedToWindow leaf-first. Template children load before
-						// the parent can propagate its theme. If this control already has a theme
-						// (e.g., FlyoutPresenter with RequestedTheme set before popup opened),
-						// force-propagate it to the newly added template subtree.
-						var controlTheme = GetTheme();
-						if (controlTheme != Theme.None && _templatedRoot is FrameworkElement templateFe)
-						{
-							templateFe.NotifyThemeChanged(controlTheme, forceRefresh: true);
-						}
-#endif
-
 						if (
 							!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
 						{

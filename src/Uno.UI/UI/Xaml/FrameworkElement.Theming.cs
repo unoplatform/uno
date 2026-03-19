@@ -48,6 +48,7 @@ public partial class FrameworkElement
 	// MUX Reference framework.cpp, lines 3501-3559
 	private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
 	{
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		var theme = Theme.None;
 
 		switch (newValue)
@@ -79,9 +80,32 @@ public partial class FrameworkElement
 
 		// Apply theme to this element and its subtree
 		NotifyThemeChanged(theme);
+#else
+		SyncRootRequestedTheme();
+		if (ActualThemeChanged != null)
+		{
+			var actualThemeChanged =
+				(oldValue == ElementTheme.Default && Application.Current?.ActualElementTheme != newValue) ||
+				(oldValue != ElementTheme.Default && oldValue != ActualTheme);
+			if (actualThemeChanged)
+			{
+				ActualThemeChanged?.Invoke(this, null);
+			}
+		}
+#endif
 	}
 
 	#endregion
+
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+	private void SyncRootRequestedTheme()
+	{
+		if (XamlRoot?.Content == this)
+		{
+			Application.Current.SyncRequestedThemeFromXamlRoot(XamlRoot);
+		}
+	}
+#endif
 
 	#region Theme propagation
 
@@ -96,6 +120,7 @@ public partial class FrameworkElement
 	{
 		get
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			// Get base (non-HighContrast) theme.
 			// Fall back to default (system or app) theme if the local theme isn't set.
 			var baseTheme = Theming.GetBaseValue(GetTheme());
@@ -105,6 +130,11 @@ public partial class FrameworkElement
 					Application.Current?.ActualElementTheme ?? ElementTheme.Light);
 			}
 			return Theming.ToElementTheme(baseTheme);
+#else
+			return RequestedTheme == ElementTheme.Default
+				? (Application.Current?.ActualElementTheme ?? ElementTheme.Light)
+				: RequestedTheme;
+#endif
 		}
 	}
 
@@ -119,6 +149,9 @@ public partial class FrameworkElement
 	/// </summary>
 	internal void NotifyThemeChanged(Theme theme, bool forceRefresh = false)
 	{
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		return;
+#else
 		// Cycle protection - prevent re-entrant theme notifications
 		if (IsProcessingThemeWalk)
 		{
@@ -151,6 +184,7 @@ public partial class FrameworkElement
 		{
 			SetIsProcessingThemeWalk(false);
 		}
+#endif
 	}
 
 	// MUX Reference Theming.cpp CDependencyObject::NotifyThemeChanged (line 110)
@@ -204,11 +238,7 @@ public partial class FrameworkElement
 				// For children inheriting theme (RequestedTheme == Default),
 				// pull the frozen foreground from the parent, just as WinUI children
 				// pull from parent's TextFormatting during EnsureTextFormatting.
-				var parent = this.GetParent() as FrameworkElement
-#if __IOS__ || __ANDROID__
-					?? VisualTreeHelper.GetParent(this) as FrameworkElement
-#endif
-					;
+				var parent = this.GetParent() as FrameworkElement;
 				var parentFg = parent?._themeForeground;
 				if (parentFg is not null)
 				{
@@ -505,6 +535,7 @@ public partial class FrameworkElement
 	/// </summary>
 	internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 	{
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		// Pass element's ActualTheme to resource binding updates
 		TryGetResources()?.UpdateThemeBindings(updateReason);
 		(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(
@@ -513,6 +544,27 @@ public partial class FrameworkElement
 
 		// Don't fire ActualThemeChanged here anymore - it's now fired
 		// in NotifyThemeChangedCore when the theme actually changes
+#else
+		TryGetResources()?.UpdateThemeBindings(updateReason);
+		(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(updateReason);
+		if (updateReason == ResourceUpdateReason.ThemeResource)
+		{
+			if (ActualThemeChanged != null && RequestedTheme == ElementTheme.Default)
+			{
+				try
+				{
+					ActualThemeChanged?.Invoke(this, null);
+				}
+				catch (Exception e)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error("ActualThemeChanged handler threw an exception", e);
+					}
+				}
+			}
+		}
+#endif
 	}
 
 	#endregion

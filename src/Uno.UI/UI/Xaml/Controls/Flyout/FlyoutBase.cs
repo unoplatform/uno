@@ -360,22 +360,26 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			private set
 			{
 				// MUX Reference: FlyoutBase_partial.cpp SetPlacementTarget (lines 2978-3006)
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				// Detach ActualThemeChanged from old target on reassignment
 				if (_targetWeakRef?.IsAlive == true && _targetWeakRef.Target is FrameworkElement oldTarget)
 				{
 					oldTarget.ActualThemeChanged -= OnPlacementTargetActualThemeChanged;
 				}
+#endif
 
 				WeakReferencePool.ReturnWeakReference(this, _targetWeakRef);
 				_targetWeakRef = value is not null ? WeakReferencePool.RentWeakReference(this, value) : null;
 			}
 		}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX Reference: FlyoutBase_partial.cpp lines 3001-3006
 		private void OnPlacementTargetActualThemeChanged(FrameworkElement sender, object args)
 		{
 			ForwardThemeToPresenter();
 		}
+#endif
 
 		/// <summary>
 		/// Defines an optional position of the popup in the <see cref="Target"/> element.
@@ -403,11 +407,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			if (!cancel)
 			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				// Detach ActualThemeChanged on close to avoid holding the flyout alive
 				if (_targetWeakRef?.IsAlive == true && _targetWeakRef.Target is FrameworkElement closingTarget)
 				{
 					closingTarget.ActualThemeChanged -= OnPlacementTargetActualThemeChanged;
 				}
+#endif
 
 				m_openingCanceled = true;
 
@@ -487,11 +493,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			Target = placementTarget;
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			// Attach ActualThemeChanged while open so flyout tracks target's theme
 			if (placementTarget is not null)
 			{
 				placementTarget.ActualThemeChanged += OnPlacementTargetActualThemeChanged;
 			}
+#endif
 
 			ForwardTargetPropertiesToPresenter();
 
@@ -745,18 +753,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				presenter.RequestedTheme = requestedTheme;
 				m_isFlyoutPresenterRequestedThemeOverridden = true;
 			}
-
-#if __IOS__ || __ANDROID__
-			// On native platforms, the normal OnRequestedThemeChanged → NotifyThemeChanged
-			// chain may not fully propagate through the native visual tree (e.g., due to
-			// intermediate native views or template timing). Force-refresh to ensure the
-			// presenter's entire subtree gets the updated theme.
-			if (requestedTheme != ElementTheme.Default)
-			{
-				var theme = Theming.FromElementTheme(requestedTheme);
-				presenter.NotifyThemeChanged(theme, forceRefresh: true);
-			}
-#endif
 
 			// Also set the popup's theme for SystemBackdrop support.
 			_popup.RequestedTheme = requestedTheme;
