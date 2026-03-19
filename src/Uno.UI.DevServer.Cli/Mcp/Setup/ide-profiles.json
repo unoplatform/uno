@@ -94,6 +94,16 @@
     "writeTarget": "{workspace}/.kiro/settings/mcp.json",
     "jsonRootKey": "mcpServers"
   },
+  "jetbrains-air": {
+    "configPaths": [
+      "{workspace}/.air/mcp.json",
+      "{workspace}/.mcp.json",
+      "{appdata}/JetBrains/Air/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.air/mcp.json",
+    "jsonRootKey": "mcpServers",
+    "extraArgs": ["--force-roots-fallback"]
+  },
   "junie-rider": {
     "configPaths": [
       "{workspace}/.idea/mcpServers.json"
