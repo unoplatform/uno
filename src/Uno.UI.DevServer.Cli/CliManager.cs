@@ -564,13 +564,23 @@ internal class CliManager
 		McpSetupOrchestrator orchestrator, Definitions defs, string workspace,
 		McpSetupParsedArgs parsed, string expectedVariant, string toolVersion)
 	{
-		var result = orchestrator.Status(defs, workspace, parsed.Ide, expectedVariant, toolVersion);
+		StatusResponse result;
+
 		if (parsed.JsonOutput)
 		{
+			result = orchestrator.Status(defs, workspace, parsed.Ide, expectedVariant, toolVersion);
 			Console.WriteLine(JsonSerializer.Serialize(result, McpSetupJson.OutputOptions));
 		}
 		else
 		{
+			var status = Spectre.Console.AnsiConsole.Status();
+			status.Spinner = Spectre.Console.Spinner.Known.Dots;
+			result = status.Start("Scanning MCP registrations...", ctx =>
+				{
+					Action<string> progress = msg => ctx.Status = msg;
+					return orchestrator.Status(defs, workspace, parsed.Ide, expectedVariant, toolVersion, progress);
+				});
+
 			McpSetupOutputFormatter.WriteStatus(result, workspace);
 		}
 

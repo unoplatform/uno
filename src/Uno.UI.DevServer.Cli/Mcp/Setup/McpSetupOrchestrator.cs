@@ -19,7 +19,8 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		string workspace,
 		string? callerIde,
 		string expectedVariant,
-		string toolVersion)
+		string toolVersion,
+		Action<string>? progress = null)
 	{
 		var scanner = new ConfigScanner(_fs);
 		var expectedDefinitions = BuildExpectedDefinitions(defs.Servers, expectedVariant);
@@ -28,13 +29,15 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		var serverEntries = new List<ServerStatusEntry>();
 
 		// Query all agent CLIs in parallel (each spawns a process, so parallelism helps)
-		var cliResults = QueryAllCliLists(defs.Ides, workspace);
+		progress?.Invoke("Querying agent CLIs...");
+		var cliResults = QueryAllCliLists(defs.Ides, workspace, progress);
 
 		// Build per-server, per-client status
 		var ideStatusMap = new Dictionary<string, Dictionary<string, ServerIdeStatus>>();
 
 		foreach (var (ideName, profile) in defs.Ides)
 		{
+			progress?.Invoke($"Scanning {ideName}...");
 			var scanResult = scanner.Scan(profile, workspace, defs.Servers, expectedDefinitions);
 			var cliServerNames = cliResults.TryGetValue(ideName, out var names) ? names : [];
 
@@ -652,7 +655,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 	/// Deduplicates by executable — profiles sharing the same CLI are queried once.
 	/// </summary>
 	private Dictionary<string, HashSet<string>> QueryAllCliLists(
-		IReadOnlyDictionary<string, IdeProfile> ides, string workspace)
+		IReadOnlyDictionary<string, IdeProfile> ides, string workspace, Action<string>? progress = null)
 	{
 		if (_cliRunner is null)
 		{
@@ -669,6 +672,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 
 		Parallel.ForEach(cliGroups, group =>
 		{
+			progress?.Invoke($"Querying {group.Key}...");
 			var representative = group.First().Value;
 			var found = QueryCliList(representative, workspace);
 			if (found.Count > 0)
