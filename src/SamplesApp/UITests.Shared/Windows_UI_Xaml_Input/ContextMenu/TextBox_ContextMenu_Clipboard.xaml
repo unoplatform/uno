@@ -1,0 +1,200 @@
+<Page
+	x:Class="UITests.Shared.Windows_UI_Xaml_Input.ContextMenu.TextBox_ContextMenu_Clipboard"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid Padding="12">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<!-- Header -->
+		<StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,12">
+			<TextBlock Text="TextBox Clipboard and Keyboard Issues" FontSize="18" FontWeight="SemiBold" />
+			<TextBlock Text="Repro scenarios for clipboard access failures and keyboard shortcut issues (kahua-private#436)."
+					   TextWrapping="Wrap" Foreground="Gray" />
+		</StackPanel>
+
+		<!-- Test Areas -->
+		<ScrollViewer Grid.Row="1">
+			<StackPanel Spacing="16">
+
+				<!-- Issue 6: Clipboard.GetContents() returns empty -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="1. Clipboard.GetContent() Returns Empty" FontWeight="SemiBold" />
+						<TextBlock TextWrapping="Wrap" Foreground="Gray"
+								   Text="Copy text from an external app (e.g. Notepad), then click 'Inspect Clipboard'. Bug: Clipboard.GetContent() may return empty despite text being on the clipboard. Error: 'EnumClipboardFormats failed: Thread does not have a clipboard open.'" />
+
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<Button x:Name="InspectClipboardButton"
+									Content="Inspect Clipboard"
+									Click="OnInspectClipboardClick" />
+							<Button x:Name="SetClipboardButton"
+									Content="Set Clipboard Text"
+									Click="OnSetClipboardClick" />
+							<Button x:Name="ClearClipboardButton"
+									Content="Clear Clipboard"
+									Click="OnClearClipboardClick" />
+						</StackPanel>
+						<TextBlock x:Name="ClipboardInspectResult" TextWrapping="Wrap" Foreground="Gray" FontFamily="Consolas" FontSize="12"
+								   Text="Click 'Inspect Clipboard' to see clipboard state..." />
+					</StackPanel>
+				</Border>
+
+				<!-- Issue 6b: Clipboard round-trip test -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="2. Clipboard Round-Trip Test" FontWeight="SemiBold" />
+						<TextBlock TextWrapping="Wrap" Foreground="Gray"
+								   Text="Type text in the source TextBox, select it, copy with Ctrl+C, then paste into the target TextBox with Ctrl+V. Click 'Verify Round-Trip' to compare." />
+
+						<TextBlock Text="Source (copy from here):" FontSize="12" />
+						<TextBox x:Name="ClipboardSourceTextBox"
+								 Text="Hello clipboard round-trip test!"
+								 Width="400" HorizontalAlignment="Left" />
+
+						<TextBlock Text="Target (paste here):" FontSize="12" />
+						<TextBox x:Name="ClipboardTargetTextBox"
+								 PlaceholderText="Ctrl+V to paste here"
+								 Width="400" HorizontalAlignment="Left" />
+
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<Button Content="Copy Source Text"
+									Click="OnCopySourceClick" />
+							<Button Content="Paste to Target"
+									Click="OnPasteToTargetClick" />
+							<Button Content="Verify Round-Trip"
+									Click="OnVerifyRoundTripClick" />
+						</StackPanel>
+						<TextBlock x:Name="RoundTripResult" TextWrapping="Wrap" Foreground="Gray" FontFamily="Consolas" FontSize="12"
+								   Text="Copy, paste, then verify..." />
+					</StackPanel>
+				</Border>
+
+				<!-- Issue 7: Ctrl+V hooks not working (WASM) -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="3. Ctrl+V Paste Hooks (WASM)" FontWeight="SemiBold" />
+						<TextBlock TextWrapping="Wrap" Foreground="Gray"
+								   Text="On WASM: Copy text to clipboard, then press Ctrl+V in the TextBox below. Bug: the paste keyboard shortcut hook may not work on the HTML/WASM renderer. Also test Ctrl+C (copy) and Ctrl+X (cut)." />
+
+						<TextBox x:Name="PasteHookTextBox"
+								 Text="Test Ctrl+C, Ctrl+X, Ctrl+V keyboard shortcuts here"
+								 Width="400" HorizontalAlignment="Left"
+								 KeyDown="OnPasteHookTextBoxKeyDown" />
+						<TextBlock x:Name="PasteHookStatus" TextWrapping="Wrap" Foreground="Gray" FontFamily="Consolas" FontSize="12"
+								   Text="Keyboard and paste events will be logged here..." />
+					</StackPanel>
+				</Border>
+
+				<!-- Issue 8: Shift+End not selecting text -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="4. Shift+End / Shift+Home Text Selection" FontWeight="SemiBold" />
+						<TextBlock TextWrapping="Wrap" Foreground="Gray"
+								   Text="Click at the beginning of the text, then press Shift+End. The text from cursor to end-of-line should be selected. Bug: On WASM, Shift+End may not select text correctly. Also test Shift+Home, Ctrl+Shift+End, Ctrl+Shift+Home." />
+
+						<TextBox x:Name="ShiftEndTextBox"
+								 Text="Click at start of this line, then press Shift+End to select to end"
+								 Width="500" HorizontalAlignment="Left"
+								 SelectionChanged="OnShiftEndSelectionChanged" />
+						<TextBlock x:Name="ShiftEndStatus" TextWrapping="Wrap" Foreground="Gray" FontFamily="Consolas" FontSize="12"
+								   Text="Selection: (none)" />
+
+						<TextBlock Text="Multi-line test:" FontSize="12" Margin="0,8,0,0" />
+						<TextBox x:Name="ShiftEndMultiLineTextBox"
+								 AcceptsReturn="True"
+								 Height="100"
+								 Width="500" HorizontalAlignment="Left"
+								 Text="Line 1: Click here and press Shift+End&#x0a;Line 2: Try Shift+Home from end of this line&#x0a;Line 3: Try Ctrl+Shift+End to select to end of all text"
+								 SelectionChanged="OnShiftEndMultiLineSelectionChanged" />
+						<TextBlock x:Name="ShiftEndMultiLineStatus" TextWrapping="Wrap" Foreground="Gray" FontFamily="Consolas" FontSize="12"
+								   Text="Selection: (none)" />
+					</StackPanel>
+				</Border>
+
+				<!-- Additional keyboard shortcuts test -->
+				<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8" Padding="16">
+					<StackPanel Spacing="8">
+						<TextBlock Text="5. Additional Keyboard Shortcuts" FontWeight="SemiBold" />
+						<TextBlock TextWrapping="Wrap" Foreground="Gray"
+								   Text="Test these keyboard shortcuts in the TextBox below and verify they work correctly:" />
+
+						<TextBox x:Name="KeyboardShortcutTextBox"
+								 Text="Test keyboard shortcuts: Ctrl+A, Ctrl+Z, Ctrl+Y, Home, End, Ctrl+Left, Ctrl+Right"
+								 Width="500" HorizontalAlignment="Left"
+								 KeyDown="OnKeyboardShortcutKeyDown" />
+
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+
+							<StackPanel Grid.Column="0" Spacing="2">
+								<TextBlock Text="Expected shortcuts:" FontSize="12" FontWeight="SemiBold" />
+								<TextBlock Text="Ctrl+A: Select All" FontSize="12" FontFamily="Consolas" />
+								<TextBlock Text="Ctrl+C: Copy" FontSize="12" FontFamily="Consolas" />
+								<TextBlock Text="Ctrl+X: Cut" FontSize="12" FontFamily="Consolas" />
+								<TextBlock Text="Ctrl+V: Paste" FontSize="12" FontFamily="Consolas" />
+								<TextBlock Text="Ctrl+Z: Undo" FontSize="12" FontFamily="Consolas" />
+								<TextBlock Text="Ctrl+Y: Redo" FontSize="12" FontFamily="Consolas" />
+							</StackPanel>
+
+							<StackPanel Grid.Column="1" Spacing="2">
+								<TextBlock Text="Selection shortcuts:" FontSize="12" FontWeight="SemiBold" />
+								<TextBlock Text="Shift+End: Select to end of line" FontSize="12" FontFamily="Consolas" />
+								<TextBlock Text="Shift+Home: Select to start of line" FontSize="12" FontFamily="Consolas" />
+								<TextBlock Text="Shift+Left/Right: Extend selection" FontSize="12" FontFamily="Consolas" />
+								<TextBlock Text="Ctrl+Shift+End: Select to end" FontSize="12" FontFamily="Consolas" />
+								<TextBlock Text="Ctrl+Shift+Home: Select to start" FontSize="12" FontFamily="Consolas" />
+							</StackPanel>
+						</Grid>
+
+						<TextBlock x:Name="KeyboardShortcutStatus" TextWrapping="Wrap" Foreground="Gray" FontFamily="Consolas" FontSize="12"
+								   Text="Key events will be logged here..." />
+					</StackPanel>
+				</Border>
+
+			</StackPanel>
+		</ScrollViewer>
+
+		<!-- Event Log -->
+		<Border Grid.Row="2"
+				Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+				CornerRadius="8" Padding="12" Margin="0,12,0,0"
+				MaxHeight="200">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+
+				<Grid Grid.Row="0" Margin="0,0,0,8">
+					<TextBlock Text="Event Log" FontWeight="SemiBold" VerticalAlignment="Center" />
+					<Button Content="Clear" Click="OnClearLogClick" HorizontalAlignment="Right" Padding="8,4" />
+				</Grid>
+
+				<ScrollViewer Grid.Row="1" x:Name="LogScrollViewer">
+					<TextBlock x:Name="EventLogText"
+							   Text="Events will be logged here..."
+							   TextWrapping="Wrap"
+							   FontFamily="Consolas"
+							   FontSize="12" />
+				</ScrollViewer>
+			</Grid>
+		</Border>
+	</Grid>
+</Page>
