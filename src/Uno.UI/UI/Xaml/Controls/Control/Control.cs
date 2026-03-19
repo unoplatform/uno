@@ -294,7 +294,7 @@ namespace Microsoft.UI.Xaml.Controls
 						// (e.g., FlyoutPresenter with RequestedTheme set before popup opened),
 						// force-propagate it to the newly added template subtree.
 						var controlTheme = GetTheme();
-						if (controlTheme != Uno.UI.Xaml.Theme.None && _templatedRoot is FrameworkElement templateFe)
+						if (controlTheme != Theme.None && _templatedRoot is FrameworkElement templateFe)
 						{
 							templateFe.NotifyThemeChanged(controlTheme, forceRefresh: true);
 						}
