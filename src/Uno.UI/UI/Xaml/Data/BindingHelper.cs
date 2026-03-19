@@ -55,6 +55,7 @@ namespace Uno.UI.Xaml
 		{
 			if (instance is IDependencyObjectStoreProvider provider)
 			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				// Push the element's theme context for resource resolution.
 				// This ensures ThemeResource bindings resolve with the correct theme
 				// when called from event handlers (like Loading) that don't have
@@ -91,6 +92,10 @@ namespace Uno.UI.Xaml
 						ResourceDictionary.PopRequestedThemeForSubTree();
 					}
 				}
+#else
+				provider.Store.ApplyElementNameBindings();
+				provider.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading, resourceContextProvider);
+#endif
 			}
 		}
 	}

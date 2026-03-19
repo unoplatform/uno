@@ -106,6 +106,7 @@ public partial class Popup
 
 				_closePopup.Disposable = currentXamlRoot?.OpenPopup(this);
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				// MUX Reference: Popup.cpp CPopupRoot::CompleteAdditionToOpenPopupList (lines 4289-4302)
 				// After the popup is added to PopupRoot, propagate this popup's theme
 				// to its child. The child was just reparented under PopupRoot (which has
@@ -115,6 +116,7 @@ public partial class Popup
 				{
 					feChild.NotifyThemeChanged(popupTheme);
 				}
+#endif
 
 			}
 			else

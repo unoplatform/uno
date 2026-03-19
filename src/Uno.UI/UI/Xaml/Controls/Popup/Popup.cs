@@ -151,6 +151,7 @@ public partial class Popup
 	partial void OnHorizontalOffsetChangedPartial(double oldHorizontalOffset, double newHorizontalOffset) =>
 		PopupPanel?.InvalidateMeasure();
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 	// MUX Reference: Popup.cpp CPopup::NotifyThemeChangedCore (lines 3589-3610)
 	// Popup's Child is reparented to PopupRoot's visual tree, so the normal
 	// PropagateThemeToChildren walk won't reach it. We must explicitly propagate.
@@ -163,6 +164,7 @@ public partial class Popup
 			child.NotifyThemeChanged(theme, forceRefresh);
 		}
 	}
+#endif
 
 	internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 	{
