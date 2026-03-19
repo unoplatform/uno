@@ -9,7 +9,7 @@ namespace Uno.UI.DevServer.Cli.Mcp.Setup;
 /// When an agent provides a CLI (e.g. <c>claude mcp add</c>), this runner
 /// handles executable detection, placeholder substitution, and process execution.
 /// </summary>
-internal class CliCommandRunner(ILogger logger)
+internal class CliCommandRunner(ILogger<CliCommandRunner> logger)
 {
 	/// <summary>
 	/// Checks whether <paramref name="cli"/>'s executable is available in PATH
