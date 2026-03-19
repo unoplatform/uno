@@ -117,6 +117,11 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 				continue;
 			}
 
+			if (!IsTransportSupported(profile, serverDef))
+			{
+				continue;
+			}
+
 			if (!expectedDefinitions.TryGetValue(serverName, out var definition))
 			{
 				continue;
@@ -156,7 +161,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		// CLI-first: if the agent provides a CLI and it is available, delegate to it.
 		if (profile.Cli is { Remove: not null } cli && _cliRunner is not null && _cliRunner.IsAvailable(cli))
 		{
-			return UninstallViaCli(defs, workspace, targetIde, cli, serverFilter, dryRun);
+			return UninstallViaCli(defs, workspace, targetIde, profile, cli, serverFilter, dryRun);
 		}
 
 		// Native strategy: no file-based config, no CLI available → manual registration guidance
@@ -441,6 +446,11 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 				continue;
 			}
 
+			if (!IsTransportSupported(profile, serverDef))
+			{
+				continue;
+			}
+
 			if (!expectedDefinitions.TryGetValue(serverName, out var definition))
 			{
 				continue;
@@ -510,15 +520,21 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		Definitions defs,
 		string workspace,
 		string targetIde,
+		IdeProfile profile,
 		CliProfile cli,
 		IReadOnlyList<string>? serverFilter,
 		bool dryRun)
 	{
 		var operations = new List<OperationEntry>();
 
-		foreach (var (serverName, _) in defs.Servers)
+		foreach (var (serverName, serverDef) in defs.Servers)
 		{
 			if (serverFilter is not null && !serverFilter.Contains(serverName, StringComparer.OrdinalIgnoreCase))
+			{
+				continue;
+			}
+
+			if (!IsTransportSupported(profile, serverDef))
 			{
 				continue;
 			}
@@ -584,6 +600,12 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		}
 
 		return placeholders;
+	}
+
+	private static bool IsTransportSupported(IdeProfile profile, ServerDefinition serverDef)
+	{
+		return profile.SupportedTransports is null
+			|| profile.SupportedTransports.Any(t => string.Equals(t, serverDef.Transport, StringComparison.OrdinalIgnoreCase));
 	}
 
 	private static OperationResponse ErrorResponse(string message) =>

@@ -53,7 +53,8 @@
       "{appdata}/Claude/claude_desktop_config.json"
     ],
     "writeTarget": "{appdata}/Claude/claude_desktop_config.json",
-    "jsonRootKey": "mcpServers"
+    "jsonRootKey": "mcpServers",
+    "supportedTransports": ["stdio"]
   },
   "codex-cli": {
     "configPaths": [],

@@ -110,6 +110,10 @@ internal static class DefinitionsLoader
 				cli = new CliProfile(executable, detect, addStdio, addHttp, list, remove);
 			}
 
+			var supportedTransports = element.TryGetProperty("supportedTransports", out var stElement)
+				? stElement.Deserialize<string[]>(_options)
+				: null;
+
 			result[key] = new IdeProfile(
 				configPaths,
 				writeTarget,
@@ -121,7 +125,8 @@ internal static class DefinitionsLoader
 				strategy,
 				manualRegistrationMessage,
 				excludeFromDetection,
-				cli);
+				cli,
+				supportedTransports);
 		}
 
 		return result;
