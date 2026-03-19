@@ -746,6 +746,18 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				m_isFlyoutPresenterRequestedThemeOverridden = true;
 			}
 
+#if __IOS__ || __ANDROID__
+			// On native platforms, the normal OnRequestedThemeChanged → NotifyThemeChanged
+			// chain may not fully propagate through the native visual tree (e.g., due to
+			// intermediate native views or template timing). Force-refresh to ensure the
+			// presenter's entire subtree gets the updated theme.
+			if (requestedTheme != ElementTheme.Default)
+			{
+				var theme = Uno.UI.Xaml.Theming.FromElementTheme(requestedTheme);
+				presenter.NotifyThemeChanged(theme, forceRefresh: true);
+			}
+#endif
+
 			// Also set the popup's theme for SystemBackdrop support.
 			_popup.RequestedTheme = requestedTheme;
 		}
