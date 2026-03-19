@@ -753,7 +753,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// presenter's entire subtree gets the updated theme.
 			if (requestedTheme != ElementTheme.Default)
 			{
-				var theme = Uno.UI.Xaml.Theming.FromElementTheme(requestedTheme);
+				var theme = Theming.FromElementTheme(requestedTheme);
 				presenter.NotifyThemeChanged(theme, forceRefresh: true);
 			}
 #endif
