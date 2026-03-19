@@ -482,6 +482,21 @@ namespace Microsoft.UI.Xaml
 				((IDependencyObjectStoreProvider)this).Store.ApplyElementNameBindings();
 				UpdateThemeBindings(ResourceUpdateReason.ResolvedOnLoading);
 
+	
+#if __IOS__ || __ANDROID__
+				// On native platforms, ApplyStyles() above may have triggered template
+				// application (RegisterContentTemplateRoot → AddSubview) which loads
+				// template children leaf-first via MovedToWindow. Those children loaded
+				// before this element could propagate its theme. If this element has an
+				// explicit RequestedTheme, force-propagate now to reach those children.
+				// The earlier NotifyThemeChanged call (line ~442) may have early-outed
+				// because GetTheme() was already set before the element entered the tree.
+				if (RequestedTheme != ElementTheme.Default)
+				{
+					NotifyThemeChanged(Theming.FromElementTheme(RequestedTheme), forceRefresh: true);
+				}
+#endif
+
 				// MUX Reference: CUIElement::Enter / EnsureTextFormatting
 				// Pull inherited theme foreground from parent when entering the visual tree.
 				// Only apply when there IS a parent with a frozen theme foreground, meaning
