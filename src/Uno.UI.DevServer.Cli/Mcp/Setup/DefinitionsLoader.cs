@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -89,6 +88,28 @@ internal static class DefinitionsLoader
 				: null;
 			var excludeFromDetection = element.TryGetProperty("excludeFromDetection", out var efd) && efd.GetBoolean();
 
+			CliProfile? cli = null;
+			if (element.TryGetProperty("cli", out var cliElement))
+			{
+				var executable = cliElement.GetProperty("executable").GetString()
+					?? throw new JsonException($"IDE profile '{key}': cli.executable is required.");
+				var detect = cliElement.GetProperty("detect").Deserialize<string[]>(_options)
+					?? throw new JsonException($"IDE profile '{key}': cli.detect is required.");
+				var addStdio = cliElement.TryGetProperty("addStdio", out var ast)
+					? ast.Deserialize<string[]>(_options)
+					: null;
+				var addHttp = cliElement.TryGetProperty("addHttp", out var aht)
+					? aht.Deserialize<string[]>(_options)
+					: null;
+				var list = cliElement.TryGetProperty("list", out var lt)
+					? lt.Deserialize<string[]>(_options)
+					: null;
+				var remove = cliElement.TryGetProperty("remove", out var rt)
+					? rt.Deserialize<string[]>(_options)
+					: null;
+				cli = new CliProfile(executable, detect, addStdio, addHttp, list, remove);
+			}
+
 			result[key] = new IdeProfile(
 				configPaths,
 				writeTarget,
@@ -99,7 +120,8 @@ internal static class DefinitionsLoader
 				mergeCommandArgs,
 				strategy,
 				manualRegistrationMessage,
-				excludeFromDetection);
+				excludeFromDetection,
+				cli);
 		}
 
 		return result;

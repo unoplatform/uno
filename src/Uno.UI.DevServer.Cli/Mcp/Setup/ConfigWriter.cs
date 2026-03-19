@@ -404,7 +404,10 @@ internal static class ConfigWriter
 						throw new System.Text.Json.JsonException("Unexpected end of JSON while reading property value.");
 					}
 
-					while (reader.TokenType == JsonToken.Comment) { if (!reader.Read()) break; }
+					if (!ReadPastComments(reader, writer))
+					{
+						throw new System.Text.Json.JsonException("Unexpected end of JSON while reading property value.");
+					}
 
 					if (remainingProperties.Remove(propertyName))
 					{

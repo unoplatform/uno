@@ -23,13 +23,22 @@ internal sealed record IdeProfile(
 	bool MergeCommandArgs = false,
 	string Strategy = "file",
 	string? ManualRegistrationMessage = null,
-	bool ExcludeFromDetection = false);
-// Future direction:
-// Some IDE clients expose a native CLI for MCP registration (for example Claude Code).
-// We currently model every profile as file-backed because status/install/uninstall are
-// standardized around persisted config files, but this record may eventually grow an
-// install strategy so install/uninstall can delegate to a native CLI while status keeps
-// scanning the on-disk config as the source of truth.
+	bool ExcludeFromDetection = false,
+	CliProfile? Cli = null);
+
+/// <summary>
+/// Defines how to drive a native CLI for MCP registration.
+/// When present and the executable is found in PATH, install/uninstall
+/// delegate to the agent's own CLI instead of writing config files directly.
+/// Status always scans on-disk config as the source of truth.
+/// </summary>
+internal sealed record CliProfile(
+	string Executable,
+	string[] Detect,
+	string[]? AddStdio,
+	string[]? AddHttp,
+	string[]? List,
+	string[]? Remove);
 
 internal sealed record ServerDefinition(
 	string Transport,

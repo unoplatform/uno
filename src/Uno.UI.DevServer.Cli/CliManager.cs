@@ -41,7 +41,7 @@ internal class CliManager
 			// current working directory differs from the solution root.
 			if (!solutionDirParseResult.Success)
 			{
-				return 1;
+				return 2;
 			}
 
 			originalArgs = solutionDirParseResult.FilteredArgs;

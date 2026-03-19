@@ -8,10 +8,11 @@ namespace Uno.UI.DevServer.Cli.Mcp.Setup;
 /// Composes <see cref="ConfigScanner"/>, <see cref="ConfigWriter"/>,
 /// <see cref="ServerDefinitionResolver"/>, and <see cref="DuplicateDetector"/>.
 /// </summary>
-internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrchestrator> logger)
+internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrchestrator> logger, CliCommandRunner? cliRunner = null)
 {
 	private readonly IFileSystem _fs = fs;
 	private readonly ILogger<McpSetupOrchestrator> _logger = logger;
+	private readonly CliCommandRunner? _cliRunner = cliRunner;
 
 	public StatusResponse Status(
 		Definitions defs,
@@ -36,7 +37,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			{
 				detectedIdes.Add(ideName);
 			}
-			supportedIdes.Add(new SupportedIdeEntry(ideName, profile.Strategy, scanResult.Detected));
+			supportedIdes.Add(new SupportedIdeEntry(ideName, profile.Strategy, scanResult.Detected && !profile.ExcludeFromDetection));
 
 			foreach (var (serverName, serverResult) in scanResult.ServerResults)
 			{
@@ -97,6 +98,12 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			return NativeRegistrationResponse(defs, targetIde, profile, serverFilter);
 		}
 
+		// CLI-first: if the agent provides a CLI and it is available, delegate to it.
+		if (profile.Cli is { } cli && _cliRunner is not null && _cliRunner.IsAvailable(cli))
+		{
+			return InstallViaCli(defs, workspace, targetIde, profile, cli, expectedVariant, serverFilter, dryRun);
+		}
+
 		var operations = new List<OperationEntry>();
 		var scanner = new ConfigScanner(_fs);
 		var expectedDefinitions = BuildExpectedDefinitions(defs.Servers, expectedVariant);
@@ -119,7 +126,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			try
 			{
 				var entry = InstallServer(
-					targetIde, profile, scanResult, serverName, serverDef, serverResult, definition, dryRun, backedUpFiles);
+					targetIde, profile, scanResult, serverName, serverDef, serverResult, definition, defs.Servers, dryRun, backedUpFiles);
 				operations.Add(entry);
 			}
 			catch (Exception ex)
@@ -148,6 +155,12 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		if (!string.Equals(profile.Strategy, "file", StringComparison.OrdinalIgnoreCase))
 		{
 			return NativeRegistrationResponse(defs, targetIde, profile, serverFilter);
+		}
+
+		// CLI-first: if the agent provides a CLI and it is available, delegate to it.
+		if (profile.Cli is { Remove: not null } cli && _cliRunner is not null && _cliRunner.IsAvailable(cli))
+		{
+			return UninstallViaCli(defs, workspace, targetIde, cli, serverFilter, dryRun);
 		}
 
 		var operations = new List<OperationEntry>();
@@ -252,6 +265,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		ServerDefinition serverDef,
 		ServerScanResult? serverResult,
 		JsonObject definition,
+		IReadOnlyDictionary<string, ServerDefinition> allServers,
 		bool dryRun,
 		HashSet<string> backedUpFiles)
 	{
@@ -276,7 +290,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			existingContent = _fs.ReadAllText(targetPath);
 
 			// Find if there's an existing entry under a different key name
-			var matchedKey = FindServerKeyInConfig(existingContent, profile.JsonRootKey, serverName, serverDef, new Dictionary<string, ServerDefinition> { [serverName] = serverDef });
+			var matchedKey = FindServerKeyInConfig(existingContent, profile.JsonRootKey, serverName, serverDef, allServers);
 			if (matchedKey is not null)
 			{
 				writeKey = matchedKey;
@@ -403,6 +417,171 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		}
 
 		return result;
+	}
+
+	private OperationResponse InstallViaCli(
+		Definitions defs,
+		string workspace,
+		string targetIde,
+		IdeProfile profile,
+		CliProfile cli,
+		string expectedVariant,
+		IReadOnlyList<string>? serverFilter,
+		bool dryRun)
+	{
+		var operations = new List<OperationEntry>();
+		var expectedDefinitions = BuildExpectedDefinitions(defs.Servers, expectedVariant);
+
+		foreach (var (serverName, serverDef) in defs.Servers)
+		{
+			if (serverFilter is not null && !serverFilter.Contains(serverName, StringComparer.OrdinalIgnoreCase))
+			{
+				continue;
+			}
+
+			if (!expectedDefinitions.TryGetValue(serverName, out var definition))
+			{
+				continue;
+			}
+
+			try
+			{
+				var entry = InstallServerViaCli(targetIde, cli, serverName, serverDef, definition, workspace, dryRun);
+				operations.Add(entry);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "CLI install failed for {Server}, falling back to file", serverName);
+				var scanner = new ConfigScanner(_fs);
+				var scanResult = scanner.Scan(profile, workspace, defs.Servers, expectedDefinitions);
+				var serverResult = scanResult.ServerResults.TryGetValue(serverName, out var sr) ? sr : null;
+				var backedUp = new HashSet<string>(FileSystem.PathComparer);
+				operations.Add(InstallServer(targetIde, profile, scanResult, serverName, serverDef, serverResult, definition, defs.Servers, dryRun, backedUp));
+			}
+		}
+
+		return new OperationResponse(McpSetupProtocol.Version, operations);
+	}
+
+	private OperationEntry InstallServerViaCli(
+		string targetIde,
+		CliProfile cli,
+		string serverName,
+		ServerDefinition serverDef,
+		JsonObject definition,
+		string workingDirectory,
+		bool dryRun)
+	{
+		var template = string.Equals(serverDef.Transport, "http", StringComparison.OrdinalIgnoreCase)
+			? cli.AddHttp
+			: cli.AddStdio;
+
+		if (template is null)
+		{
+			return new OperationEntry(serverName, targetIde, "error", null,
+				$"CLI does not support {serverDef.Transport} transport.");
+		}
+
+		var placeholders = BuildPlaceholders(serverName, serverDef, definition);
+
+		if (dryRun)
+		{
+			var args = CliCommandRunner.ExpandArgs(template, placeholders);
+			return new OperationEntry(serverName, targetIde, "created", null, null,
+				$"Dry-run: {cli.Executable} {string.Join(' ', args)}");
+		}
+
+		var (exitCode, stdout, stderr) = _cliRunner!.Execute(
+			cli.Executable, template, placeholders, workingDirectory);
+
+		if (exitCode != 0)
+		{
+			throw new InvalidOperationException(
+				$"CLI exited with code {exitCode}: {stderr.Trim()}");
+		}
+
+		return new OperationEntry(serverName, targetIde, "created", null, null,
+			$"Registered via {cli.Executable} CLI");
+	}
+
+	private OperationResponse UninstallViaCli(
+		Definitions defs,
+		string workspace,
+		string targetIde,
+		CliProfile cli,
+		IReadOnlyList<string>? serverFilter,
+		bool dryRun)
+	{
+		var operations = new List<OperationEntry>();
+
+		foreach (var (serverName, _) in defs.Servers)
+		{
+			if (serverFilter is not null && !serverFilter.Contains(serverName, StringComparer.OrdinalIgnoreCase))
+			{
+				continue;
+			}
+
+			var placeholders = new Dictionary<string, object> { ["name"] = serverName };
+
+			if (dryRun)
+			{
+				var args = CliCommandRunner.ExpandArgs(cli.Remove!, placeholders);
+				operations.Add(new OperationEntry(serverName, targetIde, "removed", null, null,
+					$"Dry-run: {cli.Executable} {string.Join(' ', args)}"));
+				continue;
+			}
+
+			try
+			{
+				var (exitCode, _, stderr) = _cliRunner!.Execute(
+					cli.Executable, cli.Remove!, placeholders, workspace);
+
+				operations.Add(exitCode == 0
+					? new OperationEntry(serverName, targetIde, "removed", null, null,
+						$"Removed via {cli.Executable} CLI")
+					: new OperationEntry(serverName, targetIde, "error", null,
+						$"CLI exited with code {exitCode}: {stderr.Trim()}"));
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "CLI uninstall failed for {Server}", serverName);
+				operations.Add(new OperationEntry(serverName, targetIde, "error", null, ex.Message));
+			}
+		}
+
+		return new OperationResponse(McpSetupProtocol.Version, operations);
+	}
+
+	private static Dictionary<string, object> BuildPlaceholders(
+		string serverName,
+		ServerDefinition serverDef,
+		JsonObject definition)
+	{
+		var placeholders = new Dictionary<string, object> { ["name"] = serverName };
+
+		if (string.Equals(serverDef.Transport, "http", StringComparison.OrdinalIgnoreCase))
+		{
+			if (definition["url"]?.GetValue<string>() is { } url)
+			{
+				placeholders["url"] = url;
+			}
+		}
+		else
+		{
+			if (definition["command"]?.GetValue<string>() is { } command)
+			{
+				placeholders["command"] = command;
+			}
+
+			if (definition["args"] is JsonArray argsArray)
+			{
+				placeholders["args"] = argsArray
+					.Select(a => a?.GetValue<string>() ?? string.Empty)
+					.ToArray();
+			}
+		}
+
+		return placeholders;
 	}
 
 	private static OperationResponse ErrorResponse(string message) =>

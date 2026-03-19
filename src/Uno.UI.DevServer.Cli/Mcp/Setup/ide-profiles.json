@@ -10,10 +10,19 @@
   },
   "gemini-cli": {
     "configPaths": [
+      "{workspace}/.gemini/settings.json",
       "{home}/.gemini/settings.json"
     ],
     "writeTarget": "{home}/.gemini/settings.json",
-    "jsonRootKey": "mcpServers"
+    "jsonRootKey": "mcpServers",
+    "cli": {
+      "executable": "gemini",
+      "detect": ["--version"],
+      "addStdio": ["mcp", "add", "-s", "project", "{name}", "{command}", "{args...}"],
+      "addHttp": ["mcp", "add", "-s", "project", "-t", "http", "{name}", "{url}"],
+      "list": ["mcp", "list"],
+      "remove": ["mcp", "remove", "-s", "project", "{name}"]
+    }
   },
   "copilot-cli": {
     "configPaths": [],
@@ -28,7 +37,15 @@
       "{home}/.claude.json"
     ],
     "writeTarget": "{workspace}/.mcp.json",
-    "jsonRootKey": "mcpServers"
+    "jsonRootKey": "mcpServers",
+    "cli": {
+      "executable": "claude",
+      "detect": ["--version"],
+      "addStdio": ["mcp", "add", "--scope", "project", "--transport", "stdio", "{name}", "--", "{command}", "{args...}"],
+      "addHttp": ["mcp", "add", "--scope", "project", "--transport", "http", "{name}", "{url}"],
+      "list": ["mcp", "list"],
+      "remove": ["mcp", "remove", "{name}"]
+    }
   },
   "claude-desktop": {
     "configPaths": [
@@ -37,13 +54,33 @@
     "writeTarget": "{appdata}/Claude/claude_desktop_config.json",
     "jsonRootKey": "mcpServers"
   },
+  "codex-cli": {
+    "configPaths": [],
+    "writeTarget": "",
+    "jsonRootKey": "mcpServers",
+    "strategy": "native",
+    "manualRegistrationMessage": "Use 'codex mcp add' to register MCP servers in Codex CLI.",
+    "cli": {
+      "executable": "codex",
+      "detect": ["--version"],
+      "addStdio": ["mcp", "add", "{name}", "--", "{command}", "{args...}"],
+      "addHttp": ["mcp", "add", "{name}", "--url", "{url}"],
+      "list": ["mcp", "list", "--json"],
+      "remove": ["mcp", "remove", "{name}"]
+    }
+  },
   "cursor": {
     "configPaths": [
       "{workspace}/.cursor/mcp.json",
       "{home}/.cursor/mcp.json"
     ],
     "writeTarget": "{workspace}/.cursor/mcp.json",
-    "jsonRootKey": "mcpServers"
+    "jsonRootKey": "mcpServers",
+    "cli": {
+      "executable": "cursor-agent",
+      "detect": ["--version"],
+      "list": ["mcp", "list"]
+    }
   },
   "kiro": {
     "configPaths": [
@@ -97,7 +134,13 @@
     "jsonRootKey": "mcp",
     "includeType": true,
     "typeMap": {"stdio": "local", "http": "remote"},
-    "mergeCommandArgs": true
+    "mergeCommandArgs": true,
+    "cli": {
+      "executable": "opencode",
+      "detect": ["--version"],
+      "list": ["mcp", "list"],
+      "remove": ["mcp", "remove", "{name}"]
+    }
   },
   "unknown": {
     "configPaths": [

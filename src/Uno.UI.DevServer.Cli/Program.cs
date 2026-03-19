@@ -121,6 +121,7 @@ internal class Program
 		services.AddSingleton<McpStdioServer>();
 		services.AddSingleton<ProxyLifecycleManager>();
 		services.AddSingleton<IFileSystem, FileSystem>();
+		services.AddSingleton<CliCommandRunner>();
 		services.AddSingleton<McpSetupOrchestrator>();
 
 		using var sp = services.BuildServiceProvider();
