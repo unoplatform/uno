@@ -716,19 +716,28 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			.ToList();
 
 		var perExecutable = new System.Collections.Concurrent.ConcurrentDictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
-		var progressLock = new object();
+		var pending = new System.Collections.Concurrent.ConcurrentDictionary<string, byte>(
+			cliGroups.Select(g => new KeyValuePair<string, byte>(g.Key, 0)),
+			StringComparer.OrdinalIgnoreCase);
+
+		if (!pending.IsEmpty)
+		{
+			progress?.Invoke($"Querying {string.Join(", ", pending.Keys)}...");
+		}
 
 		Parallel.ForEach(cliGroups, group =>
 		{
-			if (progress is not null)
-			{
-				lock (progressLock) { progress($"Querying {group.Key}..."); }
-			}
 			var representative = group.First().Value;
 			var found = QueryCliList(representative, workspace);
 			if (found.Count > 0)
 			{
 				perExecutable[group.Key] = found;
+			}
+
+			pending.TryRemove(group.Key, out _);
+			if (!pending.IsEmpty)
+			{
+				progress?.Invoke($"Querying {string.Join(", ", pending.Keys)}...");
 			}
 		});
 
