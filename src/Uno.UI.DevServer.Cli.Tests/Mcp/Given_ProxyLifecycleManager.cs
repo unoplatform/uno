@@ -213,7 +213,50 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
-	[Description("Selecting the same solution after a global.json SDK version change restarts the DevServer")]
+	[Description("Selecting the already-running solution with forceRestart=true restarts the DevServer")]
+	public async Task WhenSelectingCurrentRunningSolutionWithForceRestart_DevServerRestarts()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+		DevServerMonitor? monitor = null;
+
+		try
+		{
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "StudioLive.slnx", "6.6.0-dev.1");
+			var solutionPath = Path.Combine(workspaceDirectory, "StudioLive.slnx");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var workspaceResolution = await resolver.ResolveAsync(root);
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", workspaceResolution with { SelectionSource = WorkspaceSelectionSource.UserSelected });
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			monitor.StartMonitoring(workspaceDirectory, port: 0, forwardedArgs: [], workspaceResolution);
+			healthService.DevServerStarted = true;
+
+			var result = await subject.SelectSolutionAsync(solutionPath, forceRestart: true);
+
+			result.Status.Should().Be("restarted");
+			result.DevServerAction.Should().Be("Restart");
+			healthService.DevServerStarted.Should().BeTrue();
+		}
+		finally
+		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
 	public async Task WhenSelectingSameSolutionAfterSdkVersionChange_DevServerRestarts()
 	{
 		var root = CreateTempDirectory();

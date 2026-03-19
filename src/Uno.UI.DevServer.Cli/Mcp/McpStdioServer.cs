@@ -40,7 +40,7 @@ internal class McpStdioServer(
 		bool forceRootsFallback,
 		Func<string[]> getRoots,
 		Func<string[], Task> setRootsHandler,
-		Func<string, Task<CallToolResult>> selectSolutionHandler)
+		Func<string, bool, Task<CallToolResult>> selectSolutionHandler)
 	{
 		var tcs = new TaskCompletionSource();
 
@@ -88,7 +88,8 @@ internal class McpStdioServer(
 						return errorResult;
 					}
 
-					var selectionResult = await selectSolutionHandler(solutionPath!);
+					var forceRestart = TryGetForceRestart(ctx.Params?.Arguments);
+					var selectionResult = await selectSolutionHandler(solutionPath!, forceRestart);
 					toolStopwatch.Stop();
 					LogTimeline(logger, "tool.select-solution.complete", toolStopwatch.ElapsedMilliseconds, toolName);
 					logger.LogDebug("Handled MCP tool {Tool} in {ElapsedMs} ms", toolName,
@@ -312,5 +313,15 @@ internal class McpStdioServer(
 		}
 
 		return true;
+	}
+
+	internal static bool TryGetForceRestart(IDictionary<string, JsonElement>? arguments)
+	{
+		if (arguments is null || !arguments.TryGetValue("forceRestart", out var element))
+		{
+			return false;
+		}
+
+		return element.ValueKind == JsonValueKind.True;
 	}
 }

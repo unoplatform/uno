@@ -176,4 +176,44 @@ public class Given_McpStdioServer
 		errorResult.IsError.Should().BeTrue();
 		((TextContentBlock)errorResult.Content.Single()).Text.Should().Contain("JSON string");
 	}
+
+	[TestMethod]
+	[Description("TryGetForceRestart returns true when forceRestart is explicitly set to true")]
+	public void TryGetForceRestart_WhenTrue_ReturnsTrue()
+	{
+		var arguments = new Dictionary<string, JsonElement>
+		{
+			["forceRestart"] = JsonDocument.Parse("true").RootElement.Clone(),
+		};
+
+		McpStdioServer.TryGetForceRestart(arguments).Should().BeTrue();
+	}
+
+	[TestMethod]
+	[Description("TryGetForceRestart returns false when forceRestart is explicitly set to false")]
+	public void TryGetForceRestart_WhenFalse_ReturnsFalse()
+	{
+		var arguments = new Dictionary<string, JsonElement>
+		{
+			["forceRestart"] = JsonDocument.Parse("false").RootElement.Clone(),
+		};
+
+		McpStdioServer.TryGetForceRestart(arguments).Should().BeFalse();
+	}
+
+	[TestMethod]
+	[Description("TryGetForceRestart returns false when the argument is missing")]
+	public void TryGetForceRestart_WhenMissing_ReturnsFalse()
+	{
+		var arguments = new Dictionary<string, JsonElement>();
+
+		McpStdioServer.TryGetForceRestart(arguments).Should().BeFalse();
+	}
+
+	[TestMethod]
+	[Description("TryGetForceRestart returns false when arguments dictionary is null")]
+	public void TryGetForceRestart_WhenNull_ReturnsFalse()
+	{
+		McpStdioServer.TryGetForceRestart(null).Should().BeFalse();
+	}
 }

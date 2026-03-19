@@ -33,7 +33,7 @@ internal class ProxyLifecycleManager
 		Description =
 			"Explicitly selects the Uno solution to use for this MCP session by absolute solution path. Starts or restarts the DevServer if required.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>(
-			"""{"type":"object","required":["solutionPath"],"properties":{"solutionPath":{"type":"string","description":"Absolute path to the .sln or .slnx file to use for this session."}}}"""),
+			"""{"type":"object","required":["solutionPath"],"properties":{"solutionPath":{"type":"string","description":"Absolute path to the .sln or .slnx file to use for this session."},"forceRestart":{"type":"boolean","description":"When true, forces a full DevServer restart even if the solution is already selected. Useful after external changes such as editing global.json or running dotnet restore."}}}"""),
 	};
 
 	private bool _waitForTools;
@@ -206,7 +206,7 @@ internal class ProxyLifecycleManager
 		await ProcessRoots();
 	}
 
-	internal async Task<SelectSolutionResult> SelectSolutionAsync(string solutionPath, CancellationToken ct = default)
+	internal async Task<SelectSolutionResult> SelectSolutionAsync(string solutionPath, bool forceRestart = false, CancellationToken ct = default)
 	{
 		var selectionStopwatch = Stopwatch.StartNew();
 
@@ -315,6 +315,18 @@ internal class ProxyLifecycleManager
 		var previousResolution = _workspaceResolution;
 		var transitionAction =
 			await ApplyWorkspaceResolutionAsync(nextResolution, WorkspaceTransitionTrigger.UserSelection, ct);
+
+		// When forceRestart is requested and the normal transition was a no-op (Refresh),
+		// escalate to a full Restart so the DevServer host is recycled.
+		if (forceRestart && transitionAction == WorkspaceTransitionAction.Refresh && _healthService.DevServerStarted)
+		{
+			_logger.LogInformation("Force-restart requested for workspace {Workspace}; restarting DevServer",
+				nextResolution.EffectiveWorkspaceDirectory);
+			await StopCurrentWorkspaceAsync();
+			StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
+			transitionAction = WorkspaceTransitionAction.Restart;
+		}
+
 		var selectedResolution = _workspaceResolution ?? nextResolution;
 		LogTimeline(
 			"select-solution.apply-transition.complete",
@@ -331,9 +343,9 @@ internal class ProxyLifecycleManager
 		};
 	}
 
-	private async Task<CallToolResult> SelectSolution(string solutionPath)
+	private async Task<CallToolResult> SelectSolution(string solutionPath, bool forceRestart = false)
 	{
-		var result = await SelectSolutionAsync(solutionPath);
+		var result = await SelectSolutionAsync(solutionPath, forceRestart);
 		var json = JsonSerializer.Serialize(result, McpJsonUtilities.DefaultOptions);
 		return new CallToolResult
 		{
@@ -1137,7 +1149,7 @@ internal class ProxyLifecycleManager
 			_forceRootsFallback,
 			() => _roots,
 			async roots => await SetRoots(roots),
-			async solutionPath => await SelectSolution(solutionPath));
+			async (solutionPath, forceRestart) => await SelectSolution(solutionPath, forceRestart));
 
 		StartCachePrimingWatcher(host);
 
