@@ -502,6 +502,7 @@ public partial class FrameworkElement
 		return null;
 	}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 	/// <summary>
 	/// Clears theme foreground state when unloading from the visual tree.
 	/// Called from <see cref="OnUnloadedPartial"/> to prevent stale inherited
@@ -529,6 +530,7 @@ public partial class FrameworkElement
 			SetTheme(Theme.None);
 		}
 	}
+#endif
 
 	/// <summary>
 	/// Update ThemeResource references.

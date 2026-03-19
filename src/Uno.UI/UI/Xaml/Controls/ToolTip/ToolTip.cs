@@ -161,7 +161,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-	#if UNO_HAS_ENHANCED_LIFECYCLE
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				UnsubscribeOwnerThemeChanged();
 #endif
 				Closed?.Invoke(this, new RoutedEventArgs(this));
@@ -192,8 +192,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void SetAnchor(UIElement element) => _owner = element;
 
-	#if UNO_HAS_ENHANCED_LIFECYCLE
-	private void SubscribeOwnerThemeChanged()
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private void SubscribeOwnerThemeChanged()
 		{
 			var ownerFe = GetOwnerFrameworkElement();
 			if (ownerFe is not null)

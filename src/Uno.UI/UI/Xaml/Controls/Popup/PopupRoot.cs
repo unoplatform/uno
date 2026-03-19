@@ -204,12 +204,14 @@ internal partial class PopupRoot : Canvas
 		});
 	}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 	// MUX Reference: CPopup::ShouldPopupRootNotifyThemeChange (lines 3551-3563)
 	// A parented popup gets theme change notification from its parent walk.
 	// Only non-parented popups (visual parent is null or PopupRoot) need
 	// explicit notification from PopupRoot.
 	private static bool ShouldPopupRootNotifyThemeChange(Popup popup)
 		=> VisualTreeHelper.GetParent(popup) is null or PopupRoot;
+#endif
 
 	internal IDisposable RegisterOpenPopup(IPopup popup)
 	{
