@@ -17,6 +17,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
 [RunsOnUIThread]
+[PlatformCondition(ConditionMode.Exclude,
+	RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 public class Given_ElementTheme
 {
 	#region Basic RequestedTheme Propagation

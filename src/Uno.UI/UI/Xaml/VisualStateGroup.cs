@@ -252,6 +252,7 @@ namespace Microsoft.UI.Xaml
 			// element's theme, not the app-level theme. We push the element's theme here so
 			// any {ThemeResource} in storyboard key frames resolves with the correct theme.
 			(Storyboard transition, Storyboard animation, SetterBaseCollection setters) current, target;
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			var needsMaterializationThemePush = false;
 			if (element is FrameworkElement materializationFe)
 			{
@@ -263,6 +264,7 @@ namespace Microsoft.UI.Xaml
 					needsMaterializationThemePush = true;
 				}
 			}
+#endif
 
 			try
 			{
@@ -275,10 +277,12 @@ namespace Microsoft.UI.Xaml
 			{
 				ResourceResolver.PopScope();
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				if (needsMaterializationThemePush)
 				{
 					ResourceDictionary.PopRequestedThemeForSubTree();
 				}
+#endif
 			}
 
 			// Stops running animations (transition or state's storyboard)
@@ -380,6 +384,7 @@ namespace Microsoft.UI.Xaml
 					return;
 				}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				// MUX Reference: CVisualStateManager2::OnVisualStateGroupCollectionNotifyThemeChanged
 				// In WinUI, ThemeResource values in setters are resolved lazily at read time
 				// using the element's current theme context. In Uno, resolution happens eagerly
@@ -397,6 +402,7 @@ namespace Microsoft.UI.Xaml
 						needsThemePush = true;
 					}
 				}
+#endif
 
 				try
 				{
@@ -420,10 +426,12 @@ namespace Microsoft.UI.Xaml
 				{
 					ResourceResolver.PopScope();
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 					if (needsThemePush)
 					{
 						ResourceDictionary.PopRequestedThemeForSubTree();
 					}
+#endif
 				}
 
 			}

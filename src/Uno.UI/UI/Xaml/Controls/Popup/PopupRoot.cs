@@ -88,6 +88,7 @@ internal partial class PopupRoot : Canvas
 		}
 	}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 	// MUX Reference: Popup.cpp CPopupRoot::NotifyThemeChanged (lines 5339-5374)
 	// PopupRoot should NEVER store a theme. Its GetTheme() must always return
 	// Theme.None so that popup content entering the visual tree under PopupRoot
@@ -126,6 +127,7 @@ internal partial class PopupRoot : Canvas
 			node = next;
 		}
 	}
+#endif
 
 	protected override void OnChildrenChanged()
 	{
@@ -175,6 +177,7 @@ internal partial class PopupRoot : Canvas
 		Children.Add(popupPanel);
 		var disposable = RegisterOpenPopup(popup);
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX Reference: CPopupRoot::CompleteAdditionToOpenPopupList (lines 4289-4302)
 		// If app's theme has changed since startup, notify non-parented popups
 		// that missed the theme walk while they were closed.
@@ -186,6 +189,7 @@ internal partial class PopupRoot : Canvas
 				? Theme.Dark : Theme.Light;
 			popup.NotifyThemeChanged(appTheme);
 		}
+#endif
 
 		return Disposable.Create(() =>
 		{

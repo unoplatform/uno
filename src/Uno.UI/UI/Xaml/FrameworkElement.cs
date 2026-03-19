@@ -420,6 +420,7 @@ namespace Microsoft.UI.Xaml
 		{
 			this.StoreTryEnableHardReferences();
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			// Inherit theme from parent if we don't have explicit RequestedTheme
 			if (RequestedTheme == ElementTheme.Default)
 			{
@@ -486,11 +487,21 @@ namespace Microsoft.UI.Xaml
 					ResourceDictionary.PopRequestedThemeForSubTree();
 				}
 			}
+#else
+			if (RequestedTheme is not ElementTheme.Default)
+			{
+				SyncRootRequestedTheme();
+			}
+			ApplyStyles();
+			this.UpdateResourceBindings();
+#endif
 		}
 
 		partial void OnUnloadedPartial()
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			ClearThemeStateOnUnloaded();
+#endif
 			this.StoreDisableHardReferences();
 		}
 

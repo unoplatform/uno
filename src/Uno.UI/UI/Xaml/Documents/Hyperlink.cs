@@ -232,6 +232,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		internal void SetCurrentForeground()
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			// MUX Reference: Hyperlink.cpp UpdateForegroundColor uses GetContext()->LookupThemeResource(theme, ...)
 			// to resolve resources with the element's theme. We push the containing element's theme
 			// onto the resource stack so Application.Current.Resources.TryGetValue resolves with the
@@ -252,6 +253,7 @@ namespace Microsoft.UI.Xaml.Documents
 					}
 				}
 			}
+#endif
 
 			try
 			{
@@ -281,10 +283,12 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			finally
 			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				if (needsPush)
 				{
 					ResourceDictionary.PopRequestedThemeForSubTree();
 				}
+#endif
 			}
 		}
 
