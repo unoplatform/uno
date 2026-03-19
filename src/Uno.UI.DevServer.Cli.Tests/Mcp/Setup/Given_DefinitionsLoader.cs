@@ -145,14 +145,14 @@ public class Given_DefinitionsLoader
 	}
 
 	[TestMethod]
-	public void Load_EmbeddedResources_CopilotCliIsNative()
+	public void Load_EmbeddedResources_CopilotCliIsFileBacked()
 	{
 		var defs = DefinitionsLoader.Load();
 		var profile = defs.Ides["copilot-cli"];
 
-		profile.Strategy.Should().Be("native");
-		profile.ConfigPaths.Should().BeEmpty();
-		profile.ManualRegistrationMessage.Should().NotBeNullOrEmpty();
+		profile.Strategy.Should().Be("file");
+		profile.ConfigPaths.Should().NotBeEmpty();
+		profile.WriteTarget.Should().Contain(".copilot/mcp-config.json");
 	}
 
 	[TestMethod]

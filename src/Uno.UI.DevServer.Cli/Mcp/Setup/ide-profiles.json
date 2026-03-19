@@ -25,11 +25,12 @@
     }
   },
   "copilot-cli": {
-    "configPaths": [],
-    "writeTarget": "",
+    "configPaths": [
+      "{home}/.copilot/mcp-config.json"
+    ],
+    "writeTarget": "{home}/.copilot/mcp-config.json",
     "jsonRootKey": "mcpServers",
-    "strategy": "native",
-    "manualRegistrationMessage": "Use the native registration flow for GitHub Copilot CLI."
+    "includeType": true
   },
   "claude-code": {
     "configPaths": [

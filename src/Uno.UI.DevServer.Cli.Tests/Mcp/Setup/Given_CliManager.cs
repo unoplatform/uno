@@ -268,7 +268,7 @@ public class Given_CliManager
 	}
 
 	[TestMethod]
-	public void RunMcpSubcommand_InstallCopilotCli_ReturnsFailureWithManualGuidance()
+	public void RunMcpSubcommand_InstallCopilotCli_CreatesFileBasedRegistration()
 	{
 		var workspace = CreateWorkspacePath();
 		var fs = new InMemoryFileSystem();
@@ -282,10 +282,10 @@ public class Given_CliManager
 		{
 			var result = manager.RunMcpSubcommand(["install", "copilot-cli", "--json"], workspace);
 
-			result.Should().Be(1);
+			result.Should().Be(0);
 			var output = writer.ToString();
 			output.Should().Contain("\"ide\": \"copilot-cli\"");
-			output.Should().Contain("native registration flow");
+			output.Should().Contain("\"action\": \"created\"");
 		}
 		finally
 		{
