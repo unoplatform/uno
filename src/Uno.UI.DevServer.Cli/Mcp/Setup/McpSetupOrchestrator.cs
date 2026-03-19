@@ -27,13 +27,16 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		var supportedIdes = new List<SupportedIdeEntry>();
 		var serverEntries = new List<ServerStatusEntry>();
 
+		// Query all agent CLIs in parallel (each spawns a process, so parallelism helps)
+		var cliResults = QueryAllCliLists(defs.Ides, workspace);
+
 		// Build per-server, per-client status
 		var ideStatusMap = new Dictionary<string, Dictionary<string, ServerIdeStatus>>();
 
 		foreach (var (ideName, profile) in defs.Ides)
 		{
 			var scanResult = scanner.Scan(profile, workspace, defs.Servers, expectedDefinitions);
-			var cliServerNames = QueryCliList(profile, workspace);
+			var cliServerNames = cliResults.TryGetValue(ideName, out var names) ? names : [];
 
 			if ((scanResult.Detected || cliServerNames.Count > 0) && !profile.ExcludeFromDetection)
 			{
@@ -622,7 +625,51 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 	}
 
 	/// <summary>
-	/// Queries the agent's CLI list command to discover registered server names.
+	/// Queries all agent CLIs in parallel to discover registered server names.
+	/// Deduplicates by executable — profiles sharing the same CLI are queried once.
+	/// </summary>
+	private Dictionary<string, HashSet<string>> QueryAllCliLists(
+		IReadOnlyDictionary<string, IdeProfile> ides, string workspace)
+	{
+		if (_cliRunner is null)
+		{
+			return [];
+		}
+
+		// Group profiles by executable to avoid duplicate CLI calls
+		var cliGroups = ides
+			.Where(ide => ide.Value.Cli is { List: not null })
+			.GroupBy(ide => ide.Value.Cli!.Executable, StringComparer.OrdinalIgnoreCase)
+			.ToList();
+
+		var perExecutable = new System.Collections.Concurrent.ConcurrentDictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+
+		Parallel.ForEach(cliGroups, group =>
+		{
+			var representative = group.First().Value;
+			var found = QueryCliList(representative, workspace);
+			if (found.Count > 0)
+			{
+				perExecutable[group.Key] = found;
+			}
+		});
+
+		// Fan results back to all profiles that share the same executable
+		var results = new Dictionary<string, HashSet<string>>();
+		foreach (var (ideName, profile) in ides)
+		{
+			if (profile.Cli is { } cli
+				&& perExecutable.TryGetValue(cli.Executable, out var found))
+			{
+				results[ideName] = found;
+			}
+		}
+
+		return results;
+	}
+
+	/// <summary>
+	/// Queries a single agent's CLI list command to discover registered server names.
 	/// Returns an empty set if the CLI is unavailable or the command fails.
 	/// </summary>
 	private HashSet<string> QueryCliList(IdeProfile profile, string workspace)

@@ -57,7 +57,7 @@ internal class CliCommandRunner(ILogger<CliCommandRunner> logger)
 
 		var psi = new ProcessStartInfo
 		{
-			FileName = executable,
+			FileName = ResolveExecutablePath(executable),
 			WorkingDirectory = workingDirectory,
 			UseShellExecute = false,
 			RedirectStandardOutput = true,
@@ -131,5 +131,41 @@ internal class CliCommandRunner(ILogger<CliCommandRunner> logger)
 		}
 
 		return result;
+	}
+
+	/// <summary>
+	/// Resolves an executable name to a full path on Windows, handling
+	/// npm global <c>.cmd</c> shims that <see cref="Process.Start"/> with
+	/// <c>UseShellExecute = false</c> cannot find by bare name.
+	/// </summary>
+	internal static string ResolveExecutablePath(string executable)
+	{
+		if (Path.IsPathRooted(executable) || Path.HasExtension(executable))
+		{
+			return executable;
+		}
+
+		if (!OperatingSystem.IsWindows())
+		{
+			return executable;
+		}
+
+		var pathDirs = Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator) ?? [];
+		var extensions = Environment.GetEnvironmentVariable("PATHEXT")?.Split(';')
+			?? [".COM", ".EXE", ".BAT", ".CMD"];
+
+		foreach (var dir in pathDirs)
+		{
+			foreach (var ext in extensions)
+			{
+				var candidate = Path.Combine(dir, executable + ext);
+				if (File.Exists(candidate))
+				{
+					return candidate;
+				}
+			}
+		}
+
+		return executable;
 	}
 }
