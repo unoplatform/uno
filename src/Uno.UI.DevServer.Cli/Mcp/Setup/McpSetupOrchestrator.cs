@@ -93,15 +93,16 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			return ErrorResponse($"Unknown client: {targetIde}");
 		}
 
-		if (!string.Equals(profile.Strategy, "file", StringComparison.OrdinalIgnoreCase))
-		{
-			return NativeRegistrationResponse(defs, targetIde, profile, serverFilter);
-		}
-
 		// CLI-first: if the agent provides a CLI and it is available, delegate to it.
 		if (profile.Cli is { } cli && _cliRunner is not null && _cliRunner.IsAvailable(cli))
 		{
 			return InstallViaCli(defs, workspace, targetIde, profile, cli, expectedVariant, serverFilter, dryRun);
+		}
+
+		// Native strategy: no file-based config, no CLI available → manual registration guidance
+		if (!string.Equals(profile.Strategy, "file", StringComparison.OrdinalIgnoreCase))
+		{
+			return NativeRegistrationResponse(defs, targetIde, profile, serverFilter);
 		}
 
 		var operations = new List<OperationEntry>();
@@ -152,15 +153,16 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			return ErrorResponse($"Unknown client: {targetIde}");
 		}
 
-		if (!string.Equals(profile.Strategy, "file", StringComparison.OrdinalIgnoreCase))
-		{
-			return NativeRegistrationResponse(defs, targetIde, profile, serverFilter);
-		}
-
 		// CLI-first: if the agent provides a CLI and it is available, delegate to it.
 		if (profile.Cli is { Remove: not null } cli && _cliRunner is not null && _cliRunner.IsAvailable(cli))
 		{
 			return UninstallViaCli(defs, workspace, targetIde, cli, serverFilter, dryRun);
+		}
+
+		// Native strategy: no file-based config, no CLI available → manual registration guidance
+		if (!string.Equals(profile.Strategy, "file", StringComparison.OrdinalIgnoreCase))
+		{
+			return NativeRegistrationResponse(defs, targetIde, profile, serverFilter);
 		}
 
 		var operations = new List<OperationEntry>();
