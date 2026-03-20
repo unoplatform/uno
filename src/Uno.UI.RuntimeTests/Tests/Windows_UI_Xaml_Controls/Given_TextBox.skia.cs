@@ -4973,6 +4973,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(string.Empty, SUT.Text, "Tab should not insert a character in TextBox");
 			Assert.IsFalse(SUT.Text.Contains('\t'), "TextBox.Text should not contain a tab character");
+
+			// Ensure that Tab key still moves focus to the next control
+			var focusedElement = FocusManager.GetFocusedElement() as Control;
+			Assert.AreEqual(button, focusedElement, "Tab should move focus to the next control (button)");
 		}
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
