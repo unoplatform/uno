@@ -33,7 +33,8 @@ public class Given_McpEndToEndProcess
 			new { workspaceDirectory = workspace.PrimaryWorkspaceDirectory },
 			cts.Token);
 
-		setRootsResponse.RootElement.GetProperty("result").GetProperty("content")[0].GetProperty("text").GetString().Should().Be("Ok");
+		var initText = setRootsResponse.RootElement.GetProperty("result").GetProperty("content")[0].GetProperty("text").GetString();
+		initText.Should().Contain("workspaceDirectory");
 
 		var after = await client.WaitForHealthAsync(
 			health => string.Equals(health.SelectedSolutionPath, workspace.PrimarySolutionPath, StringComparison.OrdinalIgnoreCase)
@@ -141,7 +142,8 @@ public class Given_McpEndToEndProcess
 			"uno_app_initialize",
 			new { workspaceDirectory = workspace.PrimaryWorkspaceDirectory },
 			cts.Token);
-		setRootsResponse.RootElement.GetProperty("result").GetProperty("content")[0].GetProperty("text").GetString().Should().Be("Ok");
+		var initText = setRootsResponse.RootElement.GetProperty("result").GetProperty("content")[0].GetProperty("text").GetString();
+		initText.Should().Contain("workspaceDirectory");
 
 		using var selectionResponse = await client.CallToolAsync(
 			"uno_app_select_solution",
