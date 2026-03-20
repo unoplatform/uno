@@ -37,7 +37,9 @@ internal class McpStdioServer(
 	{
 		Name = "uno_app_initialize",
 		Description =
-			"Initializes the Uno DevServer for a workspace. Sets the root directory, resolves the Uno solution, and starts the DevServer. Call this first.",
+			"Initializes the Uno DevServer for a workspace. Sets the root directory, resolves the Uno solution, and starts the DevServer. "
+			+ "Call this ONCE at the start of a session. After initialization succeeds, the Uno app tools become available. "
+			+ "Do NOT call uno_app_select_solution after a successful initialization unless uno_health reports a WorkspaceAmbiguous issue.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>(
 			"""{"type":"object","required":["workspaceDirectory"],"properties":{"workspaceDirectory":{"type":"string","description":"Absolute path to the workspace root directory."},"solutionPath":{"type":"string","description":"Optional absolute path to the .sln or .slnx file to use."}}}"""),
 	};
@@ -46,7 +48,8 @@ internal class McpStdioServer(
 	{
 		Name = "uno_discover_tools",
 		Description =
-			"Returns available Uno app tools with descriptions and input schemas. Call after uno_app_initialize when the DevServer is ready.",
+			"Returns available Uno app tools with descriptions and input schemas. "
+			+ "Call this after uno_app_initialize succeeds. Waits for the DevServer to be ready if needed.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>("""{"type":"object","properties":{}}"""),
 	};
 
@@ -54,7 +57,7 @@ internal class McpStdioServer(
 	{
 		Name = "uno_execute_tool",
 		Description =
-			"Executes an Uno app tool by name. Use uno_discover_tools to see available tools first.",
+			"Executes an Uno app tool by name. Use uno_discover_tools first to see available tools and their schemas.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>(
 			"""{"type":"object","required":["toolName"],"properties":{"toolName":{"type":"string","description":"Name of the tool to execute."},"arguments":{"type":"object","description":"Arguments to pass to the tool."}}}"""),
 	};
@@ -94,7 +97,7 @@ internal class McpStdioServer(
 			ensureRootsInitialized,
 		Tool initializeTool,
 		Tool selectSolutionTool,
-		bool forceRootsFallback,
+		Func<bool> isForceRootsFallback,
 		Func<string[]> getRoots,
 		Func<string[], Task> setRootsHandler,
 		Func<string, Task<CallToolResult>> selectSolutionHandler)
@@ -119,7 +122,7 @@ internal class McpStdioServer(
 				logger.LogTrace("RECV call_tool {Tool}", toolName);
 
 				// Handle uno_app_initialize (force-roots-fallback mode)
-				if (forceRootsFallback && toolName == initializeTool.Name)
+				if (isForceRootsFallback() && toolName == initializeTool.Name)
 				{
 					if (!TryGetInitializeArgs(ctx.Params?.Arguments, out var workspaceDir, out var initSolutionPath, out var initError))
 					{
@@ -387,7 +390,7 @@ internal class McpStdioServer(
 
 				await ensureRootsInitialized(ctx, tcs, ct);
 
-				if (forceRootsFallback && getRoots().Length == 0)
+				if (isForceRootsFallback() && getRoots().Length == 0)
 				{
 					List<Tool> tools = [initializeTool];
 

@@ -146,20 +146,20 @@ How different SDK versions affect add-in discovery.
 
 | Client | Ref. Version | `roots` | `tools/list_changed` | `resources` | `resources/subscribe` | Transport | Workaround Needed |
 |--------|:------------:|:-:|:-:|:-:|:-:|:-:|---|
-| Antigravity | ~1.15 | No (*) | No | No | No | stdio | `--force-roots-fallback` + `--mcp-wait-tools-list` |
+| Antigravity | ~1.15 | No (*) | No | No | No | stdio | Roots fallback auto-detected + `--mcp-wait-tools-list` |
 | Claude Code | ~2.1 | Yes | No | No | No | stdio | `--mcp-wait-tools-list` |
-| Claude Desktop | ~1.1 | No | No | No | No | stdio | `--force-roots-fallback` + `--mcp-wait-tools-list` |
+| Claude Desktop | ~1.1 | No | No | No | No | stdio | Roots fallback auto-detected + `--mcp-wait-tools-list` |
 | Cursor | ~2.4 | Yes | Yes | Yes | No | stdio | None |
-| Codex CLI | ~0.98 | No | No | No | No | stdio, HTTP | `--force-roots-fallback` + `--mcp-wait-tools-list` + `uno_health` tool |
+| Codex CLI | ~0.98 | No | No | No | No | stdio, HTTP | Roots fallback auto-detected + `--mcp-wait-tools-list` + `uno_health` tool |
 | JetBrains Junie | 2025.2+ | Yes | No | No | No | stdio only | `--mcp-wait-tools-list` |
 | VS Code Copilot | ~1.109 | Yes | Yes | Yes | No | stdio | None |
-| Windsurf | ~1.95 | No | Yes | Yes | No | stdio, HTTP | `--force-roots-fallback` |
+| Windsurf | ~1.95 | No | Yes | Yes | No | stdio, HTTP | Roots fallback auto-detected |
 
 **Key observations**:
 - **`resources/subscribe` is unsupported across ALL clients** — the `uno://health` resource subscription feature (section 1d) will not work for any current client. Polling or `tools/list_changed` are the only notification mechanisms.
 - **`tools/list_changed` is supported by only 3 clients** (Cursor, VS Code Copilot, Windsurf). All others need `--mcp-wait-tools-list` to block the initial `list_tools` until upstream responds.
-- **`roots` is supported by 4 of 8 clients** (Claude Code, Cursor, VS Code Copilot, Junie). The 4 without (Claude Desktop, Codex CLI, Windsurf, Antigravity) need `--force-roots-fallback`. (*) Antigravity declares `roots` capability in the protocol but does not actually provide workspace roots per Uno's own docs (`doc/articles/get-started-ai-google-antigravity.md:52`). Treat as unsupported until verified.
-- **Capability detection from `initialize` is the only reliable approach** — hardcoding client names is fragile and already stale.
+- **`roots` is supported by 4 of 8 clients** (Claude Code, Cursor, VS Code Copilot, Junie). The 4 without (Claude Desktop, Codex CLI, Windsurf, Antigravity) previously required the explicit `--force-roots-fallback` flag. This is now **auto-detected**: when the MCP client does not advertise `roots` capability and the workspace is not already resolved, the proxy enables roots fallback automatically. The `--force-roots-fallback` CLI flag remains available for explicit override. (*) Antigravity declares `roots` capability in the protocol but does not actually provide workspace roots per Uno's own docs (`doc/articles/get-started-ai-google-antigravity.md:52`). Treat as unsupported until verified.
+- **Capability detection from `initialize` is the only reliable approach** — hardcoding client names is fragile and already stale. The auto-detection of roots fallback is an example of this principle in practice: the proxy inspects the client's declared capabilities at connection time rather than relying on per-client flags.
 
 ### Risks
 
@@ -167,7 +167,7 @@ How different SDK versions affect add-in discovery.
 |------|----------|--------|------------|
 | Client doesn't support `tools/list_changed` | Tool list updates after initial response | Client never sees updated tools | `--mcp-wait-tools-list` blocks until upstream responds. Additionally, meta-tools `uno_discover_tools` and `uno_execute_tool` allow clients to discover and invoke upstream tools without re-querying `list_tools`. |
 | Client doesn't support `resources` | `uno://health` not accessible | No diagnostics | `uno_health` tool as universal fallback |
-| Client doesn't support `roots` | Workspace not discovered | Discovery fails | `--force-roots-fallback` uses `--solution-dir` |
+| Client doesn't support `roots` | Workspace not discovered | Discovery fails | Roots fallback auto-detected when client lacks `roots` capability and workspace is unresolved; `--force-roots-fallback` still available for explicit override |
 | No client supports `resources/subscribe` | Health push notifications never received | Clients must poll or rely on `tools/list_changed` | Design for pull-based health (tool call), not push-based (subscription) |
 | Hardcoded client list becomes stale | New client not in `ClientsWithoutListUpdateSupport` | Wrong behavior for new client | Replace with capability detection from `initialize` request |
 | Junie stdio-only | Server uses HTTP transport | Junie can't connect | Ensure stdio transport always available |
@@ -176,7 +176,9 @@ How different SDK versions affect add-in discovery.
 ### Validation
 
 - [ ] Client with `roots` support → workspace discovered automatically
-- [ ] Client without `roots` + `--force-roots-fallback` → workspace from `--solution-dir`
+- [ ] Client without `roots` and workspace unresolved → roots fallback auto-detected, `uno_app_initialize` exposed
+- [ ] Client without `roots` + explicit `--force-roots-fallback` → same behavior as auto-detected fallback
+- [ ] Client without `roots` but workspace already resolved → no fallback needed, uses existing workspace
 - [ ] Client with `tools/list_changed` → sees updated tool list after host connects
 - [ ] Client without `tools/list_changed` + `--mcp-wait-tools-list` → initial response waits for upstream
 - [ ] Client without `resources` → `uno_health` tool returns same data as `uno://health`

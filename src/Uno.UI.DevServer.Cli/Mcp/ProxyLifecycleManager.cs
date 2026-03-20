@@ -29,7 +29,10 @@ internal class ProxyLifecycleManager
 	{
 		Name = "uno_app_select_solution",
 		Description =
-			"Explicitly selects the Uno solution to use for this MCP session by absolute solution path. Starts or restarts the DevServer if required.",
+			"Selects a specific Uno solution when multiple solutions exist in the workspace. "
+			+ "CAUTION: This RESTARTS the DevServer and disconnects all running apps. "
+			+ "Only call this if the DevServer fails to start due to ambiguity. "
+			+ "If uno_health shows status 'Connected' or 'Healthy', do NOT call this tool — the DevServer is already working.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>(
 			"""{"type":"object","required":["solutionPath"],"properties":{"solutionPath":{"type":"string","description":"Absolute path to the .sln or .slnx file to use for this session."}}}"""),
 	};
@@ -688,6 +691,10 @@ internal class ProxyLifecycleManager
 			{
 				watcher = _workspaceMutationWatcherFactory(workspaceRoot);
 				watcher.IncludeSubdirectories = true;
+				// Increase from the 8 KB default to reduce InternalBufferOverflowException
+				// frequency. The watcher monitors the entire workspace tree including
+				// build outputs and NuGet restores which generate high event volumes.
+				watcher.InternalBufferSize = 64 * 1024;
 				watcher.NotifyFilter = NotifyFilters.FileName
 					| NotifyFilters.DirectoryName
 					| NotifyFilters.LastWrite
@@ -884,7 +891,7 @@ internal class ProxyLifecycleManager
 	{
 		Interlocked.Increment(ref _workspaceMutationGeneration);
 		_logger.LogWarning(args.GetException(),
-			"Workspace mutation watcher failed; restarting watcher and reevaluating the workspace");
+			"Workspace mutation watcher failed; restarting watcher");
 
 		var debounceCts = ReplaceWorkspaceMutationDebounceSource(ref _workspaceMutationDebounceCts);
 
@@ -894,12 +901,17 @@ internal class ProxyLifecycleManager
 			{
 				await Task.Delay(TimeSpan.FromMilliseconds(250), debounceCts.Token);
 
-				// StopWorkspaceMutationWatcherAsync cancels _workspaceMutationDebounceCts (which may be
-				// debounceCts itself). Use CancellationToken.None for the reevaluation to avoid being
-				// cancelled by that cleanup.
 				await StopWorkspaceMutationWatcherAsync();
 				StartWorkspaceMutationWatcher();
-				await ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
+
+				// Only reevaluate when the DevServer is not already running.
+				// Watcher errors are transient (buffer overflow), not workspace changes.
+				// Reevaluating a healthy session risks a destructive transition
+				// (e.g. Ambiguous → Stop) that kills a working DevServer.
+				if (!_healthService.DevServerStarted)
+				{
+					await ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
+				}
 			}
 			catch (OperationCanceledException)
 			{
@@ -1011,7 +1023,7 @@ internal class ProxyLifecycleManager
 			EnsureRootsInitialized,
 			McpStdioServer.InitializeTool,
 			SelectSolutionTool,
-			_forceRootsFallback,
+			() => _forceRootsFallback,
 			() => _roots,
 			async roots => await SetRoots(roots),
 			async solutionPath => await SelectSolution(solutionPath));
@@ -1106,14 +1118,10 @@ internal class ProxyLifecycleManager
 			return;
 		}
 
-		var clientSupportsRoots = MonitorDecisions.DetermineClientSupportsRoots(
-			_forceRootsFallback,
-			rootsCapabilityPresent: ctx.Server.ClientCapabilities?.Roots is not null);
+		var clientSupportsRoots = ctx.Server.ClientCapabilities?.Roots is not null;
 
 		if (!_forceRootsFallback)
 		{
-			var fallbackRoot = BuildFallbackRoot();
-
 			if (clientSupportsRoots)
 			{
 				var roots = await ctx.Server.RequestRootsAsync(new(), ct);
@@ -1121,23 +1129,30 @@ internal class ProxyLifecycleManager
 				_logger.LogTrace("MCP Client supports roots: {Roots}",
 					string.Join(", ", roots.Roots.Select(r => r.Uri)));
 
-				if (roots.Roots.Count != 0)
-				{
-					_roots = [.. roots.Roots.Select(r => r.Uri)];
-				}
-				else
-				{
-					_logger.LogTrace("MCP client returned no roots; defaulting to {FallbackRoot}", fallbackRoot);
-					_roots = [fallbackRoot];
-				}
+				var fallbackRoot = BuildFallbackRoot();
+				_roots = roots.Roots.Count != 0
+					? [.. roots.Roots.Select(r => r.Uri)]
+					: [fallbackRoot];
+
+				await ProcessRoots();
+			}
+			else if (_healthService.DevServerStarted)
+			{
+				// Workspace already resolved, DevServer running — use fallback root
+				_logger.LogTrace("MCP Client does not support roots; using fallback root for running DevServer");
+				_roots = [BuildFallbackRoot()];
+				await ProcessRoots();
 			}
 			else
 			{
-				_logger.LogTrace("MCP Client does not support roots; defaulting to {FallbackRoot}", fallbackRoot);
-				_roots = [fallbackRoot];
+				// Auto-detect: client has no roots support and workspace is not resolved.
+				// Enable force-roots-fallback so the agent uses uno_app_initialize.
+				_forceRootsFallback = true;
+				_healthService.ForceRootsFallback = true;
+				_logger.LogInformation(
+					"Client does not support MCP roots and workspace is not resolved; enabling roots fallback automatically");
+				return;
 			}
-
-			await ProcessRoots();
 		}
 
 		if (_workspaceResolution?.IsResolved != true && !_healthService.DevServerStarted)

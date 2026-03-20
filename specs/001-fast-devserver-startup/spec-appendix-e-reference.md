@@ -14,7 +14,7 @@ These tools are provided directly by the DevServer MCP bridge before the upstrea
 |-----------|-------------|:------------:|
 | `uno_health` | Returns the current `HealthReport` state for the bridge and selected workspace | Always |
 | `uno_app_select_solution` | Explicitly selects a Uno solution by absolute solution path and starts/restarts DevServer when needed | Always |
-| `uno_app_initialize` | Initializes the workspace. Takes `workspaceDirectory` (required) and `solutionPath` (optional), blocks until the DevServer is connected, and returns status plus available tools. Replaces the former `uno_app_set_roots`. | Force-roots-fallback only |
+| `uno_app_initialize` | Initializes the workspace. Takes `workspaceDirectory` (required) and `solutionPath` (optional), blocks until the DevServer is connected, and returns status plus available tools. Replaces the former `uno_app_set_roots`. | Force-roots-fallback (auto-detected when client lacks `roots` capability and workspace is unresolved, or explicit via `--force-roots-fallback`) |
 | `uno_discover_tools` | Returns upstream tools with full schemas. Compatibility meta-tool for MCP clients that do not re-query `list_tools` after `tools/list_changed`. | Always (after upstream connection) |
 | `uno_execute_tool` | Forwards a tool call to the upstream by name. Compatibility meta-tool for MCP clients that do not re-query `list_tools` after `tools/list_changed`. | Always (after upstream connection) |
 
