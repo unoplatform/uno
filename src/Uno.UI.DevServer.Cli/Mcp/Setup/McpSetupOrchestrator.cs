@@ -114,8 +114,9 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			return ErrorResponse($"Unknown client: {targetIde}");
 		}
 
-		// CLI-first: if the agent provides a CLI and it is available, delegate to it.
-		if (profile.Cli is { } cli && _cliRunner is not null && _cliRunner.IsAvailable(cli))
+		// CLI-first: if the agent provides a CLI with add commands and it is available, delegate to it.
+		if (profile.Cli is { AddStdio: not null } or { AddHttp: not null }
+			&& profile.Cli is { } cli && _cliRunner is not null && _cliRunner.IsAvailable(cli))
 		{
 			return InstallViaCli(defs, workspace, targetIde, profile, cli, expectedVariant, serverFilter, dryRun);
 		}
@@ -588,7 +589,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 
 		if (template is null)
 		{
-			return new OperationEntry(serverName, targetIde, "error", null,
+			throw new InvalidOperationException(
 				$"CLI does not support {serverDef.Transport} transport.");
 		}
 
