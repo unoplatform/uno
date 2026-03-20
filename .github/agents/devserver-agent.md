@@ -126,8 +126,7 @@ The PowerShell script `build/test-scripts/run-devserver-cli-tests.ps1` provides 
 | `--json` | JSON output for disco command |
 | `--addins-only` | Output only resolved add-in paths |
 | `--mcp-wait-tools-list` | Wait for upstream tools before responding to `list_tools` |
-| `--force-roots-fallback` | Expose `uno_app_set_roots` for clients without roots support |
-| `--force-generate-tool-cache` | Force tool cache generation on startup |
+| `--force-roots-fallback` | Force roots fallback mode (auto-detected from client capabilities; rarely needed explicitly) |
 | `--solution-dir <path>` | Explicit solution root |
 
 ---
@@ -181,8 +180,8 @@ The MCP proxy (`McpStdioServer.cs` / `ProxyLifecycleManager.cs`) runs in STDIO m
 
 Only some MCP clients support roots natively (Claude Code, VS Code Copilot, Cursor). Others (Windsurf, JetBrains, Gemini CLI, Claude Desktop) do not.
 
-- **Default mode** (no `--force-roots-fallback`): DevServer starts immediately using `--solution-dir` or the current directory. If the client supports roots, they are requested but not required for startup.
-- **`--force-roots-fallback` mode**: DevServer startup is deferred until the client calls the `uno_app_set_roots` tool. Used for clients without native roots support that need to specify the workspace explicitly.
+- **Default mode**: DevServer starts immediately using `--solution-dir` or the current directory. If the client supports MCP roots, they are requested. If the client lacks roots support and the workspace is not resolved, roots fallback is auto-enabled and the agent uses `uno_app_initialize` to set the workspace.
+- **`--force-roots-fallback` mode** (explicit override): DevServer startup is deferred until the client calls `uno_app_initialize`. Rarely needed — auto-detection handles most cases.
 
 The `StartOnceGuard` in `MonitorDecisions.cs` prevents duplicate DevServer starts when roots arrive after an immediate start.
 
