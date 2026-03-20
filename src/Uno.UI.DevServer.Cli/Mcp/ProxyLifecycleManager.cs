@@ -30,9 +30,9 @@ internal class ProxyLifecycleManager
 		Name = "uno_app_select_solution",
 		Description =
 			"Selects a specific Uno solution when multiple solutions exist in the workspace. "
-			+ "CAUTION: This RESTARTS the DevServer and disconnects all running apps. "
-			+ "Only call this if the DevServer fails to start due to ambiguity. "
-			+ "If uno_health shows status 'Connected' or 'Healthy', do NOT call this tool — the DevServer is already working.",
+			+ "This restarts the DevServer. Typically called when uno_health reports a WorkspaceAmbiguous issue, "
+			+ "or when you need to switch to a different solution. "
+			+ "Pass forceRestart=true to force a restart even when the same solution is already selected.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>(
 			"""{"type":"object","required":["solutionPath"],"properties":{"solutionPath":{"type":"string","description":"Absolute path to the .sln or .slnx file to use for this session."},"forceRestart":{"type":"boolean","description":"When true, forces a full DevServer restart even if the solution is already selected. Useful after external changes such as editing global.json or running dotnet restore."}}}"""),
 		Annotations = new() { Title = "Select Solution", DestructiveHint = true, IdempotentHint = false, ReadOnlyHint = false, OpenWorldHint = false },
