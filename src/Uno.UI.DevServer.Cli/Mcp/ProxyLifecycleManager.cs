@@ -360,6 +360,20 @@ internal class ProxyLifecycleManager
 				{
 					SelectionSource = WorkspaceSelectionSource.RootsConfirmed,
 				};
+
+				// Always accept a valid directory as the workspace root, even when no
+				// Uno solution is found yet (empty project, new workspace, non-Uno project).
+				// The file watcher will pick up solutions as they appear.
+				if (!rootWorkspaceResolution.IsResolved && Directory.Exists(rootPath))
+				{
+					rootWorkspaceResolution = rootWorkspaceResolution with
+					{
+						RequestedWorkingDirectory = rootPath,
+						EffectiveWorkspaceDirectory = rootPath,
+					};
+					_logger.LogInformation(
+						"No Uno workspace found at '{RootPath}'; accepting as workspace root for monitoring", rootPath);
+				}
 				LogTimeline(
 					"set-roots.resolve-workspace.complete",
 					processRootsStopwatch.ElapsedMilliseconds,
