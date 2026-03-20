@@ -247,9 +247,9 @@ public class Given_ProxyLifecycleManager
 		}
 		finally
 		{
-			if (monitor is not null)
+			if (subject is not null)
 			{
-				await monitor.StopMonitoringAsync();
+				await StopWatcherAndMonitorAsync(subject);
 			}
 
 			await DeleteDirectoryWithRetriesAsync(root);
@@ -298,12 +298,12 @@ public class Given_ProxyLifecycleManager
 		}
 		finally
 		{
-			if (monitor is not null)
+			if (subject is not null)
 			{
-				await monitor.StopMonitoringAsync();
+				await StopWatcherAndMonitorAsync(subject);
 			}
 
-			await DeleteDirectoryWithRetriesAsync(root);
+			try { await DeleteDirectoryWithRetriesAsync(root); } catch { /* best-effort cleanup */ }
 		}
 	}
 
