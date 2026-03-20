@@ -139,12 +139,10 @@ partial class Given_Clipboard
 	private static async Task DelayForClipboard()
 	{
 		// On some platforms, clipboard operations are not immediately available.
-		// On native Android/iOS, SetContent dispatches the write asynchronously
+		// On Android/iOS, SetContent dispatches the write asynchronously
 		// via CoreDispatcher.Main.RunAsync. On Wasm, clipboard access is also async.
-		if (RuntimeTestsPlatformHelper.CurrentPlatform is
-			RuntimeTestPlatforms.SkiaWasm or
-			RuntimeTestPlatforms.NativeAndroid or
-			RuntimeTestPlatforms.NativeIOS)
+		var platform = RuntimeTestsPlatformHelper.CurrentPlatform;
+		if ((RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.Android | RuntimeTestPlatforms.IOS).HasFlag(platform))
 		{
 			await Task.Delay(1000);
 		}
