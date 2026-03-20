@@ -6,5 +6,3 @@ steps:
     ./commitsar
 
   condition: ne(variables['System.PullRequest.PullRequestNumber'], '')
-
-- template: .azure-devops-setup-generate-changelog.yml

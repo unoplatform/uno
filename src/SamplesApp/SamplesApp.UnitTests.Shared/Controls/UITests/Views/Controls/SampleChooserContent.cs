@@ -25,6 +25,13 @@ namespace SampleControl.Entities
 		public bool IgnoreInSnapshotTests { get; set; }
 		public bool IsManualTest { get; set; }
 		public bool UsesFrame { get; set; }
+		public bool DisableKeyboardShortcuts { get; set; }
+
+		public string SourceFilePath { get; set; }
+
+		public string GitHubSourceUrl => SourceFilePath is { Length: > 0 }
+			? $"https://github.com/unoplatform/uno/blob/master/src/SamplesApp/UITests.Shared/{SourceFilePath}"
+			: null;
 
 		bool _isFavorite;
 		public bool IsFavorite

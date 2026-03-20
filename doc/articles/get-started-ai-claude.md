@@ -16,17 +16,20 @@ This guide will walk you through the setup process for getting started with Clau
 1. Register the Uno Platform MCPs:
 
     ```bash
-    claude mcp add --transport http uno https://mcp.platform.uno/v1
-    claude mcp add --transport stdio "uno-app" -- dotnet dnx -y uno.devserver --mcp-app
+    claude mcp add --scope user --transport http uno https://mcp.platform.uno/v1
+    claude mcp add --scope user --transport stdio "uno-app" -- dotnet dnx -y uno.devserver --mcp-app
     ```
 
-1. Open Claude and run:
+1. Start Claude Code in your terminal and then run:
 
     ```bash
     /mcp
     ```
 
     This will show the Uno Platform MCPs available to the agent.
+
+    > [!IMPORTANT]
+    > The `uno-app` MCP [may fail to load](https://github.com/anthropics/claude-code/issues/4384) unless Claude is opened in a folder containing an Uno Platform app.
 
 ## Next Steps
 

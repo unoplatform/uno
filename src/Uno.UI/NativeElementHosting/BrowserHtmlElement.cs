@@ -54,7 +54,6 @@ public sealed partial class BrowserHtmlElement : IDisposable
 		}
 
 		ElementId = elementId;
-		RegisterExistingElementNative(elementId);
 	}
 
 	/// <summary>

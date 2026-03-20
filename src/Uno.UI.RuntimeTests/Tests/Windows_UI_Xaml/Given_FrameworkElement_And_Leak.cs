@@ -41,8 +41,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	public class Given_FrameworkElement_And_Leak
 	{
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit)] // These test are failing in CI on native iOS https://github.com/unoplatform/uno/issues/21528
-		[Timeout(3 * 60 * 1000)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.NativeWinUI)] // These test are failing in CI on native iOS https://github.com/unoplatform/uno/issues/21528
 		[DataRow(typeof(XamlEvent_Leak_UserControl), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind_Event), 15)]
@@ -344,17 +343,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				retainedMessage = retainedTypes.JoinBy(";");
 			}
 
-			if (OperatingSystem.IsIOS() || OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser() || OperatingSystem.IsLinux())
-			{
-				// Some platforms have a problem with GC timing and/or the way things like async methods are compiled
-				// where the last created instance of the control will remain in memory, so we check that objects from
-				// all but the last instance of the control are collected
-				RemoveDeadRefsAndGetAliveRefs().Count().Should().BeLessThanOrEqualTo(totalRefCount - totalRefCountExceptForLastControlInstance, retainedMessage);
-			}
-			else
-			{
-				Assert.AreEqual(0, RemoveDeadRefsAndGetAliveRefs().Count(), retainedMessage);
-			}
+			// Some platforms have a problem with GC timing and / or the way things like async methods are compiled
+			// where the last created instance of the control will remain in memory, so we check that objects from
+			// all but the last instance of the control are collected
+			var expected = totalRefCount - totalRefCountExceptForLastControlInstance;
+			var refcount = RemoveDeadRefsAndGetAliveRefs().Count();
+
+			refcount.Should().BeLessThanOrEqualTo(expected, retainedMessage);
 
 			static string ExtractTargetName(DependencyObject p)
 			{

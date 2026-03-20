@@ -55,8 +55,14 @@ namespace Windows.Media.Playback
 		void RaiseNaturalVideoDimensionChanged()
 			=> NaturalVideoDimensionChanged?.Invoke(this, null);
 
-		void RaiseVolumeChanged()
-			=> VolumeChanged?.Invoke(this, null);
+		void RaiseVolumeChanged(double? newVolume = null)
+		{
+			if (newVolume != null)
+			{
+				_volume = Math.Clamp(newVolume.Value, 0.0, 1.0);
+			}
+			VolumeChanged?.Invoke(this, null);
+		}
 
 		void RaisePositionChanged()
 			=> PlaybackSession.Position = _extension?.Position ?? TimeSpan.Zero;
@@ -115,8 +121,8 @@ namespace Windows.Media.Playback
 			void IMediaPlayerEventsExtension.RaiseNaturalVideoDimensionChanged()
 				=> _owner.RaiseNaturalVideoDimensionChanged();
 
-			void IMediaPlayerEventsExtension.RaiseVolumeChanged()
-				=> _owner.RaiseVolumeChanged();
+			void IMediaPlayerEventsExtension.RaiseVolumeChanged(double? newVolume)
+				=> _owner.RaiseVolumeChanged(newVolume);
 
 			public void RaisePositionChanged()
 				=> _owner.RaisePositionChanged();

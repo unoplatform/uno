@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference PipsPager.cpp, tag winui3/release/1.4.2
+// MUX reference PipsPager.cpp, tag winui3/release/1.8-stable
 
 using System;
 using System.Collections.ObjectModel;
@@ -11,9 +11,6 @@ using Windows.System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
-#if !HAS_UNO_WINUI // Avoid duplicate using for WinUI build
-using Microsoft.UI.Xaml.Automation.Peers;
-#endif
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -121,6 +118,7 @@ public partial class PipsPager : Control
 		m_pipsPagerElementPreparedRevoker.Disposable = null;
 		m_pipsAreaGettingFocusRevoker.Disposable = null;
 		m_pipsAreaBringIntoViewRequestedRevoker.Disposable = null;
+		RestoreLayoutVirtualization();
 		void AssignPipsPagerRepeater(ItemsRepeater repeater)
 		{
 
@@ -133,6 +131,12 @@ public partial class PipsPager : Control
 				m_pipsAreaGettingFocusRevoker.Disposable = Disposable.Create(() => repeater.GettingFocus -= OnPipsAreaGettingFocus);
 				repeater.BringIntoViewRequested += OnPipsAreaBringIntoViewRequested;
 				m_pipsAreaBringIntoViewRequestedRevoker.Disposable = Disposable.Create(() => repeater.BringIntoViewRequested -= OnPipsAreaBringIntoViewRequested);
+
+				var revokerToken = repeater.RegisterPropertyChangedCallback(ItemsRepeater.LayoutProperty, OnItemsRepeaterLayoutChanged);
+				m_itemsRepeaterStackLayoutChangedRevoker.Disposable = Disposable.Create(() => repeater.UnregisterPropertyChangedCallback(
+						ItemsRepeater.LayoutProperty, revokerToken));
+
+				UpdateLayoutVirtualization();
 			}
 		}
 		AssignPipsPagerRepeater(GetTemplateChild(c_pipsPagerRepeaterName) as ItemsRepeater);
@@ -265,7 +269,8 @@ public partial class PipsPager : Control
 		 string disabledStateName)
 	{
 
-		var ifGenerallyVisible = !hiddenOnEdgeCondition && NumberOfPages != 0 && MaxVisiblePips > 0;
+		var ifGenerallyVisible = (!hiddenOnEdgeCondition || (IsWrapEnabled && NumberOfPages > 1)) &&
+								 NumberOfPages != 0 && MaxVisiblePips > 0;
 		if (visibility != ButtonVisibility.Collapsed)
 		{
 			if ((visibility == ButtonVisibility.Visible || m_isPointerOver || m_isFocused) && ifGenerallyVisible)
@@ -525,6 +530,12 @@ public partial class PipsPager : Control
 		}
 	}
 
+	private void OnWrapModeChanged()
+	{
+		UpdateLayoutVirtualization();
+		UpdateNavigationButtonVisualStates();
+	}
+
 	private void OnOrientationChanged()
 	{
 		if (Orientation == Orientation.Horizontal)
@@ -595,14 +606,46 @@ public partial class PipsPager : Control
 
 	private void OnPreviousButtonClicked(object sender, RoutedEventArgs e)
 	{
-		// In this method, SelectedPageIndex is always greater than 0.
-		SelectedPageIndex = SelectedPageIndex - 1;
+		// Navigation buttons are hidden in this scenario.
+		// However in case someone re-templates the control and
+		// leaves the buttons active, we want to make sure
+		// we don't navigate to a non-existent index.
+		if (NumberOfPages == 0 || NumberOfPages == 1)
+		{
+			return;
+		}
+
+		var newPageIndex = Math.Max(0, SelectedPageIndex - 1);
+
+		if (IsWrapEnabled && NumberOfPages > -1 &&
+			SelectedPageIndex == 0)
+		{
+			newPageIndex = NumberOfPages - 1;
+		}
+
+		SelectedPageIndex = newPageIndex;
 	}
 
 	private void OnNextButtonClicked(object sender, RoutedEventArgs e)
 	{
-		// In this method, SelectedPageIndex is always less than maximum.
-		SelectedPageIndex = SelectedPageIndex + 1;
+		// Navigation buttons are hidden in this scenario.
+		// However in case someone re-templates the control and
+		// leaves the buttons active, we want to make sure
+		// we don't navigate to a non-existent index.
+		if (NumberOfPages == 0 || NumberOfPages == 1)
+		{
+			return;
+		}
+
+		var newPageIndex = NumberOfPages > -1 ?
+				Math.Min(SelectedPageIndex + 1, NumberOfPages - 1) : SelectedPageIndex + 1;
+
+		if (IsWrapEnabled && SelectedPageIndex == (NumberOfPages - 1))
+		{
+			newPageIndex = 0;
+		}
+
+		SelectedPageIndex = newPageIndex;
 	}
 
 	protected override void OnGotFocus(RoutedEventArgs args)
@@ -724,6 +767,46 @@ public partial class PipsPager : Control
 		args.Handled = true;
 	}
 
+	private void OnItemsRepeaterLayoutChanged(object sender, DependencyProperty args)
+	{
+		RestoreLayoutVirtualization();
+		UpdateLayoutVirtualization();
+	}
+
+	private void RestoreLayoutVirtualization()
+	{
+		// Make sure to reset the layout virtualization settings on old layout
+		if (m_itemsRepeaterStackLayout is StackLayout stackLayout)
+		{
+			stackLayout.DisableVirtualization = m_cachedIsVirtualizationEnabledFlag;
+		}
+		m_itemsRepeaterStackLayout = null;
+		m_cachedIsVirtualizationEnabledFlag = true;
+	}
+
+	private void UpdateLayoutVirtualization()
+	{
+		if (m_pipsPagerRepeater is { } repeater)
+		{
+			if (repeater.Layout is StackLayout stackLayout)
+			{
+				// Turn off virtualization when wrap around is enabled
+				// in order to avoid a bug where the pips disappear
+				// when navigating to the last page from the first page
+				if (m_itemsRepeaterStackLayout is not { })
+				{
+					//TODO Officially it is using 
+					//m_cachedIsVirtualizationEnabledFlag = stackLayout.IsVirtualizationEnabled;
+					m_cachedIsVirtualizationEnabledFlag = stackLayout.DisableVirtualization;
+					m_itemsRepeaterStackLayout = stackLayout;
+				}
+				stackLayout.DisableVirtualization = !IsWrapEnabled;
+			}
+		}
+	}
+
+	private bool IsWrapEnabled => WrapMode == PipsPagerWrapMode.Wrap;
+
 	private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 	{
 		DependencyProperty property = args.Property;
@@ -740,6 +823,10 @@ public partial class PipsPager : Control
 			else if (property == MaxVisiblePipsProperty)
 			{
 				OnMaxVisualIndicatorsChanged();
+			}
+			else if (property == WrapModeProperty)
+			{
+				OnWrapModeChanged();
 			}
 			else if (property == PreviousButtonVisibilityProperty)
 			{
@@ -796,9 +883,3 @@ public partial class PipsPager : Control
 		}
 	}
 }
-
-
-
-
-
-

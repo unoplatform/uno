@@ -108,7 +108,6 @@ public partial class CompositionTarget
 			((ICompositionTarget)this).RequestNewFrame();
 		}
 
-		FrameRendered?.Invoke();
 		if (rootElement.XamlRoot is not null)
 		{
 			XamlRootMap.GetHostForRoot(rootElement.XamlRoot)?.InvalidateRender();
@@ -133,6 +132,7 @@ public partial class CompositionTarget
 			ContentPresenter.OnNativeHostsRenderOrderChanged(nativeVisualsInZOrder);
 		}
 
+		FrameRendered?.Invoke();
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 

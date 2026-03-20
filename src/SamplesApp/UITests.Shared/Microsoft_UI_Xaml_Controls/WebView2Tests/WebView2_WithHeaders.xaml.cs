@@ -1,4 +1,4 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using System;
 using Microsoft.UI.Xaml;
 using SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests;
@@ -7,7 +7,7 @@ using Windows.Web.Http;
 
 namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
-	[SampleControlInfo("WebView", "WebView2_WithHeaders", typeof(WebView2ViewModel))]
+	[Sample("WebView", Name = "WebView2_WithHeaders", ViewModelType = typeof(WebView2ViewModel))]
 	public sealed partial class WebView2_WithHeaders : UserControl
 	{
 #if HAS_UNO

@@ -29,6 +29,7 @@
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.macOS" />
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="Uno.icu-macos" />
 	</ItemGroup>
 
 	<PropertyGroup>

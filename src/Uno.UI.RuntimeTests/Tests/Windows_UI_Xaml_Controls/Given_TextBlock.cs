@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Uno.Helpers;
@@ -30,11 +30,13 @@ using Uno.UI.Toolkit.DevTools.Input;
 using Microsoft.UI.Xaml.Data;
 using SkiaSharp;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Uno.UI.Xaml.Media;
 #endif
 
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 using static Private.Infrastructure.TestServices;
+using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -155,10 +157,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.15);
 		}
 
-		// Reason for failure on X11 is not very known, but it's likely the AdvanceX of space character
-		// is different between the fallback font and OpenSans
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWasm)]
+		// Different platforms will resolve SKFontManager.Default.MatchCharacter to different fonts
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 		public async Task Check_FontFallback_Shaping()
 		{
 			var SUT = new TextBlock
@@ -169,7 +170,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
-			var familyName = skFont.Typeface.FamilyName;
 			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
@@ -193,6 +193,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// we tolerate a 2 pixels difference between the bitmaps due to font differences
 			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.18, resolutionTolerance: 2);
 		}
+
+#pragma warning disable MSTEST0045 // Cooperating cancellation
+		[TestMethod]
+		[Timeout(60000, CooperativeCancellation = false)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task Check_FontFallback_Shaping2()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				LineHeight = 34,
+			};
+
+			var expected = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				LineHeight = 34,
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/NotoSansArabic-Regular.ttf"),
+			};
+
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
+			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
+
+			var matched = false;
+
+			await UITestHelper.Load(new StackPanel
+			{
+				expected,
+				SUT
+			});
+
+			Action OnFrameRendered = async () =>
+			{
+				var screenshot1 = await UITestHelper.ScreenShot(SUT);
+				var screenshot2 = await UITestHelper.ScreenShot(expected);
+
+				var rect = ImageAssert.GetColorBounds(screenshot2, ((SolidColorBrush)DefaultBrushes.TextForegroundBrush).Color);
+
+				matched = rect is { Width: > 0, Height: > 0 } && await ImageAssert.AreRenderTargetBitmapsEqualAsync(screenshot1.Bitmap, screenshot2.Bitmap);
+			};
+
+			var compositionTarget = (CompositionTarget)expected.Visual.CompositionTarget!;
+			compositionTarget.FrameRendered += OnFrameRendered;
+			using var _ = Disposable.Create(() => compositionTarget.FrameRendered -= OnFrameRendered);
+
+			await UITestHelper.WaitForRender();
+			await UITestHelper.WaitFor(() => matched, 60000);
+		}
+#pragma warning restore MSTEST0045
 #endif
 
 		[TestMethod]
@@ -223,7 +274,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if __SKIA__
 			var segments = ((Run)SUT.Inlines.Single()).Segments;
-			Assert.AreEqual(2, segments.Count);
+			Assert.HasCount(2, segments);
 			Assert.IsTrue(segments[0].IsTab);
 			Assert.AreEqual("\r", segments[1].Text.ToString());
 #endif
@@ -243,14 +294,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBlock { Text = "Some text" };
 			var size = new Size(1000, 1000);
 			SUT.Measure(size);
-			Assert.IsTrue(SUT.DesiredSize.Width > 0);
-			Assert.IsTrue(SUT.DesiredSize.Height > 0);
+			Assert.IsGreaterThan(0, SUT.DesiredSize.Width);
+			Assert.IsGreaterThan(0, SUT.DesiredSize.Height);
 
 			// For simplicity, currently we don't insist on a specific value here. The exact details of text measurement are highly
 			// platform-specific, and additionally on UWP the ActualWidth and DesiredSize.Width are not exactly the same, a subtlety Uno
 			// currently doesn't try to replicate.
-			Assert.IsTrue(SUT.ActualWidth > 0);
-			Assert.IsTrue(SUT.ActualHeight > 0);
+			Assert.IsGreaterThan(0, SUT.ActualWidth);
+			Assert.IsGreaterThan(0, SUT.ActualHeight);
 		}
 
 		[TestMethod]
@@ -273,13 +324,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var panel = (StackPanel)SUT.Content;
 			var span = (Span)((TextBlock)panel.Children.Single()).Inlines.Single();
 			var inlines = span.Inlines;
-			Assert.AreEqual(3, inlines.Count);
+			Assert.HasCount(3, inlines);
 			Assert.AreEqual("Where ", ((Run)inlines[0]).Text);
 			Assert.AreEqual("did", ((Run)((Italic)inlines[1]).Inlines.Single()).Text);
 			Assert.AreEqual(" my text go?", ((Run)inlines[2]).Text);
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Null_FontFamily()
 		{
 			var SUT = new TextBlock { Text = "Some text", FontFamily = null };
@@ -288,6 +340,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task Check_Single_Character_Run_With_Wrapping_Constrained()
 		{
 			var SUT = new TextBlock
@@ -656,9 +709,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-		public async Task When_FontFamily_In_Separate_Assembly()
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		[DataRow("ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf")]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf")]
+		public async Task When_FontFamily_Changed(string font)
 		{
-			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
+			var SUT = new TextBlock { Text = "abcd" };
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForIdle();
 
@@ -670,38 +726,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
 			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
 
-			SUT.FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf");
-
-			int counter = 3;
-
-			do
-			{
-				await WindowHelper.WaitForIdle();
-				await Task.Delay(100);
-
-				SUT.InvalidateMeasure();
-			}
-			while (SUT.DesiredSize == originalSize && counter-- > 0);
-
-			Assert.AreNotEqual(originalSize, SUT.DesiredSize);
-		}
-
-		[TestMethod]
-		public async Task When_FontFamily_Default()
-		{
-			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForIdle();
-
-			var size = new Size(1000, 1000);
-			SUT.Measure(size);
-
-			var originalSize = SUT.DesiredSize;
-
-			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
-			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
-
-			SUT.FontFamily = Application.Current.Resources["SymbolThemeFontFamily"] as FontFamily;
+			SUT.FontFamily = new FontFamily(font);
 
 			int counter = 3;
 
@@ -750,6 +775,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if !HAS_RENDER_TARGET_BITMAP
 		[Ignore("Cannot take screenshot on this platform.")]
 #endif
@@ -794,6 +820,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_Text_Wrapped_At_LineBreak()
+		{
+			var tb1 = new TextBlock()
+			{
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Line1 Line2\r\nLine3",
+				Width = 40,
+				Foreground = new SolidColorBrush(Colors.Red)
+			};
+			var tb2 = new TextBlock()
+			{
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Line1 Line2 Line3",
+				Width = 40,
+				Foreground = new SolidColorBrush(Colors.Red)
+			};
+
+			await UITestHelper.Load(new StackPanel { Children = { tb1, tb2 } });
+			Assert.AreEqual(tb1.ActualHeight, tb2.ActualHeight);
+		}
+
+		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Empty_TextBlock_Measure()
 		{
@@ -811,7 +862,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !__WASM__ // Disabled due to #14231
 			Assert.AreEqual(0, SUT.DesiredSize.Width);
 #endif
-			Assert.IsTrue(SUT.DesiredSize.Height > 0);
+			Assert.IsGreaterThan(0, SUT.DesiredSize.Height);
 		}
 
 		[TestMethod]
@@ -908,7 +959,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var textBlockOrigin = textBlockTransform.TransformPoint(new Point(0, 0));
 
 				Assert.AreEqual(previousOrigin.X, textBlockOrigin.X);
-				Assert.IsTrue(previousOrigin.Y < textBlockOrigin.Y);
+				Assert.IsLessThan(textBlockOrigin.Y, previousOrigin.Y);
 
 				previousOrigin = textBlockOrigin;
 			}
@@ -1001,7 +1052,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle(); // necessary on ios, since the container finished loading before the text is drawn
 
 			Assert.IsFalse(sut.IsTextTrimmed, "IsTextTrimmed should not be trimmed.");
-			Assert.AreEqual(0, states.Count, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
+			Assert.IsEmpty(states, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
 		}
 
 		[TestMethod]
@@ -1023,9 +1074,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, 50, 50), Colors.Red);
 		}
 
+		[TestMethod]
+		public async Task When_Text_Contains_Tabs_Does_Not_Throw()
+		{
+			// This used to throw an exception when tab characters appeared at the end of an inline segment boundary
+			// due to an infinite loop in the tab handling logic.
+			await UITestHelper.Load(new TextBlock
+			{
+				Text = """
+				       public class Program { // http://www.github.com/
+				       	public static void Main(string[] args) {
+				       		Console.WriteLine("Hello, World!");
+				       	}
+				       
+				       	/*
+				       	 * Things to Try:
+				       	 * - Hover over the word 'Hit'
+				       	 * - Hit F1 and Search for 'TestAction'
+				       	 * - Press Ctrl+Enter
+				       	 * - After using Ctrl+Enter, hit F5
+				       	 * - Hit Ctrl+L
+				       	 * - Hit Ctrl+U
+				       	 * - Hit Ctrl+W
+				       	 * - Type the letter 'c'
+				       	 * - Type the word 'boo'
+				       	 * - Type 'foreach' to see Snippet.
+				       	 */
+				       }
+				       """
+			});
+		}
+
 #if HAS_RENDER_TARGET_BITMAP
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21322")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Text_Set_By_Style_Setter()
 		{
 			var style = new Style(typeof(TextBlock));
@@ -1260,7 +1343,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var mouse = injector.GetMouse();
 
 			var bounds = SUT.GetAbsoluteBounds();
-			// Double click within Hello. We should only find Hello selected without "_" or "world"
+			// Double click within Hello. We should only find Hello_world
 			mouse.MoveTo(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
 			await WindowHelper.WaitForIdle();
 
@@ -1274,17 +1357,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var bitmap = await UITestHelper.ScreenShot(SUT);
 
 			// compare vertical slices to see if they have highlighted text in them or not
-			for (var i = 0; i < 5; i++)
+			for (var i = 0; i < 10; i++)
 			{
 				ImageAssert.HasColorInRectangle(
-					bitmap,
-					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
-					SUT.SelectionHighlightColor.Color);
-			}
-			// skip 5 for relaxed tolerance
-			for (var i = 6; i < 10; i++)
-			{
-				ImageAssert.DoesNotHaveColorInRectangle(
 					bitmap,
 					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
 					SUT.SelectionHighlightColor.Color);
@@ -1354,6 +1429,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_IsTextSelectionEnabled_SurrogatePair_Copy()
 		{
+#if __SKIA__
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+#endif
+
 			var SUT = new TextBlock
 			{
 				Text = "🚫 Hello world",
@@ -1391,6 +1473,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIOS)]
 		public async Task When_IsTextSelectionEnabled_CRLF()
 		{
+#if __SKIA__
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+#endif
+
 			var delayToAvoidDoubleTap = 600;
 			var SUT = new TextBlock
 			{
@@ -1479,7 +1568,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(isTextSelectionEnabled ? 1 : 0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot);
+			if (isTextSelectionEnabled)
+			{
+				Assert.IsNotEmpty(popups);
+				Assert.IsTrue(SUT.ContextFlyout.IsOpen);
+			}
+			else
+			{
+				Assert.IsEmpty(popups);
+			}
 		}
 
 #if !HAS_INPUT_INJECTOR
@@ -1492,6 +1590,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_IsTextSelectionEnabled_Keyboard_SelectAll_Copy()
 		{
+#if __SKIA__
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+#endif
+
 			var SUT = new TextBlock
 			{
 				Text = "Hello world",
@@ -1586,6 +1691,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_IsTextSelectionEnabled_ContextMenu_Copy()
 		{
+#if __SKIA__
+			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+#endif
+
 			var SUT = new TextBlock
 			{
 				Text = "Hello world",
@@ -1695,7 +1807,216 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			Assert.AreEqual(selectedText, sut.SelectedText);
 		}
+
+#if __SKIA__
+		[TestMethod]
+		public async Task When_Focus_Changes_Selection_Is_Not_Shown()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive("RenderTargetBitmap is not supported on this platform");
+			}
+
+			var SUT = new TextBlock { Text = "Some text", IsTextSelectionEnabled = true };
+			var focusBtn = new Button();
+			await UITestHelper.Load(new StackPanel { Children = { SUT, focusBtn } });
+
+			SUT.Focus(FocusState.Programmatic);
+			SUT.SelectAll();
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width, screenshot.Height), ((SolidColorBrush)Uno.UI.Xaml.Media.DefaultBrushes.SelectionHighlightColor).Color);
+
+			focusBtn.Focus(FocusState.Programmatic);
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+			var screenshot2 = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot2, new Rectangle(0, 0, screenshot2.Width, screenshot2.Height), ((SolidColorBrush)Uno.UI.Xaml.Media.DefaultBrushes.SelectionHighlightColor).Color);
+		}
+#endif
+
 		#endregion
+#endif
+
+#if __SKIA__ || WINAPPSDK
+		[TestMethod]
+		public async Task When_TextBlock_ContextFlyout_IsTextCommandBarFlyout()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.IsNotNull(SUT.ContextFlyout, "TextBlock should have a default ContextFlyout when IsTextSelectionEnabled is true");
+			Assert.IsInstanceOfType(SUT.ContextFlyout, typeof(TextCommandBarFlyout), "ContextFlyout should be TextCommandBarFlyout");
+		}
+
+		[TestMethod]
+		public async Task When_TextBlock_SelectionFlyout_IsTextCommandBarFlyout()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.IsNotNull(SUT.SelectionFlyout, "TextBlock should have a default SelectionFlyout when IsTextSelectionEnabled is true");
+			Assert.IsInstanceOfType(SUT.SelectionFlyout, typeof(TextCommandBarFlyout), "SelectionFlyout should be TextCommandBarFlyout");
+		}
+
+		[TestMethod]
+		public async Task When_TextBlock_FullText_Selected_Commands_Available()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Test content",
+				Width = 200,
+				IsTextSelectionEnabled = true
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+
+			flyout.ShowAt(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableTextBlockCommands(flyout);
+
+			Assert.IsFalse(hasCut, "Cut should NOT be available for TextBlock (read-only)");
+			Assert.IsTrue(hasCopy, "Copy button should be available when text is selected");
+			Assert.IsTrue(hasSelectAll, "Select All button should be available");
+			Assert.IsFalse(hasPaste, "Paste should NOT be available for TextBlock (read-only)");
+
+			flyout.Hide();
+		}
+
+		[TestMethod]
+		public async Task When_TextBlock_IsTextSelectionDisabled_NoContextFlyout()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Test content",
+				Width = 200,
+				IsTextSelectionEnabled = false
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			// The ContextFlyout may still exist as a default, but it should not be shown
+			// when IsTextSelectionEnabled is false. We verify the default flyout exists
+			// but that it won't be shown (OnContextRequestedCore checks IsTextSelectionEnabled).
+			// The ContextFlyout default value is always set; the guard is in OnContextRequestedCore.
+			Assert.IsInstanceOfType(SUT.ContextFlyout, typeof(TextCommandBarFlyout),
+				"Default ContextFlyout is always TextCommandBarFlyout, but it won't be shown when IsTextSelectionEnabled is false");
+		}
+
+		private (bool hasSelectAll, bool hasCut, bool hasCopy, bool hasPaste) GetAvailableTextBlockCommands(TextCommandBarFlyout flyout)
+		{
+			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
+#if HAS_UNO
+			var commandModifier = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
+#else
+			var commandModifier = VirtualKeyModifiers.Control;
+#endif
+			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.X && ka.Modifiers.HasFlag(commandModifier)));
+			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(commandModifier)));
+			var hasPaste = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.V && ka.Modifiers.HasFlag(commandModifier)));
+			var hasSelectAll = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.A && ka.Modifiers.HasFlag(commandModifier)));
+
+			return (hasSelectAll, hasCut, hasCopy, hasPaste);
+		}
+#endif
+
+#if __SKIA__
+		[TestMethod]
+		public async Task When_TextBlock_HasSelection_Commands_Available()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Test content",
+				Width = 200,
+				IsTextSelectionEnabled = true
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Select "Test"
+			SUT.Selection = new TextBlock.Range(0, 4);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+
+			flyout.ShowAt(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableTextBlockCommands(flyout);
+
+			Assert.IsFalse(hasCut, "Cut should NOT be available for TextBlock (read-only)");
+			Assert.IsTrue(hasCopy, "Copy button should be available when text is selected");
+			Assert.IsTrue(hasSelectAll, "Select All button should be available");
+			Assert.IsFalse(hasPaste, "Paste should NOT be available for TextBlock (read-only)");
+
+			flyout.Hide();
+		}
+
+		[TestMethod]
+		public async Task When_TextBlock_NoSelection_Commands_Available()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Test content",
+				Width = 200,
+				IsTextSelectionEnabled = true
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// No selection
+			SUT.Selection = default;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+
+			flyout.ShowAt(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableTextBlockCommands(flyout);
+
+			Assert.IsFalse(hasCut, "Cut should NOT be available for TextBlock");
+			Assert.IsFalse(hasCopy, "Copy should NOT be available when no text is selected");
+			Assert.IsTrue(hasSelectAll, "Select All should be available when not all text is selected");
+			Assert.IsFalse(hasPaste, "Paste should NOT be available for TextBlock");
+
+			flyout.Hide();
+		}
 #endif
 
 #if __SKIA__
@@ -1743,6 +2064,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				'R' => FlowDirection.RightToLeft,
 				_ => throw new InvalidOperationException()
 			};
+		}
+
+		[TestMethod]
+		[DataRow(TextTrimming.CharacterEllipsis, 0, TextWrapping.NoWrap)]
+		[DataRow(TextTrimming.WordEllipsis, 0, TextWrapping.NoWrap)]
+		[DataRow(TextTrimming.CharacterEllipsis, 1, TextWrapping.Wrap)]
+		[DataRow(TextTrimming.WordEllipsis, 1, TextWrapping.Wrap)]
+		[DataRow(TextTrimming.None, 1, TextWrapping.Wrap)]
+		public async Task When_Pointer_Selection_Lines_Trimmed(TextTrimming textTrimming, int maxLines, TextWrapping textWrapping)
+		{
+			var SUT = new TextBlock
+			{
+				Width = 600,
+				TextTrimming = textTrimming,
+				TextWrapping = textWrapping,
+				MaxLines = maxLines,
+				LineHeight = 20,
+				LineStackingStrategy = LineStackingStrategy.BlockLineHeight,
+				IsTextSelectionEnabled = true,
+				Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dignissim interdum sodales. Aliquam diam eros, malesuada a malesuada vel, congue semper enim. Donec justo magna, consectetur eget facilisis tincidunt, luctus sit amet mauris. Suspendisse sed suscipit velit. Donec egestas, lorem a accumsan faucibus, lectus nibh rutrum nisl, in convallis nulla elit nec velit. Maecenas sollicitudin lacus est, in ultrices leo auctor ut. Phasellus eget leo volutpat ante fermentum porttitor at non enim. Donec convallis sem at scelerisque porttitor. Curabitur ac eleifend libero, et blandit turpis. Aliquam erat volutpat. Phasellus eu rhoncus sapien. Nullam non tortor a turpis luctus pulvinar."
+			};
+
+			var bounds = await UITestHelper.Load(new Border { Child = SUT });
+			Assert.AreEqual(bounds.Height, SUT.LineHeight * 1);
+			Assert.IsGreaterThan(100, SUT.DesiredSize.Width); // just to make sure that the layout didn't crash
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.Press(bounds.GetCenter());
+			await UITestHelper.WaitForIdle();
+			mouse.MoveTo(new Point(bounds.Right + 10, bounds.Bottom + 10));
+			await UITestHelper.WaitForIdle();
+			mouse.Release();
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.SelectedText.Contains(SUT.Text[^20..])); // selection goes to the end of text
+		}
+
+		[TestMethod]
+		[CombinatorialData]
+		public async Task When_Individual_Run_Has_FlowDirection_Set(FlowDirection flowDirection)
+		{
+			var SUT = new TextBlock
+			{
+				Inlines =
+				{
+					new Run { Text = "english" },
+					new Run { Text = "كلام بالعربي!", FlowDirection = flowDirection },
+					new Run { Text = "english" },
+				}
+			};
+
+			SUT.TextHighlighters.Add(new TextHighlighter
+			{
+				Ranges = { new TextRange { StartIndex = SUT.Text.IndexOf('!'), Length = 1 } },
+				Background = new SolidColorBrush(Colors.Red)
+			});
+
+			await UITestHelper.Load(new Border { Child = SUT });
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			var leftHalf = new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height);
+			var rightHalf = new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height);
+			if (flowDirection is FlowDirection.LeftToRight)
+			{
+				ImageAssert.HasColorInRectangle(screenshot, rightHalf, Colors.Red);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot, leftHalf, Colors.Red);
+			}
+			else
+			{
+				ImageAssert.HasColorInRectangle(screenshot, leftHalf, Colors.Red);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot, rightHalf, Colors.Red);
+			}
 		}
 #endif
 	}

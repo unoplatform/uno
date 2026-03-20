@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Canvas
 {
-	[SampleControlInfo(description: "Demonstrates correct application of Canvas.ZIndex")]
+	[Sample(Description = "Demonstrates correct application of Canvas.ZIndex")]
 	public sealed partial class Canvas_ZIndex : UserControl
 	{
 		public Canvas_ZIndex()

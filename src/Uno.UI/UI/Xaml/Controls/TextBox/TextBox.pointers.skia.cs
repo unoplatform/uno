@@ -2,17 +2,14 @@
 using System.Diagnostics;
 using Windows.Foundation;
 using Windows.System;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
-#else
-using Windows.UI.Input;
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -47,7 +44,7 @@ public partial class TextBox
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
 			var point = e.GetCurrentPoint(displayBlock);
-			var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(point.Position, false, true));
+			var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point.Position, false, true));
 			if (_mouseMultiTapChunk is { } mtc)
 			{
 				(int start, int length) chunk;
@@ -57,7 +54,7 @@ public partial class TextBox
 				}
 				else
 				{
-					chunk = FindChunkAt(index, true);
+					chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(index, true);
 				}
 
 				if (chunk.start < mtc.start)
@@ -81,23 +78,19 @@ public partial class TextBox
 		}
 	}
 
-	// TODO: remove this context menu when TextCommandBarFlyout is implemented
 	protected override void OnRightTapped(RightTappedRoutedEventArgs e)
 	{
 		base.OnRightTapped(e);
-		e.Handled = true;
 
 		var displayBlock = TextBoxView.DisplayBlock;
 		var position = e.GetPosition(displayBlock);
 
-		var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(position, true, true));
+		var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(position, true, true));
 		if (index < SelectionStart || index >= SelectionStart + SelectionLength)
 		{
 			// Right tapping should move the caret to the current pointer location if outside the selection
 			Select(index, 0);
 		}
-
-		OpenContextMenu(position);
 	}
 
 	private static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, PointerPoint down)
@@ -115,7 +108,6 @@ public partial class TextBox
 	{
 		_isPressed = true;
 		TrySetCurrentlyTyping(false);
-		_contextMenu?.Close();
 
 		if (!_isSkiaTextBox)
 		{
@@ -131,7 +123,7 @@ public partial class TextBox
 		else if (!currentPoint.Properties.IsRightButtonPressed) // Mouse (a pen is considered a mouse for now)
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
-			var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, true, true));
+			var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, true, true));
 
 			if (currentPoint.Properties.IsLeftButtonPressed
 				&& _lastPointerDown.point is { } p
@@ -151,7 +143,7 @@ public partial class TextBox
 				else // _lastPointerDown.repeatedPresses == 0 or 2
 				{
 					// double tap
-					var chunk = FindChunkAt(index, true);
+					var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(index, true);
 					Select(chunk.start, chunk.length);
 					_mouseMultiTapChunk = (chunk.start, chunk.length, false);
 					_lastPointerDown = (currentPoint, 1);
@@ -187,29 +179,38 @@ public partial class TextBox
 
 		_isPressed = false;
 
-		if ((args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp) >= GestureRecognizer.HoldMinDelayMicroseconds)
+		var touchHoldTime = args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp;
+		var position = args.GetCurrentPoint(this).Position;
+
+		if (touchHoldTime >= GestureRecognizer.HoldMinDelayMicroseconds)
 		{
-			// Touch holding
-			OpenContextMenu(args.GetCurrentPoint(this).Position);
+			// Touch holding - show ContextFlyout via OnContextRequested
+			// Ported from: WinUI TextBoxBase.cpp OnGripperHeld (line 5219)
+			var contextArgs = new ContextRequestedEventArgs();
+			contextArgs.SetGlobalPoint(args.GetCurrentPoint(null).Position);
+			OnContextRequested(this, contextArgs);
 		}
 		else if (!Text.IsNullOrEmpty()) // Touch tap
 		{
 			TouchTap(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position, wasFocused);
+			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (line 2088)
+			// OnPointerReleased - queue SelectionFlyout visibility update after pointer release
+			QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, position);
 		}
 	}
 
 	private void TouchTap(Point point, bool wasFocused)
 	{
-		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(point, true, true));
+		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, true, true));
 
-		var tappedChunk = FindChunkAt(index, true);
+		var tappedChunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(index, true);
 
 		var tappedInsideSelection = _selection.start <= index && index < _selection.start + _selection.length;
 		if (tappedInsideSelection && CaretMode != CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
 			CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
 		}
-		else if (_selection.length == 0 && FindChunkAt(_selection.start, true) is var currentChunk && currentChunk.start <= index && index < currentChunk.start + currentChunk.length)
+		else if (_selection.length == 0 && TextBoxView.DisplayBlock.ParsedText.GetWordAt(_selection.start, true) is var currentChunk && currentChunk.start <= index && index < currentChunk.start + currentChunk.length)
 		{
 			Select(tappedChunk.start, tappedChunk.length); // touch selection doesn't go backwards (no "negative length")
 			CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
@@ -219,8 +220,8 @@ public partial class TextBox
 			var lastNonSpanCharIndex = Text[tappedChunk.start..(tappedChunk.start + tappedChunk.length)].IndexOf(' ');
 			var rightEndIndex = lastNonSpanCharIndex == -1 ? tappedChunk.start + tappedChunk.length - 1 : tappedChunk.start + lastNonSpanCharIndex;
 			var leftEndIndex = tappedChunk.start;
-			var leftEnd = DisplayBlockInlines.GetRectForIndex(leftEndIndex);
-			var rightEnd = DisplayBlockInlines.GetRectForIndex(rightEndIndex);
+			var leftEnd = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(leftEndIndex);
+			var rightEnd = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(rightEndIndex);
 
 			var closerEnd = Math.Abs(point.X - leftEnd.Left) < Math.Abs(point.X - rightEnd.Right) ? leftEndIndex : rightEndIndex + 1;
 
@@ -269,7 +270,7 @@ public partial class TextBox
 
 		var displayBlock = TextBoxView.DisplayBlock;
 		var point = args.GetCurrentPoint(displayBlock).Position - new Point(0, (caret.Height - 16) / 2);
-		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(point, false, true));
+		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, false, true));
 
 		if (_selection.length == 0)
 		{
@@ -311,12 +312,37 @@ public partial class TextBox
 		ClearCaretPointerState(sender, e);
 
 		var caret = (CaretWithStemAndThumb)sender;
-
 		var previous = caret.LastPointerDown;
-		if (IsMultiTapGesture((previous.PointerId, previous.Timestamp, previous.Position), e.GetCurrentPoint(null)))
+		var current = e.GetCurrentPoint(null);
+
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5209-5233)
+		// OnGripperHeld - check if this was a hold gesture on the gripper
+		var holdDuration = current.Timestamp - previous.Timestamp;
+		if (holdDuration >= GestureRecognizer.HoldMinDelayMicroseconds)
+		{
+			// Line 5219: Gripper was held - show ContextFlyout (OnContextRequested)
+			e.Handled = true;
+			var contextArgs = new ContextRequestedEventArgs();
+			contextArgs.SetGlobalPoint(e.GetCurrentPoint(null).Position);
+			OnContextRequested(this, contextArgs);
+		}
+		else if (IsMultiTapGesture((previous.PointerId, previous.Timestamp, previous.Position), current))
 		{
 			e.Handled = true;
 			TouchTap(e.GetCurrentPoint(TextBoxView.DisplayBlock).Position, true);
+			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (line 653)
+			// Gripper manipulation ended - queue SelectionFlyout visibility update
+			QueueUpdateSelectionFlyoutVisibility(
+				e.Pointer.PointerDeviceType,
+				e.GetCurrentPoint(this).Position);
+		}
+		else
+		{
+			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (line 653)
+			// Gripper manipulation ended - queue SelectionFlyout visibility update
+			QueueUpdateSelectionFlyoutVisibility(
+				e.Pointer.PointerDeviceType,
+				e.GetCurrentPoint(this).Position);
 		}
 	}
 
@@ -326,55 +352,5 @@ public partial class TextBox
 		var caret = (CaretWithStemAndThumb)sender;
 		caret.SetStemVisible(false);
 		caret.ReleasePointerCaptures();
-	}
-
-	private void OpenContextMenu(Point p)
-	{
-		if (_isSkiaTextBox)
-		{
-			if (_contextMenu is null)
-			{
-				_contextMenu = new MenuFlyout();
-				_contextMenu.Opened += (_, _) => UpdateDisplaySelection();
-
-				_flyoutItems.Add(ContextMenuItem.Cut, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_CUT"), Command = new StandardUICommand(StandardUICommandKind.Cut) { Command = new TextBoxCommand(CutSelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_COPY"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBoxCommand(CopySelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_PASTE"), Command = new StandardUICommand(StandardUICommandKind.Paste) { Command = new TextBoxCommand(PasteFromClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Undo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_UNDO"), Command = new StandardUICommand(StandardUICommandKind.Undo) { Command = new TextBoxCommand(Undo) } });
-				_flyoutItems.Add(ContextMenuItem.Redo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_REDO"), Command = new StandardUICommand(StandardUICommandKind.Redo) { Command = new TextBoxCommand(Redo) } });
-				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SELECT_ALL"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBoxCommand(SelectAll) } });
-			}
-
-			_contextMenu.Items.Clear();
-
-			var hasSelection = _selection.length > 0;
-
-			if (!IsReadOnly && hasSelection)
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Cut]);
-			}
-
-			if (hasSelection)
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
-			}
-
-			if (!IsReadOnly)
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
-				if (CanUndo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Undo]);
-				}
-				if (CanRedo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Redo]);
-				}
-			}
-
-			_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
-
-			_contextMenu.ShowAt(this, p);
-		}
 	}
 }

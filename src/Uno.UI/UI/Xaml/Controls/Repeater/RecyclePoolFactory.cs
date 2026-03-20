@@ -1,13 +1,19 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	partial class RecyclePool
 	{
-		internal static DependencyProperty ReuseKeyProperty { get; } = DependencyProperty.RegisterAttached(
+		internal static DependencyProperty ReuseKeyProperty
+		{
+			[DynamicDependency(nameof(GetReuseKey))]
+			[DynamicDependency(nameof(SetReuseKey))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 			"ReuseKey",
 			typeof(string),
 			typeof(RecyclePool),

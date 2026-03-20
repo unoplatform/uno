@@ -133,6 +133,7 @@ using System.Runtime.InteropServices;
 using Windows.Graphics.Display;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI;
 
 namespace Uno.WinUI.Runtime.Skia.X11
 {
@@ -486,8 +487,17 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			// xrandr does something similar to this, except it reads the XRRModeInfo from outputInfo->modes by picking
 			// a "best fit" mode and reading it, but this can actually result in dotClock == 0 in some cases and this
-			// show when calling xrandr. Reading from the CRTC info struct returns a more accurate result
-			var fps = mode_refresh((X11Helper.XRRModeInfo*)&crtcInfo->mode);
+			// shows when calling xrandr. Reading from the CRTC info struct returns a more accurate result
+			var modeSpan = new Span<X11Helper.XRRModeInfo>((void*)resources->modes, resources->nmode);
+			var fps = FeatureConfiguration.CompositionTarget.FrameRate;
+			foreach (var testMode in modeSpan)
+			{
+				if (crtcInfo->mode == testMode.id && mode_refresh(&testMode) is { } testFps)
+				{
+					fps = (float)testFps;
+					break;
+				}
+			}
 
 			return (new DisplayInformationDetails(
 				rawWidth,

@@ -9,7 +9,7 @@ jobs:
 - job: Dotnet_Template_Tests_NetCoreMobile_windows
   displayName: 'Windows Tests'
   timeoutInMinutes: 120
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool: ${{ parameters.poolName }}
 
@@ -35,6 +35,8 @@ jobs:
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-windows.yml
+  - template: ../templates/dotnet-install-previous-wasmtools.yml
+  
   - template: ../templates/uno-dev-feed.yml
 
   - task: CopyFiles@2
@@ -67,7 +69,7 @@ jobs:
 - job: Dotnet_Template_Tests_NetCoreMobile_macos
   displayName: 'macOS Tests'
   timeoutInMinutes: 120
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool:
     vmImage: ${{ parameters.macOSImageName }}
@@ -104,7 +106,16 @@ jobs:
       xCodeRoot: ${{ parameters.xCodeRoot }}
 
   - template: ../templates/dotnet-mobile-install-mac.yml
+  - template: ../templates/dotnet-install-previous-wasmtools.yml
   - template: ../templates/uno-dev-feed.yml
+
+  # Required to run netprevious tests
+  - task: UseDotNet@2
+    displayName: Install .NET 9 SDK
+    inputs:
+      packageType: 'sdk'
+      version: '9.0.300'
+      installationPath: $(DOTNET_INSTALL_DIR)
 
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
@@ -122,6 +133,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       NBGV_SemVer2: $(NBGV_SemVer2)
+      WasmCachePath: $(WasmCachePath)
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
@@ -158,9 +170,18 @@ jobs:
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-linux.yml
+  - template: ../templates/dotnet-install-previous-wasmtools.yml
   - template: ../templates/gitversion.yml
   - template: ../templates/uno-dev-feed.yml
   - template: ../templates/host-cleanup-linux.yml
+
+  # Required to run netprevious tests
+  - task: UseDotNet@2
+    displayName: Install .NET 9 SDK
+    inputs:
+      packageType: 'sdk'
+      version: '9.0.300'
+      installationPath: $(DOTNET_INSTALL_DIR)
 
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
@@ -209,6 +230,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       NBGV_SemVer2: $(NBGV_SemVer2)
+      WasmCachePath: $(WasmCachePath)
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
@@ -222,7 +244,7 @@ jobs:
 - job: Dotnet_Tests_Validate_DevServerCli
   displayName: 'DevServer CLI Tests'
   timeoutInMinutes: 25
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool:
     name: $(poolName)
@@ -249,8 +271,16 @@ jobs:
     inputs:
       artifactName: 'Nuget_Packages'
 
+  # Install the .NET 10 SDK in the default system location so 
+  # the devserver tests can find them.
+  - task: UseDotNet@2
+    displayName: Install .NET 10 SDK
+    inputs:
+      packageType: 'sdk'
+      version: '10.0.101'
+
   - template: ../templates/gitversion.yml
-  - template: ../templates/dotnet-mobile-install-windows.yml
+  - template: ../templates/dotnet-install.yml
   - template: ../templates/uno-dev-feed.yml
 
   - task: CopyFiles@2
@@ -277,8 +307,81 @@ jobs:
       targetType: 'inline'
       script: |
         dotnet nuget add source https://pkgs.dev.azure.com/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/_packaging/unoplatformdev/nuget/v3/index.json -n "uno-dev"
+        dotnet test --project src/Uno.UI.DevServer.Cli.E2E.Tests/Uno.UI.DevServer.Cli.E2E.Tests.csproj --filter TestCategory=DevServerSourceE2E --no-restore -v minimal
         build/test-scripts/run-devserver-cli-tests.ps1
       pwsh: true # Use PowerShell core (required for IsWindows to run)
+    env:
+      BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
+      NBGV_SemVer2: $(NBGV_SemVer2)
+      PACKAGES_DIR: $(Build.SourcesDirectory)/src/PackageCache
+      WasmCachePath: $(WasmCachePath)
+      CODEX_API_KEY: $(OPENAI_TOKEN)
+      UNO_STUDIO_LICENSES_BIN: $(UNO_STUDIO_LICENSES_BIN)
+      UNO_STUDIO_USER_JSON: $(UNO_STUDIO_USER_JSON)
+
+- job: Dotnet_Tests_Validate_DevServerCli_Compat
+  displayName: 'DevServer CLI Compat Tests'
+  timeoutInMinutes: 15
+  cancelTimeoutInMinutes: 0
+  dependsOn: Dotnet_Tests_Validate_DevServerCli
+
+  pool:
+    name: $(poolName)
+    vmImage: $(vmImage)
+
+  strategy:
+    matrix:
+      hosted_ubuntu:
+        poolName: '${{ parameters.vmPoolLinux }}'
+        vmImage:
+      hosted_windows:
+        poolName: '${{ parameters.poolName }}'
+        vmImage:
+      macos:
+        vmImage: 'macOS-15'
+        poolName:
+
+  variables:
+    NuGetAuditMode: direct
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: 'Nuget_Packages'
+
+  - task: UseDotNet@2
+    displayName: Install .NET 10 SDK
+    inputs:
+      packageType: 'sdk'
+      version: '10.0.101'
+
+  - template: ../templates/gitversion.yml
+  - template: ../templates/dotnet-install.yml
+  - template: ../templates/uno-dev-feed.yml
+
+  - task: CopyFiles@2
+    displayName: Copy Artifacts to PackageCache
+    inputs:
+      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      Contents: '*.nupkg'
+      TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
+      OverWrite: true
+
+  - task: PowerShell@2
+    displayName: Setup local package feed
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd $(Agent.WorkFolder)
+        dotnet nuget add source $(Build.SourcesDirectory)/src/PackageCache -n "local-source-compat"
+
+  - task: PowerShell@2
+    displayName: Run DevServer Compat Tests
+    inputs:
+      targetType: 'inline'
+      script: |
+        build/test-scripts/run-devserver-compat-tests.ps1
+      pwsh: true
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       NBGV_SemVer2: $(NBGV_SemVer2)

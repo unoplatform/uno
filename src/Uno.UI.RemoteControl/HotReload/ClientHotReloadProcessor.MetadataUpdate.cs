@@ -161,7 +161,7 @@ partial class ClientHotReloadProcessor
 				{
 					// Get the original type of the element, in case it's been replaced
 					var liveType = fe.GetType();
-					var originalType = liveType.GetOriginalType() ?? fe.GetType();
+					var originalType = GetOriginalType(liveType);
 
 					// Get the handler for the type specified
 					// Since we're only interested in handlers for specific element types
@@ -177,7 +177,7 @@ partial class ClientHotReloadProcessor
 					];
 
 					// Get the replacement type, or null if not replaced
-					var mappedType = originalType.GetMappedType();
+					var mappedType = GetMappedType(originalType);
 					foreach (var handler in handlers)
 					{
 						if (!capturedStates.TryGetValue(key, out var dict))
@@ -282,6 +282,15 @@ partial class ClientHotReloadProcessor
 			hrOp?.ReportCompleted();
 		}
 	}
+
+	[UnconditionalSuppressMessage("Trimming", "IL2072")]
+	private static Type GetOriginalType(Type type)
+		=> type.GetOriginalType() ?? type;
+
+
+	[UnconditionalSuppressMessage("Trimming", "IL2072")]
+	private static Type? GetMappedType(Type type)
+		=> type.GetMappedType();
 
 	/// <summary>
 	/// Updates App-level resources (from app.xaml) using the provided updated types list.
@@ -523,12 +532,16 @@ partial class ClientHotReloadProcessor
 				var attr = type.GetCustomAttributesData().FirstOrDefault(data => data is { AttributeType.FullName: "System.Runtime.CompilerServices.MetadataUpdateOriginalTypeAttribute" });
 				if (attr is { ConstructorArguments: [{ Value: Type originalType }] })
 				{
-					TypeMappings.RegisterMapping(type, originalType);
+					RegisterTypeMapping(type, originalType);
 				}
 				else if (attr is not null && _log.IsEnabled(LogLevel.Warning))
 				{
 					_log.Warn($"Found invalid MetadataUpdateOriginalTypeAttribute for {type}");
 				}
+
+				[UnconditionalSuppressMessage("Trimming", "IL2072")]
+				static void RegisterTypeMapping(Type type, Type originalType)
+					=> TypeMappings.RegisterMapping(type, originalType);
 			}
 			catch (TypeLoadException error)
 			{

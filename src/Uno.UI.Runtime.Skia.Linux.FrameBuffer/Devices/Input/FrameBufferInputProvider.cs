@@ -1,23 +1,12 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
-using Uno.Extensions;
-using Windows.Devices.Input;
-using Windows.Foundation;
-using Windows.Graphics.Display;
-using Windows.System;
-using Windows.UI.Core;
-using Windows.UI.Input;
 using Uno.UI.Runtime.Skia.Native;
 using static Uno.UI.Runtime.Skia.Native.LibInput;
-using static Windows.UI.Input.PointerUpdateKind;
 using static Uno.UI.Runtime.Skia.Native.libinput_event_type;
-using System.Runtime.CompilerServices;
-using Uno.Foundation.Extensibility;
+using System.Runtime.InteropServices;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia;
 
@@ -72,8 +61,6 @@ unsafe internal class FrameBufferInputProvider : IDisposable
 	{
 		_libDevFd = libinput_get_fd(_libInputContext);
 
-		var timeval = stackalloc IntPtr[2];
-
 		if (Directory.Exists("/dev/input"))
 		{
 			foreach (var f in Directory.GetFiles("/dev/input", "event*"))
@@ -83,32 +70,35 @@ unsafe internal class FrameBufferInputProvider : IDisposable
 					this.Log().Debug($"Opening input device {f}");
 				}
 
-				libinput_path_add_device(_libInputContext, f);
+				var ret = libinput_path_add_device(_libInputContext, f);
+				if (ret == IntPtr.Zero)
+				{
+					this.LogError()?.Error($"{nameof(libinput_path_add_device)} failed on device {f}");
+				}
 			}
 		}
 
 		while (!_cts.IsCancellationRequested)
 		{
 			IntPtr rawEvent;
-			libinput_dispatch(_libInputContext);
+			var ret = libinput_dispatch(_libInputContext);
+			if (ret < 0)
+			{
+				throw new InvalidOperationException($"{nameof(libinput_dispatch)} failed with error {ret}");
+			}
 			while ((rawEvent = libinput_get_event(_libInputContext)) != IntPtr.Zero)
 			{
 				var type = libinput_event_get_type(rawEvent);
 
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"Got event type (0x{rawEvent:X16}) {type}");
-				}
+				this.LogTrace()?.Trace($"Got event type (0x{rawEvent:X16}) {type}");
 
-				if (type >= LIBINPUT_EVENT_TOUCH_DOWN
-					&& type <= LIBINPUT_EVENT_TOUCH_CANCEL
+				if (type is >= LIBINPUT_EVENT_TOUCH_DOWN and <= LIBINPUT_EVENT_TOUCH_CANCEL
 					&& TryGetPointers(out var pointers))
 				{
 					pointers!.ProcessTouchEvent(rawEvent, type);
 				}
 
-				if (type >= LIBINPUT_EVENT_POINTER_MOTION
-					&& type <= LIBINPUT_EVENT_POINTER_AXIS
+				if (type is >= LIBINPUT_EVENT_POINTER_MOTION and <= LIBINPUT_EVENT_POINTER_AXIS
 					&& TryGetPointers(out pointers))
 				{
 					pointers!.ProcessMouseEvent(rawEvent, type);
@@ -120,13 +110,22 @@ unsafe internal class FrameBufferInputProvider : IDisposable
 				}
 
 				libinput_event_destroy(rawEvent);
-				libinput_dispatch(_libInputContext);
+				var ret2 = libinput_dispatch(_libInputContext);
+				if (ret2 != 0)
+				{
+					this.LogError()?.Error($"{nameof(libinput_dispatch)} failed with error {ret2}");
+				}
 			}
 
 			var pfd = new pollfd { fd = _libDevFd, events = 1 };
-#pragma warning disable CA1806 // Do not ignore method results
-			Libc.poll(&pfd, (IntPtr)1, -1);
-#pragma warning restore CA1806 // Do not ignore method results
+			var ret3 = Libc.poll(&pfd, 1, -1);
+			if (ret3 < 0 && this.Log().IsEnabled(LogLevel.Error))
+			{
+				var errno = Marshal.GetLastWin32Error();
+				var errnoStringPtr = Libc.strerror(errno);
+				var errorString = Marshal.PtrToStringAnsi(errnoStringPtr);
+				this.Log().Error($"{nameof(Libc.poll)} failed ({errno}) : {errorString}");
+			}
 		}
 	}
 
@@ -134,9 +133,14 @@ unsafe internal class FrameBufferInputProvider : IDisposable
 	{
 		if (_libDevFd != 0)
 		{
-#pragma warning disable CA1806 // Do not ignore method results
-			Libc.close(_libDevFd);
-#pragma warning restore CA1806 // Do not ignore method results
+			var ret = Libc.close(_libDevFd);
+			if (ret < 0 && this.Log().IsEnabled(LogLevel.Error))
+			{
+				var errno = Marshal.GetLastWin32Error();
+				var errnoStringPtr = Libc.strerror(errno);
+				var errorString = Marshal.PtrToStringAnsi(errnoStringPtr);
+				this.Log().Error($"{nameof(Libc.close)} failed ({errno}) : {errorString}");
+			}
 			_libDevFd = 0;
 
 			_cts.Cancel();

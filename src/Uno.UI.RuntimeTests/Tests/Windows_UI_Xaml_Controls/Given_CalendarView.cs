@@ -1,16 +1,19 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using SamplesApp.UITests;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using System.Linq;
-using SamplesApp.UITests;
 using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
 
@@ -97,7 +100,7 @@ public class Given_CalendarView
 
 		// The first visible index should be less than the max possible index minus the max items we can display
 		// Worst case scenario is that the last row only has 1 item
-		Assert.IsTrue(pHost.Panel.FirstVisibleIndex <= maxDecadeIndex - (maxDisplayedItems - pHost.Panel.Rows - 1));
+		Assert.IsLessThanOrEqualTo(maxDecadeIndex - (maxDisplayedItems - pHost.Panel.Rows - 1), pHost.Panel.FirstVisibleIndex);
 	}
 
 #if __WASM__
@@ -154,7 +157,7 @@ public class Given_CalendarView
 		};
 		TestServices.WindowHelper.WindowContent = calendar;
 		await TestServices.WindowHelper.WaitForIdle();
-		Assert.AreEqual(1, calendar.SelectedDates.Count);
+		Assert.HasCount(1, calendar.SelectedDates);
 		Assert.AreEqual(day1, calendar.SelectedDates[0]);
 		dayItem1 = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendar).Find(it => it.Date.Date == calendar.SelectedDates[0].Date);
 		Assert.IsNotNull(dayItem1);
@@ -165,12 +168,12 @@ public class Given_CalendarView
 		OnTappedInfo.Invoke(dayItem1, new object[] { new TappedRoutedEventArgs() });
 		await TestServices.WindowHelper.WaitForIdle();
 		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
-		Assert.AreEqual(0, calendar.SelectedDates.Count);
+		Assert.IsEmpty(calendar.SelectedDates);
 		Assert.AreEqual(calendar.CalendarItemBorderBrush, brush1);
 
 		//Add day2 to SelectedDatesItem. { } => { day2 }
 		calendar.SelectedDates.Add(day2);
-		Assert.AreEqual(1, calendar.SelectedDates.Count);
+		Assert.HasCount(1, calendar.SelectedDates);
 		Assert.AreEqual(day2, calendar.SelectedDates[0]);
 		await TestServices.WindowHelper.WaitForIdle();
 		dayItem2 = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendar).Find(it => it.Date.Date == calendar.SelectedDates[0].Date);
@@ -181,7 +184,7 @@ public class Given_CalendarView
 		//Click day1. { day2 } => { day1 }
 		OnTappedInfo.Invoke(dayItem1, new object[] { new TappedRoutedEventArgs() });
 		await TestServices.WindowHelper.WaitForIdle();
-		Assert.AreEqual(1, calendar.SelectedDates.Count);
+		Assert.HasCount(1, calendar.SelectedDates);
 		Assert.AreEqual(dayItem1.Date, calendar.SelectedDates[0]);
 		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
 		Assert.AreEqual(calendar.SelectedBorderBrush, brush1);
@@ -198,7 +201,8 @@ public class Given_CalendarView
 			MinDate = DateTimeOffset.Now.AddDays(-10),
 			MaxDate = DateTimeOffset.Now.AddDays(10)
 		};
-		Assert.AreEqual(2, calendar.SelectedDates.Count);
+
+		Assert.HasCount(2, calendar.SelectedDates);
 		Assert.AreEqual(day1, calendar.SelectedDates[0]);
 		Assert.AreEqual(day2, calendar.SelectedDates[1]);
 		TestServices.WindowHelper.WindowContent = calendar;
@@ -216,7 +220,7 @@ public class Given_CalendarView
 		//Click day1. { day1, day2 } => { day2 }
 		OnTappedInfo.Invoke(dayItem1, new object[] { new TappedRoutedEventArgs() });
 		await TestServices.WindowHelper.WaitForIdle();
-		Assert.AreEqual(1, calendar.SelectedDates.Count);
+		Assert.HasCount(1, calendar.SelectedDates);
 		Assert.AreEqual(day2, calendar.SelectedDates[0]);
 		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
 		Assert.AreEqual(calendar.CalendarItemBorderBrush, brush1);
@@ -226,7 +230,7 @@ public class Given_CalendarView
 		//Click day2. { day2 } => { }
 		OnTappedInfo.Invoke(dayItem2, new object[] { new TappedRoutedEventArgs() });
 		await TestServices.WindowHelper.WaitForIdle();
-		Assert.AreEqual(0, calendar.SelectedDates.Count);
+		Assert.IsEmpty(calendar.SelectedDates);
 		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
 		Assert.AreEqual(calendar.CalendarItemBorderBrush, brush1);
 		brush2 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem2, new object[] { false });
@@ -235,7 +239,7 @@ public class Given_CalendarView
 		//Click day1. { } => { day1 }
 		OnTappedInfo.Invoke(dayItem1, new object[] { new TappedRoutedEventArgs() });
 		await TestServices.WindowHelper.WaitForIdle();
-		Assert.AreEqual(1, calendar.SelectedDates.Count);
+		Assert.HasCount(1, calendar.SelectedDates);
 		Assert.AreEqual(dayItem1.Date, calendar.SelectedDates[0]);
 		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
 		Assert.AreEqual(calendar.SelectedBorderBrush, brush1);
@@ -245,7 +249,7 @@ public class Given_CalendarView
 		//Click day2. { day1 } => { day1, day2 }
 		OnTappedInfo.Invoke(dayItem2, new object[] { new TappedRoutedEventArgs() });
 		await TestServices.WindowHelper.WaitForIdle();
-		Assert.AreEqual(2, calendar.SelectedDates.Count);
+		Assert.HasCount(2, calendar.SelectedDates);
 		Assert.AreEqual(dayItem1.Date, calendar.SelectedDates[0]);
 		Assert.AreEqual(dayItem2.Date, calendar.SelectedDates[1]);
 		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
@@ -271,6 +275,60 @@ public class Given_CalendarView
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.IsTrue(calendarView.TemplateSettings.HeaderText.EndsWith(now.Year.ToString(), StringComparison.Ordinal));
+	}
+
+	[TestMethod]
+	public async Task When_NextMonth_InQuickSequence()
+	{
+		var sut = new CalendarView() { DisplayMode = CalendarViewDisplayMode.Month };
+		await UITestHelper.Load(sut);
+
+		var sv = sut.FindFirstDescendantOrThrow<ScrollViewer>("MonthViewScrollViewer");
+		var nextButton = sut.FindFirstDescendantOrThrow<Button>("NextButton");
+
+		var sw = Stopwatch.StartNew();
+		var logs = new List<(double timestamp, double Offset, bool IsIntermediate)>();
+		sv.ViewChanged += (s, e) => logs.Add((sw.ElapsedMilliseconds, sv.VerticalOffset, e.IsIntermediate));
+
+		// Simulate user quickly clicking "next" multiple times
+		nextButton.ProgrammaticClick();
+		await Task.Delay(200);
+		nextButton.ProgrammaticClick();
+		await UITestHelper.WaitForIdle();
+		await UITestHelper.WaitFor(() => logs.Any() && logs[^1].IsIntermediate == false, timeoutMS: 2500, message: "timeout on waiting for CalendarView to finish scrolling");
+		await Task.Delay(FeatureConfiguration.ScrollViewer.SnapDelay * 2); // ample wait time
+
+		var offsets = logs.Select(x => x.Offset).ToArray();
+		Assert.IsTrue(
+			offsets.Zip(offsets.Skip(1)).All(x => x.Second >= x.First),
+			$"should never rewind back: (v-offsets: {string.Join(", ", offsets)})"
+		);
+	}
+
+	[TestMethod]
+	public async Task When_Spanish_Language()
+	{
+		var calendarView = new CalendarView()
+		{
+			Language = "es-ES"
+		};
+		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 1)));
+		TestServices.WindowHelper.WindowContent = calendarView;
+		await TestServices.WindowHelper.WaitForLoaded(calendarView);
+		await UITestHelper.WaitFor(() => calendarView.TemplateSettings.HeaderText == "enero de 2024", message: "HeaderText was not set to expected Spanish value");
+	}
+
+	[TestMethod]
+	public async Task When_English_Language()
+	{
+		var calendarView = new CalendarView()
+		{
+			Language = "en-US"
+		};
+		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 1)));
+		TestServices.WindowHelper.WindowContent = calendarView;
+		await TestServices.WindowHelper.WaitForLoaded(calendarView);
+		await UITestHelper.WaitFor(() => calendarView.TemplateSettings.HeaderText == "January 2024", message: "HeaderText was not set to expected English value");
 	}
 }
 #endif

@@ -8,6 +8,24 @@ using Verify = XamlSourceGeneratorVerifier;
 [TestClass]
 public class Given_Binding
 {
+	private static string EmptyCodeBehind(string className) =>
+		$$"""
+		using Microsoft.UI.Xaml.Controls;
+
+		namespace TestRepro
+		{
+			public sealed partial class {{className}} : Page
+			{
+				public {{className}}()
+				{
+					this.InitializeComponent();
+				}
+			}
+		}
+		""";
+
+	private static readonly string _emptyCodeBehind = EmptyCodeBehind("MainPage");
+
 	[TestMethod]
 	public async Task When_Xaml_Object_With_Common_Properties()
 	{
@@ -666,6 +684,193 @@ public class Given_Binding
 					}
 
 					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task TestRelativeSourceFullXmlSyntax()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<TextBlock>
+						<TextBlock.Text>
+							<Binding>
+								<Binding.RelativeSource>
+									<RelativeSource>
+										<RelativeSource.Mode>TemplatedParent</RelativeSource.Mode>
+									</RelativeSource>
+								</Binding.RelativeSource>
+							</Binding>>
+						</TextBlock.Text>
+					</TextBlock>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task TestRelativeSourceExpendedSyntax()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<TextBlock Text="{Binding ThePath, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task TestRelativeSourceShortSyntax()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<TextBlock Text="{Binding ThePath, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Static_XBind_Property_In_DataTemplate_Without_DataType()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", """
+<Page x:Class="TestRepro.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:TestRepro">
+    <ContentControl x:Name="root">
+        <ContentControl.ContentTemplate>
+            <DataTemplate>
+                <TextBlock Text="{x:Bind local:StaticData.StaticProperty}" />
+            </DataTemplate>
+        </ContentControl.ContentTemplate>
+    </ContentControl>
+</Page>
+"""),
+		};
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+                    using Microsoft.UI.Xaml.Controls;
+
+                    namespace TestRepro
+                    {
+                        public static class StaticData
+                        {
+                            public static string StaticProperty => "Static Value";
+                        }
+
+                        public sealed partial class MainPage : Page
+                        {
+                            public MainPage()
+                            {
+                                this.InitializeComponent();
+                            }
+                        }
+                    }
+                    """
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Static_XBind_Event_In_DataTemplate_Without_DataType()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", """
+<Page x:Class="TestRepro.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:TestRepro">
+    <ContentControl x:Name="root">
+        <ContentControl.ContentTemplate>
+            <DataTemplate>
+                <Button Click="{x:Bind local:StaticHandler.OnClick}" />
+            </DataTemplate>
+        </ContentControl.ContentTemplate>
+    </ContentControl>
+</Page>
+"""),
+		};
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+                    using Microsoft.UI.Xaml;
+                    using Microsoft.UI.Xaml.Controls;
+
+                    namespace TestRepro
+                    {
+                        public static class StaticHandler
+                        {
+                            public static void OnClick(object sender, RoutedEventArgs e) { }
+                        }
+
+                        public sealed partial class MainPage : Page
+                        {
+                            public MainPage()
+                            {
+                                this.InitializeComponent();
+                            }
+                        }
+                    }
+                    """
 				}
 			}
 		}.AddGeneratedSources();

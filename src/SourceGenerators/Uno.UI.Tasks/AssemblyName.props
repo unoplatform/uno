@@ -1,0 +1,8 @@
+﻿<Project>
+	<!--
+		Keep AssemblyName isolated so the build-time SHA substitution can rewrite this file
+	-->
+	<PropertyGroup>
+		<AssemblyName>Uno.UI.Tasks.v0</AssemblyName>
+	</PropertyGroup>
+</Project>

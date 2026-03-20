@@ -33,13 +33,13 @@ If everything builds successfully, the app will run. The app is a collection of 
 
 ### Running-debugging the WebAssembly app on a mobile device
 
-By default, SamplesApp starts in debugging mode on localhost, making it inaccessible from external devices, even if they are on the same network. To remedy this, you can utilize Visual Studio 2022 Dev Tunnels to establish an externally accessible URL for your application. For more details, refer to the [Microsoft Learn documentation](https://learn.microsoft.com/aspnet/core/test/dev-tunnels). If the option doesn't appear initially, consider running a rebuild of the `SamplesApp.Wasm` project.
+By default, SamplesApp starts in debugging mode on localhost, making it inaccessible from external devices, even if they are on the same network. To remedy this, you can utilize Visual Studio Dev Tunnels to establish an externally accessible URL for your application. For more details, refer to the [Microsoft Learn documentation](https://learn.microsoft.com/aspnet/core/test/dev-tunnels). If the option doesn't appear initially, consider running a rebuild of the `SamplesApp.Wasm` project.
 
 ## Sample organization
 
 Samples are located in the [`UITests.Shared` project](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared). UI-related samples are generally grouped by control, or by functional area for samples that aren't specific to a particular control (eg `VisualStateTests`). Non-UI samples are generally grouped by namespace of the tested feature.
 
-Note that there's no 'master list' of samples. Instead, individual samples are tagged with `SampleAttribute` (or `SampleControlInfoAttribute`, for older samples), and the SamplesApp automatically picks up all samples using the attribute.
+Note that there's no 'master list' of samples. Instead, individual samples are tagged with `SampleAttribute`, and the SamplesApp automatically picks up all samples using the attribute.
 
 ### SampleAttribute
 
@@ -73,8 +73,23 @@ To add a new sample to the SamplesApp:
 2. Create a new `UserControl` from the Visual Studio templates, with a meaningful name.
 3. Add your sample UI to the `UserControl`.
 4. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the class in the code-behind partial file.
-5. Double-check that the category name matches other samples for the control.
-6. Run the `SamplesApp` to check that your sample appears in the browser and works as expected.
+5. **CRITICAL: Register your XAML file in `UITests.Shared.projitems`**
+   * Open `src/SamplesApp/UITests.Shared/UITests.Shared.projitems`
+   * Add an entry for your XAML page and code-behind file:
+
+     ```xml
+     <Page Include="$(MSBuildThisFileDirectory)YourFolder\YourSample.xaml">
+       <SubType>Designer</SubType>
+       <Generator>MSBuild:Compile</Generator>
+     </Page>
+     <Compile Include="$(MSBuildThisFileDirectory)YourFolder\YourSample.xaml.cs">
+       <DependentUpon>YourSample.xaml</DependentUpon>
+     </Compile>
+     ```
+
+   * **Without this step, your sample will NOT be visible in SamplesApp**
+6. Double-check that the category name matches other samples for the control.
+7. Run the `SamplesApp` to check that your sample appears in the browser and works as expected.
 
 ## Adding a manual test sample
 

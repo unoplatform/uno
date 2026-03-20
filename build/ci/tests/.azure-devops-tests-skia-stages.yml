@@ -60,6 +60,7 @@ stages:
 
 - stage: runtime_tests_skia_android_coreclr
   displayName: Tests - Android+CoreCLR Skia
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn:
     - Setup
 
@@ -77,6 +78,7 @@ stages:
 
 - stage: runtime_tests_skia_android_nativeaot
   displayName: Tests - Android+NativeAOT Skia
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn:
     - Setup
 
@@ -126,6 +128,7 @@ stages:
 - stage: runtime_tests_skia_linux
   displayName: Tests - Desktop Skia Linux
   dependsOn:
+    - Setup
     - runtime_tests_skia_build
 
   jobs:
@@ -145,6 +148,7 @@ stages:
 - stage: runtime_tests_skia_macos
   displayName: Tests - Desktop Skia macOS
   dependsOn:
+    - Setup
     - runtime_tests_skia_build
 
   jobs:
@@ -164,6 +168,7 @@ stages:
 - stage: runtime_tests_skia_windows
   displayName: Tests - Desktop Skia Windows
   dependsOn:
+    - Setup
     - runtime_tests_skia_build
 
   jobs:

@@ -95,6 +95,10 @@ NSWindow* uno_app_get_main_window(void)
     return YES;
 }
 
+-(BOOL) acceptsFirstResponder {
+    return YES;
+}
+
 -(instancetype) initWithFrame:(CGRect)frameRect device:(id<MTLDevice>)device {
     self = [super initWithFrame:frameRect device:device];
     if (self) {
@@ -817,6 +821,15 @@ bool uno_window_clip_svg(UNOWindow* window, const char* svg)
     return true;
 }
 
+void uno_window_resign_native_first_responder(UNOWindow* window)
+{
+    NSView *cv = window.contentViewController.view;
+    NSResponder *fr = window.firstResponder;
+    if ([fr isKindOfClass:[NSView class]] && fr != cv && [(NSView *)fr isDescendantOf:cv]) {
+        [window makeFirstResponder:cv];
+    }
+}
+
 @implementation UNOWindow : NSWindow
 
 NSEventModifierFlags _previousFlags;
@@ -972,9 +985,32 @@ NSOperatingSystemVersion _osVersion;
             data.pointerDeviceType = pdt;
             
             // mouse
-            // FIXME: NSEvent.pressedMouseButtons is returning a wrong value in Sequoia when using an extenal trackpad
+            // FIXME: NSEvent.pressedMouseButtons is returning a wrong value in Sequoia when using an external trackpad
             if (_osVersion.majorVersion >= 15) {
-                data.mouseButtons = (uint32)[MouseButtons mask];
+                NSInteger mask = [MouseButtons mask];
+
+                // If we think buttons are down, but AppKit says NONE are down, we likely missed a MouseUp.
+                // We trust AppKit and reset our counters, but only when handling a mouse button event.
+                if (mask != 0 && ((uint32)NSEvent.pressedMouseButtons) == 0) {
+                    NSEventType type = event.type;
+                    BOOL isMouseButtonEvent =
+                        type == NSEventTypeLeftMouseDown    ||
+                        type == NSEventTypeLeftMouseUp      ||
+                        type == NSEventTypeRightMouseDown   ||
+                        type == NSEventTypeRightMouseUp     ||
+                        type == NSEventTypeOtherMouseDown   ||
+                        type == NSEventTypeOtherMouseUp     ||
+                        type == NSEventTypeLeftMouseDragged ||
+                        type == NSEventTypeRightMouseDragged||
+                        type == NSEventTypeOtherMouseDragged;
+
+                    if (isMouseButtonEvent) {
+                        mask = [MouseButtons buttonMask:event];
+                    }
+                }
+
+                data.mouseButtons = (uint32)mask;
+
             } else {
                 data.mouseButtons = (uint32)NSEvent.pressedMouseButtons;
             }
@@ -1050,6 +1086,30 @@ NSOperatingSystemVersion _osVersion;
     NSLog(@"NSEventTypeFlagsChanged: down: %s up: %s", down ? "TRUE" : "false", up ? "TRUE" : "false");
 #endif
     return handled;
+}
+
+- (void) windowWillStartLiveResize:(NSNotification *) notification {
+    NSScreen *screen = ((NSWindow*) notification.object).screen;
+    NSView* contentView = self.contentView;
+#if DEBUG
+    NSLog(@"UNOWindow %p windowWillStartLiveResize scaling from %g to %g", self, contentView.layer.contentsScale, screen.backingScaleFactor);
+#endif
+    // This does not flow automatically when moving the window from a retina screen to a normal screen
+    contentView.layer.contentsScale = screen.backingScaleFactor;
+    // prevent content stretching during window resize by pinning to top-left. cf. https://github.com/unoplatform/uno/issues/22159
+    contentView.layerContentsPlacement = NSViewLayerContentsPlacementTopLeft;
+}
+
+- (void) windowDidEndLiveResize:(NSNotification *) notification {
+    NSScreen *screen = ((NSWindow*) notification.object).screen;
+    NSView* contentView = self.contentView;
+#if DEBUG
+    NSLog(@"UNOWindow %p windowDidEndLiveResize scaling from %g to %g", self, contentView.layer.contentsScale, screen.backingScaleFactor);
+#endif
+    // Ensure the scale stays in sync up to the end
+    contentView.layer.contentsScale = screen.backingScaleFactor;
+    // Reset the layerContentsPlacement property to its default value
+    contentView.layerContentsPlacement = NSViewLayerContentsPlacementScaleAxesIndependently;
 }
 
 - (void) performMiniaturize:(id) sender {

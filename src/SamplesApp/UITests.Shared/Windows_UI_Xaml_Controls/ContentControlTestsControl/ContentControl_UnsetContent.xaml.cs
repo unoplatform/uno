@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace GenericApp.Views.Content.UITests.ContentControlTestsControl
 {
-	[SampleControlInfo("ContentControl", "ContentControl_UnsetContent", typeof(ContentControlTestViewModel))]
+	[Sample("ContentControl", Name = "ContentControl_UnsetContent", ViewModelType = typeof(ContentControlTestViewModel))]
 	public sealed partial class ContentControl_UnsetContent : UserControl
 	{
 		public ContentControl_UnsetContent()

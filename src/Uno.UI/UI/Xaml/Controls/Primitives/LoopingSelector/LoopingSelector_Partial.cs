@@ -11,12 +11,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.UI;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.Devices.Input;
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -421,10 +416,41 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				}
 			}
 
-			// This event can be raised synchronously
-			// with the ScrollViewer's ChangeView().
-			// It must be delayed to prevent incorrect re-selection of another value.
-			global::Windows.System.DispatcherQueue.GetForCurrentThread().TryEnqueue(ProcessEvent);
+			// --------------------
+			// Fix for fast scrolling issue where items disappear
+			// --------------------
+			// During intermediate scroll events (fast scrolling), we need to balance immediately
+			// to ensure items remain visible. Only delay processing for final view changes
+			// to prevent incorrect re-selection.
+			if (pEventArgs.IsIntermediate)
+			{
+				// For intermediate events, balance immediately to keep items visible during fast scrolling.
+				// Suppress selection changes so that SelectionChanged only fires on the final
+				// ViewChanged event. Without this, keyboard-driven animated scrolls can raise
+				// SelectionChanged from an intermediate scroll position, causing callers that
+				// react to SelectionChanged (e.g., LoopingSelectorHelper.SelectItemByIndex) to
+				// proceed before the animation settles, leading to accumulated scroll drift.
+				if (!_isWithinScrollChange && !_isWithinArrangeOverride)
+				{
+					var prevSkip = _skipSelectionChangeUntilFinalViewChanged;
+					_skipSelectionChangeUntilFinalViewChanged = true;
+					try
+					{
+						Balance(false);
+					}
+					finally
+					{
+						_skipSelectionChangeUntilFinalViewChanged = prevSkip;
+					}
+				}
+			}
+			else
+			{
+				// This event can be raised synchronously
+				// with the ScrollViewer's ChangeView().
+				// It must be delayed to prevent incorrect re-selection of another value.
+				global::Windows.System.DispatcherQueue.GetForCurrentThread().TryEnqueue(ProcessEvent);
+			}
 		}
 
 		void OnViewChanging(

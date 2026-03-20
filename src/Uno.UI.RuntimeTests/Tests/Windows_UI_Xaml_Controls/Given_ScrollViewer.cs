@@ -50,6 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ScrollViewer_Resized()
 		{
 			var content = new Border
@@ -108,6 +109,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Presenter_Doesnt_Take_Up_All_Space()
 		{
 			const int ContentWidth = 700;
@@ -287,7 +289,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var focused = FocusManager.GetFocusedElement(navigationView.XamlRoot);
 			Assert.AreEqual(secondItem, focused);
 
-			Assert.IsFalse(scrollViewer.VerticalOffset > 0, "ScrollViewer should not have scrolled down when focusing the second item");
+			Assert.IsLessThanOrEqualTo(0d, scrollViewer.VerticalOffset, "ScrollViewer should not have scrolled down when focusing the second item");
 		}
 
 		[TestMethod]
@@ -342,7 +344,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var focused = FocusManager.GetFocusedElement(navigationView.XamlRoot);
 			Assert.AreEqual(item21, focused);
 
-			Assert.IsTrue(scrollViewer.VerticalOffset > 0, "ScrollViewer should have scrolled down when focusing the 21st item.");
+			Assert.IsGreaterThan(0d, scrollViewer.VerticalOffset, "ScrollViewer should have scrolled down when focusing the 21st item.");
 		}
 
 		[TestMethod]
@@ -732,7 +734,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			Assert.AreEqual(0, outer.VerticalOffset);
-			Assert.IsTrue(inner.VerticalOffset > 0, "Inner Vertical Offset is not greater than 0");
+			Assert.IsGreaterThan(0d, inner.VerticalOffset, "Inner Vertical Offset is not greater than 0");
 
 			mouse.Wheel(-500, steps: 5);
 
@@ -740,7 +742,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 
 			var expectedOffset = outer.ScrollableHeight / 2;
-			Assert.IsTrue(outer.VerticalOffset > expectedOffset, $"Outer Vertical Offset ({outer.VerticalOffset}) is not greater than outer.ScrollableHeight/2 ({expectedOffset})");
+			Assert.IsGreaterThan(expectedOffset, outer.VerticalOffset, $"Outer Vertical Offset ({outer.VerticalOffset}) is not greater than outer.ScrollableHeight/2 ({expectedOffset})");
 			Assert.AreEqual(inner.ScrollableHeight, inner.VerticalOffset);
 		}
 
@@ -795,7 +797,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// waiting for wheel animation
 			await Task.Delay(500);
 
-			Assert.IsTrue(outer.VerticalOffset > 200, "Outer Vertical Offset is not greater than 200");
+			Assert.IsGreaterThan(200d, outer.VerticalOffset, "Outer Vertical Offset is not greater than 200");
 
 			mouse.Wheel(-500, steps: 5);
 			await WindowHelper.WaitForIdle();
@@ -803,7 +805,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// waiting for wheel animation
 			await Task.Delay(500);
 
-			Assert.IsTrue(outer.VerticalOffset > outer.ScrollableHeight / 2);
+			Assert.IsGreaterThan(outer.ScrollableHeight / 2, outer.VerticalOffset);
 		}
 
 		[TestMethod]
@@ -812,6 +814,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		// Both iOS and macOS animation were disabled and will be fixed under uno-private#1788
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS | RuntimeTestPlatforms.SkiaMacOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS and macOS: Not using animations
 		public async Task When_LotOfWheelEvents_Then_IgnoreIrrelevant()
 		{
 			// This test make sure than when using a "free wheel" mouse or a touch-pad (which both produces a lot of events),
@@ -863,9 +867,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if NETFX_CORE
-		[Ignore("KeyboardHelper doesn't work on Windows")]
-#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Space_Already_Handled()
 		{
 			var lv = new ListView
@@ -1190,6 +1192,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ChangeView_Offset()
 		{
 			const double offset = 100;
@@ -1807,8 +1810,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await Task.Delay(500); // Wait for the inertia to run
 
-			Assert.IsTrue(Math.Abs(parentEndOffset - parent.VerticalOffset) < 1, $"parentEndOffset {parentEndOffset} minus parent.VerticalOffset {parent.VerticalOffset} is not lower than 1");
-			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1, $"childEndOffset {childEndOffset} minus parent.VerticalOffset {child.VerticalOffset} is not lower than 1");
+			Assert.IsLessThan(1d, Math.Abs(parentEndOffset - parent.VerticalOffset), $"parentEndOffset {parentEndOffset} minus parent.VerticalOffset {parent.VerticalOffset} is not lower than 1");
+			Assert.IsLessThan(1d, Math.Abs(childEndOffset - child.VerticalOffset), $"childEndOffset {childEndOffset} minus parent.VerticalOffset {child.VerticalOffset} is not lower than 1");
 		}
 
 		[TestMethod]
@@ -1862,7 +1865,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitForRender();
 
 			Assert.AreEqual(0, parent.VerticalOffset);
-			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1,
+			Assert.IsLessThan(1d, Math.Abs(childEndOffset - child.VerticalOffset),
 				$"abs(childEndOffset - child.VerticalOffset)={Math.Abs(childEndOffset - child.VerticalOffset)}, expected to be < 1");
 		}
 
@@ -1921,13 +1924,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.MoveBy(0, -100, steps: 1, stepOffsetInMilliseconds: 1);
 
 			// At this point inertia not kicked-in yet
-			Assert.IsTrue(Math.Abs(100 - parent.VerticalOffset) < 1);
+			Assert.IsLessThan(1d, Math.Abs(100 - parent.VerticalOffset));
 
 			finger.Release();
 
 			// Wait for the inertia to run
 			await UITestHelper.WaitForRender();
-			Assert.IsTrue(Math.Abs(parentEndOffset - parent.VerticalOffset) < 1);
+			Assert.IsLessThan(1d, Math.Abs(parentEndOffset - parent.VerticalOffset));
 		}
 #endif
 
@@ -1956,7 +1959,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(setup);
 
 			// shouldnt happen, sanity check. if it ever did, we have other problem(s), and the entire test is invalid.
-			Assert.IsTrue(sv.ActualHeight < setup.ActualHeight, $"ScrollViewer (ActualHeight={sv.ActualHeight}) should be shorter than its parent (ActualHeight={setup.Height}).");
+			Assert.IsLessThan(setup.ActualHeight, sv.ActualHeight, $"ScrollViewer (ActualHeight={sv.ActualHeight}) should be shorter than its parent (ActualHeight={setup.Height}).");
 
 			// double Margin inclusion would cause the Extent to "overflow" the Viewport, into the Scrollable
 			Assert.AreEqual(sv.ViewportHeight, sv.ExtentHeight, delta: 1.0, "In a free expanding SV, the Viewport should the same as the Extend.");
@@ -1970,6 +1973,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		// Both iOS and macOS animation were disabled and will be fixed under uno-private#1788
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS | RuntimeTestPlatforms.SkiaMacOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS and macOS: Not processing them as discrete events
 		public async Task When_ViewChanged_From_MouseWheel()
 		{
 			// setup is a 100x100 ScrollViewer with a 2000px tall Border
@@ -2018,5 +2023,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			CollectionAssert.AreEqual(new bool[] { true, false, true, false }, sequence);
 		}
 #endif
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchFlickOnNonScrollable_Then_InertiaDoesNotAssert()
+		{
+			// Repro: flicking on a ScrollViewer that has nothing to scroll
+			// triggers inertia in the GestureRecognizer, but no handler claims it.
+			// This used to cause a Debug.Assert failure.
+			var sut = new ScrollViewer
+			{
+				Width = 200,
+				Height = 400,
+				IsScrollInertiaEnabled = true,
+				Content = new Border
+				{
+					Width = 180,
+					Height = 100, // Smaller than SV → nothing to scroll
+					Background = new SolidColorBrush(Colors.DeepPink),
+				}
+			};
+
+			var center = (await UITestHelper.Load(sut)).GetCenter();
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			Assert.AreEqual(0d, sut.VerticalOffset);
+			Assert.AreEqual(0d, sut.ScrollableHeight, "Content is smaller than viewport, nothing to scroll");
+
+			// Fast flick down (drag upward) — should trigger inertia in the gesture recognizer
+			finger.Drag(
+				from: center,
+				to: new(center.X, center.Y - 200),
+				steps: 1,
+				stepOffsetInMilliseconds: 1);
+
+			// Wait for inertia to run and complete (or be stopped)
+			await UITestHelper.WaitForIdle();
+
+			// The scroll offset should remain 0 — there's nothing to scroll
+			Assert.AreEqual(0d, sut.VerticalOffset, "Should not have scrolled");
+		}
 	}
 }

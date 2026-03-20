@@ -27,7 +27,7 @@ To upgrade the Uno.Sdk, you'll need to open the `global.json` file located at th
 Update the `xx.yy.zz` property to the latest Uno.Sdk version, then save the file.
 
 > [!IMPORTANT]
-> In Visual Studio 2022, once the Uno Version is updated, a banner will ask to restart the IDE. Once the solution is reopened the changes will take effect.
+> In Visual Studio 2022/2026, once the Uno Version is updated, a banner will ask to restart the IDE. Once the solution is reopened the changes will take effect.
 >
 > At this time, the NuGet package Manager does not parse or manage Sdks provided by NuGet. If you would like to see this feature added, please be sure to provide your [feedback or upvote this issue](https://github.com/NuGet/Home/issues/13127).
 

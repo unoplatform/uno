@@ -1,11 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="AssemblyName.props" />
 	<PropertyGroup>
 		<!-- Projects that provide MSBuild tasks should be netstandard2.0 -->
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<RootNamespace>Uno.UI.Tasks</RootNamespace>
-		<AssemblyName>Uno.UI.Tasks.v0</AssemblyName>
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>portable</DebugType>
 	</PropertyGroup>
@@ -33,17 +34,29 @@
 			<Link>Resources\AndroidResourceNameEncoder.cs</Link>
 		</Compile>
 		<Compile Include="..\Uno.UI.SourceGenerators\BindableTypeProviders\LinkerHintsHelpers.cs" Link="Helpers\LinkerHintsHelpers.cs" />
+		<Compile Include="..\..\Uno.UI.RemoteControl\HotReload\HotReloadInfoHelper.cs" Link="HotReloadInfo/%(Filename)%(Extension)" />
 	</ItemGroup>
 
-	<Target Name="_copyUnoTasksBuildTime" AfterTargets="Build">
+	<Target Name="_copyUnoTasksBuildTime"
+			AfterTargets="Build">
+		<PropertyGroup>
+			<_UnoTasksBuildOutputPath>$([System.IO.Path]::GetFullPath('$(TargetDir)'))</_UnoTasksBuildOutputPath>
+			<_UnoTasksShadowOutputPath>$([System.IO.Path]::GetFullPath('$(_UnoTasksBuildOutputPath)\..\$(Configuration)_Shadow'))</_UnoTasksShadowOutputPath>
+		</PropertyGroup>
 		<ItemGroup>
-			<_unoTasksFiles Include="$(OutputPath)\*.*" />
+			<!-- Use the task project output as the source of truth for the local shadow copy. -->
+			<_UnoTasksSourceFiles Include="$(_UnoTasksBuildOutputPath)\*.*" />
+			<_UnoTasksShadowDestinationFiles Include="@(_UnoTasksSourceFiles->'$(_UnoTasksShadowOutputPath)\%(Filename)%(Extension)')" />
+			<_UnoTasksExistingShadowFiles Include="$(_UnoTasksShadowOutputPath)\*.*" />
+			<_UnoTasksStaleShadowFiles Include="@(_UnoTasksExistingShadowFiles)" Exclude="@(_UnoTasksShadowDestinationFiles)" />
 		</ItemGroup>
 		<!--
-		Copy the files to an alternal location, using deterministic build.
-		Don't fail the build if the file is locked
+		Copy the files to an alternate location using deterministic source/destination mapping.
+		Skip unchanged files and tolerate transient lock contention from external hosts.
 		-->
-		<Copy SkipUnchangedFiles="true" SourceFiles="@(_unoTasksFiles)" DestinationFolder="$(OutputPath)\..\$(Configuration)_Shadow" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
+		<MakeDir Directories="$(_UnoTasksShadowOutputPath)" />
+		<Delete Files="@(_UnoTasksStaleShadowFiles)" ContinueOnError="true" />
+		<Copy SkipUnchangedFiles="true" SourceFiles="@(_UnoTasksSourceFiles)" DestinationFiles="@(_UnoTasksShadowDestinationFiles)" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
 	</Target>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
@@ -54,11 +67,15 @@
 			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_PackageId)\$(UnoNugetOverrideVersion)\buildTransitive\Uno.UI.Tasks</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
-			<_OutputFiles Include="$(TargetDir)**" />
+			<_OutputFiles Include="$(TargetDir)**\*.*" />
+			<_OutputDestinationFiles Include="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+			<_ExistingTargetFiles Include="$(_TargetNugetFolder)\**\*.*" />
+			<_StaleTargetFiles Include="@(_ExistingTargetFiles)" Exclude="@(_OutputDestinationFiles)" />
 		</ItemGroup>
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+		<!-- Keep override cache consistent with current output and incremental for repeated local builds. -->
+		<Delete Files="@(_StaleTargetFiles)" ContinueOnError="true" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputDestinationFiles)" SkipUnchangedFiles="true" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
 	</Target>
 </Project>

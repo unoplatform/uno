@@ -211,8 +211,7 @@ static partial class ViewExtensions
 	internal static bool TryGetDpValue<T>(object owner, string property, [NotNullWhen(true)] out T? value)
 	{
 		if (owner is DependencyObject @do &&
-			owner.GetType()
-				.GetProperty($"{property}Property", Public | Static | FlattenHierarchy)
+				GetProperty(owner.GetType(), $"{property}Property")
 				?.GetValue(null, null) is DependencyProperty dp)
 		{
 			value = (T)@do.GetValue(dp);
@@ -221,6 +220,11 @@ static partial class ViewExtensions
 
 		value = default;
 		return false;
+
+		[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the property exists.")]
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the property exists.")]
+		static PropertyInfo? GetProperty(Type type, string propertyName)
+			=> type.GetProperty(propertyName, Public | Static | FlattenHierarchy);
 	}
 
 	/// <summary>

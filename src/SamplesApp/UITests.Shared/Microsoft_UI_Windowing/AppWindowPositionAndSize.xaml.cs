@@ -53,6 +53,21 @@ internal class AppWindowPositionAndSizeViewModel : ViewModelBase
 		UpdateProperties();
 	}
 
+	public void ToggleTitleBar()
+	{
+		var presenter = App.MainWindow.AppWindow.Presenter;
+		if (presenter is OverlappedPresenter overlappedPresenter)
+		{
+			overlappedPresenter.SetBorderAndTitleBar(hasBorder: true, hasTitleBar: !overlappedPresenter.HasTitleBar);
+		}
+	}
+
+	public void ToggleExtendIntoTitleBar()
+	{
+		App.MainWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar =
+			!App.MainWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBar;
+	}
+
 	private void OnAppWindowChanged(AppWindow sender, AppWindowChangedEventArgs args) => UpdateProperties();
 
 	private void UpdateProperties()
@@ -65,6 +80,12 @@ internal class AppWindowPositionAndSizeViewModel : ViewModelBase
 		RaisePropertyChanged(nameof(Y));
 		RaisePropertyChanged(nameof(Width));
 		RaisePropertyChanged(nameof(Height));
+		RaisePropertyChanged(nameof(ClientWidth));
+		RaisePropertyChanged(nameof(ClientHeight));
+		RaisePropertyChanged(nameof(XamlWindowWidth));
+		RaisePropertyChanged(nameof(XamlWindowHeight));
+		RaisePropertyChanged(nameof(XamlRootWidth));
+		RaisePropertyChanged(nameof(XamlRootHeight));
 	}
 
 	internal XamlRoot XamlRoot { get; set; }
@@ -124,6 +145,18 @@ internal class AppWindowPositionAndSizeViewModel : ViewModelBase
 	}
 
 	internal SizeInt32 Size => _size;
+
+	internal int ClientWidth => _appWindow.ClientSize.Width;
+
+	internal int ClientHeight => _appWindow.ClientSize.Height;
+
+	internal double XamlRootWidth => XamlRoot.Size.Width;
+
+	internal double XamlRootHeight => XamlRoot.Size.Height;
+
+	internal double XamlWindowWidth => App.MainWindow.Bounds.Width;
+
+	internal double XamlWindowHeight => App.MainWindow.Bounds.Height;
 
 	internal async void Move()
 	{

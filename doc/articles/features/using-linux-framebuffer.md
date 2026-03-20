@@ -40,7 +40,7 @@ Each platform support is evaluated in order for availability and definition in b
 You can build and run this app by navigating to the `MyApp` and type the following:
 
 ```dotnetcli
-dotnet run -f net9.0-desktop
+dotnet run -f net10.0-desktop
 ```
 
 The app will start and display on the first available framebuffer device. To change the active framebuffer, set the device name in the `FRAMEBUFFER` environment variable.
@@ -50,7 +50,7 @@ By default, the `Debug` configuration is used, which will show logging informati
 To read the logging information, either:
 
 - Launch the application from a different terminal (through SSH, for instance)
-- Launch the app using `dotnet run -f net9.0-desktop > logging.txt 2>&1`, then launch `tail -f logging.txt` in another terminal.
+- Launch the app using `dotnet run -f net10.0-desktop > logging.txt 2>&1`, then launch `tail -f logging.txt` in another terminal.
 
 Once the application is running, you can exit the application with:
 
@@ -62,7 +62,7 @@ Once the application is running, you can exit the application with:
 You can create a standalone publication folder using the following:
 
 ```dotnetcli
-dotnet publish -c Release -f net9.0-desktop -r linux-x64 --self-contained true
+dotnet publish -c Release -f net10.0-desktop -r linux-x64 --self-contained true
 ```
 
 > [!NOTE]

@@ -13,15 +13,27 @@ uid: Uno.GettingStarted.CreateAnApp.AI.Cursor
     ```
 
 1. In Cursor, open the project that was just created (e.g., `MyApp`).
-1. Open a terminal in the project folder and run the following command:
+1. Open a terminal in the project folder and run the following command, which will launch the Uno Studio app that will allow you to [sign in or create an account](xref:Uno.GetStarted.Licensing) and get access to the [Uno App MCP](xref:Uno.Features.Uno.MCPs).
 
     ```bash
     dnx -y uno.devserver login
     ```
 
-    The Uno Studio app will allow you to [sign in or create an account](xref:Uno.GetStarted.Licensing) and get access the [Uno App MCP](xref:Uno.Features.Uno.MCPs).
+1. Register the Uno Platform MCPs. For Cursor, you can either:
 
-1. Create a file named `.cursor/mcp.json` and place the following content:
+    - Use `dnx -y uno.devserver mcp install cursor`, which writes the supported MCP registration for you
+    - Or create `.cursor/mcp.json` manually if you prefer direct file editing
+
+    Example using the Dev Server CLI:
+
+    ```bash
+    dnx -y uno.devserver mcp install cursor
+    ```
+
+    > [!IMPORTANT]
+    > After running `mcp install`, open Cursor's **Settings > Tools & MCP** and verify that the UnoApp and UnoDocs servers are **enabled** (toggle on). Cursor does not automatically enable newly registered MCP servers.
+
+    Manual configuration example:
 
     ```json
     {
@@ -36,6 +48,20 @@ uid: Uno.GettingStarted.CreateAnApp.AI.Cursor
       }
     }
     ```
+
+    You can verify the registration state at any time:
+
+    ```bash
+    dnx -y uno.devserver mcp status cursor
+    ```
+
+    To remove the Uno MCP entries from Cursor's config:
+
+    ```bash
+    dnx -y uno.devserver mcp uninstall cursor
+    ```
+
+    See [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs) for additional details about MCP registration and diagnostics.
 
 ## Next Steps
 

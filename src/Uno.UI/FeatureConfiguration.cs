@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -8,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using System.Runtime.InteropServices;
+using Windows.Graphics.Display;
 using Microsoft.UI.Composition;
 
 namespace Uno.UI
@@ -549,6 +552,15 @@ namespace Uno.UI
 			/// This option must be set on application startup before the cache is initialized.
 			/// </summary>
 			public static int JavaStringCachedCapacity { get; set; } = 1000;
+
+			/// <summary>
+			/// On Skia targets, determines if the TextBlock should render whitespace characters.
+			/// There's usually no effect between toggling this flag on and off, but it can have
+			/// an effect when the font used to draw the TextBlock doesn't have a glyph for the
+			/// whitespace characters, in which case disabling this flag will prevent the TextBlock
+			/// from rendering the font's "replacement character" symbol (e.g. �) instead of just a white space.
+			/// </summary>
+			public static bool RenderWhiteSpace { get; set; } = true;
 		}
 
 		public static class TextBox
@@ -565,6 +577,13 @@ namespace Uno.UI
 			/// Uno skia-based TextBox implementation.
 			/// </summary>
 			public static bool UseOverlayOnSkia { get; set; }
+
+			/// <summary>
+			/// Hunspell dictionaries to be used for spell checking in TextBox and RichEditBox controls.
+			/// By default, an english dictionary is provided.
+			/// This is currently a skia-only feature.
+			/// </summary>
+			public static List<(Stream dictionary, Stream affixes)> CustomSpellCheckDictionaries { get; set; }
 
 #if __ANDROID__
 			/// <summary>
@@ -884,6 +903,13 @@ namespace Uno.UI
 			/// OpenGL if available. Otherwise, software rendering will be used.
 			/// </summary>
 			public static bool? UseOpenGLOnX11 { get; set; }
+
+			/// <summary>
+			/// Determines if OpenGL ES + EGL should be used instead of OpenGL + GLX if both are available. This value is only
+			/// used if <see cref="UseOpenGLOnX11"/> is true or null. This property only affects the order of attempting
+			/// to create a GL/GlES context but even when true, if the preferred API fails, the other will be attempted.
+			/// </summary>
+			public static bool PreferGLESOverGLOnX11 { get; set; }
 
 			/// <summary>
 			/// Determines if OpenGL rendering should be enabled on the Win32 target. If null, defaults to

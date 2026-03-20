@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MenuFlyout
 	{
-		private static DependencyProperty CancelTextIosOverrideProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.MenuFlyoutExtensions", "CancelTextIosOverride");
+		private static DependencyProperty CancelTextIosOverrideProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.MenuFlyoutExtensions, Uno.UI.Toolkit", "CancelTextIosOverride");
 
 		private string LocalizedCancelString => NSBundle.FromIdentifier("com.apple.UIKit")
 			.GetLocalizedString("Cancel", null);

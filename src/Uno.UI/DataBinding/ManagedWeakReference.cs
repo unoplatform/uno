@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Extensions;
@@ -121,6 +122,41 @@ namespace Uno.UI.DataBinding
 		/// Determines if this instance is a self reference
 		/// </summary>
 		public bool IsSelfReference { get; }
+
+#nullable enable
+		/// <summary>
+		/// Tries to retrieve the target of the weak reference and cast it to the specified type.
+		/// </summary>
+		/// <typeparam name="T">The type to cast the target to.</typeparam>
+		/// <param name="target">When this method returns, contains the target object cast to type T if the target is alive and the cast succeeds; otherwise, the default value for type T.</param>
+		/// <returns>true if the target is alive and was successfully cast to type T; otherwise, false.</returns>
+		public bool TryGetTarget<T>([NotNullWhen(true)] out T? target) where T : class
+		{
+			target = default;
+
+			// Return false if disposed, without throwing
+			if (_disposed)
+			{
+				return false;
+			}
+
+			// Get the target once and check if it's alive
+			var rawTarget = _targetHandle?.Target;
+			if (rawTarget == null || !IsNativeAlive(rawTarget))
+			{
+				return false;
+			}
+
+			// Try to cast to the requested type
+			if (rawTarget is T castTarget)
+			{
+				target = castTarget;
+				return true;
+			}
+
+			return false;
+		}
+#nullable restore
 
 		/// <summary>
 		/// Check if the target is a managed peer whose underlying native object has been collected.

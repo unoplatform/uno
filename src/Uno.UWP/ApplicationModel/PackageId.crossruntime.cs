@@ -1,4 +1,8 @@
-﻿namespace Windows.ApplicationModel;
+using System;
+using System.Reflection;
+using SystemVersion = global::System.Version;
+
+namespace Windows.ApplicationModel;
 
 public sealed partial class PackageId
 {

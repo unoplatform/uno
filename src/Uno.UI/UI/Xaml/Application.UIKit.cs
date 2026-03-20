@@ -14,11 +14,7 @@ using System.Globalization;
 using System.Threading;
 using Uno.UI.Xaml.Controls;
 
-#if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
-#else
-using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
-#endif
 
 namespace Microsoft.UI.Xaml
 {

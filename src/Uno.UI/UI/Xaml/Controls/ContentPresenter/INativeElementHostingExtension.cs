@@ -1,3 +1,4 @@
+using System;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -20,6 +21,16 @@ partial class ContentPresenter
 		object CreateSampleComponent(string text);
 
 		void ChangeNativeElementOpacity(object content, double opacity);
+
+		bool SupportsZIndex() => false;
+
+		void SetZIndex(object content, int zIndex)
+		{
+			if (SupportsZIndex())
+			{
+				throw new InvalidOperationException($"{nameof(SetZIndex)} should be implemented if {nameof(SupportsZIndex)}.");
+			}
+		}
 #endif
 	}
 }

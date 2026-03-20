@@ -17,26 +17,60 @@ using static Uno.UI.Runtime.Skia.Native.LibInput;
 using static Windows.UI.Input.PointerUpdateKind;
 using static Uno.UI.Runtime.Skia.Native.libinput_event_type;
 using Uno.Foundation.Logging;
+using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 namespace Uno.UI.Runtime.Skia;
 
-unsafe internal partial class FrameBufferPointerInputSource
+internal partial class FrameBufferPointerInputSource
 {
 	private Point _mousePosition;
+	private bool _receivedMouseEvent;
+
+	public Point MousePosition
+	{
+		get => _mousePosition;
+		set
+		{
+			var bounds = FrameBufferWindowWrapper.Instance.Bounds;
+			var x = Math.Max(0, Math.Min(value.X, bounds.Width));
+			var y = Math.Max(0, Math.Min(value.Y, bounds.Height));
+			_mousePosition = new Point(x, y);
+			// To update the cursor position
+			FrameBufferWindowWrapper.Instance.XamlRoot?.VisualTree.RootElement.Visual.CompositionTarget?.RequestNewFrame();
+		}
+	}
+
+	public bool ReceivedMouseEvent
+	{
+		get => _receivedMouseEvent;
+		private set => _receivedMouseEvent = value;
+	}
+
+	public event Action? MouseEventReceived;
 
 	public void ProcessMouseEvent(IntPtr rawEvent, libinput_event_type type)
 	{
+		ReceivedMouseEvent = true;
+		MouseEventReceived?.Invoke();
+
 		var rawPointerEvent = libinput_event_get_pointer_event(rawEvent);
 
 		var timestamp = libinput_event_pointer_get_time_usec(rawPointerEvent);
 		var properties = new PointerPointProperties();
 		Action<PointerEventArgs>? raisePointerEvent = null;
 
-		if (type == LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE)
+		if (type == LIBINPUT_EVENT_POINTER_MOTION)
 		{
-			_mousePosition = new Point(
-				x: libinput_event_pointer_get_absolute_x_transformed(rawPointerEvent, (int)_displayInformation.ScreenWidthInRawPixels),
-				y: libinput_event_pointer_get_absolute_y_transformed(rawPointerEvent, (int)_displayInformation.ScreenHeightInRawPixels));
+			var dx = libinput_event_pointer_get_dx(rawPointerEvent);
+			var dy = libinput_event_pointer_get_dy(rawPointerEvent);
+			MousePosition += new Point(dx, dy);
+
+			raisePointerEvent = RaisePointerMoved;
+		}
+		else if (type == LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE)
+		{
+			var (x, y) = GetOrientationAdjustedAbsolutionPosition(rawPointerEvent, libinput_event_pointer_get_absolute_x_transformed, libinput_event_pointer_get_absolute_y_transformed);
+			MousePosition = new Point(x, y);
 
 			raisePointerEvent = RaisePointerMoved;
 		}
@@ -108,8 +142,8 @@ unsafe internal partial class FrameBufferPointerInputSource
 			timestamp: timestampInMicroseconds,
 			device: PointerDevice.For(PointerDeviceType.Mouse),
 			pointerId: 0,
-			rawPosition: _mousePosition,
-			position: _mousePosition,
+			rawPosition: MousePosition,
+			position: MousePosition,
 			isInContact: properties.HasPressedButton,
 			properties: properties
 		);

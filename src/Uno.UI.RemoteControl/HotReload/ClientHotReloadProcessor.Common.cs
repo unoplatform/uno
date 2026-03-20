@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -51,7 +52,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			if (instance is FrameworkElement fe)
 			{
-				var instanceTypeName = (instance.GetType().GetOriginalType() ?? instance.GetType()).Name;
+				var instanceTypeName = GetInstanceTypeName(instance);
 				var instanceKey = parentKey is not null ? $"{parentKey}_{instanceTypeName}" : instanceTypeName;
 				var match = await predicate(fe, instanceKey);
 				if (match is not null)
@@ -82,7 +83,7 @@ namespace Uno.UI.RemoteControl.HotReload
 				var idx = 0;
 				foreach (var nativeChild in nativeView.EnumerateChildren())
 				{
-					var instanceTypeName = (instance.GetType().GetOriginalType() ?? instance.GetType()).Name;
+					var instanceTypeName = GetInstanceTypeName(instance);
 					var instanceKey = parentKey is not null ? $"{parentKey}_{instanceTypeName}" : instanceTypeName;
 					var inner = EnumerateHotReloadInstances(nativeChild, predicate, $"{instanceKey}_[{idx}]");
 
@@ -96,6 +97,10 @@ namespace Uno.UI.RemoteControl.HotReload
 			}
 #endif
 		}
+
+		[UnconditionalSuppressMessage("Trimming", "IL2072")]
+		private static string GetInstanceTypeName(object value)
+			=> (value.GetType().GetOriginalType() ?? value.GetType()).Name;
 
 		private static void SwapViews(FrameworkElement oldView, FrameworkElement newView)
 		{

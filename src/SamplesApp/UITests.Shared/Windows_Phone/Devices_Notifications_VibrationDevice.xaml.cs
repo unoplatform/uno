@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,7 +20,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_Phone
 {
-	[SampleControlInfo("Windows.Phone", "Devices.Notifications.VibrationDevice", description: "Verifies the Windows.Phone.Devices.Notifications.VibrationDevice API")]
+	[Sample("Windows.Phone", Name = "Devices.Notifications.VibrationDevice", Description = "Verifies the Windows.Phone.Devices.Notifications.VibrationDevice API")]
 	public sealed partial class Devices_Notifications_VibrationDevice : UserControl
 	{
 		private VibrationDevice _vibrationDevice;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
@@ -6,7 +6,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.WebView;
 
 namespace UITests.Shared.Windows_UI_Xaml
 {
-	[SampleControlInfo("WebView", "WebView_Alert", typeof(WebViewViewModel))]
+	[Sample("WebView", Name = "WebView_Alert", ViewModelType = typeof(WebViewViewModel))]
 	public sealed partial class WebView_Alert : Page
 	{
 #if HAS_UNO

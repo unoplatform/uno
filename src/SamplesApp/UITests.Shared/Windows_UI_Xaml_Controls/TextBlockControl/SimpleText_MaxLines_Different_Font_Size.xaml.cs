@@ -1,11 +1,11 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 {
-	[SampleControlInfo("TextBlock", "SimpleText_MaxLines_Different_Font_Size")]
+	[Sample("TextBlock", Name = "SimpleText_MaxLines_Different_Font_Size")]
 	public sealed partial class SimpleText_MaxLines_Different_Font_Size : UserControl
 	{
 		public SimpleText_MaxLines_Different_Font_Size()

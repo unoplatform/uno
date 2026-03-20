@@ -1,9 +1,15 @@
-﻿namespace Microsoft.UI.Xaml.Controls
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MediaTransportControlsHelper
 	{
-		public static DependencyProperty DropoutOrderProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty DropoutOrderProperty
+		{
+			[DynamicDependency(nameof(GetDropoutOrder))]
+			[DynamicDependency(nameof(SetDropoutOrder))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"DropoutOrder",
 				typeof(int?),
 				typeof(MediaTransportControlsHelper),

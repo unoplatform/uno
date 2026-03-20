@@ -15,6 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 	public class Given_DispatcherQueueTimer
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ScheduleWorkItem()
 		{
 			var tcs = new TaskCompletionSource<object>();
@@ -40,6 +41,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ScheduleRepeatingWorkItem()
 		{
 			var tcs = new TaskCompletionSource<object>();
@@ -74,6 +76,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ScheduleNonRepeatingWorkItem()
 		{
 			var tcs = new TaskCompletionSource<bool>();
@@ -133,6 +136,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_StartAndStopFromBackgroundThread()
 		{
 			var timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
@@ -154,6 +158,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno/issues/22862
 		public void When_SetNegativeInterval()
 		{
 			var timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
@@ -162,6 +167,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno/issues/22862
 		public async Task When_No_Interval_Set()
 		{
 			var dispatcherTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
@@ -183,6 +189,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Sleep_In_Tick()
 		{
 			var dispatcherTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
@@ -210,7 +217,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 
 				// The second tick must be scheduled only after the first one finishes completely -
 				// around 200ms must have elapsed on the stopwatch.
-				Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 180);
+				Assert.IsGreaterThanOrEqualTo(180, stopwatch.ElapsedMilliseconds);
 			}
 			finally
 			{
@@ -219,6 +226,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno/issues/22862
 		public async Task When_Change_Interval_Higher()
 		{
 			var dispatcherTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
@@ -234,13 +242,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 					{
 						// We increased the interval to 600ms after about 100ms elapsed,
 						// but this should not reset the existing scheduled tick.
-						Assert.IsTrue(stopwatch.ElapsedMilliseconds <= 400);
+						Assert.IsLessThanOrEqualTo(400, stopwatch.ElapsedMilliseconds);
 						stopwatch.Restart();
 					}
 					else if (repeats == 2)
 					{
 						// The second tick should be scheduled after 600ms
-						Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 400);
+						Assert.IsGreaterThanOrEqualTo(400, stopwatch.ElapsedMilliseconds);
 						stopwatch.Stop();
 						dispatcherTimer.Stop();
 					}
@@ -259,6 +267,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Exception_In_Tick()
 		{
 			var dispatcherTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
@@ -289,7 +298,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 				// The time keeps ticking even after an exception
 				Assert.IsTrue(dispatcherTimer.IsRunning);
 				Assert.IsTrue(dispatcherTimer.IsRepeating);
-				Assert.IsTrue(tickCounter > 1);
+				Assert.IsGreaterThan(1, tickCounter);
 			}
 			finally
 			{

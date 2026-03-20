@@ -27,19 +27,20 @@
 			"Uno.WinUI.MediaPlayer.Skia.Win32",
 			"Uno.WinUI.WebView.Skia.X11",
 			"Uno.WinUI.Graphics3DGL",
-			"Uno.WinUI.Graphics2DSK"
+			"Uno.WinUI.Graphics2DSK",
+			"Uno.WinUI.SpellChecking"
 		]
 	},
 	{
 		"group": "WasmBootstrap",
-		"version": "9.0.20",
+		"version": "9.0.23",
 		"packages": [
 			"Uno.Wasm.Bootstrap",
 			"Uno.Wasm.Bootstrap.DevServer",
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.0-dev.36"
+			"net10.0": "10.0.34"
 		}
 	},
 	{
@@ -73,28 +74,28 @@
 	},
 	{
 		"group": "Resizetizer",
-		"version": "1.11.1",
+		"version": "1.12.1",
 		"packages": [
 			"Uno.Resizetizer"
 		]
 	},
 	{
 		"group": "sdkextras",
-		"version": "6.1.1",
+		"version": "6.3.1",
 		"packages": [
 			"Uno.Sdk.Extras"
 		]
 	},
 	{
 		"group": "settings",
-		"version": "1.6.3",
+		"version": "1.8-dev.42",
 		"packages": [
 			"Uno.Settings.DevServer"
 		]
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.16.109",
+		"version": "1.18.66",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
@@ -128,34 +129,34 @@
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.26100.6584",
+		"version": "10.0.26100.7463",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
 		]
 	},
 	{
 		"group": "MicrosoftLoggingConsole",
-		"version": "9.0.9",
+		"version": "9.0.12",
 		"packages": [
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.0-rc.2.25502.107"
+			"net10.0": "10.0.2"
 		}
 	},
 	{
 		"group": "WindowsCompatibility",
-		"version": "9.0.9",
+		"version": "9.0.12",
 		"packages": [
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.0-rc.2.25502.107"
+			"net10.0": "10.0.2"
 		}
 	},
 	{
 		"group": "MsalClient",
-		"version": "4.76.0",
+		"version": "4.81.0",
 		"packages": [
 			"Microsoft.Identity.Client",
 			"Microsoft.Identity.Client.Extensions.Msal"
@@ -179,7 +180,7 @@
 	},
 	{
 		"group": "UnoFonts",
-		"version": "2.7.1",
+		"version": "2.8.1",
 		"packages": [
 			"Uno.Fonts.OpenSans",
 			"Uno.Fonts.Fluent",
@@ -193,7 +194,7 @@
 			"Xamarin.Google.Android.Material"
 		],
 		"versionOverride": {
-			"net10.0": "1.12.0.4"
+			"net10.0": "1.12.0.5"
 		}
 	},
 	{
@@ -223,7 +224,7 @@
 			"Xamarin.AndroidX.AppCompat"
 		],
 		"versionOverride": {
-			"net10.0": "1.7.0.7"
+			"net10.0": "1.7.1.1"
 		}
 	},
 	{
@@ -233,7 +234,7 @@
 			"Xamarin.AndroidX.RecyclerView"
 		],
 		"versionOverride": {
-			"net10.0": "1.4.0.2"
+			"net10.0": "1.4.0.3"
 		}
 	},
 	{
@@ -243,7 +244,7 @@
 			"Xamarin.AndroidX.Activity"
 		],
 		"versionOverride": {
-			"net10.0": "1.10.1.2"
+			"net10.0": "1.10.1.3"
 		}
 	},
 	{
@@ -253,7 +254,7 @@
 			"Xamarin.AndroidX.Browser"
 		],
 		"versionOverride": {
-			"net10.0": "1.8.0.10"
+			"net10.0": "1.8.0.11"
 		}
 	},
 	{
@@ -263,7 +264,7 @@
 			"Xamarin.AndroidX.SwipeRefreshLayout"
 		],
 		"versionOverride": {
-			"net10.0": "1.1.0.28"
+			"net10.0": "1.1.0.29"
 		}
 	},
 	{
@@ -274,7 +275,10 @@
 			"Xamarin.AndroidX.Navigation.Fragment",
 			"Xamarin.AndroidX.Navigation.Runtime",
 			"Xamarin.AndroidX.Navigation.Common"
-		]
+		],
+		"versionOverride": {
+			"net10.0": "2.9.2.1"
+		}
 	},
 	{
 		"group": "AndroidXCollection",
@@ -284,24 +288,24 @@
 			"Xamarin.AndroidX.Collection.Ktx"
 		],
 		"versionOverride": {
-			"net10.0": "1.5.0.2"
+			"net10.0": "1.5.0.3"
 		}
 	},
 	{
 		"group": "Maui",
-		"version": "9.0.100",
+		"version": "9.0.120",
 		"packages": [
 			"Microsoft.Maui.Controls",
 			"Microsoft.Maui.Controls.Compatibility",
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.0-rc.2.25504.7"
+			"net10.0": "10.0.30"
 		}
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "6.3.19",
+		"version": "6.5.10",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -309,7 +313,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "6.2.3",
+		"version": "7.1.1",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -339,43 +343,46 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "8.2.4",
+		"version": "8.4.2",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
 			"Uno.Toolkit.WinUI.Material",
 			"Uno.Toolkit.WinUI.Material.Markup",
 			"Uno.Toolkit.WinUI.Markup",
-			"Uno.Toolkit.Skia.WinUI"
+			"Uno.Toolkit.Skia.WinUI",
+			"Uno.Toolkit.WinUI.Simple"
 		]
 	},
 	{
 		"group": "Themes",
-		"version": "5.7.3",
+		"version": "6.1.1",
 		"packages": [
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",
 			"Uno.Themes.WinUI.Markup",
-			"Uno.Cupertino.WinUI"
+			"Uno.Cupertino.WinUI",
+			"Uno.Simple.WinUI",
+			"Uno.Simple.WinUI.Markup"
 		]
 	},
 	{
 		"group": "VlcNativeWindowsAssets",
-		"version": "3.0.21",
+		"version": "3.0.23",
 		"packages": [
 			"VideoLAN.LibVLC.Windows"
 		]
 	},
 	{
 		"group": "MicrosoftWebView2",
-		"version": "1.0.3485.44",
+		"version": "1.0.3719.77",
 		"packages": [
 			"Microsoft.Web.WebView2"
 		]
 	},
 	{
 		"group": "AppMcp",
-		"version": "1.0-dev.15",
+		"version": "1.2.0-dev.41",
 		"packages": [
 			"Uno.UI.App.Mcp"
 		]

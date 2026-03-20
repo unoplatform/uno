@@ -1,11 +1,11 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.Models;
 using Microsoft.UI.Xaml;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListViewScrollBar", typeof(ListViewViewModel), IsManualTest = true)]
+	[Sample("ListView", Name = "ListViewScrollBar", ViewModelType = typeof(ListViewViewModel), IsManualTest = true)]
 	public sealed partial class ListViewScrollBar : UserControl
 	{
 		DataTemplate _headerTemplate;

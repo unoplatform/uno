@@ -30,7 +30,7 @@ There are several common ways to manage Android Virtual Devices (AVDs):
 
 ### Option 2 — Visual Studio
 
-1. Install Visual Studio 2022 with the **Multi-Platform App UI development with .NET** workload.
+1. Install Visual Studio 2022/2026 with the **Multi-Platform App UI development with .NET** workload.
 2. Open **Tools → Android → Android Device Manager**.
 3. Create/update an AVD and start it before you deploy from your IDE.
 

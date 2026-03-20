@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -80,8 +81,12 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Identifies the NameScope attached property.
 		/// </summary>
-		public static DependencyProperty NameScopeProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty NameScopeProperty
+		{
+			[DynamicDependency(nameof(GetNameScope))]
+			[DynamicDependency(nameof(SetNameScope))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"NameScope",
 				typeof(INameScope),
 				typeof(NameScope),

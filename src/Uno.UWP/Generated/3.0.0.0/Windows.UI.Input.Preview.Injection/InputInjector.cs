@@ -19,28 +19,10 @@ namespace Windows.UI.Input.Preview.Injection
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.InitializeTouchInjection(Windows.UI.Input.Preview.Injection.InjectedInputVisualizationMode)
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.InjectTouchInput(System.Collections.Generic.IEnumerable<Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo>)
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.UninitializeTouchInjection()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void InitializePenInjection(global::Windows.UI.Input.Preview.Injection.InjectedInputVisualizationMode visualMode)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InputInjector", "void InputInjector.InitializePenInjection(InjectedInputVisualizationMode visualMode)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void InjectPenInput(global::Windows.UI.Input.Preview.Injection.InjectedInputPenInfo input)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InputInjector", "void InputInjector.InjectPenInput(InjectedInputPenInfo input)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void UninitializePenInjection()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InputInjector", "void InputInjector.UninitializePenInjection()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.InitializePenInjection(Windows.UI.Input.Preview.Injection.InjectedInputVisualizationMode)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.InjectPenInput(Windows.UI.Input.Preview.Injection.InjectedInputPenInfo)
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.UninitializePenInjection()
+		#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InjectShortcut(global::Windows.UI.Input.Preview.Injection.InjectedInputShortcut shortcut)
 		{

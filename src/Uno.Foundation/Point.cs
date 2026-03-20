@@ -11,6 +11,7 @@ using CoreGraphics;
 namespace Windows.Foundation;
 
 [DebuggerDisplay("{DebugDisplay,nq}")]
+[Uno.Foundation.Internals.Bindable]
 public partial struct Point
 {
 	// These are public in WinUI (with the underscore!), but we don't want to expose it for now at least.

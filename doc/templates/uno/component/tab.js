@@ -241,7 +241,7 @@ function renderTabs() {
     }
 
     function readTabsQueryStringParam() {
-        const qs = parseQueryString();
+        const qs = parseQueryString(location.search);
         const t = qs.tabs;
 
         if (t === undefined || t === '') {
@@ -252,7 +252,7 @@ function renderTabs() {
     }
 
     function updateTabsQueryStringParam(state) {
-        const qs = parseQueryString();
+        const qs = parseQueryString(location.search);
         qs.tabs = state.selectedTabs.join();
 
         const url = location.protocol + "//" + location.host + location.pathname + "?" + toQueryString(qs) + location.hash;

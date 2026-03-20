@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Private.Infrastructure;
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TimePicker
 {
 
-	[SampleControlInfo("Pickers")]
+	[Sample("Pickers")]
 	public sealed partial class TimePicker_Flyout_Automated_Reload : UserControl
 	{
 		private readonly UnitTestDispatcherCompat _dispatcher;

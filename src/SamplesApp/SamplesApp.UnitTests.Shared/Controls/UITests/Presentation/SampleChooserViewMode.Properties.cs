@@ -144,7 +144,7 @@ namespace SampleControl.Presentation
 			{
 				_manualTestsOnly = value;
 				RaisePropertyChanged();
-				RefreshSamples();
+				UpdateCategoryList();
 			}
 		}
 
@@ -643,5 +643,12 @@ namespace SampleControl.Presentation
 				}
 			}
 		}
+
+		/// <summary>
+		/// Returns true if global keyboard shortcuts should be enabled.
+		/// Shortcuts are disabled when the current sample has DisableKeyboardShortcuts set to true.
+		/// </summary>
+		public bool KeyboardShortcutsEnabled =>
+			CurrentSelectedSample is null || !CurrentSelectedSample.DisableKeyboardShortcuts;
 	}
 }

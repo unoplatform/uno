@@ -19,12 +19,7 @@ using Uno.Disposables;
 using Uno.UI.Core;
 using Windows.Foundation;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.Devices.Input;
-using Windows.UI.Input;
-#endif
 
 using SplitButtonAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer;
 

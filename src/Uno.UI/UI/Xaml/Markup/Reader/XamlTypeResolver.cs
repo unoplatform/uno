@@ -50,6 +50,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				},
 			}.ToImmutableDictionary();
 
+		[UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Need to ask @jeromelaban why e.g. `_isAttachedProperty` is a Func<…> instead of a method invocation.  See also 26c5cc5992cae3c8c25adf51eb77ca4b0dd34e93.")]
 		public XamlTypeResolver(XamlFileDefinition definition)
 		{
 			FileDefinition = definition;
@@ -447,7 +448,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				.Trim()
 				.FirstOrDefault();
 		}
-		private static bool SourceIsAttachedProperty(Type type, string name)
+		private static bool SourceIsAttachedProperty(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicMethods)]
+			Type type,
+			string name)
 		{
 			Type? currentType = type;
 

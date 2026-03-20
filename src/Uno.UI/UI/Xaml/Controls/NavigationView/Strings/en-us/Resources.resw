@@ -145,6 +145,10 @@
     <value>Back</value>
     <comment>ToolTip caption for the back button</comment>
   </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Close</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
   <data name="NavigationOverflowButtonName" xml:space="preserve">
     <value>More</value>
     <comment>Automation name for the nav view more button when panel is on top</comment>

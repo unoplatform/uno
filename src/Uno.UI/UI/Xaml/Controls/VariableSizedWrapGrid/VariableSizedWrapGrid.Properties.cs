@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -7,8 +8,12 @@ partial class VariableSizedWrapGrid
 	/// <summary>
 	/// Identifies the VariableSizedWrapGrid.ColumnSpan XAML attached property.
 	/// </summary>
-	public static DependencyProperty ColumnSpanProperty { get; } =
-		DependencyProperty.RegisterAttached(
+	public static DependencyProperty ColumnSpanProperty
+	{
+		[DynamicDependency(nameof(GetColumnSpan))]
+		[DynamicDependency(nameof(SetColumnSpan))]
+		get;
+	} = DependencyProperty.RegisterAttached(
 			"ColumnSpan",
 			typeof(int),
 			typeof(VariableSizedWrapGrid),
@@ -128,8 +133,12 @@ partial class VariableSizedWrapGrid
 	/// <summary>
 	/// Identifies the VariableSizedWrapGrid.RowSpan XAML attached property.
 	/// </summary>
-	public static DependencyProperty RowSpanProperty { get; } =
-		DependencyProperty.RegisterAttached(
+	public static DependencyProperty RowSpanProperty
+	{
+		[DynamicDependency(nameof(GetRowSpan))]
+		[DynamicDependency(nameof(SetRowSpan))]
+		get;
+	} = DependencyProperty.RegisterAttached(
 			"RowSpan",
 			typeof(int),
 			typeof(VariableSizedWrapGrid),

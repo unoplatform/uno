@@ -8,6 +8,7 @@ using SkiaSharp;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.Extensions;
+using Uno.UI.Dispatching;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = Microsoft.UI.Xaml.Documents.TextFormatting.GlyphInfo;
 
@@ -20,6 +21,23 @@ namespace Microsoft.UI.Xaml.Documents
 		private List<Segment>? _segments;
 
 		internal IReadOnlyList<Segment> Segments => _segments ??= GetSegments();
+
+		public global::Microsoft.UI.Xaml.FlowDirection FlowDirection
+		{
+			get => (global::Microsoft.UI.Xaml.FlowDirection)this.GetValue(FlowDirectionProperty);
+			set => this.SetValue(FlowDirectionProperty, value);
+		}
+
+		public static global::Microsoft.UI.Xaml.DependencyProperty FlowDirectionProperty { get; } =
+			Microsoft.UI.Xaml.DependencyProperty.Register(
+				nameof(FlowDirection), typeof(FlowDirection),
+				typeof(Run),
+				new FrameworkPropertyMetadata(default(FlowDirection), FrameworkPropertyMetadataOptions.Inherits, (DependencyObject dO, DependencyPropertyChangedEventArgs args) => ((Run)dO).OnFlowDirectionChanged()));
+
+		private void OnFlowDirectionChanged()
+		{
+			InvalidateInlines(false);
+		}
 
 		private static (int CodePoint, int Length) GetCodePoint(ReadOnlySpan<char> text, int i)
 		{
@@ -191,10 +209,18 @@ namespace Microsoft.UI.Xaml.Documents
 				float textSizeX;
 				if (typeface is not null && typeface != defaultTypeface)
 				{
-					fallbackFont = FontDetailsCache.GetFont(typeface.FamilyName, (float)FontSize, FontWeight, FontStretch, FontStyle).details;
-					if (fallbackFont.CanChange)
+					var (details, task) = FontDetailsCache.GetFont(typeface.FamilyName, (float)FontSize, FontWeight, FontStretch, FontStyle);
+					if (task.IsCompletedSuccessfully)
 					{
-						fallbackFont.RegisterElementForFontLoaded(this);
+						fallbackFont = task.Result;
+					}
+					else
+					{
+						task.ContinueWith(_ =>
+						{
+							NativeDispatcher.Main.Enqueue(OnFontLoaded);
+						});
+						fallbackFont = details;
 					}
 
 					font = fallbackFont.Font;
@@ -294,7 +320,6 @@ namespace Microsoft.UI.Xaml.Documents
 					var hbGlyph = hbGlyphs[i];
 					var hbPos = hbPositions[i];
 
-					// We add special handling for tabs, which don't get rendered correctly, and treated as an unknown glyph
 					TextFormatting.GlyphInfo glyph = new(
 						(ushort)hbGlyph.Codepoint,
 						clusterStart + (int)hbGlyph.Cluster,

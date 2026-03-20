@@ -18,8 +18,9 @@ partial class ContentPresenter
 	private Lazy<INativeElementHostingExtension> _nativeElementHostingExtension;
 	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
 
-	private (Rect layoutRect, int zOrder)? _lastNativeArrangeArgs;
 	private bool _nativeElementAttached;
+	private IDisposable _frameRenderedDisposable;
+	private Rect? _lastArrangeRect;
 
 	internal static bool HasNativeElements() => _nativeHosts.Count > 0;
 
@@ -68,6 +69,7 @@ partial class ContentPresenter
 			{
 				//If in visual tree, attach immediately. If not, don't attach since Enter will attach later.
 				AttachNativeElement();
+				ArrangeNativeElement();
 			}
 		}
 		else
@@ -85,9 +87,17 @@ partial class ContentPresenter
 		_nativeElementAttached = true;
 		_nativeElementHostingExtension.Value!.AttachNativeElement(Content);
 		_nativeHosts.Add(this);
+		var ct = ((CompositionTarget)Visual.CompositionTarget)!;
+		ct.FrameRendered += OnFrameRendered;
+		_frameRenderedDisposable = Disposable.Create(() => ct.FrameRendered -= OnFrameRendered);
+	}
 
-		EffectiveViewportChanged += OnEffectiveViewportChanged;
-		LayoutUpdated += OnLayoutUpdated;
+	private void OnFrameRendered()
+	{
+		if (_nativeElementAttached)
+		{
+			ArrangeNativeElement();
+		}
 	}
 
 	partial void DetachNativeElement(object content)
@@ -95,14 +105,12 @@ partial class ContentPresenter
 #if DEBUG
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);
 #endif
-		_lastNativeArrangeArgs = null;
 		_nativeHosts.Remove(this);
-
-		EffectiveViewportChanged -= OnEffectiveViewportChanged;
-		LayoutUpdated -= OnLayoutUpdated;
-
+		_lastArrangeRect = null;
 		if (_nativeElementAttached)
 		{
+			_frameRenderedDisposable.Dispose();
+			_frameRenderedDisposable = null;
 			_nativeElementAttached = false;
 			_nativeElementHostingExtension.Value!.DetachNativeElement(content);
 		}
@@ -157,64 +165,48 @@ partial class ContentPresenter
 		for (var index = 0; index < _nativeHosts.Count; index++)
 		{
 			var host = rentedArray[index].Item2;
+			var order = rentedArray[index].Item1;
 
-			if (index == -1 && host._nativeElementAttached)
+			if (host._nativeElementHostingExtension.Value.SupportsZIndex())
 			{
-				// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
-				Debug.Assert(host.IsNativeHost);
-				host._nativeElementAttached = false;
-				host._lastNativeArrangeArgs = null;
-				host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
+				host._nativeElementHostingExtension.Value.SetZIndex(host.Content, index);
 			}
-			else if (host._nativeElementAttached)
+			else
 			{
-				host.DetachNativeElement(host.Content);
-				host.AttachNativeElement();
-				host.ArrangeNativeElement(index);
+				if (host._nativeElementAttached)
+				{
+					if (order == -1)
+					{
+						// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
+						Debug.Assert(host.IsNativeHost);
+						host._nativeElementAttached = false;
+						host._lastArrangeRect = null;
+						host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
+					}
+					else
+					{
+						host.DetachNativeElement(host.Content);
+						host.AttachNativeElement();
+						host.ArrangeNativeElement();
+					}
+				}
+				else if (order != -1)
+				{
+					host.AttachNativeElement();
+					host.ArrangeNativeElement();
+				}
 			}
 		}
 	}
 
 	private void ArrangeNativeElement()
 	{
-		if (!IsNativeHost)
-		{
-			// the ArrangeNativeElement call is queued on the dispatcher, so by the time we get here, the ContentPresenter
-			// might no longer be a NativeHost
-			return;
-		}
-
-		if (_nativeElementAttached && _lastNativeArrangeArgs?.zOrder is { } zOrder)
-		{
-			ArrangeNativeElement(zOrder);
-		}
-	}
-
-	private void ArrangeNativeElement(int zOrder)
-	{
 		var arrangeRect = this.GetAbsoluteBoundsRect();
-
-		var nativeArrangeArgs = (arrangeRect, zOrder);
-		if (_lastNativeArrangeArgs != nativeArrangeArgs)
+		if (_lastArrangeRect != arrangeRect)
 		{
-			_lastNativeArrangeArgs = nativeArrangeArgs;
+			_lastArrangeRect = arrangeRect;
 			_nativeElementHostingExtension.Value!.ArrangeNativeElement(Content, arrangeRect);
 		}
-	}
-
-	private void OnLayoutUpdated(object sender, object e)
-	{
-		// Not quite sure why we need to queue the arrange call, but the native element either explodes or doesn't
-		// respect alignments correctly otherwise. This is particularly relevant for the initial load.
-		DispatcherQueue.TryEnqueue(ArrangeNativeElement);
-	}
-
-	private void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
-	{
-		global::System.Diagnostics.Debug.Assert(IsNativeHost);
-		// The arrange call here is queued because EVPChanged is fired before the layout of the ContentPresenter is updated,
-		// so calling ArrangeNativeElement synchronously would get outdated coordinates.
-		DispatcherQueue.TryEnqueue(ArrangeNativeElement);
 	}
 
 	internal object CreateSampleComponent(string text)

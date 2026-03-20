@@ -1,7 +1,7 @@
 ---
 uid: Build.Solution.TargetFramework-override
 ---
-# Improve Build Times with Visual Studio 2022
+# Improve Build Times with Visual Studio
 
 The Uno Platform template **prior to Uno Platform 5.2** provides a cross-targeted Class library that includes multiple target frameworks, and your application may contain your own cross-targeted projects as well. This document explains how to make your builds faster.
 
@@ -40,17 +40,17 @@ To do so:
         <PropertyGroup>
             <!-- Uncomment each line for each platform that you want to build: -->
 
-            <!-- <OverrideTargetFramework Condition="''!='hint: Windows App Sdk (WinUI)'">net9.0-windows10.0.19041.0</OverrideTargetFramework> -->
-            <!-- <OverrideTargetFramework Condition="''!='hint: Webassembly'">net9.0-browserwasm</OverrideTargetFramework> -->
-            <!-- <OverrideTargetFramework Condition="''!='hint: Desktop'">net9.0-desktop</OverrideTargetFramework> -->
-            <!-- <OverrideTargetFramework Condition="''!='hint: iOS'">net9.0-ios</OverrideTargetFramework> -->
-            <!-- <OverrideTargetFramework Condition="''!='hint: Android'">net9.0-android</OverrideTargetFramework> -->
-            <!-- <OverrideTargetFramework Condition="''!='hint: TvOS'">net9.0-tvos</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: Windows App Sdk (WinUI)'">net10.0-windows10.0.19041.0</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: Webassembly'">net10.0-browserwasm</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: Desktop'">net10.0-desktop</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: iOS'">net10.0-ios</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: Android'">net10.0-android</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: TvOS'">net10.0-tvos</OverrideTargetFramework> -->
         </PropertyGroup>
     </Project>
     ```
 
-    Make sure to replace `net9.0` and `-windows10.0.19041.0` with the appropriate version from your `.csproj` project.
+    Make sure to replace `net10.0` and `-windows10.0.19041.0` with the appropriate version from your `.csproj` project.
 
 - You can commit `solution-config.props.sample` to your source control.
 - Next, make a copy of `solution-config.props.sample` to `solution-config.props`. This file is [automatically loaded](https://github.com/unoplatform/uno/blob/71f1d5ab067c0dcfad2f4cccd310e506cdeaf6bf/src/Uno.Sdk/targets/Uno.Import.SolutionConfig.props#L9) by the `Uno.Sdk`.
@@ -66,7 +66,7 @@ To do so:
     <TargetFrameworks Condition=" '$(OverrideTargetFramework)' != '' ">$(OverrideTargetFramework)</TargetFrameworks>
     ```
 
-- Once done, if you're in Visual Studio 2022, you may need to close and re-open your solution or otherwise click the reload button. For other IDEs, the projects will reload automatically.
+- Once done, if you're in Visual Studio, you may need to close and re-open your solution or otherwise click the reload button. For other IDEs, the projects will reload automatically.
 
 At this point, you'll notice that the list of target frameworks available in the debugger will have been reduced to the list you added in `OverrideTargetFramework`.
 
@@ -176,7 +176,7 @@ At this point, your solution is ready for single-TargetFramework use.
 For example, to work on `net7.0-ios`:
 
 1. Before opening the solution, open the `solution-config.props` file and uncomment `MyAppTargetFrameworkOverride` to contain `net7.0-ios`
-1. Open the `MyApp-Mobile-Only.slnf` solution filter in Visual Studio 2022
+1. Open the `MyApp-Mobile-Only.slnf` solution filter in Visual Studio
 1. You should only see the **.Mobile** and **Class Library** projects in your solution
 1. When building and debugging the app, you'll only now build for the target specified in `solution-config.props`.
 

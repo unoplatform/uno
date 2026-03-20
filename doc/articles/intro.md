@@ -6,7 +6,7 @@ uid: Uno.Documentation.Intro
 
 <!-- markdownlint-disable MD001 -->
 
-Uno Platform is an open-source .NET platform for building single codebase native mobile, web, desktop, and embedded apps quickly.
+**Uno Platform** is an open-source .NET platform that enables developers to quickly build native mobile, web, desktop, and embedded applications—all from a single codebase.
 
 <br/>
 
@@ -30,7 +30,7 @@ Set up with your OS and IDE of choice.
 <a href="samples-tutorials-overview.md">
 <div class="alert alert-info alert-hover">
 
-#### How-tos and Tutorials
+#### How-Tos and Tutorials
 
 Four complete tutorials and hundreds of real-world samples.
 
@@ -46,6 +46,19 @@ Four complete tutorials and hundreds of real-world samples.
 #### Developing with Uno Platform
 
 Learn the principles of cross-platform development with Uno.
+
+</div>
+</a>
+</div>
+
+<!-- Uno Platform Studio -->
+<div class="col-md-6 col-xs-12 ">
+<a href="xref:Uno.Platform.Studio.Overview">
+<div class="alert alert-info alert-hover">
+
+#### Uno Platform Studio
+
+**Uno Platform Studio** is a set of productivity tools designed to enhance developer productivity.
 
 </div>
 </a>
@@ -146,7 +159,7 @@ Browse the set of available controls and their properties.
 
 <br/>
 
-## High level architecture
+## High Level Architecture
 
 Uno Platform's application API is compatible with Microsoft's [WinUI 3 API](https://learn.microsoft.com/windows/apps/winui/winui3/). In fact, when your application runs on Windows, it's just an ordinary WinUI 3/WinAppSDK application.
 

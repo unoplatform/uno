@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data
 			lv.SelectedIndex = 3;
 
 			Assert.IsTrue(source.IsSelected(3), "source.IsSelected(3) == true");
-			Assert.AreEqual(1, selectionRanges.Count, "selectionRanges.Count == 1");
+			Assert.HasCount(1, selectionRanges, "selectionRanges.Count == 1");
 			var expectedRange = new ItemIndexRange(3, 1);
 			Assert.AreEqual(expectedRange.FirstIndex, selectionRanges[0].FirstIndex, "selectionRanges[0] == { 3..3, count = 1 }");
 			Assert.AreEqual(expectedRange.LastIndex, selectionRanges[0].LastIndex, "selectionRanges[0] == { 3..3, count = 1 }");

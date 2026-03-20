@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -21,14 +21,10 @@ using Microsoft.UI.Xaml.Navigation;
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar
 {
 
-	[SampleControlInfo(
-		"CommandBar",
-		"Native_AppBarButton_Binding",
-		typeof(CommandBarViewModel),
-		description: "Shows a Native CommandBar with an AppBarButton. \n" +
+	[Sample("CommandBar", Name = "Native_AppBarButton_Binding", ViewModelType = typeof(CommandBarViewModel), Description = "Shows a Native CommandBar with an AppBarButton. \n" +
 		"The AppBarButton will show a FilterIcon and when Clicked it will show a CloseIcon. \n" +
 		"This tests that the AppBarButton bindings are working.",
-		isManualTest: true)]
+		IsManualTest = true)]
 	public sealed partial class CommandBar_Native_With_AppBarButton_Binding : Page
 	{
 		public CommandBar_Native_With_AppBarButton_Binding()

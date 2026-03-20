@@ -28,13 +28,7 @@ using Uno.UI.Controls;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.UI.Input;
-using Windows.Devices.Input;
-using Windows.UI.Core;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -205,14 +199,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnLayoutUpdated(object? sender, object e)
-		{
-			//if (m_layoutTransitionElement is { })
-			//{
-			//	PositionLTEs();
-			//}
-		}
-
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			RefreshContentHeight();
@@ -280,8 +266,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected override void OnUnloaded()
 		{
-			LayoutUpdated -= OnLayoutUpdated;
-			SizeChanged -= OnSizeChanged;
 			if (m_isInOverlayState)
 			{
 				TeardownOverlayState();
@@ -290,7 +274,6 @@ namespace Microsoft.UI.Xaml.Controls
 			UnregisterEvents();
 
 			base.OnUnloaded();
-
 		}
 
 		protected override void OnApplyTemplate()

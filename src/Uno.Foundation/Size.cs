@@ -9,6 +9,7 @@ namespace Windows.Foundation;
 
 [DebuggerDisplay("{DebugDisplay,nq}")]
 [TypeConverter(typeof(SizeConverter))]
+[Uno.Foundation.Internals.Bindable]
 public partial struct Size
 {
 	// These are public in WinUI (with the underscore!), but we don't want to expose it for now at least.

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +32,7 @@ namespace Uno.UI.DataBinding
 		/// <summary>
 		/// Provides the Type of this bindable type
 		/// </summary>
+		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		Type Type { get; }
 
 		/// <summary>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.CheckBoxTests
 {
-	[SampleControlInfo("Buttons")]
+	[Sample("Buttons")]
 	public sealed partial class CheckBox_Automated : UserControl
 	{
 		public CheckBox_Automated()

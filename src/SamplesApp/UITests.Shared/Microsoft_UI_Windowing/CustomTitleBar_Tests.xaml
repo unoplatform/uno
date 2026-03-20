@@ -1,0 +1,19 @@
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Windowing.CustomTitleBar_Tests"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Microsoft_UI_Windowing"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:DefaultBindMode="TwoWay"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <StackPanel Padding="8" Spacing="8">
+        <Button Click="{x:Bind DraggableRegionWindowClick}" Content="Open draggable region window" />
+        <Button Click="{x:Bind CustomTitleBarClick}" Content="Open custom title bar window" />
+        <Button Click="{x:Bind StandardExtendClick}" Content="Open ExtendContentIntoTitleBar window (standard height)" />
+        <Button Click="{x:Bind TallExtendClick}" Content="Open ExtendContentIntoTitleBar window (tall height)" />
+    </StackPanel>
+</Page>

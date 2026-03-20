@@ -1,4 +1,5 @@
-﻿using Uno.UI.Xaml;
+﻿using System.Diagnostics.CodeAnalysis;
+using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -134,8 +135,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.AlignBottomWithPanelProperty XAML attached property.
 	/// </summary>
-	public static DependencyProperty AlignBottomWithPanelProperty { get; } =
-		DependencyProperty.RegisterAttached("AlignBottomWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty AlignBottomWithPanelProperty
+	{
+		[DynamicDependency(nameof(GetAlignBottomWithPanel))]
+		[DynamicDependency(nameof(SetAlignBottomWithPanel))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"AlignBottomWithPanel",
+			typeof(bool),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignLeftWithPanel XAML attached property for the target element.
@@ -154,8 +163,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.AlignLeftWithPanelProperty XAML attached property.
 	/// </summary>
-	public static DependencyProperty AlignLeftWithPanelProperty { get; } =
-		DependencyProperty.RegisterAttached("AlignLeftWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty AlignLeftWithPanelProperty
+	{
+		[DynamicDependency(nameof(GetAlignLeftWithPanel))]
+		[DynamicDependency(nameof(SetAlignLeftWithPanel))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"AlignLeftWithPanel",
+			typeof(bool),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignRightWithPanel XAML attached property for the target element.
@@ -174,8 +191,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.AlignRightWithPanelProperty XAML attached property.
 	/// </summary>
-	public static DependencyProperty AlignRightWithPanelProperty { get; } =
-		DependencyProperty.RegisterAttached("AlignRightWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty AlignRightWithPanelProperty
+	{
+		[DynamicDependency(nameof(GetAlignRightWithPanel))]
+		[DynamicDependency(nameof(SetAlignRightWithPanel))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"AlignRightWithPanel",
+			typeof(bool),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignTopWithPanel XAML attached property for the target element.
@@ -194,8 +219,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.AlignTopWithPanelProperty XAML attached property.
 	/// </summary>
-	public static DependencyProperty AlignTopWithPanelProperty { get; } =
-		DependencyProperty.RegisterAttached("AlignTopWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty AlignTopWithPanelProperty
+	{
+		[DynamicDependency(nameof(GetAlignTopWithPanel))]
+		[DynamicDependency(nameof(SetAlignTopWithPanel))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"AlignTopWithPanel",
+			typeof(bool),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignHorizontalCenterWithPanel XAML attached property for the target element.
@@ -214,8 +247,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.AlignHorizontalCenterWithPanel XAML attached property.
 	/// </summary>
-	public static DependencyProperty AlignHorizontalCenterWithPanelProperty { get; } =
-		DependencyProperty.RegisterAttached("AlignHorizontalCenterWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty AlignHorizontalCenterWithPanelProperty
+	{
+		[DynamicDependency(nameof(GetAlignHorizontalCenterWithPanel))]
+		[DynamicDependency(nameof(SetAlignHorizontalCenterWithPanel))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"AlignHorizontalCenterWithPanel",
+			typeof(bool),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignVerticalCenterWithPanel XAML attached property for the target element.
@@ -234,8 +275,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.AlignVerticalCenterWithPanel XAML attached property.
 	/// </summary>
-	public static DependencyProperty AlignVerticalCenterWithPanelProperty { get; } =
-		DependencyProperty.RegisterAttached("AlignVerticalCenterWithPanel", typeof(bool), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty AlignVerticalCenterWithPanelProperty
+	{
+		[DynamicDependency(nameof(GetAlignVerticalCenterWithPanel))]
+		[DynamicDependency(nameof(SetAlignVerticalCenterWithPanel))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"AlignVerticalCenterWithPanel",
+			typeof(bool),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	#endregion
 
@@ -258,8 +307,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.AlignBottomWith XAML attached property.
 	/// </summary>
-	public static DependencyProperty AlignBottomWithProperty { get; } =
-		DependencyProperty.RegisterAttached("AlignBottomWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty AlignBottomWithProperty
+	{
+		[DynamicDependency(nameof(GetAlignBottomWith))]
+		[DynamicDependency(nameof(SetAlignBottomWith))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"AlignBottomWith",
+			typeof(object),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignLeftWith XAML attached property for the target element.
@@ -278,8 +335,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.AlignLeftWith XAML attached property.
 	/// </summary>
-	public static DependencyProperty AlignLeftWithProperty { get; } =
-		DependencyProperty.RegisterAttached("AlignLeftWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty AlignLeftWithProperty
+	{
+		[DynamicDependency(nameof(GetAlignLeftWith))]
+		[DynamicDependency(nameof(SetAlignLeftWith))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"AlignLeftWith",
+			typeof(object),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignRightWith XAML attached property for the target element.
@@ -298,8 +363,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.AlignRightWith XAML attached property.
 	/// </summary>
-	public static DependencyProperty AlignRightWithProperty { get; } =
-		DependencyProperty.RegisterAttached("AlignRightWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty AlignRightWithProperty
+	{
+		[DynamicDependency(nameof(GetAlignRightWith))]
+		[DynamicDependency(nameof(SetAlignRightWith))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"AlignRightWith",
+			typeof(object),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignTopWith XAML attached property for the target element.
@@ -318,8 +391,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.AlignTopWith XAML attached property.
 	/// </summary>
-	public static DependencyProperty AlignTopWithProperty { get; } =
-		DependencyProperty.RegisterAttached("AlignTopWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty AlignTopWithProperty
+	{
+		[DynamicDependency(nameof(GetAlignTopWith))]
+		[DynamicDependency(nameof(SetAlignTopWith))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"AlignTopWith",
+			typeof(object),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignHorizontalCenterWith XAML attached property for the target element.
@@ -338,8 +419,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.AlignHorizontalCenterWith XAML attached property.
 	/// </summary>
-	public static DependencyProperty AlignHorizontalCenterWithProperty { get; } =
-		DependencyProperty.RegisterAttached("AlignHorizontalCenterWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty AlignHorizontalCenterWithProperty
+	{
+		[DynamicDependency(nameof(GetAlignHorizontalCenterWith))]
+		[DynamicDependency(nameof(SetAlignHorizontalCenterWith))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"AlignHorizontalCenterWith",
+			typeof(object),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignVerticalCenterWith XAML attached property for the target element.
@@ -358,8 +447,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.AlignVerticalCenterWith XAML attached property.
 	/// </summary>
-	public static DependencyProperty AlignVerticalCenterWithProperty { get; } =
-		DependencyProperty.RegisterAttached("AlignVerticalCenterWith", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty AlignVerticalCenterWithProperty
+	{
+		[DynamicDependency(nameof(GetAlignVerticalCenterWith))]
+		[DynamicDependency(nameof(SetAlignVerticalCenterWith))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"AlignVerticalCenterWith",
+			typeof(object),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	#endregion
 
@@ -382,8 +479,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.Above XAML attached property.
 	/// </summary>
-	public static DependencyProperty AboveProperty { get; } =
-		DependencyProperty.RegisterAttached("Above", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty AboveProperty
+	{
+		[DynamicDependency(nameof(GetAbove))]
+		[DynamicDependency(nameof(SetAbove))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"Above",
+			typeof(object),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.Below XAML attached property for the target element.
@@ -402,8 +507,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.Below XAML attached property.
 	/// </summary>
-	public static DependencyProperty BelowProperty { get; } =
-		DependencyProperty.RegisterAttached("Below", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty BelowProperty
+	{
+		[DynamicDependency(nameof(GetBelow))]
+		[DynamicDependency(nameof(SetBelow))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"Below",
+			typeof(object),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.LeftOf XAML attached property for the target element.
@@ -422,8 +535,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.LeftOf XAML attached property.
 	/// </summary>
-	public static DependencyProperty LeftOfProperty { get; } =
-		DependencyProperty.RegisterAttached("LeftOf", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty LeftOfProperty
+	{
+		[DynamicDependency(nameof(GetLeftOf))]
+		[DynamicDependency(nameof(SetLeftOf))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"LeftOf",
+			typeof(object),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	/// <summary>
 	/// Gets the value of the RelativePanel.RightOf XAML attached property for the target element.
@@ -442,8 +563,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the RelativePanel.RightOf XAML attached property.
 	/// </summary>
-	public static DependencyProperty RightOfProperty { get; } =
-		DependencyProperty.RegisterAttached("RightOf", typeof(object), typeof(RelativePanel), new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
+	public static DependencyProperty RightOfProperty
+	{
+		[DynamicDependency(nameof(GetRightOf))]
+		[DynamicDependency(nameof(SetRightOf))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"RightOf",
+			typeof(object),
+			typeof(RelativePanel),
+			new FrameworkPropertyMetadata(defaultValue: null, options: FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: (s, e) => OnPositioningChanged(s)));
 
 	#endregion
 

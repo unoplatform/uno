@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -26,7 +27,10 @@ internal interface ICustomEventManager<T, TEventArgs>
 	void OnTick();
 }
 
-internal sealed class CustomKeepLastEventManager<T, TEventArgs> : ICustomEventManager<T, TEventArgs>
+internal sealed class CustomKeepLastEventManager<
+	T,
+	[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TEventArgs
+> : ICustomEventManager<T, TEventArgs>
 	where T : class
 	where TEventArgs : class
 {

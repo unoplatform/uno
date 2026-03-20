@@ -7,7 +7,7 @@ using Windows.Foundation.Metadata;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class StateTriggerBase : DependencyObject
+	public partial class StateTriggerBase : DependencyObject, IMultiParentShareableDependencyObject
 	{
 		protected StateTriggerBase()
 		{

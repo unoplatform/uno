@@ -189,6 +189,10 @@
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.Skia.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.Wasm.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.Reference.csproj</_AdjustedOutputProjects>
+
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.WinUI.Graphics2DSK.Crossruntime.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.WinUI.Graphics2DSK.netcoremobile.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.WinUI.Graphics2DSK.Windows.csproj</_AdjustedOutputProjects>
 	</PropertyGroup>
 
 	<PropertyGroup>

@@ -82,7 +82,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		var (windowSize, visibleBounds) = GetVisualBounds();
 
 		SetBoundsAndVisibleBounds(new Rect(default, windowSize), visibleBounds);
-		Size = new((int)(windowSize.Width * RasterizationScale), (int)(windowSize.Height * RasterizationScale));
+		var size = new Windows.Graphics.SizeInt32((int)(windowSize.Width * RasterizationScale), (int)(windowSize.Height * RasterizationScale));
+		SetSizes(size, size);
 		ApplySystemOverlaysTheming();
 
 		if (_previousTrueVisibleBounds != visibleBounds)

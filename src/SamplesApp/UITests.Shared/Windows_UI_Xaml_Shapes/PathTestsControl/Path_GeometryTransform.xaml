@@ -1,0 +1,164 @@
+<UserControl x:Class="UITests.Windows_UI_Xaml_Shapes.PathTestsControl.Path_GeometryTransform"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d"
+			 d:DesignHeight="600"
+			 d:DesignWidth="400">
+
+	<!-- Manual test for Geometry.Transform (issue #3238)
+	     Expected result: each Path row shows the geometry shape transformed as described in the label.
+	     The transform is applied to the Geometry itself, not to the Path element.
+	     A yellow background makes it easy to see the shape's original bounds vs the transformed shape. -->
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Margin="16">
+
+			<TextBlock Style="{ThemeResource TitleTextBlockStyle}" Text="Geometry.Transform" />
+			<TextBlock TextWrapping="Wrap"
+					   Text="Verifies that Transform applied to a Geometry object is rendered correctly. Each row shows the same 40x20 RectangleGeometry with a different transform. The yellow border marks the Path element bounds." />
+
+			<!-- Baseline: no transform -->
+			<StackPanel>
+				<TextBlock FontWeight="SemiBold" Text="Baseline — no transform" />
+				<TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+						   Text="Expected: blue rectangle at origin (0,0) of the yellow container." />
+				<Border Background="Yellow" Width="200" Height="80" HorizontalAlignment="Left">
+					<Path Fill="Blue">
+						<Path.Data>
+							<RectangleGeometry Rect="10,10 40,20" />
+						</Path.Data>
+					</Path>
+				</Border>
+			</StackPanel>
+
+			<!-- TranslateTransform -->
+			<StackPanel>
+				<TextBlock FontWeight="SemiBold" Text="TranslateTransform (X=30, Y=20)" />
+				<TextBlock TextWrapping="Wrap"
+						   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+						   Text="Expected: blue rectangle shifted 30px right and 20px down relative to the baseline." />
+				<Border Background="Yellow" Width="200" Height="80" HorizontalAlignment="Left">
+					<Path Fill="Blue">
+						<Path.Data>
+							<RectangleGeometry Rect="10,10 40,20">
+								<RectangleGeometry.Transform>
+									<TranslateTransform X="30" Y="20" />
+								</RectangleGeometry.Transform>
+							</RectangleGeometry>
+						</Path.Data>
+					</Path>
+				</Border>
+			</StackPanel>
+
+			<!-- RotateTransform -->
+			<StackPanel>
+				<TextBlock FontWeight="SemiBold" Text="RotateTransform (Angle=45)" />
+				<TextBlock TextWrapping="Wrap"
+						   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+						   Text="Expected: blue rectangle rotated 45° around the origin of the geometry." />
+				<Border Background="Yellow" Width="200" Height="120" HorizontalAlignment="Left">
+					<Path Fill="Blue">
+						<Path.Data>
+							<RectangleGeometry Rect="50,50 40,20">
+								<RectangleGeometry.Transform>
+									<RotateTransform Angle="45" CenterX="50" CenterY="50" />
+								</RectangleGeometry.Transform>
+							</RectangleGeometry>
+						</Path.Data>
+					</Path>
+				</Border>
+			</StackPanel>
+
+			<!-- ScaleTransform -->
+			<StackPanel>
+				<TextBlock FontWeight="SemiBold" Text="ScaleTransform (ScaleX=2, ScaleY=2)" />
+				<TextBlock TextWrapping="Wrap"
+						   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+						   Text="Expected: blue rectangle scaled to 2× in both dimensions (80x40 instead of 40x20)." />
+				<Border Background="Yellow" Width="200" Height="120" HorizontalAlignment="Left">
+					<Path Fill="Blue">
+						<Path.Data>
+							<RectangleGeometry Rect="10,10 40,20">
+								<RectangleGeometry.Transform>
+									<ScaleTransform ScaleX="2" ScaleY="2" />
+								</RectangleGeometry.Transform>
+							</RectangleGeometry>
+						</Path.Data>
+					</Path>
+				</Border>
+			</StackPanel>
+
+			<!-- CompositeTransform (translate + rotate) -->
+			<StackPanel>
+				<TextBlock FontWeight="SemiBold" Text="CompositeTransform (TranslateX=20, Rotation=30)" />
+				<TextBlock TextWrapping="Wrap"
+						   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+						   Text="Expected: blue rectangle translated 20px right then rotated 30°." />
+				<Border Background="Yellow" Width="200" Height="120" HorizontalAlignment="Left">
+					<Path Fill="Blue">
+						<Path.Data>
+							<RectangleGeometry Rect="20,40 40,20">
+								<RectangleGeometry.Transform>
+									<CompositeTransform TranslateX="20" Rotation="30" />
+								</RectangleGeometry.Transform>
+							</RectangleGeometry>
+						</Path.Data>
+					</Path>
+				</Border>
+			</StackPanel>
+
+			<!-- Dynamic: TranslateTransform driven by sliders -->
+			<StackPanel>
+				<TextBlock FontWeight="SemiBold" Text="Dynamic TranslateTransform (use sliders)" />
+				<TextBlock TextWrapping="Wrap"
+						   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+						   Text="Expected: blue rectangle moves as sliders change, validating that geometry transform changes cause the Path to re-render." />
+				<Border Background="Yellow" Width="200" Height="120" HorizontalAlignment="Left">
+					<Path Fill="Blue">
+						<Path.Data>
+							<RectangleGeometry Rect="10,10 40,20">
+								<RectangleGeometry.Transform>
+									<TranslateTransform X="{Binding Value, ElementName=SliderX}"
+														Y="{Binding Value, ElementName=SliderY}" />
+								</RectangleGeometry.Transform>
+							</RectangleGeometry>
+						</Path.Data>
+					</Path>
+				</Border>
+				<Slider x:Name="SliderX" Header="TranslateX" Minimum="0" Maximum="120" Value="0" />
+				<Slider x:Name="SliderY" Header="TranslateY" Minimum="0" Maximum="80" Value="0" />
+			</StackPanel>
+
+			<!-- GeometryGroup with Transform on child geometry -->
+			<StackPanel>
+				<TextBlock FontWeight="SemiBold" Text="GeometryGroup with child TranslateTransform" />
+				<TextBlock TextWrapping="Wrap"
+						   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+						   Text="Expected: two rectangles — the second (green) shifted 60px right from the first (blue)." />
+				<Border Background="Yellow" Width="200" Height="80" HorizontalAlignment="Left">
+					<Path>
+						<Path.Data>
+							<GeometryGroup>
+								<RectangleGeometry Rect="10,10 40,20" />
+								<RectangleGeometry Rect="10,10 40,20">
+									<RectangleGeometry.Transform>
+										<TranslateTransform X="60" />
+									</RectangleGeometry.Transform>
+								</RectangleGeometry>
+							</GeometryGroup>
+						</Path.Data>
+						<Path.Fill>
+							<LinearGradientBrush>
+								<GradientStop Color="Blue" Offset="0" />
+								<GradientStop Color="Green" Offset="1" />
+							</LinearGradientBrush>
+						</Path.Fill>
+					</Path>
+				</Border>
+			</StackPanel>
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

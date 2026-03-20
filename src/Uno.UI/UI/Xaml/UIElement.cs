@@ -3,6 +3,7 @@
 #endif
 
 using Windows.Foundation;
+using System.Linq;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
@@ -133,14 +134,13 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
-		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		private void SubscribeToOverridenRoutedEvents()
 		{
 			// Overridden Events are registered from constructor to ensure they are
 			// registered first in event handlers.
 			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
 
-			var implementedEvents = GetImplementedRoutedEventsForType(GetType());
+			var implementedEvents = GetImplementedRoutedEvents();
 
 			if (implementedEvents.HasFlag(RoutedEventFlag.BringIntoViewRequested))
 			{
@@ -148,11 +148,11 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal static RoutedEventFlag GetImplementedRoutedEventsForType(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-			Type type)
+		internal RoutedEventFlag GetImplementedRoutedEvents()
 		{
-			if (UIElementGeneratedProxy.TryGetImplementedRoutedEvents(type, out var result))
+			var type = GetType();
+
+			if (UIElementGeneratedProxy.TryGetImplementedRoutedEvents(GetType(), out var result))
 			{
 				return result;
 			}
@@ -166,11 +166,11 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				implementedRoutedEvents = EvaluateImplementedUIElementRoutedEvents(type);
+				implementedRoutedEvents = EvaluateImplementedUIElementRoutedEvents();
 
-				if (typeof(Control).IsAssignableFrom(type))
+				if (this is Control c)
 				{
-					implementedRoutedEvents |= Control.EvaluateImplementedControlRoutedEvents(type);
+					implementedRoutedEvents |= c.EvaluateImplementedControlRoutedEvents();
 				}
 			}
 
@@ -179,13 +179,11 @@ namespace Microsoft.UI.Xaml
 			return implementedRoutedEvents;
 		}
 
-		internal static RoutedEventFlag EvaluateImplementedUIElementRoutedEvents(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-			Type type)
+		internal RoutedEventFlag EvaluateImplementedUIElementRoutedEvents()
 		{
 			RoutedEventFlag result = RoutedEventFlag.None;
 
-			if (GetIsEventOverrideImplemented(type, nameof(OnBringIntoViewRequested), _bringIntoViewRequestedArgs))
+			if (GetIsEventOverrideImplemented(OnBringIntoViewRequested))
 			{
 				result |= RoutedEventFlag.BringIntoViewRequested;
 			}
@@ -198,20 +196,14 @@ namespace Microsoft.UI.Xaml
 			InvalidateMeasure();
 		}
 
-		private protected static bool GetIsEventOverrideImplemented(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-			Type type,
-			string name,
-			Type[] args)
+		private protected static bool GetIsEventOverrideImplemented<T>(Action<T> action)
 		{
-			var method = type
-				.GetMethod(
-					name,
-					BindingFlags.NonPublic | BindingFlags.Instance,
-					null,
-					args,
-					null);
+			return GetIsEventOverrideImplemented((Delegate)action);
+		}
 
+		private protected static bool GetIsEventOverrideImplemented(Delegate d)
+		{
+			var method = d.Method;
 			return method != null
 				&& method.IsVirtual
 				&& method.DeclaringType != typeof(UIElement)
@@ -489,6 +481,74 @@ namespace Microsoft.UI.Xaml
 			=> _renderTransform?.UpdateOrigin(origin);
 		#endregion
 
+#if __SKIA__
+		#region Projection Dependency Property
+
+		private Media.Projection _projection;
+
+		/// <summary>
+		/// Gets or sets the perspective projection (3-D effect) to apply when rendering this element.
+		/// </summary>
+		public Media.Projection Projection
+		{
+			get => GetProjectionValue();
+			set => SetProjectionValue(value);
+		}
+
+		/// <summary>
+		/// Backing dependency property for <see cref="Projection"/>
+		/// </summary>
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
+		public static DependencyProperty ProjectionProperty { get; } = CreateProjectionProperty();
+
+		private void OnProjectionChanged(Media.Projection oldValue, Media.Projection newValue)
+		{
+			if (oldValue is not null)
+			{
+				oldValue.Changed -= OnProjectionPropertyChanged;
+				oldValue.Owner = null;
+			}
+
+			_projection = newValue;
+
+			if (newValue is not null)
+			{
+				newValue.Owner = this;
+				newValue.Changed += OnProjectionPropertyChanged;
+			}
+
+			// Update the visual transform
+			UpdateProjection();
+		}
+
+		private void OnProjectionPropertyChanged(object sender, EventArgs e)
+		{
+			UpdateProjection();
+		}
+
+		private void UpdateProjection()
+		{
+			// Trigger a transform update through the render transform adapter
+			// The adapter will combine RenderTransform with Projection
+			if (_renderTransform is not null)
+			{
+				_renderTransform.UpdateSize(_renderTransform.CurrentSize);
+			}
+			else if (_projection is not null)
+			{
+				// Create a minimal adapter to apply the projection
+				_renderTransform = new Uno.UI.Media.NativeRenderTransformAdapter(this, RenderTransform, RenderTransformOrigin);
+			}
+		}
+
+		/// <summary>
+		/// Gets the current projection for internal use.
+		/// </summary>
+		internal Media.Projection GetProjection() => _projection;
+
+		#endregion
+#endif
+
 		/// <summary>
 		/// Attempts to set the focus on the UIElement.
 		/// </summary>
@@ -733,27 +793,32 @@ namespace Microsoft.UI.Xaml
 		{
 			if (newValue != null)
 			{
-				RightTapped += OpenContextFlyout;
-			}
-			else
-			{
-				RightTapped -= OpenContextFlyout;
+				// Enable gesture recognition for context menu (RightTap for mouse/pen, Hold for touch).
+				// This ensures the GestureRecognizer is created and configured to detect these gestures,
+				// which then raise ContextRequested via ContextMenuProcessor.
+				EnableContextMenuGestures();
+
+				// Propagate VisualTree to the flyout (matches WinUI IsVisualTreeProperty behavior
+				// where EnterEffectiveValue calls Enter on the new value).
+				if (this.GetVisualTree() is { } visualTree)
+				{
+					newValue.SetVisualTree(visualTree);
+				}
 			}
 		}
 
-		private void OpenContextFlyout(object sender, RightTappedRoutedEventArgs args)
-		{
-			if (this is FrameworkElement fe)
-			{
-				ContextFlyout?.ShowAt(
-					placementTarget: fe,
-					showOptions: new FlyoutShowOptions()
-					{
-						Position = args.GetPosition(this)
-					}
-				);
-			}
-		}
+		partial void EnableContextMenuGestures();
+
+		/// <summary>
+		/// Enables gesture recognition for context menu (RightTap for mouse/pen, Hold for touch).
+		/// This ensures the GestureRecognizer is created and configured to detect these gestures,
+		/// which then raise ContextRequested via ContextMenuProcessor.
+		/// </summary>
+		/// <remarks>
+		/// This method is useful for text controls like TextBlock that get their default ContextFlyout
+		/// via GetDefaultValue (which doesn't trigger OnContextFlyoutChanged).
+		/// </remarks>
+		private protected void EnsureContextMenuGesturesEnabled() => EnableContextMenuGestures();
 
 		internal bool IsRenderingSuspended { get; set; }
 
@@ -862,7 +927,6 @@ namespace Microsoft.UI.Xaml
 			var tracingThisCall = false;
 			for (var i = MaxLayoutIterations; i > 0; i--)
 			{
-#if HAS_UNO_WINUI
 				if (i <= 10 && Application.Current is { DebugSettings.LayoutCycleTracingLevel: not LayoutCycleTracingLevel.None })
 				{
 					_traceLayoutCycle = true;
@@ -872,7 +936,6 @@ namespace Microsoft.UI.Xaml
 						typeof(UIElement).Log().LogWarning($"[LayoutCycleTracing] Low on countdown ({i}).");
 					}
 				}
-#endif
 
 				if (root.IsMeasureDirtyOrMeasureDirtyPath)
 				{
@@ -1426,11 +1489,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Gets or sets the cursor that displays when the pointer is over this element. Defaults to null, indicating no change to the cursor.
 		/// </summary>
-#if HAS_UNO_WINUI
 		protected InputCursor ProtectedCursor
-#else
-		private protected Microsoft.UI.Input.InputCursor ProtectedCursor
-#endif
 		{
 			get => _protectedCursor;
 			set

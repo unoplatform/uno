@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetControlledPeers()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetAnnotations()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.SetParent(Microsoft.UI.Xaml.Automation.Peers.AutomationPeer)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RaiseTextEditTextChangedEvent(global::Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType automationTextEditChangeType, global::System.Collections.Generic.IReadOnlyList<string> changedData)
 		{
@@ -61,7 +61,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetPositionInSet()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetSizeOfSet()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetLevel()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RaiseStructureChangedEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationStructureChangeType structureChangeType, global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer child)
 		{
@@ -73,7 +73,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.IsPeripheral()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.IsDataValidForForm()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetFullDescription()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int GetCulture()
 		{
@@ -89,7 +89,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetHeadingLevel()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.IsDialog()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer PeerFromProvider(global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple provider)
 		{
@@ -139,21 +139,21 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.IsDataValidForFormCore()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetFullDescriptionCore()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetDescribedByCore()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer> GetFlowsToCore()
 		{
 			throw new global::System.NotImplementedException("The member IEnumerable<AutomationPeer> AutomationPeer.GetFlowsToCore() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerable%3CAutomationPeer%3E%20AutomationPeer.GetFlowsToCore%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer> GetFlowsFromCore()
 		{
 			throw new global::System.NotImplementedException("The member IEnumerable<AutomationPeer> AutomationPeer.GetFlowsFromCore() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerable%3CAutomationPeer%3E%20AutomationPeer.GetFlowsFromCore%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual int GetCultureCore()
 		{
@@ -163,7 +163,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetHeadingLevelCore()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.IsDialogCore()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.ListenerExists(Microsoft.UI.Xaml.Automation.Peers.AutomationEvents)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId GenerateRawElementProviderRuntimeId()
 		{

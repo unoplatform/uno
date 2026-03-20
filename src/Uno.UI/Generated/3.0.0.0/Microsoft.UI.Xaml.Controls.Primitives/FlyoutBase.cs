@@ -70,16 +70,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 		// Skipping already declared property AllowFocusWhenDisabled
 		// Skipping already declared property AllowFocusOnInteraction
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool InputDevicePrefersPrimaryCommands
-		{
-			get
-			{
-				return (bool)this.GetValue(InputDevicePrefersPrimaryCommandsProperty);
-			}
-		}
-#endif
+		// Skipping already declared property InputDevicePrefersPrimaryCommands
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsConstrainedToRootBounds
@@ -125,14 +116,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.ElementSoundMode)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty InputDevicePrefersPrimaryCommandsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(InputDevicePrefersPrimaryCommands), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property InputDevicePrefersPrimaryCommandsProperty
 		// Skipping already declared property IsOpenProperty
 		// Skipping already declared property LightDismissOverlayModeProperty
 		// Skipping already declared property OverlayInputPassThroughElementProperty

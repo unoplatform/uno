@@ -42,6 +42,7 @@ internal sealed partial class WindowChrome : ContentControl
 
 	public WindowChrome(Microsoft.UI.Xaml.Window parent)
 	{
+		_window = parent;
 		DefaultStyleKey = typeof(WindowChrome);
 
 		HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Stretch;
@@ -55,7 +56,6 @@ internal sealed partial class WindowChrome : ContentControl
 		parent.AppWindow.TitleBar.Changed += OnTitleBarChanged;
 		parent.Activated += OnActivate;
 		Loaded += OnLoaded;
-		_window = parent;
 	}
 
 	private void OnTitleBarChanged(object? sender, EventArgs e)
@@ -219,6 +219,9 @@ internal sealed partial class WindowChrome : ContentControl
 
 			SetTooltip(m_tpMaximizeButtonPart, IsWindowMaximized() ? ToolTipRestore : ToolTipMaximize);
 		}
+
+		ConfigureWindowChrome();
+		ResizeCaptionButtons();
 	}
 
 	private void SetTooltip(DependencyObject element, string resourceStringID)

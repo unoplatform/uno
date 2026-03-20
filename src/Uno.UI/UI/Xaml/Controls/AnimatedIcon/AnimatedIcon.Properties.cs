@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference AnimatedIcon.properties.cpp, commit f4d781d
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -45,8 +46,16 @@ namespace Microsoft.UI.Xaml.Controls
 			@object.SetValue(StateProperty, value);
 		}
 
-		public static DependencyProperty StateProperty { get; } =
-			DependencyProperty.RegisterAttached("State", typeof(string), typeof(AnimatedIcon), new FrameworkPropertyMetadata(string.Empty, OnAnimatedIconStatePropertyChanged));
+		public static DependencyProperty StateProperty
+		{
+			[DynamicDependency(nameof(GetState))]
+			[DynamicDependency(nameof(SetState))]
+			get;
+		} = DependencyProperty.RegisterAttached(
+				"State",
+				typeof(string),
+				typeof(AnimatedIcon),
+				new FrameworkPropertyMetadata(string.Empty, OnAnimatedIconStatePropertyChanged));
 
 		private static void OnFallbackIconSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{

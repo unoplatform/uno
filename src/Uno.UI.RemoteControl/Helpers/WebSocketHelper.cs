@@ -70,20 +70,19 @@ public static class WebSocketHelper
 				}
 			}
 		}
-		catch (IOException ex)
+		catch (Exception ex) when (ex is IOException or WebSocketException)
 		{
 #if IS_DEVSERVER
 			var log = Uno.Extensions.LogExtensionPoint.Log(typeof(Frame));
-			if (log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
 			{
-				ex.ToString();
-				Microsoft.Extensions.Logging.LoggerExtensions.LogDebug(log, "Connection reset by peer.");
+				Microsoft.Extensions.Logging.LoggerExtensions.LogInformation(log, "Connection reset by peer.");
 			}
 #else // Client
 			var log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(Frame));
-			if (log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			if (log.IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
 			{
-				log.LogDebug("Connection reset by peer.", ex);
+				log.LogInfo("Connection reset by peer.", ex);
 			}
 #endif
 			return null; // Connection reset by peer, no need to report this.

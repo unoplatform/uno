@@ -29,10 +29,6 @@ using static Uno.UI.Helpers.WinUI.CppWinRTHelpers;
 using CompositionTarget = Microsoft.UI.Xaml.Media.CompositionTarget;
 using Microsoft.UI.Composition;
 
-#if !HAS_UNO_WINUI
-using Windows.UI.Xaml.Automation.Peers;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class TeachingTip : ContentControl

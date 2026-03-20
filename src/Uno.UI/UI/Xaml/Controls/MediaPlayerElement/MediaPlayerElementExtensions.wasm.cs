@@ -1,11 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public static class MediaPlayerElementExtensions
 {
-	public static DependencyProperty AnonymousCORSProperty { get; } =
-	DependencyProperty.RegisterAttached(
+	public static DependencyProperty AnonymousCORSProperty
+	{
+		[DynamicDependency(nameof(SetAnonymousCORS))]
+		get;
+	} = DependencyProperty.RegisterAttached(
 		"AnonymousCORS",
 		typeof(bool),
 		typeof(MediaPlayerElementExtensions),

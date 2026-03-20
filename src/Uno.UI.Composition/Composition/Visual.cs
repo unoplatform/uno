@@ -14,6 +14,7 @@ namespace Microsoft.UI.Composition
 	{
 		private Vector2 _size;
 		private Vector3 _offset;
+		private Vector3 _arrangeOffset;
 		private Vector3 _scale = new Vector3(1, 1, 1);
 		private Vector3 _centerPoint;
 		private Quaternion _orientation = Quaternion.Identity;
@@ -56,6 +57,20 @@ namespace Microsoft.UI.Composition
 		}
 
 		partial void OnOffsetChanged(Vector3 value);
+
+		internal Vector3 ArrangeOffset
+		{
+			get => _arrangeOffset;
+			set
+			{
+				if (SetProperty(ref _arrangeOffset, value))
+				{
+					OnArrangeOffsetChanged(value);
+				}
+			}
+		}
+
+		partial void OnArrangeOffsetChanged(Vector3 value);
 
 		public bool IsVisible
 		{

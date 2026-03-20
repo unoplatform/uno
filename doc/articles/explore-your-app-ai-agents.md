@@ -4,9 +4,7 @@ uid: Uno.BuildYourApp.AI.Agents
 
 # Prompting in your App
 
-Once you have a running app, you're setup to have your agent help you develop features.
-
-In the agent chat, ask the following:
+Now that you've created your Uno Platform app, you're setup to have your agent help you develop features. In the agent chat, ask the following:
 
   > [!IMPORTANT]
   > The MCP tools are best used by agents when using premium models like Claude 4.5, GPT-5-Codex or GPT-5.
@@ -21,7 +19,7 @@ Your AI agent will act and use the tools provided by Uno Platform.
 
 ## Using the MCP tools
 
-Uno Platform provides two **[MCPs](https://modelcontextprotocol.io/docs/getting-started/intro)(Model Context Protocol)**, the **Remote Uno MCP** and the **Local App MCP**.
+Uno Platform provides two **[MCP](https://modelcontextprotocol.io/docs/getting-started/intro) (Model Context Protocol) servers**, the **Remote Uno MCP** and the **Local App MCP**.
 
 For more detailed information, you can read further on [the tools offered by Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
 
@@ -53,6 +51,10 @@ In your agent, there are some phrases that can be used to nudge the agent to use
 
 > [!NOTE]
 > Your agent will execute tools from our MCPs, you will need to approve them at your convenience.
+> [!NOTE]
+> In Visual Studio 2022/2026 MCPs might not be enabled automatically. Make sure to [click the "tools" icon](https://learn.microsoft.com/en-us/visualstudio/ide/mcp-servers?view=vs-2022#configuration-example-with-a-github-mcp-server) in the chat window to check both Uno Platform MCPs.
+>
+> If the Uno App MCP is missing, see [how to make the App MCP appear in Visual Studio](xref:Uno.UI.CommonIssues.AIAgents#the-app-mcp-does-not-appear-in-visual-studio).
 
 - To ask the agent to explain what MVUX is:
 
@@ -97,8 +99,11 @@ In your agent, there are some phrases that can be used to nudge the agent to use
 - To create a more specialized Uno Platform agent:
 
     ```text
-    /init
+    /mcp.uno.init
     ```
+
+    > [!NOTE]
+    > The default command is `/mcp.uno.init`, but depending on the agent you are using, it might be named differently (such as `/uno.init`).
 
     Which primes the agent with Uno Platform's best practices.
 
@@ -109,3 +114,7 @@ In your agent, there are some phrases that can be used to nudge the agent to use
     ```
 
 All those phrases will hint the model to use one or more of the tools to answer your request.
+
+## Troubleshooting MCP Servers
+
+You can find additional information about [troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents) in our docs.

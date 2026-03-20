@@ -1,36 +1,26 @@
 ﻿namespace Uno.UI.Runtime.Skia {
 	export class BrowserKeyboardInputSource {
 		private static _exports: any;
+		private static _source: any;
 		
-		public static async initialize(inputSource: any): Promise<any> {
-			const module = <any>window.Module;
-			if (BrowserKeyboardInputSource._exports == undefined
-				&& module.getAssemblyExports !== undefined) {
-					
-				const browserExports = (await module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser"));
-
+		public static initialize(inputSource: any): any {
+			if (BrowserKeyboardInputSource._exports == undefined) {
+				const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
 				BrowserKeyboardInputSource._exports = browserExports.Uno.UI.Runtime.Skia.BrowserKeyboardInputSource;
 			}
 
-			return new BrowserKeyboardInputSource(inputSource);
+			BrowserKeyboardInputSource._source = inputSource;
+			BrowserKeyboardInputSource.subscribeKeyboardEvents();
 		}
 
-		private _source: any;
-
-		private constructor(managedSource: any) {
-			this._source = managedSource;
-
-			this.subscribeKeyboardEvents();
+		private static subscribeKeyboardEvents() {
+			document.addEventListener("keydown", BrowserKeyboardInputSource.onKeyboardEvent);
+			document.addEventListener("keyup", BrowserKeyboardInputSource.onKeyboardEvent);
 		}
 
-		private subscribeKeyboardEvents() {
-			document.addEventListener("keydown", this.onKeyboardEvent.bind(this));
-			document.addEventListener("keyup", this.onKeyboardEvent.bind(this));
-		}
-
-		private onKeyboardEvent(evt: KeyboardEvent): void {
+		private static onKeyboardEvent(evt: KeyboardEvent): void {
 			let result = BrowserKeyboardInputSource._exports.OnNativeKeyboardEvent(
-				this._source,
+				BrowserKeyboardInputSource._source,
 				evt.type == "keydown",
 				evt.ctrlKey,
 				evt.shiftKey,

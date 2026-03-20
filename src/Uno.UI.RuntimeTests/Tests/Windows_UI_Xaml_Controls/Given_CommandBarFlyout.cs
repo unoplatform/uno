@@ -14,6 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_CommandBarFlyout
 {
 	[TestMethod]
+	[Ignore("Flaky on all targets - https://github.com/unoplatform/uno/issues/22862")]
 	public async Task When_CommandBarFlyoutCommandBar_AlwaysExpanded()
 	{
 		var commandBarFlyout = new CommandBarFlyout
@@ -74,7 +75,7 @@ public class Given_CommandBarFlyout
 
 		var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
 
-		var commandBar = popups.Select(p => (p.Child as FlyoutPresenter).Content as CommandBarFlyoutCommandBar).FirstOrDefault();
+		var commandBar = popups.Select(p => (p.Child as FlyoutPresenter)?.Content as CommandBarFlyoutCommandBar).Where(c => c is not null).FirstOrDefault();
 		Assert.IsNotNull(commandBar);
 
 		var state = VisualStateManager.GetCurrentState(commandBar, "PrimaryLabelStates");

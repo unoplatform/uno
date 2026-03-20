@@ -1,9 +1,13 @@
 ﻿using System;
+using DirectUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI;
+using Uno.UI.Xaml.Core;
 using Windows.System;
+using Windows.UI;
+
 
 #if __APPLE_UIKIT__
 using UIKit;
@@ -20,6 +24,8 @@ public partial class ToolTipService
 	private static uint m_LastEnteredFrameId;
 	private static DispatcherTimer m_OpenTimer;
 	private static DispatcherTimer m_CloseTimer;
+
+	private static AutomaticToolTipInputMode s_lastEnterInputMode = AutomaticToolTipInputMode.Mouse;
 
 	private static void RegisterToolTip(
 		DependencyObject owner,
@@ -88,7 +94,7 @@ public partial class ToolTipService
 		}
 	}
 
-	private static void OpenToolTipImpl(ToolTip toolTip)
+	private static void OpenToolTipImpl(ToolTip toolTip, AutomaticToolTipInputMode mode)
 	{
 		if (m_CurrentToolTip is { })
 		{
@@ -96,12 +102,24 @@ public partial class ToolTipService
 			CloseToolTipImpl(m_CurrentToolTip);
 		}
 
+		s_lastEnterInputMode = mode;
+
 		if (toolTip is { })
 		{
 			m_CurrentToolTip = toolTip;
 
 			m_OpenTimer.Start();
 			m_CloseTimer?.Stop();
+		}
+	}
+
+	private static void EnsureOpenTimer()
+	{
+		if (m_OpenTimer is null)
+		{
+			m_OpenTimer = new DispatcherTimer();
+			m_OpenTimer.Interval = TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay);
+			m_OpenTimer.Tick += OnOpenTimerTick;
 		}
 	}
 
@@ -126,6 +144,7 @@ public partial class ToolTipService
 
 		if (m_CurrentToolTip is { })
 		{
+			m_CurrentToolTip.m_inputMode = s_lastEnterInputMode;
 			m_CurrentToolTip.IsOpen = true;
 		}
 
@@ -184,8 +203,11 @@ public partial class ToolTipService
 		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
 		{
 			owner.PointerEntered += OnPointerEntered;
-			owner.PointerExited += OnPointerExited;
-			owner.Tapped += OnTapped;
+			owner.GotFocus += OnGotFocus;
+			owner.PointerExited += OnPointerOutOrLostFocus;
+			owner.PointerCaptureLost += OnPointerOutOrLostFocus;
+			owner.PointerCanceled += OnPointerOutOrLostFocus;
+			owner.LostFocus += OnPointerOutOrLostFocus;
 			owner.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
 			if (owner is ButtonBase)
 			{
@@ -206,15 +228,45 @@ public partial class ToolTipService
 			CloseToolTipImpl(toolTip);
 
 			owner.PointerEntered -= OnPointerEntered;
-			owner.PointerExited -= OnPointerExited;
-			owner.Tapped -= OnTapped;
-			owner.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			owner.GotFocus -= OnGotFocus;
+			owner.PointerExited -= OnPointerOutOrLostFocus;
+			owner.PointerCaptureLost -= OnPointerOutOrLostFocus;
+			owner.PointerCanceled -= OnPointerOutOrLostFocus;
+			owner.LostFocus -= OnPointerOutOrLostFocus;
+			owner.RemoveHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown));
 			if (owner is ButtonBase)
 			{
 				owner.RemoveHandler(UIElement.PointerPressedEvent, new PointerEventHandler(OnPointerPressed));
 			}
 			toolTip.OwnerVisibilitySubscription?.Dispose();
 			toolTip.OwnerVisibilitySubscription = null;
+		}
+	}
+
+	private static void OnGotFocus(object sender, RoutedEventArgs e)
+	{
+		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
+		{
+			if (toolTip.IsOpen)
+			{
+				return;
+			}
+
+			ContentRoot contentRoot = VisualTree.GetContentRootForElement(owner);
+
+			var focusState = contentRoot?.FocusManager.GetRealFocusStateForFocusedElement();
+
+			// If the source of a programmatic focus was UIA, we should show the tooltip:
+			bool shouldShowToolTip = (focusState == FocusState.Keyboard) ||
+									 (focusState == FocusState.Programmatic
+										&& sender is not null
+										&& contentRoot?.InputManager?.GetWasUIAFocusSetSinceLastInput() == true);
+
+			if (shouldShowToolTip)
+			{
+				EnsureOpenTimer();
+				OpenToolTipImpl(toolTip, AutomaticToolTipInputMode.Keyboard);
+			}
 		}
 	}
 
@@ -229,26 +281,13 @@ public partial class ToolTipService
 		{
 			if (toolTip.IsOpen) return;
 
-			if (m_OpenTimer is null)
-			{
-				m_OpenTimer = new DispatcherTimer();
-				m_OpenTimer.Interval = TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay);
-				m_OpenTimer.Tick += OnOpenTimerTick;
-			}
+			EnsureOpenTimer();
 			m_LastEnteredFrameId = e.FrameId;
-			OpenToolTipImpl(toolTip);
+			OpenToolTipImpl(toolTip, e.Pointer.PointerDeviceType == UI.Input.PointerDeviceType.Touch ? AutomaticToolTipInputMode.Touch : AutomaticToolTipInputMode.Mouse);
 		}
 	}
 
-	private static void OnPointerExited(object sender, PointerRoutedEventArgs e)
-	{
-		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
-		{
-			CloseToolTipImpl(toolTip);
-		}
-	}
-
-	private static void OnTapped(object sender, TappedRoutedEventArgs e)
+	private static void OnPointerOutOrLostFocus(object sender, object e)
 	{
 		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
 		{

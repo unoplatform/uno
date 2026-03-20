@@ -23,6 +23,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Include="..\..\Uno.Foundation\Internals\BindableAttribute.cs">
+			<Link>XamlGenerator\XamlPathParser\BindableAttribute.cs</Link>
+		</Compile>
 		<Compile Include="..\..\Uno.Foundation\Point.cs">
 			<Link>XamlGenerator\XamlPathParser\Point.cs</Link>
 		</Compile>

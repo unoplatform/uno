@@ -10,23 +10,43 @@
 
 	<Import Project="uno.ui.tasks.assets.targets"/>
 
-	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" />
-	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" />
-	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.EmbeddedResourceInjector.EmbeddedResourceInjectorTask_v0" TaskFactory="TaskHostFactory" />
+	<!--
+		These core tasks always run through TaskHostFactory to avoid loading Uno.UI.Tasks.v0.dll
+		into long-lived MSBuild nodes directly.
+		Runtime/Architecture are pinned to Current* so TaskHostFactory uses the active dotnet host
+		instead of inferring a CLR4 task host path (MSBuild.exe), which is not present under dotnet SDK layouts.
+	-->
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.BindableTypeLinkerGeneratorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.EmbeddedResourceInjector.EmbeddedResourceInjectorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
 
+	<!--
+		When consuming Uno from NuGet (outside the Uno repository), prefer default in-proc task loading.
+		The package payload is immutable during the build, so this keeps task startup overhead lower.
+	-->
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriFeaturesGeneratorTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriSubstitutionsGeneratorTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsSelector.RuntimeAssetsSelectorTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsValidator.RuntimeAssetsValidatorTask_v0" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.HotReloadInfo.HotReloadInfoTask_v0" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="BatchMergeXaml" />
 
-	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" TaskFactory="TaskHostFactory"/>
-	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriFeaturesGeneratorTask_v0" TaskFactory="TaskHostFactory"/>
-	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriSubstitutionsGeneratorTask_v0" TaskFactory="TaskHostFactory" />
-	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" TaskFactory="TaskHostFactory" />
-	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsSelector.RuntimeAssetsSelectorTask_v0" TaskFactory="TaskHostFactory" />
-	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsValidator.RuntimeAssetsValidatorTask_v0" TaskFactory="TaskHostFactory" />
+	<!--
+		Inside the Uno repo, run the remaining tasks out-of-proc as well so repeated local builds can
+		update Uno.UI.Tasks.v0.dll without requiring full build server shutdown between iterations.
+		Keep Runtime/Architecture explicit for the same host-selection reason as above.
+	-->
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriFeaturesGeneratorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriSubstitutionsGeneratorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsSelector.RuntimeAssetsSelectorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsValidator.RuntimeAssetsValidatorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.HotReloadInfo.HotReloadInfoTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="BatchMergeXaml" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
 
 	<Target Name="_UnoLangSetup">
 		<!-- String resources -->
@@ -405,14 +425,11 @@
 			   Condition="'$(_UnoWasmBootstrapVersionString)'!='' and '$(_UnoWasmBootstrapVersionString.Split(`-`)[0])'&lt;'3.0'"/>
 	</Target>
 
-	<!--
-    Warn when the task is executed in devenv.exe: https://github.com/dotnet/project-system/issues/4494
-    -->
-
+	<!-- Warn when the task is executed in devenv.exe: https://github.com/dotnet/project-system/issues/4494 -->
 	<UsingTask
-  TaskName="CheckForDevenv"
-  TaskFactory="CodeTaskFactory"
-  AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" >
+		TaskName="CheckForDevenv"
+		TaskFactory="CodeTaskFactory"
+		AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" >
 		<ParameterGroup />
 		<Task>
 			<Reference Include="System.Xml"/>
@@ -428,5 +445,51 @@
 			</Code>
 		</Task>
 	</UsingTask>
+
+	<Target
+		Name="_GenerateHotReloadInfo"
+		BeforeTargets="BeforeCompile"
+		Condition="'$(UnoGenerateHotReloadInfo)' == 'True'">
+
+		<HotReloadInfoTask_v0
+			IntermediateOutputPath="$(IntermediateOutputPath)">
+			<Output
+				TaskParameter="GeneratedFiles"
+				ItemName="_HotReloadInfoTaskGeneratedFiles" />
+		</HotReloadInfoTask_v0>
+
+		<ItemGroup>
+			<Compile Include="@(_HotReloadInfoTaskGeneratedFiles)" />
+		</ItemGroup>
+	</Target>
+
+	<!--
+	  Generate linker descriptor for [Bindable] types to preserve public properties in Native AOT
+	  -->
+	<Target Name="_UnoGenerateBindableTypeLinkerDescriptor"
+			Condition="'$(IsUnoHead)'=='true' and '$(PublishAot)'=='true'"
+			AfterTargets="CoreCompile"
+			BeforeTargets="PrepareForILLink">
+
+		<ItemGroup>
+			<!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
+			<_BindableTypeLinkerReferencePaths Include="@(ReferencePath)" Condition="'%(Extension)' == '.dll'" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<_BindableTypeLinkerDescriptorFile>$(IntermediateOutputPath)Uno.Bindable.Descriptor.xml</_BindableTypeLinkerDescriptorFile>
+		</PropertyGroup>
+
+		<BindableTypeLinkerGeneratorTask_v0
+			AssemblyPath="@(IntermediateAssembly)"
+			OutputDescriptorPath="$(_BindableTypeLinkerDescriptorFile)"
+			ReferencePath="@(_BindableTypeLinkerReferencePaths)" />
+
+		<ItemGroup>
+			<TrimmerRootDescriptor Include="$(_BindableTypeLinkerDescriptorFile)" Condition="Exists('$(_BindableTypeLinkerDescriptorFile)')" />
+			<FileWrites Include="$(_BindableTypeLinkerDescriptorFile)" Condition="Exists('$(_BindableTypeLinkerDescriptorFile)')" />
+		</ItemGroup>
+
+	</Target>
 
 </Project>

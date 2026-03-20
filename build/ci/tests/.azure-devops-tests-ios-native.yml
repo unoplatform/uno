@@ -99,7 +99,7 @@ jobs:
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish iOS Binaries'
-    retryCountOnTaskFailure: 3
+    retryCountOnTaskFailure: 10
     inputs:
       targetPath: $(build.artifactstagingdirectory)/bin
       ArtifactName: ios-uitest-build
@@ -107,7 +107,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: 'Publish iOS build logs'
     condition: always()
-    retryCountOnTaskFailure: 3
+    retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)/logs
       ArtifactName: ios-uitest-build-logs

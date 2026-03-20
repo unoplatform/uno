@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,7 +20,7 @@ using Microsoft.UI.Xaml.Navigation;
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
 
-	[SampleControlInfo("ListView", nameof(ListView_ItemsPanel_HotSwap))]
+	[Sample("ListView", Name = nameof(ListView_ItemsPanel_HotSwap))]
 	public sealed partial class ListView_ItemsPanel_HotSwap : UserControl
 	{
 		private readonly Random random = new Random(312);

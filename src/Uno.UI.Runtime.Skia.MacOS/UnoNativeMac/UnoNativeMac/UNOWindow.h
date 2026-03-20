@@ -42,6 +42,7 @@ typedef NS_ENUM(sint32, OverlappedPresenterState) {
 @property OverlappedPresenterState overlappedPresenterState;
 
 - (void)sendEvent:(NSEvent *)event;
+- (BOOL)performKeyEquivalent:(NSEvent *)event;
 
 - (void)windowWillMiniaturize:(NSNotification *)notification;
 - (void)windowDidMiniaturize:(NSNotification *)notification;
@@ -51,6 +52,9 @@ typedef NS_ENUM(sint32, OverlappedPresenterState) {
 - (void)windowDidMove:(NSNotification *)notification;
 - (bool)windowShouldClose:(NSWindow *)sender;
 - (void)windowWillClose:(NSNotification *)notification;
+
+- (void) windowWillStartLiveResize:(NSNotification *) notification;
+- (void) windowDidEndLiveResize:(NSNotification *) notification;
 
 @end
 
@@ -76,6 +80,8 @@ void uno_window_minimize(NSWindow *window, bool activateWindow);
 void uno_window_restore(UNOWindow *window, bool activateWindow);
 
 bool uno_window_clip_svg(UNOWindow* window, const char* svg);
+
+void uno_window_resign_native_first_responder(UNOWindow* window);
 
 OverlappedPresenterState uno_window_get_overlapped_presenter_state(UNOWindow *window);
 

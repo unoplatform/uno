@@ -1,3 +1,4 @@
+using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
@@ -7,13 +8,20 @@ using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
-internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
+internal abstract class X11Renderer : IDisposable
 {
 	private int _renderCount;
 	private SKColor _background = SKColors.White;
-	private Size _lastSize;
 	private SKSurface? _surface;
 	private X11AirspaceRenderHelper? _airspaceHelper;
+	private readonly IXamlRootHost _host;
+	protected readonly X11Window _x11Window;
+
+	protected X11Renderer(IXamlRootHost host, X11Window x11Window)
+	{
+		_host = host;
+		_x11Window = x11Window;
+	}
 
 	public void SetBackgroundColor(SKColor color) => _background = color;
 
@@ -24,53 +32,35 @@ internal abstract class X11Renderer(IXamlRootHost host, X11Window x11Window)
 			this.Log().Trace($"Render {_renderCount++}");
 		}
 
-		var display = x11Window.Display;
-		var window = x11Window.Window;
+		var display = _x11Window.Display;
+		var window = _x11Window.Window;
 		using var lockDisposable = X11Helper.XLock(display);
 
-		if (host is X11XamlRootHost { Closed.IsCompleted: true })
-		{
-			return;
-		}
-
-		XWindowAttributes attributes = default;
-		_ = XLib.XGetWindowAttributes(display, window, ref attributes);
-		var width = attributes.width;
-		var height = attributes.height;
-
-		var newSize = new Size(width, height);
-
-		if (newSize.IsEmpty)
+		if (_host is X11XamlRootHost { Closed.IsCompleted: true })
 		{
 			return;
 		}
 
 		MakeCurrent();
 
-		if (_lastSize != newSize || _surface is null || _airspaceHelper is null)
-		{
-			_lastSize = newSize;
-			_surface?.Dispose();
-			_surface = UpdateSize(width, height, attributes.depth);
-			_airspaceHelper?.Dispose();
-			_airspaceHelper = new X11AirspaceRenderHelper(display, window, width, height);
-		}
-
-		var nativeElementClipPath = ((CompositionTarget)host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+		_surface?.Canvas.Clear(_background);
+		var nativeElementClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
 			_surface?.Dispose();
-			_surface = UpdateSize(width, height, attributes.depth);
+			_surface = UpdateSize((int)size.Width, (int)size.Height);
+			_surface.Canvas.Clear(_background);
 			_airspaceHelper?.Dispose();
-			_airspaceHelper = new X11AirspaceRenderHelper(display, window, width, height);
+			_airspaceHelper = new X11AirspaceRenderHelper(display, window, (int)size.Width, (int)size.Height);
 			return _surface.Canvas;
 		});
 
-		_airspaceHelper.XShapeClip(nativeElementClipPath);
+		_airspaceHelper?.XShapeClip(nativeElementClipPath);
 		Flush();
 		_ = XLib.XFlush(display);
 	}
 
-	protected abstract SKSurface UpdateSize(int width, int height, int depth);
+	protected abstract SKSurface UpdateSize(int width, int height);
 	protected virtual void MakeCurrent() { }
 	protected abstract void Flush();
+	public abstract void Dispose();
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.Popup
 {
-	[SampleControlInfo("Popup", nameof(Popup_HVAlignments), description: "Popup always opens at the top-left corner of their available \"zone\".\n This zone is can be visualized by placing a Grid next to the Popup with the same H&V-Alignement, Height/Width, Margin.")]
+	[Sample("Popup", Name = nameof(Popup_HVAlignments), Description = "Popup always opens at the top-left corner of their available \"zone\".\n This zone is can be visualized by placing a Grid next to the Popup with the same H&V-Alignement, Height/Width, Margin.")]
 	public sealed partial class Popup_HVAlignments : UserControl
 	{
 		public Popup_HVAlignments()

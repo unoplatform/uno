@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,11 @@ namespace Uno.UI.DataBinding
 		/// <summary>
 		/// This ctor is available for backward compatibility. On newer versions of Uno.UI, the BindableTypeProvidersSourceGenerator uses the single-parameter ctor
 		/// </summary>
-		public BindableProperty(Type propertyType, PropertyGetterHandler getter, PropertySetterHandler? setter)
+		public BindableProperty(
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
+			Type propertyType,
+			PropertyGetterHandler getter,
+			PropertySetterHandler? setter)
 		{
 			Getter = getter;
 			Setter = setter;
@@ -35,6 +40,7 @@ namespace Uno.UI.DataBinding
 
 		public PropertySetterHandler? Setter { get; }
 
+		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		public Type PropertyType { get; }
 
 		public DependencyProperty? DependencyProperty { get; }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net9.0</TargetFramework>
@@ -12,29 +12,51 @@
 		<NoWarn>$(NoWarn);CS1998</NoWarn>
 
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+
+		<!-- CI passes InformationalVersion from NBGV; default to dev for local builds -->
+		<InformationalVersion Condition="'$(InformationalVersion)' == ''">0.0.0-dev</InformationalVersion>
 	</PropertyGroup>
 	
 	<PropertyGroup>
 		<PackageId>Uno.DevServer</PackageId>
 		<PackageDescription>A dotnet tool to manage the devserver in a CLI environment</PackageDescription>
 		<Title>Uno Platform DevServer CLI tool</Title>
+		<PackageType>DotnetTool;McpServer</PackageType>
 	</PropertyGroup>
 	
 	<ItemGroup>
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+		<None Include=".mcp\server.json" Pack="true" PackagePath=".mcp\" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
-		<PackageReference Include="ModelContextProtocol" Version="0.3.0-preview.4" />
-		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.3.0-preview.4" />
+		<PackageReference Include="Microsoft.VisualStudio.SolutionPersistence" Version="1.0.52" />
+		<PackageReference Include="ModelContextProtocol" Version="1.1.0" />
+		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="1.1.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
+		<PackageReference Include="Spectre.Console" Version="0.49.1" />
 	</ItemGroup>
-	
+
+	<ItemGroup>
+		<!-- Linked from Host for controller bypass -->
+		<Compile Include="..\Uno.UI.RemoteControl.Host\AmbientRegistry.cs" Link="Mcp\AmbientRegistry.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\CsprojUserGenerator.cs" Link="Helpers\CsprojUserGenerator.cs" />
+	</ItemGroup>
+
 	<ItemGroup>
 	  <Folder Include="Services\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Mcp\Setup\ide-profiles.json" LogicalName="ide-profiles.json" />
+		<EmbeddedResource Include="Mcp\Setup\server-definitions.json" LogicalName="server-definitions.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Uno.UI.DevServer.Cli.Tests" />
 	</ItemGroup>
 </Project>

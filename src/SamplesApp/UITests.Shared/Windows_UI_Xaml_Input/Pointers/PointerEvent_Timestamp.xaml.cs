@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -18,10 +18,10 @@ using System.Collections.ObjectModel;
 
 namespace UITests.Shared.Windows_UI_Xaml_Input.Pointers
 {
-	[SampleControlInfo(
+	[Sample(
 		"Pointers",
 		Description =
-		"Click the red rectangle repeatedly. You should see tickmarks in the logs (✔️) indicating that time delta matches timestamp delta.",
+		"Click the red rectangle repeatedly. You should see tickmarks in the logs (??) indicating that time delta matches timestamp delta.",
 		IsManualTest = true)]
 	public sealed partial class PointerEvent_Timestamp : UserControl
 	{
@@ -52,14 +52,14 @@ namespace UITests.Shared.Windows_UI_Xaml_Input.Pointers
 			{
 				var timeDelta = (ulong)(time - _lastElapsedTime.Value);
 				var timestampDelta = (timestamp - _lastTimestamp.Value);
-				log += $"Time Δ: {timeDelta}";
+				log += $"Time ?: {timeDelta}";
 
 				// As long as the delta differs by less than 100ms, it probably is correct.
 				var seemsCorrect = Math.Abs((double)timeDelta - timestampDelta) < 50_000;
-				log += $", Timestamp Δ: {timestampDelta} {(seemsCorrect ? "✔️" : "❌")}";
+				log += $", Timestamp ?: {timestampDelta} {(seemsCorrect ? "??" : "?")}";
 
 				var frameIdDelta = frameId - _lastFrameId.Value;
-				log += $", FrameId Δ: {frameIdDelta}";
+				log += $", FrameId ?: {frameIdDelta}";
 			}
 			_lastElapsedTime = time;
 			_lastTimestamp = timestamp;

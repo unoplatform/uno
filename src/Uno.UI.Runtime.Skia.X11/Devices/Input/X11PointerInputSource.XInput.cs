@@ -610,9 +610,9 @@ internal partial class X11PointerInputSource
 			case XiEventType.XI_DeviceChanged:
 				{
 					var data = ev.GenericEventCookie.GetEvent<XIDeviceEvent>();
-					if (this.Log().IsEnabled(LogLevel.Error))
+					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().Error($"XI2 {evtype} EVENT: {data.event_x}x{data.event_y} {data.buttons}");
+						this.Log().Trace($"XI2 {evtype} EVENT: {data.event_x}x{data.event_y} {data.buttons}");
 					}
 					_deviceInfoCache.Remove(data.sourceid);
 					_valuatorValues.Remove(data.sourceid);

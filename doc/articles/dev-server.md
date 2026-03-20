@@ -37,10 +37,22 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `uno-devserver start`: Start the Dev Server for the current solution directory
 - `uno-devserver stop`: Stop the Dev Server attached to the current directory
 - `uno-devserver list`: List running Dev Server instances
+- `uno-devserver disco`: Inspect the environment — see [Diagnostics (disco)](xref:Uno.Features.DevServerDisco)
 - `uno-devserver cleanup`: Terminate stale Dev Server processes
 - `uno-devserver login`: Open the Uno Platform settings application
-- `--mcp`: Run an MCP proxy mode for integration with MCP-based tooling
+- `uno-devserver mcp status [<client>]`: Inspect Uno MCP registration state across supported clients
+- `uno-devserver mcp install <client> | --all-ides`: Register the Uno MCP entries for a supported client (or all detected clients)
+- `uno-devserver mcp uninstall <client> | --all-ides`: Remove the Uno MCP entries for a supported client (or all detected clients)
+
+  These commands accept additional flags: `--workspace`, `--channel`, `--tool-version`, `--servers`, `--all-scopes`, `--dry-run`, `--json`. When the target agent provides a CLI (Claude Code, Codex, Gemini), `mcp install` delegates to the agent's own `mcp add` command automatically, falling back to file-based registration when the CLI is not available. See [The Uno Platform MCPs — Command reference](xref:Uno.Features.Uno.MCPs) for details.
+- `--mcp-app`: Run an MCP proxy mode for integration with MCP-based tooling
 - `--port | -p <int>`: Optional port value for MCP proxy mode
+- `--mcp-wait-tools-list`: Wait for the upstream Uno App tools to become available before responding to clients. Use this when working with MCP agents that do not react to `tools/list_changed` (for example, Codex or Claude Code).
+- `--force-roots-fallback`: Skip the MCP `roots` handshake and expose the `uno_app_set_roots` tool so agents that cannot send workspace roots can still initialize (required for Google Antigravity).
+- `--force-generate-tool-cache`: Immediately request the Uno App tool list once the Dev Server is online and persist it to the local cache. Use this to prime CI environments or agents that expect a tools cache before they can call `list_tools`.
+- `--solution-dir <path>`: Explicit solution directory Uno.DevServer should monitor. Useful when starting the DevServer manually (e.g., CI agents) or when priming tools via `--force-generate-tool-cache`. Defaults to the current working directory when omitted.
+
+For more information about Uno MCP registration, native-client alternatives, and supported MCP workflows, see [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
 
 ## Hot Reload
 
@@ -63,10 +75,14 @@ The Dev Server enables Hot Reload for a faster inner loop:
 
 ### [**Common issues**](#tab/common-issues)
 
+> [!TIP]
+> Run `uno-devserver disco` to inspect your Dev Server environment at a glance.
+> Look for `<null>` values — they indicate missing components. See [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) for details.
+
 - The TCP port number used by the app to connect back to the IDE is located in the <UnoRemoteControlPort> property of the [ProjectName].csproj.user file. If the port number does not match with the one found in the Uno Platform - Hot Reload output window, restart your IDE.
 - If the Dev Server does not start, ensure NuGet restore has completed successfully and Uno Platform packages are referenced by your project(s).
 
-### [**Visual Studio 2022**](#tab/vswints)
+### [**Visual Studio**](#tab/vswints)
 
 - The Output window in Visual Studio includes an output category named `Uno Platform`. Diagnostic messages from the Uno Platform VS extension appear there. To enable logging, set MSBuild project build output verbosity to at least "Normal" (above "Minimal"). These changes should take effect immediately without a restart; if you do not see additional logs, try restarting Visual Studio. For more details on build log verbosity, refer to the [official Visual Studio documentation](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-view-save-and-configure-build-log-files?view=vs-2022#to-change-the-amount-of-information-included-in-the-build-log).  
 

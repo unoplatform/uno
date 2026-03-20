@@ -45,11 +45,7 @@ internal sealed class XmlnsDefinitionAttribute : Attribute
 
 internal static class XamlConstants
 {
-#if HAS_UNO_WINUI
 	public const string RootUINamespace = "Microsoft.UI";
-#else
-	public const string RootUINamespace = "Windows.UI";
-#endif
 
 	public const string WindowsUINamespace = "Windows.UI";
 

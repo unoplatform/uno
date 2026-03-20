@@ -1,11 +1,11 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Content.UITests.Flyout;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Flyout
 {
-	[SampleControlInfo("Flyouts", "Flyout_ButtonInContent", viewModelType: typeof(FlyoutButonViewModel))]
+	[Sample("Flyouts", Name = "Flyout_ButtonInContent", ViewModelType = typeof(FlyoutButonViewModel))]
 	public sealed partial class Flyout_ButtonInContent : Page
 	{
 		public Flyout_ButtonInContent()

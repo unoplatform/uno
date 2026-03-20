@@ -179,6 +179,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task VerifyVSMStatesForPhotosAndInitials()
 		{
 			PersonPicture personPicture = null;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfo("Brushes", "BorderImageBrush")]
+	[Sample("Brushes", Name = "BorderImageBrush")]
 	public sealed partial class BorderImageBrush : UserControl, IWaitableSample
 	{
 		private readonly Task _samplePreparedTask;

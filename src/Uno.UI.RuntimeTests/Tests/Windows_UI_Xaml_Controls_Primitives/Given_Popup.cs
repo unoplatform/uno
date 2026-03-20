@@ -1,11 +1,13 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Combinatorial.MSTest;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.PopupPages;
@@ -114,6 +116,144 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			popup.IsOpen = false;
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task VerifyBackButtonClosesLightDismissPopup()
+		{
+			Popup popup1 = null;
+
+			var popupOpenedEvent = new Event();
+			var popupClosedEvent = new Event();
+
+			var openedRegistration = CreateSafeEventRegistration<Popup, EventHandler<object>>("Opened");
+			var closedRegistration = CreateSafeEventRegistration<Popup, EventHandler<object>>("Closed");
+
+			await RunOnUIThread(() =>
+			{
+				var rootPanel = (StackPanel)(XamlReader.Load(
+					"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' Width='400' Height='400' >" +
+					"  <Popup x:Name='popup1' IsLightDismissEnabled='True' >" +
+					"    <Border Background='Red' Width='100' Height='100' />" +
+					"  </Popup>" +
+					"</StackPanel>"));
+
+				TestServices.WindowHelper.WindowContent = rootPanel;
+
+				popup1 = (Popup)(rootPanel.FindName("popup1"));
+
+				openedRegistration.Attach(popup1, (sender, e) =>
+				{
+					popupOpenedEvent.Set();
+				});
+
+				closedRegistration.Attach(popup1, (sender, e) =>
+				{
+					popupClosedEvent.Set();
+				});
+
+				popup1.IsOpen = true;
+			});
+
+			await popupOpenedEvent.WaitForDefault();
+
+			LOG_OUTPUT("Close the Light Dismiss enabled Popup using the Back button.");
+			bool backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
+			VERIFY_IS_TRUE(backButtonPressHandled);
+			await popupClosedEvent.WaitForDefault();
+
+			LOG_OUTPUT("After closing a Popup, further back button presses should not get handled");
+			backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
+			VERIFY_IS_FALSE(backButtonPressHandled);
+
+			await RunOnUIThread(() =>
+			{
+				popup1.IsLightDismissEnabled = false;
+				popup1.IsOpen = true;
+			});
+			await popupOpenedEvent.WaitForDefault();
+
+			LOG_OUTPUT("A Back button press should not dismiss a Popup that is not Light Dismiss enabled");
+			backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
+			VERIFY_IS_FALSE(backButtonPressHandled);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await RunOnUIThread(() =>
+			{
+				VERIFY_IS_TRUE(popup1.IsOpen);
+			});
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_NonLightDismiss_Popup_Does_Not_Register_BackListener()
+		{
+			var manager = Windows.UI.Core.SystemNavigationManager.GetForCurrentView();
+			bool hadHandlersBefore = manager.HasAnyBackHandlers;
+
+			var popup = new Popup
+			{
+				IsLightDismissEnabled = false,
+				Child = new Border { Width = 100, Height = 100 }
+			};
+			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
+
+			try
+			{
+				popup.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				// Non-light-dismiss popup should NOT register as a back listener
+				Assert.AreEqual(hadHandlersBefore, manager.HasAnyBackHandlers,
+					"HasAnyBackHandlers should not change for non-light-dismiss popup.");
+
+				// Back press should not be handled
+				bool handled = await TestServices.Utilities.InjectBackButtonPress();
+				Assert.IsFalse(handled, "Back press should not be handled by non-light-dismiss popup.");
+				Assert.IsTrue(popup.IsOpen, "Non-light-dismiss popup should remain open after back press.");
+			}
+			finally
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_LightDismiss_Popup_HasAnyBackHandlers_Transitions()
+		{
+			var manager = Windows.UI.Core.SystemNavigationManager.GetForCurrentView();
+
+			var popup = new Popup
+			{
+				IsLightDismissEnabled = true,
+				Child = new Border { Width = 100, Height = 100 }
+			};
+			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
+
+			try
+			{
+				var hadHandlersBefore = manager.HasAnyBackHandlers;
+
+				popup.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(manager.HasAnyBackHandlers,
+					"Should have handlers after light-dismiss popup opens.");
+
+				popup.IsOpen = false;
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(hadHandlersBefore, manager.HasAnyBackHandlers,
+					"Should return to the same state as before the popup was opened.");
+			}
+			finally
+			{
+				popup.IsOpen = false;
+			}
+		}
+#endif
+
 		[TestMethod]
 		public async Task When_Child_Logical_Parent_Is_Popup()
 		{
@@ -200,18 +340,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 			popup.IsOpen = true;
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 
 			stackPanel.Children.Remove(popup);
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(popup.IsOpen);
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 
 			popup.IsOpen = true;
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 
 			popup.IsOpen = false;
 		}
@@ -286,7 +426,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 			popup.IsOpen = true;
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 
 			await WindowHelper.WaitForIdle();
 
@@ -296,12 +436,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 			Assert.IsTrue(args.Handled);
 			Assert.IsFalse(popup.IsOpen);
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 
 			popup.IsOpen = true;
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 
 			popup.IsOpen = false;
 		}
@@ -316,11 +456,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			var trigger = new Button();
 			await UITestHelper.Load(trigger);
 
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 
 			menu.ShowAt(trigger);
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)[0];
 
 			menu.Closing += (_, e) => e.Cancel = true;
@@ -365,6 +505,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			}
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_Multiple_Popups_Opened_Order_Is_Most_Recent_First()
+		{
+			// This test validates that GetOpenPopupsForXamlRoot returns popups in order
+			// with the most recently opened popup at the head (index 0)
+			var popup1 = new Popup
+			{
+				Child = new Button { Content = "Popup 1" }
+			};
+			popup1.XamlRoot = WindowHelper.XamlRoot;
+
+			var popup2 = new Popup
+			{
+				Child = new Button { Content = "Popup 2" }
+			};
+			popup2.XamlRoot = WindowHelper.XamlRoot;
+
+			var popup3 = new Popup
+			{
+				Child = new Button { Content = "Popup 3" }
+			};
+			popup3.XamlRoot = WindowHelper.XamlRoot;
+
+			try
+			{
+				// Open popups in sequence: 1, 2, 3
+				popup1.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				popup2.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				popup3.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot);
+
+				// Verify count
+				Assert.HasCount(3, openPopups, "Should have 3 open popups");
+
+				// Verify order: most recently opened (popup3) should be first
+				Assert.AreSame(popup3, openPopups[0], "Most recently opened popup should be at index 0");
+				Assert.AreSame(popup2, openPopups[1], "Second most recently opened popup should be at index 1");
+				Assert.AreSame(popup1, openPopups[2], "First opened popup should be at index 2");
+			}
+			finally
+			{
+				popup1.IsOpen = false;
+				popup2.IsOpen = false;
+				popup3.IsOpen = false;
+			}
+		}
 
 		private static bool CanReach(DependencyObject startingElement, DependencyObject targetElement)
 		{

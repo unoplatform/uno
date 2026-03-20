@@ -1,10 +1,10 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
-	[SampleControlInfo("Image")]
+	[Sample("Image")]
 	public sealed partial class Image_Transforms : Page
 	{
 		public Image_Transforms()

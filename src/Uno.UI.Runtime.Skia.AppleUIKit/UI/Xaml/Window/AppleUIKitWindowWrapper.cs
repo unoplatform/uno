@@ -116,6 +116,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		var newWindowSize = GetWindowSize();
 
 		SetBoundsAndVisibleBounds(new Rect(default, newWindowSize), GetVisibleBounds(_nativeWindow, newWindowSize));
+		var size = new Windows.Graphics.SizeInt32((int)(newWindowSize.Width * RasterizationScale), (int)(newWindowSize.Height * RasterizationScale));
+		SetSizes(size, size);
 	}
 
 	private void ObserveOrientationAndSize()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace Uno.UI.Samples.Content.UITests.XBind
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("x:Bind", "Phase_Large")]
+	[Sample("x:Bind", Name = "Phase_Large")]
 	public sealed partial class PhaseBinding_Large : Page
 	{
 		public PhaseBinding_Large()

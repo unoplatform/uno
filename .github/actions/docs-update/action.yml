@@ -1,0 +1,39 @@
+name: "Docs Update"
+description: "Update external docs commit hashes to latest from default branches"
+
+inputs:
+  branch:
+    description: 'base branch'
+    required: true
+    default: 'master'
+
+outputs:
+  has_changes:
+    description: 'Whether changes were detected'
+    value: ${{ steps.check_changes.outputs.has_changes }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup PowerShell
+      shell: pwsh
+      run: |
+        Write-Host "Setting up environment for docs update..." -ForegroundColor Green
+
+    - name: Update external docs commit hashes
+      shell: pwsh
+      run: |
+        ./doc/update_external_docs_hashes.ps1 -Branch '${{ inputs.branch }}'
+
+    - name: Check for changes
+      id: check_changes
+      shell: pwsh
+      run: |
+        $changes = git status --porcelain doc/import_external_docs.ps1
+        if ($changes) {
+            echo "has_changes=true" >> $env:GITHUB_OUTPUT
+            Write-Host "Changes detected in import_external_docs.ps1" -ForegroundColor Green
+        } else {
+            echo "has_changes=false" >> $env:GITHUB_OUTPUT
+            Write-Host "No changes detected in import_external_docs.ps1" -ForegroundColor Yellow
+        }

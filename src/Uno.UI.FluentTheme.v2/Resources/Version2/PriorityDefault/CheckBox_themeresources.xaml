@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:local="using:Microsoft.UI.Xaml.Controls"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)">
 
@@ -803,10 +804,11 @@
                                 contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}"
                                 contract7NotPresent:RadiusX="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
                                 contract7NotPresent:RadiusY="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}"/>
+                            <!-- WinUI uses the AnimatedAcceptVisualSource for drawing the glyph, while we depend on the FallbackIconSource, so we need to remove the Margin to keep the check glyph centered -->
                             <local:AnimatedIcon x:Name="CheckGlyph"
                                                 Foreground="{ThemeResource CheckBoxCheckGlyphForegroundUnchecked}"
                                                 contract7NotPresent:Opacity="0"
-                                                Margin="0,1,0,-1">
+                                                win:Margin="0,1,0,-1">
                                 <animatedvisuals:AnimatedAcceptVisualSource/>
                                 <local:AnimatedIcon.FallbackIconSource>
                                     <local:FontIconSource

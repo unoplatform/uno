@@ -83,7 +83,8 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		// in physical pixels
 		int w = (int)(size.Width * RasterizationScale);
 		int h = (int)(size.Height * RasterizationScale);
-		Size = new SizeInt32(w, h);
+		var fullSize = new SizeInt32(w, h);
+		SetSizes(fullSize, fullSize);
 	}
 
 	private void OnWindowClosing(object? sender, CancelEventArgs e)

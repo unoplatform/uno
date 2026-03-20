@@ -93,7 +93,7 @@ public class Given_TextBlock : BaseTestClass
 		}
 		finally
 		{
-			await hr.UpdateFileAsync(req.Undo(waitForHotReload: false), CancellationToken.None);
+			await hr.UpdateFileAsync(req.Undo(waitForHotReload: true), CancellationToken.None);
 		}
 	}
 
@@ -128,7 +128,7 @@ public class Given_TextBlock : BaseTestClass
 		finally
 		{
 			// Make sure to undo to not impact other tests!
-			await hr.UpdateFileAsync(req.Undo(waitForHotReload: false), CancellationToken.None);
+			await hr.UpdateFileAsync(req.Undo(waitForHotReload: true), CancellationToken.None);
 		}
 	}
 
@@ -163,7 +163,7 @@ public class Given_TextBlock : BaseTestClass
 		finally
 		{
 			TypeMappings.Resume();
-			await hr.UpdateFileAsync(req.Undo(waitForHotReload: false), CancellationToken.None);
+			await hr.UpdateFileAsync(req.Undo(waitForHotReload: true), CancellationToken.None);
 		}
 	}
 #endif

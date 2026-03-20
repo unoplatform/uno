@@ -1,7 +1,9 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using SkiaSharp;
 using Uno.Extensions;
@@ -11,6 +13,8 @@ using Uno.UI.Xaml.Media;
 using Windows.Storage;
 using Windows.Storage.Helpers;
 using Windows.UI.Text;
+using Uno.Foundation.Extensibility;
+using Uno.Helpers;
 using SKFontStyleWidth = SkiaSharp.SKFontStyleWidth;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
@@ -31,6 +35,7 @@ internal static class FontDetailsCache
 
 	private static readonly Dictionary<FontEntry, Task<SKTypeface?>> _fontCache = new();
 	private static readonly object _fontCacheGate = new();
+	private static readonly IFontFallbackService? _fontFallbackService = ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(FontDetailsCache), out var service) ? service : null;
 
 	private static async Task<SKTypeface?> LoadTypefaceFromApplicationUriAsync(Uri uri, FontWeight weight, FontStyle style, FontStretch stretch)
 	{
@@ -58,12 +63,19 @@ internal static class FontDetailsCache
 			typeof(FontDetailsCache).Log().LogDebug($"Fetching font from {uri}");
 		}
 
-		var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
-		using var stream = await file.OpenStreamForReadAsync();
-		return stream is null ? null : SKTypeface.FromStream(stream);
+		try
+		{
+			using var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
+			return SKTypeface.FromStream(stream);
+		}
+		catch (Exception e)
+		{
+			typeof(FontDetailsCache).LogError()?.Error($"Loading font from {uri} failed: {e}");
+			return null;
+		}
 	}
 
-	private static Task<SKTypeface?> GetFontInternal(
+	private static async Task<SKTypeface?> GetFontInternal(
 		string name,
 		FontWeight weight,
 		FontStretch stretch,
@@ -79,18 +91,22 @@ internal static class FontDetailsCache
 			name = name.Substring(0, hashIndex);
 		}
 
-		if (Uri.TryCreate(name, UriKind.Absolute, out var uri) && uri.IsLocalResource())
+		if (Uri.TryCreate(name, UriKind.Absolute, out var uri))
 		{
-			return LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
+			return await LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
 		}
 		else
 		{
+			if (_fontFallbackService is not null && await _fontFallbackService.GetTypefaceForFontName(name, weight, stretch, style) is { } typeface)
+			{
+				return typeface;
+			}
 			// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
-			return Task.FromResult<SKTypeface?>(SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant));
+			return SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
 		}
 	}
 
-	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<SKTypeface?> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
+	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<FontDetails> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
 		string? name,
 		float fontSize,
 		FontWeight weight,
@@ -137,33 +153,80 @@ internal static class FontDetailsCache
 						?? SKTypeface.FromFamilyName(null);
 		}
 
-		var details = FontDetails.Create(typeface, fontSize, canChange);
+		var details = FontDetails.Create(typeface, fontSize);
+		var detailsTask = AwaitDetails(typefaceTask);
+		return (details, detailsTask);
 
-		if (canChange)
+		async Task<FontDetails> AwaitDetails(Task<SKTypeface?> t)
 		{
-			typefaceTask.ContinueWith(t =>
-			{
-				var loadedTypeface = t.IsCompletedSuccessfully ? t.Result : null;
+			SKTypeface? loadedTypeface = null;
+			Exception? exception = null;
 
-				if (loadedTypeface is null)
+			try
+			{
+				loadedTypeface = await t;
+			}
+			catch (Exception e)
+			{
+				exception = e;
+			}
+
+			if (loadedTypeface is null)
+			{
+				if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
 				{
-					if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
-					{
-						typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", t.Exception);
-					}
+					typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", exception);
 				}
 
-				details.FontLoaded(loadedTypeface);
-			});
+				return details;
+			}
+			else
+			{
+				return FontDetails.Create(loadedTypeface, details.SKFontSize);
+			}
 		}
-
-		return (details, typefaceTask);
 	});
 
-	public static (FontDetails details, Task<SKTypeface?> loadedTask) GetFont(
+	public static (FontDetails details, Task<FontDetails> loadedTask) GetFont(
 		string? name,
 		float fontSize,
 		FontWeight weight,
 		FontStretch stretch,
 		FontStyle style) => _getFont(name, fontSize, weight, stretch, style);
+
+	public static async Task<FontDetails?> GetFontForCodepoint(
+		int codepoint,
+		float fontSize,
+		FontWeight weight,
+		FontStretch stretch,
+		FontStyle style)
+	{
+		if (_fontFallbackService is not null)
+		{
+			var fallbackServiceTask = _fontFallbackService.GetFontNameForCodepoint(codepoint);
+			string? fallbackServiceResult = null;
+			try
+			{
+				fallbackServiceResult = await fallbackServiceTask;
+			}
+			catch (Exception e)
+			{
+				typeof(UnicodeText).LogError()?.Error($"Font fallback service failed to get font for codepoint U+{codepoint:X4}", e);
+			}
+
+			if (fallbackServiceResult is null)
+			{
+				return null;
+			}
+			else
+			{
+				var fallbackFont = await GetFont(fallbackServiceResult, fontSize, weight, stretch, style).loadedTask;
+				return fallbackFont;
+			}
+		}
+		else
+		{
+			return null;
+		}
+	}
 }

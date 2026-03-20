@@ -58,7 +58,7 @@ public class Given_StatusBar
 			var snapshot2 = new { outerGrid.ActualHeight, innerGrid.Padding };
 
 			// assumption: the test device SHOULD have a status-bar, and MAY have something at the bottom
-			Assert.IsTrue(snapshot1.ActualHeight > snapshot2.ActualHeight, $"The top-level element actual-height should have decreased: {snapshot1.ActualHeight} -> {snapshot2.ActualHeight}");
+			Assert.IsGreaterThan(snapshot2.ActualHeight, snapshot1.ActualHeight, $"The top-level element actual-height should have decreased: {snapshot1.ActualHeight} -> {snapshot2.ActualHeight}");
 			Assert.IsTrue(
 				snapshot2.Padding.Top == 0 && double.Abs(snapshot2.Padding.Bottom - snapshot1.Padding.Bottom) < 1,
 				$"VisibleBoundsPadding on the inner Grid should lost the top side, and kept the bottom: {PrettyPrint.FormatThickness(snapshot1.Padding)} -> {PrettyPrint.FormatThickness(snapshot2.Padding)}");

@@ -326,12 +326,16 @@ internal partial class NavigationHistory
 		if (m_tpCurrentPageStackEntry is not null)
 		{
 			var strDescriptior = m_tpCurrentPageStackEntry.GetDescriptor();
-			var sourcePageType = Type.GetType(strDescriptior);
+			var sourcePageType = GetType(strDescriptior);
 			pFrame.SourcePageType = sourcePageType;
 			pFrame.CurrentSourcePageType = sourcePageType;
 		}
 
 		m_isSetNavigationStatePending = false;
+
+		[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the type exists.")]
+		static Type GetType(string typeName)
+			=> Type.GetType(typeName);
 	}
 
 	private void ValidateCanChangePageStack()

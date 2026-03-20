@@ -13,17 +13,19 @@ internal partial class XamlFileParser
 {
 	private struct CachedFileKey : IEquatable<CachedFileKey>
 	{
-		public CachedFileKey(string includeXamlNamespaces, string excludeXamlNamespaces, string file, ImmutableArray<byte> checksum)
+		public CachedFileKey(string includeXamlNamespaces, string excludeXamlNamespaces, string file, string link, ImmutableArray<byte> checksum)
 		{
 			IncludeXamlNamespaces = includeXamlNamespaces;
 			ExcludeXamlNamespaces = excludeXamlNamespaces;
 			File = file;
+			Link = link;
 			Checksum = checksum;
 		}
 
 		public string IncludeXamlNamespaces { get; }
 		public string ExcludeXamlNamespaces { get; }
 		public string File { get; }
+		public string Link { get; }
 		public ImmutableArray<byte> Checksum { get; }
 
 		public override bool Equals(object? obj) => obj is CachedFileKey key && Equals(key);
@@ -40,6 +42,7 @@ internal partial class XamlFileParser
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(IncludeXamlNamespaces);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ExcludeXamlNamespaces);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(File);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Link);
 			hashCode = hashCode * -1521134295 + ByteSequenceComparer.GetHashCode(Checksum);
 			return hashCode;
 		}

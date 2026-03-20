@@ -14,19 +14,16 @@ using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.UI.ViewManagement;
 using Windows.UI.Core;
+using DirectUI;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
-#else
-using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class
-		ContentDialog : ContentControl
+		ContentDialog : ContentControl, IBackButtonListener
 	{
 		internal readonly Popup _popup;
 		private TaskCompletionSource<ContentDialogResult> _tcs;
@@ -297,13 +294,6 @@ namespace Microsoft.UI.Xaml.Controls
 					throw new InvalidOperationException("A ContentDialog is already opened.");
 				}
 
-#if !HAS_UNO_WINUI
-				if (XamlRoot is null &&
-					WinUICoreServices.Instance.InitializationType != InitializationType.IslandsOnly)
-				{
-					XamlRoot = WinUICoreServices.Instance.MainRootVisual?.XamlRoot;
-				}
-#endif
 
 				// TODO: support in-place
 				m_placementMode = PlacementMode.EntireControlInPopup;
@@ -401,16 +391,13 @@ namespace Microsoft.UI.Xaml.Controls
 				xamlRoot.Changed -= XamlRootChanged;
 			});
 
-			// Here we are relying on the BackRequested event to be able to close the ContentDialog on back button pressed.
-			// This diverges from Windows behaviour as they do not allow BackRequested to be raised if the back button was pressed
-			// while a ContentDialog was open.
-			if (SystemNavigationManager.GetForCurrentView() is { } navManager)
+			if (DXamlCore.Current.BackButtonSupported)
 			{
-				navManager.BackRequested += OnBackRequested;
+				BackButtonIntegration.RegisterListener(this);
 
 				d.Add(() =>
 				{
-					navManager.BackRequested -= OnBackRequested;
+					BackButtonIntegration.UnregisterListener(this);
 				});
 			}
 
@@ -428,7 +415,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnBackRequested(object sender, BackRequestedEventArgs e)
+		bool IBackButtonListener.OnBackButtonPressed()
 		{
 			// Match Windows behavior:
 			// If we have a clickable close button, then invoke it, otherwise just
@@ -442,7 +429,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Hide();
 			}
 
-			e.Handled = true;
+			return true; // ContentDialog always handles back
 		}
 
 		private void OnCloseButtonClicked(object sender, RoutedEventArgs e)

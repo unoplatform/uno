@@ -20,7 +20,6 @@ public class Given_ShapeVisual
 #endif
 	[RequiresFullWindow]
 	[RequiresScaling(1f)]
-	[Timeout(300000)]
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Test times out in CI https://github.com/unoplatform/uno-private/issues/805
 	public async Task When_ShapeVisual_ViewBox_Shape_Combinations()
@@ -96,10 +95,10 @@ public class Given_ShapeVisual
 						await TestServices.WindowHelper.WaitFor(() => imageOpened);
 
 						var screenShot1 = await UITestHelper.ScreenShot(border);
+						var screenShot2 = await UITestHelper.ScreenShot(referenceImage);
 						// To generate the images
 						// await screenShot1.Save(filename);
 
-						var screenShot2 = await UITestHelper.ScreenShot(referenceImage);
 						// there can be a very small _bit_ difference when drawing with metal on some platforms
 						if (OperatingSystem.IsMacOS() || OperatingSystem.IsBrowser() || OperatingSystem.IsIOS() || OperatingSystem.IsAndroid())
 						{
@@ -107,7 +106,14 @@ public class Given_ShapeVisual
 						}
 						else
 						{
-							await ImageAssert.AreEqualAsync(screenShot1, screenShot2);
+							// with anti-aliasing in CompositionColorBrush, there can be some minor differences sometimes, but not always
+							// so here we first check for pixel equality, and only if that fails we check for similarity,
+							// to avoid the performance cost of the similarity check when not needed.
+							var pixelEqual = await ImageAssert.AreRenderTargetBitmapsEqualAsync(screenShot1.Bitmap, screenShot2.Bitmap);
+							if (!pixelEqual)
+							{
+								await ImageAssert.AreSimilarAsync(screenShot1, screenShot2);
+							}
 						}
 					}
 				}

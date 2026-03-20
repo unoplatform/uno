@@ -9,7 +9,7 @@ uid: Uno.GettingStarted.CreateAnApp.VSCode
 
 ## Create the App
 
-There are two ways to create your app. You can either use the Live Wizard or the `/new` Copilot Agent prompt.
+There are two ways to create your app. You can either use the Live Wizard or the `/mcp.uno.new` Copilot Agent prompt.
 
 # [**Live Wizard**](#tab/live-wizard)
 
@@ -70,7 +70,7 @@ Next, open the project using Visual Studio Code.
 
 # [**Copilot AI Prompt**](#tab/copilot-prompt)
 
-## Using the `/new` agent prompt
+## Using the `/mcp.uno.new` agent prompt
 
 1. Open VS Code in an empty new folder
 1. Add the Uno Platform MCP by creating a file named `.vscode/mcp.json`:
@@ -85,7 +85,7 @@ Next, open the project using Visual Studio Code.
    }
    ```
 
-1. On top of the registration for the uno MCP, click the **start** button.
+1. Save the file, then on top of the registration for the uno MCP, click the **start** button.
 
     ![start MCP](Assets/vscode-start-mcp.png)
 
@@ -97,7 +97,7 @@ Next, open the project using Visual Studio Code.
 
     ![Agent mode](Assets/vscode-agent-mode.png)
 
-1. In the Copilot Window, type the `/new` then **Enter**.
+1. In the Copilot Window, type the `/mcp.uno.new` then **Enter**.
 1. The Agent will ask you for your app's description, write the following:
 
     ```text
@@ -160,7 +160,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo, ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next, click on the target framework to select `net9.0-browserwasm | Debug`
+1. Next, click on the target framework to select `net10.0-browserwasm | Debug`
 
 ![status bar](Assets/quick-start/vs-code-browserwasm-project.png)
 
@@ -178,7 +178,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo, ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net9.0-desktop | Debug`
+1. Next click on the target framework to select `net10.0-desktop | Debug`
 
 ![status bar](Assets/quick-start/vs-code-desktop-project.png)
 
@@ -224,7 +224,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net9.0-android | Debug`
+1. Next click on the target framework to select `net10.0-android | Debug`
 1. Then select the device to debug with. You will need to connect an Android device or [create an Android emulator](https://developer.android.com/studio/run/managing-avds).
 
 ![status bar](Assets/quick-start/vs-code-android-project.png)
@@ -246,7 +246,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net9.0-ios | Debug`
+1. Next click on the target framework to select `net10.0-ios | Debug`
 1. Then select the device to debug with. You will need to connect an iOS device or [use an installed iOS simulator](https://developer.apple.com/documentation/xcode/installing-additional-simulator-runtimes).
 
 ![status bar](Assets/quick-start/vs-code-ios-project.png)
@@ -271,7 +271,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net9.0-windows10.0.xxxxx | Debug`
+1. Next click on the target framework to select `net10.0-windows10.0.xxxxx | Debug`
 1. The `This Computer` device will be pre-selected. On ARM64-based computers, you will have the option to use `This Computer using emulation` to debug `x64` applications
 
 ![status bar](Assets/quick-start/vs-code-windows-project.png)

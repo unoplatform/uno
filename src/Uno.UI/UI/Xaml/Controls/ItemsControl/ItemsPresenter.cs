@@ -640,7 +640,15 @@ namespace Microsoft.UI.Xaml.Controls
 			return result;
 		}
 
-		public float GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) => throw new NotSupportedException("Regular snap points are not supported.");
+		public float GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset)
+		{
+			if (SnapPointsProvider is null)
+			{
+				offset = 0f;
+				return 0f;
+			}
+			return SnapPointsProvider.GetRegularSnapPoints(orientation, alignment, out offset);
+		}
 
 		internal override bool CanHaveChildren() => true;
 

@@ -29,6 +29,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" PrivateAssets="all" />
+		<PackageReference Include="Uno.icu-win" />
 
 		<!-- 
 			Required to ensure that this reference is latest and not

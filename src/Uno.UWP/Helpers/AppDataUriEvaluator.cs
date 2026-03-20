@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Storage;
 using Path = System.IO.Path;
@@ -15,6 +19,7 @@ namespace Uno.Helpers
 		private const string LocalFolderRoute = "local";
 		private const string RoamingFolderRoute = "roaming";
 		private const string TemporaryFolderRoute = "temp";
+		private static HttpClient _httpClient;
 
 		/// <summary>
 		/// Converts given ms-appdata: URI to filesystem path.
@@ -97,6 +102,39 @@ namespace Uno.Helpers
 
 			// perform URL decoding - to handle special cases like "ms-appdata://local/Hello%23World.html"
 			return Uri.UnescapeDataString(targetPath);
+		}
+
+		public static async Task<Stream> ToStream(Uri uri, CancellationToken ct)
+		{
+			if (uri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) || uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) || uri.IsFile)
+			{
+				return await OpenStreamFromUriAsync(uri, ct);
+			}
+			else if (uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
+			{
+				var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
+				return await file.OpenStreamForReadAsync();
+			}
+			else if (uri.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase))
+			{
+				return File.OpenRead(ToPath(uri));
+			}
+			else
+			{
+				throw new InvalidOperationException($"Unsupposed URI format {uri}");
+			}
+		}
+
+		private static async Task<Stream> OpenStreamFromUriAsync(Uri uri, CancellationToken ct)
+		{
+			if (uri.IsFile)
+			{
+				return File.OpenRead(uri.LocalPath);
+			}
+
+			_httpClient ??= new HttpClient();
+			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
+			return await response.Content.ReadAsStreamAsync();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Lottie
 {
-	[SampleControlInfo("Lottie", "Sample animation", ignoreInSnapshotTests: true /* Fails for Android # */)]
+	[Sample("Lottie", Name = "Sample animation", IgnoreInSnapshotTests = true /* Fails for Android # */)]
 	public sealed partial class SampleLottieAnimation : Page
 	{
 		public SampleLottieAnimation()

@@ -93,6 +93,9 @@ public enum UnoFeature
 	[UnoArea(UnoArea.Theme)]
 	Cupertino,
 
+	[UnoArea(UnoArea.Theme)]
+	SimpleTheme,
+
 	Dsp,
 
 	Mvvm,

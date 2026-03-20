@@ -297,6 +297,9 @@ internal static partial class NativeUno
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_window_clip_svg(nint window, string? svg);
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_resign_native_first_responder(nint window);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string? /* const char* _Nullable */ uno_pick_single_folder(string? prompt, string? identifier, int suggestedStartLocation);
 
@@ -388,6 +391,11 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_webview_unsupported_scheme_identified_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, int> callback);
+
+	// WebResourceRequested callback - returns JSON string of headers to inject, or null for no modification
+	// The returned string is allocated by C# and must be freed by native code using free()
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_webview_resource_requested_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, sbyte*, sbyte*> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial nint uno_webview_create(nint window, string ok, string cancel);

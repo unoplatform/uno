@@ -2,9 +2,7 @@
 
 using Microsoft.UI.Xaml.Markup;
 
-#if HAS_UNO_WINUI
 using Windows.UI;
-#endif
 
 namespace Microsoft.UI.Xaml.Media
 {

@@ -25,8 +25,6 @@ namespace Uno.Helpers;
 
 internal static partial class ImageSourceHelpers
 {
-	private static HttpClient? _httpClient;
-
 	public static async Task<ImageData> ReadFromStreamAsBytesAsync(Stream stream, CancellationToken ct)
 	{
 		if (stream.CanSeek && stream.Position != 0)
@@ -41,12 +39,14 @@ internal static partial class ImageSourceHelpers
 	}
 
 #if __SKIA__
-	public static async Task<ImageData> ReadFromStreamAsCompositionSurface(Stream imageStream, CancellationToken ct, bool attemptLoadingWithBrowserCanvasApi = true)
+	public static async Task<ImageData> ReadFromStreamAsCompositionSurface(Stream imageStream, CancellationToken ct, bool attemptLoadingWithBrowserCanvasApi = true, int? targetWidth = null, int? targetHeight = null)
 	{
 		var buffer = new byte[imageStream.Length - imageStream.Position];
 		await imageStream.ReadExactlyAsync(buffer, 0, buffer.Length, ct);
 
-		if (OperatingSystem.IsBrowser() && attemptLoadingWithBrowserCanvasApi)
+		bool hasTargetSize = targetWidth is not null || targetHeight is not null;
+
+		if (OperatingSystem.IsBrowser() && attemptLoadingWithBrowserCanvasApi && !hasTargetSize)
 		{
 			var decodedBufferObject = await LoadFromArray(buffer);
 
@@ -94,7 +94,7 @@ internal static partial class ImageSourceHelpers
 		}
 
 		var surface = new SkiaCompositionSurface();
-		var result = surface.LoadFromStream(new MemoryStream(buffer));
+		var result = surface.LoadFromStream(targetWidth, targetHeight, new MemoryStream(buffer));
 
 		if (result.success)
 		{
@@ -112,53 +112,42 @@ internal static partial class ImageSourceHelpers
 	private static partial Task<JSObject> LoadFromArray(byte[] array);
 #endif
 
-	public static async Task<Stream> OpenStreamFromUriAsync(Uri uri, CancellationToken ct)
-	{
-		if (uri.IsFile)
-		{
-			return File.OpenRead(uri.LocalPath);
-		}
-
-		_httpClient ??= new HttpClient();
-		var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
-		return await response.Content.ReadAsStreamAsync();
-	}
-
 	public static async Task<ImageData> GetImageDataFromUriAsBytes(Uri uri, CancellationToken ct)
-		=> await GetImageDataFromUri(uri, ReadFromStreamAsBytesAsync, ct);
+	{
+		try
+		{
+			using var stream = await AppDataUriEvaluator.ToStream(uri, ct);
+			return await ReadFromStreamAsBytesAsync(stream, ct);
+		}
+		catch (Exception e)
+		{
+			return ImageData.FromError(e);
+		}
+	}
 
 #if __SKIA__
-	public static async Task<ImageData> GetImageDataFromUriAsCompositionSurface(Uri uri, CancellationToken ct) =>
-		await GetImageDataFromUri(uri,
-			// add more animation formats here if needed
-			(s, token) => ReadFromStreamAsCompositionSurface(s, token, !uri.AbsolutePath.EndsWith(".gif", StringComparison.InvariantCultureIgnoreCase)),
-			ct);
-#endif
-
-	public static async Task<ImageData> GetImageDataFromUri(Uri uri, Func<Stream, CancellationToken, Task<ImageData>> imageDataCreator, CancellationToken ct)
+	public static async Task<ImageData> GetImageDataFromUriAsCompositionSurface(Uri uri, CancellationToken ct, int? targetWidth = null, int? targetHeight = null)
 	{
-		if (uri != null && uri.IsAbsoluteUri)
+		try
 		{
-			if (uri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
-				uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ||
-				uri.IsFile)
-			{
-				using var imageStream = await OpenStreamFromUriAsync(uri, ct);
-				return await imageDataCreator(imageStream, ct);
-			}
-			else if (uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
-			{
-				var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
-				using var fileStream = await file.OpenStreamForReadAsync();
-				return await imageDataCreator(fileStream, ct);
-			}
-			else if (uri.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase))
-			{
-				using var fileStream = File.OpenRead(AppDataUriEvaluator.ToPath(uri));
-				return await imageDataCreator(fileStream, ct);
-			}
+			using var stream = await AppDataUriEvaluator.ToStream(uri, ct);
+			return await ReadFromStreamAsCompositionSurface(stream, ct, !IsAnimatableImageFormat(uri), targetWidth, targetHeight);
 		}
-
-		return default;
+		catch (Exception e)
+		{
+			return ImageData.FromError(e);
+		}
 	}
+
+	/// <summary>
+	/// Returns true for image formats that may contain animation and must bypass the
+	/// browser Canvas API (which only returns the first frame) in favor of SKCodec.
+	/// </summary>
+	private static bool IsAnimatableImageFormat(Uri uri)
+	{
+		var path = uri.AbsolutePath;
+		return path.EndsWith(".gif", StringComparison.OrdinalIgnoreCase)
+			|| path.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
+	}
+#endif
 }

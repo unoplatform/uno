@@ -15,12 +15,12 @@ jobs:
 - job: Skia_Linux_Screenshot_Tests
   displayName: 'Snapshot Tests'
   timeoutInMinutes: 60
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}
 
-  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['SetScope.SkiaScreenshots'], 'true')))
 
   variables:
     SamplesAppArtifactName: skia-generic-samples-app-WinUI
@@ -60,7 +60,7 @@ jobs:
 - job: Skia_Linux_Runtime_Tests_Build
   displayName: 'Runtime Tests'
   timeoutInMinutes: 60
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}

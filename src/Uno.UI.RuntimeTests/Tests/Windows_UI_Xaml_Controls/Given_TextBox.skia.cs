@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -9,21 +9,26 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Media3D;
 using MUXControlsTestApp.Utilities;
 using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
+using Uno.ApplicationModel.DataTransfer;
+using Uno.Foundation.Extensibility;
+using Uno.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
-using Uno.UI.Toolkit.DevTools.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -34,9 +39,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	/// </summary>
 	public partial class Given_TextBox
 	{
-		// most macOS keyboard shortcuts uses Command (mapped as Window) and not Control (Ctrl)
-		private readonly VirtualKeyModifiers _platformCtrlKey = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
-
 		[TestMethod]
 		public async Task When_Basic_Input()
 		{
@@ -111,6 +113,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
                 KeyUp Text=a SelectionStart=1 SelectionLength=0
                 
                 """.Replace("\r\n", "\n"), eventLog);
+		}
+
+		[TestMethod]
+		public async Task When_Public_KeyDown_Subscription_Changes_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+			SUT.KeyDown += (sender, args) =>
+			{
+				if (args.Key == VirtualKey.T)
+				{
+					SUT.Text = "Ramez";
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			await KeyboardHelper.PressKeySequence("t", SUT);
+
+			Assert.AreEqual("tRamez", SUT.Text);
 		}
 
 		[TestMethod]
@@ -196,6 +219,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(11, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Home_Empty_TextBox()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.RaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
 		}
 
 		[TestMethod]
@@ -325,16 +367,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0, ((ScrollViewer)SUT.ContentElement).VerticalOffset);
 
-			// on macOS moving to the end of the document is done with `Command` + `Down`
-			var macOS = OperatingSystem.IsMacOS();
-			var key = macOS ? VirtualKey.Down : VirtualKey.End;
-			var mod = macOS ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+			// on Apple platforms moving to the end of the document is done with `Command` + `Down`
+			var isAppleKeyboard = DeviceTargetHelper.UsesAppleKeyboardLayout;
+			var key = isAppleKeyboard ? VirtualKey.Down : VirtualKey.End;
+			var mod = isAppleKeyboard ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, mod));
 			await WindowHelper.WaitForIdle();
 
 			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
 
 			((ScrollViewer)SUT.ContentElement).VerticalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableHeight, 1.0);
+		}
+
+		[TestMethod]
+		public async Task When_Trailing_Space_Overflows_ScrollViewer_Viewport()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "some text that is longer than the width of the text box"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var scrollableWidthWithoutTrailingSpaces = ((ScrollViewer)SUT.ContentElement).ScrollableWidth;
+
+			SUT.Text += new string(' ', 20);
+			await UITestHelper.WaitForIdle();
+			Assert.IsGreaterThan(scrollableWidthWithoutTrailingSpaces + 50, ((ScrollViewer)SUT.ContentElement).ScrollableWidth);
 		}
 
 		[TestMethod]
@@ -401,6 +463,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Alt_Or_Win_Key_Alone()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "hello world" };
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Test Option/Alt keys
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Menu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(1, keyDownCount);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(2, keyDownCount);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(3, keyDownCount);
+
+			// Test Command/Windows keys
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(4, keyDownCount);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(5, keyDownCount);
+		}
+
+		[TestMethod]
 		public async Task When_Ctrl_Home_End()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -419,14 +525,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			var key = OperatingSystem.IsMacOS() ? VirtualKey.Down : VirtualKey.End;
+			var key = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKey.Down : VirtualKey.End;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			key = OperatingSystem.IsMacOS() ? VirtualKey.Up : VirtualKey.Home;
+			key = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKey.Up : VirtualKey.Home;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
 
@@ -455,8 +561,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			// on macOS it's option (menu/alt) and backspace to delete a word
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms it's option (menu/alt) and backspace to delete a word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, mod));
 			await WindowHelper.WaitForIdle();
 
@@ -493,8 +599,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Select(SUT.Text.Length, 0);
 			await WindowHelper.WaitForIdle();
 
-			// on macOS it's option (menu/alt) and backspace to delete a word
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms it's option (menu/alt) and backspace to delete a word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, mod));
 			await WindowHelper.WaitForIdle();
 
@@ -566,8 +672,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
 
-			// on macOS you use `option` (alt/menu) and `right` to move to the next work
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms you use `option` (alt/menu) and `right` to move to the next word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(6, SUT.SelectionStart);
@@ -959,8 +1065,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(svRight, LayoutInformation.GetLayoutSlot(SUT).Right);
 			}
 
-			// on macOS we use `option` (menu/alt) + `delete` to remove word at the left
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms we use `option` (menu/alt) + `delete` to remove word at the left
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			for (var i = 0; i < 10; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, mod));
@@ -976,6 +1082,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Scrolling_Updates_After_Pasting_Long_Text()
 		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
@@ -1725,6 +1836,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// responsible for changing the text.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -1877,9 +1992,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[CombinatorialData]
 		public async Task When_Copy_Paste(bool useInsert)
 		{
-			if (useInsert && OperatingSystem.IsMacOS())
+			if (useInsert && DeviceTargetHelper.UsesAppleKeyboardLayout)
 			{
-				Assert.Inconclusive("There's no `Insert` key on Mac keyboards");
+				Assert.Inconclusive("There's no `Insert` key on Apple keyboards");
 				// it's replaced by the `fn` key, which is a modifier
 			}
 			if (OperatingSystem.IsBrowser())
@@ -1889,6 +2004,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// input is what will receive the key event, and the browser will be
 				// responsible for changing the text.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
+			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1986,6 +2105,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// responsible for changing the text.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -2039,6 +2162,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Paste_History_Remains_Intact()
 		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
@@ -2057,6 +2185,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var text = "copied content";
 			dp.SetText(text);
 			Clipboard.SetContent(dp);
+			await Task.Delay(500);
 
 			// This actually matches WinUI. text comes before "initial" and text2 comes after text
 
@@ -2068,6 +2197,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var text2 = "copied content 2";
 			dp2.SetText(text2);
 			Clipboard.SetContent(dp2);
+			await Task.Delay(500);
 
 			SUT.PasteFromClipboard();
 			await WindowHelper.WaitForIdle();
@@ -2088,6 +2218,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Paste_The_Same_Text()
 		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
@@ -2466,8 +2601,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			// on macOS selecting the next word is `shift` + `option` (alt/menu) + `right`
-			var mod = VirtualKeyModifiers.Shift | (OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control);
+			// on Apple platforms selecting the next word is `shift` + `option` (alt/menu) + `right`
+			var mod = VirtualKeyModifiers.Shift | (DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control);
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
@@ -2737,7 +2872,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var mouse = injector.GetMouse();
 
 			var bounds = SUT.GetAbsoluteBounds();
-			mouse.MoveTo(bounds.GetCenter());
+			mouse.MoveTo(bounds.Location.Offset(145, 50));
 			await WindowHelper.WaitForIdle();
 
 			mouse.Press();
@@ -2880,6 +3015,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Clipboard can't be read for security reasons.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
 			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -2955,8 +3094,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(13, SUT.SelectionStart);
-			Assert.AreEqual(26, SUT.SelectionLength);
+			Assert.AreEqual(25, SUT.SelectionStart);
+			Assert.AreEqual(14, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -3051,6 +3190,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// No residual colors on canvas
 			var cleared = await UITestHelper.ScreenShot(canvas);
 			ImageAssert.DoesNotHaveColorInRectangle(cleared, new Rectangle(System.Drawing.Point.Empty, cleared.Size), SUT.SelectionHighlightColor.Color);
+		}
+
+		[TestMethod]
+		[DataRow(false, null, true)]
+		[DataRow(true, null, false)]
+		[DataRow(false, TextAlignment.Left, true)]
+		[DataRow(true, TextAlignment.Left, true)]
+		[DataRow(false, TextAlignment.Right, false)]
+		[DataRow(true, TextAlignment.Right, false)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // no arabic font support until https://github.com/unoplatform/uno/pull/22240
+		public async Task When_TextAlignment(bool rtlText, TextAlignment? alignment, bool textShouldEndUpOnTheLeft)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 250,
+				Foreground = new SolidColorBrush(Colors.Red),
+				Text = rtlText ? "تيست" : "Test",
+			};
+
+			if (alignment is not null)
+			{
+				SUT.TextAlignment = alignment.Value;
+			}
+
+			var bounds = await UITestHelper.Load(SUT);
+			var left = new Rectangle()
+			{
+				X = 0,
+				Width = (int)(bounds.Width / 2),
+				Y = 0,
+				Height = (int)bounds.Height
+			};
+			var right = left with { X = (int)(bounds.Width / 2) };
+
+			var screenshot1 = await UITestHelper.ScreenShot(SUT);
+
+			if (textShouldEndUpOnTheLeft)
+			{
+				ImageAssert.HasColorInRectangle(screenshot1, left, Colors.Red);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot1, right, Colors.Red);
+			}
+			else
+			{
+				ImageAssert.HasColorInRectangle(screenshot1, right, Colors.Red);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot1, left, Colors.Red);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Single_Letter_Selected()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "A" };
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			SUT.SelectAll();
+			await UITestHelper.WaitForIdle();
+
+			var canvas = SUT.FindVisualChildByType<ScrollViewer>();
+			var screenshot = await UITestHelper.ScreenShot(canvas);
+			ImageAssert.HasColorInRectangle(screenshot, new Rectangle(System.Drawing.Point.Empty, screenshot.Size), SUT.SelectionHighlightColor.Color);
 		}
 
 		[TestMethod]
@@ -3227,6 +3432,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var _ = new TextBoxFeatureConfigDisposable();
 			using var __ = new DisposableAction(() => (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
 
+			Clipboard.Clear();
+
 			var SUT = new TextBox
 			{
 				Width = 40
@@ -3240,15 +3447,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await KeyboardHelper.InputText("hello", SUT);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("hello", SUT.Text);
@@ -3259,30 +3458,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
 			await WindowHelper.WaitForIdle();
 
+			// Right-click to open context menu
 			mouse.PressRight();
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
 
-			var flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
-			Assert.AreEqual(3, flyoutItems.Count);
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout);
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
 
-			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitFor(() => flyout.IsOpen);
+
+			var undoButton = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands)
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.Z && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(undoButton, "Undo button should be present in the context menu");
+
+			await WindowHelper.WaitFor(() => undoButton.IsLoaded);
+
+			mouse.MoveTo(undoButton.GetAbsoluteBounds().GetCenter());
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => !flyout.IsOpen);
+
 			Assert.AreEqual("", SUT.Text);
 
 			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
 			await WindowHelper.WaitForIdle();
 
+			// Right-click to open context menu again
 			mouse.PressRight();
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
 
-			flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
-			Assert.AreEqual(3, flyoutItems.Count);
+			await WindowHelper.WaitFor(() => flyout.IsOpen);
 
-			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
+			var redoButton = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands)
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.Y && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(redoButton, "Redo button should be present in the context menu");
+			await WindowHelper.WaitFor(() => redoButton.IsLoaded);
+
+			mouse.MoveTo(redoButton.GetAbsoluteBounds().GetCenter());
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
@@ -3535,6 +3754,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// input is what will receive the key event, and the browser will be
 				// responsible for changing the text.
 				Assert.Inconclusive("Skipped on Wasm Skia due to clipboard-related issues.");
+			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -4042,8 +4265,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			// on macOS it's option (menu/alt) and backspace to delete a word
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms it's option (menu/alt) and backspace to delete a word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, mod));
 			await WindowHelper.WaitForIdle();
 
@@ -4064,6 +4287,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				// TODO: Investigate what goes wrong here on Wasm Skia.
 				Assert.Inconclusive("Not working on Wasm Skia, unknown issue.");
+			}
+			else if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
 			}
 
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -4213,16 +4440,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await Task.Delay(random.Next(75, 126));
 				var screenshot = await UITestHelper.ScreenShot(SUT);
-				// For some reason, the caret sometimes appears black, and sometimes as very dark grey (#FF030303), so we check for both
-				Color[] blacks = [Colors.Black, Colors.FromARGB(0xFF, 0x03, 0x03, 0x03)];
-				if (blacks.Any(b => HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), b)) &&
-					blacks.All(b => !HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.Black)))
+				// this color is the result of alpha blending 0xE4000000 (the default caret color) on top of 0xFFFFFFFF
+				var black = Colors.White.AlphaBlend(((SolidColorBrush)DefaultBrushes.TextForegroundBrush).Color);
+				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), black) &&
+					!HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), black))
 				{
 					break;
 				}
 			}
 
-			Assert.IsTrue(i < 20);
+			Assert.IsLessThan(20, i);
 
 			using var _2 = ThemeHelper.UseDarkTheme();
 			await WindowHelper.WaitForIdle();
@@ -4238,7 +4465,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 
-			Assert.IsTrue(i < 20);
+			Assert.IsLessThan(20, i);
 		}
 
 		[TestMethod]
@@ -4527,6 +4754,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // needs paste permission
 		public async Task When_MaxLine_Paste()
 		{
+			if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+			{
+				Assert.Inconclusive("Platform does not support clipboard operations.");
+			}
+
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
@@ -4607,6 +4839,104 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await ImageAssert.AreEqualAsync(screenshot1, screenshot2);
 		}
 
+		[TestMethod]
+		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21961")]
+		public async Task When_Caret_Positioning_With_Complex_Transformations()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Test"
+			};
+			textBox.RenderTransform = new RotateTransform { Angle = 30 };
+			var viewbox = new Viewbox
+			{
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+				Width = 200,
+				Height = 200,
+				Child = textBox
+			};
+			await UITestHelper.Load(viewbox);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			// Double tap the TextBox with finger to ensure we have "touch" based carets
+			using var finger = injector.GetFinger();
+			var textBoxBounds = textBox.GetAbsoluteBoundsRect();
+			var center = textBoxBounds.GetCenter();
+			finger.Press(center);
+			finger.Release();
+			await WindowHelper.WaitFor(() => textBox.FocusState == FocusState.Pointer);
+			textBox.SelectAll();
+
+			// Everything should be selected
+			Assert.AreEqual(0, textBox.SelectionStart);
+			Assert.AreEqual(textBox.Text.Length, textBox.SelectionLength);
+
+			// Wait for the caret popups to appear
+			await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.Child.FindFirstChild<Microsoft.UI.Xaml.Shapes.Ellipse>() is not null).Any());
+
+			// Get the caret popups
+			var caretPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.Child.FindFirstChild<Microsoft.UI.Xaml.Shapes.Ellipse>() is not null).ToList();
+			// We should have two caret popups (start and end)
+			Assert.HasCount(2, caretPopups);
+
+			// Validate the Ellipses of the carets are intersecting the bottom border of the TextBox
+			var textBoxTransform = textBox.TransformToVisual(null);
+			var bottomLeft = textBoxTransform.TransformPoint(new Point(0, textBox.ActualHeight));
+			var bottomRight = textBoxTransform.TransformPoint(new Point(textBox.ActualWidth, textBox.ActualHeight));
+
+			foreach (var popup in caretPopups)
+			{
+				var ellipse = popup.Child.FindFirstChild<Microsoft.UI.Xaml.Shapes.Ellipse>()!;
+				Assert.IsNotNull(ellipse);
+
+				// center in local space
+				var localCenter = new Point(ellipse.Width / 2, ellipse.Height / 2);
+
+				// pick a boundary point on the right side in local space
+				var localBoundary = new Point(ellipse.Width, ellipse.Height / 2);
+
+				// transform both to visual space
+				var ellipseTransform = ellipse.TransformToVisual(null);
+				var ellipseCenter = ellipseTransform.TransformPoint(localCenter);
+				var boundary = ellipseTransform.TransformPoint(localBoundary);
+
+				// actual radius after rotation/scale/etc.
+				double radius = Math.Sqrt(Math.Pow(boundary.X - ellipseCenter.X, 2) + Math.Pow(boundary.Y - ellipseCenter.Y, 2));
+				// Check that the line from bottomLeft to bottomRight intersects the ellipse using DistancePointToSegment
+				var distance = DistancePointToSegment(ellipseCenter, bottomLeft, bottomRight);
+				Assert.IsLessThan(radius, distance, "Caret ellipse should intersect the bottom border of the TextBox");
+			}
+		}
+
+		private double DistancePointToSegment(Point p, Point a, Point b)
+		{
+			var ax = a.X; var ay = a.Y;
+			var bx = b.X; var by = b.Y;
+			var px = p.X; var py = p.Y;
+
+			var abx = bx - ax;
+			var aby = by - ay;
+			var apx = px - ax;
+			var apy = py - ay;
+
+			// Project AP onto AB, clamp to [0,1]
+			double abLenSq = abx * abx + aby * aby;
+			double t = (apx * abx + apy * aby) / abLenSq;
+			t = Math.Clamp(t, 0, 1);
+
+			// Closest point
+			var cx = ax + t * abx;
+			var cy = ay + t * aby;
+
+			// Distance to closest point
+			var dx = px - cx;
+			var dy = py - cy;
+			return Math.Sqrt(dx * dx + dy * dy);
+		}
+
 		private static bool HasColorInRectangle(RawBitmap screenshot, Rectangle rect, Color expectedColor)
 		{
 			for (var x = rect.Left; x < rect.Right; x++)
@@ -4623,6 +4953,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			return false;
 		}
+
+#if HAS_UNO // SelectAll is not available for PasswordBox on WinUI.
+		[TestMethod]
+		public async Task When_PasswordBox_ContextFlyout_Commands_Available()
+		{
+			try
+			{
+				var SUT = new PasswordBox { Password = "secret pass", Width = 200 };
+				CopyPlaceholderTextToClipboard();
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Select(0, 4);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "PasswordBox should have TextCommandBarFlyout as ContextFlyout");
+				var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+
+				flyout.ShowAt(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+
+				Assert.IsFalse(hasCut, "Cut should NOT be available for PasswordBox (security)");
+				Assert.IsFalse(hasCopy, "Copy should NOT be available for PasswordBox (security)");
+				Assert.IsTrue(hasPaste, "Paste should be available for PasswordBox");
+				Assert.IsTrue(hasSelectAll, "Select All should be available for PasswordBox");
+
+				flyout.Hide();
+			}
+			finally
+			{
+				ClearClipboard();
+			}
+		}
+#endif
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{

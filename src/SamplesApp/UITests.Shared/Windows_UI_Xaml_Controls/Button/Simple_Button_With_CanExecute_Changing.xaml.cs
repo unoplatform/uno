@@ -1,10 +1,10 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Presentation.SamplePages;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Buttons", "Simple_Button_With_CanExecute_Changing", typeof(ButtonTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Buttons", Name = "Simple_Button_With_CanExecute_Changing", ViewModelType = typeof(ButtonTestsViewModel), IgnoreInSnapshotTests = true)]
 
 	public sealed partial class Simple_Button_With_CanExecute_Changing : UserControl
 	{

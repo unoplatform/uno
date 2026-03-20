@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
@@ -593,7 +594,21 @@ partial class MetadataAPI // quick impl
 		BindingFlags.Static |
 		BindingFlags.FlattenHierarchy;
 
-	public static DependencyProperty TryGetDependencyPropertyByName(Type type, string propertyName)
+	internal const DynamicallyAccessedMemberTypes TryGetDependencyPropertyByName_Type_Requirements =
+		  DynamicallyAccessedMemberTypes.PublicProperties
+		| DynamicallyAccessedMemberTypes.NonPublicProperties
+		| DynamicallyAccessedMemberTypes.PublicFields
+		| DynamicallyAccessedMemberTypes.NonPublicFields
+#if NET10_0_OR_GREATER
+		| DynamicallyAccessedMemberTypes.NonPublicFieldsWithInherited
+		| DynamicallyAccessedMemberTypes.NonPublicPropertiesWithInherited
+#endif  // NET10_0_OR_GREATER
+		;
+
+	public static DependencyProperty TryGetDependencyPropertyByName(
+		[DynamicallyAccessedMembers(TryGetDependencyPropertyByName_Type_Requirements)]
+		Type type,
+		string propertyName)
 	{
 		var key = (type, propertyName);
 

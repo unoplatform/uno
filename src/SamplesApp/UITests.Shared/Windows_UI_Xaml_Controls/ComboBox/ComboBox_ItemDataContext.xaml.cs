@@ -1,10 +1,10 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.Models;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 {
-	[SampleControlInfo("ComboBox", nameof(ComboBox_ItemDataContext))]
+	[Sample("ComboBox", Name = nameof(ComboBox_ItemDataContext))]
 	public sealed partial class ComboBox_ItemDataContext : Page
 	{
 		public ComboBox_ItemDataContext()

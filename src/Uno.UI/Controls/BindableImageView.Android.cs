@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -37,8 +38,11 @@ namespace Uno.UI.Controls
 	[Microsoft.UI.Xaml.Data.Bindable]
 	public class BindableImageView : ImageView, View.IOnTouchListener
 	{
+		const DynamicallyAccessedMemberTypes DrawablesRequirements = DynamicallyAccessedMemberTypes.PublicFields;
+
 		private string _uriSource;
 
+		[DynamicallyAccessedMembers(DrawablesRequirements)]
 		private static Type _drawables;
 		private static Dictionary<string, int> _drawablesLookup;
 
@@ -182,6 +186,7 @@ namespace Uno.UI.Controls
 			base.SetImageBitmap(bm);
 		}
 
+		[DynamicallyAccessedMembers(DrawablesRequirements)]
 		public static Type Drawables
 		{
 			get

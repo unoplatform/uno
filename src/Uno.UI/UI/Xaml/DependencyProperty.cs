@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Uno;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.DataBinding;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Media;
@@ -54,13 +55,22 @@ namespace Microsoft.UI.Xaml
 
 		private readonly Flags _flags;
 		private string _name;
+		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		private Type _propertyType;
+		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		private Type _ownerType;
 		private readonly int _uniqueId;
 
 		private static int _globalId = -1;
 
-		private DependencyProperty(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata, bool attached)
+		private DependencyProperty(
+			string name,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
+			Type propertyType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
+			Type ownerType,
+			PropertyMetadata defaultMetadata,
+			bool attached)
 		{
 			_name = name;
 			_propertyType = propertyType;
@@ -140,8 +150,8 @@ namespace Microsoft.UI.Xaml
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
 		public static DependencyProperty Register(
 			string name,
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type propertyType,
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type ownerType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
 			PropertyMetadata typeMetadata)
 		{
 			typeMetadata = FixMetadataIfNeeded(propertyType, typeMetadata);
@@ -196,8 +206,8 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		internal static DependencyProperty Register(
 			string name,
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type propertyType,
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type ownerType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
 			FrameworkPropertyMetadata typeMetadata)
 #pragma warning disable RS0030 // Do not used banned APIs
 			=> Register(name, propertyType, ownerType, (PropertyMetadata)typeMetadata);
@@ -214,8 +224,8 @@ namespace Microsoft.UI.Xaml
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
 		public static DependencyProperty RegisterAttached(
 			string name,
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type propertyType,
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type ownerType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
+			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
 			PropertyMetadata defaultMetadata)
 		{
 			defaultMetadata = FixMetadataIfNeeded(propertyType, defaultMetadata);
@@ -297,11 +307,13 @@ namespace Microsoft.UI.Xaml
 			return _ownerTypeMetadata.CloneWithOverwrittenDefaultValue(defaultValueForType);
 		}
 
+		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		internal Type OwnerType
 		{
 			get { return _ownerType; }
 		}
 
+		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		internal Type Type
 		{
 			get { return _propertyType; }
@@ -532,6 +544,22 @@ namespace Microsoft.UI.Xaml
 				return Boxes.BooleanBoxes.BoxedFalse;
 			}
 
+#if __SKIA__
+			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/components/DependencyObject/DependencyProperty.cpp (lines 249-276)
+			// WinUI calls GetDefaultTextControlContextFlyout/GetDefaultTextControlSelectionFlyout for text controls
+			if (this == UIElement.ContextFlyoutProperty &&
+				(typeof(TextBlock).IsAssignableFrom(forType) || typeof(RichTextBlock).IsAssignableFrom(forType)))
+			{
+				return GetDefaultTextControlContextFlyout();
+			}
+
+			if (this == TextBlock.SelectionFlyoutProperty ||
+				this == RichTextBlock.SelectionFlyoutProperty)
+			{
+				return GetDefaultTextControlSelectionFlyout();
+			}
+#endif
+
 			if (this == Shape.StretchProperty)
 			{
 				if (forType == typeof(Rectangle) || forType == typeof(Ellipse))
@@ -586,6 +614,38 @@ namespace Microsoft.UI.Xaml
 		}
 
 		public override int GetHashCode() => CachedHashCode;
+
+#if __SKIA__
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/components/DependencyObject/DependencyProperty.cpp (lines 249-261)
+		// CDependencyProperty::GetDefaultTextControlContextFlyout
+		private static FlyoutBase GetDefaultTextControlContextFlyout()
+		{
+			const string resourceKey = "TextControlCommandBarContextFlyout";
+			return GetTextControlFlyoutResource(resourceKey);
+		}
+
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/components/DependencyObject/DependencyProperty.cpp (lines 264-276)
+		// CDependencyProperty::GetDefaultTextControlSelectionFlyout
+		private static FlyoutBase GetDefaultTextControlSelectionFlyout()
+		{
+			const string resourceKey = "TextControlCommandBarSelectionFlyout";
+			return GetTextControlFlyoutResource(resourceKey);
+		}
+
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/components/DependencyObject/DependencyProperty.cpp (lines 211-246)
+		// GetTextControlFlyoutResource - looks up flyout from app resources, then theme resources
+		private static FlyoutBase GetTextControlFlyoutResource(string resourceKey)
+		{
+			if (Application.Current?.Resources?.TryGetValue(resourceKey, out var flyout) == true
+				&& flyout is FlyoutBase flyoutBase)
+			{
+				return flyoutBase;
+			}
+
+			var resolved = ResourceResolver.ResolveResourceStatic(resourceKey, typeof(FlyoutBase));
+			return resolved as FlyoutBase;
+		}
+#endif
 
 		[Flags]
 		private enum Flags

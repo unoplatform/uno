@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
-	[SampleControlInfo("CommandBar", "Native")]
+	[Sample("CommandBar", Name = "Native")]
 	public sealed partial class CommandBar_Native : UserControl
 	{
 		public CommandBar_Native()

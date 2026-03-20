@@ -52,9 +52,12 @@ static int sDepth[8] = {0};
             m |= (1 << i);
         }
     }
-    if (m != 0) return m;
+    
+    if (m != 0) {
+        return m;
+    }
 
-    // 2) Fall back to AppKit snapshot
+    // 2) AppKit fallback (may be inaccurate; doesn't track taps)
     NSInteger appKitMask = [NSEvent pressedMouseButtons];
     if (appKitMask != 0) return appKitMask;
 
@@ -65,6 +68,17 @@ static int sDepth[8] = {0};
         }
     }
     return m;
+}
+
++ (NSInteger)buttonMask:(NSEvent *)e
+{    
+    // reset the mask in cases where we believe we missed a MouseUp
+    for (int i = 0; i < 8; i++) {
+        sDepth[i] = 0;
+    }
+
+    [self track:e];
+    return [self mask];
 }
 
 @end

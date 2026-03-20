@@ -9,13 +9,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.RemoteControl.Host;
 
+/// <seealso href="ambient-registry.md"/>
 public class AmbientRegistry(ILogger logger)
 {
-	private static readonly string RegistryDirectory = Path.Combine(
-		Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-		"Uno Platform",
-		"DevServers"
-	);
+	private static readonly string RegistryDirectory =
+		Path.Combine(ResolveLocalApplicationDataPath(), "Uno Platform", "DevServers");
 
 	private static readonly JsonSerializerOptions JsonOptions = new()
 	{
@@ -24,6 +22,34 @@ public class AmbientRegistry(ILogger logger)
 
 	private string? _registryFilePath;
 	private readonly ILogger _logger = logger;
+
+	/// <summary>
+	/// Returns an absolute path to the local application data directory.
+	/// On Linux, <see cref="Environment.SpecialFolder.LocalApplicationData"/>
+	/// returns an empty string when <c>XDG_DATA_HOME</c> points outside
+	/// <c>$HOME/.local/share</c>. This method falls back to
+	/// <c>XDG_DATA_HOME</c>, then <c>$HOME/.local/share</c>, to ensure a
+	/// stable absolute path regardless of the environment configuration.
+	/// </summary>
+	internal static string ResolveLocalApplicationDataPath()
+	{
+		var path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+		if (!string.IsNullOrWhiteSpace(path))
+		{
+			return path;
+		}
+
+		// .NET returns empty when XDG_DATA_HOME is set to a non-standard path.
+		path = Environment.GetEnvironmentVariable("XDG_DATA_HOME");
+		if (!string.IsNullOrWhiteSpace(path) && Path.IsPathRooted(path))
+		{
+			return path;
+		}
+
+		// Last resort: use the conventional Linux default.
+		var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+		return Path.Combine(home, ".local", "share");
+	}
 
 	/// <summary>
 	/// Registers the current development server process in the local registry for discovery and management purposes.
@@ -35,7 +61,7 @@ public class AmbientRegistry(ILogger logger)
 	/// <param name="solution">The full path to the solution file associated with the development server, or null if not applicable.</param>
 	/// <param name="ppid">The process ID of the parent process that launched the development server.</param>
 	/// <param name="httpPort">The HTTP port number on which the development server is listening.</param>
-	internal void Register(string? solution, int ppid, int httpPort)
+	internal void Register(string? solution, int ppid, int httpPort, string? ideChannelId = null)
 	{
 		try
 		{
@@ -57,7 +83,8 @@ public class AmbientRegistry(ILogger logger)
 				StartTime = DateTime.UtcNow,
 				Port = httpPort,
 				MachineName = Environment.MachineName,
-				UserName = Environment.UserName
+				UserName = Environment.UserName,
+				IdeChannelId = ideChannelId
 			};
 
 			// Serialize and write to file
@@ -229,5 +256,6 @@ public class AmbientRegistry(ILogger logger)
 		public int Port { get; set; }
 		public string MachineName { get; set; } = string.Empty;
 		public string UserName { get; set; } = string.Empty;
+		public string? IdeChannelId { get; set; }
 	}
 }

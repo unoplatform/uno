@@ -11,12 +11,21 @@ internal static class VisualExtensions
 {
 	internal static Vector3 GetTotalOffset(this Visual visual)
 	{
+		var total = new Vector3(
+			visual.Offset.X + visual.ArrangeOffset.X,
+			visual.Offset.Y + visual.ArrangeOffset.Y,
+			visual.Offset.Z + visual.ArrangeOffset.Z
+		);
+
 		if (visual.IsTranslationEnabled && visual.Properties.TryGetVector3("Translation", out var translation) == CompositionGetValueStatus.Succeeded)
 		{
-			return visual.Offset + translation;
+			// WARNING: DO NOT change this to plain "return Offset + translation;"
+			// as this results in very wrong values on Android when debugger is not attached.
+			// https://github.com/dotnet/runtime/issues/114094
+			return new Vector3(total.X + translation.X, total.Y + translation.Y, total.Z + translation.Z);
 		}
 
-		return visual.Offset;
+		return total;
 	}
 
 #if DEBUG

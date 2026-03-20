@@ -14,7 +14,7 @@ The [`Uno.WinUI` NuGet package](https://www.nuget.org/packages/Uno.WinUI/) and [
 - The support for cross-platform non-UI APIs, such as file system access, devices and sensors, pickers, etc...
 
 > [!NOTE]
-> As the API surface is very large, some parts are included but not implemented. These features are marked with the [`Uno.NotImplementedAttribute`] attribute, and a code analyzer is included with the Uno.WinUI package will generate a warning for any such features that are referenced. You can see a complete list of supported APIs [here](implemented-views.md).
+> As the API surface is very large, some parts are included but not implemented. These features are marked with the [`Uno.NotImplementedAttribute`] attribute, and a code analyzer is included with the Uno.WinUI package will generate a warning for any such features that are referenced. You can see a complete list of supported APIs in the [implemented views documentation](implemented-views.md).
 
 ## Rendering the UI
 
@@ -48,13 +48,13 @@ For more information, see our documentation on the [Native renderer](xref:uno.fe
 
 ## Windows using WinAppSDK
 
-On Windows (the `net9.0-windows10.0.xxxxx` target framework) using [Windows App SDK](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/), the application isn't using Uno Platform at all. It's compiled just like a single-platform WinUI application, using Microsoft's own tooling.
+On Windows (the `net10.0-windows10.0.xxxxx` target framework) using [Windows App SDK](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/), the application isn't using Uno Platform at all. It's compiled just like a single-platform WinUI application, using Microsoft's own tooling.
 
 ## Uno Platform at Build Time
 
 ### Binaries
 
-Uno Platform applications use [.NET 9+](https://learn.microsoft.com/dotnet/core/introduction) and run on all major platforms:
+Uno Platform applications use [.NET 9 or later](https://learn.microsoft.com/dotnet/core/introduction) and run on all major platforms:
 
 - **Mobile/Desktop**: via .NET for Mobile
 - **Web**: via .NET for WebAssembly

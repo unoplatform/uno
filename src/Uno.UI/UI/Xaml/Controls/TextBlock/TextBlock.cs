@@ -60,18 +60,26 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// end can be less than or equal to start when the selection starts ahead and then goes back
 		// see the selection in TextBox.skia.cs for more info
-		private Range Selection
+		internal Range Selection
 		{
 			get => _selection;
 			set
 			{
-				_selection = value;
-
-				OnSelectionChanged();
+				if (_selection != value)
+				{
+					_selection = value;
+					OnSelectionChanged();
+				}
 			}
 		}
 
 		partial void OnSelectionChanged();
+
+		/// <summary>
+		/// Called from OnPointerReleased to handle SelectionFlyout visibility updates.
+		/// Implemented in TextBlock.skia.cs.
+		/// </summary>
+		partial void OnPointerReleasedForSelectionFlyout(PointerRoutedEventArgs e);
 
 #if !UNO_REFERENCE_API
 		public TextBlock()
@@ -153,7 +161,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				UpdateHyperlinks();
-				Inlines.InvalidatePreorderTree();
+				Inlines.InvalidateTraversedTree();
 			}
 
 			OnInlinesChangedPartial();
@@ -311,7 +319,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateInlines(newValue);
 
 #if __SKIA__
-			if (!IsTextBoxDisplay)
+			if (OwningTextBox is null)
 #endif
 			{
 				// On skia, we don't want to set the selection here in case TextBox is managing the selection.
@@ -752,8 +760,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		#region TextHighlighters
+
+		public IList<TextHighlighter> TextHighlighters { get; } = new ObservableCollection<TextHighlighter>();
+
+		#endregion
+
 		#region DependencyProperty: IsTextTrimmed
 		private TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> _isTextTrimmedChanged;
+
+#if __SKIA__
+		public event ContextMenuOpeningEventHandler ContextMenuOpening;
+#endif
 
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
@@ -918,6 +936,30 @@ namespace Microsoft.UI.Xaml.Controls
 			=> args.Pointer.PointerDeviceType is PointerDeviceType.Mouse;
 #endif
 
+		// Ported from: TextSelectionManager.cpp OnRightTapped (lines 895-938)
+		// WinUI focuses the TextBlock on right-tap so that when the context flyout
+		// opens and steals focus, the LostFocus handler can set
+		// _forceFocusedForContextFlyout, keeping the selection highlight visible.
+		private static readonly RightTappedEventHandler OnRightTapped = (object sender, RightTappedRoutedEventArgs e) =>
+		{
+			if (sender is not TextBlock that || !that.IsTextSelectionEnabled)
+			{
+				return;
+			}
+
+			if (e.Handled)
+			{
+				return;
+			}
+
+#if __SKIA__
+			if (!that.IsFocused && !Internal.TextControlFlyoutHelper.IsOpen(that.ContextFlyout))
+			{
+				that.Focus(FocusState.Pointer);
+			}
+#endif
+		};
+
 		private static readonly PointerEventHandler OnPointerPressed = (object sender, PointerRoutedEventArgs e) =>
 		{
 			if (sender is not TextBlock that)
@@ -962,7 +1004,14 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				e.Handled = true;
-				that.Focus(FocusState.Pointer);
+				// Ported from: TextSelectionManager.cpp OnHolding/OnRightTapped
+				// Don't take focus if the context flyout is open.
+#if __SKIA__
+				if (!Internal.TextControlFlyoutHelper.IsOpen(that.ContextFlyout))
+#endif
+				{
+					that.Focus(FocusState.Pointer);
+				}
 
 				that.CapturePointer(e.Pointer);
 			}
@@ -1009,6 +1058,9 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
+			// Modeled after WinUI TextSelectionManager.cpp UpdateSelectionFlyoutVisibility:
+			// After pointer release, queue a SelectionFlyout visibility update for touch/pen input.
+			that.OnPointerReleasedForSelectionFlyout(e);
 #if !__WASM__
 			e.Handled |= that.IsTextSelectionEnabled;
 #endif
@@ -1095,8 +1147,8 @@ namespace Microsoft.UI.Xaml.Controls
 			var aborted = false;
 			foreach (var hyperlink in _hyperlinks.ToList()) // .ToList() : for a strange reason on WASM the collection gets modified
 			{
-				aborted |= hyperlink.hyperlink.AbortPointerPressed(pointer);
-				aborted |= hyperlink.hyperlink.ReleasePointerOver(pointer);
+				aborted |= hyperlink.AbortPointerPressed(pointer);
+				aborted |= hyperlink.ReleasePointerOver(pointer);
 			}
 
 			aborted |= _hyperlinkOver?.ReleasePointerOver(pointer) ?? false;
@@ -1105,7 +1157,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return aborted;
 		}
 
-		private readonly ObservableCollection<(int start, int end, Hyperlink hyperlink)> _hyperlinks = new();
+		private readonly ObservableCollection<Hyperlink> _hyperlinks = new();
 
 		private void HyperlinksOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RecalculateSubscribeToPointerEvents();
 
@@ -1120,7 +1172,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateHyperlinks()
 		{
-			global::System.Diagnostics.Debug.Assert(_hyperlinkOver is null || _hyperlinks.Where(h => h.hyperlink == _hyperlinkOver).Count() == 1);
+			global::System.Diagnostics.Debug.Assert(_hyperlinkOver is null || _hyperlinks.Count(h => h == _hyperlinkOver) == 1);
 
 			if (UseInlinesFastPath) // i.e. no Inlines
 			{
@@ -1129,7 +1181,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// Make sure to clear the pressed state of removed hyperlinks
 					foreach (var hyperlink in _hyperlinks)
 					{
-						hyperlink.hyperlink.AbortAllPointerState();
+						hyperlink.AbortAllPointerState();
 					}
 
 					_hyperlinkOver = null;
@@ -1139,26 +1191,13 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var previousHyperLinks = _hyperlinks.SelectToList(hyperlink => hyperlink.hyperlink);
-
 			_hyperlinkOver = null;
+			var previousHyperLinks = _hyperlinks.ToHashSet();
 			_hyperlinks.Clear();
-
-			var start = 0;
-			foreach (var inline in Inlines.PreorderTree)
+			foreach (var hyperlink in Inlines.TraversedTree.preorderTree.OfType<Hyperlink>())
 			{
-				switch (inline)
-				{
-					case Hyperlink hyperlink:
-						previousHyperLinks.Remove(hyperlink);
-						_hyperlinks.Add((start, start + hyperlink.GetText().Length, hyperlink));
-						break;
-					case Span span:
-						break;
-					default: // Leaf node
-						start += inline.GetText().Length;
-						break;
-				}
+				_hyperlinks.Add(hyperlink);
+				previousHyperLinks.Remove(hyperlink);
 			}
 
 			// Make sure to clear the pressed state of removed hyperlinks
@@ -1202,6 +1241,7 @@ namespace Microsoft.UI.Xaml.Controls
 					InsertHandler(PointerEnteredEvent, OnPointerEntered);
 					InsertHandler(PointerExitedEvent, OnPointerExit);
 					InsertHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
+					InsertHandler(RightTappedEvent, OnRightTapped);
 				}
 				else
 				{
@@ -1211,6 +1251,7 @@ namespace Microsoft.UI.Xaml.Controls
 					RemoveHandler(PointerEnteredEvent, OnPointerEntered);
 					RemoveHandler(PointerExitedEvent, OnPointerExit);
 					RemoveHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
+					RemoveHandler(RightTappedEvent, OnRightTapped);
 				}
 			}
 		}
@@ -1234,7 +1275,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				foreach (var candidate in _hyperlinks)
 				{
-					if (hyperlink == candidate.hyperlink)
+					if (hyperlink == candidate)
 					{
 						return hyperlink;
 					}
@@ -1242,14 +1283,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return null;
+#elif __SKIA__
+			return ParsedText.GetHyperlinkAt(e.GetCurrentPoint(this).Position);
 #else
-			var point = e.GetCurrentPoint(this).Position;
-			var characterIndex = GetCharacterIndexAtPoint(point);
-			var hyperlink = _hyperlinks
-				.FirstOrDefault(h => h.start <= characterIndex && h.end > characterIndex)
-				.hyperlink;
-
-			return hyperlink;
+			return null;
 #endif
 		}
 		#endregion
@@ -1298,13 +1335,6 @@ namespace Microsoft.UI.Xaml.Controls
 			/*IsEnabled() &&*/ (IsTextSelectionEnabled || IsTabStop || FocusProperties.GetCaretBrowsingModeEnable()) &&
 			AreAllAncestorsVisible();
 
-		private record struct Range(int start, int end)
-		{
-			public Range((int start, int end) tuple) : this(tuple.start, tuple.end)
-			{
-			}
-		}
-
 		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms")]
 		private bool IsTextTrimmable =>
 			TextTrimming != TextTrimming.None ||
@@ -1316,5 +1346,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
 		// There is a special handling for Foreground specifically there.
 		void IThemeChangeAware.OnThemeChanged() => OnForegroundChanged();
+
+		internal record struct Range(int start, int end);
 	}
 }

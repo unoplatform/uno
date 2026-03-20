@@ -1,17 +1,19 @@
-﻿using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.MSBuild;
-using System.Linq;
-using System.Threading;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Composition.Hosting;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Host;
+using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
-using System.Collections.Generic;
-using System.Runtime.Loader;
-using Microsoft.Extensions.Logging;
-using System.Composition.Hosting;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
@@ -19,14 +21,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 	{
 		private static string MSBuildBasePath = "";
 
-		public static async Task<(Solution, WatchHotReloadService)> CreateWorkspaceAsync(
+		public static async Task<(Workspace, WatchHotReloadService)> CreateWorkspaceAsync(
 			string projectPath,
 			IReporter reporter,
 			string[] metadataUpdateCapabilities,
 			Dictionary<string, string> properties,
 			CancellationToken ct)
 		{
-			if (properties.TryGetValue("UnoHotReloadDiagnosticsLogPath", out var logPath))
+			if (properties.TryGetValue("UnoHotReloadDiagnosticsLogPath", out var logPath) && logPath is { Length: > 0 })
 			{
 				// Sets Roslyn's environment variable for troubleshooting HR, see:
 				// https://github.com/dotnet/roslyn/blob/fc6e0c25277ff440ca7ded842ac60278ee6c9695/src/Features/Core/Portable/EditAndContinue/EditAndContinueService.cs#L72
@@ -34,6 +36,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 				// Unconditionally enable binlog generation in msbuild. See https://github.com/dotnet/project-system/blob/4210ce79cfd35154dbd858f056bfb9101f290e69/docs/design-time-builds.md?L61
 				Environment.SetEnvironmentVariable("MSBUILDDEBUGENGINE", "1");
+				Environment.SetEnvironmentVariable("MSBuildDebugEngine", "1"); // For case-sensitive environments like macOS
 				Environment.SetEnvironmentVariable("MSBUILDDEBUGPATH", logPath);
 			}
 
@@ -81,7 +84,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				}
 				catch (InvalidOperationException) when (i > 1)
 				{
-					// When we load the work space right after the app was started, it happens that it "app build" is not yet completed, preventing us to open the project.
+					// When we load the workspace right after the app was started, it happens that it "app build" is not yet completed, preventing us to open the project.
 					// We retry a few times to let the build complete.
 					await Task.Delay(5_000, ct);
 				}
@@ -99,7 +102,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				await project.GetCompilationAsync(ct);
 			}
 
-			return (currentSolution, hotReloadService);
+			return (workspace, hotReloadService);
 		}
 
 		public static void InitializeRoslyn(string? workDir)

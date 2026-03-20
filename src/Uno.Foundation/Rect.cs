@@ -9,6 +9,7 @@ using Uno.Extensions;
 namespace Windows.Foundation;
 
 [DebuggerDisplay("[Rect {Size}@{Location}]")]
+[Uno.Foundation.Internals.Bindable]
 public partial struct Rect
 {
 	// These are public in WinUI (with the underscore!), but we don't want to expose it for now at least.

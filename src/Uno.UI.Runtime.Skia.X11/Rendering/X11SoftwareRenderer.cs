@@ -13,16 +13,21 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		private IntPtr? _xImage;
 		private int _width;
 		private int _height;
-		private readonly X11Window _x11Window;
+		private readonly uint _depth;
 
 		public X11SoftwareRenderer(IXamlRootHost host, X11Window x11Window) : base(host, x11Window)
 		{
-			_x11Window = x11Window;
+			using var lockDisposable = X11Helper.XLock(_x11Window.Display);
 			_gc = X11Helper.XCreateGC(x11Window.Display, x11Window.Window, 0, 0);
+			XWindowAttributes attributes = default;
+			_ = XLib.XGetWindowAttributes(_x11Window.Display, _x11Window.Window, ref attributes);
+			_depth = (uint)attributes.depth;
 		}
 
-		protected override SKSurface UpdateSize(int width, int height, int depth)
+		protected override SKSurface UpdateSize(int width, int height)
 		{
+			using var lockDisposable = X11Helper.XLock(_x11Window.Display);
+
 			_width = width;
 			_height = height;
 
@@ -43,7 +48,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			_xImage = X11Helper.XCreateImage(
 				display: _x11Window.Display,
 				visual: /* CopyFromParent */ 0,
-				depth: (uint)depth,
+				depth: _depth,
 				format: /* ZPixmap */ 2,
 				offset: 0,
 				data: _bitmap.GetPixels(),
@@ -69,6 +74,21 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				desty: 0,
 				width: (uint)_width,
 				height: (uint)_height);
+		}
+
+		public override void Dispose()
+		{
+			_bitmap?.Dispose();
+			if (_xImage is { } xImage)
+			{
+				unsafe
+				{
+					// XDestroyImage frees the buffer as well, so we unset it first
+					var ptr = (XImage*)xImage.ToPointer();
+					ptr->data = IntPtr.Zero;
+				}
+				_ = XLib.XDestroyImage(xImage);
+			}
 		}
 	}
 }

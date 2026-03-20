@@ -13,8 +13,8 @@
 	<Import Project="../targetframework-override-noplatform.props" />
 
 	<ItemGroup>
-		<PackageReference Include="ModelContextProtocol" Version="0.3.0-preview.4" />
-		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.3.0-preview.4" />
+		<PackageReference Include="ModelContextProtocol" Version="1.1.0" />
+		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="1.1.0" />
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="System.Reactive" Version="6.0.0" />
@@ -36,7 +36,7 @@
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\Helpers\**\*.cs" Exclude="..\Uno.UI.RemoteControl\Helpers\ServiceCollectionExtensions.cs" Link="Helpers/%(Filename)" />
-		<Compile Include="..\Uno.UI.RemoteControl.Server.Processors\Helpers\**\*.cs" Link="Helpers/%(Filename)" />
+		<Compile Include="..\Uno.UI.RemoteControl.Server.Processors\Helpers\ProcessHelper.cs" Link="Helpers/%(Filename)" />
 		<Compile Include="..\Uno.UI.RemoteControl.VS\Helpers\AssemblyInfoReader.cs" Link="Helpers\AssemblyInfoReader.cs" />
 	</ItemGroup>
 

@@ -39,7 +39,8 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase, INativeWin
 		var bounds = new Rect(default, new Size(width, height));
 
 		SetBoundsAndVisibleBounds(bounds, bounds);
-		Size = new((int)(bounds.Width * RasterizationScale), (int)(bounds.Height * RasterizationScale));
+		var size = new Windows.Graphics.SizeInt32((int)(bounds.Width * RasterizationScale), (int)(bounds.Height * RasterizationScale));
+		SetSizes(size, size);
 	}
 
 	protected override void ShowCore()
