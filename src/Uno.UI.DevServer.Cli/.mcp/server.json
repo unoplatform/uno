@@ -1,0 +1,23 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "uno.platform/uno-app",
+  "title": "Uno Platform App MCP",
+  "description": "Local MCP bridge for Uno Platform apps. Provides interactive access to running apps: screenshot, click, type, visual tree inspection, and automation peer actions.",
+  "version": "1.0.0",
+  "websiteUrl": "https://platform.uno",
+  "repository": {
+    "url": "https://github.com/unoplatform/uno",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "nuget",
+      "registryBaseUrl": "https://api.nuget.org/v3/index.json",
+      "identifier": "Uno.DevServer",
+      "packageArguments": ["mcp", "serve"],
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

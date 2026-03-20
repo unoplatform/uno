@@ -21,10 +21,12 @@
 		<PackageId>Uno.DevServer</PackageId>
 		<PackageDescription>A dotnet tool to manage the devserver in a CLI environment</PackageDescription>
 		<Title>Uno Platform DevServer CLI tool</Title>
+		<PackageType>DotnetTool;McpServer</PackageType>
 	</PropertyGroup>
 	
 	<ItemGroup>
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+		<None Include=".mcp\server.json" Pack="true" PackagePath=".mcp\" />
 	</ItemGroup>
 
 	<ItemGroup>
