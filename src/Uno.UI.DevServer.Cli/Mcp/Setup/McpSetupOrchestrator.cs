@@ -28,14 +28,21 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		var supportedIdes = new List<SupportedIdeEntry>();
 		var serverEntries = new List<ServerStatusEntry>();
 
-		// Query all agent CLIs in parallel (each spawns a process, so parallelism helps)
+		// When a specific IDE is requested, filter to just that IDE to avoid
+		// spawning unnecessary CLI processes for every known agent.
+		var targetIdes = callerIde is not null
+			&& defs.Ides.TryGetValue(callerIde, out var callerProfile)
+			? new Dictionary<string, IdeProfile>(StringComparer.OrdinalIgnoreCase) { [callerIde] = callerProfile }
+			: defs.Ides;
+
+		// Query agent CLIs in parallel (each spawns a process, so parallelism helps)
 		progress?.Invoke("Querying agent CLIs...");
-		var cliResults = QueryAllCliLists(defs.Ides, workspace, defs.Servers, progress);
+		var cliResults = QueryAllCliLists(targetIdes, workspace, defs.Servers, progress);
 
 		// Build per-server, per-client status
 		var ideStatusMap = new Dictionary<string, Dictionary<string, ServerIdeStatus>>();
 
-		foreach (var (ideName, profile) in defs.Ides)
+		foreach (var (ideName, profile) in targetIdes)
 		{
 			progress?.Invoke($"Scanning {ideName}...");
 			var profileExpectedDefs = ApplyProfileTransforms(expectedDefinitions, profile);
