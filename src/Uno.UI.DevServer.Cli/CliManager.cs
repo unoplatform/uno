@@ -815,6 +815,13 @@ internal class CliManager
 					serverDefinitionsPath = args[++i];
 					break;
 				default:
+					// Skip global flags already consumed by Program.cs
+					if (a is "--log-level" or "--file-log")
+					{
+						if (i + 1 < args.Length) { i++; }
+						break;
+					}
+
 					if (a.StartsWith('-'))
 					{
 						_logger.LogError("Unknown option '{Option}' for mcp {Subcommand}", a, subcommand);
