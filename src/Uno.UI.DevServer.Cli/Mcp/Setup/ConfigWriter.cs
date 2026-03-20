@@ -585,6 +585,11 @@ internal static class ConfigWriter
 		}
 	}
 
+	/// <summary>
+	/// Removes stale property keys from a server entry after a JSONC-preserving merge.
+	/// Uses System.Text.Json re-serialization, which strips comments from the file.
+	/// Only invoked when keys were actually removed (rare: OpenCode format migration).
+	/// </summary>
 	private static string RemoveObsoleteKeys(
 		string content, string rootKey, string serverKey, IReadOnlyList<string> keysToRemove)
 	{

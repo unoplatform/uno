@@ -65,7 +65,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 				{
 					status = "registered";
 					var serverDef = defs.Servers.TryGetValue(serverName, out var sd) ? sd : null;
-					locations = [new LocationEntry($"(via {profile.Cli!.Executable} CLI)", serverDef?.Transport ?? "-", "-")];
+					locations = [new LocationEntry($"(via {profile.Cli!.Executable} CLI)", "-", serverDef?.Transport ?? "-")];
 				}
 
 				map[ideName] = new ServerIdeStatus(
@@ -554,11 +554,19 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			}
 			catch (Exception ex)
 			{
-				_logger.LogWarning(ex, "CLI install failed for {Server}, falling back to file", serverName);
-				var scanner = new ConfigScanner(_fs);
-				var scanResult = scanner.Scan(profile, workspace, defs.Servers, expectedDefinitions);
-				var serverResult = scanResult.ServerResults.TryGetValue(serverName, out var sr) ? sr : null;
-				operations.Add(InstallServer(targetIde, profile, scanResult, serverName, serverDef, serverResult, definition, defs.Servers, dryRun));
+				if (string.IsNullOrEmpty(profile.WriteTarget))
+				{
+					_logger.LogError(ex, "CLI install failed for {Server} and no file-based fallback is available", serverName);
+					operations.Add(new OperationEntry(serverName, targetIde, "error", null, ex.Message));
+				}
+				else
+				{
+					_logger.LogWarning(ex, "CLI install failed for {Server}, falling back to file", serverName);
+					var scanner = new ConfigScanner(_fs);
+					var scanResult = scanner.Scan(profile, workspace, defs.Servers, expectedDefinitions);
+					var serverResult = scanResult.ServerResults.TryGetValue(serverName, out var sr) ? sr : null;
+					operations.Add(InstallServer(targetIde, profile, scanResult, serverName, serverDef, serverResult, definition, defs.Servers, dryRun));
+				}
 			}
 		}
 
