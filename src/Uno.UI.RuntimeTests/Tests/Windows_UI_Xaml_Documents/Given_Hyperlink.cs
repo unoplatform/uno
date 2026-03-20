@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
+using Uno.UI;
 using static Private.Infrastructure.TestServices;
 using Uno.Disposables;
 using Uno.UI.Toolkit.DevTools.Input;
@@ -29,6 +30,7 @@ public class Given_Hyperlink
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task TestSimpleHyperlink(bool useDark, bool useFluent, string expectedColorCode)
 	{
+		using var _ = new AccentColorOverride();
 		var expectedColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedColorCode);
 		using (useDark ? ThemeHelper.UseDarkTheme() : null)
 		{
@@ -62,6 +64,7 @@ public class Given_Hyperlink
 	[DataRow(false, true, "#FF004275", "#FF002642")]
 	public async Task TestHoveredHyperlink(bool useDark, bool useFluent, string expectedUnhoveredColorCode, string expectedHoveredColorCode)
 	{
+		using var _ = new AccentColorOverride();
 		var expectedUnhoveredColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedUnhoveredColorCode);
 		var expectedHoveredColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedHoveredColorCode);
 		using (useDark ? ThemeHelper.UseDarkTheme() : null)
@@ -115,6 +118,7 @@ public class Given_Hyperlink
 	[DataRow(false, true, "#FF004275", "#FF002642", "#FF005A9E")]
 	public async Task TestPressedHyperlink(bool useDark, bool useFluent, string expectedUnhoveredColorCode, string expectedHoveredColorCode, string expectedPressedColorCode)
 	{
+		using var _ = new AccentColorOverride();
 		var expectedUnhoveredColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedUnhoveredColorCode);
 		var expectedHoveredColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedHoveredColorCode);
 		var expectedPressedColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedPressedColorCode);
@@ -169,6 +173,7 @@ public class Given_Hyperlink
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task TestNotInheritedFromTextBlock(bool useDark, bool useFluent, string expectedColorCode)
 	{
+		using var _ = new AccentColorOverride();
 		var expectedColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedColorCode);
 		using (useDark ? ThemeHelper.UseDarkTheme() : null)
 		{
@@ -225,6 +230,27 @@ public class Given_Hyperlink
 			Assert.AreEqual(Colors.Orange, ((SolidColorBrush)hyperlinkRun.Foreground).Color);
 			Assert.AreEqual(TextDecorations.Underline, hyperlinkRun.TextDecorations);
 
+		}
+	}
+
+	/// <summary>
+	/// Overrides the accent color to the default blue (#FF0078D7) for deterministic test results,
+	/// restoring the previous value on dispose.
+	/// </summary>
+	internal struct AccentColorOverride : IDisposable
+	{
+		private static readonly Color DefaultBlueAccent = Color.FromArgb(0xFF, 0x00, 0x78, 0xD7);
+		private readonly Color? _previous;
+
+		public AccentColorOverride()
+		{
+			_previous = FeatureConfiguration.AccentColor.OverrideAccentColor;
+			FeatureConfiguration.AccentColor.OverrideAccentColor = DefaultBlueAccent;
+		}
+
+		public void Dispose()
+		{
+			FeatureConfiguration.AccentColor.OverrideAccentColor = _previous;
 		}
 	}
 }
