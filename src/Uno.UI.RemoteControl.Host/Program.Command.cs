@@ -127,7 +127,14 @@ partial class Program
 			var ready = await WaitForDevServerReadyAsync(httpPort, timeoutMs);
 			if (!ready)
 			{
-				await Console.Error.WriteLineAsync($"DevServer did not become ready within {timeoutMs}ms");
+				if (process.HasExited)
+				{
+					await Console.Error.WriteLineAsync($"DevServer process died (exit code {process.ExitCode}) before becoming ready");
+				}
+				else
+				{
+					await Console.Error.WriteLineAsync($"DevServer did not become ready within {timeoutMs}ms");
+				}
 
 				await TerminateProcessAsync(process);
 				await DrainProcessOutputAsync(outputTask, errorTask);
@@ -274,8 +281,10 @@ partial class Program
 
 		foreach (var s in servers)
 		{
-			await Console.Out.WriteLineAsync($"Process ID: {s.ProcessId}");
-			await Console.Out.WriteLineAsync($"  Parent PID: {s.ParentProcessId}");
+			var processName = TryGetProcessName(s.ProcessId);
+			var parentName = TryGetProcessName(s.ParentProcessId);
+			await Console.Out.WriteLineAsync($"Process ID: {s.ProcessId}{(processName is not null ? $" ({processName})" : "")}");
+			await Console.Out.WriteLineAsync($"  Parent PID: {s.ParentProcessId}{(parentName is not null ? $" ({parentName})" : "")}");
 			await Console.Out.WriteLineAsync($"  Port: {s.Port}");
 			await Console.Out.WriteLineAsync($"  Solution: {s.SolutionPath ?? "N/A"}");
 			await Console.Out.WriteLineAsync($"  Machine: {s.MachineName}");
@@ -356,6 +365,19 @@ partial class Program
 		}
 
 		return false;
+	}
+
+	private static string? TryGetProcessName(int pid)
+	{
+		try
+		{
+			using var process = Process.GetProcessById(pid);
+			return process.HasExited ? null : process.ProcessName;
+		}
+		catch
+		{
+			return null;
+		}
 	}
 
 	private static int EnsureTcpPort()

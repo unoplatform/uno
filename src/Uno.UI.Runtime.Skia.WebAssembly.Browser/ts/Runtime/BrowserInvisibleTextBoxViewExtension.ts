@@ -12,6 +12,10 @@
 		private static nextSelectionEnd: number;
 		private static nextSelectionDirection: "forward" | "backward" | "none";
 
+		// Android soft keyboards report all key events with keyCode 229 ("Unidentified").
+		// Text changes are synced via the oninput handler instead.
+		private static readonly ANDROID_IME_KEYCODE = 229;
+
 		public static initialize() {
 			if (BrowserInvisibleTextBoxViewExtension._exports == undefined) {
 				const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
@@ -87,9 +91,9 @@
 			};
 
 			// Handle Enter key from Android virtual keyboards which don't fire keydown events.
-			// Android keyboards typically fire beforeinput with inputType "insertLineBreak" instead.
+			// Android keyboards typically fire beforeinput with inputType "insertLineBreak" or "insertParagraph" instead.
 			input.addEventListener("beforeinput", (ev: InputEvent) => {
-				if (ev.inputType === "insertLineBreak" && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+				if ((ev.inputType === "insertLineBreak" || ev.inputType === "insertParagraph") && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
 					ev.preventDefault();
 
 					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
@@ -113,7 +117,23 @@
 					return;
 				}
 
+				// Android soft keyboards fire all keys as keyCode 229 / key "Unidentified".
+				// The C# side cannot identify these (maps to VirtualKey.None), so let the browser
+				// handle them natively. Text changes sync via the oninput handler.
+				// stopPropagation prevents the document-level BrowserKeyboardInputSource from
+				// calling preventDefault() on the event.
+				if (ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
+					ev.stopPropagation();
+					return;
+				}
+
 				ev.preventDefault();
+			};
+
+			input.onkeyup = ev => {
+				if (ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
+					ev.stopPropagation();
+				}
 			};
 
 			document.body.appendChild(input);

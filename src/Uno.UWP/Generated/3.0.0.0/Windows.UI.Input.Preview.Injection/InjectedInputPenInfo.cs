@@ -8,111 +8,13 @@ namespace Windows.UI.Input.Preview.Injection
 #endif
 	public partial class InjectedInputPenInfo
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int TiltY
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int InjectedInputPenInfo.TiltY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InjectedInputPenInfo.TiltY");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputPenInfo", "int InjectedInputPenInfo.TiltY");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int TiltX
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int InjectedInputPenInfo.TiltX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InjectedInputPenInfo.TiltX");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputPenInfo", "int InjectedInputPenInfo.TiltX");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double Rotation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double InjectedInputPenInfo.Rotation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputPenInfo.Rotation");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputPenInfo", "double InjectedInputPenInfo.Rotation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double Pressure
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double InjectedInputPenInfo.Pressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputPenInfo.Pressure");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputPenInfo", "double InjectedInputPenInfo.Pressure");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo PointerInfo
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InjectedInputPointerInfo InjectedInputPenInfo.PointerInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InjectedInputPointerInfo%20InjectedInputPenInfo.PointerInfo");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputPenInfo", "InjectedInputPointerInfo InjectedInputPenInfo.PointerInfo");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.Preview.Injection.InjectedInputPenParameters PenParameters
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InjectedInputPenParameters InjectedInputPenInfo.PenParameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InjectedInputPenParameters%20InjectedInputPenInfo.PenParameters");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputPenInfo", "InjectedInputPenParameters InjectedInputPenInfo.PenParameters");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.Preview.Injection.InjectedInputPenButtons PenButtons
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InjectedInputPenButtons InjectedInputPenInfo.PenButtons is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InjectedInputPenButtons%20InjectedInputPenInfo.PenButtons");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputPenInfo", "InjectedInputPenButtons InjectedInputPenInfo.PenButtons");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public InjectedInputPenInfo()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputPenInfo", "InjectedInputPenInfo.InjectedInputPenInfo()");
-		}
-#endif
+		// Skipping already declared property Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.TiltY
+		// Skipping already declared property Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.TiltX
+		// Skipping already declared property Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.Rotation
+		// Skipping already declared property Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.Pressure
+		// Skipping already declared property Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PointerInfo
+		// Skipping already declared property Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PenParameters
+		// Skipping already declared property Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PenButtons
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.InjectedInputPenInfo()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PointerInfo.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PointerInfo.set

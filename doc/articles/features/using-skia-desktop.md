@@ -133,4 +133,31 @@ To build an app with this feature enabled:
    > [!NOTE]
    > .NET Native AOT on Windows is not yet supported as WPF does not support it at this time.
 
+### Automatic Binding Preservation
+
+When building an Uno Platform application head (for example, a Skia Desktop head) with Native AOT, Uno Platform automatically preserves public properties of types referenced by `[Bindable]` types to ensure data binding works correctly at runtime. This happens automatically when both `IsUnoHead=true` and `PublishAot=true` are set on the project (Uno head templates set `IsUnoHead` for you).
+
+> [!NOTE]
+> Automatic binding preservation is only available for Uno Platform application heads. Class libraries or other projects that set `PublishAot=true` but are not marked with `IsUnoHead=true` will not get this behavior.
+
+The build system:
+
+1. Finds all types marked with `Microsoft.UI.Xaml.Data.BindableAttribute` or `Uno.Extensions.Reactive.Bindings.BindableAttribute`
+2. Discovers types referenced by public properties of those bindable types
+3. Generates an ILLink descriptor file to preserve the public properties (getters/setters) of discovered types
+
+For example, if you have:
+
+```csharp
+[Bindable]
+public class MainViewModel
+{
+    public Entity MyEntity { get; set; }
+}
+
+public record Entity(string Name);
+```
+
+The build system will automatically preserve the `Name` property of `Entity`, allowing `{Binding MyEntity.Name}` expressions to work correctly in Native AOT builds.
+
 For more information, see [the runtime documentation](https://github.com/dotnet/runtime/blob/main/src/coreclr/nativeaot/docs/reflection-in-aot-mode.md) and the [.NET Native AOT documentation](https://learn.microsoft.com/dotnet/core/deploying/native-aot/).

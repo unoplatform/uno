@@ -6,14 +6,25 @@ This file provides guidance to AI Agents when working with code in this reposito
 
 Uno Platform is an open-source .NET UI cross-platform framework for building .NET applications from a single codebase using the WinUI 3 API. It targets Web (WebAssembly), Desktop (Windows, macOS, Linux via Skia), and Mobile (iOS, tvOS, Android).
 
-**Reference these instructions first**. Use specialized agents for deep dives:
+**Reference these instructions first**. Use Claude Code skills (preferred) or specialized agents for deep dives:
+
+#### Claude Code Skills (invoke via `/skill-name`)
+
+| Skill | Command | Use For |
+|-------|---------|---------|
+| Add Sample | `/add-sample` | Creating SamplesApp sample pages with correct registration |
+| Runtime Tests | `/runtime-tests` | Building and running Uno runtime tests (Skia Desktop/WASM) |
+| WinUI Porting | `/winui-port` | Porting WinUI C++ code to Uno Platform C# |
+| WinUI Runtime Tests | `/winui-runtime-tests` | Running runtime tests against native WinUI on Windows |
+
+#### Specialized Agent Files (for deep reference)
 
 | Agent | File | Use For |
 |-------|------|---------|
 | DependencyProperty | `.github/agents/dependency-property-agent.md` | Adding/modifying DependencyProperties |
 | Source Generators | `.github/agents/source-generators-agent.md` | XAML/DependencyObject generator work |
-| Runtime Tests | `.github/agents/runtime-tests-agent.md` | Creating and running runtime tests |
-| WinUI Porting | `.github/agents/winui-porting-agent.md` | Porting WinUI C++ code to C# |
+| Runtime Tests | `.github/agents/runtime-tests-agent.md` | Runtime test patterns and helpers reference |
+| WinUI Porting | `.github/agents/winui-porting-agent.md` | WinUI porting rules deep reference |
 | DevServer CLI | `.github/agents/devserver-agent.md` | DevServer CLI/Host build, test, MCP proxy |
 
 ---

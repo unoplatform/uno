@@ -29,6 +29,8 @@ using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Combinatorial.MSTest;
+using Microsoft.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Markup;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -207,6 +209,93 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task BackButtonIntegration()
+		{
+			Button button = null;
+			Flyout flyout = null;
+
+			(flyout, button) = await SetupBasicFlyoutTest();
+
+			var flyoutOpenedEvent = new Event();
+			var flyoutClosedEvent = new Event();
+			var openedRegistration = TestServices.CreateSafeEventRegistration<Flyout, EventHandler<object>>("Opened");
+			var closedRegistration = TestServices.CreateSafeEventRegistration<Flyout, EventHandler<object>>("Closed");
+
+			await TestServices.RunOnUIThread(() =>
+			{
+				openedRegistration.Attach(flyout, (s, e) =>
+				{
+					flyoutOpenedEvent.Set();
+				});
+
+				closedRegistration.Attach(flyout, (s, e) =>
+				{
+					flyoutClosedEvent.Set();
+				});
+			});
+
+			await TestServices.RunOnUIThread(() =>
+			{
+				TestServices.LOG_OUTPUT("Show flyout");
+				flyout.ShowAt(button);
+			});
+			await flyoutOpenedEvent.WaitForDefault();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			bool handled = false;
+			TestServices.LOG_OUTPUT("Dismiss flyout using Back button");
+			handled = await TestServices.Utilities.InjectBackButtonPress();
+			TestServices.VERIFY_IS_TRUE(handled);
+
+			TestServices.LOG_OUTPUT("Waiting for flyout to close");
+			await flyoutClosedEvent.WaitForDefault();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			TestServices.LOG_OUTPUT("After closing a flyout, further back button presses should not get handled");
+			handled = await TestServices.Utilities.InjectBackButtonPress();
+			TestServices.VERIFY_IS_FALSE(handled);
+		}
+#endif
+
+		private async Task<(Flyout flyout, Button button)> SetupBasicFlyoutTest()
+		{
+			Button button = null;
+			Flyout flyout = null;
+			var loadedEvent = new Event();
+			var loadedRegistration = TestServices.CreateSafeEventRegistration<Grid, RoutedEventHandler>("Loaded");
+
+			await TestServices.RunOnUIThread(() =>
+			{
+				var rootPanel = (Grid)(XamlReader.Load(
+					"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+					"      x:Name='root' Background='SlateBlue' Width='400' Height='200' VerticalAlignment='Top' HorizontalAlignment='Left'> " +
+					"  <Button x:Name='button' Content='button.flyout' HorizontalAlignment='Left' FontSize='25' > " +
+					"    <Button.Flyout> " +
+					"      <Flyout Placement='Top'> " +
+					"        <TextBlock FontSize='30' Text='BUTTON.FLYOUT' Margin='30' Foreground='DarkRed' x:Name='button_flyout_content'/> " +
+					"      </Flyout> " +
+					"    </Button.Flyout> " +
+					"  </Button> " +
+					"</Grid>"));
+
+				TestServices.VERIFY_IS_NOT_NULL(rootPanel);
+				loadedRegistration.Attach(rootPanel, (s, e) => { loadedEvent.Set(); });
+				TestServices.WindowHelper.WindowContent = rootPanel;
+
+				button = (Button)(rootPanel.FindName("button"));
+				TestServices.VERIFY_IS_NOT_NULL(button);
+				flyout = (Flyout)(button.Flyout);
+				TestServices.VERIFY_IS_NOT_NULL(flyout);
+			});
+
+			await loadedEvent.WaitForDefault();
+			await TestServices.WindowHelper.WaitForIdle();
+			return (flyout, button);
+		}
+
 		[TestMethod]
 		[DataRow(FlyoutPlacementMode.Top, HorizontalPosition.Center, VerticalPosition.BeyondTop)]
 		[DataRow(FlyoutPlacementMode.Bottom, HorizontalPosition.Center, VerticalPosition.BeyondBottom)]
@@ -262,6 +351,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		[DataRow(FlyoutPlacementMode.Top, HorizontalPosition.Center, VerticalPosition.BeyondTop)]
 		[DataRow(FlyoutPlacementMode.Bottom, HorizontalPosition.Center, VerticalPosition.BeyondBottom)]
 		[DataRow(FlyoutPlacementMode.Left, HorizontalPosition.BeyondLeft, VerticalPosition.Center)]
@@ -320,7 +410,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// "Popup successfully fits left-aligned on Android - possibly because the status bar offset changes the layouting?"
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Too_Large_For_Any_Fallback()
 		{
 			var target = new TextBlock
@@ -399,6 +489,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		[DataRow(FlyoutPlacementMode.Top, HorizontalPosition.Center, VerticalPosition.BeyondTop)]
 		[DataRow(FlyoutPlacementMode.Bottom, HorizontalPosition.Center, VerticalPosition.BeyondBottom)]
 		[DataRow(FlyoutPlacementMode.Left, HorizontalPosition.BeyondLeft, VerticalPosition.Center)]
@@ -514,6 +605,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task Test_Flyout_Binding_With_SetAttachedFlyout()
 		{
 			Border b1 = new()
@@ -568,6 +660,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Flyout_Content_Takes_Focus()
 		{
 			var stackPanel = new StackPanel();
@@ -681,6 +774,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Opening_Canceled()
 		{
 
@@ -717,6 +811,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Opening_And_Closing_Canceled()
 		{
 			Flyout flyout = new Flyout();
@@ -760,6 +855,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Opening_And_Closing_Nested_Flyouts()
 		{
 			var flyout1 = new Flyout();
@@ -917,6 +1013,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Opening_And_Closing_Nested_Flyouts_Not_Open()
 		{
 			var flyout1 = new Flyout();
@@ -1421,6 +1518,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		//#endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Opening_XamlRootIsSet()
 		{
 			var flyout = new Flyout();
@@ -1449,6 +1547,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 		public async Task When_Button_ContextFlyout_XamlRoot()
 		{
 			var flyout = new Flyout();
@@ -1462,6 +1561,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_SplitButton_Flyout_XamlRoot()
 		{
 			var flyout = new Flyout();
@@ -1488,6 +1588,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Flyout_Popup_XamlRoot()
 		{
 			var flyout = new Flyout();
@@ -1516,6 +1617,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_AttachedFlyout_Popup_XamlRoot()
 		{
 			var flyout = new Flyout();
@@ -1627,6 +1729,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public Task When_Unbound_FullFlyout_Any() =>
 			When_Unbound_FullFlyout_Impl(skiaFullScreen: false);
 
@@ -1709,6 +1812,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_In_GotFocus()
 		{
 			bool keepOpening = true;
@@ -1995,6 +2099,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			BottomFlush,
 			BeyondBottom
 		}
+
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Shared_ContextFlyout_Opened_In_Second_Window()
+		{
+			if (!Uno.UI.Xaml.Controls.NativeWindowFactory.SupportsMultipleWindows)
+			{
+				Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+			}
+
+			// Use a single shared flyout instance (simulates the singleton
+			// TextControlCommandBarContextFlyout resource in Generic.xaml).
+			var sharedFlyout = new Flyout
+			{
+				Content = new TextBlock { Text = "Shared" }
+			};
+
+			// --- Window 1: open and close the flyout ---
+			var button1 = new Button { Content = "W1" };
+			button1.ContextFlyout = sharedFlyout;
+			TestServices.WindowHelper.WindowContent = button1;
+			await TestServices.WindowHelper.WaitForLoaded(button1);
+
+			try
+			{
+				sharedFlyout.ShowAt(button1);
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsTrue(sharedFlyout.IsOpen, "Flyout should be open in window 1");
+			}
+			finally
+			{
+				sharedFlyout.Hide();
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			// --- Window 2: open the same flyout on a different target ---
+			var window2 = new Window();
+			try
+			{
+				var button2 = new Button { Content = "W2" };
+				button2.ContextFlyout = sharedFlyout;
+				window2.Content = button2;
+
+				bool activated = false;
+				window2.Activated += (s, e) => activated = true;
+				window2.Activate();
+				await TestServices.WindowHelper.WaitFor(() => activated);
+				await TestServices.WindowHelper.WaitForLoaded(button2);
+
+				// This must not throw InvalidOperationException("Cannot change XamlRoot for existing element")
+				sharedFlyout.ShowAt(button2);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(sharedFlyout.IsOpen, "Flyout should be open in window 2");
+			}
+			finally
+			{
+				sharedFlyout.Hide();
+				window2.Close();
+			}
+		}
+#endif
 	}
 
 	public partial class MyMenuFlyout : MenuFlyout

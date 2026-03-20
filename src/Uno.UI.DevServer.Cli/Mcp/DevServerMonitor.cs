@@ -35,6 +35,21 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 	public long DiscoveryDurationMs => _discoveryDurationMs;
 	public DiscoveryInfo? LastDiscoveryInfo => _lastDiscoveryInfo;
 
+	/// <summary>
+	/// Set to true when the monitor has scanned for solutions and found none.
+	/// Reset to false when a solution is found. Used by HealthService to report
+	/// a clear message to the agent.
+	/// </summary>
+	public bool SolutionNotFound { get; private set; }
+
+	/// <summary>
+	/// The list of solution files discovered during the last scan, stored as
+	/// paths relative to <see cref="_currentDirectory"/>. Exposed via
+	/// <see cref="HealthService"/> so the MCP agent can see which solutions
+	/// were found.
+	/// </summary>
+	public IReadOnlyList<string> DiscoveredSolutions { get; private set; } = [];
+
 	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs)
 	{
 		if (_monitor is not null)
@@ -85,14 +100,19 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			try
 			{
 				// If we don't have a solution, we can't start a DevServer yet.
-				var solutionFiles = Directory
-					.EnumerateFiles(_currentDirectory, "*.sln")
-					.Concat(Directory.EnumerateFiles(_currentDirectory, "*.slnx")).ToArray();
+				// Search recursively (up to 3 levels deep) so solutions in
+				// subdirectories like src/MyProject.slnx are found.
+				var solutionFiles = SolutionFileFinder.FindSolutionFiles(_currentDirectory);
 
 				_logger.LogTrace(
 					"DevServerMonitor scan found {Count} solution files in {Directory}",
 					solutionFiles.Length,
 					_currentDirectory);
+
+				SolutionNotFound = solutionFiles.Length == 0;
+				DiscoveredSolutions = solutionFiles
+					.Select(f => Path.GetRelativePath(_currentDirectory, f))
+					.ToArray();
 
 				if (solutionFiles.Length != 0)
 				{
@@ -239,7 +259,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			$"http://[::1]:{port}/mcp"
 		};
 
-		var maxAttempts = 30; // 30 seconds
+		var maxAttempts = 40; // ~32s delay budget: 10×200ms + 30×1000ms (plus HTTP request time)
 
 		using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(1) };
 
@@ -282,7 +302,9 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 				return true;
 			}
 
-			await Task.Delay(1000, ct);
+			// Probe aggressively for the first ~2 seconds (10×200ms), then slow to 1s (~30s total budget)
+			var delay = i < 10 ? 200 : 1000;
+			await Task.Delay(delay, ct);
 		}
 
 		_logger.LogError("DevServer did not become ready within timeout period on any of: {Endpoints}", string.Join(", ", endpoints));

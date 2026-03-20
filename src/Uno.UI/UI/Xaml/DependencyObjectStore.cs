@@ -532,6 +532,11 @@ namespace Microsoft.UI.Xaml
 						TryClearBinding(value, propertyDetails);
 					}
 
+					if (!_inheritanceContextEnabled && precedence == DependencyPropertyValuePrecedences.Inheritance)
+					{
+						value = DependencyProperty.UnsetValue;
+					}
+
 					var previousValue = GetValue(propertyDetails);
 					var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
 

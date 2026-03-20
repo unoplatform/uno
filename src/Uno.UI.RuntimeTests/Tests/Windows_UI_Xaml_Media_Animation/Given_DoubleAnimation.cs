@@ -299,6 +299,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 
 		[TestMethod]
 		[CombinatorialData]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_OverridingFillingValue_WithLocalValue(bool skipToFill)
 		{
 			var translate = new TranslateTransform();

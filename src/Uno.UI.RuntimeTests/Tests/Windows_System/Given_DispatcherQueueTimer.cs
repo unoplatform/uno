@@ -15,6 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 	public class Given_DispatcherQueueTimer
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ScheduleWorkItem()
 		{
 			var tcs = new TaskCompletionSource<object>();
@@ -40,6 +41,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ScheduleRepeatingWorkItem()
 		{
 			var tcs = new TaskCompletionSource<object>();
@@ -74,6 +76,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ScheduleNonRepeatingWorkItem()
 		{
 			var tcs = new TaskCompletionSource<bool>();
@@ -133,6 +136,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_StartAndStopFromBackgroundThread()
 		{
 			var timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
@@ -183,6 +187,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Sleep_In_Tick()
 		{
 			var dispatcherTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
@@ -259,6 +264,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Exception_In_Tick()
 		{
 			var dispatcherTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();

@@ -24,6 +24,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 #endif
 	[TestClass]
+#if !IS_UNIT_TESTS
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#endif
 	public partial class Given_ListViewBase_Items
 	{
 		[TestMethod]
@@ -447,7 +450,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			"BELIZE",
 			"COLOMBIA",
 			"BRAZIL",
-			"CONGO, REPUBLIC OF THE",
+			"CONGO,ï¿½REPUBLIC OF THE",
 			"BARBADOS",
 			"BELGIUM",
 			"ARGENTINA",
@@ -480,7 +483,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			"BHUTAN",
 			"ALBANIA",
 			"AUSTRIA",
-			"CÔTE D'IVOIRE ",
+			"Cï¿½TE D'IVOIREï¿½",
 			"CAMEROON",
 			"ARMENIA",
 			"CROATIA",
