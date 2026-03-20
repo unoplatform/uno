@@ -1201,16 +1201,16 @@ function Test-McpModeWithRootsFallback {
             }
         } | ConvertTo-Json -Depth 10 -Compress
 
-        # MCP JSON-RPC tools/call request for uno_app_set_roots
+        # MCP JSON-RPC tools/call request for uno_app_initialize
         $normalizedSlnDir = $SlnDir -replace '\\', '/'
         $setRootsRequest = @{
             jsonrpc = "2.0"
             id = 2
             method = "tools/call"
             params = @{
-                name = "uno_app_set_roots"
+                name = "uno_app_initialize"
                 arguments = @{
-                    roots = @($normalizedSlnDir)
+                    workspaceDirectory = $normalizedSlnDir
                 }
             }
         } | ConvertTo-Json -Depth 10 -Compress

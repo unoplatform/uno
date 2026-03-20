@@ -444,15 +444,6 @@ public class Given_WorkspaceResolver
 		}
 	}
 
-	[TestMethod]
-	public void WorkspaceHash_UsesEffectiveWorkspaceDirectory()
-	{
-		var rootHash = ToolCacheFile.ComputeWorkspaceHash(@"D:\src\studio.live");
-		var workspaceHash = ToolCacheFile.ComputeWorkspaceHash(@"D:\src\studio.live\src");
-
-		workspaceHash.Should().NotBe(rootHash);
-	}
-
 	private static string CreateTempDirectory()
 	{
 		var path = Path.Combine(Path.GetTempPath(), $"uno-workspace-{Guid.NewGuid():N}");

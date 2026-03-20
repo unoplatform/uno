@@ -28,21 +28,23 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		var supportedIdes = new List<SupportedIdeEntry>();
 		var serverEntries = new List<ServerStatusEntry>();
 
-		// When a specific IDE is requested, filter to just that IDE to avoid
-		// spawning unnecessary CLI processes for every known agent.
-		var targetIdes = callerIde is not null
+		// When a specific IDE is requested, only query that IDE's CLI to avoid
+		// spawning unnecessary processes. Config file scanning still covers all
+		// IDEs because configs can be shared (e.g. .vscode/mcp.json is used by
+		// both copilot-vscode and copilot-vs).
+		var cliTargetIdes = callerIde is not null
 			&& defs.Ides.TryGetValue(callerIde, out var callerProfile)
 			? new Dictionary<string, IdeProfile>(StringComparer.OrdinalIgnoreCase) { [callerIde] = callerProfile }
 			: defs.Ides;
 
 		// Query agent CLIs in parallel (each spawns a process, so parallelism helps)
 		progress?.Invoke("Querying agent CLIs...");
-		var cliResults = QueryAllCliLists(targetIdes, workspace, defs.Servers, progress);
+		var cliResults = QueryAllCliLists(cliTargetIdes, workspace, defs.Servers, progress);
 
 		// Build per-server, per-client status
 		var ideStatusMap = new Dictionary<string, Dictionary<string, ServerIdeStatus>>();
 
-		foreach (var (ideName, profile) in targetIdes)
+		foreach (var (ideName, profile) in defs.Ides)
 		{
 			progress?.Invoke($"Scanning {ideName}...");
 			var profileExpectedDefs = ApplyProfileTransforms(expectedDefinitions, profile);

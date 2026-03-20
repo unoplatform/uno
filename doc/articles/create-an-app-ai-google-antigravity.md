@@ -26,7 +26,7 @@ uid: Uno.GettingStarted.CreateAnApp.AI.GoogleAntigravity
     Set the uno platform mcp roots to initialize app support.
     ```
 
-1. When asked, approve the execution of the `uno_app_set_roots` tool.
+1. When asked, approve the execution of the `uno_app_initialize` tool.
 1. Restart or reload Antigravity to ensure the Uno Platform App MCP is fully initialized.
 
 ## Next Steps

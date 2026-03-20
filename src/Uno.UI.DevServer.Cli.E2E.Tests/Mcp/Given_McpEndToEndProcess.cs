@@ -29,8 +29,8 @@ public class Given_McpEndToEndProcess
 		before.IssueCodes.Should().Contain("HostNotStarted");
 
 		using var setRootsResponse = await client.CallToolAsync(
-			"uno_app_set_roots",
-			new { roots = new[] { workspace.PrimaryWorkspaceDirectory } },
+			"uno_app_initialize",
+			new { workspaceDirectory = workspace.PrimaryWorkspaceDirectory },
 			cts.Token);
 
 		setRootsResponse.RootElement.GetProperty("result").GetProperty("content")[0].GetProperty("text").GetString().Should().Be("Ok");
@@ -138,8 +138,8 @@ public class Given_McpEndToEndProcess
 
 		await client.InitializeAsync(cts.Token);
 		using var setRootsResponse = await client.CallToolAsync(
-			"uno_app_set_roots",
-			new { roots = new[] { workspace.PrimaryWorkspaceDirectory } },
+			"uno_app_initialize",
+			new { workspaceDirectory = workspace.PrimaryWorkspaceDirectory },
 			cts.Token);
 		setRootsResponse.RootElement.GetProperty("result").GetProperty("content")[0].GetProperty("text").GetString().Should().Be("Ok");
 

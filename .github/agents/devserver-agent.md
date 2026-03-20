@@ -34,7 +34,7 @@ The CLI can also run in **MCP mode** (`--mcp-app`), acting as a Model Context Pr
 |-----------|---------|
 | `src/Uno.UI.DevServer.Cli/` | CLI tool: commands, helpers, MCP proxy |
 | `src/Uno.UI.DevServer.Cli/Helpers/` | Discovery, caching, process helpers |
-| `src/Uno.UI.DevServer.Cli/Mcp/` | MCP server, client proxy, tool caching |
+| `src/Uno.UI.DevServer.Cli/Mcp/` | MCP server, client proxy |
 | `src/Uno.UI.RemoteControl.Host/` | Host process: server, extensibility, IDE channel |
 | `src/Uno.UI.RemoteControl.Host/Extensibility/` | Add-in loading and discovery |
 | `src/Uno.UI.RemoteControl.DevServer.Tests/` | Unit and integration tests |
@@ -171,8 +171,7 @@ The MCP proxy (`McpStdioServer.cs` / `ProxyLifecycleManager.cs`) runs in STDIO m
 
 ### Key Behavior
 
-- Returns cached tool definitions instantly while Host launches in background
-- Tool cache persisted to `%LOCALAPPDATA%/Uno Platform/uno.devserver/tools-cache.json`
+- Returns tool definitions while Host launches in background
 - Sends `tools/list_changed` notification when tools become available
 - Detects client capabilities (roots support) via `ClientCapabilities.Roots` to adapt behavior
 
@@ -218,7 +217,6 @@ Two separate retry counters: DevServerMonitor (3 startup attempts) and ProxyLife
 | `ToolListManager.cs` | Tool list management and caching |
 | `DevServerMonitor.cs` | Process health monitoring and crash recovery |
 | `MonitorDecisions.cs` | Pure decision logic (post-startup action, roots detection, start guard) |
-| `ToolCacheFile.cs` | Persistent tool cache serialization |
 
 ---
 

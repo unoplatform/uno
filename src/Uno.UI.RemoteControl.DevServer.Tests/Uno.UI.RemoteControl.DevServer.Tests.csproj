@@ -58,7 +58,6 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\HealthReport.cs" Link="Mcp\HealthReport.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\HealthReportFactory.cs" Link="Mcp\HealthReportFactory.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\McpJsonUtilities.cs" Link="Mcp\McpJsonUtilities.cs" />
-		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\ToolCacheFile.cs" Link="Mcp\ToolCacheFile.cs" />
 
 		<!-- Link ConfigurationExtensions for add-in value parsing tests -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\ConfigurationExtensions.cs" Link="Helpers\ConfigurationExtensions.cs" />

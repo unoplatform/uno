@@ -331,7 +331,7 @@ internal class ProxyLifecycleManager
 	/// ProcessRoots()
 	///   │
 	///   ├─ roots empty AND forceRootsFallback?
-	///   │   └─ YES → defer startup, wait for uno_app_set_roots call
+	///   │   └─ YES → defer startup, wait for uno_app_initialize call
 	///   │
 	///   ├─ GetRootPath(rootUri) → rootPath
 	///   │   └─ null → log warning, done
@@ -399,7 +399,7 @@ internal class ProxyLifecycleManager
 		else if (_forceRootsFallback)
 		{
 			_logger.LogWarning(
-				"No roots provided via uno_app_set_roots; DevServer startup is deferred until roots are set");
+				"No roots provided via uno_app_initialize; DevServer startup is deferred until roots are set");
 		}
 	}
 
