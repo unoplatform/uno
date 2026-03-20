@@ -64,6 +64,52 @@ namespace Microsoft.UI.Xaml
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
 
+		/// <summary>
+		/// Internal theme state for this element. Matches WinUI's m_theme field in CDependencyObject.
+		/// </summary>
+		private Theme _theme = Theme.None;
+
+		// WinUI stores fIsProcessingEnterLeave (bit 15) and fIsProcessingThemeWalk (bit 16)
+		// in a DependencyObjectBitFields uint on CDependencyObject (corep.h:224-348).
+		[Flags]
+		private enum UIElementFlag : uint
+		{
+			IsProcessingEnterLeave = 1 << 15, // WinUI CDependencyObject bit 15
+			IsProcessingThemeWalk = 1 << 16,  // WinUI CDependencyObject bit 16
+		}
+
+		private UIElementFlag _uiElementFlags;
+
+		/// <summary>
+		/// Gets the current theme value for this element.
+		/// </summary>
+		internal Theme GetTheme() => _theme;
+
+		/// <summary>
+		/// Sets the theme value for this element.
+		/// </summary>
+		internal void SetTheme(Theme theme) => _theme = theme;
+
+		/// <summary>
+		/// Gets whether this element is currently processing a theme walk.
+		/// </summary>
+		internal bool IsProcessingThemeWalk => (_uiElementFlags & UIElementFlag.IsProcessingThemeWalk) != 0;
+
+		/// <summary>
+		/// Sets whether this element is currently processing a theme walk.
+		/// </summary>
+		internal void SetIsProcessingThemeWalk(bool value)
+		{
+			if (value)
+			{
+				_uiElementFlags |= UIElementFlag.IsProcessingThemeWalk;
+			}
+			else
+			{
+				_uiElementFlags &= ~UIElementFlag.IsProcessingThemeWalk;
+			}
+		}
+
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
 
 		//private protected virtual void PrepareState()
