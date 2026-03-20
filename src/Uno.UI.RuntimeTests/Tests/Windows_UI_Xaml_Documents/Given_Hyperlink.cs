@@ -233,6 +233,7 @@ public class Given_Hyperlink
 		}
 	}
 
+#if HAS_UNO
 	/// <summary>
 	/// Overrides the accent color to the default blue (#FF0078D7) for deterministic test results,
 	/// restoring the previous value on dispose.
@@ -253,4 +254,10 @@ public class Given_Hyperlink
 			FeatureConfiguration.AccentColor.OverrideAccentColor = _previous;
 		}
 	}
+#else
+	internal struct AccentColorOverride : IDisposable
+	{
+		public void Dispose() { }
+	}
+#endif
 }
