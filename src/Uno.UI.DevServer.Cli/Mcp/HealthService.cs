@@ -16,6 +16,9 @@ internal class HealthService(
 	DevServerMonitor devServerMonitor,
 	ToolListManager toolListManager)
 {
+	internal bool ForceRootsFallback { get; set; }
+	internal bool RootsProvided { get; set; }
+
 	internal const string HealthResourceUri = "uno://health";
 
 	internal static readonly Tool HealthTool = new()
@@ -66,6 +69,8 @@ internal class HealthService(
 			discoveredSolutions,
 			upstreamError: upstreamTask.IsFaulted
 				? upstreamTask.Exception?.InnerException?.Message ?? "Unknown error"
-				: null);
+				: null,
+			forceRootsFallback: ForceRootsFallback,
+			rootsProvided: RootsProvided);
 	}
 }

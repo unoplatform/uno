@@ -154,6 +154,7 @@ internal class ProxyLifecycleManager
 	{
 		_waitForTools = waitForTools;
 		_forceRootsFallback = forceRootsFallback;
+		_healthService.ForceRootsFallback = forceRootsFallback;
 		_forceGenerateToolCache = forceGenerateToolCache;
 		_currentDirectory = currentDirectory;
 		_workspaceResolution = workspaceResolution;
@@ -200,6 +201,7 @@ internal class ProxyLifecycleManager
 		_logger.LogTrace("SetRoots invoked with {Count} roots: {Roots}", normalizedRoots.Length,
 			string.Join(", ", normalizedRoots));
 		_roots = normalizedRoots;
+		_healthService.RootsProvided = normalizedRoots.Length > 0;
 
 		await ProcessRoots();
 	}

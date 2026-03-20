@@ -1,0 +1,197 @@
+using AwesomeAssertions;
+using Uno.UI.DevServer.Cli.Mcp.Setup;
+
+namespace Uno.UI.DevServer.Cli.Tests.Mcp.Setup;
+
+[TestClass]
+public class Given_DefinitionsLoader
+{
+	[TestMethod]
+	public void Load_EmbeddedResources_ReturnsAllIdeProfiles()
+	{
+		var defs = DefinitionsLoader.Load();
+
+		defs.Ides.Keys.Should().Contain([
+			"copilot-vscode",
+			"copilot-vs",
+			"copilot-cli",
+			"cursor",
+			"windsurf",
+			"kiro",
+			"gemini-antigravity",
+			"gemini-cli",
+			"junie-rider",
+			"claude-code",
+			"claude-desktop",
+			"opencode",
+			"unknown",
+		]);
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_ReturnsAllServerDefinitions()
+	{
+		var defs = DefinitionsLoader.Load();
+
+		defs.Servers.Should().ContainKey("UnoApp");
+		defs.Servers.Should().ContainKey("UnoDocs");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_UnoAppHasThreeVariants()
+	{
+		var defs = DefinitionsLoader.Load();
+		var unoApp = defs.Servers["UnoApp"];
+
+		unoApp.Transport.Should().Be("stdio");
+		unoApp.Variants.Should().ContainKey("stable");
+		unoApp.Variants.Should().ContainKey("prerelease");
+		unoApp.Variants.Should().ContainKey("pinned");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_UnoDocsIsHttp()
+	{
+		var defs = DefinitionsLoader.Load();
+		var unoDocs = defs.Servers["UnoDocs"];
+
+		unoDocs.Transport.Should().Be("http");
+		unoDocs.Variants["stable"]["url"]!.GetValue<string>().Should().Be("https://mcp.platform.uno/v1");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_CopilotVsCodeUsesServersRootKey()
+	{
+		var defs = DefinitionsLoader.Load();
+		var vscode = defs.Ides["copilot-vscode"];
+
+		vscode.JsonRootKey.Should().Be("servers");
+		vscode.WriteTarget.Should().Contain("{workspace}");
+		vscode.ConfigPaths.Length.Should().BeGreaterThan(1);
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_CopilotVsUsesVsConfigFile()
+	{
+		var defs = DefinitionsLoader.Load();
+		var profile = defs.Ides["copilot-vs"];
+
+		profile.ConfigPaths.Should().Contain("{workspace}/.vscode/mcp.json");
+		profile.ConfigPaths.Should().Contain("{workspace}/.vs/mcp.json");
+		profile.WriteTarget.Should().Be("{workspace}/.vs/mcp.json");
+		profile.JsonRootKey.Should().Be("servers");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_CursorUsesMcpServersRootKey()
+	{
+		var defs = DefinitionsLoader.Load();
+		var cursor = defs.Ides["cursor"];
+
+		cursor.JsonRootKey.Should().Be("mcpServers");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_ClaudeCodeUsesCliConfigFiles()
+	{
+		var defs = DefinitionsLoader.Load();
+		var claudeCode = defs.Ides["claude-code"];
+
+		claudeCode.ConfigPaths.Should().Contain("{workspace}/.mcp.json");
+		claudeCode.ConfigPaths.Should().Contain("{home}/.claude.json");
+		claudeCode.WriteTarget.Should().Be("{workspace}/.mcp.json");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_ClaudeDesktopUsesDesktopConfigFile()
+	{
+		var defs = DefinitionsLoader.Load();
+		var claudeDesktop = defs.Ides["claude-desktop"];
+
+		claudeDesktop.ConfigPaths.Should().Contain("{appdata}/Claude/claude_desktop_config.json");
+		claudeDesktop.WriteTarget.Should().Be("{appdata}/Claude/claude_desktop_config.json");
+		claudeDesktop.JsonRootKey.Should().Be("mcpServers");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_GeminiCliUsesSettingsJson()
+	{
+		var defs = DefinitionsLoader.Load();
+		var geminiCli = defs.Ides["gemini-cli"];
+
+		geminiCli.ConfigPaths.Should().Contain("{home}/.gemini/settings.json");
+		geminiCli.WriteTarget.Should().Be("{home}/.gemini/settings.json");
+		geminiCli.JsonRootKey.Should().Be("mcpServers");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_GeminiAntigravityUsesDedicatedConfigFile()
+	{
+		var defs = DefinitionsLoader.Load();
+		var profile = defs.Ides["gemini-antigravity"];
+
+		profile.ConfigPaths.Should().Contain("{home}/.gemini/antigravity/mcp_config.json");
+		profile.WriteTarget.Should().Be("{home}/.gemini/antigravity/mcp_config.json");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_JunieRiderUsesIdeaConfigFile()
+	{
+		var defs = DefinitionsLoader.Load();
+		var profile = defs.Ides["junie-rider"];
+
+		profile.ConfigPaths.Should().Contain("{workspace}/.idea/mcpServers.json");
+		profile.WriteTarget.Should().Be("{workspace}/.idea/mcpServers.json");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_CopilotCliIsFileBacked()
+	{
+		var defs = DefinitionsLoader.Load();
+		var profile = defs.Ides["copilot-cli"];
+
+		profile.Strategy.Should().Be("file");
+		profile.ConfigPaths.Should().NotBeEmpty();
+		profile.WriteTarget.Should().Contain(".copilot/mcp-config.json");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_DetectionPatternsPresent()
+	{
+		var defs = DefinitionsLoader.Load();
+		var unoApp = defs.Servers["UnoApp"];
+
+		unoApp.Detection.KeyPatterns.Should().NotBeEmpty();
+		unoApp.Detection.CommandPatterns.Should().NotBeNull();
+		unoApp.Detection.UrlPatterns.Should().NotBeNull();
+	}
+
+	[TestMethod]
+	public void Load_ExternalFile_OverridesEmbedded()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddFile("/custom/ides.json", """
+		{
+		  "test-ide": {
+		    "configPaths": ["{workspace}/.test/mcp.json"],
+		    "writeTarget": "{workspace}/.test/mcp.json",
+		    "jsonRootKey": "mcpServers"
+		  }
+		}
+		""");
+
+		var defs = DefinitionsLoader.Load(fs, ideDefinitionsPath: "/custom/ides.json");
+
+		defs.Ides.Should().ContainKey("test-ide");
+		defs.Ides.Should().NotContainKey("copilot-vscode");
+	}
+
+	[TestMethod]
+	public void Load_ExternalFileNotFound_Throws()
+	{
+		var fs = new InMemoryFileSystem();
+
+		var act = () => DefinitionsLoader.Load(fs, ideDefinitionsPath: "/missing/file.json");
+		act.Should().Throw<FileNotFoundException>();
+	}
+}

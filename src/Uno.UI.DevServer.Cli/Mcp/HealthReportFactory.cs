@@ -14,18 +14,24 @@ internal static class HealthReportFactory
 		IReadOnlyList<string>? discoveredSolutions,
 		int? hostProcessId = null,
 		string? hostEndpoint = null,
-		string? upstreamError = null)
+		string? upstreamError = null,
+		bool forceRootsFallback = false,
+		bool rootsProvided = false)
 	{
 		var issues = new List<ValidationIssue>();
 
 		if (!devServerStarted)
 		{
+			var remediation = forceRootsFallback && !rootsProvided
+				? "Call uno_app_set_roots with the path to your Uno workspace folder to initialize the DevServer."
+				: "Ensure the workspace can be resolved, or start the MCP bridge from a valid Uno workspace.";
+
 			issues.Add(new ValidationIssue
 			{
 				Code = IssueCode.HostNotStarted,
 				Severity = ValidationSeverity.Fatal,
 				Message = "The DevServer host process has not been started yet.",
-				Remediation = "Ensure the workspace can be resolved, or start the MCP bridge from a valid Uno workspace.",
+				Remediation = remediation,
 			});
 		}
 
