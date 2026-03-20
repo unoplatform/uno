@@ -314,19 +314,7 @@ internal class ProxyLifecycleManager
 
 		var previousResolution = _workspaceResolution;
 		var transitionAction =
-			await ApplyWorkspaceResolutionAsync(nextResolution, WorkspaceTransitionTrigger.UserSelection, ct);
-
-		// When forceRestart is requested and the normal transition was a no-op (Refresh),
-		// escalate to a full Restart so the DevServer host is recycled.
-		if (forceRestart && transitionAction == WorkspaceTransitionAction.Refresh && _healthService.DevServerStarted)
-		{
-			_logger.LogInformation("Force-restart requested for workspace {Workspace}; restarting DevServer",
-				nextResolution.EffectiveWorkspaceDirectory);
-			await StopCurrentWorkspaceAsync();
-			StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
-			transitionAction = WorkspaceTransitionAction.Restart;
-		}
-
+			await ApplyWorkspaceResolutionAsync(nextResolution, WorkspaceTransitionTrigger.UserSelection, forceRestart, ct);
 		var selectedResolution = _workspaceResolution ?? nextResolution;
 		LogTimeline(
 			"select-solution.apply-transition.complete",
@@ -407,11 +395,11 @@ internal class ProxyLifecycleManager
 		}
 
 		var nextResolution = await _workspaceResolver.ResolveAsync(workspaceRoot);
-		await ApplyWorkspaceResolutionAsync(nextResolution, trigger, ct);
+		await ApplyWorkspaceResolutionAsync(nextResolution, trigger, ct: ct);
 	}
 
 	internal async Task<WorkspaceTransitionAction> ApplyWorkspaceResolutionAsync(WorkspaceResolution nextResolution,
-		WorkspaceTransitionTrigger trigger, CancellationToken ct = default)
+		WorkspaceTransitionTrigger trigger, bool forceRestart = false, CancellationToken ct = default)
 	{
 		var transitionStopwatch = Stopwatch.StartNew();
 		await _workspaceTransitionGate.WaitAsync(ct);
@@ -422,6 +410,15 @@ internal class ProxyLifecycleManager
 				nextResolution,
 				trigger,
 				_healthService.DevServerStarted);
+
+			// When forceRestart is requested and the normal transition was a no-op (Refresh),
+			// escalate to a full Restart so the DevServer host is recycled.
+			if (forceRestart && transitionAction == WorkspaceTransitionAction.Refresh && _healthService.DevServerStarted)
+			{
+				_logger.LogInformation("Force-restart requested for workspace {Workspace}; restarting DevServer",
+					nextResolution.EffectiveWorkspaceDirectory);
+				transitionAction = WorkspaceTransitionAction.Restart;
+			}
 
 			switch (transitionAction)
 			{
