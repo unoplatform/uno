@@ -354,7 +354,8 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			installDef,
 			profile.IncludeType,
 			transportLabel,
-			profile.UrlKey);
+			profile.UrlKey,
+			profile.MergeCommandArgs ? ["args"] : null);
 
 		if (!dryRun)
 		{

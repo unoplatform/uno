@@ -13,6 +13,11 @@ namespace Uno.UI.DevServer.Cli.Mcp.Setup;
 /// </summary>
 internal static class ConfigWriter
 {
+	private static readonly System.Text.Json.JsonSerializerOptions IndentedOptions = new()
+	{
+		WriteIndented = true,
+	};
+
 	/// <summary>
 	/// Merges a server definition into existing JSON config content.
 	/// Creates the file structure if <paramref name="existingContent"/> is null or empty.
@@ -24,7 +29,8 @@ internal static class ConfigWriter
 		JsonObject definition,
 		bool includeType,
 		string? transport,
-		string? urlKey = null)
+		string? urlKey = null,
+		IReadOnlyList<string>? obsoleteKeys = null)
 	{
 		var newEntry = BuildNewEntry(definition, includeType, transport, urlKey);
 
@@ -57,7 +63,15 @@ internal static class ConfigWriter
 			}
 
 			WriteRootObjectForMerge(reader, writer.JsonWriter, rootKey, serverKey, newEntry);
-			return writer.GetResult();
+			var result = writer.GetResult();
+
+			// Remove stale keys from the merged entry (e.g., "args" when command is now an array)
+			if (obsoleteKeys is { Count: > 0 })
+			{
+				result = RemoveObsoleteKeys(result, rootKey, serverKey, obsoleteKeys);
+			}
+
+			return result;
 		}
 		catch (JsonReaderException ex)
 		{
@@ -569,6 +583,39 @@ internal static class ConfigWriter
 				return;
 			}
 		}
+	}
+
+	private static string RemoveObsoleteKeys(
+		string content, string rootKey, string serverKey, IReadOnlyList<string> keysToRemove)
+	{
+		var doc = System.Text.Json.JsonDocument.Parse(content, new System.Text.Json.JsonDocumentOptions
+		{
+			CommentHandling = System.Text.Json.JsonCommentHandling.Skip,
+			AllowTrailingCommas = true,
+		});
+
+		using (doc)
+		{
+			var root = System.Text.Json.Nodes.JsonNode.Parse(
+				System.Text.Json.JsonSerializer.Serialize(doc.RootElement))?.AsObject();
+
+			if (root?[rootKey] is System.Text.Json.Nodes.JsonObject servers
+				&& servers[serverKey] is System.Text.Json.Nodes.JsonObject entry)
+			{
+				var removed = false;
+				foreach (var key in keysToRemove)
+				{
+					removed |= entry.Remove(key);
+				}
+
+				if (removed)
+				{
+					return System.Text.Json.JsonSerializer.Serialize(root, IndentedOptions);
+				}
+			}
+		}
+
+		return content;
 	}
 
 	private static string FormatOutput(JObject root)
