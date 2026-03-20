@@ -14,7 +14,10 @@
       "registryType": "nuget",
       "registryBaseUrl": "https://api.nuget.org/v3/index.json",
       "identifier": "Uno.DevServer",
-      "packageArguments": ["mcp", "serve"],
+      "packageArguments": [
+        { "type": "positional", "value": "mcp", "valueHint": "subcommand" },
+        { "type": "positional", "value": "serve", "valueHint": "action" }
+      ],
       "transport": {
         "type": "stdio"
       }
