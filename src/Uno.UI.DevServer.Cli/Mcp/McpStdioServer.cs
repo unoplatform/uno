@@ -139,16 +139,20 @@ internal class McpStdioServer(
 						await selectSolutionHandler(initSolutionPath);
 					}
 
-					// Wait for upstream to connect (with timeout)
-					using var initTimeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-					initTimeoutCts.CancelAfter(InitializeTimeoutMs);
-					try
+					// Wait for upstream to connect unless the workspace already entered
+					// a terminal state (Degraded = no solution found, DevServer won't start).
+					if (healthService.ConnectionState != ConnectionState.Degraded)
 					{
-						await tcs.Task.WaitAsync(initTimeoutCts.Token);
-					}
-					catch (OperationCanceledException) when (!ct.IsCancellationRequested)
-					{
-						logger.LogWarning("Timed out waiting for DevServer to connect during initialization");
+						using var initTimeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+						initTimeoutCts.CancelAfter(InitializeTimeoutMs);
+						try
+						{
+							await tcs.Task.WaitAsync(initTimeoutCts.Token);
+						}
+						catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+						{
+							logger.LogWarning("Timed out waiting for DevServer to connect during initialization");
+						}
 					}
 
 					toolStopwatch.Stop();
@@ -192,6 +196,17 @@ internal class McpStdioServer(
 					{
 						var discoverResult = await toolListManager.ListToolsWithTimeoutAsync(ct);
 						var discoveredTools = discoverResult.Tools;
+
+						if (discoveredTools.Count == 0)
+						{
+							toolStopwatch.Stop();
+							LogTimeline(logger, "tool.discover-tools.empty", toolStopwatch.ElapsedMilliseconds, "no-tools");
+							return new CallToolResult
+							{
+								Content = [new TextContentBlock() { Text = "No tools available yet. The DevServer may still be starting. Call uno_health for diagnostics, then retry." }],
+								IsError = true
+							};
+						}
 
 						var discoveredJson = JsonSerializer.Serialize(discoveredTools, McpJsonUtilities.DefaultOptions);
 						toolStopwatch.Stop();
@@ -253,9 +268,12 @@ internal class McpStdioServer(
 					var upstreamExecuteTask = mcpUpstreamClient.UpstreamClient;
 					if (!upstreamExecuteTask.IsCompletedSuccessfully)
 					{
+						var initHint = isForceRootsFallback()
+							? "Call uno_app_initialize"
+							: "Call uno_health to check status";
 						var executeMessage = healthService.ConnectionState == ConnectionState.Reconnecting
-							? "DevServer host crashed and is reconnecting. Call uno_app_initialize or wait and retry."
-							: "DevServer is not yet connected. Call uno_app_initialize first, or wait and retry.";
+							? $"DevServer host crashed and is reconnecting. {initHint}, or wait and retry."
+							: $"DevServer is not yet connected. {initHint}, or wait and retry.";
 						toolStopwatch.Stop();
 						LogTimeline(logger, "tool.execute-tool.rejected-upstream-not-ready",
 							toolStopwatch.ElapsedMilliseconds, targetToolName);
@@ -593,16 +611,19 @@ internal class McpStdioServer(
 	{
 		var upstreamTask = mcpUpstreamClient.UpstreamClient;
 		var connected = upstreamTask.IsCompletedSuccessfully;
+		var degraded = healthService.ConnectionState == ConnectionState.Degraded;
 		var toolCount = toolListManager.SnapshotToolCount;
-		var status = connected ? "ready" : "starting";
+		var status = degraded ? "degraded" : connected ? "ready" : "starting";
 		var response = new
 		{
 			status,
 			workspaceDirectory,
 			toolCount,
-			message = connected
-				? $"DevServer initialized with {toolCount} tools available. Use uno_discover_tools for full schemas or uno_execute_tool to call tools."
-				: "DevServer is starting. Use uno_discover_tools and uno_execute_tool when ready.",
+			message = degraded
+				? "Workspace could not be resolved. Call uno_health for diagnostics. Check that the workspace contains a valid Uno solution."
+				: connected
+					? $"DevServer initialized with {toolCount} tools available. Use uno_discover_tools for full schemas or uno_execute_tool to call tools."
+					: "DevServer is starting. Use uno_discover_tools and uno_execute_tool when ready.",
 		};
 
 		var json = JsonSerializer.Serialize(response, McpJsonUtilities.DefaultOptions);

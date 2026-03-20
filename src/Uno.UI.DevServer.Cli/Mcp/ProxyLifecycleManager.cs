@@ -1046,6 +1046,10 @@ internal class ProxyLifecycleManager
 			SetConnectionState(ConnectionState.Connected);
 			_reconnectionAttempts = 0;
 
+			// Prime the tool count snapshot so uno_health and uno_app_initialize
+			// report an accurate toolCount as soon as upstream is connected.
+			_ = _toolListManager.ListToolsWithTimeoutAsync(CancellationToken.None);
+
 			tcs.TrySetResult();
 
 			try
