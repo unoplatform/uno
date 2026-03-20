@@ -30,7 +30,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 
 		// Query all agent CLIs in parallel (each spawns a process, so parallelism helps)
 		progress?.Invoke("Querying agent CLIs...");
-		var cliResults = QueryAllCliLists(defs.Ides, workspace, progress);
+		var cliResults = QueryAllCliLists(defs.Ides, workspace, defs.Servers, progress);
 
 		// Build per-server, per-client status
 		var ideStatusMap = new Dictionary<string, Dictionary<string, ServerIdeStatus>>();
@@ -702,7 +702,8 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 	/// Deduplicates by executable — profiles sharing the same CLI are queried once.
 	/// </summary>
 	private Dictionary<string, HashSet<string>> QueryAllCliLists(
-		IReadOnlyDictionary<string, IdeProfile> ides, string workspace, Action<string>? progress = null)
+		IReadOnlyDictionary<string, IdeProfile> ides, string workspace,
+		IReadOnlyDictionary<string, ServerDefinition> servers, Action<string>? progress = null)
 	{
 		if (_cliRunner is null)
 		{
@@ -728,7 +729,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		Parallel.ForEach(cliGroups, group =>
 		{
 			var representative = group.First().Value;
-			var found = QueryCliList(representative, workspace);
+			var found = QueryCliList(representative, workspace, servers);
 			if (found.Count > 0)
 			{
 				perExecutable[group.Key] = found;
@@ -757,9 +758,11 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 
 	/// <summary>
 	/// Queries a single agent's CLI list command to discover registered server names.
+	/// Matches against detection key patterns from server definitions.
 	/// Returns an empty set if the CLI is unavailable or the command fails.
 	/// </summary>
-	private HashSet<string> QueryCliList(IdeProfile profile, string workspace)
+	private HashSet<string> QueryCliList(IdeProfile profile, string workspace,
+		IReadOnlyDictionary<string, ServerDefinition> servers)
 	{
 		if (profile.Cli is not { List: not null } cli
 			|| _cliRunner is null
@@ -778,23 +781,23 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 				return [];
 			}
 
-			// Match known server names in the output (case-insensitive text search)
+			// Match server names using detection key patterns from definitions
 			var found = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-			foreach (var line in stdout.Split('\n'))
+			foreach (var (serverName, serverDef) in servers)
 			{
-				var trimmed = line.Trim();
-				if (trimmed.Contains("UnoApp", StringComparison.OrdinalIgnoreCase)
-					|| trimmed.Contains("uno-app", StringComparison.OrdinalIgnoreCase)
-					|| trimmed.Contains("uno_app", StringComparison.OrdinalIgnoreCase))
+				if (stdout.Contains(serverName, StringComparison.OrdinalIgnoreCase))
 				{
-					found.Add("UnoApp");
+					found.Add(serverName);
+					continue;
 				}
 
-				if (trimmed.Contains("UnoDocs", StringComparison.OrdinalIgnoreCase)
-					|| trimmed.Contains("uno-docs", StringComparison.OrdinalIgnoreCase)
-					|| trimmed.Contains("uno_docs", StringComparison.OrdinalIgnoreCase))
+				// Also try common name variants (kebab-case, snake_case)
+				var kebab = serverName.Replace("App", "-app").Replace("Docs", "-docs").ToLowerInvariant();
+				var snake = serverName.Replace("App", "_app").Replace("Docs", "_docs").ToLowerInvariant();
+				if (stdout.Contains(kebab, StringComparison.OrdinalIgnoreCase)
+					|| stdout.Contains(snake, StringComparison.OrdinalIgnoreCase))
 				{
-					found.Add("UnoDocs");
+					found.Add(serverName);
 				}
 			}
 

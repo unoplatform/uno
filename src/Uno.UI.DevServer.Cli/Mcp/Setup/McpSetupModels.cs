@@ -32,7 +32,8 @@ internal sealed record IdeProfile(
 /// Defines how to drive a native CLI for MCP registration.
 /// When present and the executable is found in PATH, install/uninstall
 /// delegate to the agent's own CLI instead of writing config files directly.
-/// Status always scans on-disk config as the source of truth.
+/// Status scans on-disk config files and also queries the CLI list command
+/// to detect registrations not visible via file scan (e.g., Codex TOML config).
 /// </summary>
 internal sealed record CliProfile(
 	string Executable,
