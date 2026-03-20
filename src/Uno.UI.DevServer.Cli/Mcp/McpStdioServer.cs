@@ -42,6 +42,7 @@ internal class McpStdioServer(
 			+ "Do NOT call uno_app_select_solution after a successful initialization unless uno_health reports a WorkspaceAmbiguous issue.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>(
 			"""{"type":"object","required":["workspaceDirectory"],"properties":{"workspaceDirectory":{"type":"string","description":"Absolute path to the workspace root directory."},"solutionPath":{"type":"string","description":"Optional absolute path to the .sln or .slnx file to use."}}}"""),
+		Annotations = new() { Title = "Initialize Workspace", DestructiveHint = false, IdempotentHint = true, ReadOnlyHint = false, OpenWorldHint = false },
 	};
 
 	internal static readonly Tool DiscoverToolsTool = new()
@@ -51,6 +52,7 @@ internal class McpStdioServer(
 			"Returns available Uno app tools with descriptions and input schemas. "
 			+ "Call this after uno_app_initialize succeeds. Waits for the DevServer to be ready if needed.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>("""{"type":"object","properties":{}}"""),
+		Annotations = new() { Title = "Discover Tools", DestructiveHint = false, IdempotentHint = true, ReadOnlyHint = true, OpenWorldHint = false },
 	};
 
 	internal static readonly Tool ExecuteToolTool = new()
@@ -60,6 +62,7 @@ internal class McpStdioServer(
 			"Executes an Uno app tool by name. Use uno_discover_tools first to see available tools and their schemas.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>(
 			"""{"type":"object","required":["toolName"],"properties":{"toolName":{"type":"string","description":"Name of the tool to execute."},"arguments":{"type":"object","description":"Arguments to pass to the tool."}}}"""),
+		Annotations = new() { Title = "Execute Tool", OpenWorldHint = true },
 	};
 
 	// ── Meta-tool tracking state ───────────────────────────────────────

@@ -35,6 +35,7 @@ internal class ProxyLifecycleManager
 			+ "If uno_health shows status 'Connected' or 'Healthy', do NOT call this tool — the DevServer is already working.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>(
 			"""{"type":"object","required":["solutionPath"],"properties":{"solutionPath":{"type":"string","description":"Absolute path to the .sln or .slnx file to use for this session."}}}"""),
+		Annotations = new() { Title = "Select Solution", DestructiveHint = true, IdempotentHint = false, ReadOnlyHint = false, OpenWorldHint = false },
 	};
 
 	private bool _waitForTools;
