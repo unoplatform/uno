@@ -72,12 +72,15 @@ internal static class Win32Helper
 		public void Dispose() => Marshal.FreeHGlobal(Handle);
 	}
 
-	public static unsafe GlobalLockDisposable? GlobalLock(HGLOBAL handle, out void* firstByte)
+	public static unsafe GlobalLockDisposable? GlobalLock(HGLOBAL handle, out void* firstByte, bool logLastError = true)
 	{
 		firstByte = PInvoke.GlobalLock(handle);
 		if (firstByte is null)
 		{
-			typeof(Win32Helper).LogError()?.Error($"{nameof(PInvoke.GlobalLock)} failed: {GetErrorMessage()}");
+			if (logLastError) // note: this consumes GetLastError
+			{
+				typeof(Win32Helper).LogError()?.Error($"{nameof(PInvoke.GlobalLock)} failed: {GetErrorMessage()}");
+			}
 			return null;
 		}
 

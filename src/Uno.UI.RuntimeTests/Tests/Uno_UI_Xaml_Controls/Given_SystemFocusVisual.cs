@@ -9,6 +9,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using static Microsoft.VisualStudio.TestTools.UnitTesting.ConditionMode;
+using static Microsoft.VisualStudio.TestTools.UnitTesting.RuntimeTestPlatforms;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Controls;
 
@@ -194,6 +196,7 @@ public class Given_SystemFocusVisual
 	}
 
 	[TestMethod]
+	[PlatformCondition(Exclude, SkiaWasm)] // https://github.com/unoplatform/uno/issues/22862
 	public async Task When_Focused_Element_With_Multiple_Parent_Transforms()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)

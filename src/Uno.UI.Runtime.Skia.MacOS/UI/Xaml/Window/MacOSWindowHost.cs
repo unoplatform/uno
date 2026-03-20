@@ -204,6 +204,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	void IXamlRootHost.InvalidateRender() => NativeUno.uno_window_invalidate(_nativeWindow.Handle);
 
+	void IXamlRootHost.ResignNativeFocus() => NativeUno.uno_window_resign_native_first_responder(_nativeWindow.Handle);
+
 	public static void Register(nint handle, XamlRoot xamlRoot, MacOSWindowHost host)
 	{
 		XamlRootMap.Register(xamlRoot, host);
@@ -304,8 +306,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 			var args = CreateArgs(key, mods, scanCode, unicode);
 			keyDown.Invoke(window!, args);
-			var root = window?._xamlRoot;
-			return root is null || FocusManager.GetFocusedElement(root) == null ? 0 : 1;
+			return args.Handled ? 1 : 0;
 		}
 		catch (Exception e)
 		{
@@ -332,7 +333,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 			var args = CreateArgs(key, mods, scanCode, unicode);
 			keyUp.Invoke(window!, args);
-			return 1;
+			return args.Handled ? 1 : 0;
 		}
 		catch (Exception e)
 		{

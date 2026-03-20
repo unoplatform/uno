@@ -14,6 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno/issues/22862
 		public void When_GetForCurrentThreadFromDispatcher()
 		{
 			Assert.IsNotNull(DispatcherQueue.GetForCurrentThread());

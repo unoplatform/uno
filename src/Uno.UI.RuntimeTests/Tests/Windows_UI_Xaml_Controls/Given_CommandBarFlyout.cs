@@ -14,6 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_CommandBarFlyout
 {
 	[TestMethod]
+	[Ignore("Flaky on all targets - https://github.com/unoplatform/uno/issues/22862")]
 	public async Task When_CommandBarFlyoutCommandBar_AlwaysExpanded()
 	{
 		var commandBarFlyout = new CommandBarFlyout

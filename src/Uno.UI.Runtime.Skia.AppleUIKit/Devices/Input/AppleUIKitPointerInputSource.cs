@@ -55,7 +55,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 	private CADisplayLink? _momentumDisplayLink;
 	private CADisplayLink? _activeScrollDisplayLink;
-	private bool _isDiscreteScroll;
 	private double _momentumVelocityX;
 	private double _momentumVelocityY;
 	// Sub-pixel accumulator: collects fractional pts across frames so inertia
@@ -220,104 +219,13 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 				return;
 			}
 
-			switch (gesture.State)
+			if (isDiscreteScroll)
 			{
-				case UIGestureRecognizerState.Began:
-					// Only preserve momentum for rapid back-to-back flicks (within the
-					// time window). For slower starts the previous inertia is stale and
-					// fighting it causes the noticeable delay the user reported.
-					var timeSinceLastEnd = CoreAnimation.CAAnimation.CurrentMediaTime() - _lastGestureEndTime;
-					if (timeSinceLastEnd <= RapidFlickWindowSeconds)
-					{
-						PauseInertiaScrolling();
-					}
-					else
-					{
-						StopInertiaScrolling();
-					}
-
-					_activeScrollPendingX = 0;
-					_activeScrollPendingY = 0;
-					_gestureBeganTime = CoreAnimation.CAAnimation.CurrentMediaTime();
-					_cachedScrollLocation = gesture.LocationInView(source);
-					_isDiscreteScroll = isDiscreteScroll;
-					_gestureIsNaturalScrolling = isNaturalScrollingEnabled;
-
-					if (_isDiscreteScroll)
-					{
-						// Discrete (mouse wheel): batch Changed events through a display link to prevent
-						// synchronous layout thrashing at high event rates (fast free-wheel spin).
-						_activeScrollDisplayLink?.Invalidate();
-						_activeScrollDisplayLink = CADisplayLink.Create(FlushDiscreteScroll);
-						_activeScrollDisplayLink.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.Common);
-					}
-
-					// Pre-position the scroll pointer (ID=1) at the cursor location so that
-					// the first PointerWheelChanged event does not trigger a PointerExited /
-					// PointerEntered visual-state transition on the item under the cursor.
-					// Without this, OnPointerWheelChanged's RaiseLeaveEnter sees the item as
-					// stale (it was PointerOver via a UITouch hover pointer, a different ID)
-					// and fires Leave then Enter — briefly flashing the item as selected and
-					// causing a layout pass that delays the first scroll frame.
-					PointerMoved?.Invoke(this, CreateScrollGestureEventArgs(CGPoint.Empty, _cachedScrollLocation, isNaturalScrollingEnabled));
-					return;
-
-				case UIGestureRecognizerState.Changed:
-					var translation = gesture.TranslationInView(source);
-
-					_activeScrollPendingX += (double)translation.X;
-					_activeScrollPendingY += (double)translation.Y;
-					_cachedScrollLocation = gesture.LocationInView(source);
-					gesture.SetTranslation(CGPoint.Empty, source);
-
-					if (_isDiscreteScroll)
-					{
-						// Discrete (mouse wheel): defer dispatch to display link to avoid
-						// synchronous layout thrashing. FlushDiscreteScroll() handles dispatch.
-						return;
-					}
-
-					// Continuous (trackpad): dispatch immediately with sub-pixel accumulation.
-					var activeScrollX = (nfloat)Math.Truncate(_activeScrollPendingX);
-					var activeScrollY = (nfloat)Math.Truncate(_activeScrollPendingY);
-					// Preserve fractional remainder for sub-pixel accumulation.
-					_activeScrollPendingX -= (double)activeScrollX;
-					_activeScrollPendingY -= (double)activeScrollY;
-
-					if (activeScrollX == 0 && activeScrollY == 0)
-					{
-						return;
-					}
-
-					_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()} state={gesture.State}>");
-					PointerWheelChanged?.Invoke(this, CreateScrollGestureEventArgs(new CGPoint(activeScrollX, activeScrollY), _cachedScrollLocation, isNaturalScrollingEnabled));
-					_trace?.Invoke("</ScrollGesture>");
-					return;
-
-				case UIGestureRecognizerState.Ended:
-					_gestureIsNaturalScrolling = isNaturalScrollingEnabled;
-					if (_isDiscreteScroll)
-					{
-						// Flush any pending discrete scroll before starting inertia.
-						FlushDiscreteScroll();
-						StopActiveScrollDisplayLink();
-					}
-					// If the gesture lasted longer than the rapid-flick window, the preserved
-					// momentum is unrelated to the current scroll — discard it to avoid an
-					// unexpected inertia kick at the end of a deliberate slow scroll.
-					if (CoreAnimation.CAAnimation.CurrentMediaTime() - _gestureBeganTime > RapidFlickWindowSeconds)
-					{
-						_momentumVelocityX = 0;
-						_momentumVelocityY = 0;
-					}
-					AccumulateInertiaScrolling(gesture.VelocityInView(source));
-					return;
-
-				case UIGestureRecognizerState.Cancelled:
-				case UIGestureRecognizerState.Failed:
-					StopActiveScrollDisplayLink();
-					StopInertiaScrolling();
-					return;
+				HandleDiscreteScroll(source, gesture, isNaturalScrollingEnabled);
+			}
+			else
+			{
+				HandleContinuousScroll(source, gesture, isNaturalScrollingEnabled);
 			}
 		}
 		catch (Exception e)
@@ -327,20 +235,145 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		}
 	}
 
-	// Dispatch all accumulated discrete (mouse wheel) pending scroll as a single
-	// PointerWheelChanged event. Scales raw translation to WinUI wheel-delta units
-	// (120 per standard notch) using DiscreteScrollScale.
-	private void FlushDiscreteScroll()
+	/// <summary>
+	/// Handles discrete (mouse wheel) scroll gestures. Each notch is dispatched
+	/// immediately with no accumulation, display link, or inertia.
+	/// On iPadOS a single notch fires Began → Ended with no Changed event,
+	/// so translation is read in both Changed and Ended to cover all cases.
+	/// </summary>
+	private void HandleDiscreteScroll(UIView source, UIPanGestureRecognizer gesture, bool isNaturalScrollingEnabled)
+	{
+		switch (gesture.State)
+		{
+			case UIGestureRecognizerState.Began:
+				StopInertiaScrolling();
+				_cachedScrollLocation = gesture.LocationInView(source);
+				_gestureIsNaturalScrolling = isNaturalScrollingEnabled;
+
+				// Pre-position the scroll pointer so the first wheel event
+				// does not trigger a PointerExited/PointerEntered flash.
+				PointerMoved?.Invoke(this, CreateScrollGestureEventArgs(CGPoint.Empty, _cachedScrollLocation, isNaturalScrollingEnabled));
+				return;
+
+			case UIGestureRecognizerState.Changed:
+				// Rapid notches: iOS batches multiple notches into one gesture,
+				// firing Changed for each. Scale and dispatch immediately.
+				DispatchDiscreteTranslation(gesture.TranslationInView(source));
+				gesture.SetTranslation(CGPoint.Empty, source);
+				return;
+
+			case UIGestureRecognizerState.Ended:
+				// Single notch: iPadOS fires Began → Ended with no Changed.
+				// For rapid notches, Changed already called SetTranslation,
+				// so translation here is only the remaining delta.
+				DispatchDiscreteTranslation(gesture.TranslationInView(source));
+				return;
+		}
+	}
+
+	private void DispatchDiscreteTranslation(CGPoint translation)
+	{
+		var scrollX = (nfloat)((double)translation.X * DiscreteScrollScale);
+		var scrollY = (nfloat)((double)translation.Y * DiscreteScrollScale);
+		if (scrollX != 0 || scrollY != 0)
+		{
+			PointerWheelChanged?.Invoke(this,
+				CreateScrollGestureEventArgs(new CGPoint(scrollX, scrollY), _cachedScrollLocation, _gestureIsNaturalScrolling));
+		}
+	}
+
+	/// <summary>
+	/// Handles continuous (trackpad) scroll gestures. Deltas are accumulated
+	/// and dispatched once per vsync via a display link to avoid starving the
+	/// render pass. Inertia provides momentum after the gesture ends.
+	/// </summary>
+	private void HandleContinuousScroll(UIView source, UIPanGestureRecognizer gesture, bool isNaturalScrollingEnabled)
+	{
+		switch (gesture.State)
+		{
+			case UIGestureRecognizerState.Began:
+				// Preserve momentum for rapid back-to-back flicks (within the
+				// time window). For slower starts the previous inertia is stale.
+				var timeSinceLastEnd = CoreAnimation.CAAnimation.CurrentMediaTime() - _lastGestureEndTime;
+				if (timeSinceLastEnd <= RapidFlickWindowSeconds)
+				{
+					PauseInertiaScrolling();
+				}
+				else
+				{
+					StopInertiaScrolling();
+				}
+
+				_activeScrollPendingX = 0;
+				_activeScrollPendingY = 0;
+				_gestureBeganTime = CoreAnimation.CAAnimation.CurrentMediaTime();
+				_cachedScrollLocation = gesture.LocationInView(source);
+				_gestureIsNaturalScrolling = isNaturalScrollingEnabled;
+
+				// Pre-position the scroll pointer so the first wheel event
+				// does not trigger a PointerExited/PointerEntered flash.
+				PointerMoved?.Invoke(this, CreateScrollGestureEventArgs(CGPoint.Empty, _cachedScrollLocation, isNaturalScrollingEnabled));
+				return;
+
+			case UIGestureRecognizerState.Changed:
+				var translation = gesture.TranslationInView(source);
+				gesture.SetTranslation(CGPoint.Empty, source);
+
+				// Accumulate and defer dispatch to a display link so that
+				// scroll events are processed once per vsync frame.
+				_activeScrollPendingX += (double)translation.X;
+				_activeScrollPendingY += (double)translation.Y;
+				if (_activeScrollDisplayLink is null)
+				{
+					_activeScrollDisplayLink = CADisplayLink.Create(FlushContinuousScroll);
+					_activeScrollDisplayLink.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.Common);
+				}
+				return;
+
+			case UIGestureRecognizerState.Ended:
+				_gestureIsNaturalScrolling = isNaturalScrollingEnabled;
+				FlushContinuousScroll();
+				StopActiveScrollDisplayLink();
+				// If the gesture lasted longer than the rapid-flick window, the preserved
+				// momentum is unrelated to the current scroll — discard it.
+				if (CoreAnimation.CAAnimation.CurrentMediaTime() - _gestureBeganTime > RapidFlickWindowSeconds)
+				{
+					_momentumVelocityX = 0;
+					_momentumVelocityY = 0;
+				}
+				AccumulateInertiaScrolling(gesture.VelocityInView(source));
+				return;
+
+			case UIGestureRecognizerState.Cancelled:
+			case UIGestureRecognizerState.Failed:
+				StopActiveScrollDisplayLink();
+				StopInertiaScrolling();
+				return;
+		}
+	}
+
+	// Dispatch accumulated continuous (trackpad) scroll deltas as a single
+	// PointerWheelChanged event, once per vsync frame. Uses sub-pixel accumulation
+	// so fractional remainders carry over to the next frame.
+	private void FlushContinuousScroll()
 	{
 		if (_activeScrollPendingX == 0 && _activeScrollPendingY == 0)
 		{
 			return;
 		}
 
-		var scrollX = (nfloat)(_activeScrollPendingX * DiscreteScrollScale);
-		var scrollY = (nfloat)(_activeScrollPendingY * DiscreteScrollScale);
-		_activeScrollPendingX = 0;
-		_activeScrollPendingY = 0;
+		var scrollX = (nfloat)Math.Truncate(_activeScrollPendingX);
+		var scrollY = (nfloat)Math.Truncate(_activeScrollPendingY);
+		// Subtract only the integer part so the fractional remainder (e.g. 3.7 → 0.7)
+		// carries over to the next frame. This preserves sub-pixel precision across
+		// vsync frames, preventing choppy trackpad scroll at low velocities.
+		_activeScrollPendingX -= (double)scrollX;
+		_activeScrollPendingY -= (double)scrollY;
+
+		if (scrollX == 0 && scrollY == 0)
+		{
+			return;
+		}
 
 		try
 		{

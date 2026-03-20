@@ -1,6 +1,7 @@
 using AwesomeAssertions;
 using ModelContextProtocol.Protocol;
 using Uno.UI.DevServer.Cli.Mcp;
+using System.Text.Json;
 
 namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 
@@ -115,7 +116,8 @@ public class Given_McpStdioServer
 
 		var healthCount = result.Count(t => t.Name == HealthService.HealthTool.Name);
 		healthCount.Should().Be(1, "AppendBuiltInTools deduplication ensures uno_health appears exactly once");
-		result.Should().HaveCount(3, "addRoots + uno_health (from cache) + uno_app_get_info");
+		result.Should().ContainSingle(t => t.Name == ProxyLifecycleManager.SelectSolutionTool.Name);
+		result.Should().HaveCount(4, "addRoots + uno_health (from cache) + uno_app_select_solution + uno_app_get_info");
 	}
 
 	[TestMethod]
@@ -130,7 +132,48 @@ public class Given_McpStdioServer
 		// Call the real production code
 		var result = ToolListManager.AppendBuiltInTools(tools);
 
-		result.Should().HaveCount(2, "uno_health + addRoots when no cache is available");
+		result.Should().HaveCount(3, "uno_health + uno_app_select_solution + addRoots when no cache is available");
 		result[0].Name.Should().Be(HealthService.HealthTool.Name, "uno_health should be first");
+		result[1].Name.Should().Be(ProxyLifecycleManager.SelectSolutionTool.Name, "uno_app_select_solution should be second");
+	}
+
+	[TestMethod]
+	[Description("AppendBuiltInTools always normalizes built-in tools to the front even when upstream/cache already returned them out of order")]
+	public void ListTools_FallbackPath_BuiltInsAreAlwaysOrderedFirst()
+	{
+		List<Tool> tools =
+		[
+			new() { Name = "uno_app_get_info", Description = "Info" },
+			HealthService.HealthTool,
+			new() { Name = "uno_app_set_roots", Description = "Set roots" },
+			ProxyLifecycleManager.SelectSolutionTool,
+		];
+
+		var result = ToolListManager.AppendBuiltInTools(tools);
+
+		result[0].Name.Should().Be(HealthService.HealthTool.Name);
+		result[1].Name.Should().Be(ProxyLifecycleManager.SelectSolutionTool.Name);
+		result.Select(t => t.Name).Should().Equal(
+			HealthService.HealthTool.Name,
+			ProxyLifecycleManager.SelectSolutionTool.Name,
+			"uno_app_get_info",
+			"uno_app_set_roots");
+	}
+
+	[TestMethod]
+	[Description("Select-solution argument parsing rejects non-string JSON values with a structured MCP error")]
+	public void TryGetSelectSolutionPath_WhenValueIsNotString_ReturnsStructuredError()
+	{
+		var arguments = new Dictionary<string, JsonElement>
+		{
+			["solutionPath"] = JsonDocument.Parse("42").RootElement.Clone(),
+		};
+
+		var success = McpStdioServer.TryGetSelectSolutionPath(arguments, out var solutionPath, out var errorResult);
+
+		success.Should().BeFalse();
+		solutionPath.Should().BeNull();
+		errorResult.IsError.Should().BeTrue();
+		((TextContentBlock)errorResult.Content.Single()).Text.Should().Contain("JSON string");
 	}
 }

@@ -50,7 +50,7 @@ function Get-DevserverCliArguments {
 
 function Invoke-DevserverCli {
     param([string[]]$Arguments = @())
-    $fullArgs = Get-DevserverCliArguments -Arguments $Arguments
+    [string[]]$fullArgs = @(Get-DevserverCliArguments -Arguments $Arguments)
     & $script:DevServerHostExecutable @fullArgs
 }
 

@@ -162,7 +162,7 @@ public partial class Given_ContentPresenter
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Inside_ContentControl_Template()
 	{
-		var control = new ContentPresenter_Inside_ContentControlTemplate();
+		var control = new CP_InCCTemplate();
 
 		await UITestHelper.Load(control);
 

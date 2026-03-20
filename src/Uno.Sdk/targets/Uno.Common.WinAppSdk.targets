@@ -83,4 +83,6 @@
 				HelpLink="https://aka.platform.uno/UNOB0008"
 				Text="Building a WinUI class library with dotnet build is not supported when XAML files are present. Use `msbuild` instead." />
 	</Target>
+
+	<Import Project="Uno.UI.SourceGenerators.WinAppSdk.props" />
 </Project>

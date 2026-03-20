@@ -288,8 +288,17 @@ namespace Microsoft.UI.Xaml.Controls
 					// signal to distinguish touchpad/precise scrolling from discrete mouse-wheel input.
 					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
 					{
+						// Continuous trackpad scroll sends small per-frame deltas (|delta| < 120)
+						// that the GetScrollWheelDelta formula (designed for discrete 120-unit notches)
+						// would shrink by up to 60%, making fast scroll sluggish and LoopingSelector
+						// (inline pickers) nearly unresponsive. Use delta directly as pixel offset
+						// for 1:1 trackpad-to-scroll mapping. Discrete mouse wheel (|delta| >= 120)
+						// still uses the standard formula for correct per-notch distance.
+						var hScrollAmount = Math.Abs(delta) < ScrollViewerDefaultMouseWheelDelta
+							? (double)delta
+							: GetHorizontalScrollWheelDelta(DesiredSize, delta);
 						success = Set(
-							horizontalOffset: HorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
+							horizontalOffset: HorizontalOffset + hScrollAmount,
 							options: new(DisableAnimation: true, IsIntermediate: false));
 					}
 					else
@@ -309,8 +318,11 @@ namespace Microsoft.UI.Xaml.Controls
 #else
 					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
 					{
+						var vScrollAmount = Math.Abs(delta) < ScrollViewerDefaultMouseWheelDelta
+							? (double)(-delta)
+							: GetVerticalScrollWheelDelta(DesiredSize, -delta);
 						success = Set(
-							verticalOffset: VerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
+							verticalOffset: VerticalOffset + vScrollAmount,
 							options: new(DisableAnimation: true, IsIntermediate: false));
 					}
 					else

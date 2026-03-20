@@ -3,9 +3,9 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ContentPresenterPages
 {
-	public sealed partial class ContentPresenter_Inside_ContentControlTemplate : UserControl
+	public sealed partial class CP_InCCTemplate : UserControl
 	{
-		public ContentPresenter_Inside_ContentControlTemplate()
+		public CP_InCCTemplate()
 		{
 			this.InitializeComponent();
 		}
