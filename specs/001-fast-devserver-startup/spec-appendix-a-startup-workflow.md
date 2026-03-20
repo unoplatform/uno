@@ -480,13 +480,12 @@ gantt
 
 ## 7. Proposed Workflow: Phase 1a+2 (Instant MCP Start + R2R)
 
-> **Maps to spec phases**: Phase 1a (instant MCP start, cached tools, structured errors) + Phase 2 (ReadyToRun compilation). This workflow shows the end-state where MCP tools are served from cache in < 1s.
+> **Maps to spec phases**: Phase 1a (instant MCP start, meta-tools, structured errors) + Phase 2 (ReadyToRun compilation). This workflow shows the end-state where MCP tools are served in < 1s via bridge tools and meta-tools.
 
 ```mermaid
 sequenceDiagram
     participant Client as MCP Client
     participant CLI as uno-devserver CLI
-    participant Cache as ToolCacheFile
     participant Health as HealthResource
     participant Monitor as DevServerMonitor
     participant Server as Host (Server)

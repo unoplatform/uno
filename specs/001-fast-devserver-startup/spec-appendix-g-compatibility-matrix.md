@@ -165,7 +165,7 @@ How different SDK versions affect add-in discovery.
 
 | Risk | Scenario | Impact | Mitigation |
 |------|----------|--------|------------|
-| Client doesn't support `tools/list_changed` | Tool list updates after initial response | Client never sees updated tools | `--mcp-wait-tools-list` blocks until upstream responds |
+| Client doesn't support `tools/list_changed` | Tool list updates after initial response | Client never sees updated tools | `--mcp-wait-tools-list` blocks until upstream responds. Additionally, meta-tools `uno_discover_tools` and `uno_execute_tool` allow clients to discover and invoke upstream tools without re-querying `list_tools`. |
 | Client doesn't support `resources` | `uno://health` not accessible | No diagnostics | `uno_health` tool as universal fallback |
 | Client doesn't support `roots` | Workspace not discovered | Discovery fails | `--force-roots-fallback` uses `--solution-dir` |
 | No client supports `resources/subscribe` | Health push notifications never received | Clients must poll or rely on `tools/list_changed` | Design for pull-based health (tool call), not push-based (subscription) |
@@ -210,16 +210,18 @@ These scenarios test the interaction between different DevServer launchers runni
 
 ## 7. License Tier Compatibility
 
-| Tier | Tool Count | Tool Cache Content | Upgrade Mid-Session |
-|------|:----------:|-------------------|:-------------------:|
-| Community | 9 | 9 tools cached | `tools/list_changed` sent |
-| Pro | 11 | 11 tools cached | `tools/list_changed` sent |
-| Business | 12 | 12 tools cached | `tools/list_changed` sent |
-| Expired/None | 0 | Last-known cached | Warning in health |
+| Tier | Tool Count | Upgrade Mid-Session |
+|------|:----------:|:-------------------:|
+| Community | 9 | `tools/list_changed` sent |
+| Pro | 11 | `tools/list_changed` sent |
+| Business | 12 | `tools/list_changed` sent |
+| Expired/None | 0 | Warning in health |
+
+> **Note**: The tool cache (`tools-cache.json`) has been removed. For clients that do not re-query `list_tools` after `tools/list_changed`, the meta-tools `uno_discover_tools` and `uno_execute_tool` provide an alternative mechanism to discover and call upstream tools.
 
 ### Validation
 
-- [ ] Community license → `list_tools` returns 9 tools, cache reflects this
+- [ ] Community license → `list_tools` returns 9 tools
 - [ ] Pro upgrade mid-session → `tools/list_changed` notification, updated tool list
 - [ ] No license / expired → `list_tools` returns within 30s (not infinite hang), health warning
-- [ ] Cache from Pro session used by Community session → stale tools served, refreshed when upstream responds
+- [ ] Client without `list_changed` support → can use `uno_discover_tools` to see current upstream tools
