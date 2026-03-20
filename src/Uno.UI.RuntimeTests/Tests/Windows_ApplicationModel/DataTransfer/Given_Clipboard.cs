@@ -72,6 +72,8 @@ partial class Given_Clipboard
 		package.SetUri(uri);
 		Clipboard.SetContent(package);
 
+		await DelayForClipboard();
+
 		var view = Clipboard.GetContent();
 		var result = await view.GetUriAsync();
 		Assert.AreEqual(uri, result);
@@ -136,9 +138,11 @@ partial class Given_Clipboard
 
 	private static async Task DelayForClipboard()
 	{
-		// on some platforms, clipboard operations are not immediately available,
-		// so we need to wait a bit before trying to read the content
-		if (RuntimeTestsPlatformHelper.CurrentPlatform is RuntimeTestPlatforms.SkiaWasm)
+		// On some platforms, clipboard operations are not immediately available.
+		// On Android/iOS, SetContent dispatches the write asynchronously
+		// via CoreDispatcher.Main.RunAsync. On Wasm, clipboard access is also async.
+		var platform = RuntimeTestsPlatformHelper.CurrentPlatform;
+		if ((RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.Android | RuntimeTestPlatforms.IOS).HasFlag(platform))
 		{
 			await Task.Delay(1000);
 		}
