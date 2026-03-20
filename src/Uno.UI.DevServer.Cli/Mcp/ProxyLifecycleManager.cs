@@ -25,8 +25,6 @@ internal class ProxyLifecycleManager
 	private readonly McpStdioServer _mcpStdioServer;
 	private readonly WorkspaceResolver _workspaceResolver;
 	private readonly ISolutionFileFinder _solutionFileFinder;
-	private readonly Tool _addRootsTool;
-
 	internal static readonly Tool SelectSolutionTool = new()
 	{
 		Name = "uno_app_select_solution",
@@ -38,7 +36,6 @@ internal class ProxyLifecycleManager
 
 	private bool _waitForTools;
 	private bool _forceRootsFallback;
-	private bool _forceGenerateToolCache;
 	private string? _solutionDirectory;
 	private readonly MonitorDecisions.StartOnceGuard _devServerStartGuard = new();
 
@@ -83,12 +80,9 @@ internal class ProxyLifecycleManager
 	private const int MaxReconnectionAttempts = 3;
 	private string? _currentDirectory;
 	private WorkspaceResolution? _workspaceResolution;
-	private string? _workspaceHash;
 	private int _devServerPort;
 	private List<string> _forwardedArgs = [];
 	private string[] _roots = [];
-	private TaskCompletionSource<bool>? _toolCachePrimedTcs;
-	private Task? _cachePrimedWatcher;
 	private FileSystemWatcher? _workspaceMutationWatcher;
 	private string? _workspaceMutationWatcherRoot;
 	private CancellationTokenSource? _workspaceMutationDebounceCts;
@@ -127,8 +121,6 @@ internal class ProxyLifecycleManager
 		_workspaceResolver = workspaceResolver;
 		_solutionFileFinder = solutionFileFinder ?? new FileSystemSolutionFileFinder();
 		_workspaceMutationWatcherFactory = workspaceMutationWatcherFactory ?? (root => new FileSystemWatcher(root));
-
-		_addRootsTool = McpServerTool.Create(SetRoots, new() { Name = "uno_app_set_roots" }).ProtocolTool;
 	}
 
 	internal ConnectionState ConnectionState => _connectionState;
@@ -155,20 +147,12 @@ internal class ProxyLifecycleManager
 		_waitForTools = waitForTools;
 		_forceRootsFallback = forceRootsFallback;
 		_healthService.ForceRootsFallback = forceRootsFallback;
-		_forceGenerateToolCache = forceGenerateToolCache;
 		_currentDirectory = currentDirectory;
 		_workspaceResolution = workspaceResolution;
 		_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 		_devServerPort = port;
 		_forwardedArgs = forwardedArgs;
 		_solutionDirectory = NormalizeSolutionDirectory(solutionDirectory);
-		_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(
-			workspaceResolution.EffectiveWorkspaceDirectory ?? _solutionDirectory ?? currentDirectory);
-		_toolListManager.WorkspaceHash = _workspaceHash;
-		_toolListManager.IsToolCacheEnabled = true;
-		_toolListManager.OnToolCachePersisted = () => _toolCachePrimedTcs?.TrySetResult(true);
-		_toolListManager.OnToolCachePersistFailed = ex => FailToolCachePriming(ex);
-		InitializeToolCachePrimingTracker();
 		StartWorkspaceMutationWatcher();
 
 		EnsureDevServerStartedFromSolutionDirectory();
@@ -176,12 +160,6 @@ internal class ProxyLifecycleManager
 		try
 		{
 			var exitCode = await StartMcpStdIoProxyAsync(ct);
-
-			if (!await EnsureCachePrimingCompletedAsync())
-			{
-				return 1;
-			}
-
 			return exitCode;
 		}
 		catch (Exception ex)
@@ -458,7 +436,6 @@ internal class ProxyLifecycleManager
 						_workspaceResolution?.EffectiveWorkspaceDirectory);
 					_workspaceResolution = nextResolution;
 					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
-					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
 						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
@@ -467,7 +444,6 @@ internal class ProxyLifecycleManager
 				case WorkspaceTransitionAction.Start:
 					_workspaceResolution = nextResolution;
 					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
-					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
@@ -482,10 +458,8 @@ internal class ProxyLifecycleManager
 					await StopCurrentWorkspaceAsync();
 					_workspaceResolution = nextResolution;
 					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
-					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					SetConnectionState(ConnectionState.Degraded);
-					FailToolCachePriming();
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
 						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
@@ -498,7 +472,6 @@ internal class ProxyLifecycleManager
 					await StopCurrentWorkspaceAsync();
 					_workspaceResolution = nextResolution;
 					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
-					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
@@ -522,12 +495,10 @@ internal class ProxyLifecycleManager
 							nextResolution.ResolutionKind);
 						_workspaceResolution = nextResolution;
 						_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
-						UpdateWorkspaceHash(nextResolution);
 						await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					}
 
 					SetConnectionState(ConnectionState.Degraded);
-					FailToolCachePriming();
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
 						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
@@ -536,7 +507,6 @@ internal class ProxyLifecycleManager
 					_logger.LogWarning("Unexpected workspace transition action {Action} for trigger {Trigger}",
 						transitionAction, trigger);
 					SetConnectionState(ConnectionState.Degraded);
-					FailToolCachePriming();
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
 						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
@@ -628,7 +598,6 @@ internal class ProxyLifecycleManager
 				"Workspace resolution failed for {Directory}; DevServer startup is skipped and health remains immediately available for diagnostics",
 				_currentDirectory);
 			SetConnectionState(ConnectionState.Degraded);
-			FailToolCachePriming();
 			return;
 		}
 
@@ -660,7 +629,6 @@ internal class ProxyLifecycleManager
 			_logger.LogWarning(
 				"Unable to start DevServer monitor because the solution directory '{Directory}' is invalid", directory);
 			_devServerStartGuard.Reset();
-			FailToolCachePriming();
 			LogTimeline("start-monitor.rejected-invalid-directory", startMonitorStopwatch.ElapsedMilliseconds,
 				directory ?? "<null>");
 			return;
@@ -669,12 +637,6 @@ internal class ProxyLifecycleManager
 		_logger.LogTrace("Starting DevServer monitor using solution directory {Directory}", normalized);
 		try
 		{
-			if (string.IsNullOrEmpty(_workspaceHash))
-			{
-				_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(normalized);
-				_toolListManager.WorkspaceHash = _workspaceHash;
-			}
-
 			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs, _workspaceResolution);
 			_healthService.DevServerStarted = true;
 			SetConnectionState(ConnectionState.Discovering);
@@ -688,7 +650,6 @@ internal class ProxyLifecycleManager
 			_logger.LogWarning(ex, "Unable to start DevServer monitor for solution directory '{Directory}'",
 				normalized);
 			_devServerStartGuard.Reset();
-			FailToolCachePriming(ex);
 			LogTimeline("start-monitor.failed", startMonitorStopwatch.ElapsedMilliseconds, normalized);
 		}
 	}
@@ -696,23 +657,12 @@ internal class ProxyLifecycleManager
 	private async Task StopCurrentWorkspaceAsync()
 	{
 		await _devServerMonitor.StopMonitoringAsync();
+		// Reset the upstream connection before any asynchronous ServerCrashed events
+		// can race with the new DevServer startup. This ensures the TCS is fresh when
+		// the next ServerStarted event fires.
+		await _mcpUpstreamClient.ResetConnectionAsync();
 		_healthService.DevServerStarted = false;
 		_devServerStartGuard.Reset();
-	}
-
-	private void UpdateWorkspaceHash(WorkspaceResolution resolution)
-	{
-		var workspaceDirectory = resolution.EffectiveWorkspaceDirectory
-			?? _solutionDirectory
-			?? _currentDirectory;
-
-		if (string.IsNullOrWhiteSpace(workspaceDirectory))
-		{
-			return;
-		}
-
-		_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(workspaceDirectory);
-		_toolListManager.WorkspaceHash = _workspaceHash;
 	}
 
 	internal void StartWorkspaceMutationWatcher()
@@ -1055,129 +1005,16 @@ internal class ProxyLifecycleManager
 		}
 	}
 
-	private void InitializeToolCachePrimingTracker()
-	{
-		if (!_forceGenerateToolCache)
-		{
-			_toolCachePrimedTcs = null;
-			_cachePrimedWatcher = null;
-			return;
-		}
-
-		_toolCachePrimedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
-		_cachePrimedWatcher = null;
-	}
-
-	private void FailToolCachePriming(Exception? ex = null)
-	{
-		if (_toolCachePrimedTcs is null)
-		{
-			return;
-		}
-
-		if (ex is not null)
-		{
-			_toolCachePrimedTcs.TrySetException(ex);
-		}
-		else
-		{
-			_toolCachePrimedTcs.TrySetResult(false);
-		}
-	}
-
-	private async Task<bool> EnsureCachePrimingCompletedAsync()
-	{
-		if (!_forceGenerateToolCache)
-		{
-			return true;
-		}
-
-		if (_toolCachePrimedTcs is null)
-		{
-			_logger.LogError("Tool cache priming tracker was not initialized");
-			return false;
-		}
-
-		try
-		{
-			var result = await _toolCachePrimedTcs.Task;
-			if (!result)
-			{
-				_logger.LogError("Tool cache priming failed");
-			}
-
-			return result;
-		}
-		catch (Exception ex)
-		{
-			_logger.LogError(ex, "Tool cache priming failed with an exception");
-			return false;
-		}
-	}
-
-	private void StartCachePrimingWatcher(IHost host)
-	{
-		if (!_forceGenerateToolCache || _toolCachePrimedTcs is null)
-		{
-			return;
-		}
-
-		_cachePrimedWatcher = CachePrimingWatcherAsync(host);
-	}
-
-	private async Task CachePrimingWatcherAsync(IHost host)
-	{
-		try
-		{
-			try
-			{
-				var result = await _toolCachePrimedTcs!.Task.ConfigureAwait(false);
-
-				if (result)
-				{
-					_logger.LogInformation("Tool cache primed successfully; stopping stdio server");
-				}
-				else
-				{
-					_logger.LogWarning("Tool cache priming failed; stopping stdio server");
-				}
-			}
-			catch (OperationCanceledException)
-			{
-				_logger.LogInformation("Tool cache priming was canceled; stopping stdio server");
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex, "Tool cache priming failed with an exception; stopping stdio server");
-			}
-
-			try
-			{
-				await host.StopAsync().ConfigureAwait(false);
-			}
-			catch (Exception ex)
-			{
-				_logger.LogWarning(ex, "Error while stopping stdio server after tool cache priming");
-			}
-		}
-		catch (Exception ex)
-		{
-			_logger.LogWarning(ex, "Unexpected error in cache priming watcher");
-		}
-	}
-
 	private async Task<int> StartMcpStdIoProxyAsync(CancellationToken ct)
 	{
 		var (host, tcs) = _mcpStdioServer.BuildHost(
 			EnsureRootsInitialized,
-			_addRootsTool,
+			McpStdioServer.InitializeTool,
 			SelectSolutionTool,
 			_forceRootsFallback,
 			() => _roots,
 			async roots => await SetRoots(roots),
 			async solutionPath => await SelectSolution(solutionPath));
-
-		StartCachePrimingWatcher(host);
 
 		_devServerMonitor.ServerLaunching += () =>
 		{
@@ -1196,16 +1033,22 @@ internal class ProxyLifecycleManager
 			SetConnectionState(ConnectionState.Connected);
 			_reconnectionAttempts = 0;
 
-			_toolListManager.MarkShouldRefresh();
-
-			await _toolListManager.RefreshCachedToolsFromUpstreamAsync();
-
 			tcs.TrySetResult();
 
-			await host.Services.GetRequiredService<McpServer>().SendNotificationAsync(
-				NotificationMethods.ToolListChangedNotification,
-				new ToolListChangedNotificationParams()
-			);
+			try
+			{
+				_logger.LogTrace("Sending tools/list_changed notification to client...");
+				await host.Services.GetRequiredService<McpServer>().SendNotificationAsync(
+					NotificationMethods.ToolListChangedNotification,
+					new ToolListChangedNotificationParams()
+				);
+				_mcpStdioServer.OnListChangedNotificationSent();
+				_logger.LogTrace("tools/list_changed notification sent successfully");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "Failed to send tools/list_changed notification to client");
+			}
 		});
 
 		_devServerMonitor.ServerCrashed += () =>
@@ -1237,7 +1080,6 @@ internal class ProxyLifecycleManager
 				_workspaceResolution?.SelectedSolutionPath ?? "<none>",
 				discovery?.AddIns?.Count ?? 0);
 			SetConnectionState(ConnectionState.Degraded);
-			FailToolCachePriming();
 		};
 
 		try

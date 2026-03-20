@@ -1591,35 +1591,7 @@ public class Given_ProxyLifecycleManager
 		}
 	}
 
-	[TestMethod]
-	[Description("Explicit solution selection updates the workspace hash to the selected workspace")]
-	public async Task WhenSelectingSolution_WorkspaceHashTracksSelectedWorkspace()
-	{
-		var root = CreateTempDirectory();
 
-		try
-		{
-			var workspaceA = await CreateUnoWorkspaceAsync(root, "srcA", "AppA.slnx", "6.6.0-dev.1");
-			var workspaceB = await CreateUnoWorkspaceAsync(root, "srcB", "AppB.slnx", "6.6.0-dev.2");
-			var solutionB = Path.Combine(workspaceB, "AppB.slnx");
-			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
-			var resolutionA = await resolver.ResolveAsync(workspaceA);
-
-			var created = CreateSubject();
-			var subject = created.Subject;
-			SetPrivateField(subject, "_currentDirectory", root);
-			SetPrivateField(subject, "_workspaceResolution", resolutionA);
-
-			await subject.SelectSolutionAsync(solutionB);
-
-			GetPrivateField<string?>(subject, "_workspaceHash")
-				.Should().Be(ToolCacheFile.ComputeWorkspaceHash(workspaceB));
-		}
-		finally
-		{
-			await DeleteDirectoryWithRetriesAsync(root);
-		}
-	}
 
 	private static (ProxyLifecycleManager Subject, HealthService HealthService, DevServerMonitor Monitor) CreateSubject(
 		ILogger<ProxyLifecycleManager>? logger = null,
@@ -1631,10 +1603,7 @@ public class Given_ProxyLifecycleManager
 			.BuildServiceProvider();
 		var monitor = new DevServerMonitor(services, NullLogger<DevServerMonitor>.Instance);
 		var upstreamClient = new McpUpstreamClient(NullLogger<McpUpstreamClient>.Instance, monitor);
-		var toolListManager = new ToolListManager(NullLogger<ToolListManager>.Instance, upstreamClient, monitor)
-		{
-			IsToolCacheEnabled = false,
-		};
+		var toolListManager = new ToolListManager(NullLogger<ToolListManager>.Instance, upstreamClient);
 		var healthService = new HealthService(upstreamClient, monitor, toolListManager);
 		var stdioServer = new McpStdioServer(NullLogger<McpStdioServer>.Instance, toolListManager, healthService, upstreamClient);
 		var finder = solutionFileFinder ?? new FileSystemSolutionFileFinder();

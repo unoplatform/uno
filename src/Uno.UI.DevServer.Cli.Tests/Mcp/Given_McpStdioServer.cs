@@ -1,5 +1,7 @@
 using AwesomeAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using ModelContextProtocol.Protocol;
+using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.DevServer.Cli.Mcp;
 using System.Text.Json;
 
@@ -90,7 +92,7 @@ public class Given_McpStdioServer
 	[Description("When cached tools include uno_health and it is prepended explicitly, duplicates appear (demonstrates the old bug)")]
 	public void ListTools_FallbackPath_OldBehavior_ProducesDuplicateHealthTool()
 	{
-		var addRootsTool = new Tool { Name = "uno_app_set_roots", Description = "Set roots" };
+		var addRootsTool = new Tool { Name = "uno_app_initialize", Description = "Set roots" };
 		var cachedTools = new[] { HealthService.HealthTool, new Tool { Name = "uno_app_get_info", Description = "Info" } };
 
 		// Old behavior: explicitly prepend uno_health, then AddRange cached tools
@@ -105,7 +107,7 @@ public class Given_McpStdioServer
 	[Description("New behavior: AppendBuiltInTools deduplication prevents duplicate uno_health in forceRootsFallback path")]
 	public void ListTools_FallbackPath_NewBehavior_NoDuplicateHealthTool()
 	{
-		var addRootsTool = new Tool { Name = "uno_app_set_roots", Description = "Set roots" };
+		var addRootsTool = new Tool { Name = "uno_app_initialize", Description = "Set roots" };
 		var cachedTools = new[] { HealthService.HealthTool, new Tool { Name = "uno_app_get_info", Description = "Info" } };
 
 		List<Tool> tools = [addRootsTool];
@@ -124,7 +126,7 @@ public class Given_McpStdioServer
 	[Description("AppendBuiltInTools adds uno_health when no cached tools are available (fresh start)")]
 	public void ListTools_FallbackPath_NoCachedTools_HealthToolIsAdded()
 	{
-		var addRootsTool = new Tool { Name = "uno_app_set_roots", Description = "Set roots" };
+		var addRootsTool = new Tool { Name = "uno_app_initialize", Description = "Set roots" };
 
 		List<Tool> tools = [addRootsTool];
 		// No cached tools
@@ -145,7 +147,7 @@ public class Given_McpStdioServer
 		[
 			new() { Name = "uno_app_get_info", Description = "Info" },
 			HealthService.HealthTool,
-			new() { Name = "uno_app_set_roots", Description = "Set roots" },
+			new() { Name = "uno_app_initialize", Description = "Set roots" },
 			ProxyLifecycleManager.SelectSolutionTool,
 		];
 
@@ -157,7 +159,7 @@ public class Given_McpStdioServer
 			HealthService.HealthTool.Name,
 			ProxyLifecycleManager.SelectSolutionTool.Name,
 			"uno_app_get_info",
-			"uno_app_set_roots");
+			"uno_app_initialize");
 	}
 
 	[TestMethod]
@@ -175,5 +177,208 @@ public class Given_McpStdioServer
 		solutionPath.Should().BeNull();
 		errorResult.IsError.Should().BeTrue();
 		((TextContentBlock)errorResult.Content.Single()).Text.Should().Contain("JSON string");
+	}
+
+	// -------------------------------------------------------------------
+	// Meta-tools: AppendMetaTools deduplication
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("AppendMetaTools adds discover_tools and execute_tool when not already present")]
+	public void AppendMetaTools_WhenNonePresent_AddsBoth()
+	{
+		IList<Tool> tools = [HealthService.HealthTool, ProxyLifecycleManager.SelectSolutionTool];
+
+		var result = McpStdioServer.AppendMetaTools(tools);
+
+		result.Should().HaveCount(4);
+		result.Should().ContainSingle(t => t.Name == McpStdioServer.DiscoverToolsTool.Name);
+		result.Should().ContainSingle(t => t.Name == McpStdioServer.ExecuteToolTool.Name);
+	}
+
+	[TestMethod]
+	[Description("AppendMetaTools deduplicates when meta-tools are already in the list")]
+	public void AppendMetaTools_WhenAlreadyPresent_NoDuplicates()
+	{
+		IList<Tool> tools =
+		[
+			HealthService.HealthTool,
+			McpStdioServer.DiscoverToolsTool,
+			McpStdioServer.ExecuteToolTool,
+		];
+
+		var result = McpStdioServer.AppendMetaTools(tools);
+
+		result.Should().HaveCount(3);
+		result.Count(t => t.Name == McpStdioServer.DiscoverToolsTool.Name).Should().Be(1);
+		result.Count(t => t.Name == McpStdioServer.ExecuteToolTool.Name).Should().Be(1);
+	}
+
+	[TestMethod]
+	[Description("Meta-tools are appended at the end, after built-in and upstream tools")]
+	public void AppendMetaTools_OrderIsPreserved_MetaToolsLast()
+	{
+		IList<Tool> tools =
+		[
+			HealthService.HealthTool,
+			ProxyLifecycleManager.SelectSolutionTool,
+			new() { Name = "uno_app_get_info", Description = "Info" },
+		];
+
+		var result = McpStdioServer.AppendMetaTools(tools);
+
+		result[0].Name.Should().Be(HealthService.HealthTool.Name);
+		result[1].Name.Should().Be(ProxyLifecycleManager.SelectSolutionTool.Name);
+		result[2].Name.Should().Be("uno_app_get_info");
+		result[3].Name.Should().Be(McpStdioServer.DiscoverToolsTool.Name);
+		result[4].Name.Should().Be(McpStdioServer.ExecuteToolTool.Name);
+	}
+
+	// -------------------------------------------------------------------
+	// Meta-tools: ShouldIncludeMetaTools tracking
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("ShouldIncludeMetaTools is true before any list_changed notification")]
+	public void ShouldIncludeMetaTools_BeforeListChanged_IsTrue()
+	{
+		var server = CreateMcpStdioServer();
+
+		server.ShouldIncludeMetaTools.Should().BeTrue();
+	}
+
+	[TestMethod]
+	[Description("ShouldIncludeMetaTools is still true after list_changed sent but before client re-queries")]
+	public void ShouldIncludeMetaTools_AfterListChangedSentBeforeReQuery_IsTrue()
+	{
+		var server = CreateMcpStdioServer();
+
+		server.OnListChangedNotificationSent();
+
+		// The client has not re-queried list_tools yet, so meta-tools should still be included
+		server.ShouldIncludeMetaTools.Should().BeTrue();
+	}
+
+	// -------------------------------------------------------------------
+	// TryGetInitializeArgs validation
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("TryGetInitializeArgs extracts workspaceDirectory and optional solutionPath")]
+	public void TryGetInitializeArgs_WhenValid_ExtractsArguments()
+	{
+		var arguments = new Dictionary<string, JsonElement>
+		{
+			["workspaceDirectory"] = JsonDocument.Parse("\"C:\\\\src\\\\project\"").RootElement.Clone(),
+			["solutionPath"] = JsonDocument.Parse("\"C:\\\\src\\\\project\\\\App.slnx\"").RootElement.Clone(),
+		};
+
+		var success = McpStdioServer.TryGetInitializeArgs(arguments, out var workspaceDir, out var solutionPath, out _);
+
+		success.Should().BeTrue();
+		workspaceDir.Should().Be(@"C:\src\project");
+		solutionPath.Should().Be(@"C:\src\project\App.slnx");
+	}
+
+	[TestMethod]
+	[Description("TryGetInitializeArgs succeeds when solutionPath is omitted")]
+	public void TryGetInitializeArgs_WhenSolutionPathOmitted_Succeeds()
+	{
+		var arguments = new Dictionary<string, JsonElement>
+		{
+			["workspaceDirectory"] = JsonDocument.Parse("\"C:\\\\src\\\\project\"").RootElement.Clone(),
+		};
+
+		var success = McpStdioServer.TryGetInitializeArgs(arguments, out var workspaceDir, out var solutionPath, out _);
+
+		success.Should().BeTrue();
+		workspaceDir.Should().Be(@"C:\src\project");
+		solutionPath.Should().BeNull();
+	}
+
+	[TestMethod]
+	[Description("TryGetInitializeArgs rejects missing workspaceDirectory")]
+	public void TryGetInitializeArgs_WhenMissing_ReturnsError()
+	{
+		var arguments = new Dictionary<string, JsonElement>();
+
+		var success = McpStdioServer.TryGetInitializeArgs(arguments, out _, out _, out var errorResult);
+
+		success.Should().BeFalse();
+		errorResult.IsError.Should().BeTrue();
+		((TextContentBlock)errorResult.Content.Single()).Text.Should().Contain("workspaceDirectory");
+	}
+
+	[TestMethod]
+	[Description("TryGetInitializeArgs rejects non-string workspaceDirectory")]
+	public void TryGetInitializeArgs_WhenNotString_ReturnsError()
+	{
+		var arguments = new Dictionary<string, JsonElement>
+		{
+			["workspaceDirectory"] = JsonDocument.Parse("42").RootElement.Clone(),
+		};
+
+		var success = McpStdioServer.TryGetInitializeArgs(arguments, out _, out _, out var errorResult);
+
+		success.Should().BeFalse();
+		errorResult.IsError.Should().BeTrue();
+		((TextContentBlock)errorResult.Content.Single()).Text.Should().Contain("string");
+	}
+
+	[TestMethod]
+	[Description("TryGetInitializeArgs rejects relative paths")]
+	public void TryGetInitializeArgs_WhenRelativePath_ReturnsError()
+	{
+		var arguments = new Dictionary<string, JsonElement>
+		{
+			["workspaceDirectory"] = JsonDocument.Parse("\"relative/path\"").RootElement.Clone(),
+		};
+
+		var success = McpStdioServer.TryGetInitializeArgs(arguments, out _, out _, out var errorResult);
+
+		success.Should().BeFalse();
+		errorResult.IsError.Should().BeTrue();
+		((TextContentBlock)errorResult.Content.Single()).Text.Should().Contain("absolute path");
+	}
+
+	// -------------------------------------------------------------------
+	// InitializeTool definition
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("InitializeTool has the expected name and schema")]
+	public void InitializeTool_NameAndSchema_AreValid()
+	{
+		McpStdioServer.InitializeTool.Name.Should().Be("uno_app_initialize");
+		McpStdioServer.InitializeTool.InputSchema.GetProperty("required")
+			.EnumerateArray().First().GetString().Should().Be("workspaceDirectory");
+	}
+
+	[TestMethod]
+	[Description("DiscoverToolsTool has the expected name")]
+	public void DiscoverToolsTool_Name_IsValid()
+	{
+		McpStdioServer.DiscoverToolsTool.Name.Should().Be("uno_discover_tools");
+	}
+
+	[TestMethod]
+	[Description("ExecuteToolTool has the expected name and required toolName argument")]
+	public void ExecuteToolTool_NameAndSchema_AreValid()
+	{
+		McpStdioServer.ExecuteToolTool.Name.Should().Be("uno_execute_tool");
+		McpStdioServer.ExecuteToolTool.InputSchema.GetProperty("required")
+			.EnumerateArray().First().GetString().Should().Be("toolName");
+	}
+
+	private static McpStdioServer CreateMcpStdioServer()
+	{
+		var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection()
+			.AddSingleton(new UnoToolsLocator(Microsoft.Extensions.Logging.Abstractions.NullLogger<UnoToolsLocator>.Instance))
+			.BuildServiceProvider();
+		var monitor = new DevServerMonitor(services, Microsoft.Extensions.Logging.Abstractions.NullLogger<DevServerMonitor>.Instance);
+		var upstreamClient = new McpUpstreamClient(Microsoft.Extensions.Logging.Abstractions.NullLogger<McpUpstreamClient>.Instance, monitor);
+		var toolListManager = new ToolListManager(Microsoft.Extensions.Logging.Abstractions.NullLogger<ToolListManager>.Instance, upstreamClient);
+		var healthService = new HealthService(upstreamClient, monitor, toolListManager);
+		return new McpStdioServer(Microsoft.Extensions.Logging.Abstractions.NullLogger<McpStdioServer>.Instance, toolListManager, healthService, upstreamClient);
 	}
 }

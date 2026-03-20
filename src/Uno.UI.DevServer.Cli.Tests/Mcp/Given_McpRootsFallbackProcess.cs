@@ -9,7 +9,7 @@ namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 public class Given_McpRootsFallbackProcess
 {
 	[TestMethod]
-	[Description("The MCP proxy starts the deferred DevServer after uno_app_set_roots is called in force-roots-fallback mode")]
+	[Description("The MCP proxy starts the deferred DevServer after uno_app_initialize is called in force-roots-fallback mode")]
 	public async Task WhenRootsAreProvidedViaToolCall_DeferredDevServerStarts()
 	{
 		var cliDllPath = GetCliDllPath();
@@ -201,10 +201,10 @@ public class Given_McpRootsFallbackProcess
 			method = "tools/call",
 			@params = new
 			{
-				name = "uno_app_set_roots",
+				name = "uno_app_initialize",
 				arguments = new
 				{
-					roots = new[] { workspaceDirectory }
+					workspaceDirectory
 				}
 			}
 		});

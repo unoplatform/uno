@@ -30,8 +30,8 @@ The workspace and MCP discovery cases in [Appendix I](spec-appendix-i-workspace-
 | 7 | Host crash mid-session | Auto-restart, `tools/list_changed`, tool calls recover |
 | 8 | Host crash 3x | Give up, `uno://health` shows `HostCrashed`, remediation |
 | 9 | Missing NuGet cache | Structured error with `dotnet restore` remediation |
-| 10 | `--force-roots-fallback` | `uno_app_set_roots` workflow unchanged |
-| 11 | `--force-generate-tool-cache` | Cache primed and process exits |
+| 10 | `--force-roots-fallback` | `uno_app_initialize` workflow: takes `workspaceDirectory` and optional `solutionPath`, blocks until DevServer connected, returns status + available tools |
+| 11 | `--force-generate-tool-cache` | Deprecated no-op: flag is accepted for backward compatibility but does nothing |
 | 12 | Non-MCP commands | `start`, `stop`, `list`, `cleanup`, `disco`, `login` unchanged |
 | 13 | VS extension launches Host | No `--addins` flag -> MSBuild discovery works |
 | 14 | Tool call before host ready | Structured error, not hang or crash |

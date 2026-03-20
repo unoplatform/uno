@@ -14,13 +14,15 @@ These tools are provided directly by the DevServer MCP bridge before the upstrea
 |-----------|-------------|:------------:|
 | `uno_health` | Returns the current `HealthReport` state for the bridge and selected workspace | Always |
 | `uno_app_select_solution` | Explicitly selects a Uno solution by absolute solution path and starts/restarts DevServer when needed | Always |
-| `uno_app_set_roots` | Updates MCP roots used for workspace discovery fallback | Force-roots-fallback only |
+| `uno_app_initialize` | Initializes the workspace. Takes `workspaceDirectory` (required) and `solutionPath` (optional), blocks until the DevServer is connected, and returns status plus available tools. Replaces the former `uno_app_set_roots`. | Force-roots-fallback only |
+| `uno_discover_tools` | Returns upstream tools with full schemas. Compatibility meta-tool for MCP clients that do not re-query `list_tools` after `tools/list_changed`. | Always (after upstream connection) |
+| `uno_execute_tool` | Forwards a tool call to the upstream by name. Compatibility meta-tool for MCP clients that do not re-query `list_tools` after `tools/list_changed`. | Always (after upstream connection) |
 
-`uno_app_select_solution` is implemented in `uno.devserver`, not `uno.app-mcp`, because solution selection affects pre-host behavior: workspace resolution, DevServer lifecycle, tool-cache identity, and health.
+`uno_app_select_solution` is implemented in `uno.devserver`, not `uno.app-mcp`, because solution selection affects pre-host behavior: workspace resolution, DevServer lifecycle, and health.
 
 ### E.1b Upstream app tools (reference from uno.app-mcp)
 
-> **Note**: The tool count visible to the AI model depends on the user's license tier. `MCPToolsObserverService` filters tools via `[LicenseFeatures]` attributes. The tool cache (`tools-cache.json`) reflects the license tier active at cache time.
+> **Note**: The tool count visible to the AI model depends on the user's license tier. `MCPToolsObserverService` filters tools via `[LicenseFeatures]` attributes. For MCP clients that do not re-query `list_tools` after `tools/list_changed`, the meta-tools `uno_discover_tools` and `uno_execute_tool` provide an alternative mechanism to access upstream tools.
 >
 > **Known discrepancy**: The public docs (`doc/articles/features/using-the-uno-mcps.md`) do not list all tools (e.g., `uno_app_start` is missing, Business tier not documented). The table below reflects the **actual server code** (`uno.app-mcp`), not the docs. See also `uno.app-mcp/README.md` alongside this spec for upstream action items.
 

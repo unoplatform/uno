@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Linq;
 using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,6 +24,62 @@ internal class McpStdioServer(
 	/// <summary>Maximum time to wait for an upstream tool call before returning a timeout error.</summary>
 	internal const int UpstreamCallToolTimeoutMs = 5 * 60 * 1000; // 5 minutes — tool calls can involve builds
 
+	/// <summary>Maximum time to wait for the upstream to connect during uno_app_initialize.</summary>
+	internal const int InitializeTimeoutMs = 120_000; // 2 minutes
+
+	// ── Meta-tool definitions ──────────────────────────────────────────
+	// These tools provide a compatibility layer for MCP clients that do not
+	// re-query list_tools after a tools/list_changed notification. They are
+	// included in the initial list_tools response and removed once the client
+	// demonstrates support for tools/list_changed by re-querying.
+
+	internal static readonly Tool InitializeTool = new()
+	{
+		Name = "uno_app_initialize",
+		Description =
+			"Initializes the Uno DevServer for a workspace. Sets the root directory, resolves the Uno solution, and starts the DevServer. Call this first.",
+		InputSchema = JsonSerializer.Deserialize<JsonElement>(
+			"""{"type":"object","required":["workspaceDirectory"],"properties":{"workspaceDirectory":{"type":"string","description":"Absolute path to the workspace root directory."},"solutionPath":{"type":"string","description":"Optional absolute path to the .sln or .slnx file to use."}}}"""),
+	};
+
+	internal static readonly Tool DiscoverToolsTool = new()
+	{
+		Name = "uno_discover_tools",
+		Description =
+			"Returns available Uno app tools with descriptions and input schemas. Call after uno_app_initialize when the DevServer is ready.",
+		InputSchema = JsonSerializer.Deserialize<JsonElement>("""{"type":"object","properties":{}}"""),
+	};
+
+	internal static readonly Tool ExecuteToolTool = new()
+	{
+		Name = "uno_execute_tool",
+		Description =
+			"Executes an Uno app tool by name. Use uno_discover_tools to see available tools first.",
+		InputSchema = JsonSerializer.Deserialize<JsonElement>(
+			"""{"type":"object","required":["toolName"],"properties":{"toolName":{"type":"string","description":"Name of the tool to execute."},"arguments":{"type":"object","description":"Arguments to pass to the tool."}}}"""),
+	};
+
+	// ── Meta-tool tracking state ───────────────────────────────────────
+	// Tracks whether the client supports tools/list_changed by observing
+	// whether it re-queries list_tools after a notification.
+	private volatile bool _listChangedNotificationSent;
+	private volatile bool _clientReQueriedAfterListChanged;
+
+	/// <summary>
+	/// Called by ProxyLifecycleManager after tools/list_changed notification is sent downstream.
+	/// </summary>
+	internal void OnListChangedNotificationSent()
+	{
+		_listChangedNotificationSent = true;
+	}
+
+	/// <summary>
+	/// Returns true when meta-tools (uno_discover_tools, uno_execute_tool) should be included
+	/// in list_tools responses. Meta-tools are included until the client demonstrates support
+	/// for tools/list_changed by re-querying list_tools after a notification.
+	/// </summary>
+	internal bool ShouldIncludeMetaTools => !_clientReQueriedAfterListChanged;
+
 	private static void LogTimeline(ILogger logger, string stage, long elapsedMilliseconds, string details)
 	{
 		logger.LogDebug("TIMELINE|mcp-stdio|{Stage}|{ElapsedMs}|{Details}", stage, elapsedMilliseconds, details);
@@ -35,7 +92,7 @@ internal class McpStdioServer(
 	public (IHost Host, TaskCompletionSource ToolsReadyTcs) BuildHost(
 		Func<RequestContext<ListToolsRequestParams>, TaskCompletionSource, CancellationToken, Task>
 			ensureRootsInitialized,
-		Tool addRootsTool,
+		Tool initializeTool,
 		Tool selectSolutionTool,
 		bool forceRootsFallback,
 		Func<string[]> getRoots,
@@ -61,24 +118,38 @@ internal class McpStdioServer(
 				var toolStopwatch = Stopwatch.StartNew();
 				logger.LogTrace("RECV call_tool {Tool}", toolName);
 
-				if (forceRootsFallback && toolName == addRootsTool.Name)
+				// Handle uno_app_initialize (force-roots-fallback mode)
+				if (forceRootsFallback && toolName == initializeTool.Name)
 				{
-					if (ctx.Params?.Arguments is not { } arguments
-						|| !arguments.TryGetValue("roots", out var rootsElement))
+					if (!TryGetInitializeArgs(ctx.Params?.Arguments, out var workspaceDir, out var initSolutionPath, out var initError))
 					{
-						return new CallToolResult()
-						{
-							Content = [new TextContentBlock() { Text = "Missing required 'roots' argument." }],
-							IsError = true
-						};
+						return initError;
 					}
 
-					await setRootsHandler(rootsElement.Deserialize<string[]>() ?? []);
+					await setRootsHandler([workspaceDir!]);
+
+					if (!string.IsNullOrWhiteSpace(initSolutionPath))
+					{
+						await selectSolutionHandler(initSolutionPath);
+					}
+
+					// Wait for upstream to connect (with timeout)
+					using var initTimeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+					initTimeoutCts.CancelAfter(InitializeTimeoutMs);
+					try
+					{
+						await tcs.Task.WaitAsync(initTimeoutCts.Token);
+					}
+					catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+					{
+						logger.LogWarning("Timed out waiting for DevServer to connect during initialization");
+					}
+
 					toolStopwatch.Stop();
-					LogTimeline(logger, "tool.set-roots.complete", toolStopwatch.ElapsedMilliseconds, "roots-fallback");
+					LogTimeline(logger, "tool.initialize.complete", toolStopwatch.ElapsedMilliseconds, workspaceDir!);
 					logger.LogDebug("Handled MCP tool {Tool} in {ElapsedMs} ms", toolName,
 						toolStopwatch.ElapsedMilliseconds);
-					return new CallToolResult() { Content = [new TextContentBlock() { Text = "Ok" }] };
+					return BuildInitializeResponse(workspaceDir!);
 				}
 
 				if (toolName == selectSolutionTool.Name)
@@ -106,6 +177,138 @@ internal class McpStdioServer(
 					logger.LogDebug("Handled MCP tool {Tool} in {ElapsedMs} ms", toolName,
 						toolStopwatch.ElapsedMilliseconds);
 					return healthResult;
+				}
+
+				// Handle uno_discover_tools (meta-tool for clients without list_changed)
+				if (toolName == DiscoverToolsTool.Name)
+				{
+					try
+					{
+						var discoverResult = await toolListManager.ListToolsWithTimeoutAsync(ct);
+						var discoveredTools = discoverResult.Tools;
+
+						var discoveredJson = JsonSerializer.Serialize(discoveredTools, McpJsonUtilities.DefaultOptions);
+						toolStopwatch.Stop();
+						LogTimeline(logger, "tool.discover-tools.complete", toolStopwatch.ElapsedMilliseconds,
+							$"count={discoveredTools.Count}");
+						logger.LogDebug("Handled MCP tool {Tool} in {ElapsedMs} ms", toolName,
+							toolStopwatch.ElapsedMilliseconds);
+						return new CallToolResult { Content = [new TextContentBlock() { Text = discoveredJson }] };
+					}
+					catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+					{
+						toolStopwatch.Stop();
+						LogTimeline(logger, "tool.discover-tools.timeout", toolStopwatch.ElapsedMilliseconds, "timeout");
+						return new CallToolResult
+						{
+							Content = [new TextContentBlock() { Text = "Timed out waiting for upstream tools. The DevServer may still be starting. Call uno_health for diagnostics, then retry." }],
+							IsError = true
+						};
+					}
+					catch (Exception ex)
+					{
+						toolStopwatch.Stop();
+						logger.LogWarning(ex, "Failed to discover tools from upstream");
+						LogTimeline(logger, "tool.discover-tools.error", toolStopwatch.ElapsedMilliseconds, ex.GetType().Name);
+						return new CallToolResult
+						{
+							Content = [new TextContentBlock() { Text = $"Failed to discover tools: {ex.Message}. Call uno_health for diagnostics, then retry." }],
+							IsError = true
+						};
+					}
+				}
+
+				// Handle uno_execute_tool (meta-tool for clients without list_changed)
+				if (toolName == ExecuteToolTool.Name)
+				{
+					if (ctx.Params?.Arguments is not { } executeArgs
+						|| !executeArgs.TryGetValue("toolName", out var targetToolNameElement)
+						|| targetToolNameElement.ValueKind != JsonValueKind.String
+						|| string.IsNullOrWhiteSpace(targetToolNameElement.GetString()))
+					{
+						return new CallToolResult
+						{
+							Content = [new TextContentBlock() { Text = "Missing required 'toolName' argument." }],
+							IsError = true
+						};
+					}
+
+					var targetToolName = targetToolNameElement.GetString()!;
+					var targetArgs = new Dictionary<string, object?>();
+					if (executeArgs.TryGetValue("arguments", out var targetArgsElement)
+						&& targetArgsElement.ValueKind == JsonValueKind.Object)
+					{
+						foreach (var prop in targetArgsElement.EnumerateObject())
+						{
+							targetArgs[prop.Name] = prop.Value;
+						}
+					}
+
+					var upstreamExecuteTask = mcpUpstreamClient.UpstreamClient;
+					if (!upstreamExecuteTask.IsCompletedSuccessfully)
+					{
+						var executeMessage = healthService.ConnectionState == ConnectionState.Reconnecting
+							? "DevServer host crashed and is reconnecting. Call uno_app_initialize or wait and retry."
+							: "DevServer is not yet connected. Call uno_app_initialize first, or wait and retry.";
+						toolStopwatch.Stop();
+						LogTimeline(logger, "tool.execute-tool.rejected-upstream-not-ready",
+							toolStopwatch.ElapsedMilliseconds, targetToolName);
+						return new CallToolResult
+						{
+							Content = [new TextContentBlock() { Text = executeMessage }],
+							IsError = true
+						};
+					}
+
+					try
+					{
+						using var executeTimeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+						executeTimeoutCts.CancelAfter(UpstreamCallToolTimeoutMs);
+						var executeResult = await upstreamExecuteTask.Result.CallToolAsync(
+							targetToolName,
+							targetArgs,
+							cancellationToken: executeTimeoutCts.Token);
+						toolStopwatch.Stop();
+						LogTimeline(logger, "tool.execute-tool.complete", toolStopwatch.ElapsedMilliseconds,
+							targetToolName);
+						logger.LogDebug("Forwarded MCP tool {Tool} via execute_tool in {ElapsedMs} ms",
+							targetToolName, toolStopwatch.ElapsedMilliseconds);
+						return executeResult;
+					}
+					catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+					{
+						toolStopwatch.Stop();
+						return new CallToolResult
+						{
+							Content =
+							[
+								new TextContentBlock()
+								{
+									Text =
+										$"Tool '{targetToolName}' timed out after {UpstreamCallToolTimeoutMs / 1000}s. Call uno_health for diagnostics."
+								}
+							],
+							IsError = true
+						};
+					}
+					catch (Exception ex)
+					{
+						toolStopwatch.Stop();
+						logger.LogWarning(ex, "Error executing tool {Tool} via execute_tool", targetToolName);
+						LogTimeline(logger, "tool.execute-tool.error", toolStopwatch.ElapsedMilliseconds, targetToolName);
+						return new CallToolResult
+						{
+							Content =
+							[
+								new TextContentBlock()
+								{
+									Text =
+										$"Tool '{targetToolName}' failed: {ex.Message}. Call uno_health for diagnostics."
+								}
+							],
+							IsError = true
+						};
+					}
 				}
 
 				var upstreamTask = mcpUpstreamClient.UpstreamClient;
@@ -174,16 +377,19 @@ internal class McpStdioServer(
 			{
 				var listToolsStopwatch = Stopwatch.StartNew();
 				logger.LogTrace("RECV list_tools");
+
+				// Track whether the client re-queried after tools/list_changed.
+				// A re-query means the client supports list_changed and does not need meta-tools.
+				if (_listChangedNotificationSent)
+				{
+					_clientReQueriedAfterListChanged = true;
+				}
+
 				await ensureRootsInitialized(ctx, tcs, ct);
 
 				if (forceRootsFallback && getRoots().Length == 0)
 				{
-					List<Tool> tools = [addRootsTool];
-					var cachedTools = toolListManager.GetCachedTools();
-					if (cachedTools.Length > 0)
-					{
-						tools.AddRange(cachedTools);
-					}
+					List<Tool> tools = [initializeTool];
 
 					logger.LogTrace("Upstream client is not connected, returning {Count} tools", tools.Count);
 					listToolsStopwatch.Stop();
@@ -191,29 +397,31 @@ internal class McpStdioServer(
 						$"count={tools.Count}");
 					logger.LogDebug("Handled tools/list with roots fallback in {ElapsedMs} ms",
 						listToolsStopwatch.ElapsedMilliseconds);
-					return new() { Tools = ToolListManager.AppendBuiltInTools(tools) };
+					var fallbackTools = ToolListManager.AppendBuiltInTools(tools);
+					return new() { Tools = ShouldIncludeMetaTools ? AppendMetaTools(fallbackTools) : fallbackTools };
 				}
 
-				if (!toolListManager.HasCachedTools
-					&& !mcpUpstreamClient.UpstreamClient.IsCompletedSuccessfully)
+				if (!mcpUpstreamClient.UpstreamClient.IsCompletedSuccessfully)
 				{
 					logger.LogTrace(
-						"Upstream client is not ready and no cached tools are available, returning built-in tools immediately");
+						"Upstream client is not ready, returning built-in tools immediately");
 					listToolsStopwatch.Stop();
 					LogTimeline(logger, "list-tools.builtins-only.complete", listToolsStopwatch.ElapsedMilliseconds,
 						"count=0");
 					logger.LogDebug("Handled tools/list with built-ins only in {ElapsedMs} ms",
 						listToolsStopwatch.ElapsedMilliseconds);
-					return new() { Tools = ToolListManager.AppendBuiltInTools([]) };
+					var builtInOnly = ToolListManager.AppendBuiltInTools([]);
+					return new() { Tools = ShouldIncludeMetaTools ? AppendMetaTools(builtInOnly) : builtInOnly };
 				}
 
 				var result = await toolListManager.ListToolsWithTimeoutAsync(ct);
 				listToolsStopwatch.Stop();
-				LogTimeline(logger, "list-tools.upstream-or-cache.complete", listToolsStopwatch.ElapsedMilliseconds,
+				LogTimeline(logger, "list-tools.upstream.complete", listToolsStopwatch.ElapsedMilliseconds,
 					$"count={result.Tools.Count}");
-				logger.LogDebug("Handled tools/list with upstream/cached tools in {ElapsedMs} ms",
+				logger.LogDebug("Handled tools/list with upstream tools in {ElapsedMs} ms",
 					listToolsStopwatch.ElapsedMilliseconds);
-				return new() { Tools = ToolListManager.AppendBuiltInTools(result.Tools) };
+				var upstreamTools = ToolListManager.AppendBuiltInTools(result.Tools);
+				return new() { Tools = ShouldIncludeMetaTools ? AppendMetaTools(upstreamTools) : upstreamTools };
 			})
 			.WithListResourcesHandler((ctx, ct) =>
 			{
@@ -312,5 +520,107 @@ internal class McpStdioServer(
 		}
 
 		return true;
+	}
+
+	internal static bool TryGetInitializeArgs(
+		IDictionary<string, JsonElement>? arguments,
+		out string? workspaceDirectory,
+		out string? solutionPath,
+		out CallToolResult errorResult)
+	{
+		workspaceDirectory = null;
+		solutionPath = null;
+		errorResult = new CallToolResult()
+		{
+			Content = [new TextContentBlock() { Text = "Missing required 'workspaceDirectory' argument." }],
+			IsError = true
+		};
+
+		if (arguments is null || !arguments.TryGetValue("workspaceDirectory", out var workspaceDirElement))
+		{
+			return false;
+		}
+
+		if (workspaceDirElement.ValueKind != JsonValueKind.String)
+		{
+			errorResult = new CallToolResult()
+			{
+				Content =
+				[
+					new TextContentBlock()
+					{
+						Text = "The 'workspaceDirectory' argument must be a string containing an absolute path."
+					}
+				],
+				IsError = true
+			};
+			return false;
+		}
+
+		workspaceDirectory = workspaceDirElement.GetString();
+		if (string.IsNullOrWhiteSpace(workspaceDirectory) || !Path.IsPathRooted(workspaceDirectory))
+		{
+			errorResult = new CallToolResult()
+			{
+				Content =
+				[
+					new TextContentBlock()
+					{
+						Text = "The 'workspaceDirectory' argument must be a non-empty absolute path."
+					}
+				],
+				IsError = true
+			};
+			return false;
+		}
+
+		if (arguments.TryGetValue("solutionPath", out var solutionPathElement)
+			&& solutionPathElement.ValueKind == JsonValueKind.String)
+		{
+			solutionPath = solutionPathElement.GetString();
+		}
+
+		return true;
+	}
+
+	private CallToolResult BuildInitializeResponse(string workspaceDirectory)
+	{
+		var upstreamTask = mcpUpstreamClient.UpstreamClient;
+		var connected = upstreamTask.IsCompletedSuccessfully;
+		var toolCount = toolListManager.SnapshotToolCount;
+		var status = connected ? "ready" : "starting";
+		var response = new
+		{
+			status,
+			workspaceDirectory,
+			toolCount,
+			message = connected
+				? $"DevServer initialized with {toolCount} tools available. Use uno_discover_tools for full schemas or uno_execute_tool to call tools."
+				: "DevServer is starting. Use uno_discover_tools and uno_execute_tool when ready.",
+		};
+
+		var json = JsonSerializer.Serialize(response, McpJsonUtilities.DefaultOptions);
+		return new CallToolResult
+		{
+			Content = [new TextContentBlock() { Text = json }],
+		};
+	}
+
+	internal static IList<Tool> AppendMetaTools(IList<Tool> tools)
+	{
+		var result = new List<Tool>(tools.Count + 2);
+		result.AddRange(tools);
+
+		if (!tools.Any(t => string.Equals(t.Name, DiscoverToolsTool.Name, StringComparison.Ordinal)))
+		{
+			result.Add(DiscoverToolsTool);
+		}
+
+		if (!tools.Any(t => string.Equals(t.Name, ExecuteToolTool.Name, StringComparison.Ordinal)))
+		{
+			result.Add(ExecuteToolTool);
+		}
+
+		return result;
 	}
 }

@@ -315,11 +315,11 @@ flowchart LR
     subgraph "McpProxy internals"
         D[WithListToolsHandler] --> E{Upstream connected?}
         E -->|Yes| F[Forward to upstream]
-        E -->|No, roots fallback| G[Return cached tools + set_roots]
+        E -->|No, roots fallback| G[Return initialize + meta-tools]
         E -->|No, normal| H[Return empty]
 
-        I[WithCallToolHandler] --> J{Is set_roots?}
-        J -->|Yes| K[Process roots locally]
+        I[WithCallToolHandler] --> J{Is initialize/meta-tool?}
+        J -->|Yes| K[Process locally or forward via meta-tool]
         J -->|No| L[Forward to upstream]
     end
 ```
@@ -330,7 +330,6 @@ flowchart LR
 sequenceDiagram
     participant Client as MCP Client
     participant Proxy as McpProxy
-    participant Cache as ToolCacheFile
     participant Upstream as McpClientProxy
 
     Client->>Proxy: tools/list
@@ -350,16 +349,15 @@ sequenceDiagram
     alt Upstream connected
         Proxy->>Upstream: ListToolsAsync()
         Upstream-->>Proxy: Tool[]
-        Proxy->>Cache: PersistToolCacheIfNeeded(tools)
         Proxy-->>Client: tools
     else Roots fallback, no upstream
-        Proxy->>Cache: GetCachedTools()
-        Cache-->>Proxy: cached Tool[]
-        Proxy-->>Client: [set_roots] + cached tools
-    else No upstream, no cache
+        Proxy-->>Client: [uno_app_initialize] + meta-tools (uno_discover_tools, uno_execute_tool)
+    else No upstream
         Proxy-->>Client: empty tools
     end
 ```
+
+> **Note**: The tool cache (`tools-cache.json`) has been removed. For MCP clients that do not re-query `list_tools` after `tools/list_changed`, the meta-tools `uno_discover_tools` and `uno_execute_tool` provide an alternative mechanism to discover and call upstream tools.
 
 ### Clients Without `list_changed` Support
 
@@ -503,12 +501,10 @@ sequenceDiagram
     CLI->>Health: Status = Initializing
     Client->>CLI: tools/list
 
-    alt Cached tools available
-        CLI->>Cache: GetCachedTools()
-        Cache-->>CLI: 12 cached tools
-        CLI-->>Client: 12 tools (instant!)
-    else No cache
-        CLI-->>Client: [set_roots tool only]
+    alt Upstream connected
+        CLI-->>Client: upstream tools
+    else No upstream yet (roots fallback)
+        CLI-->>Client: [uno_app_initialize + meta-tools]
     end
 
     Note over CLI: T=~100ms — Client has tools
@@ -694,7 +690,7 @@ Both layers are self-discovering — no hardcoded package names. A new add-in pa
 ### CLI Entry Point
 
 **`CliManager.RunMcpProxyAsync()`** (`src/Uno.UI.DevServer.Cli/CliManager.cs:176-242`):
-- Parses MCP-specific flags: `--port`, `--mcp-wait-tools-list`, `--force-roots-fallback`, `--force-generate-tool-cache`
+- Parses MCP-specific flags: `--port`, `--mcp-wait-tools-list`, `--force-roots-fallback`, `--force-generate-tool-cache` (deprecated no-op)
 - Delegates to `McpProxy.RunAsync()`
 
 ### MCP Proxy
@@ -739,10 +735,6 @@ Both layers are self-discovering — no hardcoded package names. A new add-in pa
 - Registers services via `AddFromAttributes()`
 - Stores `AddInsStatus` singleton
 
-### Tool Cache
+### Tool Cache (Removed)
 
-**`ToolCacheFile`** (`src/Uno.UI.DevServer.Cli/Mcp/ToolCacheFile.cs`):
-- Persists tool definitions to `%LocalAppData%\Uno Platform\uno.devserver\tools-cache.json`
-- Validates with SHA256 checksum and version number
-- Used by `--force-roots-fallback` and `--force-generate-tool-cache` modes
-- Phase 1a makes this cache the primary source for instant tool list responses
+The `ToolCacheFile` (`tools-cache.json`) has been removed. There is no more file persistence for tool definitions (`IsToolCacheEnabled`, `PersistToolCacheIfNeeded`, `RefreshCachedToolsFromUpstreamAsync` no longer exist). The meta-tools `uno_discover_tools` (returns upstream tools with full schemas) and `uno_execute_tool` (forwards a tool call to the upstream by name) replace the cache as the mechanism for MCP clients that do not re-query `list_tools` after `tools/list_changed`.
