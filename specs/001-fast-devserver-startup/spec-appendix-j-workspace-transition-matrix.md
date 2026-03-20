@@ -50,6 +50,7 @@ The following rules define the required behavior for dynamic workspace changes:
 | Single valid Uno workspace A | MCP roots point to different valid workspace B | Single valid Uno workspace B or diagnostic state, according to session policy | Stop A then start B once dynamic switching is implemented; until then, stay diagnostic and never switch silently | Lifecycle/proxy unit | Covered |
 | Deferred or ambiguous session | Explicit `uno_app_select_solution` for current valid Uno workspace | Single valid Uno workspace | Start DevServer on selected workspace without restarting the MCP session | Lifecycle/proxy unit + MCP integration | Covered |
 | Running workspace A | Explicit `uno_app_select_solution` for valid Uno workspace B | Single valid Uno workspace B | Stop A then start B; refresh health and cache identity | Lifecycle/proxy unit + MCP integration | Covered |
+| `NoCandidates` (force-roots-fallback) | `uno_app_set_roots` points to empty or non-Uno directory | Workspace accepted, monitoring started | Accept directory as workspace root; start file watcher; health shows `effectiveWorkspaceDirectory` but no solution; watcher will auto-start DevServer when Uno solution appears | Lifecycle/proxy unit | Covered |
 
 ---
 

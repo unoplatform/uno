@@ -342,6 +342,30 @@ internal class ProxyLifecycleManager
 		};
 	}
 
+	/// <summary>
+	/// Processes MCP client roots to resolve the workspace directory.
+	/// </summary>
+	/// <remarks>
+	/// <code>
+	/// ProcessRoots()
+	///   │
+	///   ├─ roots empty AND forceRootsFallback?
+	///   │   └─ YES → defer startup, wait for uno_app_set_roots call
+	///   │
+	///   ├─ GetRootPath(rootUri) → rootPath
+	///   │   └─ null → log warning, done
+	///   │
+	///   ├─ ResolveAsync(rootPath)
+	///   │   ├─ Found Uno solution → IsResolved=true → ApplyTransition(Start)
+	///   │   └─ No Uno solution found → IsResolved=false
+	///   │       └─ Directory.Exists(rootPath)?
+	///   │           ├─ YES → accept as workspace root, start monitoring
+	///   │           │         (watcher will detect solutions as they appear)
+	///   │           └─ NO  → log warning, done
+	///   │
+	///   └─ Health reports effectiveWorkspaceDirectory + candidateSolutions
+	/// </code>
+	/// </remarks>
 	private async Task ProcessRoots()
 	{
 		var processRootsStopwatch = Stopwatch.StartNew();

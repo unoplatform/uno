@@ -80,7 +80,7 @@ This is the existing MCP STDIO proxy. All current options remain:
 |--------|-------------|
 | `--port <port>` | Port for DevServer (default: auto-allocate) |
 | `--mcp-wait-tools-list` | Wait for upstream server tools before responding to `list_tools` |
-| `--force-roots-fallback` | Disable MCP roots feature (for clients that don't support it) |
+| `--force-roots-fallback` | Expose `uno_app_set_roots` tool and defer workspace resolution until roots are provided. `set_roots` always accepts the provided directory, even when no Uno solution is found yet — the file watcher monitors the directory and auto-starts the DevServer when a solution appears. Agents without MCP roots support get this flag automatically via `extraArgs` in their IDE profile. |
 | `--force-generate-tool-cache` | Force tool discovery and persist cache immediately |
 | `--solution-dir <path>` | Explicit solution root |
 
