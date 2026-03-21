@@ -770,10 +770,10 @@ public class Given_ProxyLifecycleManager
 	[Description("Only solution and global.json mutations trigger workspace reevaluation")]
 	public void WhenWorkspaceMutationPathIsRelevant_PathIsDetected()
 	{
-		ProxyLifecycleManager.IsWorkspaceMutationPath(@"D:\repo\global.json").Should().BeTrue();
-		ProxyLifecycleManager.IsWorkspaceMutationPath(@"D:\repo\App.sln").Should().BeTrue();
-		ProxyLifecycleManager.IsWorkspaceMutationPath(@"D:\repo\App.slnx").Should().BeTrue();
-		ProxyLifecycleManager.IsWorkspaceMutationPath(@"D:\repo\README.md").Should().BeFalse();
+		ProxyLifecycleManager.IsWorkspaceMutationPath(Path.Combine(Path.GetTempPath(), "repo", "global.json")).Should().BeTrue();
+		ProxyLifecycleManager.IsWorkspaceMutationPath(Path.Combine(Path.GetTempPath(), "repo", "App.sln")).Should().BeTrue();
+		ProxyLifecycleManager.IsWorkspaceMutationPath(Path.Combine(Path.GetTempPath(), "repo", "App.slnx")).Should().BeTrue();
+		ProxyLifecycleManager.IsWorkspaceMutationPath(Path.Combine(Path.GetTempPath(), "repo", "README.md")).Should().BeFalse();
 		ProxyLifecycleManager.IsWorkspaceMutationPath(null).Should().BeFalse();
 	}
 
@@ -1205,11 +1205,14 @@ public class Given_ProxyLifecycleManager
 			SetPrivateField(subject, "_currentDirectory", root);
 			SetPrivateField(subject, "_workspaceResolution", workspaceResolution);
 
-			var result = await subject.SelectSolutionAsync("C:\\\0\\bad.slnx");
+			var malformedPath = OperatingSystem.IsWindows()
+				? "C:\\\0\\bad.slnx"
+				: "/\0/bad.slnx";
+			var result = await subject.SelectSolutionAsync(malformedPath);
 
 			result.Status.Should().Be("rejected");
 			result.DevServerAction.Should().Be("None");
-			result.Message.Should().ContainEquivalentOf("valid absolute path");
+			result.Message.Should().ContainEquivalentOf("absolute path");
 			result.Issues.Should().NotBeNull();
 			result.Issues!.Should().Contain(issue => issue.Code == IssueCode.WorkspaceNotResolved);
 		}

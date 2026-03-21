@@ -267,32 +267,35 @@ public class Given_McpStdioServer
 	[Description("TryGetInitializeArgs extracts workspaceDirectory and optional solutionPath")]
 	public void TryGetInitializeArgs_WhenValid_ExtractsArguments()
 	{
+		var testDir = Path.Combine(Path.GetTempPath(), "test-project");
+		var testSln = Path.Combine(testDir, "App.slnx");
 		var arguments = new Dictionary<string, JsonElement>
 		{
-			["workspaceDirectory"] = JsonDocument.Parse("\"C:\\\\src\\\\project\"").RootElement.Clone(),
-			["solutionPath"] = JsonDocument.Parse("\"C:\\\\src\\\\project\\\\App.slnx\"").RootElement.Clone(),
+			["workspaceDirectory"] = JsonDocument.Parse($"\"{testDir.Replace("\\", "\\\\")}\"").RootElement.Clone(),
+			["solutionPath"] = JsonDocument.Parse($"\"{testSln.Replace("\\", "\\\\")}\"").RootElement.Clone(),
 		};
 
 		var success = McpStdioServer.TryGetInitializeArgs(arguments, out var workspaceDir, out var solutionPath, out _);
 
 		success.Should().BeTrue();
-		workspaceDir.Should().Be(@"C:\src\project");
-		solutionPath.Should().Be(@"C:\src\project\App.slnx");
+		workspaceDir.Should().Be(testDir);
+		solutionPath.Should().Be(testSln);
 	}
 
 	[TestMethod]
 	[Description("TryGetInitializeArgs succeeds when solutionPath is omitted")]
 	public void TryGetInitializeArgs_WhenSolutionPathOmitted_Succeeds()
 	{
+		var testDir = Path.Combine(Path.GetTempPath(), "test-project");
 		var arguments = new Dictionary<string, JsonElement>
 		{
-			["workspaceDirectory"] = JsonDocument.Parse("\"C:\\\\src\\\\project\"").RootElement.Clone(),
+			["workspaceDirectory"] = JsonDocument.Parse($"\"{testDir.Replace("\\", "\\\\")}\"").RootElement.Clone(),
 		};
 
 		var success = McpStdioServer.TryGetInitializeArgs(arguments, out var workspaceDir, out var solutionPath, out _);
 
 		success.Should().BeTrue();
-		workspaceDir.Should().Be(@"C:\src\project");
+		workspaceDir.Should().Be(testDir);
 		solutionPath.Should().BeNull();
 	}
 
