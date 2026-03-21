@@ -715,7 +715,23 @@ internal class ProxyLifecycleManager
 				watcher.Deleted += OnWorkspaceMutation;
 				watcher.Renamed += OnWorkspaceMutation;
 				watcher.Error += OnWorkspaceMutationWatcherError;
-				watcher.EnableRaisingEvents = true;
+
+				// EnableRaisingEvents can block on certain filesystem types (e.g. NTFS
+				// mounted via drvfs/9p in WSL). Run it off the calling thread so MCP
+				// proxy startup is never delayed.
+				_ = Task.Run(() =>
+				{
+					try
+					{
+						watcher.EnableRaisingEvents = true;
+					}
+					catch (Exception ex)
+					{
+						_logger.LogWarning(ex,
+							"FileSystemWatcher failed to enable for {WorkspaceRoot}; workspace mutations will not be monitored",
+							workspaceRoot);
+					}
+				});
 
 				_workspaceMutationWatcher = watcher;
 				_workspaceMutationWatcherRoot = workspaceRoot;
