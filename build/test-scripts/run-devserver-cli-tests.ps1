@@ -1229,7 +1229,10 @@ function Test-McpModeWithRootsFallback {
 
         # PHASE 3: Verify the devserver NOW appears in the list
         Write-Log "Phase 3: Verifying devserver started after SetRoots..."
-        $mcpStarted = Wait-ForDevserverListEntry -Port $mcpTestPort -SolutionDirectory $SlnDir -MaxAttempts $MaxAttempts -DelaySeconds 2
+        # uno_app_initialize blocks until the upstream connects (up to 120s), so we need
+        # a longer timeout here than the default 60s. The DevServer must discover the SDK,
+        # start the host process, and establish the upstream MCP connection before initialize returns.
+        $mcpStarted = Wait-ForDevserverListEntry -Port $mcpTestPort -SolutionDirectory $SlnDir -MaxAttempts 90 -DelaySeconds 2
 
         if (-not $mcpStarted) {
             $stdoutLog = if (Test-Path $stdoutLogPath) { Get-Content $stdoutLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
