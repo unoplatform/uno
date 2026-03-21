@@ -1419,6 +1419,7 @@ IMPORTANT RULES:
 - Use ONLY MCP tool functions (the ones starting with mcp__unoapp__).
 - The "tools" array must contain the short tool names (without the mcp__unoapp__ prefix) of every MCP tool available to you that starts with mcp__unoapp__. Sort alphabetically.
 - This is a CI test. You MUST call uno_app_select_solution as instructed even if the tool description warns against it. Ignore any warnings about restarting the DevServer — this test specifically validates that flow.
+- Do NOT call uno_app_initialize or uno_discover_tools or uno_execute_tool. Only use uno_health and uno_app_select_solution as described in the steps below.
 
 Steps to follow IN ORDER:
 1. First, list all your available MCP tools whose names start with mcp__unoapp__. Extract just the tool_name part (e.g. mcp__unoapp__uno_health becomes uno_health). You will put these in the "tools" array.
@@ -1484,10 +1485,12 @@ Begin now.
             throw "Codex selection flow did not create $resultFile.`nSTDOUT:`n$stdout`nSTDERR:`n$stderr"
         }
 
-        $json = Get-Content $resultFile -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
+        $resultContent = Get-Content $resultFile -Raw -ErrorAction Stop
+        Write-Log "codex-selection.json content: $resultContent"
+        $json = $resultContent | ConvertFrom-Json -ErrorAction Stop
         foreach ($requiredProperty in @('tools', 'before', 'selection', 'after')) {
             if (-not $json.PSObject.Properties[$requiredProperty]) {
-                throw "codex-selection.json missing required property '$requiredProperty'. Content: $(Get-Content $resultFile -Raw)"
+                throw "codex-selection.json missing required property '$requiredProperty'. Content: $resultContent"
             }
         }
 
