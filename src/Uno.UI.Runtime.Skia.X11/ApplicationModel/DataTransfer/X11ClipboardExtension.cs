@@ -1,4 +1,4 @@
-﻿// This implementation has a lot of the structure of Avalonia's implementation
+// This implementation has a lot of the structure of Avalonia's implementation
 // with the actual logic ported from xsel
 
 // The MIT License (MIT)
@@ -92,7 +92,6 @@ internal class X11ClipboardExtension : IClipboardExtension
 	private IntPtr _ownershipTimestamp;
 	private DataPackageView _clipboardData;
 
-	private readonly IntPtr _privateDisplay;
 	private volatile bool _isMonitoringEnabled;
 	private int _xfixesEventBase = -1;
 
@@ -103,11 +102,10 @@ internal class X11ClipboardExtension : IClipboardExtension
 	private X11ClipboardExtension()
 	{
 		IntPtr display = XLib.XOpenDisplay(IntPtr.Zero);
-		_privateDisplay = XLib.XOpenDisplay(IntPtr.Zero);
-		
+
 		using var lockDiposable = X11Helper.XLock(display);
 
-		if (display == IntPtr.Zero || _privateDisplay == IntPtr.Zero)
+		if (display == IntPtr.Zero)
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
@@ -486,7 +484,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 					if ((int)event_.type == _xfixesEventBase + (int)SelectionEvent.SetSelectionOwner)
 					{
 						var selectionNotify = event_.SelectionNotifyEvent;
-						if (selectionNotify.selection == X11Helper.GetAtom(_privateDisplay, X11Helper.CLIPBOARD))
+						if (selectionNotify.selection == X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD))
 						{
 							if (_isMonitoringEnabled)
 							{
