@@ -1,6 +1,7 @@
 using System.Text.Json;
 using AwesomeAssertions;
 using ModelContextProtocol.Protocol;
+using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.DevServer.Cli.Mcp;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Mcp;
@@ -25,6 +26,7 @@ public class Given_HealthService
 			DevServerVersion = "1.0.0",
 			UpstreamConnected = true,
 			ToolCount = 5,
+			SelectionSource = WorkspaceSelectionSource.UserSelected,
 			Issues = [],
 		};
 
@@ -35,6 +37,7 @@ public class Given_HealthService
 		deserialized!.Status.Should().Be(HealthStatus.Healthy);
 		deserialized.UpstreamConnected.Should().BeTrue();
 		deserialized.ToolCount.Should().Be(5);
+		deserialized.SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
 		deserialized.Issues.Should().BeEmpty();
 	}
 
@@ -173,6 +176,137 @@ public class Given_HealthService
 			MimeType = "application/json",
 		};
 		contents.Text.Should().NotBeEmpty();
+	}
+
+	[TestMethod]
+	[Description("When workspace resolution fails before startup, health is immediately unhealthy with a workspace-specific issue instead of waiting for upstream timeouts.")]
+	public void HealthReport_WhenWorkspaceIsNotResolved_IsImmediatelyUnhealthy()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			RequestedWorkingDirectory = @"D:\src\studio.live",
+			ResolutionKind = WorkspaceResolutionKind.NoValidWorkspace,
+			CandidateSolutions =
+			[
+				@"D:\src\studio.live\src\App.slnx",
+			],
+		};
+
+		var report = HealthReportFactory.Create(
+			discovery,
+			devServerStarted: false,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: null,
+			discoveredSolutions: discovery.CandidateSolutions);
+
+		report.Status.Should().Be(HealthStatus.Unhealthy);
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.HostNotStarted);
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.WorkspaceNotResolved);
+		report.Issues.Should().NotContain(issue => issue.Code == IssueCode.HostUnreachable);
+	}
+
+	[TestMethod]
+	public void HealthReport_WhenNoCandidates_IsImmediatelyUnhealthy()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			RequestedWorkingDirectory = @"D:\empty",
+			ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+			CandidateSolutions = [],
+		};
+
+		var report = HealthReportFactory.Create(
+			discovery,
+			devServerStarted: false,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: null,
+			discoveredSolutions: null);
+
+		report.Status.Should().Be(HealthStatus.Unhealthy);
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.HostNotStarted);
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.NoSolutionFound);
+	}
+
+	[TestMethod]
+	public void HealthReport_WhenWorkspaceWasExplicitlySelected_ExposesSelectionSource()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			RequestedWorkingDirectory = @"D:\src\repo",
+			EffectiveWorkspaceDirectory = @"D:\src\repo\src",
+			SelectedSolutionPath = @"D:\src\repo\src\App.slnx",
+			ResolutionKind = WorkspaceResolutionKind.AutoDiscovered,
+			SelectionSource = WorkspaceSelectionSource.UserSelected,
+			CandidateSolutions =
+			[
+				@"D:\src\repo\src\App.slnx",
+			],
+		};
+
+		var report = HealthReportFactory.Create(
+			discovery,
+			devServerStarted: true,
+			upstreamConnected: true,
+			toolCount: 4,
+			connectionState: ConnectionState.Connected,
+			discoveredSolutions: discovery.CandidateSolutions);
+
+		report.SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
+		report.Discovery.Should().NotBeNull();
+		report.Discovery!.SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
+	}
+
+	[TestMethod]
+	public void HealthReport_WhenWorkspaceIsAmbiguous_IsImmediatelyUnhealthyWithDiagnostic()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			RequestedWorkingDirectory = @"D:\src\repo",
+			ResolutionKind = WorkspaceResolutionKind.Ambiguous,
+			CandidateSolutions =
+			[
+				@"D:\src\repo\srcA\AppA.slnx",
+				@"D:\src\repo\srcB\AppB.slnx",
+			],
+		};
+
+		var report = HealthReportFactory.Create(
+			discovery,
+			devServerStarted: false,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: null,
+			discoveredSolutions: discovery.CandidateSolutions);
+
+		report.Status.Should().Be(HealthStatus.Unhealthy);
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.HostNotStarted);
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.WorkspaceAmbiguous);
+	}
+
+	[TestMethod]
+	public void HealthReport_WhenDiscoveryInfoHasTotalDuration_UsesThatDuration()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			RequestedWorkingDirectory = @"D:\src\repo",
+			EffectiveWorkspaceDirectory = @"D:\src\repo\src",
+			ResolutionKind = WorkspaceResolutionKind.AutoDiscovered,
+			DiscoveryDurationMs = 321,
+			AddInsDiscoveryDurationMs = 42,
+			UnoSdkVersion = "6.6.0-dev.1",
+		};
+
+		var report = HealthReportFactory.Create(
+			discovery,
+			devServerStarted: true,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: null,
+			discoveredSolutions: null);
+
+		report.DiscoveryDurationMs.Should().Be(321);
 	}
 
 	[TestMethod]
@@ -330,6 +464,34 @@ public class Given_HealthService
 		report.Issues.Should().HaveCount(1);
 		report.Issues[0].Code.Should().Be(IssueCode.HostCrashed);
 		report.Issues[0].Severity.Should().Be(ValidationSeverity.Fatal);
+	}
+
+	[TestMethod]
+	[Description("Diagnostic degraded mode does not report HostCrashed when no DevServer host was ever started")]
+	public void HealthReport_WhenDegradedWithoutStartedHost_DoesNotReportHostCrashed()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			RequestedWorkingDirectory = @"D:\src\repo",
+			ResolutionKind = WorkspaceResolutionKind.Ambiguous,
+			CandidateSolutions =
+			[
+				@"D:\src\repo\srcA\AppA.slnx",
+				@"D:\src\repo\srcB\AppB.slnx",
+			],
+		};
+
+		var report = HealthReportFactory.Create(
+			discovery,
+			devServerStarted: false,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: ConnectionState.Degraded,
+			discoveredSolutions: discovery.CandidateSolutions);
+
+		report.Status.Should().Be(HealthStatus.Unhealthy);
+		report.Issues.Should().NotContain(issue => issue.Code == IssueCode.HostCrashed);
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.WorkspaceAmbiguous);
 	}
 
 	[TestMethod]

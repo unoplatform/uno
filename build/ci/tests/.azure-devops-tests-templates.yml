@@ -307,11 +307,13 @@ jobs:
       targetType: 'inline'
       script: |
         dotnet nuget add source https://pkgs.dev.azure.com/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/_packaging/unoplatformdev/nuget/v3/index.json -n "uno-dev"
+        dotnet test --project src/Uno.UI.DevServer.Cli.E2E.Tests/Uno.UI.DevServer.Cli.E2E.Tests.csproj --filter TestCategory=DevServerSourceE2E --no-restore -v minimal
         build/test-scripts/run-devserver-cli-tests.ps1
       pwsh: true # Use PowerShell core (required for IsWindows to run)
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       NBGV_SemVer2: $(NBGV_SemVer2)
+      PACKAGES_DIR: $(Build.SourcesDirectory)/src/PackageCache
       WasmCachePath: $(WasmCachePath)
       CODEX_API_KEY: $(OPENAI_TOKEN)
       UNO_STUDIO_LICENSES_BIN: $(UNO_STUDIO_LICENSES_BIN)

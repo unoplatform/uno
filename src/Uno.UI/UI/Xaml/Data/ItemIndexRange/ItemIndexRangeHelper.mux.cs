@@ -527,15 +527,12 @@ internal static partial class ItemIndexRangeHelper
 			{
 				m_selectedRanges.RemoveAt(currentRangeIndex);
 			}
-			else
-			// update current to second part
-			if (updatedLength1 == 0)
+			else if (updatedLength1 == 0) // update current to second part
 			{
 				currentRange = new Range(lastIndex + 1, (uint)updatedLength2);
 				m_selectedRanges[currentRangeIndex] = currentRange;
 			}
-			else
-			// update current to first part
+			else // update current to first part
 			{
 				currentRange = new Range(currentRange.FirstIndex, (uint)updatedLength1);
 				m_selectedRanges[currentRangeIndex] = currentRange;

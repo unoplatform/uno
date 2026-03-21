@@ -19,6 +19,42 @@ internal static class DiscoveryIssueMapper
 			return issues;
 		}
 
+		if (discovery.ResolutionKind == WorkspaceResolutionKind.Ambiguous)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.WorkspaceAmbiguous,
+				Severity = ValidationSeverity.Warning,
+				Message = "Multiple Uno solutions matched the current directory. The DevServer host was not started automatically.",
+				Remediation = "Start from a more specific workspace directory, or use --solution-dir to disambiguate. If the repo changed after startup, restart the MCP bridge once the intended workspace is clear.",
+			});
+			return issues;
+		}
+
+		if (discovery.ResolutionKind == WorkspaceResolutionKind.NoValidWorkspace)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.WorkspaceNotResolved,
+				Severity = ValidationSeverity.Fatal,
+				Message = "Solution files were found, but none resolved to a valid Uno workspace with a global.json declaring Uno.Sdk.",
+				Remediation = "Ensure the intended workspace contains a global.json with Uno.Sdk in msbuild-sdks. If the repo changed after startup, restart the MCP bridge after fixing the workspace.",
+			});
+			return issues;
+		}
+
+		if (discovery.ResolutionKind == WorkspaceResolutionKind.NoCandidates)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.NoSolutionFound,
+				Severity = ValidationSeverity.Warning,
+				Message = "No .sln or .slnx file found in the working directory or its subdirectories.",
+				Remediation = "Create an Uno Platform project first (e.g. 'dotnet new unoapp'), then tools will become available automatically.",
+			});
+			return issues;
+		}
+
 		if (discovery.GlobalJsonPath is null)
 		{
 			issues.Add(new ValidationIssue
@@ -50,7 +86,7 @@ internal static class DiscoveryIssueMapper
 				Code = IssueCode.SdkNotInCache,
 				Severity = ValidationSeverity.Fatal,
 				Message = $"Uno SDK package {discovery.UnoSdkPackage} {discovery.UnoSdkVersion} not found in NuGet cache.",
-				Remediation = "Run 'dotnet restore' to download the Uno SDK package.",
+				Remediation = "Run 'dotnet restore' to download the Uno SDK package, then call 'uno_app_select_solution' again with the intended solution path to retry startup.",
 			});
 			return issues;
 		}
@@ -84,7 +120,7 @@ internal static class DiscoveryIssueMapper
 				Code = IssueCode.DevServerPackageNotCached,
 				Severity = ValidationSeverity.Fatal,
 				Message = $"Uno.WinUI.DevServer {discovery.DevServerPackageVersion} not found in NuGet cache.",
-				Remediation = "Run 'dotnet restore' to download the DevServer package.",
+				Remediation = "Run 'dotnet restore' to download the DevServer package, then call 'uno_app_select_solution' again with the intended solution path to retry startup.",
 			});
 		}
 
@@ -107,7 +143,7 @@ internal static class DiscoveryIssueMapper
 				Code = IssueCode.AddInPackageNotCached,
 				Severity = ValidationSeverity.Warning,
 				Message = $"Add-in package uno.settings.devserver {discovery.SettingsPackageVersion} not found in NuGet cache.",
-				Remediation = "Run 'dotnet restore' to download the package.",
+				Remediation = "Run 'dotnet restore' to download the package, then call 'uno_app_select_solution' again with the intended solution path to retry startup.",
 			});
 		}
 

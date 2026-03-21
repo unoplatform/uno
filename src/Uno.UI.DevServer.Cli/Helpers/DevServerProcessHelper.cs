@@ -52,6 +52,7 @@ internal static class DevServerProcessHelper
 			WorkingDirectory = workingDirectory,
 		};
 
+		var allArgs = new List<string>();
 		var hostArgPath = hostPath;
 		if (useDotnet)
 		{
@@ -59,19 +60,24 @@ internal static class DevServerProcessHelper
 			{
 				hostArgPath = Path.ChangeExtension(hostArgPath, "dll");
 			}
-			psi.ArgumentList.Add(hostArgPath);
+			allArgs.Add(QuoteArgument(hostArgPath));
 		}
 
 		foreach (var a in arguments)
 		{
-			psi.ArgumentList.Add(a);
+			allArgs.Add(QuoteArgument(a));
 		}
+
+		psi.Arguments = string.Join(" ", allArgs);
 
 		PropagateDotnetRootVariables(psi);
 		PropagateXdgVariables(psi);
 
 		return psi;
 	}
+
+	private static string QuoteArgument(string arg)
+		=> arg.Contains(' ') || arg.Contains('"') ? $"\"{arg.Replace("\"", "\\\"")}\"" : arg;
 
 	private static void PropagateDotnetRootVariables(ProcessStartInfo startInfo)
 	{
@@ -102,7 +108,7 @@ internal static class DevServerProcessHelper
 		ILogger logger,
 		TimeSpan graceStartupDuration)
 	{
-		logger.LogDebug("Starting host process: {File} {Args}", startInfo.FileName, string.Join(" ", startInfo.ArgumentList));
+		logger.LogDebug("Starting host process: {File} {Args}", startInfo.FileName, startInfo.Arguments);
 
 		Process process = new()
 		{
@@ -208,7 +214,7 @@ internal static class DevServerProcessHelper
 		ILogger logger,
 		bool forwardOutputToConsole = false)
 	{
-		logger.LogDebug("Starting host process: {File} {Args}", startInfo.FileName, string.Join(" ", startInfo.ArgumentList));
+		logger.LogDebug("Starting host process: {File} {Args}", startInfo.FileName, startInfo.Arguments);
 
 		Process process = new()
 		{

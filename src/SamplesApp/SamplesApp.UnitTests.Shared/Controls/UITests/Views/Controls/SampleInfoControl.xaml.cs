@@ -33,4 +33,12 @@ public sealed partial class SampleInfoControl : UserControl
 		dataPackage.SetText(content);
 		Clipboard.SetContent(dataPackage);
 	}
+
+	public async void OpenGitHubClick(object sender, RoutedEventArgs e)
+	{
+		if (DataContext is SampleChooserContent sample && !string.IsNullOrEmpty(sample.GitHubSourceUrl))
+		{
+			await Windows.System.Launcher.LaunchUriAsync(new Uri(sample.GitHubSourceUrl));
+		}
+	}
 }

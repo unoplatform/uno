@@ -14,7 +14,12 @@ internal static class DiscoveryOutputFormatter
 			.AddColumn(new TableColumn("[grey]Key[/]").LeftAligned())
 			.AddColumn(new TableColumn("[grey]Value[/]").LeftAligned());
 
+		AddRow(table, "requestedWorkingDirectory", info.RequestedWorkingDirectory);
 		AddRow(table, "workingDirectory", info.WorkingDirectory);
+		AddRow(table, "effectiveWorkspaceDirectory", info.EffectiveWorkspaceDirectory);
+		AddRow(table, "selectedSolutionPath", info.SelectedSolutionPath);
+		AddRow(table, "selectedGlobalJsonPath", info.SelectedGlobalJsonPath);
+		AddRow(table, "resolutionKind", info.ResolutionKind?.ToString());
 
 		AddSection(table, "Uno SDK");
 		AddRow(table, "sdkSource", info.UnoSdkSource);
@@ -41,7 +46,8 @@ internal static class DiscoveryOutputFormatter
 
 		AddSection(table, "Add-Ins");
 		AddRow(table, "discoveryMethod", info.AddInsDiscoveryMethod);
-		AddRow(table, "discoveryDurationMs", info.AddInsDiscoveryDurationMs.ToString(CultureInfo.InvariantCulture));
+		AddRow(table, "addInsDiscoveryDurationMs", info.AddInsDiscoveryDurationMs.ToString(CultureInfo.InvariantCulture));
+		AddRow(table, "totalDiscoveryDurationMs", info.DiscoveryDurationMs.ToString(CultureInfo.InvariantCulture));
 		if (info.AddIns.Count > 0)
 		{
 			foreach (var addIn in info.AddIns)
@@ -86,6 +92,7 @@ internal static class DiscoveryOutputFormatter
 
 		WriteList("warnings", info.Warnings, "yellow");
 		WriteList("errors", info.Errors, "red");
+		WriteList("candidateSolutions", info.CandidateSolutions, "grey");
 	}
 
 	private static void AddRow(Table table, string key, string? value)
@@ -140,9 +147,14 @@ internal static class DiscoveryOutputFormatter
 	{
 		return key switch
 		{
+			"requestedWorkingDirectory" => "directory requested by the caller",
 			"sdkSource" => "global.json or project source",
 			"sdkSourcePath" => "global.json or project file path",
 			"globalJsonPath" => "global.json in working directory or parents",
+			"effectiveWorkspaceDirectory" => "resolved Uno workspace directory",
+			"selectedSolutionPath" => "solution selected for the workspace",
+			"selectedGlobalJsonPath" => "global.json selected for the workspace",
+			"resolutionKind" => "how the workspace was selected",
 			"sdkPackage" => "msbuild-sdks entry in global.json",
 			"sdkVersion" => "msbuild-sdks entry in global.json",
 			"sdkPath" => "restored Uno.Sdk package in NuGet cache",

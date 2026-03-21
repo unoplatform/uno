@@ -313,7 +313,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "7.1.1",
+		"version": "7.2.0-dev.44",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -382,7 +382,7 @@
 	},
 	{
 		"group": "AppMcp",
-		"version": "1.2.0-dev.40",
+		"version": "1.2.0-dev.41",
 		"packages": [
 			"Uno.UI.App.Mcp"
 		]

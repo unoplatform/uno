@@ -9,6 +9,7 @@
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Tests\\Uno.UI.SourceGenerators.Tests.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
+      "SourceGenerators\\Uno.UI.SourceGenerators.WinAppSDK\\Uno.UI.SourceGenerators.WinAppSDK.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "Uno.Analyzers.Tests\\Uno.Analyzers.Tests.csproj",
       "Uno.Analyzers\\Uno.Analyzers.csproj",

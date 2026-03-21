@@ -81,6 +81,8 @@ void uno_window_restore(UNOWindow *window, bool activateWindow);
 
 bool uno_window_clip_svg(UNOWindow* window, const char* svg);
 
+void uno_window_resign_native_first_responder(UNOWindow* window);
+
 OverlappedPresenterState uno_window_get_overlapped_presenter_state(UNOWindow *window);
 
 void uno_window_set_always_on_top(NSWindow* window, bool isAlwaysOnTop);
