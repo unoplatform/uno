@@ -203,7 +203,6 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 		{
 			new ClassDefinition("Control", "true", "public", new[]
 			{
-				new PropertyDefinition("BackgroundSizing", "BackgroundSizing", "default"),
 				new PropertyDefinition("HorizontalContentAlignment", "HorizontalAlignment",
 					"(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? HorizontalAlignment.Left : HorizontalAlignment.Center)",
 					frameworkPropertyOption: "AffectsArrange"),
