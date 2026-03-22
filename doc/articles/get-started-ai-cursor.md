@@ -22,3 +22,8 @@ There is nothing specific to set up for Cursor. You can proceed to the next sect
 ## Next Steps
 
 Now that you are set up, let's [create your first app](xref:Uno.GettingStarted.CreateAnApp.AI.Cursor).
+
+## Uno TechBite
+
+Getting Started with Uno Platform & Cursor IDE - Complete Setup Guide:
+> [!Video https://www.youtube-nocookie.com/embed/H-7WcTKAY3s]
