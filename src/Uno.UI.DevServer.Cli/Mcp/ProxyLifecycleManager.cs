@@ -35,7 +35,7 @@ internal class ProxyLifecycleManager
 			+ "Pass forceRestart=true to force a restart even when the same solution is already selected.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>(
 			"""{"type":"object","required":["solutionPath"],"properties":{"solutionPath":{"type":"string","description":"Absolute path to the .sln or .slnx file to use for this session."},"forceRestart":{"type":"boolean","description":"When true, forces a full DevServer restart even if the solution is already selected. Useful after external changes such as editing global.json or running dotnet restore."}}}"""),
-		Annotations = new() { Title = "Select Solution", DestructiveHint = true, IdempotentHint = false, ReadOnlyHint = false, OpenWorldHint = false },
+		Annotations = new() { Title = "Select Solution", IdempotentHint = false, ReadOnlyHint = false, OpenWorldHint = false },
 	};
 
 	private bool _waitForTools;
