@@ -378,6 +378,7 @@ internal class CliManager
 				}
 				else if (a == "--force-generate-tool-cache")
 				{
+					// Deprecated no-op, kept for backward compatibility
 					forceGenerateToolCache = true;
 					continue; // do not forward mcp-specific arguments to controller
 				}

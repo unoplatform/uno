@@ -21,8 +21,8 @@ The workspace and MCP discovery cases in [Appendix I](spec-appendix-i-workspace-
 
 | # | Scenario | Validation |
 |---|----------|-----------|
-| 1 | Normal startup (warm cache) | `list_tools` < 1s, licensed tools functional < 5s |
-| 2 | First-ever startup (no cache) | `list_tools` returns cached tools, functional tools < 10s |
+| 1 | Normal startup | `list_tools` < 1s, licensed tools functional < 5s |
+| 2 | First-ever startup | `list_tools` returns bridge tools + meta-tools, functional upstream tools < 10s |
 | 3 | No valid Uno workspace | MCP starts, health is immediately `Unhealthy` with `WorkspaceNotResolved` or `NoSolutionFound`, without waiting for upstream timeout |
 | 4 | Broken solution | Fast-path add-in resolution succeeds (no MSBuild needed) |
 | 5 | Uno SDK 5.x project | Fallback chain resolves add-ins correctly |
@@ -30,18 +30,18 @@ The workspace and MCP discovery cases in [Appendix I](spec-appendix-i-workspace-
 | 7 | Host crash mid-session | Auto-restart, `tools/list_changed`, tool calls recover |
 | 8 | Host crash 3x | Give up, `uno://health` shows `HostCrashed`, remediation |
 | 9 | Missing NuGet cache | Structured error with `dotnet restore` remediation |
-| 10 | `--force-roots-fallback` | `uno_app_set_roots` workflow unchanged |
-| 11 | `--force-generate-tool-cache` | Cache primed and process exits |
+| 10 | `--force-roots-fallback` | `uno_app_initialize` workflow: takes `workspaceDirectory` and optional `solutionPath`, blocks until DevServer connected, returns status + available tools |
+| 11 | `--force-generate-tool-cache` | Deprecated no-op: flag is accepted for backward compatibility but does nothing |
 | 12 | Non-MCP commands | `start`, `stop`, `list`, `cleanup`, `disco`, `login` unchanged |
 | 13 | VS extension launches Host | No `--addins` flag -> MSBuild discovery works |
 | 14 | Tool call before host ready | Structured error, not hang or crash |
 | 15 | `dotnet --version` cache | Correct TFM even after .NET SDK update |
-| 16 | **Upstream returns 0 tools** (no license, add-in load failure, or registration error — not a valid license tier) | `list_tools` returns within 30s (not indefinitely), empty list or cached tools + health warning |
-| 17 | Repo root with nested Uno solution | Workspace auto-resolves to nested Uno solution directory and cache hash follows the effective workspace |
+| 16 | **Upstream returns 0 tools** (no license, add-in load failure, or registration error — not a valid license tier) | `list_tools` returns within 30s (not indefinitely), empty list or bridge tools + health warning |
+| 17 | Repo root with nested Uno solution | Workspace auto-resolves to nested Uno solution directory |
 | 18 | Multiple solutions, only one Uno | Resolver selects the Uno solution and does not start DevServer for non-Uno solutions |
 | 19 | CLI `health --json` | Returns the same `HealthReport` shape as `uno_health` |
-| 20 | **Upstream connection fails** | `list_tools` returns within 30s with cached tools or error tool |
-| 21 | **Community license** | `list_tools` returns 9 tools (not 12), cache reflects license tier |
+| 20 | **Upstream connection fails** | `list_tools` returns within 30s with bridge tools or error tool |
+| 21 | **Community license** | `list_tools` returns 9 upstream tools (not 12) plus bridge and meta-tools |
 | 22 | **`--addins` with `--solution`** | `--addins` wins for add-in loading, `--solution` used for Hot Reload |
 | 23 | **`--addins` with missing DLL** | Warning logged, remaining add-ins still loaded |
 | 24 | **Duplicate DevServer for same solution** | CLI detects via AmbientRegistry, reuses or fails explicitly |
@@ -100,7 +100,7 @@ Testing is a first-class deliverable for this spec, not an afterthought. **Each 
 | `TargetsAddInResolver` | Parse known `.targets` patterns, property resolution, `exists()` conditions, malformed XML, missing files, **`build/` fallback when `buildTransitive/` empty** | 0 |
 | `ManifestAddInResolver` | Parse `devserver-addin.json`, schema version handling, missing manifest, invalid JSON | 1 |
 | `DotNetVersionCache` | Cache hit, cache miss, invalidation on global.json change, stale cache (>24h) | 0 |
-| `ToolListManager` | Timeout handling, 0-tool case, cache refresh, TCS lifecycle | 1a |
+| `ToolListManager` | Timeout handling, 0-tool case, meta-tool registration, TCS lifecycle | 1a |
 | `HealthService` | Report aggregation, status transitions, issue collection | 1a |
 | `ProxyLifecycleManager` | State machine transitions, all 8 states, invalid transitions rejected | 1c |
 | `--addins` flag parser | Semicolon splitting, empty entries, whitespace, missing DLLs, empty string | 0 |

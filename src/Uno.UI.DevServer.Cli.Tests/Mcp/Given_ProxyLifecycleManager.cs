@@ -511,7 +511,7 @@ public class Given_ProxyLifecycleManager
 
 	[TestMethod]
 	[Description("Late MCP roots that still do not resolve to a valid Uno workspace keep the session in immediate diagnostic mode")]
-	public async Task WhenRootsRemainUnresolved_SessionStaysDiagnosticWithoutStarting()
+	public async Task WhenRootsResolveToNonUnoDirectory_WorkspaceIsStillAccepted()
 	{
 		var root = CreateTempDirectory();
 
@@ -535,12 +535,83 @@ public class Given_ProxyLifecycleManager
 
 			await InvokeSetRootsAsync(subject, [new Uri(nonUno).AbsoluteUri]);
 
-			subject.ConnectionState.Should().Be(ConnectionState.Degraded);
-			healthService.ConnectionState.Should().Be(ConnectionState.Degraded);
-			healthService.DevServerStarted.Should().BeFalse();
-
+			// The workspace directory should be accepted even without an Uno solution
 			var currentResolution = GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution");
-			currentResolution.ResolutionKind.Should().Be(WorkspaceResolutionKind.NoValidWorkspace);
+			currentResolution.EffectiveWorkspaceDirectory.Should().NotBeNullOrWhiteSpace();
+			PathComparison.PathsEqual(currentResolution.EffectiveWorkspaceDirectory, nonUno).Should().BeTrue();
+		}
+		finally
+		{
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("set_roots on an empty directory with force-roots-fallback accepts the workspace and sets effectiveWorkspaceDirectory")]
+	public async Task WhenSetRootsOnEmptyDirectoryWithForceRootsFallback_WorkspaceIsAccepted()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			// Empty directory — no .sln, no global.json
+			var emptyWorkspace = Path.Combine(root, "my-project");
+			Directory.CreateDirectory(emptyWorkspace);
+
+			var (subject, healthService, _) = CreateSubject();
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_forceRootsFallback", true);
+			SetPrivateField(subject, "_workspaceResolution", new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = root,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+				CandidateSolutions = [],
+			});
+
+			await InvokeSetRootsAsync(subject, [new Uri(emptyWorkspace).AbsoluteUri]);
+
+			// The workspace should be accepted even without a solution
+			var resolution = GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution");
+			resolution.EffectiveWorkspaceDirectory.Should().NotBeNullOrWhiteSpace(
+				"set_roots with force-roots-fallback should accept an empty directory as workspace");
+			PathComparison.PathsEqual(resolution.EffectiveWorkspaceDirectory, emptyWorkspace).Should().BeTrue();
+		}
+		finally
+		{
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("set_roots on a directory with a non-Uno solution with force-roots-fallback still accepts the workspace")]
+	public async Task WhenSetRootsOnNonUnoDirectoryWithForceRootsFallback_WorkspaceIsAccepted()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			// Directory with a .sln but no Uno SDK in global.json
+			var workspace = Path.Combine(root, "src");
+			Directory.CreateDirectory(workspace);
+			await File.WriteAllTextAsync(Path.Combine(workspace, "global.json"), """{"sdk":{"version":"10.0.100"}}""");
+			await File.WriteAllTextAsync(Path.Combine(workspace, "App.slnx"), string.Empty);
+
+			var (subject, healthService, _) = CreateSubject();
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_forceRootsFallback", true);
+			SetPrivateField(subject, "_workspaceResolution", new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = root,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+				CandidateSolutions = [],
+			});
+
+			await InvokeSetRootsAsync(subject, [new Uri(workspace).AbsoluteUri]);
+
+			var resolution = GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution");
+			resolution.EffectiveWorkspaceDirectory.Should().NotBeNullOrWhiteSpace(
+				"set_roots with force-roots-fallback should accept a non-Uno directory as workspace");
+			PathComparison.PathsEqual(resolution.EffectiveWorkspaceDirectory, workspace).Should().BeTrue();
 		}
 		finally
 		{
@@ -699,10 +770,10 @@ public class Given_ProxyLifecycleManager
 	[Description("Only solution and global.json mutations trigger workspace reevaluation")]
 	public void WhenWorkspaceMutationPathIsRelevant_PathIsDetected()
 	{
-		ProxyLifecycleManager.IsWorkspaceMutationPath(@"D:\repo\global.json").Should().BeTrue();
-		ProxyLifecycleManager.IsWorkspaceMutationPath(@"D:\repo\App.sln").Should().BeTrue();
-		ProxyLifecycleManager.IsWorkspaceMutationPath(@"D:\repo\App.slnx").Should().BeTrue();
-		ProxyLifecycleManager.IsWorkspaceMutationPath(@"D:\repo\README.md").Should().BeFalse();
+		ProxyLifecycleManager.IsWorkspaceMutationPath(Path.Combine(Path.GetTempPath(), "repo", "global.json")).Should().BeTrue();
+		ProxyLifecycleManager.IsWorkspaceMutationPath(Path.Combine(Path.GetTempPath(), "repo", "App.sln")).Should().BeTrue();
+		ProxyLifecycleManager.IsWorkspaceMutationPath(Path.Combine(Path.GetTempPath(), "repo", "App.slnx")).Should().BeTrue();
+		ProxyLifecycleManager.IsWorkspaceMutationPath(Path.Combine(Path.GetTempPath(), "repo", "README.md")).Should().BeFalse();
 		ProxyLifecycleManager.IsWorkspaceMutationPath(null).Should().BeFalse();
 	}
 
@@ -1134,11 +1205,14 @@ public class Given_ProxyLifecycleManager
 			SetPrivateField(subject, "_currentDirectory", root);
 			SetPrivateField(subject, "_workspaceResolution", workspaceResolution);
 
-			var result = await subject.SelectSolutionAsync("C:\\\0\\bad.slnx");
+			var malformedPath = OperatingSystem.IsWindows()
+				? "C:\\\0\\bad.slnx"
+				: "/\0/bad.slnx";
+			var result = await subject.SelectSolutionAsync(malformedPath);
 
 			result.Status.Should().Be("rejected");
 			result.DevServerAction.Should().Be("None");
-			result.Message.Should().ContainEquivalentOf("valid absolute path");
+			result.Message.Should().ContainEquivalentOf("absolute path");
 			result.Issues.Should().NotBeNull();
 			result.Issues!.Should().Contain(issue => issue.Code == IssueCode.WorkspaceNotResolved);
 		}
@@ -1520,35 +1594,7 @@ public class Given_ProxyLifecycleManager
 		}
 	}
 
-	[TestMethod]
-	[Description("Explicit solution selection updates the workspace hash to the selected workspace")]
-	public async Task WhenSelectingSolution_WorkspaceHashTracksSelectedWorkspace()
-	{
-		var root = CreateTempDirectory();
 
-		try
-		{
-			var workspaceA = await CreateUnoWorkspaceAsync(root, "srcA", "AppA.slnx", "6.6.0-dev.1");
-			var workspaceB = await CreateUnoWorkspaceAsync(root, "srcB", "AppB.slnx", "6.6.0-dev.2");
-			var solutionB = Path.Combine(workspaceB, "AppB.slnx");
-			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
-			var resolutionA = await resolver.ResolveAsync(workspaceA);
-
-			var created = CreateSubject();
-			var subject = created.Subject;
-			SetPrivateField(subject, "_currentDirectory", root);
-			SetPrivateField(subject, "_workspaceResolution", resolutionA);
-
-			await subject.SelectSolutionAsync(solutionB);
-
-			GetPrivateField<string?>(subject, "_workspaceHash")
-				.Should().Be(ToolCacheFile.ComputeWorkspaceHash(workspaceB));
-		}
-		finally
-		{
-			await DeleteDirectoryWithRetriesAsync(root);
-		}
-	}
 
 	private static (ProxyLifecycleManager Subject, HealthService HealthService, DevServerMonitor Monitor) CreateSubject(
 		ILogger<ProxyLifecycleManager>? logger = null,
@@ -1560,10 +1606,7 @@ public class Given_ProxyLifecycleManager
 			.BuildServiceProvider();
 		var monitor = new DevServerMonitor(services, NullLogger<DevServerMonitor>.Instance);
 		var upstreamClient = new McpUpstreamClient(NullLogger<McpUpstreamClient>.Instance, monitor);
-		var toolListManager = new ToolListManager(NullLogger<ToolListManager>.Instance, upstreamClient, monitor)
-		{
-			IsToolCacheEnabled = false,
-		};
+		var toolListManager = new ToolListManager(NullLogger<ToolListManager>.Instance, upstreamClient);
 		var healthService = new HealthService(upstreamClient, monitor, toolListManager);
 		var stdioServer = new McpStdioServer(NullLogger<McpStdioServer>.Instance, toolListManager, healthService, upstreamClient);
 		var finder = solutionFileFinder ?? new FileSystemSolutionFileFinder();
