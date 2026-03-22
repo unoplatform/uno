@@ -3011,6 +3011,7 @@
 				<ControlTemplate TargetType="ToggleButton">
 					<Grid x:Name="RootGrid"
 						  Background="{TemplateBinding Background}"
+						  BackgroundSizing="{TemplateBinding BackgroundSizing}"
 						  CornerRadius="{TemplateBinding CornerRadius}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
