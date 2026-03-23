@@ -1242,15 +1242,28 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void OnPresenterScrolled(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
 #if __SKIA__
-			// WinUI-aligned behavior: store pending offsets and defer DP updates to ArrangeOverride.
-			// On WinUI, SetOffsetsWithExtents stores offsets in ScrollData + InvalidateArrange;
-			// the DPs are updated during ArrangeOverride → VerifyScrollData → put_HorizontalOffset/VerticalOffset.
 			_pendingHorizontalOffset = horizontalOffset;
 			_pendingVerticalOffset = verticalOffset;
 			_pendingScrollIsIntermediate = isIntermediate;
-			_hasPendingScrollUpdate = true;
 
-			_presenter?.InvalidateArrange();
+			if (UpdatesMode == Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous)
+			{
+				// Synchronous mode: update DPs immediately (used for testing).
+				// This bypasses the WinUI-aligned deferred path so that test assertions
+				// can read VerticalOffset/HorizontalOffset right after input injection.
+				_hasPendingScrollUpdate = false;
+				HorizontalOffset = horizontalOffset;
+				VerticalOffset = verticalOffset;
+				RaiseViewChanged(isIntermediate || m_isInIntermediateViewChangedMode);
+			}
+			else
+			{
+				// WinUI-aligned behavior: store pending offsets and defer DP updates to ArrangeOverride.
+				// On WinUI, SetOffsetsWithExtents stores offsets in ScrollData + InvalidateArrange;
+				// the DPs are updated during ArrangeOverride → VerifyScrollData → put_HorizontalOffset/VerticalOffset.
+				_hasPendingScrollUpdate = true;
+				_presenter?.InvalidateArrange();
+			}
 #else
 			_pendingHorizontalOffset = horizontalOffset;
 			_pendingVerticalOffset = verticalOffset;
