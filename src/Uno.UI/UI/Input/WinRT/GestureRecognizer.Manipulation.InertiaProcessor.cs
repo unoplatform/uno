@@ -26,8 +26,6 @@ public partial class GestureRecognizer
 	{
 		internal class InertiaProcessor : IDisposable
 		{
-			private const double _defaultDurationMs = 1000;
-
 			private delegate double Get(in ManipulationDelta delta);
 			private delegate void Set(ref ManipulationDelta delta, double value);
 			private record struct ManipulationDeltaProperty(Get Get, Set Set);
@@ -62,9 +60,18 @@ public partial class GestureRecognizer
 			private bool _isRotateInertiaEnabled;
 			private bool _isScaleInertiaEnabled;
 
-			internal const double DefaultDesiredDisplacementDeceleration = .001;
-			internal const double DefaultDesiredRotationDeceleration = .0001;
-			internal const double DefaultDesiredExpansionDeceleration = .001;
+			/// <summary>
+			/// Velocity threshold (in units/ms) below which inertia is considered complete.
+			/// At 60fps this is ~0.6 units/frame — sub-pixel, so movement is imperceptible.
+			/// </summary>
+			internal const double VelocityThreshold = 0.01;
+
+			// Default decay constants (1/ms). These control how fast inertia decelerates.
+			// The exponential model: velocity(t) = v0 * e^(-k*t), position(t) = v0 * (1 - e^(-k*t)) / k
+			// A value of 0.003 corresponds to WinUI's InteractionTracker default of 0.95 decay per 16.67ms frame.
+			internal const double DefaultDesiredDisplacementDeceleration = .003;
+			internal const double DefaultDesiredRotationDeceleration = .003;
+			internal const double DefaultDesiredExpansionDeceleration = .003;
 
 			// Those values can be customized by the application through the ManipInertiaStartingArgs.Inertia<Tr|Rot|Exp>Behavior
 			public double DesiredDisplacement = NaN;
@@ -155,18 +162,17 @@ public partial class GestureRecognizer
 				if (!IsNaN(DesiredDisplacement))
 				{
 					var v0 = (Math.Abs(_velocities0.Linear.X) + Math.Abs(_velocities0.Linear.Y)) / 2;
-					DesiredDisplacementDeceleration = GetDecelerationFromDesiredDisplacement(v0, DesiredDisplacement);
+					DesiredDisplacementDeceleration = GetDecayRateFromDesiredDisplacement(v0, DesiredDisplacement);
 				}
 				if (!IsNaN(DesiredRotation))
 				{
-					DesiredRotationDeceleration = GetDecelerationFromDesiredDisplacement(_velocities0.Angular, DesiredRotation);
+					DesiredRotationDeceleration = GetDecayRateFromDesiredDisplacement(_velocities0.Angular, DesiredRotation);
 				}
 				if (!IsNaN(DesiredExpansion))
 				{
-					DesiredExpansionDeceleration = GetDecelerationFromDesiredDisplacement(_velocities0.Expansion, DesiredExpansion);
+					DesiredExpansionDeceleration = GetDecayRateFromDesiredDisplacement(_velocities0.Expansion, DesiredExpansion);
 				}
 
-				// Default values are **inspired** by https://docs.microsoft.com/en-us/windows/win32/wintouch/inertia-mechanics#smooth-object-animation-using-the-velocity-and-deceleration-properties
 				if (IsNaN(DesiredDisplacementDeceleration))
 				{
 					DesiredDisplacementDeceleration = DefaultDesiredDisplacementDeceleration;
@@ -264,23 +270,68 @@ public partial class GestureRecognizer
 				return true;
 			}
 
-			// https://docs.microsoft.com/en-us/windows/win32/wintouch/inertia-mechanics#inertia-physics-overview
-			internal static double GetValue(double v0, double d, double t)
-				=> v0 >= 0
-					? v0 * t - d * Math.Pow(t, 2)
-					: -(-v0 * t - d * Math.Pow(t, 2));
+			// Exponential decay model matching WinUI InteractionTracker, Flutter FrictionSimulation,
+			// and Avalonia ScrollGestureRecognizer. This produces smooth, natural-feeling deceleration
+			// where velocity decays as v(t) = v0 * e^(-k*t) and position follows the integral.
+			// The parameter 'k' is the decay rate constant (1/ms): higher values = faster deceleration.
 
-			private static bool IsCompleted(double v0, double d, double t)
-				=> Math.Abs(v0) - d * 2 * t <= 0; // The derivative of the GetValue function
+			/// <summary>
+			/// Computes the cumulative displacement at time <paramref name="t"/> (ms)
+			/// using exponential decay: position(t) = v0 * (1 - e^(-k*t)) / k.
+			/// </summary>
+			internal static double GetValue(double v0, double k, double t)
+			{
+				if (k <= 0)
+				{
+					return v0 * t; // No deceleration — constant velocity fallback
+				}
 
-			internal static double GetCompletionTime(double v0, double d)
-				=> Math.Abs(v0) / (2 * d);
+				var decay = Math.Exp(-k * t);
+				return v0 * (1 - decay) / k;
+			}
 
+			private static bool IsCompleted(double v0, double k, double t)
+				=> Math.Abs(v0) * Math.Exp(-k * t) <= VelocityThreshold;
+
+			internal static double GetCompletionTime(double v0, double k)
+			{
+				var absV0 = Math.Abs(v0);
+				if (absV0 <= VelocityThreshold || k <= 0)
+				{
+					return 0;
+				}
+
+				return Math.Log(absV0 / VelocityThreshold) / k;
+			}
+
+			/// <summary>
+			/// Computes the decay rate constant that causes inertia to complete in <paramref name="durationMs"/> ms.
+			/// </summary>
 			internal static double GetDecelerationFromDesiredDuration(double v0, double durationMs)
-				=> Math.Abs(v0) / (2 * durationMs);
+			{
+				var absV0 = Math.Abs(v0);
+				if (absV0 <= VelocityThreshold || durationMs <= 0)
+				{
+					return DefaultDesiredDisplacementDeceleration;
+				}
 
-			private static double GetDecelerationFromDesiredDisplacement(double v0, double displacement, double durationMs = _defaultDurationMs)
-				=> (v0 * durationMs - displacement) / Math.Pow(_defaultDurationMs, 2);
+				return Math.Log(absV0 / VelocityThreshold) / durationMs;
+			}
+
+			/// <summary>
+			/// Computes the decay rate constant that produces approximately <paramref name="displacement"/> total displacement.
+			/// From the exponential model: total ≈ |v0| / k, so k ≈ |v0| / displacement.
+			/// </summary>
+			private static double GetDecayRateFromDesiredDisplacement(double v0, double displacement)
+			{
+				var absV0 = Math.Abs(v0);
+				if (absV0 <= VelocityThreshold || displacement <= 0)
+				{
+					return DefaultDesiredDisplacementDeceleration;
+				}
+
+				return absV0 / Math.Abs(displacement);
+			}
 
 			/// <inheritdoc />
 			public void Dispose()
@@ -315,7 +366,7 @@ public partial class GestureRecognizer
 		{
 			private readonly DispatcherQueueTimer _timer;
 
-			public const double DefaultFramePerSeconds = 30d;
+			public const double DefaultFramePerSeconds = 60d;
 
 			public DispatcherInertiaProcessorTimer(Action<TimeSpan> OnTick, double framePerSeconds = DefaultFramePerSeconds)
 			{
@@ -335,7 +386,8 @@ public partial class GestureRecognizer
 		private sealed class CompositionInertiaProcessorTimer(Action<TimeSpan> onTick) : IInertiaProcessorTimer
 		{
 			private EventHandler<object>? _handler;
-			private Stopwatch? _time;
+			private TimeSpan? _t0; // First VSync timestamp — used as the inertia time origin
+			private Stopwatch? _fallbackTime; // Fallback for platforms that don't provide RenderingEventArgs
 
 			public bool IsRunning => _handler is not null;
 
@@ -343,11 +395,34 @@ public partial class GestureRecognizer
 			{
 				Stop();
 
-				_time = Stopwatch.StartNew();
+				_t0 = null;
+				_fallbackTime = null;
 				_handler = (_, args) =>
 				{
-					// Note: We are not using the ((Microsoft.UI.Xaml.Media.RenderingEventArgs)args).RenderingTime as we are not able to have the value at t0
-					onTick(_time.Elapsed);
+					// Prefer the VSync-aligned RenderingTime when available (Skia hosts provide this
+					// from the platform's VSync signal, e.g. Android Choreographer). Using VSync time
+					// ensures the physics position matches the actual display moment, eliminating
+					// micro-stutters caused by wall-clock / display-clock divergence.
+					if (args is Microsoft.UI.Xaml.Media.RenderingEventArgs rea)
+					{
+						if (_t0 is null)
+						{
+							_t0 = rea.RenderingTime;
+							return; // First frame just records t0; processing starts on the next frame.
+						}
+
+						onTick(rea.RenderingTime - _t0.Value);
+					}
+					else
+					{
+						if (_fallbackTime is null)
+						{
+							_fallbackTime = Stopwatch.StartNew();
+							return; // First frame just starts the clock; processing starts on the next frame.
+						}
+
+						onTick(_fallbackTime.Elapsed);
+					}
 				};
 
 				CompositionTarget.Rendering += _handler;

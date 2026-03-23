@@ -317,7 +317,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (options is { DisableAnimation: true } or { IsTouch: true })
 			{
-				visual.StopAnimation(nameof(Visual.AnchorPoint));
+				// Only stop a running animation — during inertia no animation is active,
+				// so calling StopAnimation every tick wastes time on dictionary lookups.
+				if (visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is not null)
+				{
+					visual.StopAnimation(nameof(Visual.AnchorPoint));
+				}
+
 				visual.AnchorPoint = target;
 				Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
 			}
@@ -519,8 +525,8 @@ namespace Microsoft.UI.Xaml.Controls
 					_ => 0
 				};
 
-				// calculate the duration based on PKScrollView.prototype.stepThroughDecelerationAnimation from https://github.com/jimeh/PastryKit
-				// momentum should decay by 5% each frame, at 60fps, until the minimum threshold is reached.
+				// PastryKit-inspired iOS scroll physics: 0.95 friction factor per frame at 60fps.
+				// This maps directly to the exponential decay model: k = -ln(0.95)/16.67 ≈ 0.003
 				const double PKScrollViewDecelerationFrictionFactor = 0.95;
 				const double PKScrollViewDesiredAnimationFrameRate = 1000 / 60.0;
 				const double PKScrollViewMinimumVelocity = 0.01;
@@ -531,10 +537,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (OperatingSystem.IsAndroid())
 			{
-				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration / 2;
+				// Gentler decay for Android, matching the longer fling feel of native Android OverScroller.
+				// 0.0025 ≈ 0.96 decay per 16.67ms frame (vs WinUI's 0.95).
+				inertia.DesiredDisplacementDeceleration = 0.0025;
 			}
 			else
 			{
+				// Desktop/other: match WinUI InteractionTracker default (0.95 decay per frame).
 				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration;
 			}
 
