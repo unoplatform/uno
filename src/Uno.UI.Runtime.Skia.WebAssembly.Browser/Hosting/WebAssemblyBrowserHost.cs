@@ -117,7 +117,19 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 
 	internal void RemoveSplashScreen() => NativeMethods.RemoveLoading();
 
-	bool IXamlRootHost.SupportsRenderThrottle => true;
+	// RAF provides natural frame pacing on single-threaded WASM — no need for
+	// the OnFramePresented throttle. When MT WASM adds a render worker, this
+	// should switch to true and ScheduleFrameCallback should use the default
+	// dispatcher-based scheduling (see plan for details).
+	bool IXamlRootHost.SupportsRenderThrottle => false;
+
+	/// <summary>
+	/// Aligns FrameTick (layout + render + record) to the browser's requestAnimationFrame,
+	/// matching Avalonia's BrowserRenderTimer and Flutter's scheduleFrame → RAF pattern.
+	/// Without this, FrameTick runs at arbitrary setImmediate timing, disconnected from vsync.
+	/// </summary>
+	void IXamlRootHost.ScheduleFrameCallback(Action callback)
+		=> BrowserRenderer.ScheduleOnAnimationFrame(callback);
 
 	UIElement? IXamlRootHost.RootElement => Window.CurrentSafe!.RootElement;
 
