@@ -142,7 +142,6 @@ Phase-gate rule: no phase advances to the next step without a short decision not
 
 ## References
 
-- Research baseline (initial Copilot-assisted survey of Skia backends, Vulkan/Metal/WebGPU ecosystem signals, and relevant docs used to seed this intake): https://mattt98.sg-host.com/
 - Avalonia Vulkan directory (reference implementation signal): https://github.com/AvaloniaUI/Avalonia/tree/658afb87173081b9444d30dd70ae47a04e519e4e/src/Avalonia.Vulkan
 - Avalonia discussion (custom Vulkan integration considerations): https://github.com/AvaloniaUI/Avalonia/discussions/7137
 - Avalonia Vulkan PR (merged backend work): https://github.com/AvaloniaUI/Avalonia/pull/12737
