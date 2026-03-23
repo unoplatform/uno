@@ -2069,5 +2069,201 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The scroll offset should remain 0 — there's nothing to scroll
 			Assert.AreEqual(0d, sut.VerticalOffset, "Should not have scrolled");
 		}
+
+		#region Skia intermediate scrolling mode
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ChangeView_DisableAnimation_Then_SingleViewChangedEvent()
+		{
+			var content = new Border
+			{
+				Height = 2000,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 200,
+				Width = 200,
+				Content = content,
+			};
+
+			await UITestHelper.Load(sut);
+
+			var viewChangedCount = 0;
+			sut.ViewChanged += (s, e) => viewChangedCount++;
+
+			sut.ChangeView(null, 100, null, disableAnimation: true);
+
+			// On both WinUI and Skia, ChangeView stores offsets and defers DP updates to the arrange pass.
+			// ViewChanged fires during the layout pass. Exactly one event should be raised.
+			await WindowHelper.WaitFor(() => viewChangedCount >= 1);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, viewChangedCount, "Exactly one ViewChanged event should be raised for ChangeView with disableAnimation.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ChangeView_DisableAnimation_Then_ViewChangedIsNotIntermediate()
+		{
+			var content = new Border
+			{
+				Height = 2000,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 200,
+				Width = 200,
+				Content = content,
+			};
+
+			await UITestHelper.Load(sut);
+
+			var records = new List<bool>();
+			sut.ViewChanged += (s, e) => records.Add(e.IsIntermediate);
+
+			sut.ChangeView(null, 100, null, disableAnimation: true);
+
+			// On both WinUI and Skia, ViewChanged fires during the layout pass.
+			// Exactly one non-intermediate event should be raised.
+			await WindowHelper.WaitFor(() => records.Count >= 1);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, records.Count, "Exactly one ViewChanged event should be raised.");
+			Assert.IsFalse(records[0], "The ViewChanged event from ChangeView should have IsIntermediate=false.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ChangeView_DisableAnimation_Then_OffsetUpdatedAfterArrange()
+		{
+			var content = new Border
+			{
+				Height = 2000,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 200,
+				Width = 200,
+				Content = content,
+			};
+
+			await UITestHelper.Load(sut);
+
+			Assert.AreEqual(0d, sut.VerticalOffset, "Initial vertical offset should be 0.");
+
+			sut.ChangeView(null, 150, null, disableAnimation: true);
+
+			// On both WinUI and Skia, offsets are updated during the arrange pass
+			// (WinUI: ArrangeOverride → VerifyScrollData → put_VerticalOffset;
+			//  Skia: ArrangeOverride → OnPresenterArranged → set VerticalOffset DP).
+			await WindowHelper.WaitFor(() => sut.VerticalOffset == 150d);
+
+			Assert.AreEqual(150d, sut.VerticalOffset, "VerticalOffset should be updated after arrange.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("This test validates Skia-specific intermediate scrolling mode.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchScroll_Then_IntermediateEventsFollowedByFinal()
+		{
+			var content = new Border
+			{
+				Height = 2000,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 200,
+				Width = 200,
+				Content = content,
+				IsScrollInertiaEnabled = false,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var records = new List<bool>();
+			sut.ViewChanged += (s, e) => records.Add(e.IsIntermediate);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			finger.Press(bounds.GetCenter());
+			finger.MoveBy(0, -100, steps: 10);
+
+			// Flush the arrange pass so intermediate offset updates are applied and
+			// intermediate ViewChanged events fire before the finger is released.
+			// This is needed because offset DPs are deferred to ArrangeOverride,
+			// matching WinUI behavior where rapid scroll events are batched per layout pass.
+			await WindowHelper.WaitForIdle();
+
+			finger.Release();
+
+			await WindowHelper.WaitForIdle();
+
+			// We should have at least 2 events: some intermediate + one final
+			Assert.IsTrue(records.Count >= 2, $"Expected at least 2 ViewChanged events, got {records.Count}.");
+
+			// All events except the last should be IsIntermediate=true
+			for (int i = 0; i < records.Count - 1; i++)
+			{
+				Assert.IsTrue(records[i], $"ViewChanged event #{i} during drag should have IsIntermediate=true.");
+			}
+
+			// The last event should be IsIntermediate=false (from LeaveIntermediateViewChangedMode)
+			Assert.IsFalse(records[records.Count - 1], "The final ViewChanged event after finger release should have IsIntermediate=false.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("This test validates Skia-specific intermediate scrolling mode.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchPressReleaseWithoutScroll_Then_NoViewChangedEvents()
+		{
+			var content = new Border
+			{
+				Height = 2000,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 200,
+				Width = 200,
+				Content = content,
+				IsScrollInertiaEnabled = false,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var viewChangedCount = 0;
+			sut.ViewChanged += (s, e) => viewChangedCount++;
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			// Press and release without moving — enters and leaves intermediate mode
+			// but no scroll happened, so no final event should be raised.
+			finger.Press(bounds.GetCenter());
+			finger.Release();
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, viewChangedCount, "No ViewChanged events should be raised when touch press-release occurs without scrolling.");
+		}
+
+		#endregion
 	}
 }
