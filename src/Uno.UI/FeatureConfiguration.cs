@@ -611,7 +611,7 @@ namespace Uno.UI
 			/// before any UI related initialization (like generic styles init) and even before
 			/// referencing the ** type ** ScrollViewer in any way.
 			/// </remarks>
-			public static ScrollViewerUpdatesMode DefaultUpdatesMode { get; set; } = ScrollViewerUpdatesMode.AsynchronousIdle;
+			public static ScrollViewerUpdatesMode DefaultUpdatesMode { get; set; } = ScrollViewerUpdatesMode.Asynchronous;
 
 			/// <summary>
 			/// Defines the delay after which the scrollbars hide themselves when pointer is not over.<br/>

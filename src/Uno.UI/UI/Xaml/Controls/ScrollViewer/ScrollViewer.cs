@@ -1322,7 +1322,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			_ = Dispatcher.RunIdleAsync(e =>
+			_ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
 			{
 				if (_hasPendingUpdate)
 				{

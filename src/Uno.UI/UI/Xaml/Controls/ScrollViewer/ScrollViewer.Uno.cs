@@ -21,11 +21,15 @@ namespace Uno.UI.Xaml.Controls
 
 		/// <summary>
 		/// The raise of ViewChanged event and the VerticalOffset and HorizontalOffset updates are
-		/// queued and dispatcher one idle dispatcher. Some updates may be dropped if the dispatcher is busy,
-		/// but the last update will always be notified synchronously.
+		/// queued and dispatched on the dispatcher at normal priority. Some updates may be dropped
+		/// if the dispatcher is busy, but the last update will always be notified synchronously.
 		/// </summary>
 		/// <remarks>This mode is the closest to the windows behavior.</remarks>
-		AsynchronousIdle
+		Asynchronous = 1,
+
+		/// <inheritdoc cref="Asynchronous"/>
+		[global::System.Obsolete("Use Asynchronous instead.")]
+		AsynchronousIdle = Asynchronous,
 	}
 
 	/// <summary>

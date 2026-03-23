@@ -52,7 +52,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 		private void SetSync(object sender, TappedRoutedEventArgs e) => SetMode(_UpdatesMode.Synchronous);
 
-		private void SetAsync(object sender, TappedRoutedEventArgs e) => SetMode(_UpdatesMode.AsynchronousIdle);
+		private void SetAsync(object sender, TappedRoutedEventArgs e) => SetMode(_UpdatesMode.Asynchronous);
 
 		private void Reset(object sender, TappedRoutedEventArgs e)
 		{
