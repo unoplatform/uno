@@ -48,6 +48,16 @@ These are real issues encountered in practice — not theoretical:
 
 9. **MAX_PATH (260 chars)**: The PRI resource generator uses Win32 APIs with the 260-char path limit. If you see `PRI175`/`PRI252` errors, shorten the repo path or use `subst` drive mapping.
 
+10. **Graphics3DGL Windows TFM**: `Uno.WinUI.Graphics3DGL.csproj` only builds Skia TFMs by default. SamplesApp.Windows references it but MSBuild picks the Skia `net9.0` build, causing `CS0012: The type 'Grid' is defined in an assembly that is not referenced` errors. **Fix**: Before building SamplesApp.Windows, restore Graphics3DGL with the Windows TFM enabled:
+    ```bash
+    "$MSBUILD" "src/AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj" \
+        -restore -v:m -p:BuildGraphics3DGLForWindows=true \
+        -p:Platform=x64 -p:Configuration=Release
+    ```
+    Also ensure `SamplesApp.Windows.csproj` has `AdditionalProperties="BuildGraphics3DGLForWindows=true"` on that ProjectReference.
+
+11. **ParseArgs base64 truncation**: `App.Tests.cs:ParseArgs` uses `Split('=')` to parse CLI args, which breaks base64 filter values containing `=` padding. The filter is silently dropped and **all tests run instead of filtered tests**. If you see all tests running when a filter was provided, verify that `ParseArgs` uses `Split('=', 2)` to split only on the first `=`.
+
 ---
 
 ## Execution Workflow
@@ -81,13 +91,14 @@ Use `$PS_CMD -NoProfile -ExecutionPolicy Bypass -File script.ps1` for all script
 
 #### 1b. Find MSBuild
 
+**IMPORTANT**: Use `-prerelease -all` flags — without them, `vswhere` skips preview/insiders installations and may return nothing:
 ```bash
-MSBUILD=$("/c/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe" \
-    -latest -requires Microsoft.Component.MSBuild \
-    -find "MSBuild\\**\\Bin\\MSBuild.exe" 2>/dev/null)
+MSBUILD=$(pwsh -NoProfile -Command "& 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe' -prerelease -all -latest -requires Microsoft.Component.MSBuild -find 'MSBuild\**\Bin\MSBuild.exe'" 2>/dev/null)
 ```
 
-If `vswhere` is not found, check `C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe`.
+**Why PowerShell instead of bash**: The `vswhere.exe` path contains `(x86)` which bash interprets as a subshell. Using `pwsh -Command` with single-quoted paths avoids this. If you must use bash directly, escape or quote the path carefully.
+
+If `vswhere` returns nothing even with `-prerelease -all`, verify Visual Studio is installed and includes the MSBuild component.
 
 #### 1c. Verify crosstargeting_override.props
 
@@ -119,6 +130,17 @@ After `setup-cert.ps1` runs, read the thumbprint for the build step:
 THUMBPRINT=$(cat ~/.uno-dev-cert-thumbprint)
 ```
 
+#### 1f. Restore Graphics3DGL with Windows TFM
+
+The `Uno.WinUI.Graphics3DGL` project only builds Skia targets by default. SamplesApp.Windows references it, so it must also have a Windows TFM available:
+```bash
+"$MSBUILD" "src/AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj" \
+    -restore -v:m -p:BuildGraphics3DGLForWindows=true \
+    -p:Platform=x64 -p:Configuration=Release
+```
+
+This is idempotent — safe to run every time. Skip only if you know Graphics3DGL was already restored with the Windows TFM.
+
 ### Phase 2: Build the MSIX Package
 
 **CRITICAL**: Set bash timeout to **600000** (10 minutes). **NEVER cancel builds.**
@@ -147,6 +169,8 @@ THUMBPRINT=$(cat ~/.uno-dev-cert-thumbprint)
 | `APPX0101: signing key required` | No cert in store | Run `setup-cert.ps1` (Phase 1d) |
 | `APPX0105: Cannot import key file` | Used `PackageCertificateKeyFile` instead of thumbprint | Switch to `PackageCertificateThumbprint` |
 | `MSB1008: Only one project` | Bash mangled `/r` as path | Use dash syntax: `-restore` |
+| `CS0012: type 'Grid' defined in unreferenced assembly 'Uno.UI'` | Graphics3DGL built for Skia only | Run Phase 1f (restore Graphics3DGL with Windows TFM) |
+| `NETSDK1005: Assets file doesn't have target for windows10` | Graphics3DGL not restored with Windows TFM | Run Phase 1f before building SamplesApp |
 
 ### Phase 3: Install the MSIX Package
 
@@ -232,13 +256,16 @@ This is the **exact sequence** to execute. Copy-paste each step:
 # --- Config ---
 SKILL_DIR=".claude/skills/winui-runtime-tests"
 PS_CMD="pwsh"  # or "powershell.exe" if pwsh unavailable
-MSBUILD=$("/c/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe" \
-    -latest -requires Microsoft.Component.MSBuild \
-    -find "MSBuild\\**\\Bin\\MSBuild.exe" 2>/dev/null)
+MSBUILD=$(pwsh -NoProfile -Command "& 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe' -prerelease -all -latest -requires Microsoft.Component.MSBuild -find 'MSBuild\**\Bin\MSBuild.exe'" 2>/dev/null)
 
 # --- Phase 1: Setup cert (idempotent, first time prompts UAC) ---
 $PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/setup-cert.ps1"
 THUMBPRINT=$(cat ~/.uno-dev-cert-thumbprint)
+
+# --- Phase 1f: Restore Graphics3DGL with Windows TFM (timeout: 600000ms) ---
+"$MSBUILD" "src/AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj" \
+    -restore -v:m -p:BuildGraphics3DGLForWindows=true \
+    -p:Platform=x64 -p:Configuration=Release
 
 # --- Phase 2: Build MSIX (timeout: 600000ms) ---
 "$MSBUILD" "src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows.csproj" \
@@ -251,8 +278,12 @@ THUMBPRINT=$(cat ~/.uno-dev-cert-thumbprint)
 $PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/install-msix.ps1" -RepoRoot "."
 
 # --- Phase 4+5: Run tests (timeout: 600000ms) ---
+# Without filter:
 $PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/run-tests.ps1" \
     -ResultsFile "$(pwd)/winui-test-results.xml"
+# With filter:
+# FILTER=$(echo -n "Fully.Qualified.TestName" | base64 -w 0)
+# $PS_CMD ... -Filter "$FILTER"
 
 # --- Phase 6: Parse results (use Read tool on winui-test-results.xml) ---
 # Then cleanup:
