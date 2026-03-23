@@ -172,17 +172,21 @@ public partial class CompositionTarget
 			//    UpdateLayout after CallPerFrameCallback). Without this, Rendering handlers
 			//    that modify layout-affecting properties would render with stale layout.
 			rootElement.UpdateLayout();
+
+			// 5. Record SKPicture from visual tree
 			if (SkiaRenderHelper.CanRecordPicture(rootElement))
 			{
-				Render();
-
-				// Throttle: don't schedule next FrameTick until render thread presents.
-				// Only set on hosts with a render thread that calls OnFramePresented.
+				// Set throttle BEFORE Render() to prevent RequestNewFrame() inside Render()
+				// (called when CompositionTarget.Rendering has subscribers) from scheduling
+				// another FrameTick immediately. Without this, one extra FrameTick fires per
+				// displayed frame during continuous animations, doubling CPU work.
 				if (ContentRoot.XamlRoot is { } xamlRoot
 					&& XamlRootMap.GetHostForRoot(xamlRoot) is { SupportsRenderThrottle: true })
 				{
 					_waitingForPresent = true;
 				}
+
+				Render();
 			}
 		}
 		finally
