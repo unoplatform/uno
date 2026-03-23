@@ -75,6 +75,9 @@ namespace Windows.UI.Input
 
 			private ManipulationVelocities _lastRelevantVelocities;
 			private InertiaProcessor? _inertia;
+#if IS_UNO_UI_PROJECT
+			private readonly VelocityTracker _velocityTracker = new();
+#endif
 
 			/// <summary>
 			/// Type of the pointers handled by this manipulation.
@@ -134,6 +137,11 @@ namespace Windows.UI.Input
 
 				_origins = _currents = pointer1;
 				_contacts = (0, 1);
+
+#if IS_UNO_UI_PROJECT
+				// Seed the velocity tracker with the initial pointer position.
+				_velocityTracker.AddPosition(pointer1.Timestamp, pointer1.Position.X, pointer1.Position.Y);
+#endif
 
 				switch (_deviceType)
 				{
@@ -241,7 +249,16 @@ namespace Windows.UI.Input
 				{
 					if (_deviceType == (PointerDeviceType)point.PointerDevice.PointerDeviceType)
 					{
-						hasUpdate |= _currents.TryUpdate(point);
+						if (_currents.TryUpdate(point))
+						{
+							hasUpdate = true;
+#if IS_UNO_UI_PROJECT
+							// Feed the least-squares velocity tracker with each pointer position.
+							// The tracker accumulates samples and uses polynomial fitting for
+							// a smoother velocity estimate than simple delta/time.
+							_velocityTracker.AddPosition(point.Timestamp, point.Position.X, point.Position.Y);
+#endif
+						}
 					}
 				}
 
@@ -268,6 +285,11 @@ namespace Windows.UI.Input
 
 				if (_currents.TryUpdate(removed))
 				{
+#if IS_UNO_UI_PROJECT
+					// Feed the release position to the velocity tracker so it has
+					// the most up-to-date data for the inertia velocity estimate.
+					_velocityTracker.AddPosition(removed.Timestamp, removed.Position.X, removed.Position.Y);
+#endif
 					_contacts.current--;
 
 					NotifyUpdate();
@@ -463,11 +485,31 @@ namespace Windows.UI.Input
 				ManipulationVelocities? velocities;
 				if (useHistory && _inertia is null && !_currents.StateHistory.IsDefault) // Cannot use history when inertia is running: pointer points are no longer updated!
 				{
-					var velocitiesPoints = _currents.StateHistory.GetBoundaries(static p => p.Timestamp);
-					var velocitiesElapsedMicroseconds = velocitiesPoints.to.Timestamp - velocitiesPoints.from.Timestamp;
-					var velocitiesDelta = ComputeDelta(velocitiesPoints.from, velocitiesPoints.to, parentCommit.SumOfDelta);
-
-					velocities = ComputeVelocities(velocitiesDelta, velocitiesElapsedMicroseconds);
+#if IS_UNO_UI_PROJECT
+					// Try the least-squares velocity tracker first — it provides a much smoother
+					// estimate by fitting a polynomial to all recent samples, rather than using
+					// just the boundary points. This significantly reduces fling velocity noise.
+					var lsEstimate = _velocityTracker.GetVelocityEstimate();
+					if (lsEstimate is var (vx, vy))
+					{
+						// VelocityTracker returns units/ms (position delta / ms), which matches
+						// Uno's ManipulationVelocities.Linear convention (units per millisecond).
+						velocities = new ManipulationVelocities
+						{
+							Linear = new Point(vx, vy),
+							Angular = 0,
+							Expansion = 0
+						};
+					}
+					else
+#endif
+					{
+						// Fallback: use the boundary-based linear velocity from the rolling history.
+						var velocitiesPoints = _currents.StateHistory.GetBoundaries(static p => p.Timestamp);
+						var velocitiesElapsedMicroseconds = velocitiesPoints.to.Timestamp - velocitiesPoints.from.Timestamp;
+						var velocitiesDelta = ComputeDelta(velocitiesPoints.from, velocitiesPoints.to, parentCommit.SumOfDelta);
+						velocities = ComputeVelocities(velocitiesDelta, velocitiesElapsedMicroseconds);
+					}
 				}
 				else
 				{
