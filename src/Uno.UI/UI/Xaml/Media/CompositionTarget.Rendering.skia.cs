@@ -252,9 +252,17 @@ public partial class CompositionTarget
 		}
 	}
 
-	internal static void InvokeRendering()
+	/// <summary>
+	/// Fires the <see cref="Rendering"/> event.
+	/// </summary>
+	/// <param name="renderingTime">
+	/// Elapsed time since application start. When a VSync-aligned timestamp is available
+	/// (e.g. Android Choreographer), this reflects the VSync time rather than wall clock,
+	/// giving animations a stable time base even if the tick is delayed by GC or layout.
+	/// </param>
+	internal static void InvokeRendering(TimeSpan renderingTime)
 	{
 		NativeDispatcher.CheckThreadAccess();
-		_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
+		_rendering?.Invoke(null, new RenderingEventArgs(renderingTime));
 	}
 }
