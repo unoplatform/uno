@@ -8,6 +8,10 @@
 
 @implementation UNOSoftView
 
+- (BOOL)acceptsFirstResponder {
+    return YES;
+}
+
 - (void)drawRect:(NSRect)dirtyRect
 {
     double width = dirtyRect.origin.x + dirtyRect.size.width;

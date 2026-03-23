@@ -51,6 +51,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private bool _isLightDismissEnabled = true;
 		private readonly SerialDisposable _sizeChangedDisposable = new SerialDisposable();
 
+		// MUX Reference: FlyoutBase_partial.h m_isFlyoutPresenterRequestedThemeOverridden
+		private bool m_isFlyoutPresenterRequestedThemeOverridden;
+
 		private bool m_hasPlacementOverride;
 		private FlyoutPlacementMode m_placementOverride;
 
@@ -356,10 +359,27 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			get => _targetWeakRef?.IsAlive == true ? _targetWeakRef.Target as FrameworkElement : null;
 			private set
 			{
+				// MUX Reference: FlyoutBase_partial.cpp SetPlacementTarget (lines 2978-3006)
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				// Detach ActualThemeChanged from old target on reassignment
+				if (_targetWeakRef?.IsAlive == true && _targetWeakRef.Target is FrameworkElement oldTarget)
+				{
+					oldTarget.ActualThemeChanged -= OnPlacementTargetActualThemeChanged;
+				}
+#endif
+
 				WeakReferencePool.ReturnWeakReference(this, _targetWeakRef);
 				_targetWeakRef = value is not null ? WeakReferencePool.RentWeakReference(this, value) : null;
 			}
 		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		// MUX Reference: FlyoutBase_partial.cpp lines 3001-3006
+		private void OnPlacementTargetActualThemeChanged(FrameworkElement sender, object args)
+		{
+			ForwardThemeToPresenter();
+		}
+#endif
 
 		/// <summary>
 		/// Defines an optional position of the popup in the <see cref="Target"/> element.
@@ -387,6 +407,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			if (!cancel)
 			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				// Detach ActualThemeChanged on close to avoid holding the flyout alive
+				if (_targetWeakRef?.IsAlive == true && _targetWeakRef.Target is FrameworkElement closingTarget)
+				{
+					closingTarget.ActualThemeChanged -= OnPlacementTargetActualThemeChanged;
+				}
+#endif
+
 				m_openingCanceled = true;
 
 				if (_popup != null)
@@ -464,6 +492,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 			Target = placementTarget;
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// Attach ActualThemeChanged while open so flyout tracks target's theme
+			if (placementTarget is not null)
+			{
+				placementTarget.ActualThemeChanged += OnPlacementTargetActualThemeChanged;
+			}
+#endif
+
 			ForwardTargetPropertiesToPresenter();
 
 			// Capture the input device that triggered this flyout (mirrors WinUI ValidateAndSetParameters)
@@ -656,7 +693,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		/// <summary>
-		/// Forwards DataContext from the placement target to the presenter.
+		/// Forwards DataContext and theme from the placement target to the presenter.
 		/// Ported from WinUI: FlyoutBase_partial.cpp ForwardTargetPropertiesToPresenter.
 		/// </summary>
 		private void ForwardTargetPropertiesToPresenter()
@@ -665,6 +702,60 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				presenter.DataContext = target.DataContext;
 			}
+
+			ForwardThemeToPresenter();
+		}
+
+		// MUX Reference: FlyoutBase_partial.cpp ForwardThemeToPresenter (lines 1534-1592)
+		// Walks up from placement target to find the nearest non-Default RequestedTheme
+		// and applies it to the presenter and popup, ensuring flyout content matches
+		// the theme of the subtree it was opened from.
+		private void ForwardThemeToPresenter()
+		{
+			if (_popup?.Child is not Control presenter || Target is not { } target)
+			{
+				return;
+			}
+
+			// Only override if presenter's RequestedTheme hasn't been explicitly set,
+			// or was previously overridden by us.
+			var presenterTheme = presenter.RequestedTheme;
+			var isDefault = presenterTheme == ElementTheme.Default;
+			if (!isDefault && !m_isFlyoutPresenterRequestedThemeOverridden)
+			{
+				return;
+			}
+
+			// Walk up from placement target to find nearest non-Default RequestedTheme
+			var requestedTheme = ElementTheme.Default;
+			DependencyObject current = target;
+			while (current is FrameworkElement currentFe)
+			{
+				requestedTheme = currentFe.RequestedTheme;
+				if (requestedTheme != ElementTheme.Default)
+				{
+					break;
+				}
+
+				var parent = VisualTreeHelper.GetParent(current);
+				if (parent is PopupRoot)
+				{
+					// If the target is in a Popup's visual tree, skip PopupRoot
+					// and use the logical parent instead (the Popup's owner).
+					parent = currentFe.Parent;
+				}
+
+				current = parent;
+			}
+
+			if (requestedTheme != presenterTheme)
+			{
+				presenter.RequestedTheme = requestedTheme;
+				m_isFlyoutPresenterRequestedThemeOverridden = true;
+			}
+
+			// Also set the popup's theme for SystemBackdrop support.
+			_popup.RequestedTheme = requestedTheme;
 		}
 
 		private protected virtual void OnOpened() { }

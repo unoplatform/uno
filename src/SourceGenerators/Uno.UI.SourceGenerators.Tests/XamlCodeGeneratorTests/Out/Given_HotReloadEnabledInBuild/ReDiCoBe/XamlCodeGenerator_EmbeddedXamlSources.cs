@@ -97,13 +97,13 @@ internal static class EmbeddedXamlSourcesProvider
 	private static (string hash, string payload) GetSources_MyDictionary_b7707bcf1e73425b710b6a5d04177088()
 	{
 		return (
-			"8a20e730b77da8f904f7548b2c39750361332923", // hash
+			"f5612b407065b7c60b576f1975640cb2ad0e3734", // hash
 			_utf8.GetString("""
 			<ResourceDictionary
 			      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			      xmlns:local="using:TestRepro"
-			      x:Class="TestNamespace.TestClass">
+			      x:Class="Test.RD">
 			</ResourceDictionary>
 			"""u8)); // Stored as UTF8 to minimize impact on assembly size / limitations
 	}

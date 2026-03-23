@@ -96,6 +96,10 @@ NSWindow* uno_app_get_main_window(void)
     return YES;
 }
 
+-(BOOL) acceptsFirstResponder {
+    return YES;
+}
+
 -(instancetype) initWithFrame:(CGRect)frameRect device:(id<MTLDevice>)device {
     self = [super initWithFrame:frameRect device:device];
     if (self) {
@@ -816,6 +820,15 @@ bool uno_window_clip_svg(UNOWindow* window, const char* svg)
         }
     }
     return true;
+}
+
+void uno_window_resign_native_first_responder(UNOWindow* window)
+{
+    NSView *cv = window.contentViewController.view;
+    NSResponder *fr = window.firstResponder;
+    if ([fr isKindOfClass:[NSView class]] && fr != cv && [(NSView *)fr isDescendantOf:cv]) {
+        [window makeFirstResponder:cv];
+    }
 }
 
 @implementation UNOWindow : NSWindow

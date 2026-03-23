@@ -297,6 +297,9 @@ internal static partial class NativeUno
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_window_clip_svg(nint window, string? svg);
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_resign_native_first_responder(nint window);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string? /* const char* _Nullable */ uno_pick_single_folder(string? prompt, string? identifier, int suggestedStartLocation);
 

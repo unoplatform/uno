@@ -315,7 +315,7 @@ public class Given_CalendarView
 		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 1)));
 		TestServices.WindowHelper.WindowContent = calendarView;
 		await TestServices.WindowHelper.WaitForLoaded(calendarView);
-		Assert.AreEqual("enero de 2024", calendarView.TemplateSettings.HeaderText);
+		await UITestHelper.WaitFor(() => calendarView.TemplateSettings.HeaderText == "enero de 2024", message: "HeaderText was not set to expected Spanish value");
 	}
 
 	[TestMethod]
@@ -328,7 +328,7 @@ public class Given_CalendarView
 		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 1)));
 		TestServices.WindowHelper.WindowContent = calendarView;
 		await TestServices.WindowHelper.WaitForLoaded(calendarView);
-		Assert.AreEqual("January 2024", calendarView.TemplateSettings.HeaderText);
+		await UITestHelper.WaitFor(() => calendarView.TemplateSettings.HeaderText == "January 2024", message: "HeaderText was not set to expected English value");
 	}
 }
 #endif

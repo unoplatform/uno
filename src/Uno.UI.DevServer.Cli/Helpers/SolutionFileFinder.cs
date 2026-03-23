@@ -6,7 +6,10 @@ using System.Linq;
 namespace Uno.UI.DevServer.Cli.Helpers;
 
 // Directory filtering uses a two-layer strategy: a hardcoded skip list is
-// always applied, and `git check-ignore` is layered on top when available.
+// always applied during traversal, and `git check-ignore` is applied only to
+// discovered solution files when available. This keeps discovery cheap while
+// still honoring `.gitignore` for the solutions we might select.
+//
 // This ensures robust behavior across all environments:
 //
 // | # | `.git` exists | `git` installed | `.gitignore` | Result                                                                  |
@@ -28,7 +31,7 @@ namespace Uno.UI.DevServer.Cli.Helpers;
 
 /// <summary>
 /// Searches for .sln/.slnx files recursively, respecting .gitignore rules
-/// when running inside a git repository.
+/// for discovered solutions when running inside a git repository.
 /// </summary>
 internal static class SolutionFileFinder
 {
@@ -37,6 +40,18 @@ internal static class SolutionFileFinder
 	/// </summary>
 	private static readonly string[] HardcodedSkipDirs =
 		["node_modules", "bin", "obj", ".vs", ".idea", "packages"];
+
+	private static bool ShouldAlwaysSkipDirectory(string directoryName)
+	{
+		if (HardcodedSkipDirs.Contains(directoryName, StringComparer.OrdinalIgnoreCase))
+		{
+			return true;
+		}
+
+		// Codex homes/sessions can be created next to the workspace during tests
+		// and should never influence solution discovery.
+		return directoryName.StartsWith(".codex", StringComparison.OrdinalIgnoreCase);
+	}
 
 	/// <summary>
 	/// Finds solution files (.sln, .slnx) recursively up to <paramref name="maxDepth"/> levels.
@@ -47,8 +62,23 @@ internal static class SolutionFileFinder
 	{
 		var results = new List<string>();
 		var gitRoot = FindGitRoot(directory);
-		SearchDirectory(directory, 0, maxDepth, results, gitRoot);
-		return results.ToArray();
+		SearchDirectory(directory, 0, maxDepth, results);
+
+		if (gitRoot is null || results.Count == 0)
+		{
+			return results.ToArray();
+		}
+
+		var gitIgnoredSolutions = GetGitIgnoredPaths(results, gitRoot);
+		if (gitIgnoredSolutions is null || gitIgnoredSolutions.Count == 0)
+		{
+			return results.ToArray();
+		}
+
+		return
+		[
+			.. results.Where(solution => !gitIgnoredSolutions.Contains(solution))
+		];
 	}
 
 	/// <summary>
@@ -157,7 +187,7 @@ internal static class SolutionFileFinder
 	}
 
 	private static void SearchDirectory(string directory, int currentDepth, int maxDepth,
-		List<string> results, string? gitRoot)
+		List<string> results)
 	{
 		try
 		{
@@ -187,20 +217,12 @@ internal static class SolutionFileFinder
 			// Always skip .git directory (contains git objects, never solutions)
 			subDirs.RemoveAll(d => string.Equals(Path.GetFileName(d), ".git", StringComparison.OrdinalIgnoreCase));
 
-			// Always apply hardcoded skip list (node_modules, bin, obj, etc.)
+			// Only the hardcoded skip list participates in traversal. Git-based
+			// filtering is applied once at the end on the discovered solution set,
+			// which avoids paying for `git check-ignore` on every directory.
 			var ignored = subDirs
-				.Where(d => HardcodedSkipDirs.Contains(Path.GetFileName(d), StringComparer.OrdinalIgnoreCase))
+				.Where(d => ShouldAlwaysSkipDirectory(Path.GetFileName(d)))
 				.ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-			// Additionally filter via git check-ignore when inside a git repo
-			if (gitRoot is not null)
-			{
-				var gitIgnored = GetGitIgnoredPaths(subDirs, gitRoot);
-				if (gitIgnored is not null)
-				{
-					ignored.UnionWith(gitIgnored);
-				}
-			}
 
 			foreach (var subDir in subDirs)
 			{
@@ -208,7 +230,7 @@ internal static class SolutionFileFinder
 				{
 					continue;
 				}
-				SearchDirectory(subDir, currentDepth + 1, maxDepth, results, gitRoot);
+				SearchDirectory(subDir, currentDepth + 1, maxDepth, results);
 			}
 		}
 		catch (Exception ex) when (ex is UnauthorizedAccessException or DirectoryNotFoundException or IOException)
