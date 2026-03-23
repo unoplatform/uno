@@ -404,6 +404,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			Debug.Assert(_touchInertia is null || isResuming, "Inertia should already be null instead if we are resuming from a previous manipulation.");
 			_touchInertia = null;
+#if __SKIA__
+			Scroller?.EnterIntermediateViewChangedMode();
+#endif
 		}
 
 		/// <inheritdoc />
@@ -598,6 +601,9 @@ namespace Microsoft.UI.Xaml.Controls
 			if (args?.IsInertial is true && _touchInertia is null)
 			{
 				// Inertia has been aborted (external ChangeView request?) or was not even allowed, do not try to apply the final value.
+#if __SKIA__
+				Scroller?.LeaveIntermediateViewChangedMode(raiseFinalViewChanged: false);
+#endif
 				return;
 			}
 
@@ -605,6 +611,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			//Set(disableAnimation: true, isIntermediate: false);
 			Set(options: new ScrollOptions(DisableAnimation: true, IsTouch: true, IsIntermediate: false));
+#if __SKIA__
+			Scroller?.LeaveIntermediateViewChangedMode(raiseFinalViewChanged: true);
+#endif
 		}
 
 		private ScrollDirection GetDirection(ManipulationVelocities velocities)
