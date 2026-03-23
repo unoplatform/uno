@@ -4,6 +4,7 @@ using Private.Infrastructure;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Path = Microsoft.UI.Xaml.Shapes.Path;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Icons;
 

@@ -71,8 +71,8 @@ internal static class MonitorDecisions
 	/// the Roots capability object (not just ListChanged), so clients like Junie that
 	/// declare Roots support without ListChanged are correctly detected.
 	/// </summary>
-	internal static bool DetermineClientSupportsRoots(bool forceRootsFallback, bool rootsCapabilityPresent)
-		=> !forceRootsFallback && rootsCapabilityPresent;
+	internal static bool DetermineClientSupportsRoots(bool rootsCapabilityPresent)
+		=> rootsCapabilityPresent;
 
 	/// <summary>
 	/// Thread-safe guard ensuring that a start operation occurs exactly once,

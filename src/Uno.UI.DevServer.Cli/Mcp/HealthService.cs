@@ -26,6 +26,7 @@ internal class HealthService(
 		Name = "uno_health",
 		Description = "Returns the health status of the Uno DevServer MCP bridge, including connection state, tool count, and any issues detected during startup. Always available, even before the upstream host is ready.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>("""{"type":"object","properties":{}}"""),
+		Annotations = new() { Title = "Uno Health Check", DestructiveHint = false, IdempotentHint = true, ReadOnlyHint = true, OpenWorldHint = false },
 	};
 
 	/// <summary>Set by ProxyLifecycleManager when the DevServer monitor has been started.</summary>

@@ -101,6 +101,13 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 			}
 		}
 
+		// Kill any process that was spawned by the monitor task during the
+		// race window between Cancel() and the task actually observing the
+		// cancellation token. Without this second call, a crash-recovery
+		// retry that spawns a new process just before the token is checked
+		// leaves a zombie host process running.
+		TerminateServerProcess();
+
 		_monitor = null;
 		cts?.Dispose();
 		_serverProcess = null;

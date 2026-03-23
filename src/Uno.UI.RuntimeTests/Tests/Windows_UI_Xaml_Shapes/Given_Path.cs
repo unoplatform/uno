@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
 using SamplesApp.UITests;
+using Path = Microsoft.UI.Xaml.Shapes.Path;
 using Uno.UI.RuntimeTests.Helpers;
 using System.Threading;
 using static Private.Infrastructure.TestServices;

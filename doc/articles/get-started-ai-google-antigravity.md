@@ -58,7 +58,7 @@ This guide walks you through configuring the Uno Platform MCPs for Google Antigr
         ```
 
     > [!NOTE]
-    > `--force-roots-fallback` exposes the `uno_app_set_roots` tool so Antigravity, which does not yet provide [MCP roots](https://modelcontextprotocol.io/specification/2025-06-18/client/roots), can initialize.
+    > `--force-roots-fallback` is optional. The DevServer auto-detects when the client does not advertise the MCP roots capability and exposes the `uno_app_initialize` tool automatically. The flag is still accepted for explicit override.
 
     You can verify the registration state at any time:
 

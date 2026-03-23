@@ -47,7 +47,9 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 							solutionPath,
 							currentDirectory,
 							globalJsonPath,
-							GetDirectoryDistance(currentDirectory, solutionDirectory)));
+							GetDirectoryDistance(currentDirectory, solutionDirectory),
+							parsed.sdkPackage!,
+							parsed.sdkVersion!));
 					}
 
 					break;
@@ -95,6 +97,8 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 			EffectiveWorkspaceDirectory = selected.WorkspaceDirectory,
 			SelectedSolutionPath = selected.SolutionPath,
 			SelectedGlobalJsonPath = selected.GlobalJsonPath,
+			UnoSdkPackage = selected.SdkPackage,
+			UnoSdkVersion = selected.SdkVersion,
 			ResolutionKind = resolutionKind,
 			SelectionSource = WorkspaceSelectionSource.Automatic,
 			CandidateSolutions = [.. solutionFiles],
@@ -134,6 +138,8 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 			RequestedWorkingDirectory = normalizedRequestedDirectory,
 			EffectiveWorkspaceDirectory = normalizedRequestedDirectory,
 			SelectedGlobalJsonPath = globalJsonPath,
+			UnoSdkPackage = parsed.sdkPackage,
+			UnoSdkVersion = parsed.sdkVersion,
 			ResolutionKind = WorkspaceResolutionKind.CurrentDirectory,
 			SelectionSource = WorkspaceSelectionSource.UserSelected,
 			CandidateSolutions = [],
@@ -218,6 +224,8 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 						EffectiveWorkspaceDirectory = currentDirectory,
 						SelectedSolutionPath = solutionPath,
 						SelectedGlobalJsonPath = globalJsonPath,
+						UnoSdkPackage = parsed.sdkPackage,
+						UnoSdkVersion = parsed.sdkVersion,
 						ResolutionKind = resolutionKind,
 						SelectionSource = selectionSource,
 						CandidateSolutions = [.. candidateSolutions],
@@ -275,7 +283,9 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 		string SolutionPath,
 		string WorkspaceDirectory,
 		string GlobalJsonPath,
-		int GlobalJsonDistance);
+		int GlobalJsonDistance,
+		string SdkPackage,
+		string SdkVersion);
 }
 
 internal sealed record WorkspaceResolution
@@ -284,6 +294,8 @@ internal sealed record WorkspaceResolution
 	public string? EffectiveWorkspaceDirectory { get; init; }
 	public string? SelectedSolutionPath { get; init; }
 	public string? SelectedGlobalJsonPath { get; init; }
+	public string? UnoSdkPackage { get; init; }
+	public string? UnoSdkVersion { get; init; }
 	public required WorkspaceResolutionKind ResolutionKind { get; init; }
 	public WorkspaceSelectionSource SelectionSource { get; init; } = WorkspaceSelectionSource.Automatic;
 	public IReadOnlyList<string> CandidateSolutions { get; init; } = [];

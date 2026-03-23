@@ -32,7 +32,7 @@ internal class Program
 			WriteOption("--mcp-app", "Start in App MCP STDIO mode");
 			WriteOption("--mcp-wait-tools-list", "Wait for upstream server tools before responding to list_tools (MCP mode only)");
 			WriteOption("--force-roots-fallback", "This mode can be used when the MCP client does not support the roots feature");
-			WriteOption("--force-generate-tool-cache", "Force tool discovery and persist the cache immediately (MCP mode only)");
+			WriteOption("--force-generate-tool-cache", "Deprecated (no-op). Kept for backward compatibility.");
 			Console.WriteLine();
 			Console.WriteLine("Commands:");
 			WriteCommand("start", "Start the DevServer for the current folder");

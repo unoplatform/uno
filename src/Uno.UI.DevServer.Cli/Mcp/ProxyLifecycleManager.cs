@@ -25,20 +25,21 @@ internal class ProxyLifecycleManager
 	private readonly McpStdioServer _mcpStdioServer;
 	private readonly WorkspaceResolver _workspaceResolver;
 	private readonly ISolutionFileFinder _solutionFileFinder;
-	private readonly Tool _addRootsTool;
-
 	internal static readonly Tool SelectSolutionTool = new()
 	{
 		Name = "uno_app_select_solution",
 		Description =
-			"Explicitly selects the Uno solution to use for this MCP session by absolute solution path. Starts or restarts the DevServer if required.",
+			"Selects a specific Uno solution when multiple solutions exist in the workspace. "
+			+ "This restarts the DevServer. Typically called when uno_health reports a WorkspaceAmbiguous issue, "
+			+ "or when you need to switch to a different solution. "
+			+ "Pass forceRestart=true to force a restart even when the same solution is already selected.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>(
-			"""{"type":"object","required":["solutionPath"],"properties":{"solutionPath":{"type":"string","description":"Absolute path to the .sln or .slnx file to use for this session."}}}"""),
+			"""{"type":"object","required":["solutionPath"],"properties":{"solutionPath":{"type":"string","description":"Absolute path to the .sln or .slnx file to use for this session."},"forceRestart":{"type":"boolean","description":"When true, forces a full DevServer restart even if the solution is already selected. Useful after external changes such as editing global.json or running dotnet restore."}}}"""),
+		Annotations = new() { Title = "Select Solution", IdempotentHint = false, ReadOnlyHint = false, OpenWorldHint = false },
 	};
 
 	private bool _waitForTools;
 	private bool _forceRootsFallback;
-	private bool _forceGenerateToolCache;
 	private string? _solutionDirectory;
 	private readonly MonitorDecisions.StartOnceGuard _devServerStartGuard = new();
 
@@ -83,12 +84,9 @@ internal class ProxyLifecycleManager
 	private const int MaxReconnectionAttempts = 3;
 	private string? _currentDirectory;
 	private WorkspaceResolution? _workspaceResolution;
-	private string? _workspaceHash;
 	private int _devServerPort;
 	private List<string> _forwardedArgs = [];
 	private string[] _roots = [];
-	private TaskCompletionSource<bool>? _toolCachePrimedTcs;
-	private Task? _cachePrimedWatcher;
 	private FileSystemWatcher? _workspaceMutationWatcher;
 	private string? _workspaceMutationWatcherRoot;
 	private CancellationTokenSource? _workspaceMutationDebounceCts;
@@ -127,8 +125,6 @@ internal class ProxyLifecycleManager
 		_workspaceResolver = workspaceResolver;
 		_solutionFileFinder = solutionFileFinder ?? new FileSystemSolutionFileFinder();
 		_workspaceMutationWatcherFactory = workspaceMutationWatcherFactory ?? (root => new FileSystemWatcher(root));
-
-		_addRootsTool = McpServerTool.Create(SetRoots, new() { Name = "uno_app_set_roots" }).ProtocolTool;
 	}
 
 	internal ConnectionState ConnectionState => _connectionState;
@@ -155,20 +151,12 @@ internal class ProxyLifecycleManager
 		_waitForTools = waitForTools;
 		_forceRootsFallback = forceRootsFallback;
 		_healthService.ForceRootsFallback = forceRootsFallback;
-		_forceGenerateToolCache = forceGenerateToolCache;
 		_currentDirectory = currentDirectory;
 		_workspaceResolution = workspaceResolution;
 		_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 		_devServerPort = port;
 		_forwardedArgs = forwardedArgs;
 		_solutionDirectory = NormalizeSolutionDirectory(solutionDirectory);
-		_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(
-			workspaceResolution.EffectiveWorkspaceDirectory ?? _solutionDirectory ?? currentDirectory);
-		_toolListManager.WorkspaceHash = _workspaceHash;
-		_toolListManager.IsToolCacheEnabled = true;
-		_toolListManager.OnToolCachePersisted = () => _toolCachePrimedTcs?.TrySetResult(true);
-		_toolListManager.OnToolCachePersistFailed = ex => FailToolCachePriming(ex);
-		InitializeToolCachePrimingTracker();
 		StartWorkspaceMutationWatcher();
 
 		EnsureDevServerStartedFromSolutionDirectory();
@@ -176,12 +164,6 @@ internal class ProxyLifecycleManager
 		try
 		{
 			var exitCode = await StartMcpStdIoProxyAsync(ct);
-
-			if (!await EnsureCachePrimingCompletedAsync())
-			{
-				return 1;
-			}
-
 			return exitCode;
 		}
 		catch (Exception ex)
@@ -206,7 +188,7 @@ internal class ProxyLifecycleManager
 		await ProcessRoots();
 	}
 
-	internal async Task<SelectSolutionResult> SelectSolutionAsync(string solutionPath, CancellationToken ct = default)
+	internal async Task<SelectSolutionResult> SelectSolutionAsync(string solutionPath, bool forceRestart = false, CancellationToken ct = default)
 	{
 		var selectionStopwatch = Stopwatch.StartNew();
 
@@ -314,7 +296,7 @@ internal class ProxyLifecycleManager
 
 		var previousResolution = _workspaceResolution;
 		var transitionAction =
-			await ApplyWorkspaceResolutionAsync(nextResolution, WorkspaceTransitionTrigger.UserSelection, ct);
+			await ApplyWorkspaceResolutionAsync(nextResolution, WorkspaceTransitionTrigger.UserSelection, forceRestart, ct);
 		var selectedResolution = _workspaceResolution ?? nextResolution;
 		LogTimeline(
 			"select-solution.apply-transition.complete",
@@ -331,9 +313,9 @@ internal class ProxyLifecycleManager
 		};
 	}
 
-	private async Task<CallToolResult> SelectSolution(string solutionPath)
+	private async Task<CallToolResult> SelectSolution(string solutionPath, bool forceRestart = false)
 	{
-		var result = await SelectSolutionAsync(solutionPath);
+		var result = await SelectSolutionAsync(solutionPath, forceRestart);
 		var json = JsonSerializer.Serialize(result, McpJsonUtilities.DefaultOptions);
 		return new CallToolResult
 		{
@@ -342,6 +324,30 @@ internal class ProxyLifecycleManager
 		};
 	}
 
+	/// <summary>
+	/// Processes MCP client roots to resolve the workspace directory.
+	/// </summary>
+	/// <remarks>
+	/// <code>
+	/// ProcessRoots()
+	///   │
+	///   ├─ roots empty AND forceRootsFallback?
+	///   │   └─ YES → defer startup, wait for uno_app_initialize call
+	///   │
+	///   ├─ GetRootPath(rootUri) → rootPath
+	///   │   └─ null → log warning, done
+	///   │
+	///   ├─ ResolveAsync(rootPath)
+	///   │   ├─ Found Uno solution → IsResolved=true → ApplyTransition(Start)
+	///   │   └─ No Uno solution found → IsResolved=false
+	///   │       └─ Directory.Exists(rootPath)?
+	///   │           ├─ YES → accept as workspace root, start monitoring
+	///   │           │         (watcher will detect solutions as they appear)
+	///   │           └─ NO  → log warning, done
+	///   │
+	///   └─ Health reports effectiveWorkspaceDirectory + candidateSolutions
+	/// </code>
+	/// </remarks>
 	private async Task ProcessRoots()
 	{
 		var processRootsStopwatch = Stopwatch.StartNew();
@@ -360,6 +366,20 @@ internal class ProxyLifecycleManager
 				{
 					SelectionSource = WorkspaceSelectionSource.RootsConfirmed,
 				};
+
+				// Always accept a valid directory as the workspace root, even when no
+				// Uno solution is found yet (empty project, new workspace, non-Uno project).
+				// The file watcher will pick up solutions as they appear.
+				if (!rootWorkspaceResolution.IsResolved && Directory.Exists(rootPath))
+				{
+					rootWorkspaceResolution = rootWorkspaceResolution with
+					{
+						RequestedWorkingDirectory = rootPath,
+						EffectiveWorkspaceDirectory = rootPath,
+					};
+					_logger.LogInformation(
+						"No Uno workspace found at '{RootPath}'; accepting as workspace root for monitoring", rootPath);
+				}
 				LogTimeline(
 					"set-roots.resolve-workspace.complete",
 					processRootsStopwatch.ElapsedMilliseconds,
@@ -380,7 +400,7 @@ internal class ProxyLifecycleManager
 		else if (_forceRootsFallback)
 		{
 			_logger.LogWarning(
-				"No roots provided via uno_app_set_roots; DevServer startup is deferred until roots are set");
+				"No roots provided via uno_app_initialize; DevServer startup is deferred until roots are set");
 		}
 	}
 
@@ -395,11 +415,11 @@ internal class ProxyLifecycleManager
 		}
 
 		var nextResolution = await _workspaceResolver.ResolveAsync(workspaceRoot);
-		await ApplyWorkspaceResolutionAsync(nextResolution, trigger, ct);
+		await ApplyWorkspaceResolutionAsync(nextResolution, trigger, ct: ct);
 	}
 
 	internal async Task<WorkspaceTransitionAction> ApplyWorkspaceResolutionAsync(WorkspaceResolution nextResolution,
-		WorkspaceTransitionTrigger trigger, CancellationToken ct = default)
+		WorkspaceTransitionTrigger trigger, bool forceRestart = false, CancellationToken ct = default)
 	{
 		var transitionStopwatch = Stopwatch.StartNew();
 		await _workspaceTransitionGate.WaitAsync(ct);
@@ -411,6 +431,15 @@ internal class ProxyLifecycleManager
 				trigger,
 				_healthService.DevServerStarted);
 
+			// When forceRestart is requested and the normal transition was a no-op (Refresh),
+			// escalate to a full Restart so the DevServer host is recycled.
+			if (forceRestart && transitionAction == WorkspaceTransitionAction.Refresh && _healthService.DevServerStarted)
+			{
+				_logger.LogInformation("Force-restart requested for workspace {Workspace}; restarting DevServer",
+					nextResolution.EffectiveWorkspaceDirectory);
+				transitionAction = WorkspaceTransitionAction.Restart;
+			}
+
 			switch (transitionAction)
 			{
 				case WorkspaceTransitionAction.Refresh:
@@ -420,7 +449,6 @@ internal class ProxyLifecycleManager
 						_workspaceResolution?.EffectiveWorkspaceDirectory);
 					_workspaceResolution = nextResolution;
 					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
-					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
 						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
@@ -429,7 +457,6 @@ internal class ProxyLifecycleManager
 				case WorkspaceTransitionAction.Start:
 					_workspaceResolution = nextResolution;
 					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
-					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
@@ -444,10 +471,8 @@ internal class ProxyLifecycleManager
 					await StopCurrentWorkspaceAsync();
 					_workspaceResolution = nextResolution;
 					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
-					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					SetConnectionState(ConnectionState.Degraded);
-					FailToolCachePriming();
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
 						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
@@ -460,7 +485,6 @@ internal class ProxyLifecycleManager
 					await StopCurrentWorkspaceAsync();
 					_workspaceResolution = nextResolution;
 					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
-					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
@@ -484,12 +508,10 @@ internal class ProxyLifecycleManager
 							nextResolution.ResolutionKind);
 						_workspaceResolution = nextResolution;
 						_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
-						UpdateWorkspaceHash(nextResolution);
 						await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					}
 
 					SetConnectionState(ConnectionState.Degraded);
-					FailToolCachePriming();
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
 						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
@@ -498,7 +520,6 @@ internal class ProxyLifecycleManager
 					_logger.LogWarning("Unexpected workspace transition action {Action} for trigger {Trigger}",
 						transitionAction, trigger);
 					SetConnectionState(ConnectionState.Degraded);
-					FailToolCachePriming();
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
 						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
@@ -590,7 +611,6 @@ internal class ProxyLifecycleManager
 				"Workspace resolution failed for {Directory}; DevServer startup is skipped and health remains immediately available for diagnostics",
 				_currentDirectory);
 			SetConnectionState(ConnectionState.Degraded);
-			FailToolCachePriming();
 			return;
 		}
 
@@ -622,7 +642,6 @@ internal class ProxyLifecycleManager
 			_logger.LogWarning(
 				"Unable to start DevServer monitor because the solution directory '{Directory}' is invalid", directory);
 			_devServerStartGuard.Reset();
-			FailToolCachePriming();
 			LogTimeline("start-monitor.rejected-invalid-directory", startMonitorStopwatch.ElapsedMilliseconds,
 				directory ?? "<null>");
 			return;
@@ -631,12 +650,6 @@ internal class ProxyLifecycleManager
 		_logger.LogTrace("Starting DevServer monitor using solution directory {Directory}", normalized);
 		try
 		{
-			if (string.IsNullOrEmpty(_workspaceHash))
-			{
-				_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(normalized);
-				_toolListManager.WorkspaceHash = _workspaceHash;
-			}
-
 			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs, _workspaceResolution);
 			_healthService.DevServerStarted = true;
 			SetConnectionState(ConnectionState.Discovering);
@@ -650,7 +663,6 @@ internal class ProxyLifecycleManager
 			_logger.LogWarning(ex, "Unable to start DevServer monitor for solution directory '{Directory}'",
 				normalized);
 			_devServerStartGuard.Reset();
-			FailToolCachePriming(ex);
 			LogTimeline("start-monitor.failed", startMonitorStopwatch.ElapsedMilliseconds, normalized);
 		}
 	}
@@ -658,23 +670,12 @@ internal class ProxyLifecycleManager
 	private async Task StopCurrentWorkspaceAsync()
 	{
 		await _devServerMonitor.StopMonitoringAsync();
+		// Reset the upstream connection before any asynchronous ServerCrashed events
+		// can race with the new DevServer startup. This ensures the TCS is fresh when
+		// the next ServerStarted event fires.
+		await _mcpUpstreamClient.ResetConnectionAsync();
 		_healthService.DevServerStarted = false;
 		_devServerStartGuard.Reset();
-	}
-
-	private void UpdateWorkspaceHash(WorkspaceResolution resolution)
-	{
-		var workspaceDirectory = resolution.EffectiveWorkspaceDirectory
-			?? _solutionDirectory
-			?? _currentDirectory;
-
-		if (string.IsNullOrWhiteSpace(workspaceDirectory))
-		{
-			return;
-		}
-
-		_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(workspaceDirectory);
-		_toolListManager.WorkspaceHash = _workspaceHash;
 	}
 
 	internal void StartWorkspaceMutationWatcher()
@@ -700,6 +701,10 @@ internal class ProxyLifecycleManager
 			{
 				watcher = _workspaceMutationWatcherFactory(workspaceRoot);
 				watcher.IncludeSubdirectories = true;
+				// Increase from the 8 KB default to reduce InternalBufferOverflowException
+				// frequency. The watcher monitors the entire workspace tree including
+				// build outputs and NuGet restores which generate high event volumes.
+				watcher.InternalBufferSize = 64 * 1024;
 				watcher.NotifyFilter = NotifyFilters.FileName
 					| NotifyFilters.DirectoryName
 					| NotifyFilters.LastWrite
@@ -710,7 +715,18 @@ internal class ProxyLifecycleManager
 				watcher.Deleted += OnWorkspaceMutation;
 				watcher.Renamed += OnWorkspaceMutation;
 				watcher.Error += OnWorkspaceMutationWatcherError;
-				watcher.EnableRaisingEvents = true;
+
+				// EnableRaisingEvents can block indefinitely on certain filesystem
+				// types (e.g. NTFS mounted via drvfs/9p in WSL). Use a bounded
+				// timeout so the MCP proxy startup is not blocked forever.
+				var enableTask = Task.Run(() => watcher.EnableRaisingEvents = true);
+				if (!enableTask.Wait(TimeSpan.FromSeconds(10)))
+				{
+					_logger.LogWarning(
+						"FileSystemWatcher.EnableRaisingEvents timed out for {WorkspaceRoot}; workspace mutations will not be monitored",
+						workspaceRoot);
+					throw new TimeoutException($"FileSystemWatcher timed out for {workspaceRoot}");
+				}
 
 				_workspaceMutationWatcher = watcher;
 				_workspaceMutationWatcherRoot = workspaceRoot;
@@ -896,7 +912,7 @@ internal class ProxyLifecycleManager
 	{
 		Interlocked.Increment(ref _workspaceMutationGeneration);
 		_logger.LogWarning(args.GetException(),
-			"Workspace mutation watcher failed; restarting watcher and reevaluating the workspace");
+			"Workspace mutation watcher failed; restarting watcher");
 
 		var debounceCts = ReplaceWorkspaceMutationDebounceSource(ref _workspaceMutationDebounceCts);
 
@@ -906,12 +922,17 @@ internal class ProxyLifecycleManager
 			{
 				await Task.Delay(TimeSpan.FromMilliseconds(250), debounceCts.Token);
 
-				// StopWorkspaceMutationWatcherAsync cancels _workspaceMutationDebounceCts (which may be
-				// debounceCts itself). Use CancellationToken.None for the reevaluation to avoid being
-				// cancelled by that cleanup.
 				await StopWorkspaceMutationWatcherAsync();
 				StartWorkspaceMutationWatcher();
-				await ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
+
+				// Only reevaluate when the DevServer is not already running.
+				// Watcher errors are transient (buffer overflow), not workspace changes.
+				// Reevaluating a healthy session risks a destructive transition
+				// (e.g. Ambiguous → Stop) that kills a working DevServer.
+				if (!_healthService.DevServerStarted)
+				{
+					await ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
+				}
 			}
 			catch (OperationCanceledException)
 			{
@@ -1017,129 +1038,16 @@ internal class ProxyLifecycleManager
 		}
 	}
 
-	private void InitializeToolCachePrimingTracker()
-	{
-		if (!_forceGenerateToolCache)
-		{
-			_toolCachePrimedTcs = null;
-			_cachePrimedWatcher = null;
-			return;
-		}
-
-		_toolCachePrimedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
-		_cachePrimedWatcher = null;
-	}
-
-	private void FailToolCachePriming(Exception? ex = null)
-	{
-		if (_toolCachePrimedTcs is null)
-		{
-			return;
-		}
-
-		if (ex is not null)
-		{
-			_toolCachePrimedTcs.TrySetException(ex);
-		}
-		else
-		{
-			_toolCachePrimedTcs.TrySetResult(false);
-		}
-	}
-
-	private async Task<bool> EnsureCachePrimingCompletedAsync()
-	{
-		if (!_forceGenerateToolCache)
-		{
-			return true;
-		}
-
-		if (_toolCachePrimedTcs is null)
-		{
-			_logger.LogError("Tool cache priming tracker was not initialized");
-			return false;
-		}
-
-		try
-		{
-			var result = await _toolCachePrimedTcs.Task;
-			if (!result)
-			{
-				_logger.LogError("Tool cache priming failed");
-			}
-
-			return result;
-		}
-		catch (Exception ex)
-		{
-			_logger.LogError(ex, "Tool cache priming failed with an exception");
-			return false;
-		}
-	}
-
-	private void StartCachePrimingWatcher(IHost host)
-	{
-		if (!_forceGenerateToolCache || _toolCachePrimedTcs is null)
-		{
-			return;
-		}
-
-		_cachePrimedWatcher = CachePrimingWatcherAsync(host);
-	}
-
-	private async Task CachePrimingWatcherAsync(IHost host)
-	{
-		try
-		{
-			try
-			{
-				var result = await _toolCachePrimedTcs!.Task.ConfigureAwait(false);
-
-				if (result)
-				{
-					_logger.LogInformation("Tool cache primed successfully; stopping stdio server");
-				}
-				else
-				{
-					_logger.LogWarning("Tool cache priming failed; stopping stdio server");
-				}
-			}
-			catch (OperationCanceledException)
-			{
-				_logger.LogInformation("Tool cache priming was canceled; stopping stdio server");
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex, "Tool cache priming failed with an exception; stopping stdio server");
-			}
-
-			try
-			{
-				await host.StopAsync().ConfigureAwait(false);
-			}
-			catch (Exception ex)
-			{
-				_logger.LogWarning(ex, "Error while stopping stdio server after tool cache priming");
-			}
-		}
-		catch (Exception ex)
-		{
-			_logger.LogWarning(ex, "Unexpected error in cache priming watcher");
-		}
-	}
-
 	private async Task<int> StartMcpStdIoProxyAsync(CancellationToken ct)
 	{
 		var (host, tcs) = _mcpStdioServer.BuildHost(
 			EnsureRootsInitialized,
-			_addRootsTool,
+			McpStdioServer.InitializeTool,
 			SelectSolutionTool,
-			_forceRootsFallback,
+			() => _forceRootsFallback,
 			() => _roots,
 			async roots => await SetRoots(roots),
-			async solutionPath => await SelectSolution(solutionPath));
-
-		StartCachePrimingWatcher(host);
+			async (solutionPath, forceRestart) => await SelectSolution(solutionPath, forceRestart));
 
 		_devServerMonitor.ServerLaunching += () =>
 		{
@@ -1158,16 +1066,26 @@ internal class ProxyLifecycleManager
 			SetConnectionState(ConnectionState.Connected);
 			_reconnectionAttempts = 0;
 
-			_toolListManager.MarkShouldRefresh();
-
-			await _toolListManager.RefreshCachedToolsFromUpstreamAsync();
+			// Prime the tool count snapshot so uno_health and uno_app_initialize
+			// report an accurate toolCount as soon as upstream is connected.
+			_ = _toolListManager.ListToolsWithTimeoutAsync(CancellationToken.None);
 
 			tcs.TrySetResult();
 
-			await host.Services.GetRequiredService<McpServer>().SendNotificationAsync(
-				NotificationMethods.ToolListChangedNotification,
-				new ToolListChangedNotificationParams()
-			);
+			try
+			{
+				_logger.LogTrace("Sending tools/list_changed notification to client...");
+				await host.Services.GetRequiredService<McpServer>().SendNotificationAsync(
+					NotificationMethods.ToolListChangedNotification,
+					new ToolListChangedNotificationParams()
+				);
+				_mcpStdioServer.OnListChangedNotificationSent();
+				_logger.LogTrace("tools/list_changed notification sent successfully");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "Failed to send tools/list_changed notification to client");
+			}
 		});
 
 		_devServerMonitor.ServerCrashed += () =>
@@ -1199,7 +1117,6 @@ internal class ProxyLifecycleManager
 				_workspaceResolution?.SelectedSolutionPath ?? "<none>",
 				discovery?.AddIns?.Count ?? 0);
 			SetConnectionState(ConnectionState.Degraded);
-			FailToolCachePriming();
 		};
 
 		try
@@ -1226,14 +1143,10 @@ internal class ProxyLifecycleManager
 			return;
 		}
 
-		var clientSupportsRoots = MonitorDecisions.DetermineClientSupportsRoots(
-			_forceRootsFallback,
-			rootsCapabilityPresent: ctx.Server.ClientCapabilities?.Roots is not null);
+		var clientSupportsRoots = ctx.Server.ClientCapabilities?.Roots is not null;
 
 		if (!_forceRootsFallback)
 		{
-			var fallbackRoot = BuildFallbackRoot();
-
 			if (clientSupportsRoots)
 			{
 				var roots = await ctx.Server.RequestRootsAsync(new(), ct);
@@ -1241,23 +1154,30 @@ internal class ProxyLifecycleManager
 				_logger.LogTrace("MCP Client supports roots: {Roots}",
 					string.Join(", ", roots.Roots.Select(r => r.Uri)));
 
-				if (roots.Roots.Count != 0)
-				{
-					_roots = [.. roots.Roots.Select(r => r.Uri)];
-				}
-				else
-				{
-					_logger.LogTrace("MCP client returned no roots; defaulting to {FallbackRoot}", fallbackRoot);
-					_roots = [fallbackRoot];
-				}
+				var fallbackRoot = BuildFallbackRoot();
+				_roots = roots.Roots.Count != 0
+					? [.. roots.Roots.Select(r => r.Uri)]
+					: [fallbackRoot];
+
+				await ProcessRoots();
+			}
+			else if (_healthService.DevServerStarted)
+			{
+				// Workspace already resolved, DevServer running — use fallback root
+				_logger.LogTrace("MCP Client does not support roots; using fallback root for running DevServer");
+				_roots = [BuildFallbackRoot()];
+				await ProcessRoots();
 			}
 			else
 			{
-				_logger.LogTrace("MCP Client does not support roots; defaulting to {FallbackRoot}", fallbackRoot);
-				_roots = [fallbackRoot];
+				// Auto-detect: client has no roots support and workspace is not resolved.
+				// Enable force-roots-fallback so the agent uses uno_app_initialize.
+				_forceRootsFallback = true;
+				_healthService.ForceRootsFallback = true;
+				_logger.LogInformation(
+					"Client does not support MCP roots and workspace is not resolved; enabling roots fallback automatically");
+				return;
 			}
-
-			await ProcessRoots();
 		}
 
 		if (_workspaceResolution?.IsResolved != true && !_healthService.DevServerStarted)
