@@ -222,6 +222,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_End_And_Shift_End_At_Position_Zero()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await KeyboardHelper.InputText("hello world", SUT);
+
+			// Move cursor to position 0
+			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart, "Cursor should be at position 0 after Home");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Press End at position 0 - should move to end of line
+			await KeyboardHelper.PressKeySequence("$d$_end#$u$_end", SUT);
+			Assert.AreEqual(11, SUT.SelectionStart, "End key at position 0 should move cursor to end of text");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Move back to position 0
+			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Press Shift+End at position 0 - should select all text
+			await KeyboardHelper.PressKeySequence("$d$_shift#$d$_end#$u$_end#$u$_shift", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart, "Shift+End at position 0 should keep SelectionStart at 0");
+			Assert.AreEqual(11, SUT.SelectionLength, "Shift+End at position 0 should select all text");
+		}
+
+		[TestMethod]
 		public async Task When_Home_Empty_TextBox()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
