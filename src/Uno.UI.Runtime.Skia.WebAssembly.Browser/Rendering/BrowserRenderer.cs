@@ -89,6 +89,8 @@ internal partial class BrowserRenderer
 			_renderer.Flush();
 		}
 
+		// Currently a no-op on single-threaded WASM (SupportsRenderThrottle = false),
+		// but kept for forward-compatibility with future MT WASM render worker.
 		NativeDispatcher.Main.Enqueue(
 			compositionTarget.OnFramePresented,
 			NativeDispatcherPriority.Render);
@@ -103,6 +105,13 @@ internal partial class BrowserRenderer
 	}
 
 
+	/// <summary>
+	/// Schedules a callback to run on the next requestAnimationFrame.
+	/// Used by the WASM host to align FrameTick to vsync.
+	/// </summary>
+	internal static void ScheduleOnAnimationFrame(Action callback)
+		=> NativeMethods.ScheduleOnAnimationFrame(callback);
+
 	internal static partial class NativeMethods
 	{
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.createInstance")]
@@ -110,5 +119,8 @@ internal partial class BrowserRenderer
 
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.invalidate")]
 		internal static partial void Invalidate(JSObject nativeSwapChainPanel);
+
+		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.scheduleOnAnimationFrame")]
+		internal static partial void ScheduleOnAnimationFrame([JSMarshalAs<JSType.Function>] Action callback);
 	}
 }
