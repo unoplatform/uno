@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Diagnostics;
 using System.Threading;
 using SkiaSharp;
 using Windows.Foundation;
@@ -61,14 +62,23 @@ public partial class CompositionTarget
 	/// Throttle flag: when true, ScheduleFrameTick defers until OnFramePresented clears it.
 	/// Only set on hosts with a render thread (SupportsRenderThrottle == true).
 	/// Prevents the UI thread from recording frames faster than the render thread presents.
+	/// Volatile: written on UI thread (FrameTick / OnFramePresented), read in ScheduleFrameTick
+	/// which may be called from a non-UI thread via RequestNewFrame.
 	/// </summary>
-	private bool _waitingForPresent;
+	private volatile bool _waitingForPresent;
 
 	/// <summary>
 	/// Set when ScheduleFrameTick is called while throttled. OnFramePresented schedules
 	/// the deferred FrameTick when it clears the throttle.
+	/// Volatile: written in ScheduleFrameTick (any thread), read in OnFramePresented (UI thread).
 	/// </summary>
-	private bool _pendingFrameRequest;
+	private volatile bool _pendingFrameRequest;
+
+	/// <summary>
+	/// Set when FrameTick is called re-entrantly (e.g. loaded event → Window.Show → SynchronousRenderAndDraw).
+	/// The outer FrameTick schedules another tick after completing if this is set.
+	/// </summary>
+	private bool _reentrantFrameRequested;
 
 	void ICompositionTarget.RequestNewFrame()
 	{
@@ -128,7 +138,9 @@ public partial class CompositionTarget
 		if (_inFrameTick)
 		{
 			// Re-entrant call (e.g. loaded event handler → Window.Show → SynchronousRenderAndDraw).
-			// Skip to avoid corrupting the loaded event list iteration.
+			// Skip to avoid corrupting the loaded event list iteration. The outer FrameTick
+			// will schedule another tick after completing.
+			_reentrantFrameRequested = true;
 			return;
 		}
 
@@ -140,6 +152,11 @@ public partial class CompositionTarget
 		_inFrameTick = true;
 		try
 		{
+			// Resolve the host once for this tick (used for throttle + VSync timestamp).
+			var host = ContentRoot.XamlRoot is { } xr
+				? XamlRootMap.GetHostForRoot(xr)
+				: null;
+
 			// 1. Layout pass
 			rootElement.UpdateLayout();
 
@@ -150,29 +167,46 @@ public partial class CompositionTarget
 				rootElement.UpdateLayout();
 			}
 
-			// 3. CompositionTarget.Rendering event (may dirty layout)
-			InvokeRendering();
+			// 3. CompositionTarget.Rendering event (may dirty layout).
+			//    Use the host's VSync timestamp when available (e.g. Android Choreographer)
+			//    for accurate animation timing; fall back to wall clock otherwise.
+			var vsync = host?.FrameVsyncTimestamp ?? 0;
+			InvokeRendering(vsync != 0
+				? Stopwatch.GetElapsedTime(_start, vsync)
+				: Stopwatch.GetElapsedTime(_start));
 
 			// 4. Re-layout after Rendering callbacks (matches WinUI NWDrawTree which runs
 			//    UpdateLayout after CallPerFrameCallback). Without this, Rendering handlers
 			//    that modify layout-affecting properties would render with stale layout.
 			rootElement.UpdateLayout();
+
+			// 5. Record SKPicture from visual tree
 			if (SkiaRenderHelper.CanRecordPicture(rootElement))
 			{
-				Render();
-
-				// Throttle: don't schedule next FrameTick until render thread presents.
-				// Only set on hosts with a render thread that calls OnFramePresented.
-				if (ContentRoot.XamlRoot is { } xamlRoot
-					&& XamlRootMap.GetHostForRoot(xamlRoot) is { SupportsRenderThrottle: true })
+				// Set throttle BEFORE Render() to prevent RequestNewFrame() inside Render()
+				// (called when CompositionTarget.Rendering has subscribers) from scheduling
+				// another FrameTick immediately. Without this, one extra FrameTick fires per
+				// displayed frame during continuous animations, doubling CPU work.
+				if (host is { SupportsRenderThrottle: true })
 				{
 					_waitingForPresent = true;
 				}
+
+				Render();
 			}
 		}
 		finally
 		{
 			_inFrameTick = false;
+
+			// If a re-entrant call was suppressed, schedule another tick to process
+			// the deferred state change. This prevents lost frames when loaded event
+			// handlers indirectly trigger RequestNewFrame.
+			if (_reentrantFrameRequested)
+			{
+				_reentrantFrameRequested = false;
+				ScheduleFrameTick();
+			}
 		}
 	}
 
