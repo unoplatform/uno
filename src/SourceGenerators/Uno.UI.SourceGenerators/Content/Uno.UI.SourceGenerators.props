@@ -116,8 +116,10 @@
 		<CompilerVisibleProperty Include="AssemblyName"/>
 
 		<CompilerVisibleProperty Include="UnoDefaultFont" />
+		<CompilerVisibleProperty Include="UnoGenerateCodeBehind" />
 
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="UnoGenerateCodeBehind" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="TargetPath" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="FullPath" />

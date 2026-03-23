@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.DevServer.Cli.Mcp;
+using Uno.UI.DevServer.Cli.Mcp.Setup;
 
 namespace Uno.UI.DevServer.Cli;
 
@@ -14,6 +15,7 @@ internal class CliManager
 {
 	private readonly IServiceProvider _services;
 	private readonly UnoToolsLocator _unoToolsLocator;
+	private readonly IWorkspaceResolver _workspaceResolver;
 	private readonly ILogger<CliManager> _logger;
 	private static readonly JsonSerializerOptions _discoJsonOptions = new()
 	{
@@ -21,10 +23,11 @@ internal class CliManager
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 	};
 
-	public CliManager(IServiceProvider services, UnoToolsLocator unoToolsLocator)
+	public CliManager(IServiceProvider services, UnoToolsLocator unoToolsLocator, IWorkspaceResolver workspaceResolver)
 	{
 		_services = services;
 		_unoToolsLocator = unoToolsLocator;
+		_workspaceResolver = workspaceResolver;
 		_logger = _services.GetRequiredService<ILogger<CliManager>>();
 	}
 
@@ -38,18 +41,37 @@ internal class CliManager
 			// current working directory differs from the solution root.
 			if (!solutionDirParseResult.Success)
 			{
-				return 1;
+				return 2;
 			}
 
 			originalArgs = solutionDirParseResult.FilteredArgs;
-			var workingDirectory = solutionDirParseResult.SolutionDirectory ?? Environment.CurrentDirectory;
+			var requestedWorkingDirectory = solutionDirParseResult.SolutionDirectory ?? Environment.CurrentDirectory;
+			var hasExplicitWorkspaceOverride = solutionDirParseResult.SolutionDirectory is not null;
+
+			// Route "mcp" subcommand group
+			if (originalArgs is { Length: > 0 } &&
+				string.Equals(originalArgs[0], "mcp", StringComparison.OrdinalIgnoreCase))
+			{
+				var mcpArgs = originalArgs[1..];
+				// "mcp serve" is the MCP STDIO proxy
+				if (mcpArgs is { Length: > 0 } && string.Equals(mcpArgs[0], "serve", StringComparison.OrdinalIgnoreCase))
+				{
+					var mcpWorkspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+					LogVersionBanner();
+					return await RunMcpProxyAsync(mcpArgs[1..], requestedWorkingDirectory, mcpWorkspaceResolution);
+				}
+
+				return RunMcpSubcommand(mcpArgs, requestedWorkingDirectory);
+			}
 
 			if (originalArgs.Contains("--mcp-app"))
 			{
+				var mcpWorkspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+				LogVersionBanner();
 				return await RunMcpProxyAsync(
 					originalArgs.Where(a => a != "--mcp-app").ToArray(),
-					workingDirectory,
-					solutionDirParseResult.SolutionDirectory);
+					requestedWorkingDirectory,
+					mcpWorkspaceResolution);
 			}
 
 			var isDisco = originalArgs is { Length: > 0 } &&
@@ -58,33 +80,54 @@ internal class CliManager
 				originalArgs.Any(a => string.Equals(a, "--json", StringComparison.OrdinalIgnoreCase));
 			var discoAddInsOnly = isDisco &&
 				originalArgs.Any(a => string.Equals(a, "--addins-only", StringComparison.OrdinalIgnoreCase));
+			var isHealth = originalArgs is { Length: > 0 } &&
+				string.Equals(originalArgs[0], "health", StringComparison.OrdinalIgnoreCase);
+			var healthJson = isHealth &&
+				originalArgs.Any(a => string.Equals(a, "--json", StringComparison.OrdinalIgnoreCase));
+			var command = originalArgs.Length == 0 ? "start" : originalArgs[0];
+			var requiresWorkspaceResolution = RequiresWorkspaceResolution(command);
+			WorkspaceResolution? workspaceResolution = null;
+			string? workingDirectory = null;
 
-			if (!isDisco || (!discoJson && !discoAddInsOnly))
+			if ((!isDisco || (!discoJson && !discoAddInsOnly)) && !(isHealth && healthJson))
 			{
 				ShowBanner();
 			}
 
+			if (requiresWorkspaceResolution)
+			{
+				workspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+				workingDirectory = workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+			}
+
 			if (isDisco && discoAddInsOnly)
 			{
-				return await RunDiscoAddInsOnlyAsync(workingDirectory, outputJson: discoJson);
+				return await RunDiscoAddInsOnlyAsync(workingDirectory!, outputJson: discoJson);
 			}
 
 			if (isDisco && discoJson)
 			{
 				// Avoid banner/log noise when emitting JSON output
-				return await RunDiscoAsync(workingDirectory, outputJson: true);
+				return await RunDiscoAsync(workingDirectory!, workspaceResolution!, outputJson: true);
 			}
 
 			if (isDisco)
 			{
-				return await RunDiscoAsync(workingDirectory, outputJson: false);
+				return await RunDiscoAsync(workingDirectory!, workspaceResolution!, outputJson: false);
+			}
+
+			if (isHealth)
+			{
+				return await RunHealthAsync(requestedWorkingDirectory, workspaceResolution!, healthJson);
 			}
 
 			if (originalArgs is { Length: > 0 } && string.Equals(originalArgs[0], "login", StringComparison.OrdinalIgnoreCase))
 			{
-				return await OpenSettings(originalArgs, workingDirectory);
+				var loginWorkspace = (await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride)).EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+				return await OpenSettings(originalArgs, loginWorkspace);
 			}
 
+			workingDirectory ??= requestedWorkingDirectory;
 			var hostPath = await _unoToolsLocator.ResolveHostExecutableAsync(workingDirectory);
 
 			if (hostPath is null)
@@ -109,8 +152,8 @@ internal class CliManager
 
 			var startInfo = BuildHostArgs(hostPath, originalArgs, workingDirectory, redirectOutput: true, addins: resolvedAddIns);
 
-			var result = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger, forwardOutputToConsole: requiresHostOutputPassthrough);
-			return result.ExitCode;
+			var (ExitCode, StdOut, StdErr) = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger, forwardOutputToConsole: requiresHostOutputPassthrough);
+			return ExitCode;
 		}
 		catch (Exception ex)
 		{
@@ -121,20 +164,31 @@ internal class CliManager
 
 	private void ShowBanner()
 	{
-		// get the assembly informational version
-		var attrs = typeof(CliManager).Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false);
+		LogVersionBanner();
+	}
 
-		if (attrs.Length > 0 && attrs[0] is System.Reflection.AssemblyInformationalVersionAttribute versionAttr)
-		{
-			// Take only what's before a `+`, we don't want the commit hash here
-			var items = versionAttr.InformationalVersion.Split('+', StringSplitOptions.RemoveEmptyEntries);
+	private static bool RequiresWorkspaceResolution(string command)
+		=> string.Equals(command, "start", StringComparison.OrdinalIgnoreCase)
+			|| string.Equals(command, "stop", StringComparison.OrdinalIgnoreCase)
+			|| string.Equals(command, "disco", StringComparison.OrdinalIgnoreCase)
+			|| string.Equals(command, "health", StringComparison.OrdinalIgnoreCase);
 
-			_logger.LogInformation("Uno Platform DevServer CLI - Version {Version}", items[0]);
-		}
-		else
-		{
-			_logger.LogInformation("Uno Platform DevServer CLI - Dev Version");
-		}
+	private Task<WorkspaceResolution> ResolveWorkspaceAsync(string requestedWorkingDirectory, bool hasExplicitWorkspaceOverride)
+		=> hasExplicitWorkspaceOverride
+			? _workspaceResolver.ResolveExplicitWorkspaceAsync(requestedWorkingDirectory)
+			: _workspaceResolver.ResolveAsync(requestedWorkingDirectory);
+
+	internal void LogVersionBanner()
+	{
+		_logger.LogInformation(GetVersionBannerText());
+	}
+
+	internal static string GetVersionBannerText()
+	{
+		var version = AssemblyVersionHelper.GetAssemblyVersion(typeof(CliManager).Assembly);
+		return string.IsNullOrWhiteSpace(version)
+			? "Uno Platform DevServer CLI - Dev Version"
+			: $"Uno Platform DevServer CLI - Version {version}";
 	}
 
 	private async Task<int> RunDiscoAddInsOnlyAsync(string workingDirectory, bool outputJson)
@@ -205,9 +259,9 @@ internal class CliManager
 		}
 	}
 
-	private async Task<int> RunDiscoAsync(string workingDirectory, bool outputJson)
+	private async Task<int> RunDiscoAsync(string workingDirectory, WorkspaceResolution workspaceResolution, bool outputJson)
 	{
-		var info = await _unoToolsLocator.DiscoverAsync(workingDirectory);
+		var info = await _unoToolsLocator.DiscoverAsync(workingDirectory, workspaceResolution);
 
 		if (outputJson)
 		{
@@ -220,6 +274,30 @@ internal class CliManager
 		}
 
 		return info.Errors.Count > 0 ? 1 : 0;
+	}
+
+	private async Task<int> RunHealthAsync(string requestedWorkingDirectory, WorkspaceResolution workspaceResolution, bool outputJson)
+	{
+		var workingDirectory = workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+		var info = await _unoToolsLocator.DiscoverAsync(workingDirectory, workspaceResolution);
+		var report = HealthReportFactory.Create(
+			info,
+			devServerStarted: false,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: null,
+			discoveredSolutions: null);
+
+		if (outputJson)
+		{
+			Console.WriteLine(HealthReportFormatter.FormatJson(report));
+		}
+		else
+		{
+			Console.WriteLine(HealthReportFormatter.FormatPlainText(report));
+		}
+
+		return report.Status == HealthStatus.Healthy ? 0 : 1;
 	}
 
 	private async Task<int> OpenSettings(string[] originalArgs, string workingDirectory)
@@ -258,19 +336,19 @@ internal class CliManager
 		}
 	}
 
-	private async Task<int> RunMcpProxyAsync(string[] args, string workingDirectory, string? solutionDirectory)
+	private async Task<int> RunMcpProxyAsync(string[] args, string requestedWorkingDirectory, WorkspaceResolution workspaceResolution)
 	{
 		try
 		{
 			_logger.LogInformation("Starting MCP Mode");
 
-			int requestedPort = 0;
-			bool mcpWaitToolsList = false;
-			bool forceRootsFallback = false;
-			bool forceGenerateToolCache = false;
+			var requestedPort = 0;
+			var mcpWaitToolsList = false;
+			var forceRootsFallback = false;
+			var forceGenerateToolCache = false;
 			var forwardedArgs = new List<string>();
 
-			for (int i = 0; i < args.Length; i++)
+			for (var i = 0; i < args.Length; i++)
 			{
 				var a = args[i];
 				if (a == "--port" || a == "-p")
@@ -300,23 +378,26 @@ internal class CliManager
 				}
 				else if (a == "--force-generate-tool-cache")
 				{
+					// Deprecated no-op, kept for backward compatibility
 					forceGenerateToolCache = true;
 					continue; // do not forward mcp-specific arguments to controller
 				}
 				forwardedArgs.Add(a);
 			}
 
-			var normalizedSolutionDirectory = solutionDirectory ?? (forceGenerateToolCache ? workingDirectory : null);
-
 			var waitForTools = mcpWaitToolsList;
+			var startupSolutionDirectory = workspaceResolution.IsResolved
+				? workspaceResolution.EffectiveWorkspaceDirectory
+				: null;
 			return await _services.GetRequiredService<ProxyLifecycleManager>().RunAsync(
-				workingDirectory,
+				requestedWorkingDirectory,
+				workspaceResolution,
 				requestedPort,
 				forwardedArgs,
 				waitForTools,
 				forceRootsFallback,
 				forceGenerateToolCache,
-				normalizedSolutionDirectory,
+				startupSolutionDirectory,
 				CancellationToken.None);
 		}
 		catch (Exception ex)
@@ -331,7 +412,7 @@ internal class CliManager
 		string? rawSolutionDirectory = null;
 		var filteredArgs = new List<string>(args.Length);
 
-		for (int i = 0; i < args.Length; i++)
+		for (var i = 0; i < args.Length; i++)
 		{
 			var arg = args[i];
 			if (arg == "--solution-dir")
@@ -339,7 +420,7 @@ internal class CliManager
 				if (i + 1 >= args.Length)
 				{
 					_logger.LogError("Missing value for --solution-dir");
-					return (false, Array.Empty<string>(), null);
+					return (false, [], null);
 				}
 
 				rawSolutionDirectory = args[i + 1];
@@ -360,27 +441,421 @@ internal class CliManager
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "Invalid solution directory '{Directory}'", rawSolutionDirectory);
-				return (false, Array.Empty<string>(), null);
+				return (false, [], null);
 			}
 		}
 
 		return (true, filteredArgs.ToArray(), normalizedSolutionDirectory);
 	}
 
-	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true, string? addins = null)
+	internal int RunMcpSubcommand(string[] args, string workingDirectory)
 	{
-		var args = new List<string> { "--command" };
-		if (originalArgs.Length > 0)
+		if (args.Length == 0)
 		{
-			args.Add(originalArgs[0]);
-			for (int i = 1; i < originalArgs.Length; i++)
+			_logger.LogError("Missing mcp subcommand. Use: mcp serve|status|install|uninstall");
+			return 2;
+		}
+
+		var subcommand = args[0].ToLowerInvariant();
+
+		if (subcommand == "serve")
+		{
+			_logger.LogError("The 'mcp serve' subcommand should be routed through RunAsync");
+			return 2;
+		}
+
+		if (subcommand is not ("status" or "install" or "uninstall"))
+		{
+			_logger.LogError("Unknown mcp subcommand '{Subcommand}'. Use: serve|status|install|uninstall", subcommand);
+			return 2;
+		}
+
+		// Parse common setup options
+		var parsed = ParseMcpSetupArgs(args[1..], subcommand);
+		if (parsed is null)
+		{
+			return 2; // error already logged
+		}
+
+		// When no client is specified, require --all-ides to confirm multi-client operation
+		if (subcommand is "install" or "uninstall" && parsed.Value.Ide is null && !parsed.Value.AllIdes)
+		{
+			_logger.LogError("Missing client argument. Usage: mcp {Subcommand} <client>, or use --all-ides to target all detected clients", subcommand);
+			return 2;
+		}
+
+		// Validate mutually exclusive variant flags
+		if (parsed.Value.Channel is not null &&
+			!string.Equals(parsed.Value.Channel, "stable", StringComparison.OrdinalIgnoreCase) &&
+			!string.Equals(parsed.Value.Channel, "prerelease", StringComparison.OrdinalIgnoreCase))
+		{
+			_logger.LogError("Invalid value for --channel '{Channel}'. Valid values: stable, prerelease", parsed.Value.Channel);
+			return 2;
+		}
+
+		if (parsed.Value.Channel is not null && parsed.Value.ToolVersion is not null)
+		{
+			_logger.LogError("--channel and --tool-version are mutually exclusive");
+			return 2;
+		}
+
+		try
+		{
+			var defs = DefinitionsLoader.Load(
+				_services.GetRequiredService<IFileSystem>(),
+				parsed.Value.IdeDefinitionsPath,
+				parsed.Value.ServerDefinitionsPath);
+
+			// Validate client if specified
+			if (parsed.Value.Ide is not null && !defs.Ides.ContainsKey(parsed.Value.Ide))
 			{
-				args.Add(originalArgs[i]);
+				_logger.LogError("Unknown client '{Ide}'. Known clients: {KnownIdes}",
+					parsed.Value.Ide, string.Join(", ", defs.Ides.Keys));
+				return 1;
 			}
+
+			// Validate server filter
+			if (parsed.Value.Servers is not null)
+			{
+				foreach (var s in parsed.Value.Servers)
+				{
+					if (!defs.Servers.ContainsKey(s))
+					{
+						_logger.LogError("Unknown server '{Server}'. Known servers: {KnownServers}",
+							s, string.Join(", ", defs.Servers.Keys));
+						return 2;
+					}
+				}
+			}
+
+			var workspace = parsed.Value.Workspace ?? workingDirectory;
+			if (!TryValidateWorkspace(workspace, _services.GetRequiredService<IFileSystem>(), out var normalizedWorkspace))
+			{
+				return 2;
+			}
+			var toolVersion = ServerDefinitionResolver.GetToolVersion();
+			var expectedVariant = ServerDefinitionResolver.ResolveExpectedVariant(
+				toolVersion, parsed.Value.Channel, parsed.Value.ToolVersion);
+
+			var orchestrator = _services.GetRequiredService<McpSetupOrchestrator>();
+
+			return subcommand switch
+			{
+				"status" => RunMcpStatus(orchestrator, defs, normalizedWorkspace, parsed.Value, expectedVariant, toolVersion),
+				"install" when parsed.Value.Ide is not null => RunMcpInstall(orchestrator, defs, normalizedWorkspace, parsed.Value, expectedVariant, toolVersion),
+				"install" => RunMcpInstallAllDetected(orchestrator, defs, normalizedWorkspace, parsed.Value, expectedVariant, toolVersion),
+				"uninstall" when parsed.Value.Ide is not null => RunMcpUninstall(orchestrator, defs, normalizedWorkspace, parsed.Value),
+				"uninstall" => RunMcpUninstallAllDetected(orchestrator, defs, normalizedWorkspace, parsed.Value),
+				_ => 2,
+			};
+		}
+		catch (FileNotFoundException ex)
+		{
+			_logger.LogError(ex, "Definitions file not found: {Message}", ex.Message);
+			return 1;
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "MCP setup error: {Message}", ex.Message);
+			return 1;
+		}
+	}
+
+	private static int RunMcpStatus(
+		McpSetupOrchestrator orchestrator, Definitions defs, string workspace,
+		McpSetupParsedArgs parsed, string expectedVariant, string toolVersion)
+	{
+		StatusResponse result;
+
+		if (parsed.JsonOutput)
+		{
+			result = orchestrator.Status(defs, workspace, parsed.Ide, expectedVariant, toolVersion);
+			Console.WriteLine(JsonSerializer.Serialize(result, McpSetupJson.OutputOptions));
 		}
 		else
 		{
-			args.Add("start");
+			var status = Spectre.Console.AnsiConsole.Status();
+			status.Spinner = Spectre.Console.Spinner.Known.Dots;
+			result = status.Start("Scanning MCP registrations...", ctx =>
+				{
+					Action<string> progress = msg => ctx.Status = msg;
+					return orchestrator.Status(defs, workspace, parsed.Ide, expectedVariant, toolVersion, progress);
+				});
+
+			McpSetupOutputFormatter.WriteStatus(result, workspace);
+		}
+
+		return 0;
+	}
+
+	private static int RunMcpInstall(
+		McpSetupOrchestrator orchestrator, Definitions defs, string workspace,
+		McpSetupParsedArgs parsed, string expectedVariant, string toolVersion)
+	{
+		var result = orchestrator.Install(defs, workspace, parsed.Ide!, expectedVariant, toolVersion, parsed.Servers, parsed.DryRun);
+		if (parsed.JsonOutput)
+		{
+			Console.WriteLine(JsonSerializer.Serialize(result, McpSetupJson.OutputOptions));
+		}
+		else
+		{
+			McpSetupOutputFormatter.WriteInstall(result, workspace, parsed.DryRun);
+		}
+
+		return DetermineMcpSetupExitCode(result);
+	}
+
+	private static int RunMcpUninstall(
+		McpSetupOrchestrator orchestrator, Definitions defs, string workspace, McpSetupParsedArgs parsed)
+	{
+		var result = orchestrator.Uninstall(defs, workspace, parsed.Ide!, parsed.Servers, parsed.AllScopes, parsed.DryRun);
+		if (parsed.JsonOutput)
+		{
+			Console.WriteLine(JsonSerializer.Serialize(result, McpSetupJson.OutputOptions));
+		}
+		else
+		{
+			McpSetupOutputFormatter.WriteUninstall(result, workspace, parsed.DryRun);
+		}
+
+		return DetermineMcpSetupExitCode(result);
+	}
+
+	private int RunMcpInstallAllDetected(
+		McpSetupOrchestrator orchestrator, Definitions defs, string workspace,
+		McpSetupParsedArgs parsed, string expectedVariant, string toolVersion)
+	{
+		var detectedIdes = GetDetectedIdes(orchestrator, defs, workspace, expectedVariant, toolVersion);
+		if (detectedIdes.Count == 0)
+		{
+			_logger.LogError("No clients detected. Specify a client explicitly: mcp install <client>");
+			return 1;
+		}
+
+		var allOperations = new List<OperationEntry>();
+		foreach (var ide in detectedIdes)
+		{
+			var result = orchestrator.Install(defs, workspace, ide, expectedVariant, toolVersion, parsed.Servers, parsed.DryRun);
+			allOperations.AddRange(result.Operations);
+		}
+
+		var combined = new OperationResponse(McpSetupProtocol.Version, allOperations);
+		if (parsed.JsonOutput)
+		{
+			Console.WriteLine(JsonSerializer.Serialize(combined, McpSetupJson.OutputOptions));
+		}
+		else
+		{
+			McpSetupOutputFormatter.WriteInstall(combined, workspace, parsed.DryRun);
+		}
+
+		return DetermineMcpSetupExitCode(combined);
+	}
+
+	private int RunMcpUninstallAllDetected(
+		McpSetupOrchestrator orchestrator, Definitions defs, string workspace, McpSetupParsedArgs parsed)
+	{
+		var detectedIdes = GetDetectedIdes(orchestrator, defs, workspace, "stable", "0.0.0");
+		if (detectedIdes.Count == 0)
+		{
+			_logger.LogError("No clients detected. Specify a client explicitly: mcp uninstall <client>");
+			return 1;
+		}
+
+		var allOperations = new List<OperationEntry>();
+		foreach (var ide in detectedIdes)
+		{
+			var result = orchestrator.Uninstall(defs, workspace, ide, parsed.Servers, parsed.AllScopes, parsed.DryRun);
+			allOperations.AddRange(result.Operations);
+		}
+
+		var combined = new OperationResponse(McpSetupProtocol.Version, allOperations);
+		if (parsed.JsonOutput)
+		{
+			Console.WriteLine(JsonSerializer.Serialize(combined, McpSetupJson.OutputOptions));
+		}
+		else
+		{
+			McpSetupOutputFormatter.WriteUninstall(combined, workspace, parsed.DryRun);
+		}
+
+		return DetermineMcpSetupExitCode(combined);
+	}
+
+	private static IReadOnlyList<string> GetDetectedIdes(
+		McpSetupOrchestrator orchestrator, Definitions defs, string workspace,
+		string expectedVariant, string toolVersion)
+	{
+		var status = orchestrator.Status(defs, workspace, null, expectedVariant, toolVersion);
+		return status.DetectedIdes;
+	}
+
+	private bool TryValidateWorkspace(string workspace, IFileSystem fs, out string normalizedWorkspace)
+	{
+		normalizedWorkspace = workspace;
+		try
+		{
+			normalizedWorkspace = Path.GetFullPath(workspace);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Invalid workspace path '{Workspace}'", workspace);
+			return false;
+		}
+
+		if (!fs.DirectoryExists(normalizedWorkspace))
+		{
+			_logger.LogError("Workspace directory does not exist: {Workspace}", normalizedWorkspace);
+			return false;
+		}
+
+		if (IsFileSystemRoot(normalizedWorkspace))
+		{
+			_logger.LogError("Workspace cannot be a filesystem root: {Workspace}", normalizedWorkspace);
+			return false;
+		}
+
+		return true;
+	}
+
+	private static bool IsFileSystemRoot(string path)
+	{
+		var root = Path.GetPathRoot(path);
+		if (string.IsNullOrEmpty(root))
+		{
+			return false;
+		}
+
+		var trimChars = new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+		return string.Equals(
+			path.TrimEnd(trimChars),
+			root.TrimEnd(trimChars),
+			OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
+	}
+
+	internal static int DetermineMcpSetupExitCode(OperationResponse result) =>
+		result.Operations.Count > 0
+		&& result.Operations.All(static op => op.Action is "error" or "not_found")
+			? 1
+			: 0;
+
+	internal record struct McpSetupParsedArgs(
+		string? Ide,
+		string? Workspace,
+		string? Channel,
+		string? ToolVersion,
+		List<string>? Servers,
+		bool JsonOutput,
+		bool AllScopes,
+		bool AllIdes,
+		bool DryRun,
+		string? IdeDefinitionsPath,
+		string? ServerDefinitionsPath);
+
+	internal McpSetupParsedArgs? ParseMcpSetupArgs(string[] args, string subcommand)
+	{
+		string? ide = null;
+		string? workspace = null;
+		string? channel = null;
+		string? toolVersion = null;
+		List<string>? servers = null;
+		var jsonOutput = false;
+		var allScopes = false;
+		var dryRun = false;
+		var allIdes = false;
+		string? ideDefinitionsPath = null;
+		string? serverDefinitionsPath = null;
+
+		for (var i = 0; i < args.Length; i++)
+		{
+			var a = args[i];
+			switch (a)
+			{
+				case "--workspace":
+					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --workspace"); return null; }
+					workspace = args[++i];
+					break;
+				case "--channel":
+					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --channel"); return null; }
+					channel = args[++i];
+					break;
+				case "--tool-version":
+					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --tool-version"); return null; }
+					toolVersion = args[++i].Trim();
+					if (string.IsNullOrEmpty(toolVersion)) { _logger.LogError("Empty value for --tool-version"); return null; }
+					break;
+				case "--servers":
+					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --servers"); return null; }
+					var parsedServers = args[++i].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+					if (parsedServers.Length == 0)
+					{
+						_logger.LogError("Empty value for --servers");
+						return null;
+					}
+
+					servers = [.. parsedServers];
+					break;
+				case "--json":
+					jsonOutput = true;
+					break;
+				case "--all-scopes":
+					allScopes = true;
+					break;
+				case "--dry-run":
+					dryRun = true;
+					break;
+				case "--all-ides":
+					allIdes = true;
+					break;
+				case "--ide-definitions":
+					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --ide-definitions"); return null; }
+					ideDefinitionsPath = args[++i];
+					break;
+				case "--server-definitions":
+					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --server-definitions"); return null; }
+					serverDefinitionsPath = args[++i];
+					break;
+				default:
+					// Skip global flags already consumed by Program.cs
+					if (a is "--log-level" or "--file-log")
+					{
+						if (i + 1 < args.Length) { i++; }
+						break;
+					}
+
+					if (a.StartsWith('-'))
+					{
+						_logger.LogError("Unknown option '{Option}' for mcp {Subcommand}", a, subcommand);
+						return null;
+					}
+					// Positional: MCP client identifier
+					if (ide is null)
+					{
+						ide = a;
+					}
+					else
+					{
+						_logger.LogError("Unexpected argument '{Arg}' for mcp {Subcommand}", a, subcommand);
+						return null;
+					}
+					break;
+			}
+		}
+
+		return new McpSetupParsedArgs(ide, workspace, channel, toolVersion,
+			servers, jsonOutput, allScopes, allIdes, dryRun, ideDefinitionsPath, serverDefinitionsPath);
+	}
+
+	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true, string? addins = null)
+	{
+		// Use --command=<verb> (single token) instead of --command <verb> (two tokens)
+		// to work around argument splitting observed on some CI environments where
+		// the verb string was being split into individual characters.
+		var command = originalArgs.Length > 0 ? originalArgs[0] : "start";
+		var args = new List<string> { $"--command={command}" };
+		for (int i = 1; i < originalArgs.Length; i++)
+		{
+			args.Add(originalArgs[i]);
 		}
 
 		if (addins is not null)

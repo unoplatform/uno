@@ -41,6 +41,14 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\ProjectAssetsParser.cs" Link="Helpers\ProjectAssetsParser.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\DiscoveryInfo.cs" Link="Helpers\DiscoveryInfo.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\SolutionFileFinder.cs" Link="Helpers\SolutionFileFinder.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\ISolutionFileFinder.cs" Link="Helpers\ISolutionFileFinder.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\GlobalJsonLocator.cs" Link="Helpers\GlobalJsonLocator.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\IWorkspaceResolver.cs" Link="Helpers\IWorkspaceResolver.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\PathComparison.cs" Link="Helpers\PathComparison.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\WorkspaceResolver.cs" Link="Helpers\WorkspaceResolver.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\HealthReportFormatter.cs" Link="Helpers\HealthReportFormatter.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\AssemblyVersionHelper.cs" Link="Helpers\AssemblyVersionHelper.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\DevServerProcessHelper.cs" Link="Helpers\DevServerProcessHelper.cs" />
 
 		<!-- Link MCP sources for unit testing -->
 		<!-- TODO: MCP tests that only depend on CLI types should be migrated to Uno.UI.DevServer.Cli.Tests -->
@@ -48,6 +56,7 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\ConnectionState.cs" Link="Mcp\ConnectionState.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\DiscoveryIssueMapper.cs" Link="Mcp\DiscoveryIssueMapper.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\HealthReport.cs" Link="Mcp\HealthReport.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\HealthReportFactory.cs" Link="Mcp\HealthReportFactory.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\McpJsonUtilities.cs" Link="Mcp\McpJsonUtilities.cs" />
 
 		<!-- Link ConfigurationExtensions for add-in value parsing tests -->

@@ -1,7 +1,7 @@
 # Verification Plan & Test Strategy
 
 > **Parent**: [Main Spec](spec.md) — Section 9
-> **Related**: [Add-In Discovery](spec-appendix-b-addin-discovery.md) | [Startup Workflow](spec-appendix-a-startup-workflow.md)
+> **Related**: [Add-In Discovery](spec-appendix-b-addin-discovery.md) | [Startup Workflow](spec-appendix-a-startup-workflow.md) | [Workspace Resolution Matrix](spec-appendix-i-workspace-resolution-matrix.md) | [Workspace Transition Matrix](spec-appendix-j-workspace-transition-matrix.md)
 
 ---
 
@@ -17,56 +17,61 @@
 
 ## 2. Test Scenarios
 
+The workspace and MCP discovery cases in [Appendix I](spec-appendix-i-workspace-resolution-matrix.md) are the **initial-state support contract**. The repo mutation and workspace change cases in [Appendix J](spec-appendix-j-workspace-transition-matrix.md) are the **transition contract**. The scenario table below is the execution-oriented verification list derived from those contracts.
+
 | # | Scenario | Validation |
 |---|----------|-----------|
-| 1 | Normal startup (warm cache) | `list_tools` < 1s, licensed tools functional < 5s |
-| 2 | First-ever startup (no cache) | `list_tools` returns cached tools, functional tools < 10s |
-| 3 | Missing global.json | MCP starts, `uno://health` shows `GlobalJsonNotFound`, remediation hint |
+| 1 | Normal startup | `list_tools` < 1s, licensed tools functional < 5s |
+| 2 | First-ever startup | `list_tools` returns bridge tools + meta-tools, functional upstream tools < 10s |
+| 3 | No valid Uno workspace | MCP starts, health is immediately `Unhealthy` with `WorkspaceNotResolved` or `NoSolutionFound`, without waiting for upstream timeout |
 | 4 | Broken solution | Fast-path add-in resolution succeeds (no MSBuild needed) |
 | 5 | Uno SDK 5.x project | Fallback chain resolves add-ins correctly |
 | 6 | Uno SDK 6.5 project | Fast-path resolution works |
 | 7 | Host crash mid-session | Auto-restart, `tools/list_changed`, tool calls recover |
 | 8 | Host crash 3x | Give up, `uno://health` shows `HostCrashed`, remediation |
 | 9 | Missing NuGet cache | Structured error with `dotnet restore` remediation |
-| 10 | `--force-roots-fallback` | `uno_app_set_roots` workflow unchanged |
-| 11 | `--force-generate-tool-cache` | Cache primed and process exits |
+| 10 | `--force-roots-fallback` | `uno_app_initialize` workflow: takes `workspaceDirectory` and optional `solutionPath`, blocks until DevServer connected, returns status + available tools |
+| 11 | `--force-generate-tool-cache` | Deprecated no-op: flag is accepted for backward compatibility but does nothing |
 | 12 | Non-MCP commands | `start`, `stop`, `list`, `cleanup`, `disco`, `login` unchanged |
 | 13 | VS extension launches Host | No `--addins` flag -> MSBuild discovery works |
 | 14 | Tool call before host ready | Structured error, not hang or crash |
 | 15 | `dotnet --version` cache | Correct TFM even after .NET SDK update |
-| 16 | **Upstream returns 0 tools** (no license, add-in load failure, or registration error — not a valid license tier) | `list_tools` returns within 30s (not indefinitely), empty list or cached tools + health warning |
-| 17 | **Upstream connection fails** | `list_tools` returns within 30s with cached tools or error tool |
-| 18 | **Community license** | `list_tools` returns 9 tools (not 12), cache reflects license tier |
-| 19 | **`--addins` with `--solution`** | `--addins` wins for add-in loading, `--solution` used for Hot Reload |
-| 20 | **`--addins` with missing DLL** | Warning logged, remaining add-ins still loaded |
-| 21 | **Duplicate DevServer for same solution** | CLI detects via AmbientRegistry, reuses or fails explicitly |
-| 22 | **Package has `tools/devserver/` but no `.targets`** | Diagnostic warning in health, DLLs NOT loaded blindly |
-| 23 | **`.targets` has complex conditions** (e.g., `$(Configuration)`) | Ignored gracefully, production path still resolved |
-| 24 | **Windows path separators** | `\` handled correctly in `.targets` resolution on Windows |
-| 25 | **Linux/macOS NuGet cache location** | `~/.nuget/packages/` resolved correctly |
-| 26 | **Custom `$NUGET_PACKAGES` env var** | Custom NuGet cache location used |
-| 27 | **`devserver-addin.json` with version > 1** | Warning logged, falls through to `.targets` |
-| 28 | **Mixed discovery: manifest + .targets** | Each package resolved by its best available method |
-| 29 | **VS extension launcher reflection compatibility** | `Uno.UI.RemoteControl.VS.EntryPoint` class (loaded via `Assembly.LoadFrom` in `DevServerLauncher.cs:301`) must have v3 constructor `(DTE2,string,AsyncPackage,string)`. VS probes v3 → v2 → v1 via `Activator.CreateInstance` (`DevServerLauncher.cs:313-331`). Test: verify constructor signatures are present. |
-| 30 | **Rider auto-restart race condition** | When MCP mode relaunches Host (hot reconnection), Rider's auto-restart (immediate on process exit) should not create a competing instance. Test: kill Host while both Rider and MCP are connected → verify AmbientRegistry prevents duplicate, only one Host survives. |
-| 31 | **Health check IPv6 loopback** | MCP mode health polling must check `[::1]` (IPv6) in addition to `localhost` and `127.0.0.1`. Test: Host bound to IPv6 only → health check succeeds. |
-| 32 | **Controller `--addins` forwarding** | Controller accepts `--addins` parameter and includes it in child server process argument list. Test: run `Host.dll --command start --addins "p1;p2" --httpPort 0 --solution s.sln` → verify child process receives `--addins "p1;p2"`. **Verification mechanism**: The Host MUST log a distinct message when `--addins` is present (e.g., `"Add-ins provided via --addins flag: {count} paths"`). The test captures stdout/stderr and asserts this log line appears. Alternative: unit test the controller's argument-building code directly, asserting the output argument list contains `--addins`. |
-| 33 | **`disco --json` includes add-in paths** | `disco --json` output contains `addIns` array with resolved add-in DLL paths, discovery method, and duration |
-| 34 | **`disco --addins-only --json`** | Returns JSON array of absolute DLL paths only. Output is parseable and paths exist on disk. |
-| 35 | **`disco --addins-only` (text)** | Returns semicolon-separated DLL paths. Output can be piped as `--addins` value. |
-| 36 | **`disco --json` backward compat** | Existing fields (`globalJsonPath`, `unoSdkPackage`, etc.) still present and correct. New fields are additive. |
-| 37 | **NuGet cache unavailable** | Uno SDK directory missing from all cache locations → structured error with remediation hint ("Run `dotnet restore`") and list of checked paths. |
-| 38 | **Partial NuGet restore** | Package directory exists but DLL file missing → `AddInBinaryNotFound` error at DLL-level validation (not silently passed). |
-| 39 | **Custom `$NUGET_PACKAGES` missing** | Env var points to non-existent path → error includes the custom path in checked locations. |
-| 40 | **Health check IPv6-only environment** | Host bound to `[::1]` only → health check succeeds via IPv6 loopback endpoint. |
-| 41 | **`build/` fallback for `.targets`** | Package has `.targets` in `build/` but NOT in `buildTransitive/` → `.targets` resolved from `build/` directory, add-in paths extracted correctly. |
-| 42 | **`$NUGET_PACKAGES` set to empty string** | `NUGET_PACKAGES=""` → env var path skipped (not treated as relative path). Only UserProfile and CommonApplicationData paths checked. |
-| 43 | **`--metadata-updates` forwarding in direct launch** | Phase 1b direct Host launch with `--metadata-updates true` → `ServerHotReloadProcessor` activates metadata delta generation. |
-| 44 | **`cleanup` command non-regression** | `--command cleanup` → stale DevServer registrations removed, active ones preserved. Exit code 0. |
-| 45 | **MCP capability detection from `initialize`** | Client sends `initialize` with `capabilities.roots` → server detects roots support via `Roots != null` (not `Roots.ListChanged`). Client without `roots` capability → server falls back to `--force-roots-fallback` behavior. |
-| 46 | **`tools/list_changed` notification deserialization** | Upstream sends `tools/list_changed` → `McpClientProxy` processes it without deserialization error. Callback fires, `list_tools` refresh triggered. |
-| 47 | **`McpClientProxy` dispose without connection** | Host never starts → `McpClientProxy.DisposeAsync()` completes within 5s (does not block indefinitely). |
-| 48 | **`list_tools` timeout for waiting clients** | Client without `tools/list_changed` capability (detected from `initialize`) or `--mcp-wait-tools-list` flag → `list_tools` returns within 30s even if upstream never responds (not indefinitely). Returns cached tools or empty list. No hardcoded client name list used. |
+| 16 | **Upstream returns 0 tools** (no license, add-in load failure, or registration error — not a valid license tier) | `list_tools` returns within 30s (not indefinitely), empty list or bridge tools + health warning |
+| 17 | Repo root with nested Uno solution | Workspace auto-resolves to nested Uno solution directory |
+| 18 | Multiple solutions, only one Uno | Resolver selects the Uno solution and does not start DevServer for non-Uno solutions |
+| 19 | CLI `health --json` | Returns the same `HealthReport` shape as `uno_health` |
+| 20 | **Upstream connection fails** | `list_tools` returns within 30s with bridge tools or error tool |
+| 21 | **Community license** | `list_tools` returns 9 upstream tools (not 12) plus bridge and meta-tools |
+| 22 | **`--addins` with `--solution`** | `--addins` wins for add-in loading, `--solution` used for Hot Reload |
+| 23 | **`--addins` with missing DLL** | Warning logged, remaining add-ins still loaded |
+| 24 | **Duplicate DevServer for same solution** | CLI detects via AmbientRegistry, reuses or fails explicitly |
+| 25 | **Package has `tools/devserver/` but no `.targets`** | Diagnostic warning in health, DLLs NOT loaded blindly |
+| 26 | **`.targets` has complex conditions** (e.g., `$(Configuration)`) | Ignored gracefully, production path still resolved |
+| 27 | **Windows path separators** | `\` handled correctly in `.targets` resolution on Windows |
+| 28 | **Linux/macOS NuGet cache location** | `~/.nuget/packages/` resolved correctly |
+| 29 | **Custom `$NUGET_PACKAGES` env var** | Custom NuGet cache location used |
+| 30 | **`devserver-addin.json` with version > 1** | Warning logged, falls through to `.targets` |
+| 31 | **Mixed discovery: manifest + .targets** | Each package resolved by its best available method |
+| 32 | **VS extension launcher reflection compatibility** | `Uno.UI.RemoteControl.VS.EntryPoint` class (loaded via `Assembly.LoadFrom` in `DevServerLauncher.cs:301`) must have v3 constructor `(DTE2,string,AsyncPackage,string)`. VS probes v3 → v2 → v1 via `Activator.CreateInstance` (`DevServerLauncher.cs:313-331`). Test: verify constructor signatures are present. |
+| 33 | **Rider auto-restart race condition** | When MCP mode relaunches Host (hot reconnection), Rider's auto-restart (immediate on process exit) should not create a competing instance. Test: kill Host while both Rider and MCP are connected → verify AmbientRegistry prevents duplicate, only one Host survives. |
+| 34 | **Health check IPv6 loopback** | MCP mode health polling must check `[::1]` (IPv6) in addition to `localhost` and `127.0.0.1`. Test: Host bound to IPv6 only → health check succeeds. |
+| 35 | **Controller `--addins` forwarding** | Controller accepts `--addins` parameter and includes it in child server process argument list. Test: run `Host.dll --command start --addins "p1;p2" --httpPort 0 --solution s.sln` → verify child process receives `--addins "p1;p2"`. **Verification mechanism**: The Host MUST log a distinct message when `--addins` is present (e.g., `"Add-ins provided via --addins flag: {count} paths"`). The test captures stdout/stderr and asserts this log line appears. Alternative: unit test the controller's argument-building code directly, asserting the output argument list contains `--addins`. |
+| 36 | **`disco --json` includes add-in paths** | `disco --json` output contains `addIns` array with resolved add-in DLL paths, discovery method, and duration |
+| 37 | **`disco --addins-only --json`** | Returns JSON array of absolute DLL paths only. Output is parseable and paths exist on disk. |
+| 38 | **`disco --addins-only` (text)** | Returns semicolon-separated DLL paths. Output can be piped as `--addins` value. |
+| 39 | **`disco --json` backward compat** | Existing fields (`globalJsonPath`, `unoSdkPackage`, etc.) still present and correct. New fields are additive. |
+| 40 | **NuGet cache unavailable** | Uno SDK directory missing from all cache locations → structured error with remediation hint ("Run `dotnet restore`") and list of checked paths. |
+| 41 | **Partial NuGet restore** | Package directory exists but DLL file missing → `AddInBinaryNotFound` error at DLL-level validation (not silently passed). |
+| 42 | **Custom `$NUGET_PACKAGES` missing** | Env var points to non-existent path → error includes the custom path in checked locations. |
+| 43 | **Health check IPv6-only environment** | Host bound to `[::1]` only → health check succeeds via IPv6 loopback endpoint. |
+| 44 | **`build/` fallback for `.targets`** | Package has `.targets` in `build/` but NOT in `buildTransitive/` → `.targets` resolved from `build/` directory, add-in paths extracted correctly. |
+| 45 | **`$NUGET_PACKAGES` set to empty string** | `NUGET_PACKAGES=""` → env var path skipped (not treated as relative path). Only UserProfile and CommonApplicationData paths checked. |
+| 46 | **`--metadata-updates` forwarding in direct launch** | Phase 1b direct Host launch with `--metadata-updates true` → `ServerHotReloadProcessor` activates metadata delta generation. |
+| 47 | **`cleanup` command non-regression** | `--command cleanup` → stale DevServer registrations removed, active ones preserved. Exit code 0. |
+| 48 | **MCP capability detection from `initialize`** | Client sends `initialize` with `capabilities.roots` → server detects roots support via `Roots != null` (not `Roots.ListChanged`). Client without `roots` capability → server falls back to `--force-roots-fallback` behavior. |
+| 49 | **`tools/list_changed` notification deserialization** | Upstream sends `tools/list_changed` → `McpClientProxy` processes it without deserialization error. Callback fires, `list_tools` refresh triggered. |
+| 50 | **`McpClientProxy` dispose without connection** | Host never starts → `McpClientProxy.DisposeAsync()` completes within 5s (does not block indefinitely). |
+| 51 | **`list_tools` timeout for waiting clients** | Client without `tools/list_changed` capability (detected from `initialize`) or `--mcp-wait-tools-list` flag → `list_tools` returns within 30s even if upstream never responds (not indefinitely). Returns cached tools or empty list. No hardcoded client name list used. |
 
 ---
 
@@ -95,7 +100,7 @@ Testing is a first-class deliverable for this spec, not an afterthought. **Each 
 | `TargetsAddInResolver` | Parse known `.targets` patterns, property resolution, `exists()` conditions, malformed XML, missing files, **`build/` fallback when `buildTransitive/` empty** | 0 |
 | `ManifestAddInResolver` | Parse `devserver-addin.json`, schema version handling, missing manifest, invalid JSON | 1 |
 | `DotNetVersionCache` | Cache hit, cache miss, invalidation on global.json change, stale cache (>24h) | 0 |
-| `ToolListManager` | Timeout handling, 0-tool case, cache refresh, TCS lifecycle | 1a |
+| `ToolListManager` | Timeout handling, 0-tool case, meta-tool registration, TCS lifecycle | 1a |
 | `HealthService` | Report aggregation, status transitions, issue collection | 1a |
 | `ProxyLifecycleManager` | State machine transitions, all 8 states, invalid transitions rejected | 1c |
 | `--addins` flag parser | Semicolon splitting, empty entries, whitespace, missing DLLs, empty string | 0 |

@@ -845,8 +845,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		private bool _isProcessingEnterLeave;
-
 		// NOTE: This should actually be on DependencyObject, not UIElement.
 		// We'll be able to do it once DependencyObject is a class instead of an interface.
 		internal void Enter(EnterParams @params, int depth)
@@ -854,13 +852,13 @@ namespace Microsoft.UI.Xaml
 			// If IsProcessingEnterLeave is true, then this element is already part of the
 			// Enter/Leave walk. This can happen, for instance, if a custom DP's value has
 			// been set to some ancestor of this node.
-			if (_isProcessingEnterLeave)
+			if ((_uiElementFlags & UIElementFlag.IsProcessingEnterLeave) != 0)
 			{
 				return;
 			}
 			else
 			{
-				_isProcessingEnterLeave = true;
+				_uiElementFlags |= UIElementFlag.IsProcessingEnterLeave;
 			}
 
 			try
@@ -1012,7 +1010,7 @@ namespace Microsoft.UI.Xaml
 			}
 			finally
 			{
-				_isProcessingEnterLeave = false;
+				_uiElementFlags &= ~UIElementFlag.IsProcessingEnterLeave;
 			}
 		}
 
@@ -1407,13 +1405,13 @@ namespace Microsoft.UI.Xaml
 			// If IsProcessingEnterLeave is true, then this element is already part of the
 			// Enter/Leave walk.  This can happen, for instance, if a custom DP's value has
 			// been set to some ancestor of this node.
-			if (_isProcessingEnterLeave)
+			if ((_uiElementFlags & UIElementFlag.IsProcessingEnterLeave) != 0)
 			{
 				return;
 			}
 			else
 			{
-				_isProcessingEnterLeave = true;
+				_uiElementFlags |= UIElementFlag.IsProcessingEnterLeave;
 			}
 
 			try
@@ -1559,7 +1557,7 @@ namespace Microsoft.UI.Xaml
 			}
 			finally
 			{
-				_isProcessingEnterLeave = false;
+				_uiElementFlags &= ~UIElementFlag.IsProcessingEnterLeave;
 			}
 		}
 

@@ -1,0 +1,50 @@
+{
+  "UnoApp": {
+    "transport": "stdio",
+    "variants": {
+      "stable": {
+        "command": "dnx",
+        "args": ["-y", "uno.devserver", "--mcp-app"]
+      },
+      "prerelease": {
+        "command": "dnx",
+        "args": ["-y", "--prerelease", "uno.devserver", "--mcp-app"]
+      },
+      "pinned": {
+        "command": "dnx",
+        "args": ["-y", "--version", "{version}", "uno.devserver", "--mcp-app"]
+      }
+    },
+    "detection": {
+      "keyPatterns": ["^UnoApp$"],
+      "commandPatterns": [
+        "dnx.*uno\\.devserver.*--mcp-app",
+        "uno\\.devserver.*--mcp-app",
+        "dotnet\\s+dnx.*uno\\.devserver.*--mcp-app"
+      ],
+      "urlPatterns": [
+        "localhost.*uno[._-]?devserver.*/mcp",
+        "localhost:\\d+/mcp"
+      ]
+    }
+  },
+  "UnoDocs": {
+    "transport": "http",
+    "variants": {
+      "stable": {
+        "url": "https://mcp.platform.uno/v1"
+      },
+      "prerelease": {
+        "url": "https://mcp.platform.uno/v1"
+      },
+      "pinned": {
+        "url": "https://mcp.platform.uno/v1"
+      }
+    },
+    "detection": {
+      "keyPatterns": ["^UnoDocs$"],
+      "commandPatterns": null,
+      "urlPatterns": ["mcp\\.platform\\.uno"]
+    }
+  }
+}

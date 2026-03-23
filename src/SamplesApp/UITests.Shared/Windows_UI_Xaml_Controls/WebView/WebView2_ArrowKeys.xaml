@@ -1,0 +1,27 @@
+<Page
+	x:Class="UITests.Windows_UI_Xaml_Controls.WebView.WebView2_ArrowKeys"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<StackPanel Spacing="12" Padding="20">
+		<TextBlock Text="1. Click on the WebView below to give it focus" />
+		<TextBlock Text="2. Click on the TextBox and type some text" />
+		<TextBlock Text="3. Use arrow keys to move the cursor in the TextBox" />
+		<TextBlock Text="Arrow keys should work normally in the TextBox after focusing the WebView" />
+
+		<WebView2 x:Name="TestWebView" Source="https://platform.uno/" Height="300" />
+
+		<TextBox x:Name="TestTextBox" PlaceholderText="Click WebView above, then type here and use arrow keys" />
+
+		<TextBox x:Name="TestMultilineTextBox"
+				 AcceptsReturn="True"
+				 TextWrapping="Wrap"
+				 Height="150"
+				 PlaceholderText="Multiline TextBox - test Up/Down arrow keys here"
+				 Text="Line 1&#x0a;Line 2&#x0a;Line 3&#x0a;Line 4&#x0a;Line 5" />
+	</StackPanel>
+</Page>

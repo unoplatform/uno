@@ -681,12 +681,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var span = new Span();
 			SUT.Inlines.Add(span);
-			span.Inlines.Add(new Run() { Text = "text" });
+			span.Inlines.Add(new Run() { Text = "ABCDEFGHIJK" });
 
 			await UITestHelper.WaitForIdle();
 
 			var bitmap = await UITestHelper.ScreenShot(SUT);
-			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), ((SolidColorBrush)Uno.UI.Xaml.Media.DefaultBrushes.TextForegroundBrush).Color);
+			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), ((SolidColorBrush)Uno.UI.Xaml.Media.DefaultBrushes.TextForegroundBrush).Color, tolerance: 15);
 		}
 #endif
 

@@ -206,24 +206,6 @@ namespace Microsoft.UI.Xaml
 
 		internal bool IsThemeSetExplicitly { get; private set; }
 
-		internal void SyncRequestedThemeFromXamlRoot(XamlRoot xamlRoot)
-		{
-			if (xamlRoot is null)
-			{
-				throw new ArgumentNullException(nameof(xamlRoot));
-			}
-
-			// Sync the requested theme from the XamlRoot
-			// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
-			// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
-			// This will also explicitly change the Application.Current.RequestedTheme, which does not happen in case of UWP.
-			if (xamlRoot.Content is FrameworkElement fe)
-			{
-				var theme = fe.RequestedTheme;
-				SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(theme));
-			}
-		}
-
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
 		{
 			// this flag makes sure the app will not respond to OS events
@@ -231,6 +213,23 @@ namespace Microsoft.UI.Xaml
 			var theme = explicitTheme ?? GetSystemTheme();
 			SetRequestedTheme(theme);
 		}
+
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		internal void SyncRequestedThemeFromXamlRoot(XamlRoot xamlRoot)
+		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
+			if (xamlRoot.Content is FrameworkElement fe)
+			{
+				var theme = fe.RequestedTheme;
+				SetExplicitRequestedTheme(
+					Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(theme));
+			}
+		}
+#endif
 
 		public ResourceDictionary Resources
 		{
@@ -502,6 +501,20 @@ namespace Microsoft.UI.Xaml
 						// Update theme bindings in system resources
 						ResourceResolver.UpdateSystemThemeBindings(updateReason);
 
+						// When the application theme changes, notify the visual tree to update
+						// stored element themes (UIElement._theme). PropagateResourcesChanged only
+						// updates theme bindings but not stored themes, which causes new elements
+						// entering the tree (via OnLoadingPartial) to inherit stale themes from
+						// their parent.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+						if (updateReason == ResourceUpdateReason.ThemeResource)
+						{
+							var theme = InternalRequestedTheme == ApplicationTheme.Dark ? Theme.Dark : Theme.Light;
+							var rootFe = root as FrameworkElement ?? contentRoot.XamlRoot.Content as FrameworkElement;
+							rootFe?.NotifyThemeChanged(theme);
+						}
+#endif
+
 						PropagateResourcesChanged(root, updateReason);
 					}
 
@@ -533,6 +546,17 @@ namespace Microsoft.UI.Xaml
 			// Update ThemeResource references that have changed
 			if (instance is FrameworkElement fe)
 			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				// If element has explicit RequestedTheme and this is a theme change,
+				// skip it - its subtree is managed by its own theme context and
+				// will be updated via NotifyThemeChanged, not by propagation.
+				if (updateReason == ResourceUpdateReason.ThemeResource &&
+					fe.RequestedTheme != ElementTheme.Default)
+				{
+					return;
+				}
+#endif
+
 				fe.UpdateThemeBindings(updateReason);
 			}
 
