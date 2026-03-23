@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Extensibility;
@@ -16,10 +17,17 @@ internal class AndroidSkiaXamlRootHost : IXamlRootHost
 	private Action? _pendingVsyncAction;
 	private bool _vsyncPosted;
 
+	/// <summary>
+	/// The Choreographer's frameTimeNanos from the most recent VSync callback.
+	/// On .NET Android, this is nanoseconds from CLOCK_MONOTONIC — the same clock
+	/// as <see cref="Stopwatch.GetTimestamp"/> (Stopwatch.Frequency == 1_000_000_000).
+	/// </summary>
+	private long _lastFrameTimeNanos;
+
 	public AndroidSkiaXamlRootHost(XamlRoot xamlRoot)
 	{
 		_choreographer = Choreographer.Instance!;
-		_vsyncCallback = new VsyncCallback(OnVsyncFrame);
+		_vsyncCallback = new VsyncCallback(this);
 
 		XamlRootMap.Register(xamlRoot, this);
 	}
@@ -36,8 +44,15 @@ internal class AndroidSkiaXamlRootHost : IXamlRootHost
 
 	UIElement? IXamlRootHost.RootElement => Window.Current!.RootElement;
 
+	long IXamlRootHost.FrameVsyncTimestamp => _lastFrameTimeNanos;
+
 	void IXamlRootHost.ScheduleFrameCallback(Action callback)
 	{
+		Debug.Assert(
+			_pendingVsyncAction is null || _pendingVsyncAction == callback,
+			"ScheduleFrameCallback called with a different callback while one is already pending. " +
+			"Only one FrameTick should be scheduled per VSync interval.");
+
 		_pendingVsyncAction = callback;
 		if (!_vsyncPosted)
 		{
@@ -46,8 +61,9 @@ internal class AndroidSkiaXamlRootHost : IXamlRootHost
 		}
 	}
 
-	private void OnVsyncFrame()
+	private void OnVsyncFrame(long frameTimeNanos)
 	{
+		_lastFrameTimeNanos = frameTimeNanos;
 		_vsyncPosted = false;
 		var action = _pendingVsyncAction;
 		_pendingVsyncAction = null;
@@ -56,16 +72,16 @@ internal class AndroidSkiaXamlRootHost : IXamlRootHost
 
 	private sealed class VsyncCallback : Java.Lang.Object, Choreographer.IFrameCallback
 	{
-		private readonly Action _action;
+		private readonly AndroidSkiaXamlRootHost _host;
 
-		public VsyncCallback(Action action)
+		public VsyncCallback(AndroidSkiaXamlRootHost host)
 		{
-			_action = action;
+			_host = host;
 		}
 
 		public void DoFrame(long frameTimeNanos)
 		{
-			_action();
+			_host.OnVsyncFrame(frameTimeNanos);
 		}
 	}
 }
