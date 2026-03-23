@@ -108,6 +108,19 @@ This intake packages meeting outcomes, external ecosystem signals (Avalonia Vulk
 - Android context: Vulkan support is strong on modern Android (API 24+), and major engines commonly default to Vulkan on supported devices.
 - Intake implication: Vulkan exploration should prioritize CPU-bound and complex-scene workloads on Android, with device-tier benchmarking to validate net gains versus OpenGL ES.
 
+## Required Execution Order
+
+Work must be executed in this sequence, with each phase producing a written summary before proceeding:
+
+1. Vulkan support research and feasibility for Android first, using Avalonia source signals and AI-assisted research.
+2. Vulkan support research and feasibility for Desktop second, using the same evidence model.
+3. Performance assessment of Vulkan versus OpenGL/GLES on Android and Desktop using agreed benchmark scenarios.
+4. Skia and SkiaSharp update planning to latest compatible versions, then Graphite enablement investigation.
+5. Performance assessment of Graphite versus Ganesh using matched rendering scenarios.
+6. WebGPU support evaluation as the final exploration phase.
+
+Phase-gate rule: no phase advances to the next step without a short decision note (go/hold/defer) and benchmark evidence where applicable.
+
 ## Risks and Unknowns
 
 - Risk: Vulkan benefits may be marginal if UI rendering is not the primary bottleneck.
@@ -117,12 +130,15 @@ This intake packages meeting outcomes, external ecosystem signals (Avalonia Vulk
 
 ## Pre-Spec Action Items
 
-- [ ] Vulkan backend exploration: Investigate feasibility and performance of Vulkan on Android/Desktop; compare against current OpenGL paths. Owner: Ramez.
-- [ ] API surface study: Analyze Silk.NET API differences/similarities across OpenGL, Vulkan, Metal, WebGPU to determine unified vs separate canvas strategy. Owner: Ramez.
-- [ ] WebGPU status scan: Document current platform/browser support and feasibility for Uno roadmap consideration. Owner: Ramez.
-- [ ] Graphite integration gap summary: Capture required changes, known blockers, and initial perf/stability findings for Uno. Owner: Jenny.
+- [ ] Phase 1 (Android Vulkan): Investigate Vulkan support and integration feasibility on Android, grounded by Avalonia source and AI-assisted research. Owner: Ramez.
+- [ ] Phase 2 (Desktop Vulkan): Investigate Vulkan support and integration feasibility on Desktop after Android findings are documented. Owner: Ramez.
+- [ ] Phase 3 (Vulkan vs OGL/GLES performance): Run comparative benchmarks for Vulkan versus OpenGL/GLES on prioritized Android/Desktop scenarios and summarize wins/tradeoffs. Owner: Ramez.
+- [ ] Phase 4 (Skia/SkiaSharp + Graphite path): Assess upgrade path to latest compatible Skia/SkiaSharp and define Graphite enablement tasks/blockers. Owner: Jenny.
+- [ ] Phase 5 (Graphite vs Ganesh performance): Benchmark Graphite versus Ganesh on matched workloads with frame-time, CPU, and stability metrics. Owner: Jenny.
+- [ ] Phase 6 (WebGPU evaluation): Document WebGPU support status, feasibility, and strategic fit after Vulkan and Graphite phases complete. Owner: Ramez.
+- [ ] Cross-phase API surface study: Analyze Silk.NET API differences/similarities across OpenGL, Vulkan, Metal, and WebGPU to determine unified versus separate canvas strategy. Owner: Ramez.
 - [ ] Upstream contribution track: Prepare SkiaSharp Graphite API contribution plan and coordination points. Owner: Ramez.
-- [ ] Research accelerator usage: Use Copilot research assistant for initial evidence gathering and produce summarized findings log. Owner: Ramez.
+- [ ] Research accelerator usage: Use Copilot research assistant for initial evidence gathering and maintain a phase-by-phase findings log. Owner: Ramez.
 
 ## References
 
