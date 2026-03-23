@@ -118,8 +118,8 @@ public partial class CompositionTarget
 
 	/// <summary>
 	/// Single batched frame tick, posted to the dispatcher as one operation at Render priority.
-	/// Sequences: Layout -> Loaded events -> Layout -> CompositionTarget.Rendering -> Render.
-	/// Matches WPF MediaContext.RenderMessageHandlerCore / WinUI OnTick pattern.
+	/// Sequences: Layout -> Loaded events -> Layout -> CompositionTarget.Rendering -> Layout -> Render.
+	/// Matches WPF MediaContext.RenderMessageHandlerCore / WinUI NWDrawTree OnTick pattern.
 	/// </summary>
 	internal void FrameTick()
 	{
@@ -150,10 +150,13 @@ public partial class CompositionTarget
 				rootElement.UpdateLayout();
 			}
 
-			// 3. CompositionTarget.Rendering event
+			// 3. CompositionTarget.Rendering event (may dirty layout)
 			InvokeRendering();
 
-			// 4. Record SKPicture from visual tree
+			// 4. Re-layout after Rendering callbacks (matches WinUI NWDrawTree which runs
+			//    UpdateLayout after CallPerFrameCallback). Without this, Rendering handlers
+			//    that modify layout-affecting properties would render with stale layout.
+			rootElement.UpdateLayout();
 			if (SkiaRenderHelper.CanRecordPicture(rootElement))
 			{
 				Render();
