@@ -28,7 +28,9 @@ public class Given_RootVisual
 
 		Assert.AreEqual(Colors.White, ((SolidColorBrush)rootVisual.Background).Color);
 
-		using (ThemeHelper.UseDarkTheme())
+		// RootVisual.Background follows the application-level theme, not element-level
+		// theme overrides. Use UseApplicationDarkTheme to properly test this.
+		using (ThemeHelper.UseApplicationDarkTheme())
 		{
 			await TestServices.WindowHelper.WaitForIdle();
 			Assert.AreEqual(Colors.Black, ((SolidColorBrush)rootVisual.Background).Color);

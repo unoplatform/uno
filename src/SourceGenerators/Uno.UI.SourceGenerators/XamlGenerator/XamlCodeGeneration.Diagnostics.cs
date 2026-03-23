@@ -45,5 +45,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 																							 isEnabledByDefault: true,
 																							 description: "Resource Generation Failed."
 																							);
+		public static readonly DiagnosticDescriptor InvalidXClassRule = new DiagnosticDescriptor(
+#pragma warning disable RS2008 // Enable analyzer release tracking
+																							 "UXAML0004",
+#pragma warning restore RS2008 // Enable analyzer release tracking
+																							 "Invalid x:Class Value",
+																							 "{0}",
+																							 XamlCategory,
+																							 DiagnosticSeverity.Warning,
+																							 isEnabledByDefault: true,
+																							 description: "The x:Class attribute value is malformed and must include a namespace."
+																							);
 	}
 }

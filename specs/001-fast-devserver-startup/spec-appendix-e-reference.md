@@ -4,9 +4,25 @@
 
 ---
 
-## E.1 MCP Tools (reference from uno.app-mcp)
+## E.1 MCP Tools
 
-> **Note**: The tool count visible to the AI model depends on the user's license tier. `MCPToolsObserverService` filters tools via `[LicenseFeatures]` attributes. The tool cache (`tools-cache.json`) reflects the license tier active at cache time.
+### E.1a Built-in bridge tools (`uno.devserver`)
+
+These tools are provided directly by the DevServer MCP bridge before the upstream add-ins are connected. They are always available to support discovery, diagnostics, and workspace selection.
+
+| Tool Name | Description | Availability |
+|-----------|-------------|:------------:|
+| `uno_health` | Returns the current `HealthReport` state for the bridge and selected workspace | Always |
+| `uno_app_select_solution` | Explicitly selects a Uno solution by absolute solution path and starts/restarts DevServer when needed | Always |
+| `uno_app_initialize` | Initializes the workspace. Takes `workspaceDirectory` (required) and `solutionPath` (optional), blocks until the DevServer is connected, and returns status plus available tools. Replaces the former `uno_app_set_roots`. | Force-roots-fallback (auto-detected when client lacks `roots` capability and workspace is unresolved, or explicit via `--force-roots-fallback`) |
+| `uno_discover_tools` | Returns upstream tools with full schemas. Compatibility meta-tool for MCP clients that do not re-query `list_tools` after `tools/list_changed`. | Always (after upstream connection) |
+| `uno_execute_tool` | Forwards a tool call to the upstream by name. Compatibility meta-tool for MCP clients that do not re-query `list_tools` after `tools/list_changed`. | Always (after upstream connection) |
+
+`uno_app_select_solution` is implemented in `uno.devserver`, not `uno.app-mcp`, because solution selection affects pre-host behavior: workspace resolution, DevServer lifecycle, and health.
+
+### E.1b Upstream app tools (reference from uno.app-mcp)
+
+> **Note**: The tool count visible to the AI model depends on the user's license tier. `MCPToolsObserverService` filters tools via `[LicenseFeatures]` attributes. For MCP clients that do not re-query `list_tools` after `tools/list_changed`, the meta-tools `uno_discover_tools` and `uno_execute_tool` provide an alternative mechanism to access upstream tools.
 >
 > **Known discrepancy**: The public docs (`doc/articles/features/using-the-uno-mcps.md`) do not list all tools (e.g., `uno_app_start` is missing, Business tier not documented). The table below reflects the **actual server code** (`uno.app-mcp`), not the docs. See also `uno.app-mcp/README.md` alongside this spec for upstream action items.
 
@@ -24,7 +40,7 @@
 | `uno_app_element_peer_action` | Advanced automation action | Pro |
 | `uno_app_get_element_datacontext` | Element data context | Pro |
 
-**Visible tools by tier**: Community 9, Pro 11 (verified against `MCPToolsObserverService`). Counts may change as tools are added.
+**Visible upstream app tools by tier**: Community 9, Pro 11 (verified against `MCPToolsObserverService`). Counts may change as tools are added.
 
 ---
 
@@ -61,3 +77,13 @@ Per-IDE discovery      CLI-centralized                 CLI-centralized
 ## E.4 IDE Extension Behavior
 
 Moved to [`.github/agents/devserver-agent.md` § 10](../../.github/agents/devserver-agent.md) (IDE Compatibility Constraints).
+
+---
+
+## E.5 Extension Alignment Tracking
+
+The workspace-resolution and workspace-transition contracts in Appendices I and J are **DevServer-wide contracts**, not MCP-only behavior. MCP is the first consumer being aligned, but VS Code, Rider, and Visual Studio launchers must converge on the same lifecycle rules while remaining backward compatible and forward compatible.
+
+Alignment work for Rider, VS Code, and Visual Studio is tracked outside this public spec, including in private extension repositories. Those trackers must stay aligned with the contracts defined here, but they are intentionally not referenced directly from this document.
+
+The spec remains the source of truth for expected behavior.
