@@ -256,7 +256,7 @@ This is the **exact sequence** to execute. Copy-paste each step:
 # --- Config ---
 SKILL_DIR=".claude/skills/winui-runtime-tests"
 PS_CMD="pwsh"  # or "powershell.exe" if pwsh unavailable
-MSBUILD=$(pwsh -NoProfile -Command "& 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe' -prerelease -all -latest -requires Microsoft.Component.MSBuild -find 'MSBuild\**\Bin\MSBuild.exe'" 2>/dev/null)
+MSBUILD=$($PS_CMD -NoProfile -Command "& 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe' -prerelease -all -latest -requires Microsoft.Component.MSBuild -find 'MSBuild\**\Bin\MSBuild.exe'" 2>/dev/null)
 
 # --- Phase 1: Setup cert (idempotent, first time prompts UAC) ---
 $PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/setup-cert.ps1"
