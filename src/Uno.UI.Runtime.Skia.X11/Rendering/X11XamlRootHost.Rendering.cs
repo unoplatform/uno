@@ -1,28 +1,52 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
 using Uno.UI;
-using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
-using Timer = System.Timers.Timer;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal partial class X11XamlRootHost
 {
-	private readonly Timer _renderTimer;
+	private readonly AutoResetEvent _renderRequested = new(false);
+	private volatile bool _renderLooprunning = true;
+	private double _targetInterval = 1000.0 / FeatureConfiguration.CompositionTarget.FrameRate;
 
-	private Timer CreateRenderTimer()
+	private void InitRenderThread()
 	{
-		var timer = new Timer { AutoReset = false, Interval = TimeSpan.FromSeconds(1.0 / FeatureConfiguration.CompositionTarget.FrameRate).TotalMilliseconds };
-		timer.Elapsed += (_, _) => _renderer?.Render();
-		return timer;
+		new Thread(RenderLoop)
+		{
+			IsBackground = true,
+			Name = "X11RenderThread",
+			Priority = ThreadPriority.AboveNormal
+		}.Start();
+	}
+
+	private void RenderLoop()
+	{
+		var stopwatch = Stopwatch.StartNew();
+
+		while (_renderLooprunning)
+		{
+			_renderRequested.WaitOne();
+
+			var frameStart = stopwatch.Elapsed.TotalMilliseconds;
+			_renderer?.Render();
+			var elapsed = stopwatch.Elapsed.TotalMilliseconds - frameStart;
+
+			var remaining = Volatile.Read(ref _targetInterval) - elapsed;
+			if (remaining > 0)
+			{
+				Thread.Sleep((int)remaining);
+			}
+		}
 	}
 
 	internal void UpdateRenderTimerFps(double fps)
 	{
 		if (FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate)
 		{
-			_renderTimer.Interval = TimeSpan.FromSeconds(1.0 / fps).TotalMilliseconds;
+			Volatile.Write(ref _targetInterval, TimeSpan.FromSeconds(1.0 / fps).TotalMilliseconds);
 		}
 	}
 
@@ -30,7 +54,7 @@ internal partial class X11XamlRootHost
 	{
 		if (!_closed.Task.IsCompleted)
 		{
-			_renderTimer.Enabled = true;
+			_renderRequested.Set();
 		}
 	}
 }

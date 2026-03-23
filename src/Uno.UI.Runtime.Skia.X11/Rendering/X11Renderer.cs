@@ -34,7 +34,6 @@ internal abstract class X11Renderer : IDisposable
 
 		var display = _x11Window.Display;
 		var window = _x11Window.Window;
-		using var lockDisposable = X11Helper.XLock(display);
 
 		if (_host is X11XamlRootHost { Closed.IsCompleted: true })
 		{
@@ -56,7 +55,6 @@ internal abstract class X11Renderer : IDisposable
 
 		_airspaceHelper?.XShapeClip(nativeElementClipPath);
 		Flush();
-		_ = XLib.XFlush(display);
 	}
 
 	protected abstract SKSurface UpdateSize(int width, int height);
