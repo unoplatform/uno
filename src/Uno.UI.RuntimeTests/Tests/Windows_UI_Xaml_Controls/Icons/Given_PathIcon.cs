@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
+using Path = Microsoft.UI.Xaml.Shapes.Path;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
