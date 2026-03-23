@@ -1242,7 +1242,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index)
 	{
-		if (index == 0 || _text.Length == 0 || _lines.Count == 0)
+		if (_text.Length == 0 || _lines.Count == 0)
 		{
 			return (0, 0, true, _lines.Count == 1 || (_lines.Count == 0 && _endingNewLineLineHeight is not null), 0);
 		}
