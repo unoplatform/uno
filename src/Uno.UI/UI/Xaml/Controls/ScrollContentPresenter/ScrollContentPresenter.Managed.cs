@@ -8,6 +8,7 @@ using System.Threading;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -36,6 +37,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private GestureRecognizer.Manipulation? _touchInertia;
 		private (double hOffset, double vOffset, bool isIntermediate) _lastScrolledEvent;
+
+		// Batching: during active touch scrolling, we set AnchorPoint immediately (cheap) but
+		// defer the expensive Updated() call (OnPresenterScrolled + InvalidateViewport + EVP propagation)
+		// to once per frame via CompositionTarget.Rendering. This collapses N pointer moves
+		// per frame into 1 Updated() call while keeping the visual perfectly in sync.
+		private bool _hasPendingTouchUpdate;
+		private double _pendingTouchHOffset;
+		private double _pendingTouchVOffset;
+		private bool _pendingTouchIsIntermediate;
+		private EventHandler<object>? _touchUpdateHandler;
 #nullable restore
 
 		private bool _canHorizontallyScroll;
@@ -128,6 +139,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				UnhookScrollEvents(sv);
 			}
+			FlushPendingTouchUpdate();
 			_touchInertia?.Complete();
 			_touchInertia = null;
 		}
@@ -324,8 +336,22 @@ namespace Microsoft.UI.Xaml.Controls
 					visual.StopAnimation(nameof(Visual.AnchorPoint));
 				}
 
+				// Always set AnchorPoint immediately — this is cheap (just a field write + RequestNewFrame).
+				// Multiple writes per frame are fine; only the last value is used at render time.
 				visual.AnchorPoint = target;
-				Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
+
+				if (options.IsTouch && options.IsIntermediate)
+				{
+					// During active touch scrolling (finger on screen or inertia), defer the expensive
+					// Updated() call to once per frame. This batches N pointer moves into 1 Updated().
+					ScheduleDeferredTouchUpdate(horizontalOffset, verticalOffset, options.IsIntermediate);
+				}
+				else
+				{
+					// Non-intermediate (final) or non-touch: flush immediately for correct event sequencing.
+					FlushPendingTouchUpdate();
+					Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
+				}
 			}
 			else
 			{
@@ -347,6 +373,36 @@ namespace Microsoft.UI.Xaml.Controls
 				animation.Stopped += OnStopped;
 
 				visual.StartAnimation(nameof(Visual.AnchorPoint), animation);
+			}
+		}
+
+		private void ScheduleDeferredTouchUpdate(double hOffset, double vOffset, bool isIntermediate)
+		{
+			_pendingTouchHOffset = hOffset;
+			_pendingTouchVOffset = vOffset;
+			_pendingTouchIsIntermediate = isIntermediate;
+
+			if (!_hasPendingTouchUpdate)
+			{
+				_hasPendingTouchUpdate = true;
+				_touchUpdateHandler ??= OnRenderingFlushTouchUpdate;
+				CompositionTarget.Rendering += _touchUpdateHandler;
+			}
+		}
+
+		private void OnRenderingFlushTouchUpdate(object? sender, object e)
+		{
+			// Unsubscribe immediately — we re-subscribe on next touch move if needed.
+			CompositionTarget.Rendering -= _touchUpdateHandler;
+			FlushPendingTouchUpdate();
+		}
+
+		private void FlushPendingTouchUpdate()
+		{
+			if (_hasPendingTouchUpdate)
+			{
+				_hasPendingTouchUpdate = false;
+				Updated(_pendingTouchHOffset, _pendingTouchVOffset, _pendingTouchIsIntermediate);
 			}
 		}
 
