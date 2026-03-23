@@ -87,6 +87,27 @@ This intake packages meeting outcomes, external ecosystem signals (Avalonia Vulk
 - macOS Skia host defaults to Metal (with software fallback behavior when Metal is not available or explicitly disabled).
 - No explicit Vulkan/WebGPU/Graphite implementation was found in the current Uno `src` code baseline during this intake pass.
 
+## Android Performance Note: Vulkan vs OpenGL ES
+
+- Short answer: Vulkan is generally more performant than OpenGL ES on Android when implemented well.
+- Key reason: Vulkan typically reduces CPU overhead by removing hidden driver work and enabling explicit GPU submission control.
+- Key reason: Vulkan supports stronger multi-threaded command recording/submission models, while OpenGL ES usage is often effectively single-threaded.
+- Key reason: Vulkan can produce more stable frame times due to explicit memory, synchronization, and pipeline control.
+- Important caveat: Vulkan complexity is significantly higher; poor Vulkan implementations can underperform well-tuned OpenGL ES.
+- Important caveat: Driver maturity still varies by device class; some older or low-end Android devices may have stronger OpenGL ES driver behavior.
+- Important caveat: Simple, non-CPU-bound apps (UI/basic 2D/light 3D) may see little to no practical gain from Vulkan.
+
+| Scenario | Practical winner |
+| --- | --- |
+| Simple UI / 2D apps | OpenGL ES (simpler, often similar performance) |
+| Mid-level 3D apps | Device and implementation dependent |
+| High-end games / engines | Vulkan |
+| CPU-bound rendering | Vulkan |
+| Fast iteration / low implementation complexity | OpenGL ES |
+
+- Android context: Vulkan support is strong on modern Android (API 24+), and major engines commonly default to Vulkan on supported devices.
+- Intake implication: Vulkan exploration should prioritize CPU-bound and complex-scene workloads on Android, with device-tier benchmarking to validate net gains versus OpenGL ES.
+
 ## Risks and Unknowns
 
 - Risk: Vulkan benefits may be marginal if UI rendering is not the primary bottleneck.
