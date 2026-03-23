@@ -1242,12 +1242,15 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void OnPresenterScrolled(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
 #if __SKIA__
-			// Skia: synchronous delay/counter mechanism matching WinUI behavior.
-			// Offsets are set immediately; RaiseViewChanged respects the delay counter.
-			HorizontalOffset = horizontalOffset;
-			VerticalOffset = verticalOffset;
+			// WinUI-aligned behavior: store pending offsets and defer DP updates to ArrangeOverride.
+			// On WinUI, SetOffsetsWithExtents stores offsets in ScrollData + InvalidateArrange;
+			// the DPs are updated during ArrangeOverride → VerifyScrollData → put_HorizontalOffset/VerticalOffset.
+			_pendingHorizontalOffset = horizontalOffset;
+			_pendingVerticalOffset = verticalOffset;
+			_pendingScrollIsIntermediate = isIntermediate;
+			_hasPendingScrollUpdate = true;
 
-			RaiseViewChanged(isIntermediate || m_isInIntermediateViewChangedMode);
+			_presenter?.InvalidateArrange();
 #else
 			_pendingHorizontalOffset = horizontalOffset;
 			_pendingVerticalOffset = verticalOffset;
@@ -1334,6 +1337,14 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_isViewChangedRaisedInIntermediateMode;
 		private int m_iViewChangedDelay;
 
+		// Pending offsets — applied during ArrangeOverride to align with WinUI behavior.
+		// On WinUI, offsets are stored via SetOffsetsWithExtents + InvalidateArrange and
+		// applied during ArrangeOverride → VerifyScrollData → put_HorizontalOffset/VerticalOffset.
+		private double _pendingHorizontalOffset;
+		private double _pendingVerticalOffset;
+		private bool _pendingScrollIsIntermediate;
+		private bool _hasPendingScrollUpdate;
+
 		/// <summary>
 		/// Increments the delay counter to prevent ViewChanged from being raised.
 		/// Must be paired with a call to <see cref="FlushViewChanged"/>.
@@ -1417,8 +1428,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/// <summary>
 		/// Leaves intermediate mode. If ViewChanged was raised during intermediate mode
-		/// and <paramref name="raiseFinalViewChanged"/> is true, raises a final
-		/// ViewChanged event with IsIntermediate=false.
+		/// and <paramref name="raiseFinalViewChanged"/> is true, ensures a final
+		/// ViewChanged event with IsIntermediate=false is raised.
+		/// When a pending scroll update exists (from OnPresenterScrolled), the final event
+		/// is raised during the arrange pass via <see cref="OnPresenterArranged"/>.
 		/// </summary>
 		internal void LeaveIntermediateViewChangedMode(bool raiseFinalViewChanged)
 		{
@@ -1430,11 +1443,32 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					m_isViewChangedRaisedInIntermediateMode = false;
 
-					if (raiseFinalViewChanged)
+					if (raiseFinalViewChanged && !_hasPendingScrollUpdate)
 					{
+						// No pending scroll update will trigger an arrange, so raise directly.
 						RaiseViewChanged(isIntermediate: false);
 					}
+					// Otherwise, the pending scroll update from OnCompleted's Set(IsIntermediate: false)
+					// will raise the final non-intermediate event during OnPresenterArranged.
 				}
+			}
+		}
+
+		/// <summary>
+		/// Called from <see cref="ScrollContentPresenter.ArrangeOverride"/> to flush
+		/// pending scroll offset updates. Aligns with WinUI where offset DPs are updated
+		/// during ArrangeOverride → VerifyScrollData → put_HorizontalOffset/VerticalOffset.
+		/// </summary>
+		internal void OnPresenterArranged()
+		{
+			if (_hasPendingScrollUpdate)
+			{
+				_hasPendingScrollUpdate = false;
+
+				HorizontalOffset = _pendingHorizontalOffset;
+				VerticalOffset = _pendingVerticalOffset;
+
+				RaiseViewChanged(_pendingScrollIsIntermediate || m_isInIntermediateViewChangedMode);
 			}
 		}
 #else
