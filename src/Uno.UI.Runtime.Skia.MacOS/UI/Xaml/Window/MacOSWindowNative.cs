@@ -46,6 +46,16 @@ internal class MacOSWindowNative
 
 		MacOSWindowHost.Register(Handle, xamlRoot, Host);
 
+		// Initialize accessibility only for the main/initial window.
+		// MacOSAccessibility is a singleton that manages one accessibility tree.
+		// Calling Initialize for every secondary window resets the singleton's
+		// window handle and native element dictionary, which causes stale pointer
+		// dereferences and segfaults when rapidly creating/closing secondary windows.
+		if (MacSkiaHost.Current.InitialWindow == this)
+		{
+			MacOSAccessibility.Instance.Initialize(Handle);
+		}
+
 		// call resize as late as possible (after the host creation)
 		NativeUno.uno_window_resize(Handle, initialWidth, initialHeight);
 
