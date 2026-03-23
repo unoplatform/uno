@@ -1244,7 +1244,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	{
 		if (_text.Length == 0 || _lines.Count == 0)
 		{
-			return (0, 0, true, _lines.Count == 1 || (_lines.Count == 0 && _endingNewLineLineHeight is not null), 0);
+			return (0, 0, true, true, 0);
 		}
 		if (index >= _lines[^1].end)
 		{
