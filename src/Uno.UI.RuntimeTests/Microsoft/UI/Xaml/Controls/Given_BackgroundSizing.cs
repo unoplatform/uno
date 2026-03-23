@@ -125,7 +125,7 @@ public class Given_BackgroundSizing
 	}
 
 	[TestMethod]
-	public async Task When_ToggleButton_BackgroundSizing_Propagates_To_Grid()
+	public async Task When_ToggleButton_BackgroundSizing_Propagates_To_ContentPresenter()
 	{
 		var toggleButton = new ToggleButton
 		{
@@ -135,9 +135,10 @@ public class Given_BackgroundSizing
 
 		await UITestHelper.Load(toggleButton);
 
-		var grid = toggleButton.FindVisualChildByType<Grid>();
-		Assert.IsNotNull(grid, "Grid should exist in ToggleButton template");
-		Assert.AreEqual(BackgroundSizing.OuterBorderEdge, grid.BackgroundSizing);
+		// WinUI ToggleButton template uses ContentPresenter with {TemplateBinding BackgroundSizing}
+		var cp = toggleButton.FindVisualChildByType<ContentPresenter>();
+		Assert.IsNotNull(cp, "ContentPresenter should exist in ToggleButton template");
+		Assert.AreEqual(BackgroundSizing.OuterBorderEdge, cp.BackgroundSizing);
 	}
 
 	[TestMethod]
@@ -358,13 +359,14 @@ public class Given_BackgroundSizing
 		Assert.IsTrue(toggle2.ActualHeight > 0, "toggle2 ActualHeight should be > 0");
 
 		// Verify BackgroundSizing can be set on ToggleButton and propagates
+		// WinUI ToggleButton template uses ContentPresenter with {TemplateBinding BackgroundSizing}
 		toggle1.BackgroundSizing = BackgroundSizing.OuterBorderEdge;
 		await TestServices.WindowHelper.WaitForIdle();
 
-		var innerGrid = toggle1.FindVisualChildByType<Grid>();
-		Assert.IsNotNull(innerGrid, "Grid should exist in ToggleButton template");
-		Assert.AreEqual(BackgroundSizing.OuterBorderEdge, innerGrid.BackgroundSizing,
-			"BackgroundSizing should propagate from ToggleButton to template Grid");
+		var cp = toggle1.FindVisualChildByType<ContentPresenter>();
+		Assert.IsNotNull(cp, "ContentPresenter should exist in ToggleButton template");
+		Assert.AreEqual(BackgroundSizing.OuterBorderEdge, cp.BackgroundSizing,
+			"BackgroundSizing should propagate from ToggleButton to template ContentPresenter");
 	}
 
 	#endregion
