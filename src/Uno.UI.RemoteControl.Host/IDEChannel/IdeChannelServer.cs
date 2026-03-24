@@ -1,12 +1,10 @@
 using System;
-using System.Diagnostics;
 using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StreamJsonRpc;
-using Uno.Extensions;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.Services;
 
@@ -14,22 +12,27 @@ namespace Uno.UI.RemoteControl.Host.IdeChannel;
 
 /// <summary>
 /// The server end for the "ide-channel" communication.
+/// Uses an atomic <see cref="ChannelSession"/> swap (Interlocked.Exchange) to
+/// guarantee lock-free, race-free rebinding across concurrent HTTP requests,
+/// IOptionsMonitor callbacks, and inter-process named-pipe coordination.
 /// </summary>
 internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 {
 	private readonly ILogger _logger;
 	private readonly IDisposable? _configSubscription;
-
-	private Task<bool> _initializeTask = Task.FromResult(false);
-	private CancellationTokenSource? _initializeCts;
-	private NamedPipeServerStream? _pipeServer;
-	private JsonRpc? _rpcServer;
-	private Proxy? _proxy;
 	private readonly Timer _keepAliveTimer;
-	private string? _channelId;
 
-	internal bool IsConnected => _pipeServer?.IsConnected ?? false;
-	string? IIdeChannelManager.ChannelId => _channelId;
+	/// <summary>
+	/// The single source of truth for the active IDE channel.
+	/// All reads go through <see cref="Volatile.Read{T}(ref T)"/>;
+	/// all replacements go through <see cref="Interlocked.Exchange{T}(ref T, T)"/>.
+	/// </summary>
+	private ChannelSession? _session;
+
+	internal bool IsConnected => Volatile.Read(ref _session)?.IsConnected ?? false;
+
+	string? IIdeChannelManager.ChannelId => Volatile.Read(ref _session)?.ChannelId;
+
 	bool IIdeChannelManager.IsConnected => IsConnected;
 
 	public IdeChannelServer(ILogger<IdeChannelServer> logger, IOptionsMonitor<IdeChannelServerOptions> config)
@@ -38,9 +41,10 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 
 		_keepAliveTimer = new Timer(_ =>
 		{
-			if (_pipeServer?.IsConnected ?? false)
+			var session = Volatile.Read(ref _session);
+			if (session is { IsConnected: true, Proxy: { } proxy })
 			{
-				SendKeepAlive();
+				proxy.SendToIde(new KeepAliveIdeMessage("dev-server"));
 			}
 			else
 			{
@@ -48,8 +52,8 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 			}
 		});
 
-		_ = ConfigureServerAsync(config.CurrentValue.ChannelId, waitForConnection: false);
-		_configSubscription = config.OnChange(opts => _ = ConfigureServerAsync(opts.ChannelId, waitForConnection: false));
+		_ = ConfigureChannelAsync(config.CurrentValue.ChannelId);
+		_configSubscription = config.OnChange(opts => _ = ConfigureChannelAsync(opts.ChannelId));
 	}
 
 	#region IIdeChannel
@@ -63,9 +67,7 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 	/// <inheritdoc />
 	async Task<bool> IIdeChannel.TrySendToIdeAsync(IdeMessage message, CancellationToken ct)
 	{
-		await WaitForReady(ct);
-
-		if (_proxy is null)
+		if (!await WaitForReady(ct))
 		{
 			_logger.LogInformation(
 				"Received a message {MessageType} to send to the IDE, but there is no connection available for that.",
@@ -73,160 +75,154 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 
 			return false;
 		}
-		else
-		{
-			_proxy.SendToIde(message);
-			ScheduleKeepAlive();
 
-			return true;
+		var session = Volatile.Read(ref _session);
+		if (session?.Proxy is not { } proxy)
+		{
+			return false;
 		}
+
+		proxy.SendToIde(message);
+		ScheduleKeepAlive();
+		return true;
 	}
 	#endregion
 
 	/// <inheritdoc />
 	public async ValueTask<bool> WaitForReady(CancellationToken ct = default)
-#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
-		=> await _initializeTask;
-#pragma warning restore VSTHRD003
-
-	Task<bool> IIdeChannelManager.RebindAsync(
-		string? channelId,
-		CancellationToken cancellationToken)
-		=> ConfigureServerAsync(channelId, waitForConnection: false, cancellationToken);
-
-	/// <summary>
-	/// Configures the named pipe for the active IDE channel. The caller can
-	/// either wait for an actual client connection or only for the listener to
-	/// become available, which is required when rebinding from the HTTP control
-	/// surface.
-	/// </summary>
-	private async Task<bool> ConfigureServerAsync(string? channelId, bool waitForConnection, CancellationToken cancellationToken = default)
 	{
-		_channelId = channelId;
-
-		try
+		var session = Volatile.Read(ref _session);
+		if (session is null)
 		{
-			await DisposeCurrentServerAsync();
-		}
-		catch (Exception error)
-		{
-			_logger.LogWarning(error, "An error occurred while disposing the existing IDE channel server. Continuing initialization.");
-		}
-
-		try
-		{
-			if (string.IsNullOrWhiteSpace(channelId))
-			{
-				_initializeTask = Task.FromResult(false);
-				return false;
-			}
-
-			var pipeServer = new NamedPipeServerStream(
-				pipeName: channelId,
-				direction: PipeDirection.InOut,
-				maxNumberOfServerInstances: 1,
-				transmissionMode: PipeTransmissionMode.Byte,
-				options: PipeOptions.Asynchronous | PipeOptions.WriteThrough,
-				inBufferSize: 8 * 1024 * 1024,
-				outBufferSize: 8 * 1024 * 1024);
-
-			_pipeServer = pipeServer;
-			_initializeCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-			_initializeTask = WaitForClientConnectionAsync(pipeServer, _initializeCts.Token);
-
-			return waitForConnection
-				? await _initializeTask
-				: true;
-		}
-		catch (Exception error)
-		{
-			if (_logger.IsEnabled(LogLevel.Error))
-			{
-				_logger.LogError(error, "Failed to init the IDE channel.");
-			}
-
 			return false;
 		}
+
+		// WaitAsync honours the caller's CT for timeout/cancellation
+		// without linking it into the session's own CTS.
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
+		return await session.ReadyTask.WaitAsync(ct);
+#pragma warning restore VSTHRD003
 	}
 
-	private async Task DisposeCurrentServerAsync()
+	Task<bool> IIdeChannelManager.RebindAsync(string? channelId)
+		=> ConfigureChannelAsync(channelId);
+
+	/// <summary>
+	/// Atomically swaps to a new <see cref="ChannelSession"/> for the given
+	/// <paramref name="channelId"/>. The previous session (if any) is disposed
+	/// asynchronously after the swap. Returns <see langword="true"/> when a
+	/// pipe listener is active for the requested channel.
+	/// </summary>
+	private async Task<bool> ConfigureChannelAsync(string? channelId)
 	{
-		_proxy = null;
-
-		if (_initializeCts is { } initializeCts)
+		// Idempotency: if the current session already serves this channel, no-op.
+		var current = Volatile.Read(ref _session);
+		if (current is not null
+			&& current.ChannelId == channelId
+			&& !current.Cts.IsCancellationRequested)
 		{
-			_initializeCts = null;
-			await initializeCts.CancelAsync();
-			initializeCts.Dispose();
-		}
-
-		_rpcServer?.Dispose();
-		_rpcServer = null;
-
-		if (_pipeServer is { } server)
-		{
-			_pipeServer = null;
-
-			try
-			{
-				if (server.IsConnected)
-				{
-					server.Disconnect();
-				}
-			}
-			catch (InvalidOperationException)
-			{
-				// The pipe might not have completed its connection handshake yet.
-			}
-
-			await server.DisposeAsync();
-		}
-	}
-
-	private async Task<bool> WaitForClientConnectionAsync(NamedPipeServerStream pipeServer, CancellationToken cancellationToken)
-	{
-		try
-		{
-			await pipeServer.WaitForConnectionAsync(cancellationToken);
-
-			if (!ReferenceEquals(_pipeServer, pipeServer))
-			{
-				return false;
-			}
-
-			_proxy = new(this);
-			_rpcServer = JsonRpc.Attach(pipeServer, _proxy);
-
 			if (_logger.IsEnabled(LogLevel.Debug))
 			{
-				_logger.LogDebug("IDE channel successfully initialized.");
+				_logger.LogDebug("IDE channel {ChannelId} is already active, skipping rebind.", channelId);
 			}
-
-			ScheduleKeepAlive();
-			SendKeepAlive(); // Send a keep-alive message immediately after connection
 
 			return true;
 		}
-		catch (OperationCanceledException)
+
+		if (string.IsNullOrWhiteSpace(channelId))
 		{
-			return false;
-		}
-		catch (Exception error)
-		{
-			if (_logger.IsEnabled(LogLevel.Error))
+			var old = Interlocked.Exchange(ref _session, null);
+			if (old is not null)
 			{
-				_logger.LogError(error, "Failed to init the IDE channel.");
+				await DisposeSessionAsync(old);
 			}
 
 			return false;
 		}
+
+		ChannelSession newSession;
+		try
+		{
+			newSession = new ChannelSession(channelId);
+		}
+		catch (Exception error)
+		{
+			_logger.LogError(error, "Failed to create IDE channel pipe for {ChannelId}.", channelId);
+			return false;
+		}
+
+		// Atomic swap — last writer wins.
+		var previous = Interlocked.Exchange(ref _session, newSession);
+
+		// Launch the background wait for client connection, capturing the session snapshot.
+		_ = WaitForClientConnectionAsync(newSession);
+
+		// Dispose previous session asynchronously (cancels its WaitForConnection).
+		if (previous is not null)
+		{
+			_ = DisposeSessionAsync(previous);
+		}
+
+		if (_logger.IsEnabled(LogLevel.Debug))
+		{
+			_logger.LogDebug("IDE channel configured for {ChannelId}.", channelId);
+		}
+
+		return true;
 	}
 
-	private const int KeepAliveDelay = 10000; // 10 seconds in milliseconds
+	private async Task WaitForClientConnectionAsync(ChannelSession session)
+	{
+		try
+		{
+			await session.PipeServer.WaitForConnectionAsync(session.Cts.Token);
+
+			// Verify this session is still the active one.
+			if (!ReferenceEquals(Volatile.Read(ref _session), session))
+			{
+				_logger.LogDebug("IDE channel session was superseded during connection handshake.");
+				session.ReadyTcs.TrySetResult(false);
+				return;
+			}
+
+			session.Proxy = new Proxy(this);
+			session.RpcServer = JsonRpc.Attach(session.PipeServer, session.Proxy);
+			session.ReadyTcs.TrySetResult(true);
+
+			if (_logger.IsEnabled(LogLevel.Debug))
+			{
+				_logger.LogDebug("IDE channel {ChannelId} successfully connected.", session.ChannelId);
+			}
+
+			ScheduleKeepAlive();
+			session.Proxy.SendToIde(new KeepAliveIdeMessage("dev-server"));
+		}
+		catch (OperationCanceledException)
+		{
+			session.ReadyTcs.TrySetResult(false);
+		}
+		catch (Exception error)
+		{
+			_logger.LogError(error, "Failed to init the IDE channel {ChannelId}.", session.ChannelId);
+			session.ReadyTcs.TrySetResult(false);
+		}
+	}
+
+	private async Task DisposeSessionAsync(ChannelSession session)
+	{
+		try
+		{
+			await session.DisposeAsync();
+		}
+		catch (Exception error)
+		{
+			_logger.LogWarning(error, "Error while disposing IDE channel session {ChannelId}.", session.ChannelId);
+		}
+	}
+
+	private const int KeepAliveDelay = 10000; // 10 seconds
 
 	private void ScheduleKeepAlive() => _keepAliveTimer.Change(KeepAliveDelay, KeepAliveDelay);
-
-	private void SendKeepAlive() => _proxy?.SendToIde(new KeepAliveIdeMessage("dev-server"));
 
 	/// <inheritdoc />
 	public void Dispose()
@@ -234,11 +230,82 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 #pragma warning disable VSTHRD103 // Dispose is synchronous; cancelling pending waits is a best-effort cleanup.
 		_keepAliveTimer.Dispose();
 		_configSubscription?.Dispose();
-		_initializeCts?.Cancel();
-		_initializeCts?.Dispose();
-		_rpcServer?.Dispose();
-		_pipeServer?.Dispose();
+		var session = Interlocked.Exchange(ref _session, null);
+		if (session is not null)
+		{
+			session.Cts.Cancel();
+			session.RpcServer?.Dispose();
+			try
+			{
+				if (session.PipeServer.IsConnected)
+				{
+					session.PipeServer.Disconnect();
+				}
+			}
+			catch (InvalidOperationException)
+			{
+				// The pipe might not have completed its connection handshake yet.
+			}
+
+			session.PipeServer.Dispose();
+			session.Cts.Dispose();
+		}
 #pragma warning restore VSTHRD103
+	}
+
+	/// <summary>
+	/// Encapsulates all mutable state for a single IDE channel lifetime.
+	/// Created atomically (pipe + CTS in constructor); swapped via
+	/// <see cref="Interlocked.Exchange{T}(ref T, T)"/>.
+	/// </summary>
+	private sealed class ChannelSession : IAsyncDisposable
+	{
+		public string ChannelId { get; }
+		public NamedPipeServerStream PipeServer { get; }
+		public CancellationTokenSource Cts { get; }
+		public TaskCompletionSource<bool> ReadyTcs { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+		public Task<bool> ReadyTask => ReadyTcs.Task;
+		public bool IsConnected => PipeServer.IsConnected;
+
+		// Set once after the client connects — only by WaitForClientConnectionAsync.
+		public JsonRpc? RpcServer { get; set; }
+		public Proxy? Proxy { get; set; }
+
+		public ChannelSession(string channelId)
+		{
+			ChannelId = channelId;
+			PipeServer = new NamedPipeServerStream(
+				pipeName: channelId,
+				direction: PipeDirection.InOut,
+				maxNumberOfServerInstances: 1,
+				transmissionMode: PipeTransmissionMode.Byte,
+				options: PipeOptions.Asynchronous | PipeOptions.WriteThrough,
+				inBufferSize: 8 * 1024 * 1024,
+				outBufferSize: 8 * 1024 * 1024);
+			Cts = new CancellationTokenSource();
+		}
+
+		public async ValueTask DisposeAsync()
+		{
+			await Cts.CancelAsync();
+			ReadyTcs.TrySetResult(false);
+			RpcServer?.Dispose();
+
+			try
+			{
+				if (PipeServer.IsConnected)
+				{
+					PipeServer.Disconnect();
+				}
+			}
+			catch (InvalidOperationException)
+			{
+				// The pipe might not have completed its connection handshake yet.
+			}
+
+			await PipeServer.DisposeAsync();
+			Cts.Dispose();
+		}
 	}
 
 	private class Proxy(IdeChannelServer Owner) : IIdeChannelServer

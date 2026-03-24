@@ -1,4 +1,3 @@
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Uno.UI.RemoteControl.Host.IdeChannel;
@@ -12,7 +11,9 @@ internal interface IIdeChannelManager
 
 	bool IsConnected { get; }
 
-	Task<bool> RebindAsync(
-		string? channelId,
-		CancellationToken cancellationToken = default);
+	/// <summary>
+	/// Atomically rebinds the IDE channel to the given <paramref name="channelId"/>.
+	/// The pipe lifetime is owned by the session, not the caller.
+	/// </summary>
+	Task<bool> RebindAsync(string? channelId);
 }

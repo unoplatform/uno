@@ -56,9 +56,14 @@ namespace Uno.UI.RemoteControl.Host
 
 			app.MapPost(
 					"/devserver/idechannel/{channelId}",
-					async (string channelId, IIdeChannelManager ideChannelManager, AmbientRegistry ambientRegistry, HttpContext context) =>
+					async (string channelId, IIdeChannelManager ideChannelManager, AmbientRegistry ambientRegistry) =>
 					{
-						var rebound = await ideChannelManager.RebindAsync(channelId, context.RequestAborted);
+						if (string.IsNullOrWhiteSpace(channelId))
+						{
+							return Results.BadRequest("channelId is required.");
+						}
+
+						var rebound = await ideChannelManager.RebindAsync(channelId);
 						if (!rebound)
 						{
 							return Results.Problem(

@@ -31,12 +31,17 @@ public partial class AmbientRegistry
 			}
 
 			registration.IdeChannelId = ideChannelId;
-			File.WriteAllText(_registryFilePath, JsonSerializer.Serialize(registration, JsonOptions));
+
+			// Atomic write: temp file + rename to prevent partial reads by concurrent processes.
+			var tempPath = _registryFilePath + ".tmp";
+			File.WriteAllText(tempPath, JsonSerializer.Serialize(registration, JsonOptions));
+			File.Move(tempPath, _registryFilePath, overwrite: true);
+
 			_logger.LogDebug("Updated DevServer IDE channel registration: {IdeChannelId}", ideChannelId ?? "<null>");
 		}
 		catch (Exception ex)
 		{
-			_logger.LogWarning($"Failed to update DevServer IDE channel registration: {ex.Message}");
+			_logger.LogWarning(ex, "Failed to update DevServer IDE channel registration.");
 		}
 	}
 
