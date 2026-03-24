@@ -143,6 +143,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 				windowBackgroundDisposable.Dispose();
 				_renderRequested.Dispose();
+				_renderer?.Dispose();
 			}
 		});
 	}
