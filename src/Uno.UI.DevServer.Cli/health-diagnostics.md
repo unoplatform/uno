@@ -100,6 +100,22 @@ When a Host already exists for the selected solution:
 
 Because the Host stays alive, `health` and `disco` must show the updated `IdeChannelId` and current process ancestry so launchers can verify that the running instance was reused rather than respawned.
 
+### IDE channel lifecycle logging
+
+The Host emits the following diagnostic logs during channel operations:
+
+| Log level | Message | When |
+|-----------|---------|------|
+| Information | `IDE channel rebind requested: {ChannelId}` | HTTP POST hits the rebind endpoint |
+| Information | `IDE channel pipe created: \\.\pipe\{ChannelId}` | Named pipe server stream created |
+| Information | `IDE channel {ChannelId}: waiting for client connection...` | `WaitForConnectionAsync` begins |
+| Information | `IDE channel {ChannelId}: client connected, JsonRpc attached.` | Client connected, RPC active |
+| Warning | `IDE channel {ChannelId}: session was superseded` | Another rebind replaced this session |
+| Warning | `IDE channel {ChannelId}: wait for connection was cancelled.` | Session CTS was cancelled |
+| Debug | `IDE channel {ChannelId} is already active, skipping rebind.` | Idempotent rebind (same channelId) |
+
+The CLI also forwards the Host subprocess stdout/stderr at Debug level on success, so IDE extensions can see reuse decisions (`"A DevServer is already running..."`) and rebind POST results.
+
 ## Health Status
 
 ```

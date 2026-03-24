@@ -56,12 +56,19 @@ namespace Uno.UI.RemoteControl.Host
 
 			app.MapPost(
 					"/devserver/idechannel/{channelId}",
-					async (string channelId, IIdeChannelManager ideChannelManager, AmbientRegistry ambientRegistry) =>
+					async (string channelId, IIdeChannelManager ideChannelManager, AmbientRegistry ambientRegistry, ILoggerFactory loggerFactory) =>
 					{
+						var logger = loggerFactory.CreateLogger("DevServerIdeChannelRebind");
 						if (string.IsNullOrWhiteSpace(channelId))
 						{
 							return Results.BadRequest("channelId is required.");
 						}
+
+						logger.LogInformation(
+							"IDE channel rebind requested: {ChannelId} (current: {CurrentChannelId}, connected: {IsConnected})",
+							channelId,
+							ideChannelManager.ChannelId ?? "<none>",
+							ideChannelManager.IsConnected);
 
 						var rebound = await ideChannelManager.RebindAsync(channelId);
 						if (!rebound)

@@ -417,6 +417,9 @@ partial class Program
 
 	private static async Task<bool> TryUpdateExistingIdeChannelAsync(int port, string ideChannel)
 	{
+		var url = $"http://127.0.0.1:{port.ToString(CultureInfo.InvariantCulture)}/devserver/idechannel/{Uri.EscapeDataString(ideChannel)}";
+		await Console.Out.WriteLineAsync($"Rebinding IDE channel on running DevServer: POST {url}");
+
 		using var httpClient = new HttpClient
 		{
 			Timeout = TimeSpan.FromSeconds(10),
@@ -424,19 +427,14 @@ partial class Program
 
 		try
 		{
-			using var response = await httpClient.PostAsync(
-				$"http://127.0.0.1:{port.ToString(CultureInfo.InvariantCulture)}/devserver/idechannel/{Uri.EscapeDataString(ideChannel)}",
-				content: null);
+			using var response = await httpClient.PostAsync(url, content: null);
+
+			var body = await response.Content.ReadAsStringAsync();
+			await Console.Out.WriteLineAsync($"Rebind response: {(int)response.StatusCode} {response.StatusCode}{(string.IsNullOrWhiteSpace(body) ? "" : $" — {body}")}");
 
 			if (response.IsSuccessStatusCode)
 			{
 				return true;
-			}
-
-			var error = await response.Content.ReadAsStringAsync();
-			if (!string.IsNullOrWhiteSpace(error))
-			{
-				await Console.Error.WriteLineAsync(error);
 			}
 
 			return false;

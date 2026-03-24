@@ -154,6 +154,11 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 		// Atomic swap — last writer wins.
 		var previous = Interlocked.Exchange(ref _session, newSession);
 
+		_logger.LogInformation(
+			@"IDE channel pipe created: \\.\pipe\{ChannelId} (previous: {PreviousChannelId})",
+			channelId,
+			previous?.ChannelId ?? "<none>");
+
 		// Launch the background wait for client connection, capturing the session snapshot.
 		_ = WaitForClientConnectionAsync(newSession);
 
@@ -163,11 +168,6 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 			_ = DisposeSessionAsync(previous);
 		}
 
-		if (_logger.IsEnabled(LogLevel.Debug))
-		{
-			_logger.LogDebug("IDE channel configured for {ChannelId}.", channelId);
-		}
-
 		return true;
 	}
 
@@ -175,12 +175,14 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 	{
 		try
 		{
+			_logger.LogInformation("IDE channel {ChannelId}: waiting for client connection...", session.ChannelId);
+
 			await session.PipeServer.WaitForConnectionAsync(session.Cts.Token);
 
 			// Verify this session is still the active one.
 			if (!ReferenceEquals(Volatile.Read(ref _session), session))
 			{
-				_logger.LogDebug("IDE channel session was superseded during connection handshake.");
+				_logger.LogWarning("IDE channel {ChannelId}: session was superseded during connection handshake.", session.ChannelId);
 				session.ReadyTcs.TrySetResult(false);
 				return;
 			}
@@ -189,16 +191,14 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 			session.RpcServer = JsonRpc.Attach(session.PipeServer, session.Proxy);
 			session.ReadyTcs.TrySetResult(true);
 
-			if (_logger.IsEnabled(LogLevel.Debug))
-			{
-				_logger.LogDebug("IDE channel {ChannelId} successfully connected.", session.ChannelId);
-			}
+			_logger.LogInformation("IDE channel {ChannelId}: client connected, JsonRpc attached.", session.ChannelId);
 
 			ScheduleKeepAlive();
 			session.Proxy.SendToIde(new KeepAliveIdeMessage("dev-server"));
 		}
 		catch (OperationCanceledException)
 		{
+			_logger.LogWarning("IDE channel {ChannelId}: wait for connection was cancelled.", session.ChannelId);
 			session.ReadyTcs.TrySetResult(false);
 		}
 		catch (Exception error)
