@@ -11,7 +11,9 @@ using Microsoft.UI.Xaml.Tests.Common;
 using Microsoft.UI.Xaml.Tests.Enterprise;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
+#if HAS_UNO
 using Uno.UI.Xaml.Input;
+#endif
 using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
 
@@ -2331,7 +2333,9 @@ public class MenuFlyoutIntegrationTests
 			// the previous test doesn't mess up the state for this test. Use a test hook for this - tapping at arbitrary places can mess
 			// up focus and flyout state.
 
+#if HAS_UNO
 			await TestServices.WindowHelper.SetLastInputMethod(InputDeviceType.Touch, xamlRoot);
+#endif
 		}
 
 		await RunOnUIThread(() =>
