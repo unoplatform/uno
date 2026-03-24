@@ -125,7 +125,8 @@ namespace Uno.UI.RemoteControl.Host
 				globalServices.AddSingleton<IdeChannelServer>();
 				globalServices.AddSingleton<IIdeChannel>(sp => sp.GetRequiredService<IdeChannelServer>());
 				globalServices.AddSingleton<IIdeChannelManager>(sp => sp.GetRequiredService<IdeChannelServer>());
-				globalServices.AddSingleton<AmbientRegistry>();
+				globalServices.AddSingleton(sp =>
+					new AmbientRegistry(sp.GetRequiredService<ILoggerFactory>().CreateLogger<AmbientRegistry>()));
 
 #pragma warning disable ASP0000 // Do not call ConfigureServices after calling UseKestrel.
 				var globalServiceProvider = globalServices.BuildServiceProvider();
