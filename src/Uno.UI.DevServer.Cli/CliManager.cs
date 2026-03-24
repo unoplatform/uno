@@ -286,10 +286,17 @@ internal class CliManager
 		var activeWorkspaceServer = info.ActiveServers.FirstOrDefault(s => s.IsInWorkspace);
 		var devServerStarted = activeWorkspaceServer is not null;
 
+		// Verify the active server is actually reachable via its MCP endpoint.
+		var upstreamConnected = false;
+		if (activeWorkspaceServer?.McpEndpoint is { } endpoint)
+		{
+			upstreamConnected = await TryReachHostAsync(endpoint);
+		}
+
 		var report = HealthReportFactory.Create(
 			info,
 			devServerStarted: devServerStarted,
-			upstreamConnected: false,
+			upstreamConnected: upstreamConnected,
 			toolCount: 0,
 			connectionState: null,
 			discoveredSolutions: null,
@@ -306,6 +313,22 @@ internal class CliManager
 		}
 
 		return report.Status == HealthStatus.Healthy ? 0 : 1;
+	}
+
+	private static async Task<bool> TryReachHostAsync(string mcpEndpoint)
+	{
+		try
+		{
+			// Extract the base URL (strip /mcp path) and probe the root.
+			var baseUrl = mcpEndpoint.Replace("/mcp", "");
+			using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(3) };
+			using var response = await httpClient.GetAsync(baseUrl);
+			return true; // Any response means the host is reachable.
+		}
+		catch
+		{
+			return false;
+		}
 	}
 
 	private async Task<int> OpenSettings(string[] originalArgs, string workingDirectory)
