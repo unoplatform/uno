@@ -289,10 +289,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	public static void Close(X11Window x11window)
 	{
-		X11XamlRootHost? host;
 		lock (_x11WindowToXamlRootHostMutex)
 		{
-			if (!_x11WindowToXamlRootHost.Remove(x11window, out host))
+			if (!_x11WindowToXamlRootHost.Remove(x11window, out var host))
 			{
 				if (typeof(X11XamlRootHost).Log().IsEnabled(LogLevel.Error))
 				{

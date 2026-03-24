@@ -10,7 +10,7 @@ internal partial class X11XamlRootHost
 {
 	private readonly AutoResetEvent _renderRequested = new(false);
 	private volatile bool _renderLoopRunning = true;
-	private Thread _renderThread;
+	private readonly Thread _renderThread;
 	private double _targetInterval = 1000.0 / FeatureConfiguration.CompositionTarget.FrameRate;
 
 	private Thread InitRenderThread()
