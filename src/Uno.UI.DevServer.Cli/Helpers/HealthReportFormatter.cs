@@ -63,19 +63,5 @@ internal static class HealthReportFormatter
 	}
 
 	private static string FormatProcessChain(IReadOnlyList<ProcessChainEntry> processChain)
-		=> string.Join(
-			" → ",
-			processChain.Reverse().Select(entry =>
-			{
-				var name = ShortenProcessName(entry.ProcessName);
-				var pid = entry.ProcessId.ToString(CultureInfo.InvariantCulture);
-				return string.IsNullOrWhiteSpace(name)
-					? pid
-					: $"{name} ({pid})";
-			}));
-
-	private static string? ShortenProcessName(string? name)
-		=> name is not null && name.StartsWith("Uno.UI.RemoteControl.Host", StringComparison.OrdinalIgnoreCase)
-			? "Host"
-			: name;
+		=> ProcessChainEntry.FormatChain(processChain);
 }

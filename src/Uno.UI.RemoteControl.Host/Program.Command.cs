@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -324,18 +325,7 @@ partial class Program
 		{
 			var processName = TryGetProcessName(s.ProcessId);
 			var parentName = TryGetProcessName(s.ParentProcessId);
-			var processChain = string.Join(
-				" → ",
-				ambient.GetProcessChain(s).Reverse().Select(node =>
-				{
-					var name = node.ProcessName is not null
-						&& node.ProcessName.StartsWith("Uno.UI.RemoteControl.Host", StringComparison.OrdinalIgnoreCase)
-						? "Host"
-						: node.ProcessName;
-					return name is { Length: > 0 }
-						? $"{name} ({node.ProcessId})"
-						: node.ProcessId.ToString(CultureInfo.InvariantCulture);
-				}));
+			var processChain = FormatProcessChain(ambient.GetProcessChain(s));
 			await Console.Out.WriteLineAsync($"Process ID: {s.ProcessId}{(processName is not null ? $" ({processName})" : "")}");
 			await Console.Out.WriteLineAsync($"  Parent PID: {s.ParentProcessId}{(parentName is not null ? $" ({parentName})" : "")}");
 			await Console.Out.WriteLineAsync($"  Port: {s.Port}");
@@ -465,6 +455,20 @@ partial class Program
 			return null;
 		}
 	}
+
+	private static string FormatProcessChain(IReadOnlyList<AmbientRegistry.ProcessChainNode> chain)
+		=> string.Join(
+			" → ",
+			chain.Reverse().Select(node =>
+			{
+				var name = node.ProcessName is not null
+					&& node.ProcessName.StartsWith("Uno.UI.RemoteControl.Host", StringComparison.OrdinalIgnoreCase)
+					? "Host"
+					: node.ProcessName;
+				return name is { Length: > 0 }
+					? $"{name} ({node.ProcessId})"
+					: node.ProcessId.ToString(CultureInfo.InvariantCulture);
+			}));
 
 	private static int EnsureTcpPort()
 	{

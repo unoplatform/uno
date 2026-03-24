@@ -152,32 +152,17 @@ internal static class DiscoveryOutputFormatter
 			return null;
 		}
 
+		// Use the shared formatter, then apply Spectre Console bold markup to names.
 		return string.Join(
 			" → ",
 			processChain.Reverse().Select(entry =>
 			{
-				var name = ShortenProcessName(entry.ProcessName);
+				var name = ProcessChainEntry.ShortenProcessName(entry.ProcessName);
 				var pid = entry.ProcessId.ToString(CultureInfo.InvariantCulture);
 				return string.IsNullOrWhiteSpace(name)
 					? pid
 					: $"[bold]{Escape(name)}[/] ({pid})";
 			}));
-	}
-
-	private static string? ShortenProcessName(string? name)
-	{
-		if (string.IsNullOrWhiteSpace(name))
-		{
-			return name;
-		}
-
-		// Shorten well-known verbose process names for readability.
-		if (name.StartsWith("Uno.UI.RemoteControl.Host", StringComparison.OrdinalIgnoreCase))
-		{
-			return "Host";
-		}
-
-		return name;
 	}
 
 	private static string? GetMissingHint(string key)

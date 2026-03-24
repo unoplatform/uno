@@ -184,7 +184,7 @@ public partial class AmbientRegistry
 				out _);
 
 			return result == 0
-				? basicInformation.InheritedFromUniqueProcessId.ToInt32()
+				? (int)basicInformation.InheritedFromUniqueProcessId
 				: null;
 		}
 		finally

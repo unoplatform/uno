@@ -86,7 +86,7 @@ public class Given_HealthReportFormatter
 						[
 							new ProcessChainEntry { ProcessId = 100, ProcessName = "Uno.UI.RemoteControl.Host" },
 							new ProcessChainEntry { ProcessId = 50, ProcessName = "dotnet" },
-							new ProcessChainEntry { ProcessId = 25, ProcessName = "kiro" },
+							new ProcessChainEntry { ProcessId = 25, ProcessName = "ide-process" },
 						],
 					},
 				],
@@ -96,7 +96,7 @@ public class Given_HealthReportFormatter
 		var text = HealthReportFormatter.FormatPlainText(report);
 
 		text.Should().Contain("Active Servers:");
-		text.Should().Contain("Process Chain: 100 (Uno.UI.RemoteControl.Host) -> 50 (dotnet) -> 25 (kiro)");
+		text.Should().Contain("Process Chain: ide-process (25) → dotnet (50) → Host (100)");
 		text.Should().Contain("IDE Channel: abc");
 	}
 }
