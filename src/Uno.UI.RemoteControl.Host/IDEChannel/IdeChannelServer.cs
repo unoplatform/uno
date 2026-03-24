@@ -35,6 +35,9 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 
 	bool IIdeChannelManager.IsConnected => IsConnected;
 
+	/// <inheritdoc />
+	public event Action? ClientConnected;
+
 	public IdeChannelServer(ILogger<IdeChannelServer> logger, IOptionsMonitor<IdeChannelServerOptions> config)
 	{
 		_logger = logger;
@@ -189,12 +192,20 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 
 			session.Proxy = new Proxy(this);
 			session.RpcServer = JsonRpc.Attach(session.PipeServer, session.Proxy);
-			session.ReadyTcs.TrySetResult(true);
 
-			_logger.LogInformation("IDE channel {ChannelId}: client connected, JsonRpc attached.", session.ChannelId);
+			_logger.LogInformation("IDE channel {ChannelId}: client connected, JsonRpc attached. Publishing state snapshot.", session.ChannelId);
 
 			ScheduleKeepAlive();
 			session.Proxy.SendToIde(new KeepAliveIdeMessage("dev-server"));
+
+			// Notify subscribers (e.g. UnoDevEnvironmentService) that a client is
+			// connected and ready to receive messages. This triggers the initial
+			// environment state snapshot publication.
+			// This must fire BEFORE ReadyTcs is set so callers awaiting WaitForReady
+			// can rely on the snapshot having been sent.
+			ClientConnected?.Invoke();
+
+			session.ReadyTcs.TrySetResult(true);
 		}
 		catch (OperationCanceledException)
 		{

@@ -1,47 +1,66 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Uno.UI.RemoteControl.Host.Extensibility;
+using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.Services;
 
 namespace Uno.UI.RemoteControl.Host;
 
-public class UnoDevEnvironmentService(IIdeChannel ideChannel, AddInsStatus addIns) : BackgroundService
+internal class UnoDevEnvironmentService(
+	IIdeChannel ideChannel,
+	IIdeChannelManager ideChannelManager,
+	ILogger<UnoDevEnvironmentService> logger,
+	AddInsStatus addIns) : BackgroundService
 {
 	/// <inheritdoc />
 	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 	{
 		var udeiMessage = BuildStatusMessage();
 
-		// Subscribe BEFORE the first send attempt to close the race window
-		// between TrySend failing and the channel connecting. If the channel
-		// connects in between, we still get the signal.
-		var connected = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+		// Publish the current environment state on EVERY client connection.
+		// This covers: fresh startup, rebind, reconnect — all paths.
+		ideChannelManager.ClientConnected += () =>
+		{
+			logger.LogInformation("IDE client connected — publishing environment state snapshot.");
+			_ = PublishStatusAsync(udeiMessage, stoppingToken);
+		};
 
-		void OnMessage(object? sender, IdeMessage msg) => connected.TrySetResult();
+		// Also try immediately (client may already be connected at startup).
+		await PublishStatusAsync(udeiMessage, stoppingToken);
 
-		ideChannel.MessageFromIde += OnMessage;
+		// Keep the service alive for the Host lifetime so the event handler
+		// can fire on future reconnections.
 		try
 		{
-			// Try to send immediately (works when IDE channel was configured at startup).
-			if (await ideChannel.TrySendToIdeAsync(udeiMessage, stoppingToken))
-			{
-				return;
-			}
-
-			// The IDE channel is not ready yet (e.g. Host was started by MCP without
-			// --ideChannel and the channel will be created later via rebind).
-			// Wait for the first incoming IDE message (typically a KeepAlive) as a
-			// signal that the channel is now connected, then publish the status.
-			await connected.Task.WaitAsync(stoppingToken);
-			await ideChannel.SendToIdeAsync(udeiMessage, stoppingToken);
+			await Task.Delay(Timeout.Infinite, stoppingToken);
 		}
-		finally
+		catch (OperationCanceledException)
 		{
-			ideChannel.MessageFromIde -= OnMessage;
+			// Host shutting down — expected.
+		}
+	}
+
+	private async Task PublishStatusAsync(DevelopmentEnvironmentStatusIdeMessage message, CancellationToken ct)
+	{
+		try
+		{
+			if (await ideChannel.TrySendToIdeAsync(message, ct))
+			{
+				logger.LogInformation("Published IDE environment status: {Description}", message.Description);
+			}
+		}
+		catch (OperationCanceledException)
+		{
+			// Shutting down.
+		}
+		catch (Exception ex)
+		{
+			logger.LogWarning(ex, "Failed to publish IDE environment status.");
 		}
 	}
 

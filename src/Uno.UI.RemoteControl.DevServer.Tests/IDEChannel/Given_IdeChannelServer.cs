@@ -202,6 +202,81 @@ public class Given_IdeChannelServer
 		sentAfter.Should().BeTrue("channel is live after IDE message triggers retry");
 	}
 
+	[TestMethod]
+	public async Task WhenClientConnects_ClientConnectedEventFires()
+	{
+		var channelId = $"ide-channel-{Guid.NewGuid():N}";
+		using var server = CreateServer();
+
+		var connected = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+		Manager(server).ClientConnected += () => connected.TrySetResult();
+
+		(await Rebind(server, channelId)).Should().BeTrue();
+
+		using var client = CreateClient(channelId);
+		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+		await client.ConnectAsync(cts.Token);
+
+		// ClientConnected must fire after pipe connection + JsonRpc attach.
+		await connected.Task.WaitAsync(TimeSpan.FromSeconds(2));
+	}
+
+	[TestMethod]
+	public async Task WhenRebindAndReconnect_ClientConnectedFiresEachTime()
+	{
+		using var server = CreateServer();
+		var connectCount = 0;
+		Manager(server).ClientConnected += () => Interlocked.Increment(ref connectCount);
+
+		// First connection.
+		var ch1 = $"ide-channel-{Guid.NewGuid():N}";
+		(await Rebind(server, ch1)).Should().BeTrue();
+		using var client1 = CreateClient(ch1);
+		using var cts1 = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+		await client1.ConnectAsync(cts1.Token);
+		(await server.WaitForReady()).Should().BeTrue();
+
+		// Second connection via rebind to a different channel.
+		var ch2 = $"ide-channel-{Guid.NewGuid():N}";
+		(await Rebind(server, ch2)).Should().BeTrue();
+		using var client2 = CreateClient(ch2);
+		using var cts2 = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+		await client2.ConnectAsync(cts2.Token);
+		(await server.WaitForReady()).Should().BeTrue();
+
+		// Event must have fired for each connection.
+		Volatile.Read(ref connectCount).Should().Be(2);
+	}
+
+	[TestMethod]
+	public async Task WhenClientConnects_StatusCanBeSentImmediately()
+	{
+		// Simulates the UnoDevEnvironmentService contract: on ClientConnected,
+		// the Ready message must be sendable immediately (not require a
+		// round-trip KeepAlive from the IDE first).
+		var channelId = $"ide-channel-{Guid.NewGuid():N}";
+		using var server = CreateServer();
+		IIdeChannel channel = server;
+
+		var statusSent = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+#pragma warning disable VSTHRD101 // Test-only: exceptions will surface via the TCS.
+		Manager(server).ClientConnected += async () =>
+		{
+			var sent = await channel.TrySendToIdeAsync(
+				new KeepAliveIdeMessage("ready-sim"), CancellationToken.None);
+			statusSent.TrySetResult(sent);
+		};
+#pragma warning restore VSTHRD101
+
+		(await Rebind(server, channelId)).Should().BeTrue();
+		using var client = CreateClient(channelId);
+		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+		await client.ConnectAsync(cts.Token);
+
+		var result = await statusSent.Task.WaitAsync(TimeSpan.FromSeconds(2));
+		result.Should().BeTrue("status must be sendable immediately on ClientConnected");
+	}
+
 	// ── Helpers ──────────────────────────────────────────────────────
 
 	private static IdeChannelServer CreateServer()
