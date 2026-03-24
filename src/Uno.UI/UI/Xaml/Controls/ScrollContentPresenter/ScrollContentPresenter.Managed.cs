@@ -462,11 +462,12 @@ namespace Microsoft.UI.Xaml.Controls
 			var animation = compositor.CreateVector2KeyFrameAnimation();
 			animation.Duration = TimeSpan.FromMilliseconds(durationMs);
 
-			// Sample the exponential decay curve at regular intervals as keyframes.
-			// The composition system linearly interpolates between them, which closely
-			// approximates the smooth exponential curve.
-			const int keyframeInterval = 32; // ms between keyframes (~30fps sampling)
-			var numKeyframes = Math.Max(2, (int)(durationMs / keyframeInterval));
+			// Sample the exponential decay curve at frame-rate-matched intervals.
+			// Using 16ms (60fps) ensures each displayed frame has its own keyframe,
+			// eliminating velocity discontinuities from inter-keyframe linear interpolation
+			// that would otherwise cause subtle visual "shaking" or "tearing" effects.
+			const int keyframeIntervalMs = 16;
+			var numKeyframes = Math.Max(2, (int)(durationMs / keyframeIntervalMs));
 
 			for (var i = 0; i <= numKeyframes; i++)
 			{
@@ -483,24 +484,31 @@ namespace Microsoft.UI.Xaml.Controls
 				animation.InsertKeyFrame(progress, new Vector2((float)-hPos, (float)-vPos));
 			}
 
-			// Throttled offset updates: only call Updated() every Nth frame to reduce
-			// the cost of OnPresenterScrolled + InvalidateViewport + PropagateEffectiveViewportChange.
-			// The visual is still smooth at 60fps because the composition animation drives AnchorPoint.
+			// During the animation, update only the ScrollViewer offset DPs (for scrollbar movement).
+			// CRITICAL: Do NOT call InvalidateViewport() / PropagateEffectiveViewportChange() here.
+			// That triggers layout invalidation (item recycling, re-arrangement) which causes visible
+			// "tearing" — content appears at the animation position while layout elements shift around.
+			// Viewport propagation is deferred to OnInertiaAnimationCompleted for a single clean pass.
 			var frameCount = 0;
 			void OnFrame(CompositionAnimation? _)
 			{
-				// Update scrollbar position and viewport every 2nd frame (~30fps).
-				// This keeps the scrollbar visually smooth while halving the cost of
-				// OnPresenterScrolled + InvalidateViewport + PropagateEffectiveViewportChange.
-				// The content itself is smooth at 60fps because the composition animation
-				// drives AnchorPoint directly.
+				// Update scrollbar position every 2nd frame (~30fps) for smooth scrollbar movement.
+				// Only updates the DP offsets — no layout invalidation, no viewport propagation.
 				if (++frameCount % 2 == 0)
 				{
 					var currentH = Math.Round(-visual.AnchorPoint.X);
 					var currentV = Math.Round(-visual.AnchorPoint.Y);
 					HorizontalOffset = Math.Clamp(currentH, 0, maxH);
 					VerticalOffset = Math.Clamp(currentV, 0, maxV);
-					Updated(HorizontalOffset, VerticalOffset, isIntermediate: true);
+
+					// Update ScrollViewer DPs for scrollbar visuals, but skip full Updated()
+					// which would trigger InvalidateViewport → layout changes → tearing.
+					if (_lastScrolledEvent != (HorizontalOffset, VerticalOffset, true))
+					{
+						_lastScrolledEvent = (HorizontalOffset, VerticalOffset, true);
+						Scroller?.OnPresenterScrolled(HorizontalOffset, VerticalOffset, isIntermediate: true);
+					}
+					ScrollOffsets = new Point(HorizontalOffset, VerticalOffset);
 				}
 			}
 
