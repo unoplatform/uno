@@ -169,6 +169,11 @@ namespace Uno.UI.RemoteControl.HotReload
 		{
 			try
 			{
+				if (this.Log().IsEnabled(LogLevel.Information))
+				{
+					this.Log().Info($"[HotReload] ProcessAssemblyReload ENTER — files=[{string.Join(",", assemblyDeltaReload.FilePaths)}], ModuleId={assemblyDeltaReload.ModuleId}, IsValid={assemblyDeltaReload.IsValid()}, Debugger.IsAttached={Debugger.IsAttached}, TypeMappings.IsPaused={TypeMappings.IsPaused}");
+				}
+
 				if (Debugger.IsAttached)
 				{
 					// the work is done elsewhere but we don't want to report an error
@@ -206,16 +211,16 @@ namespace Uno.UI.RemoteControl.HotReload
 					_status.ConfigureSourceForNextOperation(HotReloadSource.DevServer);
 					_agent?.ApplyDeltas(new[] { delta });
 
-					if (this.Log().IsEnabled(LogLevel.Trace))
+					if (this.Log().IsEnabled(LogLevel.Information))
 					{
-						this.Log().Trace($"Done applying IL Delta for {string.Join(",", assemblyDeltaReload.FilePaths)}, Guid:{assemblyDeltaReload.ModuleId}");
+						this.Log().Info($"[HotReload] ProcessAssemblyReload — ApplyDeltas done for [{string.Join(",", assemblyDeltaReload.FilePaths)}], ModuleId={assemblyDeltaReload.ModuleId}, agent={(_agent is not null ? "set" : "NULL")}");
 					}
 				}
 				else
 				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
+					if (this.Log().IsEnabled(LogLevel.Warning))
 					{
-						this.Log().Trace($"Failed to apply IL Delta for {string.Join(",", assemblyDeltaReload.FilePaths)} ({assemblyDeltaReload})");
+						this.Log().Warn($"[HotReload] ProcessAssemblyReload — delta INVALID for [{string.Join(",", assemblyDeltaReload.FilePaths)}], ModuleId={assemblyDeltaReload.ModuleId}");
 					}
 				}
 			}
@@ -223,7 +228,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error($"An exception occurred when applying IL Delta for {string.Join(",", assemblyDeltaReload.FilePaths)} ({assemblyDeltaReload.ModuleId})", e);
+					this.Log().Error($"[HotReload] ProcessAssemblyReload EXCEPTION for [{string.Join(",", assemblyDeltaReload.FilePaths)}] ({assemblyDeltaReload.ModuleId})", e);
 				}
 			}
 			finally

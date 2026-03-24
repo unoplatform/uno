@@ -100,6 +100,11 @@ partial class ClientHotReloadProcessor
 	/// </summary>
 	private static async Task ReloadWithUpdatedTypes(HotReloadClientOperation? hrOp, Window window, Type[] updatedTypes)
 	{
+		if (_log.IsEnabled(LogLevel.Information))
+		{
+			_log.Info($"[HotReload] ReloadWithUpdatedTypes ENTER — {updatedTypes.Length} type(s): [{string.Join(", ", updatedTypes.Select(t => t.FullName ?? t.Name))}], TypeMappings.IsPaused={TypeMappings.IsPaused}");
+		}
+
 		using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(default);
 
 		var handlerActions = ElementAgent?.ElementHandlerActions;
@@ -110,6 +115,11 @@ partial class ClientHotReloadProcessor
 
 			if (ShouldReload() is { value: false } prevent)
 			{
+				if (_log.IsEnabled(LogLevel.Warning))
+				{
+					_log.Warn($"[HotReload] ReloadWithUpdatedTypes SKIPPED — reason='{prevent.reason}', TypeMappings.IsPaused={TypeMappings.IsPaused}");
+				}
+
 				uiUpdating = false;
 				hrOp?.ReportIgnored(prevent.reason);
 				return;
@@ -294,6 +304,18 @@ partial class ClientHotReloadProcessor
 		}
 		finally
 		{
+			if (uiUpdating)
+			{
+				if (_log.IsEnabled(LogLevel.Information))
+				{
+					_log.Info($"[HotReload] ReloadWithUpdatedTypes COMPLETED — {updatedTypes.Length} type(s)");
+				}
+			}
+			else if (_log.IsEnabled(LogLevel.Warning))
+			{
+				_log.Warn($"[HotReload] ReloadWithUpdatedTypes DID NOT UPDATE — {updatedTypes.Length} type(s), TypeMappings.IsPaused={TypeMappings.IsPaused}");
+			}
+
 			// Action: ReloadCompleted
 			_ = handlerActions?.Do(h =>
 			{
@@ -546,6 +568,11 @@ partial class ClientHotReloadProcessor
 
 	private static void UpdateApplicationCore(Type[] types)
 	{
+		if (_log.IsEnabled(LogLevel.Information))
+		{
+			_log.Info($"[HotReload] UpdateApplicationCore called with {types.Length} type(s): [{string.Join(", ", types.Select(t => t.FullName ?? t.Name))}], TypeMappings.IsPaused={TypeMappings.IsPaused}, CurrentWindow={(CurrentWindow is not null ? "set" : "null")}");
+		}
+
 		var hr = Instance?._status.ReportLocalStarting(types);
 
 		foreach (var type in types)
@@ -594,11 +621,19 @@ partial class ClientHotReloadProcessor
 #if WINUI
 		if (CurrentWindow is { DispatcherQueue: { } dispatcherQueue } window)
 		{
+			if (_log.IsEnabled(LogLevel.Information))
+			{
+				_log.Info($"[HotReload] Dispatching ReloadWithUpdatedTypes on UI thread for {types.Length} type(s)");
+			}
 			dispatcherQueue.TryEnqueue(async () => await ReloadWithUpdatedTypes(hr, window, types));
 		}
 #else
 		if (CurrentWindow is { Dispatcher: { } dispatcher } window)
 		{
+			if (_log.IsEnabled(LogLevel.Information))
+			{
+				_log.Info($"[HotReload] Dispatching ReloadWithUpdatedTypes on UI thread for {types.Length} type(s)");
+			}
 			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await ReloadWithUpdatedTypes(hr, window, types));
 		}
 #endif
