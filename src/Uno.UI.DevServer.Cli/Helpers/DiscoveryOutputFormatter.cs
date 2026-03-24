@@ -146,24 +146,7 @@ internal static class DiscoveryOutputFormatter
 		=> Markup.Escape(value);
 
 	private static string? FormatProcessChain(IReadOnlyList<ProcessChainEntry> processChain)
-	{
-		if (processChain.Count == 0)
-		{
-			return null;
-		}
-
-		// Use the shared formatter, then apply Spectre Console bold markup to names.
-		return string.Join(
-			" → ",
-			processChain.Reverse().Select(entry =>
-			{
-				var name = ProcessChainEntry.ShortenProcessName(entry.ProcessName);
-				var pid = entry.ProcessId.ToString(CultureInfo.InvariantCulture);
-				return string.IsNullOrWhiteSpace(name)
-					? pid
-					: $"[bold]{Escape(name)}[/] ({pid})";
-			}));
-	}
+		=> processChain.Count == 0 ? null : ProcessChainEntry.FormatChain(processChain);
 
 	private static string? GetMissingHint(string key)
 	{
