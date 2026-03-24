@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.RemoteControl.Host;
 
-#pragma warning disable IDE0055 // Linked-source formatting differs between host/CLI workspaces; keep this helper stable.
 public partial class AmbientRegistry
 {
 	/// <summary>
@@ -219,4 +218,3 @@ public partial class AmbientRegistry
 		int processInformationLength,
 		out int returnLength);
 }
-#pragma warning restore IDE0055

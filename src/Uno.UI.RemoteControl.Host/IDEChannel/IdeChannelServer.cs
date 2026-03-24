@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO.Pipes;
 using System.Threading;
@@ -12,7 +12,6 @@ using Uno.UI.RemoteControl.Services;
 
 namespace Uno.UI.RemoteControl.Host.IdeChannel;
 
-#pragma warning disable IDE0055 // This linked source does not converge under dotnet format across all consuming projects.
 /// <summary>
 /// The server end for the "ide-channel" communication.
 /// </summary>
@@ -258,4 +257,3 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 			=> MessageFromDevServer?.Invoke(this, IdeMessageSerializer.Serialize(message));
 	}
 }
-#pragma warning restore IDE0055

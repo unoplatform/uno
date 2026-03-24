@@ -163,7 +163,6 @@ public sealed class DiscoveryInfo
 /// <summary>
 /// Describes an active DevServer instance discovered via the ambient registry.
 /// </summary>
-#pragma warning disable IDE0055 // Shared linked source currently triggers non-converging formatter diagnostics.
 public sealed class ActiveServerInfo
 {
 	public int ProcessId { get; init; }
@@ -181,4 +180,3 @@ public sealed class ActiveServerInfo
 	/// </summary>
 	public bool IsInWorkspace { get; init; }
 }
-#pragma warning restore IDE0055
