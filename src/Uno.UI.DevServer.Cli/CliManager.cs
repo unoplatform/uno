@@ -280,13 +280,21 @@ internal class CliManager
 	{
 		var workingDirectory = workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
 		var info = await _unoToolsLocator.DiscoverAsync(workingDirectory, workspaceResolution);
+
+		// In standalone CLI mode, check if any active workspace-matching server
+		// exists in the AmbientRegistry — if so, the DevServer is effectively started.
+		var activeWorkspaceServer = info.ActiveServers.FirstOrDefault(s => s.IsInWorkspace);
+		var devServerStarted = activeWorkspaceServer is not null;
+
 		var report = HealthReportFactory.Create(
 			info,
-			devServerStarted: false,
+			devServerStarted: devServerStarted,
 			upstreamConnected: false,
 			toolCount: 0,
 			connectionState: null,
-			discoveredSolutions: null);
+			discoveredSolutions: null,
+			hostProcessId: activeWorkspaceServer?.ProcessId,
+			hostEndpoint: activeWorkspaceServer?.McpEndpoint);
 
 		if (outputJson)
 		{
