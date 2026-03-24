@@ -13,13 +13,11 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using System.Linq;
 using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
 
+using Windows.Foundation;
+
 #if HAS_UNO
 using DirectUI;
 using Uno.UI.Xaml.Input;
-using Windows.Foundation;
-
-
-
 #endif
 
 #if WINAPPSDK
@@ -489,6 +487,7 @@ namespace Private.Infrastructure
 				return tcs.Task;
 			}
 
+#if HAS_UNO
 			internal async static Task SetLastInputMethod(InputDeviceType lastInputType, XamlRoot xamlRoot)
 			{
 				// Uno specific: Implementation is a bit different in WinUI.
@@ -501,7 +500,6 @@ namespace Private.Infrastructure
 				});
 			}
 
-#if HAS_UNO
 			internal async static Task<ToolTip> TestGetActualToolTip(UIElement element)
 			{
 				ToolTip toolTip = null;
