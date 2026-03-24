@@ -11,6 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using System.Runtime.Loader;
 using Microsoft.UI.Xaml;
 using Uno;
 using System.Threading.Tasks;
@@ -25,7 +26,8 @@ internal sealed class ElementUpdateAgent : IDisposable
 	private readonly Action<string> _log;
 	private readonly Action<MethodInfo, Exception> _onActionError;
 	private readonly AssemblyLoadEventHandler _assemblyLoad;
-	private readonly ConcurrentDictionary<Type, ElementUpdateHandlerActions> _elementHandlerActions = new();
+	private readonly AssemblyLoadContext _alc;
+	private readonly ConcurrentDictionary<Type, ImmutableList<ElementUpdateHandlerActions>> _elementHandlerActions = new();
 
 	internal const string MetadataUpdaterType = "System.Reflection.Metadata.MetadataUpdater";
 
@@ -33,21 +35,31 @@ internal sealed class ElementUpdateAgent : IDisposable
 	{
 		_log = log;
 		_onActionError = onActionError;
+		_alc = AssemblyLoadContext.GetLoadContext(typeof(ElementUpdateAgent).Assembly)
+			?? AssemblyLoadContext.Default;
 		_assemblyLoad = OnAssemblyLoad;
 		AppDomain.CurrentDomain.AssemblyLoad += _assemblyLoad;
 		LoadElementUpdateHandlerActions();
 	}
 
-	public ImmutableDictionary<Type, ElementUpdateHandlerActions> ElementHandlerActions => _elementHandlerActions.ToImmutableDictionary();
+	public ImmutableDictionary<Type, ImmutableList<ElementUpdateHandlerActions>> ElementHandlerActions
+		=> _elementHandlerActions.ToImmutableDictionary();
 
-	private void OnAssemblyLoad(object? _, AssemblyLoadEventArgs eventArgs) =>
-		// This should only be invoked on the (rare) occasion that assemblies
+	private void OnAssemblyLoad(object? _, AssemblyLoadEventArgs eventArgs)
+	{
+		// Only reload handlers when the loaded assembly belongs to our ALC.
+		// Each ALC has its own agent instance — no need to process other ALCs' assemblies.
+		// Note: This should only be invoked on the (rare) occasion that assemblies
 		// haven't been loaded when the agent is initialized. Since the agent 
 		// is initialized when the first UpdateApplication call is invoked on
 		// the ClientHotReloadProcessor, most assemblies should already be loaded.
 		// For this reason, we don't worry about incrementally loading handlers
 		// we just reload from all assemblies
-		LoadElementUpdateHandlerActions();
+		if (AssemblyLoadContext.GetLoadContext(eventArgs.LoadedAssembly) == _alc)
+		{
+			LoadElementUpdateHandlerActions();
+		}
+	}
 
 	internal sealed class ElementUpdateHandlerActions
 	{
@@ -143,7 +155,7 @@ internal sealed class ElementUpdateAgent : IDisposable
 		// in System.Private.CoreLib is executed before System.Text.Json clears it's own cache.)
 		// This would ensure that caches and updates more lower in the application stack are up to date
 		// before ones higher in the stack are recomputed.
-		var sortedAssemblies = TopologicalSort(AppDomain.CurrentDomain.GetAssemblies());
+		var sortedAssemblies = TopologicalSort(_alc.Assemblies.ToArray());
 		_elementHandlerActions.Clear();
 		foreach (var assembly in sortedAssemblies)
 		{
@@ -192,7 +204,6 @@ internal sealed class ElementUpdateAgent : IDisposable
 
 
 		var updateActions = new ElementUpdateHandlerActions();
-		_elementHandlerActions[elementType] = updateActions;
 
 		if (GetUpdateMethod(handlerType, nameof(ElementUpdateHandlerActions.BeforeVisualTreeUpdate)) is MethodInfo beforeVisualTreeUpdate)
 		{
@@ -271,6 +282,12 @@ internal sealed class ElementUpdateAgent : IDisposable
 		else
 		{
 			_log($"Invokable methods found on metadata handler type '{handlerType}'. ");
+
+			// Append instead of overwrite — multiple handlers can coexist for the same element type
+			_elementHandlerActions.AddOrUpdate(
+				elementType,
+				_ => ImmutableList.Create(updateActions),
+				(_, existing) => existing.Add(updateActions));
 		}
 	}
 
