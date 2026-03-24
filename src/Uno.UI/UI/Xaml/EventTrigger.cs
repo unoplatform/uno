@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace Microsoft.UI.Xaml;
 
@@ -45,7 +46,7 @@ public partial class EventTrigger : TriggerBase
 
 	internal void FireActions()
 	{
-		foreach (var action in Actions)
+		foreach (var action in Actions.ToArray())
 		{
 			if (action is Media.Animation.BeginStoryboard beginStoryboard)
 			{

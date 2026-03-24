@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 
 namespace Microsoft.UI.Xaml;
@@ -38,19 +37,15 @@ public partial class FrameworkElement
 
 		_triggersInitialized = true;
 
-		// Only subscribe to Loaded if not yet loaded
-		// Triggers added after loading fire via TriggerCollection.OnTriggerAdded
-		if (!IsLoaded)
-		{
-			this.Loaded += OnLoadedForTriggers;
-		}
+		// Subscribe to Loaded for the element lifetime so that EventTrigger
+		// actions fire on every Loaded occurrence (e.g. when the element is
+		// removed from the tree and re-added).
+		// Triggers added after loading fire immediately via TriggerCollection.OnTriggerAdded.
+		this.Loaded += OnLoadedForTriggers;
 	}
 
 	private void OnLoadedForTriggers(object sender, RoutedEventArgs e)
 	{
-		// Unsubscribe to prevent memory leaks
-		this.Loaded -= OnLoadedForTriggers;
-
 		FireLoadedTriggers();
 	}
 
@@ -61,12 +56,11 @@ public partial class FrameworkElement
 			return;
 		}
 
-		// EventTrigger only supports Loaded event, so we fire all EventTrigger actions when Loaded fires
-		// Use .ToArray() to avoid collection modification during enumeration
+		// EventTrigger only supports Loaded event, so we fire all EventTrigger actions when Loaded fires.
+		// Use .ToArray() to avoid collection modification during enumeration.
 		foreach (var trigger in _triggers.OfType<EventTrigger>().ToArray())
 		{
 			trigger.FireActions();
 		}
 	}
-
 }

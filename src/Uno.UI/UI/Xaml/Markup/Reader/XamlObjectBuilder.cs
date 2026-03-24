@@ -1510,7 +1510,6 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					else if (propertyType == typeof(RoutedEvent))
 					{
 						// Parse RoutedEvent values in the format "TypeName.EventName" (e.g., "FrameworkElement.Loaded")
-						// The actual validation of which events are supported is done by the property setter (e.g., EventTrigger.RoutedEvent)
 						var normalizedValue = memberValue?.Trim();
 						if (string.IsNullOrEmpty(normalizedValue))
 						{
@@ -1537,16 +1536,16 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 								null, member.LineNumber, member.LinePosition);
 						}
 
-						// Validate that this is the Loaded event on a FrameworkElement-derived type,
-						// which is the only event EventTrigger supports.
-						if (eventName != "Loaded" || !typeof(FrameworkElement).IsAssignableFrom(type))
+						// EventTrigger only supports the Loaded event on FrameworkElement-derived types.
+						var isEventTriggerProperty = member.Owner?.Type?.Name == "EventTrigger";
+						if (isEventTriggerProperty && (eventName != "Loaded" || !typeof(FrameworkElement).IsAssignableFrom(type)))
 						{
 							throw new XamlParseException(
 								$"EventTrigger only supports the FrameworkElement.Loaded event, but got '{normalizedValue}'.",
 								null, member.LineNumber, member.LinePosition);
 						}
 
-						return new RoutedEvent(Uno.UI.Xaml.RoutedEventFlag.None, "Loaded");
+						return new RoutedEvent(Uno.UI.Xaml.RoutedEventFlag.None, eventName);
 					}
 					else
 					{
