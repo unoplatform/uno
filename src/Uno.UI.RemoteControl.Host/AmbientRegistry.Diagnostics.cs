@@ -48,7 +48,7 @@ public partial class AmbientRegistry
 	/// <summary>
 	/// Builds a bounded ancestry chain for diagnostics.
 	/// </summary>
-	public IReadOnlyList<ProcessChainNode> GetProcessChain(DevServerRegistration registration, int maxDepth = 4)
+	public IReadOnlyList<ProcessChainNode> GetProcessChain(DevServerRegistration registration, int maxDepth = 8)
 	{
 		var chain = new List<ProcessChainNode>();
 		var visited = new HashSet<int>();

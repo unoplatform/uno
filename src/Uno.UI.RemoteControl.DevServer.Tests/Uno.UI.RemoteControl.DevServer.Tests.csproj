@@ -69,6 +69,7 @@
 		<Compile Include="..\Uno.UI.RemoteControl.Messaging\IDEChannel\IIdeChannelServer.cs" Link="IDEChannel\IIdeChannelServer.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Messaging\IDEChannel\IdeMessageEnvelope.cs" Link="IDEChannel\IdeMessageEnvelope.cs" />
 
+
 		<!-- Link AmbientRegistry and CsprojUserGenerator for controller bypass testing -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\AmbientRegistry.cs" Link="Mcp\AmbientRegistry.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\AmbientRegistry.Diagnostics.cs" Link="Mcp\AmbientRegistry.Diagnostics.cs" />

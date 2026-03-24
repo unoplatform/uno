@@ -153,10 +153,31 @@ internal static class DiscoveryOutputFormatter
 		}
 
 		return string.Join(
-			" -> ",
-			processChain.Select(entry => string.IsNullOrWhiteSpace(entry.ProcessName)
-				? entry.ProcessId.ToString(CultureInfo.InvariantCulture)
-				: $"{entry.ProcessId.ToString(CultureInfo.InvariantCulture)} ({entry.ProcessName})"));
+			" → ",
+			processChain.Reverse().Select(entry =>
+			{
+				var name = ShortenProcessName(entry.ProcessName);
+				var pid = entry.ProcessId.ToString(CultureInfo.InvariantCulture);
+				return string.IsNullOrWhiteSpace(name)
+					? pid
+					: $"[bold]{Escape(name)}[/] ({pid})";
+			}));
+	}
+
+	private static string? ShortenProcessName(string? name)
+	{
+		if (string.IsNullOrWhiteSpace(name))
+		{
+			return name;
+		}
+
+		// Shorten well-known verbose process names for readability.
+		if (name.StartsWith("Uno.UI.RemoteControl.Host", StringComparison.OrdinalIgnoreCase))
+		{
+			return "Host";
+		}
+
+		return name;
 	}
 
 	private static string? GetMissingHint(string key)

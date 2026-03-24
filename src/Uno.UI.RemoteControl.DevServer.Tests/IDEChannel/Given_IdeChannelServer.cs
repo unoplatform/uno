@@ -2,6 +2,8 @@ using System.IO.Pipes;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Uno.UI.RemoteControl.Host.IdeChannel;
+using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using Uno.UI.RemoteControl.Services;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.IDEChannel;
 
@@ -126,6 +128,78 @@ public class Given_IdeChannelServer
 		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
 		await client.ConnectAsync(cts.Token);
 		(await server.WaitForReady()).Should().BeTrue();
+	}
+
+	[TestMethod]
+	public async Task WhenRebindAfterStartup_TrySendSucceedsOnceClientConnects()
+	{
+		var channelId = $"ide-channel-{Guid.NewGuid():N}";
+		using var server = CreateServer();
+		IIdeChannel channel = server;
+
+		// At startup the Host has no IDE channel — TrySend should fail.
+		var sentBeforeRebind = await channel.TrySendToIdeAsync(
+			new KeepAliveIdeMessage("test"), CancellationToken.None);
+		sentBeforeRebind.Should().BeFalse("no channel is configured yet");
+
+		// Rebind creates the pipe.
+		(await Rebind(server, channelId)).Should().BeTrue();
+
+		// Connect a client.
+		using var client = CreateClient(channelId);
+		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+		await client.ConnectAsync(cts.Token);
+		(await server.WaitForReady()).Should().BeTrue();
+
+		// Now TrySend should succeed — this is the path UnoDevEnvironmentService
+		// takes after receiving the first KeepAlive from the IDE.
+		var sentAfterRebind = await channel.TrySendToIdeAsync(
+			new KeepAliveIdeMessage("test"), CancellationToken.None);
+		sentAfterRebind.Should().BeTrue("channel is connected after rebind");
+	}
+
+	[TestMethod]
+	public async Task WhenRebindAfterStartup_MessageFromIdeSignalsReconnect()
+	{
+		// Integration test: simulates what UnoDevEnvironmentService does when the
+		// Host starts without --ideChannel (MCP scenario). The service tries to
+		// send a Ready message, fails, subscribes to MessageFromIde, then retries
+		// after the IDE channel is established via rebind + client connection.
+
+		var channelId = $"ide-channel-{Guid.NewGuid():N}";
+		using var server = CreateServer();
+		IIdeChannel channel = server;
+
+		// Step 1: TrySend fails (no channel).
+		var sent = await channel.TrySendToIdeAsync(
+			new KeepAliveIdeMessage("ready-sim"), CancellationToken.None);
+		sent.Should().BeFalse();
+
+		// Step 2: Subscribe to incoming messages (like UnoDevEnvironmentService does).
+		var ideMessageReceived = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+		channel.MessageFromIde += (_, _) => ideMessageReceived.TrySetResult();
+
+		// Step 3: Rebind + client connects.
+		(await Rebind(server, channelId)).Should().BeTrue();
+		using var client = CreateClient(channelId);
+		using var connectCts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+		await client.ConnectAsync(connectCts.Token);
+		(await server.WaitForReady()).Should().BeTrue();
+
+		// Step 4: Client sends a KeepAlive (simulates IDE sending its first message).
+		var rpcClient = StreamJsonRpc.JsonRpc.Attach<IIdeChannelServer>(client);
+		await rpcClient.SendToDevServerAsync(
+			IdeMessageSerializer.Serialize(new KeepAliveIdeMessage("IDE")),
+			CancellationToken.None);
+
+		// Step 5: The MessageFromIde event should fire (signal for retry).
+		using var waitCts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+		await ideMessageReceived.Task.WaitAsync(waitCts.Token);
+
+		// Step 6: Re-send succeeds — the IDE can now leave "Starting...".
+		var sentAfter = await channel.TrySendToIdeAsync(
+			new KeepAliveIdeMessage("ready-sim"), CancellationToken.None);
+		sentAfter.Should().BeTrue("channel is live after IDE message triggers retry");
 	}
 
 	// ── Helpers ──────────────────────────────────────────────────────
