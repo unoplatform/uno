@@ -16,16 +16,9 @@ public class UnoDevEnvironmentService(IIdeChannel ideChannel, AddInsStatus addIn
 	{
 		var udeiMessage = BuildStatusMessage();
 
-		// Try to send immediately (works when IDE channel was configured at startup).
-		if (await ideChannel.TrySendToIdeAsync(udeiMessage, stoppingToken))
-		{
-			return;
-		}
-
-		// The IDE channel is not ready yet (e.g. Host was started by MCP without
-		// --ideChannel and the channel will be created later via rebind).
-		// Wait for the first incoming IDE message (typically a KeepAlive) as a
-		// signal that the channel is now connected, then publish the status.
+		// Subscribe BEFORE the first send attempt to close the race window
+		// between TrySend failing and the channel connecting. If the channel
+		// connects in between, we still get the signal.
 		var connected = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
 
 		void OnMessage(object? sender, IdeMessage msg) => connected.TrySetResult();
@@ -33,6 +26,16 @@ public class UnoDevEnvironmentService(IIdeChannel ideChannel, AddInsStatus addIn
 		ideChannel.MessageFromIde += OnMessage;
 		try
 		{
+			// Try to send immediately (works when IDE channel was configured at startup).
+			if (await ideChannel.TrySendToIdeAsync(udeiMessage, stoppingToken))
+			{
+				return;
+			}
+
+			// The IDE channel is not ready yet (e.g. Host was started by MCP without
+			// --ideChannel and the channel will be created later via rebind).
+			// Wait for the first incoming IDE message (typically a KeepAlive) as a
+			// signal that the channel is now connected, then publish the status.
 			await connected.Task.WaitAsync(stoppingToken);
 			await ideChannel.SendToIdeAsync(udeiMessage, stoppingToken);
 		}
