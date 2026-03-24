@@ -1,9 +1,9 @@
 using System.Diagnostics;
 using System.Text.Json;
-using Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
 using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
-using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
 using Uno.UI.RemoteControl.Helpers;
+using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.AppLaunch;
 
