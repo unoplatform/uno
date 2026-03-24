@@ -48,11 +48,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _pendingTouchIsIntermediate;
 		private EventHandler<object>? _touchUpdateHandler;
 
-		// Composition-driven inertia: instead of running managed code every frame (inertia processor
-		// → gesture recognizer → event → Set → Update → viewport propagation), we pre-compute the
-		// exponential decay curve as keyframes and let the composition animation system drive the
-		// Visual.AnchorPoint directly. This makes inertia as smooth as any other composition animation.
-		private bool _isInertiaAnimationRunning;
 #nullable restore
 
 		private bool _canHorizontallyScroll;
@@ -146,7 +141,7 @@ namespace Microsoft.UI.Xaml.Controls
 				UnhookScrollEvents(sv);
 			}
 			FlushPendingTouchUpdate();
-			StopInertiaAnimation();
+
 			_touchInertia?.Complete();
 			_touchInertia = null;
 		}
@@ -261,9 +256,8 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!options.IsTouch)
 			{
 				// If we get a request to scroll to a specific offset **that is not flagged as IsInertial** (i.e. not coming from the inertia processing),
-				// we stop the pending inertia processor and any running inertia animation.
+				// we stop the pending inertia processor.
 				_touchInertia?.Complete();
-				StopInertiaAnimation();
 			}
 
 			var updatedHorizontalOffset = HorizontalOffset;
@@ -348,15 +342,18 @@ namespace Microsoft.UI.Xaml.Controls
 				// Multiple writes per frame are fine; only the last value is used at render time.
 				visual.AnchorPoint = target;
 
-				if (options.IsTouch && options.IsIntermediate)
+				if (options.IsTouch && options.IsIntermediate && _touchInertia is null)
 				{
-					// During active touch scrolling (finger on screen or inertia), defer the expensive
+					// During active touch scrolling (finger on screen, NOT inertia), defer the expensive
 					// Updated() call to once per frame. This batches N pointer moves into 1 Updated().
+					// We DON'T defer during inertia because the inertia processor fires exactly once per
+					// frame during CompositionTarget.Rendering (BEFORE layout), and we need layout to
+					// process the new scroll position in the SAME frame to avoid tearing.
 					ScheduleDeferredTouchUpdate(horizontalOffset, verticalOffset, options.IsIntermediate);
 				}
 				else
 				{
-					// Non-intermediate (final) or non-touch: flush immediately for correct event sequencing.
+					// Inertia, non-intermediate (final), or non-touch: flush immediately.
 					FlushPendingTouchUpdate();
 					Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
 				}
@@ -414,161 +411,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		/// <summary>
-		/// Starts a composition-animation-driven inertia scroll.
-		/// Pre-computes the exponential decay curve as keyframes so the composition system
-		/// drives the Visual.AnchorPoint directly — no managed code per frame.
-		/// </summary>
-		private void StartInertiaAnimation(
-			ManipulationVelocities velocities,
-			double deceleration,
-			ScrollableOffsets scrollable)
-		{
-			if (Content is not UIElement contentElt)
-			{
-				return;
-			}
-
-			// Flush any pending touch updates before starting the animation
-			FlushPendingTouchUpdate();
-
-			// Velocities are in pointer-position space (px/ms). Negate to get scroll-offset velocity.
-			// When pointer moves right (positive velocity), content scrolls left (offset decreases).
-			var v0H = -velocities.Linear.X;
-			var v0V = -velocities.Linear.Y;
-			var k = deceleration;
-
-			// Compute duration: time until velocity drops below threshold
-			var maxAbsV = Math.Max(Math.Abs(v0H), Math.Abs(v0V));
-			if (maxAbsV <= GestureRecognizer.Manipulation.InertiaProcessor.VelocityThreshold)
-			{
-				// Velocity too low for visible inertia
-				OnInertiaAnimationCompleted(contentElt);
-				return;
-			}
-
-			var durationMs = GestureRecognizer.Manipulation.InertiaProcessor.GetCompletionTime(maxAbsV, k);
-
-			// Clamp to reasonable max (avoid extremely long animations from very fast flings)
-			durationMs = Math.Min(durationMs, 5000);
-
-			var maxH = Math.Max(0, Scroller?.ScrollableWidth ?? ExtentWidth - ViewportWidth);
-			var maxV = Math.Max(0, Scroller?.ScrollableHeight ?? ExtentHeight - ViewportHeight);
-			var startH = HorizontalOffset;
-			var startV = VerticalOffset;
-
-			var visual = contentElt.Visual;
-			var compositor = visual.Compositor;
-			var animation = compositor.CreateVector2KeyFrameAnimation();
-			animation.Duration = TimeSpan.FromMilliseconds(durationMs);
-
-			// Sample the exponential decay curve at frame-rate-matched intervals.
-			// Using 16ms (60fps) ensures each displayed frame has its own keyframe,
-			// eliminating velocity discontinuities from inter-keyframe linear interpolation
-			// that would otherwise cause subtle visual "shaking" or "tearing" effects.
-			const int keyframeIntervalMs = 16;
-			var numKeyframes = Math.Max(2, (int)(durationMs / keyframeIntervalMs));
-
-			for (var i = 0; i <= numKeyframes; i++)
-			{
-				var progress = (float)i / numKeyframes;
-				var tMs = progress * durationMs;
-
-				var hPos = startH + GestureRecognizer.Manipulation.InertiaProcessor.GetValue(v0H, k, tMs);
-				var vPos = startV + GestureRecognizer.Manipulation.InertiaProcessor.GetValue(v0V, k, tMs);
-
-				// Clamp to scrollable bounds
-				hPos = Math.Clamp(hPos, 0, maxH);
-				vPos = Math.Clamp(vPos, 0, maxV);
-
-				animation.InsertKeyFrame(progress, new Vector2((float)-hPos, (float)-vPos));
-			}
-
-			// During the animation, update only the ScrollViewer offset DPs (for scrollbar movement).
-			// CRITICAL: Do NOT call InvalidateViewport() / PropagateEffectiveViewportChange() here.
-			// That triggers layout invalidation (item recycling, re-arrangement) which causes visible
-			// "tearing" — content appears at the animation position while layout elements shift around.
-			// Viewport propagation is deferred to OnInertiaAnimationCompleted for a single clean pass.
-			var frameCount = 0;
-			void OnFrame(CompositionAnimation? _)
-			{
-				// Update scrollbar position every 2nd frame (~30fps) for smooth scrollbar movement.
-				// Only updates the DP offsets — no layout invalidation, no viewport propagation.
-				if (++frameCount % 2 == 0)
-				{
-					var currentH = Math.Round(-visual.AnchorPoint.X);
-					var currentV = Math.Round(-visual.AnchorPoint.Y);
-					HorizontalOffset = Math.Clamp(currentH, 0, maxH);
-					VerticalOffset = Math.Clamp(currentV, 0, maxV);
-
-					// Update ScrollViewer DPs for scrollbar visuals, but skip full Updated()
-					// which would trigger InvalidateViewport → layout changes → tearing.
-					if (_lastScrolledEvent != (HorizontalOffset, VerticalOffset, true))
-					{
-						_lastScrolledEvent = (HorizontalOffset, VerticalOffset, true);
-						Scroller?.OnPresenterScrolled(HorizontalOffset, VerticalOffset, isIntermediate: true);
-					}
-					ScrollOffsets = new Point(HorizontalOffset, VerticalOffset);
-				}
-			}
-
-			void OnStopped(object? _, EventArgs __)
-			{
-				animation.AnimationFrame -= OnFrame;
-				animation.Stopped -= OnStopped;
-				OnInertiaAnimationCompleted(contentElt);
-			}
-
-			animation.AnimationFrame += OnFrame;
-			animation.Stopped += OnStopped;
-
-			// Stop any existing animation and start the inertia animation
-			if (visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is not null)
-			{
-				visual.StopAnimation(nameof(Visual.AnchorPoint));
-			}
-
-			_isInertiaAnimationRunning = true;
-			visual.StartAnimation(nameof(Visual.AnchorPoint), animation);
-		}
-
-		private void OnInertiaAnimationCompleted(UIElement contentElt)
-		{
-			_isInertiaAnimationRunning = false;
-
-			// Read the final position from the visual
-			var visual = contentElt.Visual;
-			var finalH = Math.Round(-visual.AnchorPoint.X);
-			var finalV = Math.Round(-visual.AnchorPoint.Y);
-
-			var maxH = Math.Max(0, Scroller?.ScrollableWidth ?? ExtentWidth - ViewportWidth);
-			var maxV = Math.Max(0, Scroller?.ScrollableHeight ?? ExtentHeight - ViewportHeight);
-
-			HorizontalOffset = Math.Clamp(finalH, 0, maxH);
-			VerticalOffset = Math.Clamp(finalV, 0, maxV);
-
-			// Fire final non-intermediate Updated
-			Updated(HorizontalOffset, VerticalOffset, isIntermediate: false);
-
-#if __SKIA__
-			Scroller?.LeaveIntermediateViewChangedMode(raiseFinalViewChanged: true);
-#endif
-		}
-
-		/// <summary>
-		/// Stops a running inertia animation (e.g. when user touches during fling)
-		/// and synchronizes the scroll offset to the current visual position.
-		/// </summary>
-		private void StopInertiaAnimation()
-		{
-			if (_isInertiaAnimationRunning && Content is UIElement contentElt)
-			{
-				var visual = contentElt.Visual;
-				visual.StopAnimation(nameof(Visual.AnchorPoint));
-				// StopAnimation triggers the Stopped callback which calls OnInertiaAnimationCompleted
-			}
-		}
-
 		private void TryEnableDirectManipulation(object sender, PointerRoutedEventArgs args)
 		{
 			if (args.Pointer.PointerDeviceType is not (_PointerDeviceType.Pen or _PointerDeviceType.Touch))
@@ -589,7 +431,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_touchInertia = null;
 
 			// Stop any running composition-driven inertia animation (user touched during fling).
-			StopInertiaAnimation();
+
 
 			var mode = ManipulationModes.None;
 			var scrollable = GetScrollableOffsets();
@@ -809,21 +651,17 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				// Instead of letting the inertia processor tick managed code every frame
-				// (physics → gesture recognizer → events → Set → viewport propagation),
-				// we pre-compute the exponential decay curve as a composition animation.
-				// This makes inertia as smooth as any other composition animation (e.g. RedirectVisual).
-				_touchInertia = null; // Don't allow inertia processor ticks in OnUpdated
+				// We can handle the inertia scrolling, configure to accept allow it by assigning the _touchInertia field.
+				_touchInertia = args.Manipulation;
 
-				// Complete the gesture to stop the inertia processor from ticking.
-				// OnCompleted will see _touchInertia == null && IsInertial, so it early-returns
-				// without touching intermediate mode.
-				recognizer.CompleteGesture();
+				// Even if usually empty, make sure to apply the delta
+				var deltaX = Math.Clamp(-args.Delta.Translation.X, scrollable.Left, scrollable.Right);
+				var deltaY = Math.Clamp(-args.Delta.Translation.Y, scrollable.Up, scrollable.Down);
 
-				StartInertiaAnimation(
-					args.Velocities,
-					inertia.DesiredDisplacementDeceleration,
-					scrollable);
+				Set(
+					horizontalOffset: HorizontalOffset + deltaX,
+					verticalOffset: VerticalOffset + deltaY,
+					options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: true));
 			}
 
 			return true;
@@ -834,13 +672,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (args?.IsInertial is true && _touchInertia is null)
 			{
-				if (_isInertiaAnimationRunning)
-				{
-					// The inertia is now driven by a composition animation, not the processor.
-					// Don't touch intermediate mode — the animation's Stopped callback handles it.
-					return;
-				}
-
 				// Inertia has been aborted (external ChangeView request?) or was not even allowed, do not try to apply the final value.
 #if __SKIA__
 				Scroller?.LeaveIntermediateViewChangedMode(raiseFinalViewChanged: false);
