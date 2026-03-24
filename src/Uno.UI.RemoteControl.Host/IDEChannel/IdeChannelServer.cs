@@ -12,21 +12,26 @@ using Uno.UI.RemoteControl.Services;
 
 namespace Uno.UI.RemoteControl.Host.IdeChannel;
 
+#pragma warning disable IDE0055 // This linked source does not converge under dotnet format across all consuming projects.
 /// <summary>
 /// The server end for the "ide-channel" communication.
 /// </summary>
-internal class IdeChannelServer : IIdeChannel, IDisposable
+internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 {
 	private readonly ILogger _logger;
 	private readonly IDisposable? _configSubscription;
 
-	private Task<bool> _initializeTask;
+	private Task<bool> _initializeTask = Task.FromResult(false);
+	private CancellationTokenSource? _initializeCts;
 	private NamedPipeServerStream? _pipeServer;
 	private JsonRpc? _rpcServer;
 	private Proxy? _proxy;
 	private readonly Timer _keepAliveTimer;
+	private string? _channelId;
 
 	internal bool IsConnected => _pipeServer?.IsConnected ?? false;
+	string? IIdeChannelManager.ChannelId => _channelId;
+	bool IIdeChannelManager.IsConnected => IsConnected;
 
 	public IdeChannelServer(ILogger<IdeChannelServer> logger, IOptionsMonitor<IdeChannelServerOptions> config)
 	{
@@ -44,8 +49,8 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 			}
 		});
 
-		_initializeTask = Task.Run(() => InitializeServer(config.CurrentValue.ChannelId));
-		_configSubscription = config.OnChange(opts => _initializeTask = InitializeServer(opts.ChannelId));
+		_ = ConfigureServerAsync(config.CurrentValue.ChannelId, waitForConnection: false);
+		_configSubscription = config.OnChange(opts => _ = ConfigureServerAsync(opts.ChannelId, waitForConnection: false));
 	}
 
 	#region IIdeChannel
@@ -63,7 +68,7 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 
 		if (_proxy is null)
 		{
-			this.Log().LogInformation(
+			_logger.LogInformation(
 				"Received a message {MessageType} to send to the IDE, but there is no connection available for that.",
 				message.Scope);
 
@@ -85,23 +90,24 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 		=> await _initializeTask;
 #pragma warning restore VSTHRD003
 
+	Task<bool> IIdeChannelManager.RebindAsync(
+		string? channelId,
+		CancellationToken cancellationToken)
+		=> ConfigureServerAsync(channelId, waitForConnection: false, cancellationToken);
+
 	/// <summary>
-	/// Initialize as dev-server (cf. IdeChannelClient for init as IDE)
+	/// Configures the named pipe for the active IDE channel. The caller can
+	/// either wait for an actual client connection or only for the listener to
+	/// become available, which is required when rebinding from the HTTP control
+	/// surface.
 	/// </summary>
-	private async Task<bool> InitializeServer(string? channelId)
+	private async Task<bool> ConfigureServerAsync(string? channelId, bool waitForConnection, CancellationToken cancellationToken = default)
 	{
+		_channelId = channelId;
+
 		try
 		{
-			// First, we remove the proxy to prevent messages being sent while we are re-initializing
-			_proxy = null;
-
-			// Disposing any previous server
-			_rpcServer?.Dispose();
-			if (_pipeServer is { } server)
-			{
-				server.Disconnect();
-				await server.DisposeAsync();
-			}
+			await DisposeCurrentServerAsync();
 		}
 		catch (Exception error)
 		{
@@ -112,10 +118,11 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 		{
 			if (string.IsNullOrWhiteSpace(channelId))
 			{
+				_initializeTask = Task.FromResult(false);
 				return false;
 			}
 
-			_pipeServer = new NamedPipeServerStream(
+			var pipeServer = new NamedPipeServerStream(
 				pipeName: channelId,
 				direction: PipeDirection.InOut,
 				maxNumberOfServerInstances: 1,
@@ -124,10 +131,72 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 				inBufferSize: 8 * 1024 * 1024,
 				outBufferSize: 8 * 1024 * 1024);
 
-			await _pipeServer.WaitForConnectionAsync();
+			_pipeServer = pipeServer;
+			_initializeCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+			_initializeTask = WaitForClientConnectionAsync(pipeServer, _initializeCts.Token);
+
+			return waitForConnection
+				? await _initializeTask
+				: true;
+		}
+		catch (Exception error)
+		{
+			if (_logger.IsEnabled(LogLevel.Error))
+			{
+				_logger.LogError(error, "Failed to init the IDE channel.");
+			}
+
+			return false;
+		}
+	}
+
+	private async Task DisposeCurrentServerAsync()
+	{
+		_proxy = null;
+
+		if (_initializeCts is { } initializeCts)
+		{
+			_initializeCts = null;
+			await initializeCts.CancelAsync();
+			initializeCts.Dispose();
+		}
+
+		_rpcServer?.Dispose();
+		_rpcServer = null;
+
+		if (_pipeServer is { } server)
+		{
+			_pipeServer = null;
+
+			try
+			{
+				if (server.IsConnected)
+				{
+					server.Disconnect();
+				}
+			}
+			catch (InvalidOperationException)
+			{
+				// The pipe might not have completed its connection handshake yet.
+			}
+
+			await server.DisposeAsync();
+		}
+	}
+
+	private async Task<bool> WaitForClientConnectionAsync(NamedPipeServerStream pipeServer, CancellationToken cancellationToken)
+	{
+		try
+		{
+			await pipeServer.WaitForConnectionAsync(cancellationToken);
+
+			if (!ReferenceEquals(_pipeServer, pipeServer))
+			{
+				return false;
+			}
 
 			_proxy = new(this);
-			_rpcServer = JsonRpc.Attach(_pipeServer, _proxy);
+			_rpcServer = JsonRpc.Attach(pipeServer, _proxy);
 
 			if (_logger.IsEnabled(LogLevel.Debug))
 			{
@@ -135,10 +204,13 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 			}
 
 			ScheduleKeepAlive();
-
 			SendKeepAlive(); // Send a keep-alive message immediately after connection
 
 			return true;
+		}
+		catch (OperationCanceledException)
+		{
+			return false;
 		}
 		catch (Exception error)
 		{
@@ -160,10 +232,14 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 	/// <inheritdoc />
 	public void Dispose()
 	{
+#pragma warning disable VSTHRD103 // Dispose is synchronous; cancelling pending waits is a best-effort cleanup.
 		_keepAliveTimer.Dispose();
 		_configSubscription?.Dispose();
+		_initializeCts?.Cancel();
+		_initializeCts?.Dispose();
 		_rpcServer?.Dispose();
 		_pipeServer?.Dispose();
+#pragma warning restore VSTHRD103
 	}
 
 	private class Proxy(IdeChannelServer Owner) : IIdeChannelServer
@@ -182,3 +258,4 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 			=> MessageFromDevServer?.Invoke(this, IdeMessageSerializer.Serialize(message));
 	}
 }
+#pragma warning restore IDE0055

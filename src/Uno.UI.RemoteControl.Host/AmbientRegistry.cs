@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace Uno.UI.RemoteControl.Host;
 
 /// <seealso href="ambient-registry.md"/>
-public class AmbientRegistry(ILogger logger)
+public partial class AmbientRegistry(ILogger logger)
 {
 	private static readonly string RegistryDirectory =
 		Path.Combine(ResolveLocalApplicationDataPath(), "Uno Platform", "DevServers");
@@ -230,7 +230,9 @@ public class AmbientRegistry(ILogger logger)
 	/// </summary>
 	public void CleanupStaleRegistrations()
 	{
-		_ = GetActiveDevServers(); // This will automatically clean up stale registrations
+		// Reuse the active-servers enumeration so stale files are pruned by the
+		// same logic that normal discovery already uses.
+		_ = GetActiveDevServers();
 	}
 
 	private bool IsProcessRunning(int processId)

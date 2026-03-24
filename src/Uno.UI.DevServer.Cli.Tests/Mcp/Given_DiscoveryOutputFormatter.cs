@@ -29,4 +29,41 @@ public class Given_DiscoveryOutputFormatter
 		output.Should().Contain("250");
 		output.Should().NotContain("discoveryDurationMs");
 	}
+
+	[TestMethod]
+	[Description("Active server diagnostics include the process ancestry chain so callers can identify who launched the host")]
+	public void WhenPlainTextIsWritten_ActiveServersIncludeProcessChain()
+	{
+		var info = new DiscoveryInfo
+		{
+			RequestedWorkingDirectory = @"D:\src\repo",
+			WorkingDirectory = @"D:\src\repo",
+			ActiveServers =
+			[
+				new ActiveServerInfo
+				{
+					ProcessId = 1234,
+					Port = 61616,
+					McpEndpoint = "http://localhost:61616/mcp",
+					ParentProcessId = 4321,
+					SolutionPath = @"D:\src\repo\Repo.sln",
+					IsInWorkspace = true,
+					ProcessChain =
+					[
+						new ProcessChainEntry { ProcessId = 1234, ProcessName = "Uno.UI.RemoteControl.Host" },
+						new ProcessChainEntry { ProcessId = 4321, ProcessName = "dotnet" },
+						new ProcessChainEntry { ProcessId = 9876, ProcessName = "kiro" },
+					],
+				},
+			],
+		};
+
+		AnsiConsole.Record();
+		DiscoveryOutputFormatter.WritePlainText(info);
+		var output = AnsiConsole.ExportText();
+
+		output.Should().Contain("processChain");
+		output.Should().Contain("1234 (Uno.UI.RemoteControl.Host) -> 4321");
+		output.Should().Contain("(dotnet) -> 9876 (kiro)");
+	}
 }

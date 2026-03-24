@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Spectre.Console;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
@@ -77,6 +78,7 @@ internal static class DiscoveryOutputFormatter
 				AddRow(table, "parentProcessId", server.ParentProcessId.ToString(CultureInfo.InvariantCulture));
 				AddRow(table, "startTime", server.StartTime.ToString("yyyy-MM-dd HH:mm:ss UTC", CultureInfo.InvariantCulture));
 				AddRow(table, "ideChannelId", server.IdeChannelId);
+				AddRow(table, "processChain", FormatProcessChain(server.ProcessChain));
 				if (server != info.ActiveServers[^1])
 				{
 					table.AddEmptyRow();
@@ -142,6 +144,20 @@ internal static class DiscoveryOutputFormatter
 
 	private static string Escape(string value)
 		=> Markup.Escape(value);
+
+	private static string? FormatProcessChain(IReadOnlyList<ProcessChainEntry> processChain)
+	{
+		if (processChain.Count == 0)
+		{
+			return null;
+		}
+
+		return string.Join(
+			" -> ",
+			processChain.Select(entry => string.IsNullOrWhiteSpace(entry.ProcessName)
+				? entry.ProcessId.ToString(CultureInfo.InvariantCulture)
+				: $"{entry.ProcessId.ToString(CultureInfo.InvariantCulture)} ({entry.ProcessName})"));
+	}
 
 	private static string? GetMissingHint(string key)
 	{

@@ -56,4 +56,47 @@ public class Given_HealthReportFormatter
 		text.Should().Contain(@"Solution: D:\src\studio.live\src\StudioLive.slnx");
 		text.Should().Contain("Resolution: AutoDiscovered");
 	}
+
+	[TestMethod]
+	public void WhenPlainTextRequested_IncludesActiveServerOwnershipDetails()
+	{
+		var report = new HealthReport
+		{
+			Status = HealthStatus.Degraded,
+			UpstreamConnected = true,
+			ToolCount = 11,
+			EffectiveWorkspaceDirectory = @"D:\src\studio.live\src",
+			SelectedSolutionPath = @"D:\src\studio.live\src\StudioLive.slnx",
+			ResolutionKind = WorkspaceResolutionKind.AutoDiscovered,
+			Issues = [],
+			Discovery = new DiscoverySummary
+			{
+				ActiveServers =
+				[
+					new ActiveServerSummary
+					{
+						ProcessId = 100,
+						Port = 61616,
+						McpEndpoint = "http://localhost:61616/mcp",
+						ParentProcessId = 50,
+						IdeChannelId = "abc",
+						SolutionPath = @"D:\src\studio.live\src\StudioLive.slnx",
+						IsInWorkspace = true,
+						ProcessChain =
+						[
+							new ProcessChainEntry { ProcessId = 100, ProcessName = "Uno.UI.RemoteControl.Host" },
+							new ProcessChainEntry { ProcessId = 50, ProcessName = "dotnet" },
+							new ProcessChainEntry { ProcessId = 25, ProcessName = "kiro" },
+						],
+					},
+				],
+			},
+		};
+
+		var text = HealthReportFormatter.FormatPlainText(report);
+
+		text.Should().Contain("Active Servers:");
+		text.Should().Contain("Process Chain: 100 (Uno.UI.RemoteControl.Host) -> 50 (dotnet) -> 25 (kiro)");
+		text.Should().Contain("IDE Channel: abc");
+	}
 }
