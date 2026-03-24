@@ -128,7 +128,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		// only start listening to events after we're done setting everything up
 		InitializeX11EventsThread();
-		InitRenderThread();
+		_renderThread = InitRenderThread();
 
 		var windowBackgroundDisposable = _window.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
 		UpdateRendererBackground();
@@ -142,9 +142,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
 				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 				windowBackgroundDisposable.Dispose();
-				_renderLoopRunning = false;
-				_renderRequested.Set(); // wake up the render thread so it can exit
-				_renderer?.Dispose();
+				_renderRequested.Dispose();
 			}
 		});
 	}
@@ -296,6 +294,12 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			{
 				using (X11Helper.XLock(x11window.Display))
 				{
+					// The rendering thread needs to be stopped before we destroy the window,
+					// otherwise we might end up in a situation where the render thread is
+					// trying to render on a destroyed window.
+					host._renderLoopRunning = false;
+					host._renderRequested.Set(); // wake up the render loop so it can see that it needs to exit
+					host._renderThread.Join();
 					host._closed.SetResult();
 				}
 			}
