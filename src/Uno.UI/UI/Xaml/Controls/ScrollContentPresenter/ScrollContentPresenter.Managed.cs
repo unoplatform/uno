@@ -48,6 +48,15 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _pendingTouchIsIntermediate;
 		private EventHandler<object>? _touchUpdateHandler;
 
+		// Inertia viewport throttle: PropagateEffectiveViewportChange() can trigger
+		// heavy layout (ItemsRepeater measure, item recycling). If that layout doesn't
+		// fully resolve in one UpdateLayout() pass, CanRecordPicture returns false and
+		// the frame is SKIPPED, causing visible ghosting. By throttling EVP to every Nth
+		// inertia frame, most frames are lightweight (just AnchorPoint + scroll offset DPs)
+		// and always render. Items still materialize at ~20fps which is imperceptible.
+		private int _inertiaFrameCount;
+		private const int InertiaViewportUpdateInterval = 3;
+
 #nullable restore
 
 		private bool _canHorizontallyScroll;
@@ -340,20 +349,46 @@ namespace Microsoft.UI.Xaml.Controls
 
 				// Always set AnchorPoint immediately — this is cheap (just a field write + RequestNewFrame).
 				// Multiple writes per frame are fine; only the last value is used at render time.
-				visual.AnchorPoint = target;
+				// Pixel-snap to integer values to avoid subpixel text rendering artifacts
+				// (shimmer/ghosting from fractional offsets during inertia decay).
+				visual.AnchorPoint = new Vector2(MathF.Round(target.X), MathF.Round(target.Y));
 
 				if (options.IsTouch && options.IsIntermediate && _touchInertia is null)
 				{
 					// During active touch scrolling (finger on screen, NOT inertia), defer the expensive
 					// Updated() call to once per frame. This batches N pointer moves into 1 Updated().
-					// We DON'T defer during inertia because the inertia processor fires exactly once per
-					// frame during CompositionTarget.Rendering (BEFORE layout), and we need layout to
-					// process the new scroll position in the SAME frame to avoid tearing.
 					ScheduleDeferredTouchUpdate(horizontalOffset, verticalOffset, options.IsIntermediate);
+				}
+				else if (options.IsTouch && options.IsIntermediate && _touchInertia is not null)
+				{
+					// Inertia: update immediately but throttle viewport propagation.
+					// PropagateEffectiveViewportChange() can trigger heavy layout (ItemsRepeater
+					// measure, item recycling). If layout doesn't fully resolve in one pass,
+					// CanRecordPicture returns false → frame skipped → visible ghosting.
+					// By only doing the full EVP every Nth frame, most frames are guaranteed
+					// to render. Items materialize at ~20fps which is imperceptible.
+					FlushPendingTouchUpdate();
+					_inertiaFrameCount++;
+					if (_inertiaFrameCount % InertiaViewportUpdateInterval == 0)
+					{
+						// Full update: scroll offsets + OnPresenterScrolled + InvalidateViewport
+						Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
+					}
+					else
+					{
+						// Lightweight update: scroll offsets + scrollbar DPs only (no EVP tree walk).
+						// AnchorPoint was already set above, so the visual moves at 60fps.
+						if (_lastScrolledEvent != (horizontalOffset, verticalOffset, true))
+						{
+							_lastScrolledEvent = (horizontalOffset, verticalOffset, true);
+							Scroller?.OnPresenterScrolled(horizontalOffset, verticalOffset, isIntermediate: true);
+						}
+						ScrollOffsets = new Point(horizontalOffset, verticalOffset);
+					}
 				}
 				else
 				{
-					// Inertia, non-intermediate (final), or non-touch: flush immediately.
+					// Non-intermediate (final) or non-touch: flush immediately with full update.
 					FlushPendingTouchUpdate();
 					Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
 				}
@@ -653,6 +688,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// We can handle the inertia scrolling, configure to accept allow it by assigning the _touchInertia field.
 				_touchInertia = args.Manipulation;
+				_inertiaFrameCount = 0;
 
 				// Even if usually empty, make sure to apply the delta
 				var deltaX = Math.Clamp(-args.Delta.Translation.X, scrollable.Left, scrollable.Right);
