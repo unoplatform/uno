@@ -32,10 +32,19 @@ public partial class AmbientRegistry
 
 			registration.IdeChannelId = ideChannelId;
 
-			// Atomic write: temp file + rename to prevent partial reads by concurrent processes.
-			var tempPath = _registryFilePath + ".tmp";
-			File.WriteAllText(tempPath, JsonSerializer.Serialize(registration, JsonOptions));
-			File.Move(tempPath, _registryFilePath, overwrite: true);
+			// Atomic write: unique temp file + rename to prevent partial reads
+			// and avoid races when multiple rebinds target the same registration.
+			var tempPath = _registryFilePath + $".{Guid.NewGuid():N}.tmp";
+			try
+			{
+				File.WriteAllText(tempPath, JsonSerializer.Serialize(registration, JsonOptions));
+				File.Move(tempPath, _registryFilePath, overwrite: true);
+			}
+			finally
+			{
+				// Clean up the temp file if rename failed.
+				try { File.Delete(tempPath); } catch { /* best effort */ }
+			}
 
 			_logger.LogDebug("Updated DevServer IDE channel registration: {IdeChannelId}", ideChannelId ?? "<null>");
 		}
