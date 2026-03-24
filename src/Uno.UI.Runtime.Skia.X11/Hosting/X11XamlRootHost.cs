@@ -142,7 +142,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
 				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 				windowBackgroundDisposable.Dispose();
-				_renderLooprunning = false;
+				_renderLoopRunning = false;
+				_renderRequested.Set(); // wake up the render thread so it can exit
 				_renderer?.Dispose();
 			}
 		});

@@ -9,7 +9,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 internal partial class X11XamlRootHost
 {
 	private readonly AutoResetEvent _renderRequested = new(false);
-	private volatile bool _renderLooprunning = true;
+	private volatile bool _renderLoopRunning = true;
 	private double _targetInterval = 1000.0 / FeatureConfiguration.CompositionTarget.FrameRate;
 
 	private void InitRenderThread()
@@ -26,7 +26,7 @@ internal partial class X11XamlRootHost
 	{
 		var stopwatch = Stopwatch.StartNew();
 
-		while (_renderLooprunning)
+		while (_renderLoopRunning)
 		{
 			_renderRequested.WaitOne();
 
