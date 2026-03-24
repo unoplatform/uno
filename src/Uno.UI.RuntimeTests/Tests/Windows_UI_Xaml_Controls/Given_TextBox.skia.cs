@@ -397,6 +397,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				TextWrapping = TextWrapping.Wrap,
 				Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Gravida dictum fusce ut placerat orci nulla. Luctus venenatis lectus magna fringilla urna porttitor rhoncus. Faucibus vitae aliquet nec ullamcorper. Sem fringilla ut morbi tincidunt. Imperdiet proin fermentum leo vel orci. Velit aliquet sagittis id consectetur. Faucibus et molestie ac feugiat sed lectus vestibulum. Morbi enim nunc faucibus a pellentesque sit amet porttitor. Elementum sagittis vitae et leo duis ut diam. Pulvinar pellentesque habitant morbi tristique senectus et netus et malesuada. Id porta nibh venenatis cras sed felis eget velit aliquet. Feugiat pretium nibh ipsum consequat nisl. Adipiscing diam donec adipiscing tristique risus nec feugiat. Consequat semper viverra nam libero justo laoreet sit. Non tellus orci ac auctor augue mauris augue neque. Dolor purus non enim praesent."
 			};
+
 			await UITestHelper.Load(SUT);
 
 			SUT.Focus(FocusState.Programmatic);
