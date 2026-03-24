@@ -56,7 +56,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		protected override void MakeCurrent()
 		{
-			using var xLock = X11Helper.XLock(_x11Window.Display);
 			if (!GlxInterface.glXMakeCurrent(_x11Window.Display, _x11Window.Window, _x11Window.glXInfo!.Value.context))
 			{
 				this.LogError()?.Error($"glXMakeCurrent failed for Window {_x11Window.Window.GetHashCode().ToString("X", CultureInfo.InvariantCulture)}");
@@ -65,7 +64,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		protected override void Flush()
 		{
-			using var xLock = X11Helper.XLock(_x11Window.Display);
 			GlxInterface.glXSwapBuffers(_x11Window.Display, _x11Window.Window);
 			if (!GlxInterface.glXMakeCurrent(_x11Window.Display, X11Helper.None, IntPtr.Zero))
 			{
@@ -79,8 +77,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			{
 				throw new NotSupportedException($"No glX information associated with this OpenGL renderer, so it cannot be used.");
 			}
-
-			using var xLock = X11Helper.XLock(_x11Window.Display);
 
 			MakeCurrent();
 			using var makeCurrentDisposable = new DisposableStruct<X11Window>(static x11Window =>

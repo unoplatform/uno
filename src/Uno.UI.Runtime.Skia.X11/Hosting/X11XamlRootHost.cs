@@ -288,28 +288,26 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	public static void Close(X11Window x11window)
 	{
+		X11XamlRootHost? host;
 		lock (_x11WindowToXamlRootHostMutex)
 		{
-			if (_x11WindowToXamlRootHost.Remove(x11window, out var host))
-			{
-				using (X11Helper.XLock(x11window.Display))
-				{
-					// The rendering thread needs to be stopped before we destroy the window,
-					// otherwise we might end up in a situation where the render thread is
-					// trying to render on a destroyed window.
-					host._renderLoopRunning = false;
-					host._renderRequested.Set(); // wake up the render loop so it can see that it needs to exit
-					host._renderThread.Join();
-					host._closed.SetResult();
-				}
-			}
-			else
+			if (!_x11WindowToXamlRootHost.Remove(x11window, out host))
 			{
 				if (typeof(X11XamlRootHost).Log().IsEnabled(LogLevel.Error))
 				{
 					typeof(X11XamlRootHost).Log().Error($"{nameof(Close)} could not find X11Window {x11window}");
 				}
+				return;
 			}
+
+			// The rendering thread needs to be stopped before we destroy the window,
+			// otherwise we might end up in a situation where the render thread is
+			// trying to render on a destroyed window.
+			host._renderLoopRunning = false;
+			host._renderRequested.Set(); // wake up the render loop so it can see that it needs to exit
+			host._renderThread.Join();
+
+			host._closed.SetResult();
 		}
 	}
 

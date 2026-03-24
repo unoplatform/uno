@@ -63,7 +63,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		protected override void Flush()
 		{
-			using var lockDisposable = X11Helper.XLock(_x11Window.Display);
 			_ = X11Helper.XPutImage(
 				display: _x11Window.Display,
 				drawable: _x11Window.Window,
@@ -82,7 +81,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			_bitmap?.Dispose();
 			if (_xImage is { } xImage)
 			{
-				using var lockDisposable = X11Helper.XLock(_x11Window.Display);
 				unsafe
 				{
 					// XDestroyImage frees the buffer as well, so we unset it first
