@@ -11,10 +11,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.Loader;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
+using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -115,6 +117,9 @@ partial class ClientHotReloadProcessor
 
 			UpdateGlobalResources(updatedTypes);
 
+			// Each ALC has its own ClientHotReloadProcessor with its own CurrentWindow.
+			// Use the window's visual tree root directly — ALC scoping is handled by
+			// each processor only seeing its own assemblies and handler registrations.
 #if HAS_UNO_WINUI
 			var rootElement = window.Content?.XamlRoot?.VisualTree.RootElement;
 #else
@@ -132,7 +137,13 @@ partial class ClientHotReloadProcessor
 
 			// Action: BeforeVisualTreeUpdate
 			// This is called before the visual tree is updated
-			_ = handlerActions?.Do(h => h.Value.BeforeVisualTreeUpdate(updatedTypes)).ToArray();
+			_ = handlerActions?.Do(h =>
+			{
+				foreach (var a in h.Value)
+				{
+					a.BeforeVisualTreeUpdate(updatedTypes);
+				}
+			}).ToArray();
 
 			var capturedStates = new Dictionary<string, Dictionary<string, object>>();
 
@@ -155,6 +166,7 @@ partial class ClientHotReloadProcessor
 			}
 
 			var isCapturingState = true;
+
 			var treeIterator = EnumerateHotReloadInstances(
 				rootElement,
 				async (fe, key) =>
@@ -169,11 +181,12 @@ partial class ClientHotReloadProcessor
 					// for all element types should register for FrameworkElement instead
 					ImmutableArray<ElementUpdateHandlerActions> handlers =
 					[
-						..from handler in handlerActions
-						let depth = GetSubClassDepth(originalType, handler.Key)
-						where depth is not -1 && handler.Key != typeof(object)
+						..from handlerGroup in handlerActions
+						let depth = GetSubClassDepth(originalType, handlerGroup.Key)
+						where depth is not -1 && handlerGroup.Key != typeof(object)
 						orderby depth descending
-						select handler.Value
+						from handler in handlerGroup.Value
+						select handler
 					];
 
 					// Get the replacement type, or null if not replaced
@@ -260,7 +273,13 @@ partial class ClientHotReloadProcessor
 			_ = await treeIterator.ToArrayAsync();
 
 			// Action: AfterVisualTreeUpdate
-			_ = handlerActions?.Do(h => h.Value.AfterVisualTreeUpdate(updatedTypes)).ToArray();
+			_ = handlerActions?.Do(h =>
+			{
+				foreach (var a in h.Value)
+				{
+					a.AfterVisualTreeUpdate(updatedTypes);
+				}
+			}).ToArray();
 		}
 		catch (Exception ex)
 		{
@@ -276,7 +295,13 @@ partial class ClientHotReloadProcessor
 		finally
 		{
 			// Action: ReloadCompleted
-			_ = handlerActions?.Do(h => h.Value.ReloadCompleted(updatedTypes, uiUpdating)).ToArray();
+			_ = handlerActions?.Do(h =>
+			{
+				foreach (var a in h.Value)
+				{
+					a.ReloadCompleted(updatedTypes, uiUpdating);
+				}
+			}).ToArray();
 
 			hrOp?.ResignCurrent();
 			hrOp?.ReportCompleted();

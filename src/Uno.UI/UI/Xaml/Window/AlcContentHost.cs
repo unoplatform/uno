@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -15,6 +16,13 @@ public sealed partial class AlcContentHost : ContentControl
 {
 	private Application? _sourceApplicationOverride;
 	private Application? _contentApplication;
+
+	/// <summary>
+	/// Gets or sets the <see cref="System.Runtime.Loader.AssemblyLoadContext"/> that owns the hosted content.
+	/// Auto-populated in <see cref="OnContentChanged"/> from the content type's assembly.
+	/// Used by the hot-reload system to scope visual tree traversal per ALC.
+	/// </summary>
+	public System.Runtime.Loader.AssemblyLoadContext? LoadContext { get; set; }
 
 	public AlcContentHost()
 	{
@@ -44,6 +52,9 @@ public sealed partial class AlcContentHost : ContentControl
 		base.OnContentChanged(oldContent, newContent);
 
 		_contentApplication = Application.GetForInstance(newContent);
+		LoadContext = newContent is not null
+			? System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(newContent.GetType().Assembly)
+			: null;
 		UpdateMergedResources();
 	}
 

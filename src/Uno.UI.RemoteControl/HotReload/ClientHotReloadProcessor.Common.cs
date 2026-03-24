@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.Loader;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
@@ -13,6 +14,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload;
+using Uno.UI.Xaml.Controls;
 using Windows.Storage.Pickers.Provider;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -31,6 +33,10 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor
 	{
+		private static readonly AssemblyLoadContext _processorAlc =
+			AssemblyLoadContext.GetLoadContext(typeof(ClientHotReloadProcessor).Assembly)
+			?? AssemblyLoadContext.Default;
+
 		private static ClientHotReloadProcessor? _instance;
 
 #if HAS_UNO
@@ -60,14 +66,25 @@ namespace Uno.UI.RemoteControl.HotReload
 					yield return match;
 				}
 
-				var idx = 0;
-				foreach (var child in fe.EnumerateChildren())
+				// Scope tree walk by ALC: if this element is an AlcContentHost, check if its
+				// content comes from a different ALC than our processor's. If so, skip its
+				// children — they will be processed by the other ALC's own processor.
+				if (fe is AlcContentHost { LoadContext: { } contentAlc }
+					&& contentAlc != _processorAlc)
 				{
-					var inner = EnumerateHotReloadInstances(child, predicate, $"{instanceKey}_[{idx}]");
-					idx++;
-					await foreach (var validElement in inner)
+					// Children belong to a different ALC — skip them
+				}
+				else
+				{
+					var idx = 0;
+					foreach (var child in fe.EnumerateChildren())
 					{
-						yield return validElement;
+						var inner = EnumerateHotReloadInstances(child, predicate, $"{instanceKey}_[{idx}]");
+						idx++;
+						await foreach (var validElement in inner)
+						{
+							yield return validElement;
+						}
 					}
 				}
 			}
