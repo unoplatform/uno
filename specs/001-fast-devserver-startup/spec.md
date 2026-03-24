@@ -790,9 +790,19 @@ New flag on Host: `--addins {dll1;dll2;...}` to bypass `AddIns.Discover()`.
 1. **Check AmbientRegistry** before launching a new Host
 2. If an instance already exists for this solution:
    - **MCP mode**: Connect to the **existing** Host's `/mcp` endpoint instead of launching a new one. This is the ideal scenario — the MCP proxy becomes a client of the IDE-launched DevServer.
-   - **CLI `start` mode**: Current behavior (block with message)
+   - **CLI `start` mode without `--ideChannel`**: Current behavior (block with message)
+   - **CLI `start` mode with `--ideChannel`**: Reuse the **existing** Host instance and update its active IDE channel in-place. The Host process MUST remain alive; this is a channel reassignment, not a takeover by restart.
 3. **Register in AmbientRegistry** after launching a new Host
 4. **Unregister on shutdown** (or let the stale-process cleanup handle it)
+
+**Normative contract for `start --ideChannel` on an existing Host**:
+
+- If a Host already exists for the resolved solution and `start` is invoked with `--ideChannel {id}`, the command MUST reuse that Host.
+- The Host MUST replace the currently configured IDE channel with `{id}`. This applies whether the previous value was `null` or another channel identifier.
+- Rebinding the active IDE channel MUST NOT stop or restart the Host process.
+- The command MUST return success only after the Host has accepted the new channel configuration (or return a structured error if the rebind failed).
+- Supporting multiple simultaneous IDE channels is **out of scope for this spec revision**. The current target is **single active IDE channel replacement**.
+- When `start` reuses an existing Host in this way, diagnostics (`list`, `disco`, `health`) MUST report the updated active IDE channel so the caller can verify ownership.
 
 **`.csproj.user` generation**: This is **controller-only** (`Program.Command.cs:101` calls `CsprojUserGenerator.SetCsprojUserPort()`). The Host server-mode process does NOT write `.csproj.user` — it only registers in AmbientRegistry (`Program.cs:221`).
 
@@ -806,6 +816,14 @@ IDE extensions handle `.csproj.user` independently:
 2. **Host-side**: Add `.csproj.user` generation to the server-mode startup path
 
 Without this, the running app won't know the DevServer port for Hot Reload.
+
+**Process ownership diagnostics**: AmbientRegistry-backed discovery is also the right place to explain **who started the Host**. `list`, `disco`, and `health` MUST surface a bounded process ancestry chain (`current -> parent -> grandparent -> great-grandparent`) with PID + process name. This is required so IDE and MCP launchers can distinguish:
+
+- a Host they launched themselves
+- a Host launched by another IDE session
+- a Host launched indirectly by an external MCP server
+
+The ancestry chain is diagnostic state only; it does not change instance ownership semantics.
 
 > **Note — encoding is NOT an issue**: `CsprojUserGenerator` uses `XDocument.Save()` (`CsprojUserGenerator.cs:137`) which defaults to **UTF-8** in modern .NET. The previous UTF-16 concern was based on stale information and is no longer applicable.
 
