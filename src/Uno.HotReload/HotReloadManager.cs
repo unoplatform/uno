@@ -172,42 +172,52 @@ public sealed class HotReloadManager : IDisposable
 		await hotReload.Complete(HotReloadOperationResult.Success).ConfigureAwait(false);
 	}
 
+	/// <summary>
+	/// Maximum number of compilation errors to format and report per hot-reload cycle.
+	/// Formatting diagnostics allocates strings via <see cref="CSharpDiagnosticFormatter"/>;
+	/// capping prevents unbounded allocations when the code is heavily broken.
+	/// </summary>
+	private const int MaxCompilationErrorsPerCycle = 20;
+
 	private ImmutableArray<string> GetCompilationErrors(Solution solution, CancellationToken cancellationToken)
 	{
-		var @lock = new object();
-		var builder = ImmutableArray<string>.Empty;
-		Parallel.ForEach(solution.Projects,
-			project =>
+		// Studio Live workspaces always have a single project — sequential iteration avoids
+		// Parallel.ForEach overhead (thread pool work items, partitioner, lambda closures).
+		var builder = ImmutableArray.CreateBuilder<string>();
+		foreach (var project in solution.Projects)
+		{
+			if (!project.TryGetCompilation(out var compilation))
 			{
-				if (!project.TryGetCompilation(out var compilation))
-				{
-					return;
-				}
+				continue;
+			}
 
-				var compilationDiagnostics = compilation.GetDiagnostics(cancellationToken);
-				if (compilationDiagnostics.IsEmpty)
-				{
-					return;
-				}
+			var compilationDiagnostics = compilation.GetDiagnostics(cancellationToken);
+			if (compilationDiagnostics.IsEmpty)
+			{
+				continue;
+			}
 
-				var projectDiagnostics = ImmutableArray<string>.Empty;
-				foreach (var item in compilationDiagnostics)
+			foreach (var item in compilationDiagnostics)
+			{
+				if (item.Severity == DiagnosticSeverity.Error)
 				{
-					if (item.Severity == DiagnosticSeverity.Error)
+					var diagnostic = CSharpDiagnosticFormatter.Instance.Format(item, CultureInfo.InvariantCulture);
+					_tracker.Output("\x1B[40m\x1B[31m" + diagnostic);
+					builder.Add(diagnostic);
+
+					// On WASM, memory.grow() is irreversible — cap diagnostic formatting
+					// to avoid unbounded string allocations when code is heavily broken.
+					// On desktop, report all errors for full IDE-like diagnostics.
+					if (OperatingSystem.IsBrowser() && builder.Count >= MaxCompilationErrorsPerCycle)
 					{
-						var diagnostic = CSharpDiagnosticFormatter.Instance.Format(item, CultureInfo.InvariantCulture);
-						_tracker.Output("\x1B[40m\x1B[31m" + diagnostic);
-						projectDiagnostics = projectDiagnostics.Add(diagnostic);
+						_tracker.Output($"... and more errors (capped at {MaxCompilationErrorsPerCycle}).");
+						return builder.ToImmutable();
 					}
 				}
+			}
+		}
 
-				lock (@lock)
-				{
-					builder = builder.AddRange(projectDiagnostics);
-				}
-			});
-
-		return builder;
+		return builder.ToImmutable();
 	}
 
 	/// <inheritdoc />
