@@ -170,6 +170,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
+
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.Id.Name))
+		{
+			SetWMClass(Windows.ApplicationModel.Package.Current.Id.Name);
+		}
 	}
 
 	private void SetWindowIcon()
@@ -258,6 +263,30 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 			_ = XLib.XFlush(display);
 			_ = XLib.XSync(display, false); // wait until the pixels are actually copied
+		}
+	}
+
+	private void SetWMClass(string name)
+	{
+		var resName = Marshal.StringToHGlobalAnsi(name);
+		var resClass = Marshal.StringToHGlobalAnsi(name);
+		try
+		{
+			var classHint = new XClassHint
+			{
+				res_name = resName,
+				res_class = resClass,
+			};
+
+			var display = RootX11Window.Display;
+			using var lockDisposable = X11Helper.XLock(display);
+			_ = XLib.XSetClassHint(display, RootX11Window.Window, ref classHint);
+			_ = XLib.XFlush(display);
+		}
+		finally
+		{
+			Marshal.FreeHGlobal(resName);
+			Marshal.FreeHGlobal(resClass);
 		}
 	}
 

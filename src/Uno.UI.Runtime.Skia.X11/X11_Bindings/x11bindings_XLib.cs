@@ -144,6 +144,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public static partial void XSetWMNormalHints(IntPtr display, IntPtr window, ref XSizeHints hints);
 
 		[LibraryImport(libX11)]
+		public static partial int XSetClassHint(IntPtr display, IntPtr window, ref XClassHint class_hints);
+
+		[LibraryImport(libX11)]
 		public static partial int XSendEvent(IntPtr display, IntPtr window, [MarshalAs(UnmanagedType.Bool)] bool propagate, IntPtr event_mask,
 			ref XEvent send_event);
 

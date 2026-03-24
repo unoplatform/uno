@@ -1708,6 +1708,13 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public int height_inc;
 	}
 
+	[StructLayout(LayoutKind.Sequential)]
+	public struct XClassHint
+	{
+		public IntPtr res_name;
+		public IntPtr res_class;
+	}
+
 	public delegate int XErrorHandler(IntPtr DisplayHandle, ref XErrorEvent error_event);
 
 	public enum XRequest : byte
