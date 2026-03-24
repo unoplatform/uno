@@ -52,7 +52,7 @@ public class Given_DiscoveryOutputFormatter
 					[
 						new ProcessChainEntry { ProcessId = 1234, ProcessName = "Uno.UI.RemoteControl.Host" },
 						new ProcessChainEntry { ProcessId = 4321, ProcessName = "dotnet" },
-						new ProcessChainEntry { ProcessId = 9876, ProcessName = "kiro" },
+						new ProcessChainEntry { ProcessId = 9876, ProcessName = "ide-process" },
 					],
 				},
 			],
@@ -63,7 +63,10 @@ public class Given_DiscoveryOutputFormatter
 		var output = AnsiConsole.ExportText();
 
 		output.Should().Contain("processChain");
-		output.Should().Contain("1234 (Uno.UI.RemoteControl.Host) -> 4321");
-		output.Should().Contain("(dotnet) -> 9876 (kiro)");
+		// The table may wrap long chains across lines, so check individual elements.
+		output.Should().Contain("ide-process (9876)");
+		output.Should().Contain("dotnet (4321)");
+		output.Should().Contain("Host");
+		output.Should().Contain("1234");
 	}
 }

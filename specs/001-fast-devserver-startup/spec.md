@@ -817,7 +817,7 @@ IDE extensions handle `.csproj.user` independently:
 
 Without this, the running app won't know the DevServer port for Hot Reload.
 
-**Process ownership diagnostics**: AmbientRegistry-backed discovery is also the right place to explain **who started the Host**. `list`, `disco`, and `health` MUST surface a bounded process ancestry chain (`current -> parent -> grandparent -> great-grandparent`) with PID + process name. This is required so IDE and MCP launchers can distinguish:
+**Process ownership diagnostics**: AmbientRegistry-backed discovery is also the right place to explain **who started the Host**. `list`, `disco`, and `health` MUST surface a bounded process ancestry chain displayed ancestor-first (`IDE → ... → dotnet → Host`) with PID + process name (up to 8 levels). This is required so IDE and MCP launchers can distinguish:
 
 - a Host they launched themselves
 - a Host launched by another IDE session

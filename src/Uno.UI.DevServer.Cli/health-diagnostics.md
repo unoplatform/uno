@@ -11,7 +11,7 @@ To support that, active server diagnostics should include:
 - `ProcessId`
 - `ParentProcessId`
 - `IdeChannelId`
-- a bounded **process ancestry chain** (`current -> parent -> grandparent -> great-grandparent`) with PID + process name
+- a bounded **process ancestry chain** displayed ancestor-first (`IDE → ... → dotnet → Host`) with PID + process name (up to 8 levels)
 
 The ancestry chain is diagnostic only. It helps callers distinguish:
 
