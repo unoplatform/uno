@@ -14,7 +14,6 @@ using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload;
-using Uno.UI.Xaml.Controls;
 using Windows.Storage.Pickers.Provider;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -69,12 +68,15 @@ namespace Uno.UI.RemoteControl.HotReload
 				// Scope tree walk by ALC: if this element is an AlcContentHost, check if its
 				// content comes from a different ALC than our processor's. If so, skip its
 				// children — they will be processed by the other ALC's own processor.
-				if (fe is AlcContentHost { LoadContext: { } contentAlc }
+#if HAS_UNO
+				// TODO: Use alcHost.LoadContext directly once Uno.UI NuGet includes the property.
+				if (fe is Uno.UI.Xaml.Controls.AlcContentHost { LoadContext: { } contentAlc }
 					&& contentAlc != _processorAlc)
 				{
 					// Children belong to a different ALC — skip them
 				}
 				else
+#endif
 				{
 					var idx = 0;
 					foreach (var child in fe.EnumerateChildren())
