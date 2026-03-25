@@ -68,10 +68,12 @@ public partial class TextBox
 
 		_isComposing = true;
 		_compositionStartIndex = SelectionStart;
-		_compositionLength = 0;
+		// Initialize from SelectionLength so the first ReplaceCompositionText
+		// replaces the selected range, matching normal typing behavior.
+		_compositionLength = SelectionLength;
 		_compositionResolvedLength = 0;
 
-		TextCompositionStarted?.Invoke(this, new TextCompositionStartedEventArgs(_compositionStartIndex, 0));
+		TextCompositionStarted?.Invoke(this, new TextCompositionStartedEventArgs(_compositionStartIndex, _compositionLength));
 	}
 
 	private void OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength)
