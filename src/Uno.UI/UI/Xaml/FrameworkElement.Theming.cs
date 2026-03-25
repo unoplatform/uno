@@ -28,6 +28,20 @@ public partial class FrameworkElement
 	private Brush _themeForeground;
 	private bool _isForegroundFrozen;
 
+	/// <summary>
+	/// Returns true when this element is a theme boundary that should block automatic
+	/// DP inheritance cascade for Foreground-type properties.
+	/// </summary>
+	/// <remarks>
+	/// In WinUI, Foreground is not an inherited DP — it propagates through the
+	/// TextFormatting system which has a freeze flag at theme boundaries.
+	/// In Uno, Foreground IS inherited (FrameworkPropertyMetadataOptions.Inherits),
+	/// so a parent setting Foreground auto-cascades to ALL descendants, bypassing
+	/// the theme walk's early-return at elements with explicit RequestedTheme.
+	/// This property lets DependencyObjectStore block that cascade at theme boundaries.
+	/// </remarks>
+	internal bool IsForegroundInheritanceBlocked => _isForegroundFrozen;
+
 	#region Requested theme dependency property
 
 	public ElementTheme RequestedTheme
