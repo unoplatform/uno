@@ -17,11 +17,11 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 			var lines = new System.Text.StringBuilder();
 			for (int i = 0; i < 20; i++)
 			{
-				lines.AppendLine("Created new targets in Yedidiah's care plan.");
+				lines.AppendLine("Sample placeholder text line A for multiline TextBox.");
 				lines.AppendLine();
-				lines.AppendLine("Created new behavior reduction objectives in Yedidiah's care plan.");
+				lines.AppendLine("Sample placeholder text line B for multiline TextBox.");
 				lines.AppendLine();
-				lines.AppendLine("Analyzed data in Yedidiah's care plan. Session Participants: BCBA and Learner.");
+				lines.AppendLine("Sample placeholder text line C for multiline TextBox.");
 				lines.AppendLine();
 			}
 
