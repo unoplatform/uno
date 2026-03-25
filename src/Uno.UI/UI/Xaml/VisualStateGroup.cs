@@ -362,7 +362,7 @@ namespace Microsoft.UI.Xaml
 
 			void ApplyTargetState()
 			{
-				// Apply target state setters (the right time to do it!) 
+				// Apply target state setters (the right time to do it!)
 				if (!FeatureConfiguration.VisualState.ApplySettersBeforeTransition)
 				{
 					ApplyTargetStateSetters();
@@ -371,10 +371,63 @@ namespace Microsoft.UI.Xaml
 				// Starts target state animation
 				if (target.animation is { } stateAnimation)
 				{
-					stateAnimation.Begin();
+					BeginAnimationWithThemeContext(stateAnimation);
 				}
 
 				onStateChanged();
+			}
+
+			void BeginAnimationWithThemeContext(Storyboard stateAnimation)
+			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				// MUX Reference: CStoryboard::BeginPrivate / CVisualState::NotifyThemeChangedCore
+				// In WinUI, keyframe ThemeResource values are pre-resolved during XAML parsing
+				// and stored as concrete values. In Uno, resource bindings on keyframe values
+				// may have been resolved with the wrong theme context (e.g., app-level Light
+				// instead of element-level Dark). Before beginning the animation, push the
+				// owner element's theme and re-resolve the storyboard's resource bindings so
+				// keyframe values reflect the correct theme.
+				var needsThemePush = false;
+				if (element is FrameworkElement animFe)
+				{
+					var effectiveTheme = animFe.GetTheme();
+					if (effectiveTheme != Theme.None)
+					{
+						var themeKey = Theming.GetBaseValue(effectiveTheme) == Theme.Light ? "Light" : "Dark";
+						ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+						needsThemePush = true;
+
+						// Walk each child animation and re-resolve keyframe resource bindings.
+						foreach (var child in stateAnimation.Children)
+						{
+							if (child is IKeyFramesProvider kfProvider)
+							{
+								foreach (DependencyObject kf in kfProvider.GetKeyFrames())
+								{
+									((IDependencyObjectStoreProvider)kf).Store
+										.UpdateResourceBindings(
+											Data.ResourceUpdateReason.ThemeResource,
+											resourceContextProvider: animFe);
+								}
+							}
+						}
+					}
+				}
+
+				try
+				{
+					stateAnimation.Begin();
+				}
+				finally
+				{
+					if (needsThemePush)
+					{
+						ResourceDictionary.PopRequestedThemeForSubTree();
+					}
+				}
+#else
+				stateAnimation.Begin();
+#endif
 			}
 
 			void ApplyTargetStateSetters()
