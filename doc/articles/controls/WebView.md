@@ -286,6 +286,66 @@ For HTML element requests that cannot be intercepted:
 - Proxy requests through your server
 - Use JavaScript-based loading for resources that need custom headers
 
+## Accessing the underlying native control
+
+In some advanced scenarios, you may need to access the platform-specific native web view control directly — for example, to configure settings not exposed by the Uno Platform abstraction.
+
+The `WebView2` control template contains a single `ContentPresenter` named `WebViewTemplateRoot`. Each platform sets the `Content` of this presenter to its native web view control. You can retrieve it using `VisualTreeHelper`:
+
+```csharp
+await myWebView.EnsureCoreWebView2Async();
+
+var presenter = (ContentPresenter)VisualTreeHelper.GetChild(myWebView, 0);
+var nativeControl = presenter.Content;
+```
+
+The type of `nativeControl` varies per platform:
+
+| Platform | Native Control Type | Notes |
+|----------|-------------------|-------|
+| **Android** | `Android.Webkit.WebView` | Standard Android WebView |
+| **iOS / Mac Catalyst** | `WebKit.WKWebView` | Via `UnoWKWebView`, which extends `WKWebView` |
+| **macOS (Skia)** | `MacOSNativeWebView` | Internal wrapper using native WebKit via P/Invoke |
+| **Windows (Win32/Skia)** | N/A | Uses a native HWND; not directly accessible via `Content` |
+| **Linux (X11)** | N/A | Uses a GTK `WebKit.WebView` hosted in a separate window |
+| **WebAssembly** | `BrowserHtmlElement` | An HTML `<iframe>` element |
+
+### Example: Configuring the native Android WebView
+
+```csharp
+#if __ANDROID__
+await myWebView.EnsureCoreWebView2Async();
+
+var presenter = (ContentPresenter)VisualTreeHelper.GetChild(myWebView, 0);
+
+if (presenter.Content is Android.Webkit.WebView androidWebView)
+{
+    // Access native Android WebView settings
+    androidWebView.Settings.BuiltInZoomControls = true;
+    androidWebView.Settings.DisplayZoomControls = false;
+}
+#endif
+```
+
+### Example: Configuring the native iOS WKWebView
+
+```csharp
+#if __IOS__
+await myWebView.EnsureCoreWebView2Async();
+
+var presenter = (ContentPresenter)VisualTreeHelper.GetChild(myWebView, 0);
+
+if (presenter.Content is WebKit.WKWebView wkWebView)
+{
+    // Access native WKWebView configuration
+    wkWebView.AllowsBackForwardNavigationGestures = true;
+}
+#endif
+```
+
+> [!NOTE]
+> The native control is only available after calling `EnsureCoreWebView2Async()` and the control template has been applied. The internal types and access patterns may change in future releases.
+
 ## WinAppSDK Specifics
 
 When using the WebView2 and running on WinAppSDK, make sure to create an `x64` or `ARM64` configuration:
