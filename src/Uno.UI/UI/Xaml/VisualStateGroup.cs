@@ -245,12 +245,8 @@ namespace Microsoft.UI.Xaml
 			// we ensure that this materialization occurs only in the right resource scope AND theme context.
 			// Note: the "current" should have already been materialized.
 			//
-			// MUX Reference: CVisualState::NotifyThemeChangedCore
-			// In WinUI, the VisualState/Storyboard/KeyFrame tree receives theme notifications
-			// via the visual tree walk (VisualStateGroupCollection is a child of the element).
-			// When ThemeResource values are resolved during materialization, they must use the
-			// element's theme, not the app-level theme. We push the element's theme here so
-			// any {ThemeResource} in storyboard key frames resolves with the correct theme.
+			// The theme push is still needed because ResourceDictionary.GetActiveThemeDictionary()
+			// uses the global theme stack to select the correct Light/Dark sub-dictionary.
 			(Storyboard transition, Storyboard animation, SetterBaseCollection setters) current, target;
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			var needsMaterializationThemePush = false;
@@ -384,13 +380,9 @@ namespace Microsoft.UI.Xaml
 					return;
 				}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
-				// MUX Reference: CVisualStateManager2::OnVisualStateGroupCollectionNotifyThemeChanged
-				// In WinUI, ThemeResource values in setters are resolved lazily at read time
-				// using the element's current theme context. In Uno, resolution happens eagerly
-				// at setter application time. We must push the owner element's theme so that
-				// ResourceDictionary.TryGetValue selects the correct themed dictionary
-				// (e.g., Dark instead of the app-default Light).
+		#if UNO_HAS_ENHANCED_LIFECYCLE
+				// The theme push is still needed because ResourceDictionary.GetActiveThemeDictionary()
+				// uses the global theme stack to select the correct Light/Dark sub-dictionary.
 				var needsThemePush = false;
 				if (element is FrameworkElement fe)
 				{
