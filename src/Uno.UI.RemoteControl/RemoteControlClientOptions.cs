@@ -1,5 +1,7 @@
 #nullable enable
 
+using Uno.UI.RemoteControl.Messaging;
+
 namespace Uno.UI.RemoteControl;
 
 /// <summary>
@@ -48,4 +50,11 @@ public sealed record RemoteControlClientOptions
 	/// Indicates whether app identity should be sent automatically when server processors are initialized.
 	/// </summary>
 	public bool AutoRegisterAppIdentity { get; init; }
+
+	/// <summary>
+	/// Optional pre-connected transport to use instead of discovering and connecting to the dev-server.
+	/// When set via <see cref="RemoteControlClient.PreConfigureNextInstance"/>, the next
+	/// <see cref="RemoteControlClient.Initialize(System.Type)"/> call will use this transport.
+	/// </summary>
+	public IFrameTransport? ConnectionTransportOverride { get; init; }
 }
