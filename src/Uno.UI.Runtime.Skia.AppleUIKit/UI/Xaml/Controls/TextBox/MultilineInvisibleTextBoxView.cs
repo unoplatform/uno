@@ -4,6 +4,7 @@ using ObjCRuntime;
 using UIKit;
 using Uno.Extensions;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Controls.Extensions;
 using Microsoft.UI.Xaml.Controls;
 
 
@@ -63,6 +64,8 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 			baseAction.Invoke();
 		}
 	}
+
+	public bool IsComposing => AppleUIKitImeTextBoxExtension.Instance.IsComposing;
 
 	internal InvisibleTextBoxViewExtension TextBoxViewExtension => _textBoxViewExtension.GetTarget();
 
@@ -144,4 +147,43 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 			}
 		}
 	}
+
+	#region IME Composition (UITextInput overrides)
+
+	public override void SetMarkedText(string markedText, NSRange selectedRange)
+	{
+		markedText ??= string.Empty;
+		AppleUIKitImeTextBoxExtension.Instance.OnSetMarkedText(markedText);
+		base.SetMarkedText(markedText, selectedRange);
+	}
+
+	public new void InsertText(string text)
+	{
+		var wasComposing = AppleUIKitImeTextBoxExtension.Instance.IsComposing;
+		base.InsertText(text);
+
+		if (wasComposing || !_settingTextFromManaged)
+		{
+			AppleUIKitImeTextBoxExtension.Instance.OnInsertText(text);
+		}
+	}
+
+	public override void UnmarkText()
+	{
+		AppleUIKitImeTextBoxExtension.Instance.OnUnmarkText();
+		base.UnmarkText();
+	}
+
+	public override CoreGraphics.CGRect GetFirstRectForRange(UITextRange range)
+	{
+		var caretRect = AppleUIKitImeTextBoxExtension.Instance.GetCaretRect();
+		if (caretRect != Windows.Foundation.Rect.Empty && Superview is not null)
+		{
+			var windowRect = new CoreGraphics.CGRect(caretRect.X, caretRect.Y, caretRect.Width, caretRect.Height);
+			return ConvertRectFromView(windowRect, Superview);
+		}
+		return base.GetFirstRectForRange(range);
+	}
+
+	#endregion
 }

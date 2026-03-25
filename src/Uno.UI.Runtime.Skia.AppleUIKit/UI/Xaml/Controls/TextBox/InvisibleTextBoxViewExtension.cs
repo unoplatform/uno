@@ -225,6 +225,14 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	internal void ProcessNativeTextInput(string? text)
 	{
+		// During IME composition, text updates are managed by the shared
+		// TextBox.skia.cs composition handlers via IImeTextBoxExtension events.
+		// Suppress the normal text processing path to prevent double processing.
+		if (_textBoxView?.IsComposing == true)
+		{
+			return;
+		}
+
 		if (_owner?.TextBox is { } textBox)
 		{
 			var selectionStart = textBox.SelectionStart;

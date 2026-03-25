@@ -5,6 +5,7 @@ using ObjCRuntime;
 using UIKit;
 using Uno.Extensions;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
@@ -63,6 +64,8 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 			baseAction.Invoke();
 		}
 	}
+
+	public bool IsComposing => AppleUIKitImeTextBoxExtension.Instance.IsComposing;
 
 	internal InvisibleTextBoxViewExtension TextBoxViewExtension => _textBoxViewExtension.GetTarget();
 
@@ -182,4 +185,48 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 			}
 		}
 	}
+
+	#region IME Composition (UITextInput overrides)
+
+	public override void SetMarkedText(string markedText, NSRange selectedRange)
+	{
+		markedText ??= string.Empty;
+		AppleUIKitImeTextBoxExtension.Instance.OnSetMarkedText(markedText);
+		base.SetMarkedText(markedText, selectedRange);
+	}
+
+	public new void InsertText(string text)
+	{
+		var wasComposing = AppleUIKitImeTextBoxExtension.Instance.IsComposing;
+		base.InsertText(text);
+
+		if (wasComposing || !_settingTextFromManaged)
+		{
+			AppleUIKitImeTextBoxExtension.Instance.OnInsertText(text);
+		}
+	}
+
+	public override void UnmarkText()
+	{
+		AppleUIKitImeTextBoxExtension.Instance.OnUnmarkText();
+		base.UnmarkText();
+	}
+
+	public override CoreGraphics.CGRect GetFirstRectForRange(UITextRange range)
+	{
+		var caretRect = AppleUIKitImeTextBoxExtension.Instance.GetCaretRect();
+		if (caretRect != Windows.Foundation.Rect.Empty && Superview is not null)
+		{
+			// GetCaretRect returns Uno logical coordinates (relative to the XamlRoot).
+			// iOS expects the result in the view's own coordinate system, then uses the
+			// view hierarchy to convert to screen coordinates for the candidate window.
+			// Since our view is off-screen, convert from the superview's (window) coordinate
+			// space into our local coordinate space.
+			var windowRect = new CoreGraphics.CGRect(caretRect.X, caretRect.Y, caretRect.Width, caretRect.Height);
+			return ConvertRectFromView(windowRect, Superview);
+		}
+		return base.GetFirstRectForRange(range);
+	}
+
+	#endregion
 }
