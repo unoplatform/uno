@@ -867,6 +867,14 @@ public partial class TextBox
 
 			sv.ChangeView(newHorizontalOffset, newVerticalOffset, null);
 		}
+
+		// Also request parent ScrollViewers to bring the caret into view.
+		// This is needed when the TextBox's internal scrolling is disabled
+		// and an outer ScrollViewer handles scrolling instead.
+		if (FocusState != FocusState.Unfocused)
+		{
+			StartBringIntoView(new BringIntoViewOptions { AnimationDesired = false });
+		}
 	}
 
 	partial void OnKeyDownPartial(KeyRoutedEventArgs args)
