@@ -44,13 +44,21 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 
 		_keepAliveTimer = new Timer(_ =>
 		{
-			var session = Volatile.Read(ref _session);
-			if (session is { IsConnected: true, Proxy: { } proxy })
+			try
 			{
-				proxy.SendToIde(new KeepAliveIdeMessage("dev-server"));
+				var session = Volatile.Read(ref _session);
+				if (session is { IsConnected: true, Proxy: { } proxy })
+				{
+					proxy.SendToIde(new KeepAliveIdeMessage("dev-server"));
+				}
+				else
+				{
+					_keepAliveTimer!.Change(Timeout.Infinite, Timeout.Infinite);
+				}
 			}
-			else
+			catch (Exception ex)
 			{
+				_logger.LogDebug(ex, "Keep-alive send failed; stopping timer.");
 				_keepAliveTimer!.Change(Timeout.Infinite, Timeout.Infinite);
 			}
 		});
@@ -203,7 +211,14 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 			// environment state snapshot publication.
 			// This must fire BEFORE ReadyTcs is set so callers awaiting WaitForReady
 			// can rely on the snapshot having been sent.
-			ClientConnected?.Invoke();
+			try
+			{
+				ClientConnected?.Invoke();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "A ClientConnected subscriber threw an exception.");
+			}
 
 			session.ReadyTcs.TrySetResult(true);
 		}
@@ -245,6 +260,7 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 		if (session is not null)
 		{
 			session.Cts.Cancel();
+			session.ReadyTcs.TrySetResult(false); // Unblock any WaitForReady callers.
 			session.RpcServer?.Dispose();
 			try
 			{
