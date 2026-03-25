@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using Uno.UI.DevServer.Cli.Mcp;
@@ -38,6 +40,28 @@ internal static class HealthReportFormatter
 			}
 		}
 
+		if (report.Discovery?.ActiveServers is { Count: > 0 } activeServers)
+		{
+			builder.AppendLine("Active Servers:");
+			foreach (var server in activeServers)
+			{
+				builder.AppendLine($"- PID: {server.ProcessId} (Port {server.Port})");
+				builder.AppendLine($"  Solution: {server.SolutionPath ?? "<none>"}");
+				builder.AppendLine($"  IDE Channel: {server.IdeChannelId ?? "<none>"}");
+				builder.AppendLine($"  Parent PID: {server.ParentProcessId}");
+				builder.AppendLine($"  Started: {server.StartTime.ToString("yyyy-MM-dd HH:mm:ss UTC", CultureInfo.InvariantCulture)}");
+				builder.AppendLine($"  Workspace Match: {server.IsInWorkspace}");
+
+				if (server.ProcessChain is { Count: > 0 })
+				{
+					builder.AppendLine($"  Process Chain: {FormatProcessChain(server.ProcessChain)}");
+				}
+			}
+		}
+
 		return builder.ToString().TrimEnd();
 	}
+
+	private static string FormatProcessChain(IReadOnlyList<ProcessChainEntry> processChain)
+		=> ProcessChainEntry.FormatChain(processChain);
 }
