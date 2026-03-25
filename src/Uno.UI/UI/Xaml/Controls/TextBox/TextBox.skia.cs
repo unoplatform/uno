@@ -463,6 +463,7 @@ public partial class TextBox
 			{
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 				_textBoxNotificationsSingleton?.OnFocused(this);
+				StartImeSession();
 				UpdateCanPasteClipboardContent();
 				Clipboard.ContentChanged += OnClipboardContentChanged;
 				_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
@@ -485,6 +486,7 @@ public partial class TextBox
 
 			if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
 			{
+				EndImeSession();
 				TrySetCurrentlyTyping(false);
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 				if (SelectionFlyout?.IsOpen == true)
@@ -1082,6 +1084,12 @@ public partial class TextBox
 				}
 				break;
 			default:
+				// During IME composition, skip normal character insertion.
+				// The IME extension handles text updates via OnImeCompositionUpdated → ProcessTextInput.
+				if (_isComposing)
+				{
+					return;
+				}
 				var isEnterKey = args.UnicodeKey is '\r' or '\n' || args.Key == VirtualKey.Enter;
 				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
 				{
@@ -1602,12 +1610,16 @@ public partial class TextBox
 	partial void InitializePartial()
 	{
 		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
+		InitializeIme();
 	}
+
 
 	partial void OnTextChangedPartial()
 	{
 		if (_isSkiaTextBox)
 		{
+			CancelCompositionOnExternalChange();
+
 			// Ported from: TextBoxBase.cpp TxNotify EN_CHANGE (line 3113)
 			// Close the selection flyout when text changes.
 			TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);

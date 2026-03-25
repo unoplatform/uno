@@ -340,7 +340,8 @@ internal readonly struct ParsedText : IParsedText
 
 	public void Draw(in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret,
-		IEnumerable<TextHighlighter> highlighters)
+		IEnumerable<TextHighlighter> highlighters,
+		(int startIndex, int length)? compositionRange)
 	{
 		if (_renderLines.Count == 0)
 		{

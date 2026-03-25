@@ -94,6 +94,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
 	private static readonly SKPaint _spareDrawPaint = new() { IsStroke = false, IsAntialias = true };
 	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
+	private static readonly SKPaint _spareCompositionUnderlinePaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 1, IsAntialias = true };
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
 	private readonly string _text;
@@ -803,7 +804,8 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public void Draw(in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
-		IEnumerable<TextHighlighter> highlighters)
+		IEnumerable<TextHighlighter> highlighters,
+		(int startIndex, int length)? compositionRange)
 	{
 		var highlighterSlicer = new RangeSlicer<(CompositionBrush? background, Brush foreground)>(0, _text.Length);
 		foreach (var highlighter in highlighters)
@@ -823,6 +825,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		Dictionary<SKColor, Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>> _colorToFontToGlyphs = new();
 		List<(SKPath path, float strokeThickness)> spellCheckUnderlines = new();
+		List<(float x1, float x2, float y, SKColor color)> compositionUnderlines = new();
 
 		SKRect? caretRect = default;
 
@@ -928,6 +931,20 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 			}
 
+			if (compositionRange is var (compStart, compLen) && compLen > 0)
+			{
+				var compEnd = compStart + compLen;
+				if (cluster.Value.start < compEnd && cluster.Value.end > compStart)
+				{
+					// Place the underline just below the baseline
+					var underlineY = y + line.baselineOffset + fontDetails.SKFontSize / 6.0f;
+					var underlineLeftX = unalignedX + alignmentOffset;
+					var underlineRightX = underlineLeftX + cluster.Value.width;
+					var foreColor = BrushToColor(_runBreaks[runBreakIndex].foreground, session.Opacity);
+					compositionUnderlines.Add((underlineLeftX, underlineRightX, underlineY, foreColor));
+				}
+			}
+
 			if (caret is var (caretIndex, _, caretThickness))
 			{
 				if (caretIndex >= cluster.Value.start && caretIndex < cluster.Value.end)
@@ -961,6 +978,12 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			_spareSpellCheckPaint.StrokeWidth = strokeThickness;
 			session.Canvas.DrawPath(path, _spareSpellCheckPaint);
+		}
+
+		foreach (var (x1, x2, underlineY, color) in compositionUnderlines)
+		{
+			_spareCompositionUnderlinePaint.Color = color;
+			session.Canvas.DrawLine(x1, underlineY, x2, underlineY, _spareCompositionUnderlinePaint);
 		}
 
 		if (caretRect is null && caret?.index == _text.Length) // ending new line or empty text
