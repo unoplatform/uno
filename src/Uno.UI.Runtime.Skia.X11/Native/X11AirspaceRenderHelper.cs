@@ -25,6 +25,7 @@ internal class X11AirspaceRenderHelper : IDisposable
 
 	public X11AirspaceRenderHelper(IntPtr display, IntPtr window, int width, int height)
 	{
+		using var xLock = X11Helper.XLock(display);
 		_xShapesPresent ??= X11Helper.XShapeQueryExtension(display, out _, out _);
 		if (!_xShapesPresent.Value)
 		{
