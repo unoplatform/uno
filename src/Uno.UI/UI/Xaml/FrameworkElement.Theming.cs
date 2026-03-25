@@ -176,6 +176,10 @@ public partial class FrameworkElement
 		}
 
 		SetIsProcessingThemeWalk(true);
+		// MUX Reference: CCoreServices::NotifyThemeChange() calls
+		// BeginCachingThemeResources() before the theme walk.
+		// Reentrant-safe: nested calls (recursive child walks) get no-op guards.
+		using var cacheGuard = ThemeWalkResourceCache.Instance.BeginCachingThemeResources();
 		try
 		{
 			NotifyThemeChangedCore(theme, forceRefresh);

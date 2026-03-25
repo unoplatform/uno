@@ -1408,11 +1408,31 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
-		/// Updates all <see cref="Data.ThemeResourceReference"/> entries by re-resolving
-		/// from their pinned dictionaries. Called during theme change walks.
+		/// Gets the theme resource references for a specific property, if any.
+		/// Used by animation code to re-resolve ThemeResource values with the
+		/// target element's theme context.
+		/// </summary>
+		internal IEnumerable<Data.ThemeResourceReference>? GetThemeResourceReferences(DependencyProperty property)
+		{
+			return _themeResources?.GetForProperty(property);
+		}
+
+		/// <summary>
+		/// Updates all <see cref="Data.ThemeResourceReference"/> entries using WinUI's
+		/// clear + ancestor-walk + pinned-dict-fallback pattern.
 		/// </summary>
 		/// <remarks>
-		/// MUX Reference: CDependencyObject::UpdateAllThemeReferences in Theming.cpp
+		/// MUX Reference: CDependencyObject::UpdateAllThemeReferences in Theming.cpp (lines 260-286)
+		///
+		/// WinUI's algorithm:
+		/// 1. Snapshot all property indices with theme refs
+		/// 2. For each: clear the ref from the map, then re-apply via SetThemeResourceBinding
+		///    which calls UpdateThemeReference(CThemeResource*):
+		///    - If element is active: walk ancestors (FindNextResolvedValueNoRef)
+		///    - Fall back to RefreshValue (pinned dict lookup)
+		/// 3. Get resolved value, SetValue, store ref back in map
+		///
+		/// The clear-first pattern handles cascading changes (e.g., setting Style triggers new theme refs).
 		/// </remarks>
 		internal void UpdateAllThemeReferences(DependencyObject? owner, ThemeWalkResourceCache? cache = null)
 		{
@@ -1421,24 +1441,77 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
+			// MUX: Theming.cpp:271-276 — snapshot property indices to avoid mutation issues
+			// "Get the properties that have theme refs" into a separate collection before iterating,
+			// because updating one property could cascade and modify _themeResources.
 			var entries = _themeResources.GetAll();
-			for (var i = 0; i < entries.Count; i++)
+			var snapshotCount = entries.Count;
+			var snapshot = new ThemeResourceMap.Entry[snapshotCount];
+			for (var i = 0; i < snapshotCount; i++)
 			{
-				var entry = entries[i];
+				snapshot[i] = entries[i];
+			}
+
+			for (var i = 0; i < snapshot.Length; i++)
+			{
+				var property = snapshot[i].Property;
+				var precedence = snapshot[i].Precedence;
+				var themeRef = snapshot[i].Reference;
 				try
 				{
-					var newValue = entry.Reference.RefreshValue(owner, cache);
-					var convertedValue = BindingPropertyHelper.Convert(entry.Property.Type, newValue);
-
-					// Only apply if we actually have a value. Deferred entries that haven't
-					// been resolved yet (null target dict, null last value) will be resolved
-					// by the _resourceBindings fallback path during loading.
-					if (convertedValue is null && entry.Reference.LastResolvedValue is null)
+					// MUX: Theming.cpp:297-298 — clear the theme ref first.
+					// "Just continue to the next one if the ref isn't in the map now,
+					//  which means it no longer applies to this element."
+					if (_themeResources.Get(property, precedence) != themeRef)
 					{
+						continue; // ref was removed by a cascading update
+					}
+					_themeResources.Clear(property, precedence);
+
+					// MUX: Theming.cpp:315-346 — UpdateThemeReference(CThemeResource*)
+					object? newValue = null;
+					bool resolved = false;
+
+					// Phase A: Ancestor walk (WinUI: FindNextResolvedValueNoRef)
+					// If element is active, walk ancestor ResourceDictionaries to find
+					// the resource. This handles re-parenting correctly.
+					if (owner is FrameworkElement { IsLoaded: true })
+					{
+						var dicts = GetResourceDictionaries(includeAppResources: false);
+						foreach (var dict in dicts)
+						{
+							if (dict.TryGetValue(themeRef.ResourceKey, out var ancestorValue, shouldCheckSystem: false))
+							{
+								themeRef.LastResolvedValue = ancestorValue;
+								newValue = ancestorValue;
+								resolved = true;
+								break;
+							}
+						}
+					}
+
+					// Phase B: Pinned dict fallback (WinUI: themeResource->RefreshValue())
+					// MUX: Theming.cpp:340-342 — "Call refresh if we're in a theme walk
+					// or the ref has been updated in the past and the value wasn't updated
+					// already by the tree lookup above."
+					if (!resolved)
+					{
+						newValue = themeRef.RefreshValue(owner, cache);
+					}
+
+					var convertedValue = BindingPropertyHelper.Convert(property.Type, newValue);
+
+					// Skip deferred entries that haven't been resolved yet (null target dict,
+					// null last value). They will be resolved by the _resourceBindings fallback
+					// path during loading.
+					if (convertedValue is null && themeRef.LastResolvedValue is null)
+					{
+						// MUX: Theming.cpp:397 — store ref back even if we skip the value set
+						_themeResources.Set(property, precedence, themeRef);
 						continue;
 					}
 
-					if (entry.Reference.SetterBindingPath is { } bindingPath)
+					if (themeRef.SetterBindingPath is { } bindingPath)
 					{
 						try
 						{
@@ -1452,15 +1525,20 @@ namespace Microsoft.UI.Xaml
 					}
 					else
 					{
-						SetValue(entry.Property, convertedValue, entry.Precedence, isPersistentResourceBinding: true);
+						SetValue(property, convertedValue, precedence, isPersistentResourceBinding: true);
 					}
+
+					// MUX: Theming.cpp:397 — store the reference back in the map
+					_themeResources.Set(property, precedence, themeRef);
 				}
 				catch (Exception e)
 				{
 					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 					{
-						this.Log().Warn($"Failed to update theme resource binding for {entry.Property.Name}", e);
+						this.Log().Warn($"Failed to update theme resource binding for {property.Name}", e);
 					}
+					// Restore the ref even on failure to avoid losing it
+					_themeResources.Set(property, precedence, themeRef);
 				}
 			}
 		}
@@ -1475,11 +1553,11 @@ namespace Microsoft.UI.Xaml
 				throw new ArgumentException();
 			}
 
-			// Phase 1: Update theme resources via pinned-dictionary path (no tree walk needed)
+			// Phase 1: Update theme resources via ancestor-walk + pinned-dictionary path
 			// MUX Reference: CDependencyObject::UpdateAllThemeReferences() in Theming.cpp
 			if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
 			{
-				UpdateAllThemeReferences(ActualInstance);
+				UpdateAllThemeReferences(ActualInstance, ThemeWalkResourceCache.Instance);
 			}
 
 			ResourceDictionary[]? dictionariesInScope = null;
