@@ -1,24 +1,60 @@
 #nullable enable
 
+using System;
 using System.Collections.Generic;
+using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml;
 
 /// <summary>
-/// Per-theme-walk cache that prevents redundant dictionary lookups when many elements
+/// Global theme resource cache that prevents redundant dictionary lookups when many elements
 /// reference the same resource key from the same dictionary during a single theme change walk.
 /// </summary>
 /// <remarks>
 /// MUX Reference: ThemeWalkResourceCache in ThemeWalkResourceCache.h
-/// In WinUI, resources are cached during a theme walk to alleviate the cost of
-/// repeatedly searching large resource dictionaries multiple times for the same keys.
-/// The cache is created at walk start and cleared at walk end.
+/// In WinUI, this is stored on CCoreServices (one global instance). Resources are cached
+/// during theme walks and cleared when the walk completes. Reentrant-safe: nested calls
+/// return no-op guards.
 /// </remarks>
 internal sealed class ThemeWalkResourceCache
 {
+	/// <summary>
+	/// Global singleton, matching WinUI's CCoreServices::m_themeWalkResourceCache.
+	/// Safe because theme walks are UI-thread-only and serialized.
+	/// </summary>
+	internal static ThemeWalkResourceCache Instance { get; } = new();
+
 	// Key: (ResourceDictionary, ResourceKey) -> resolved value
 	// ResourceDictionary uses reference equality (default for classes).
 	private readonly Dictionary<(ResourceDictionary Dict, SpecializedResourceDictionary.ResourceKey Key), object?> _cache = new();
+
+	private bool _isCachingThemeResources;
+
+	/// <summary>
+	/// Begins a caching session. Returns an IDisposable that clears the cache when disposed.
+	/// Reentrant-safe: nested calls return no-op disposables.
+	/// </summary>
+	/// <remarks>
+	/// MUX Reference: ThemeWalkResourceCache::BeginCachingThemeResources()
+	/// Called at the start of:
+	/// - Theme change walks (CCoreServices::NotifyThemeChange)
+	/// - UpdateLayout (elements entering tree)
+	/// - AppBarButton VSM updates
+	/// </remarks>
+	internal IDisposable BeginCachingThemeResources()
+	{
+		if (!_isCachingThemeResources)
+		{
+			_isCachingThemeResources = true;
+			return Disposable.Create(() =>
+			{
+				_isCachingThemeResources = false;
+				_cache.Clear();
+			});
+		}
+
+		return Disposable.Empty;
+	}
 
 	/// <summary>
 	/// Tries to retrieve a cached resource value.
@@ -49,7 +85,7 @@ internal sealed class ThemeWalkResourceCache
 	}
 
 	/// <summary>
-	/// Clears all cached entries. Called at the end of a theme walk.
+	/// Clears all cached entries.
 	/// </summary>
 	public void Clear()
 	{

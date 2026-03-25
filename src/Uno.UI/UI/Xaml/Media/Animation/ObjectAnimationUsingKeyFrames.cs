@@ -10,6 +10,7 @@ using Windows.UI.Core;
 using Uno.Diagnostics.Eventing;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -204,7 +205,66 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		private IDisposable OnFrame(object currentValue, IKeyFrame<object> frame, TimeSpan duration)
 		{
-			SetValue(frame.Value);
+			var value = frame.Value;
+
+			// MUX Reference: ObjectAnimationUsingKeyFrames.cpp, CAnimation::NotifyThemeChangedCore
+			// WinUI resolves ThemeResource KeyFrame values lazily using the target element's
+			// current theme at the moment the animation applies the value. In Uno, KeyFrame
+			// values are pre-resolved during template materialization which may use the wrong
+			// theme context (app-level instead of element-level). We re-resolve here using
+			// the target element's actual theme.
+			if (frame is IDependencyObjectStoreProvider frameProvider)
+			{
+				var targetElement = PropertyInfo?.DataContext as FrameworkElement;
+				if (targetElement is not null)
+				{
+					var effectiveTheme = targetElement.GetTheme();
+					if (effectiveTheme != Theme.None)
+					{
+						// Check if the KeyFrame has ThemeResource bindings (in _themeResources or _resourceBindings)
+						var themeRefs = frameProvider.Store.GetThemeResourceReferences(ObjectKeyFrame.ValueProperty);
+						var resourceBindings = frameProvider.Store.GetResourceBindingsForProperty(ObjectKeyFrame.ValueProperty);
+
+						bool hasThemeBinding = false;
+						foreach (var _ in themeRefs ?? System.Linq.Enumerable.Empty<Data.ThemeResourceReference>())
+						{
+							hasThemeBinding = true;
+							break;
+						}
+						if (!hasThemeBinding)
+						{
+							foreach (var rb in resourceBindings)
+							{
+								if ((rb.UpdateReason & Data.ResourceUpdateReason.ThemeResource) != 0)
+								{
+									hasThemeBinding = true;
+									break;
+								}
+							}
+						}
+
+						if (hasThemeBinding)
+						{
+							// Push the target element's theme and re-resolve the KeyFrame value
+							var themeKey = Theming.GetBaseValue(effectiveTheme) == Theme.Light ? "Light" : "Dark";
+							ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+							try
+							{
+								// Force re-resolution via the store's UpdateResourceBindings
+								frameProvider.Store.UpdateResourceBindings(Data.ResourceUpdateReason.ThemeResource, targetElement);
+								// Read the updated value
+								value = frame.Value;
+							}
+							finally
+							{
+								ResourceDictionary.PopRequestedThemeForSubTree();
+							}
+						}
+					}
+				}
+			}
+
+			SetValue(value);
 			return null;
 		}
 
