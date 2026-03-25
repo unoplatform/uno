@@ -5104,6 +5104,106 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		public async Task When_OuterScrollViewer_BringIntoView_Scrolls_To_Caret()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// Build enough text so the TextBox is taller than the ScrollViewer viewport.
+			var sb = new System.Text.StringBuilder();
+			for (int i = 0; i < 40; i++)
+			{
+				sb.AppendLine($"Line {i}");
+			}
+
+			var textBox = new TextBox
+			{
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				Text = sb.ToString(),
+				// Disable internal scrolling so the outer ScrollViewer handles it.
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			// Disable internal ScrollViewer scrolling via attached properties.
+			ScrollViewer.SetVerticalScrollMode(textBox, ScrollMode.Disabled);
+			ScrollViewer.SetVerticalScrollBarVisibility(textBox, ScrollBarVisibility.Disabled);
+
+			var outerScrollViewer = new ScrollViewer
+			{
+				Height = 300,
+				Content = textBox,
+			};
+
+			await UITestHelper.Load(outerScrollViewer);
+
+			// Place cursor at the end (bottom of the TextBox).
+			textBox.Focus(FocusState.Programmatic);
+			textBox.SelectionStart = textBox.Text.Length;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(500);
+
+			// The outer ScrollViewer should have scrolled down to bring the caret into view.
+			Assert.IsTrue(outerScrollViewer.VerticalOffset > 0,
+				"Outer ScrollViewer should scroll to bring the caret at the end into view.");
+
+			var offsetAfterFocus = outerScrollViewer.VerticalOffset;
+
+			// Now type an Enter to add a new line — the caret moves further down.
+			textBox.SafeRaiseEvent(UIElement.KeyDownEvent,
+				new KeyRoutedEventArgs(textBox, VirtualKey.Enter, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(500);
+
+			Assert.IsTrue(outerScrollViewer.VerticalOffset >= offsetAfterFocus,
+				"Outer ScrollViewer should scroll further after adding a new line.");
+		}
+
+		[TestMethod]
+		public async Task When_OuterScrollViewer_Caret_Middle_Does_Not_Scroll_To_Bottom()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// Build enough text so the TextBox is taller than the ScrollViewer viewport.
+			var sb = new System.Text.StringBuilder();
+			for (int i = 0; i < 60; i++)
+			{
+				sb.AppendLine($"Line {i}");
+			}
+
+			var textBox = new TextBox
+			{
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				Text = sb.ToString(),
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			ScrollViewer.SetVerticalScrollMode(textBox, ScrollMode.Disabled);
+			ScrollViewer.SetVerticalScrollBarVisibility(textBox, ScrollBarVisibility.Disabled);
+
+			var outerScrollViewer = new ScrollViewer
+			{
+				Height = 300,
+				Content = textBox,
+			};
+
+			await UITestHelper.Load(outerScrollViewer);
+
+			// Place cursor at roughly the middle of the text.
+			textBox.Focus(FocusState.Programmatic);
+			textBox.SelectionStart = textBox.Text.Length / 2;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(500);
+
+			var offsetAtMiddle = outerScrollViewer.VerticalOffset;
+
+			// The scroll offset for cursor at the middle should be less than
+			// the maximum scrollable height (it should NOT scroll to the bottom).
+			Assert.IsTrue(offsetAtMiddle < outerScrollViewer.ScrollableHeight,
+				"Outer ScrollViewer should scroll to the caret at the middle, not to the bottom.");
+		}
+
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{
 			private bool _useOverlay;
