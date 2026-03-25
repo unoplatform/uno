@@ -44,9 +44,21 @@ These are real issues encountered in practice — not theoretical:
 
 7. **Existing package conflict**: If a SamplesApp is already installed with the same version, `Add-AppxPackage` fails with `0x80073CFB`. **Always remove existing packages first** — `install-msix.ps1` handles this.
 
-8. **crosstargeting_override.props**: The SamplesApp.Windows project targets `$(NetPreviousWinAppSDK)` = `net9.0-windows10.0.19041.0`. The override must either not exist or be set to `net9.0-windows10.0.19041.0`. **If it's set to `net10.0-...`**, dependency projects will target net10.0 while the app targets net9.0, causing NU1201 restore failures.
+8. **crosstargeting_override.props MUST be set**: The SamplesApp.Windows project targets `$(NetPreviousWinAppSDK)` = `net9.0-windows10.0.19041.0`. **You MUST create/set `src/crosstargeting_override.props`** with `<UnoTargetFrameworkOverride>net9.0-windows10.0.19041.0</UnoTargetFrameworkOverride>`. If the file is missing or set to a different value (e.g., `net10.0`), the build will pull in Skia/Wasm projects as transitive dependencies — those projects require source generators to have already run and will fail with hundreds of `CS0535: does not implement interface member 'DependencyObject.XXX'` errors. **"File not found" is NOT acceptable** — always create it.
 
 9. **MAX_PATH (260 chars)**: The PRI resource generator uses Win32 APIs with the 260-char path limit. If you see `PRI175`/`PRI252` errors, shorten the repo path or use `subst` drive mapping.
+
+10. **Results file is UTF-16 encoded XML**: The NUnit XML results file is written in UTF-16 encoding. The `Read` tool will often fail with token limits on this file, and `head`/`cat` will show garbled double-spaced output. **Always use the python parsing snippet** from Phase 6 instead of the Read tool.
+
+11. **Graphics3DGL Windows TFM**: `Uno.WinUI.Graphics3DGL.csproj` only builds Skia TFMs by default. SamplesApp.Windows references it but MSBuild picks the Skia `net9.0` build, causing `CS0012: The type 'Grid' is defined in an assembly that is not referenced` errors. **Fix**: Before building SamplesApp.Windows, restore Graphics3DGL with the Windows TFM enabled:
+    ```bash
+    "$MSBUILD" "src/AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj" \
+        -restore -v:m -p:BuildGraphics3DGLForWindows=true \
+        -p:Platform=x64 -p:Configuration=Release
+    ```
+    Also ensure `SamplesApp.Windows.csproj` has `AdditionalProperties="BuildGraphics3DGLForWindows=true"` on that ProjectReference.
+
+12. **ParseArgs base64 truncation**: `App.Tests.cs:ParseArgs` uses `Split('=')` to parse CLI args, which breaks base64 filter values containing `=` padding. The filter is silently dropped and **all tests run instead of filtered tests**. If you see all tests running when a filter was provided, verify that `ParseArgs` uses `Split('=', 2)` to split only on the first `=`.
 
 ---
 
@@ -81,21 +93,38 @@ Use `$PS_CMD -NoProfile -ExecutionPolicy Bypass -File script.ps1` for all script
 
 #### 1b. Find MSBuild
 
+**IMPORTANT**: Use `-prerelease -all` flags — without them, `vswhere` skips preview/insiders installations and may return nothing:
 ```bash
-MSBUILD=$("/c/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe" \
-    -latest -requires Microsoft.Component.MSBuild \
-    -find "MSBuild\\**\\Bin\\MSBuild.exe" 2>/dev/null)
+MSBUILD=$(pwsh -NoProfile -Command "& 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe' -prerelease -all -latest -requires Microsoft.Component.MSBuild -find 'MSBuild\**\Bin\MSBuild.exe'" 2>/dev/null)
 ```
 
-If `vswhere` is not found, check `C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe`.
+**Why PowerShell instead of bash**: The `vswhere.exe` path contains `(x86)` which bash interprets as a subshell. Using `pwsh -Command` with single-quoted paths avoids this. If you must use bash directly, escape or quote the path carefully.
 
-#### 1c. Verify crosstargeting_override.props
+If `vswhere` returns nothing even with `-prerelease -all`, verify Visual Studio is installed and includes the MSBuild component.
 
-Read `src/crosstargeting_override.props`. It must either:
-- Not exist (fine)
-- Contain `net9.0-windows10.0.19041.0` as the `UnoTargetFrameworkOverride`
+#### 1c. Set crosstargeting_override.props (MANDATORY)
 
-**If it's set to anything else**, the build will fail. Fix it before proceeding.
+The file `src/crosstargeting_override.props` **MUST exist** and contain `net9.0-windows10.0.19041.0`. Without it, MSBuild resolves all target frameworks and pulls in Skia/Wasm projects that fail to build.
+
+**Check and fix:**
+```bash
+# If file doesn't exist, create from sample
+if [ ! -f src/crosstargeting_override.props ]; then
+    cp src/crosstargeting_override.props.sample src/crosstargeting_override.props
+fi
+```
+
+Then ensure it contains:
+```xml
+<UnoTargetFrameworkOverride>net9.0-windows10.0.19041.0</UnoTargetFrameworkOverride>
+```
+
+If it's set to anything else (e.g., `net10.0` for Skia development), **change it** to `net9.0-windows10.0.19041.0` before building. Remember to **restore the previous value** after WinUI testing is complete if the user was working with a different target.
+
+**Symptoms of a wrong/missing override:**
+- `CS0535: does not implement interface member 'DependencyObject.XXX'` — Uno.UI.Skia is being built as a transitive dependency
+- `MSB4062: ResourcesGenerationTask_v0 could not be loaded` — Uno.UI.Tasks hasn't been built for the expected configuration
+- Hundreds of errors from `Uno.UI.Skia.csproj::TargetFramework=net9.0` — dead giveaway
 
 #### 1d. Setup signing certificate (first time)
 
@@ -118,6 +147,17 @@ After `setup-cert.ps1` runs, read the thumbprint for the build step:
 ```bash
 THUMBPRINT=$(cat ~/.uno-dev-cert-thumbprint)
 ```
+
+#### 1f. Restore Graphics3DGL with Windows TFM
+
+The `Uno.WinUI.Graphics3DGL` project only builds Skia targets by default. SamplesApp.Windows references it, so it must also have a Windows TFM available:
+```bash
+"$MSBUILD" "src/AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj" \
+    -restore -v:m -p:BuildGraphics3DGLForWindows=true \
+    -p:Platform=x64 -p:Configuration=Release
+```
+
+This is idempotent — safe to run every time. Skip only if you know Graphics3DGL was already restored with the Windows TFM.
 
 ### Phase 2: Build the MSIX Package
 
@@ -142,11 +182,15 @@ THUMBPRINT=$(cat ~/.uno-dev-cert-thumbprint)
 
 | Error | Cause | Fix |
 |-------|-------|-----|
-| `NU1201: not compatible with net9.0-...` | `crosstargeting_override.props` TFM mismatch | Set to `net9.0-windows10.0.19041.0` or remove |
+| `CS0535: does not implement 'DependencyObject.XXX'` from `Uno.UI.Skia.csproj` | **`crosstargeting_override.props` missing or set to wrong TFM.** MSBuild resolves all TFMs and pulls in Skia which needs source generators. | **Set override to `net9.0-windows10.0.19041.0`** (Phase 1c). This is the #1 most common build failure. |
+| `MSB4062: ResourcesGenerationTask_v0 could not be loaded` | Uno.UI.Tasks.v0.dll not built; cascading from wrong TFM pulling in unexpected dependencies | Set override to `net9.0-windows10.0.19041.0` (Phase 1c) |
+| `NU1201: not compatible with net9.0-...` | `crosstargeting_override.props` TFM mismatch | Set to `net9.0-windows10.0.19041.0` |
 | `PRI175` / `PRI252: .xbf not found` | MAX_PATH >= 260 chars | Shorten repo path or `subst` drive |
 | `APPX0101: signing key required` | No cert in store | Run `setup-cert.ps1` (Phase 1d) |
 | `APPX0105: Cannot import key file` | Used `PackageCertificateKeyFile` instead of thumbprint | Switch to `PackageCertificateThumbprint` |
 | `MSB1008: Only one project` | Bash mangled `/r` as path | Use dash syntax: `-restore` |
+| `CS0012: type 'Grid' defined in unreferenced assembly 'Uno.UI'` | Graphics3DGL built for Skia only | Run Phase 1f (restore Graphics3DGL with Windows TFM) |
+| `NETSDK1005: Assets file doesn't have target for windows10` | Graphics3DGL not restored with Windows TFM | Run Phase 1f before building SamplesApp |
 
 ### Phase 3: Install the MSIX Package
 
@@ -207,13 +251,50 @@ Results are output in NUnit XML format.
 
 ### Phase 6: Parse Results and Cleanup
 
-1. **Read** the NUnit XML results file with the Read tool
-2. **Report summary**: total tests, passed, failed, skipped
-3. **For failures**: extract failure messages and stack traces
-4. **Cleanup** — uninstall the MSIX package:
+**IMPORTANT**: The results file is **UTF-16 encoded** XML. Do NOT use the `Read` tool (token limits) or `head`/`cat` (garbled output). Use this python snippet:
+
+```bash
+python3 -c "
+import re
+with open('RESULTS_FILE_PATH', 'r', encoding='utf-16') as f:
+    content = f.read()
+
+m = re.search(r'<test-run[^>]+total=\"(\d+)\"[^>]+passed=\"(\d+)\"[^>]+failed=\"(\d+)\"[^>]+skipped=\"(\d+)\"', content)
+if m:
+    total, passed, failed, skipped = m.groups()
+    print(f'TOTAL: {total}  PASSED: {passed}  FAILED: {failed}  SKIPPED: {skipped}')
+print()
+
+for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"(\w+)\"', content):
+    name, result = m.groups()
+    status = '  PASS' if result == 'Passed' else '**FAIL' if result == 'Failed' else '  SKIP'
+    print(f'{status}  {name}')
+"
+```
+
+Replace `RESULTS_FILE_PATH` with the actual path.
+
+To extract failure messages for failed tests:
+```bash
+python3 -c "
+import re
+with open('RESULTS_FILE_PATH', 'r', encoding='utf-16') as f:
+    content = f.read()
+
+for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"Failed\".*?<message>(.*?)</message>', content, re.DOTALL):
+    name, msg = m.groups()
+    print(f'FAILED: {name}')
+    print(f'  {msg.strip()[:500]}')
+    print()
+"
+```
+
+**Cleanup steps:**
+1. Uninstall the MSIX package:
    ```bash
    $PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/cleanup.ps1"
    ```
+2. **Restore `crosstargeting_override.props`**: If you changed it in Phase 1c (e.g., from `net10.0` to `net9.0-windows10.0.19041.0`), **restore it to the user's previous value** so their Skia/Wasm development workflow isn't broken.
 
 **Interpreting WinUI failures**: Tests that fail on WinUI represent the native WinUI behavior. If a test passes on Uno but fails on WinUI (or vice versa), this reveals a parity gap. Use the `[PlatformCondition]` attribute to exclude tests from WinUI:
 ```csharp
@@ -232,13 +313,30 @@ This is the **exact sequence** to execute. Copy-paste each step:
 # --- Config ---
 SKILL_DIR=".claude/skills/winui-runtime-tests"
 PS_CMD="pwsh"  # or "powershell.exe" if pwsh unavailable
-MSBUILD=$("/c/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe" \
-    -latest -requires Microsoft.Component.MSBuild \
-    -find "MSBuild\\**\\Bin\\MSBuild.exe" 2>/dev/null)
+MSBUILD=$($PS_CMD -NoProfile -Command "& 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe' -prerelease -all -latest -requires Microsoft.Component.MSBuild -find 'MSBuild\**\Bin\MSBuild.exe'" 2>/dev/null)
 
-# --- Phase 1: Setup cert (idempotent, first time prompts UAC) ---
+# --- Phase 1a: Save and set crosstargeting override (MANDATORY) ---
+# Save current value if it exists so we can restore later
+OVERRIDE_FILE="src/crosstargeting_override.props"
+OVERRIDE_BACKUP=""
+if [ -f "$OVERRIDE_FILE" ]; then
+    OVERRIDE_BACKUP=$(cat "$OVERRIDE_FILE")
+fi
+# Create from sample if missing, then set to Windows TFM
+if [ ! -f "$OVERRIDE_FILE" ]; then
+    cp src/crosstargeting_override.props.sample "$OVERRIDE_FILE"
+fi
+# Ensure it contains net9.0-windows10.0.19041.0
+# (use Edit tool to set UnoTargetFrameworkOverride)
+
+# --- Phase 1b: Setup cert (idempotent, first time prompts UAC) ---
 $PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/setup-cert.ps1"
 THUMBPRINT=$(cat ~/.uno-dev-cert-thumbprint)
+
+# --- Phase 1f: Restore Graphics3DGL with Windows TFM (timeout: 600000ms) ---
+"$MSBUILD" "src/AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj" \
+    -restore -v:m -p:BuildGraphics3DGLForWindows=true \
+    -p:Platform=x64 -p:Configuration=Release
 
 # --- Phase 2: Build MSIX (timeout: 600000ms) ---
 "$MSBUILD" "src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows.csproj" \
@@ -251,12 +349,32 @@ THUMBPRINT=$(cat ~/.uno-dev-cert-thumbprint)
 $PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/install-msix.ps1" -RepoRoot "."
 
 # --- Phase 4+5: Run tests (timeout: 600000ms) ---
+# Without filter:
 $PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/run-tests.ps1" \
     -ResultsFile "$(pwd)/winui-test-results.xml"
+# With filter:
+# FILTER=$(echo -n "Fully.Qualified.TestName" | base64 -w 0)
+# $PS_CMD ... -Filter "$FILTER"
 
-# --- Phase 6: Parse results (use Read tool on winui-test-results.xml) ---
-# Then cleanup:
+# --- Phase 6: Parse results (UTF-16 XML — use python, NOT Read tool) ---
+python3 -c "
+import re
+with open('winui-test-results.xml', 'r', encoding='utf-16') as f:
+    content = f.read()
+m = re.search(r'<test-run[^>]+total=\"(\d+)\"[^>]+passed=\"(\d+)\"[^>]+failed=\"(\d+)\"[^>]+skipped=\"(\d+)\"', content)
+if m:
+    total, passed, failed, skipped = m.groups()
+    print(f'TOTAL: {total}  PASSED: {passed}  FAILED: {failed}  SKIPPED: {skipped}')
+print()
+for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"(\w+)\"', content):
+    name, result = m.groups()
+    status = '  PASS' if result == 'Passed' else '**FAIL' if result == 'Failed' else '  SKIP'
+    print(f'{status}  {name}')
+"
+
+# --- Cleanup ---
 $PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/cleanup.ps1"
+# IMPORTANT: Restore crosstargeting_override.props to its previous value
 ```
 
 ---
