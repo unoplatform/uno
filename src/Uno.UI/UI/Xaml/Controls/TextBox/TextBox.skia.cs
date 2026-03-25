@@ -805,6 +805,40 @@ public partial class TextBox
 	#endregion
 
 	/// <summary>
+	/// Narrows the BringIntoView target rect to the caret position so that parent
+	/// ScrollViewers scroll to the cursor rather than the full TextBox bounds.
+	/// </summary>
+	/// <remarks>
+	/// When a TextBox has its internal scrolling disabled and relies on an outer
+	/// ScrollViewer, the default BringIntoView uses the full element bounds.
+	/// For a tall TextBox this causes the outer ScrollViewer to scroll to the
+	/// element edges rather than to the cursor position.
+	/// </remarks>
+	protected override void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs e)
+	{
+		base.OnBringIntoViewRequested(e);
+
+		if (_isSkiaTextBox
+			&& FocusState != FocusState.Unfocused
+			&& TextBoxView?.DisplayBlock is { } displayBlock
+			&& displayBlock.ParsedText is { } parsedText)
+		{
+			var selectionEnd = _selection.selectionEndsAtTheStart
+				? _selection.start
+				: _selection.start + _selection.length;
+
+			var caretRect = parsedText.GetRectForIndex(selectionEnd);
+			caretRect = new Rect(caretRect.X, caretRect.Y, Math.Max(caretRect.Width, TextBlock.CaretThickness), caretRect.Height);
+
+			// Transform from TextBlock coordinate space to TextBox coordinate space
+			var transform = displayBlock.TransformToVisual(this);
+			var caretRectInTextBox = transform.TransformBounds(caretRect);
+
+			e.TargetRect = caretRectInTextBox;
+		}
+	}
+
+	/// <summary>
 	/// Scrolls the <see cref="_contentElement"/> so that the caret is inside the visible viewport
 	/// </summary>
 	/// <remarks>
