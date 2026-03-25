@@ -181,7 +181,7 @@ namespace Microsoft.UI.Xaml.Documents
 			typeof(TextElement),
 			new FrameworkPropertyMetadata(
 				defaultValue: SolidColorBrushHelper.Black,
-				options: FrameworkPropertyMetadataOptions.Inherits,
+				options: FrameworkPropertyMetadataOptions.None,
 				propertyChangedCallback: (instance, args) => ((TextElement)instance).OnForegroundChanged()
 		));
 

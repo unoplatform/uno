@@ -52,7 +52,7 @@ public partial class IconElement : FrameworkElement
 			typeof(IconElement),
 			new FrameworkPropertyMetadata(
 				SolidColorBrushHelper.White,
-				FrameworkPropertyMetadataOptions.Inherits,
+				FrameworkPropertyMetadataOptions.None,
 				propertyChangedCallback: (s, e) => ((IconElement)s).OnForegroundChanged(e)
 			)
 		);
@@ -89,7 +89,10 @@ public partial class IconElement : FrameworkElement
 		return finalSize;
 	}
 
-	private protected virtual void OnForegroundChanged(DependencyPropertyChangedEventArgs e) { }
+	private protected virtual void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
+	{
+		OnForegroundPropertyChanged(e.NewValue as Brush);
+	}
 
 	internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
 	{

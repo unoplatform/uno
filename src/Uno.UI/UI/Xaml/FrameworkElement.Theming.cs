@@ -11,36 +11,128 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml;
 
-// Theming partial – element-level theme propagation, foreground freezing,
+// Theming partial – element-level theme propagation, foreground inheritance,
 // and ActualTheme bookkeeping.  Mirrors WinUI's CDependencyObject/CFrameworkElement
-// theme walk (Theming.cpp, framework.cpp).
+// theme walk (Theming.cpp, framework.cpp) and TextFormatting system (corep.h).
 public partial class FrameworkElement
 {
 	// MUX Reference: corep.h TextFormatting::m_pForeground / m_freezeForeground
-	// In WinUI, every FrameworkElement has a TextFormatting structure that stores
-	// an inherited foreground brush and a freeze flag. The freeze flag prevents
-	// parent foreground inheritance at theme boundaries (RequestedTheme != Default).
-	// Children pull the parent's frozen foreground lazily via EnsureTextFormatting.
+	// In WinUI, every CDependencyObject has a TextFormatting structure that stores
+	// an inherited foreground brush and a freeze flag. Foreground is NOT a DP-inherited
+	// property in WinUI — it propagates exclusively through TextFormatting.
 	//
-	// In Uno, we emulate this with two fields on FrameworkElement:
-	// - _themeForeground: the frozen brush from the nearest themed ancestor
-	// - _isForegroundFrozen: whether this element's foreground is frozen (theme boundary)
-	private Brush _themeForeground;
+	// In Uno, we emulate this with:
+	// - _inheritedForeground: the foreground brush inherited from the nearest ancestor
+	//   (either from a theme boundary or from a parent's explicit Foreground setting)
+	// - _isForegroundFrozen: whether this element is a theme boundary that blocks
+	//   foreground inheritance from ancestors (WinUI: m_freezeForeground)
+	//
+	// Since Uno's Foreground DPs no longer have FrameworkPropertyMetadataOptions.Inherits,
+	// propagation is handled by PropagateForegroundToChildren / ReceiveInheritedForeground
+	// (push-based replacement for WinUI's lazy pull-based PullInheritedTextFormatting).
+	private Brush _inheritedForeground;
 	private bool _isForegroundFrozen;
 
+	#region Foreground inheritance (replaces DP auto-cascade)
+
 	/// <summary>
-	/// Returns true when this element is a theme boundary that should block automatic
-	/// DP inheritance cascade for Foreground-type properties.
+	/// Called from Foreground property-changed callbacks on Control, TextBlock,
+	/// ContentPresenter, IconElement, RichTextBlock when the Foreground value
+	/// changes at a non-Inheritance precedence (Local, Style, Animation, etc.).
+	/// Replaces the old DP auto-cascade that was driven by the Inherits flag.
 	/// </summary>
 	/// <remarks>
-	/// In WinUI, Foreground is not an inherited DP — it propagates through the
-	/// TextFormatting system which has a freeze flag at theme boundaries.
-	/// In Uno, Foreground IS inherited (FrameworkPropertyMetadataOptions.Inherits),
-	/// so a parent setting Foreground auto-cascades to ALL descendants, bypassing
-	/// the theme walk's early-return at elements with explicit RequestedTheme.
-	/// This property lets DependencyObjectStore block that cascade at theme boundaries.
+	/// MUX Reference: In WinUI, when Control.Foreground is set, MarkInheritedPropertyDirty
+	/// is called which bumps the generation counter. Children then lazily pull the new
+	/// foreground via PullInheritedTextFormatting on next measure/render.
+	/// In Uno, we push eagerly since rendering reads the Foreground DP directly.
 	/// </remarks>
-	internal bool IsForegroundInheritanceBlocked => _isForegroundFrozen;
+	internal void OnForegroundPropertyChanged(Brush newBrush)
+	{
+		// Only propagate if the change is from a non-inheritance source.
+		// When ReceiveInheritedForeground sets at Inheritance precedence, the DP
+		// callback fires again — we must not re-propagate (it's already handled).
+		var fgProp = GetForegroundProperty();
+		if (fgProp is null)
+		{
+			return;
+		}
+
+		var precedence = this.GetCurrentHighestValuePrecedence(fgProp);
+		if (precedence == DependencyPropertyValuePrecedences.Inheritance)
+		{
+			return;
+		}
+
+		// This is a local/style/animation change — propagate to children
+		_inheritedForeground = newBrush;
+		PropagateForegroundToChildren(newBrush);
+	}
+
+	/// <summary>
+	/// Pushes a foreground brush down to this element's visual children.
+	/// Stops at theme boundaries (_isForegroundFrozen).
+	/// </summary>
+	/// <remarks>
+	/// MUX Reference: MarkInheritedPropertyDirty + PullInheritedTextFormatting
+	/// but push-based since Uno reads the Foreground DP for rendering.
+	/// </remarks>
+	private void PropagateForegroundToChildren(Brush brush)
+	{
+		var childCount = VisualTreeHelper.GetChildrenCount(this);
+		for (var i = 0; i < childCount; i++)
+		{
+			if (VisualTreeHelper.GetChild(this, i) is FrameworkElement child)
+			{
+				child.ReceiveInheritedForeground(brush);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Receives an inherited foreground brush from a parent or theme boundary.
+	/// </summary>
+	/// <remarks>
+	/// MUX Reference: CControl::PullInheritedTextFormatting (Control.cpp:134)
+	///   if (IsPropertyDefaultByIndex(Control_Foreground) &amp;&amp; !m_freezeForeground)
+	///       SetForeground(pParentTextFormatting->m_pForeground)
+	/// </remarks>
+	private void ReceiveInheritedForeground(Brush brush)
+	{
+		// WinUI: m_freezeForeground blocks inheritance at theme boundaries
+		if (_isForegroundFrozen)
+		{
+			return;
+		}
+
+		_inheritedForeground = brush;
+
+		var fgProp = GetForegroundProperty();
+		if (fgProp is not null)
+		{
+			// WinUI: IsPropertyDefaultByIndex(Foreground) — only inherit if not locally/style-set
+			var precedence = this.GetCurrentHighestValuePrecedence(fgProp);
+			if (precedence == DependencyPropertyValuePrecedences.DefaultValue
+				|| precedence == DependencyPropertyValuePrecedences.Inheritance)
+			{
+				if (brush is not null)
+				{
+					this.SetValue(fgProp, brush, DependencyPropertyValuePrecedences.Inheritance);
+				}
+				else
+				{
+					DependencyObjectExtensions.SetValue(
+						this, fgProp, DependencyProperty.UnsetValue,
+						DependencyPropertyValuePrecedences.Inheritance);
+				}
+			}
+		}
+
+		// Continue propagation (pass-through for Panels, Borders, etc.)
+		PropagateForegroundToChildren(brush);
+	}
+
+	#endregion
 
 	#region Requested theme dependency property
 
@@ -256,14 +348,14 @@ public partial class FrameworkElement
 			else if (themeChanged)
 			{
 				var parent = this.GetParent() as FrameworkElement;
-				var parentFg = parent?._themeForeground;
+				var parentFg = parent?._inheritedForeground;
 				if (parentFg is not null)
 				{
 					EnsureThemeForeground(parentFg);
 				}
-				else if (_themeForeground is not null)
+				else if (_inheritedForeground is not null)
 				{
-					_themeForeground = null;
+					_inheritedForeground = null;
 					_isForegroundFrozen = false;
 
 					var fgProp = GetForegroundProperty();
@@ -346,15 +438,15 @@ public partial class FrameworkElement
 	// MUX Reference: CFrameworkElement::PullInheritedTextFormatting / EnsureTextFormatting
 	// In WinUI, when a child's TextFormatting is out of date (generation counter mismatch),
 	// it pulls the parent's foreground unless freezeForeground is set.
-	// In Uno, we apply the parent's frozen foreground to this element's Foreground DP.
+	// In Uno, we apply the parent's inherited foreground to this element's Foreground DP.
 	/// <summary>
-	/// Applies the inherited theme foreground from the nearest themed ancestor.
+	/// Applies the inherited foreground from the nearest ancestor with a foreground.
 	/// Mirrors WinUI's PullInheritedTextFormatting for the Foreground property.
 	/// </summary>
-	/// <param name="parentThemeForeground">The foreground brush from the parent's theme context.</param>
-	private void EnsureThemeForeground(Brush parentThemeForeground)
+	/// <param name="parentForeground">The foreground brush from the parent's context.</param>
+	private void EnsureThemeForeground(Brush parentForeground)
 	{
-		if (parentThemeForeground is null)
+		if (parentForeground is null)
 		{
 			return;
 		}
@@ -362,16 +454,13 @@ public partial class FrameworkElement
 		// MUX Reference: CControl::PullInheritedTextFormatting (Control.cpp line 134)
 		//   if (IsPropertyDefaultByIndex(KnownPropertyIndex::Control_Foreground)
 		//       && !m_pTextFormatting->m_freezeForeground)
-		// MUX Reference: CTextBlock::PullInheritedTextFormatting (TextBlock.cpp line 647)
-		//   if (IsPropertyDefaultByIndex(KnownPropertyIndex::TextBlock_Foreground)
-		//       && !m_pTextFormatting->m_freezeForeground)
 		DependencyProperty foregroundProperty = GetForegroundProperty();
 
 		if (foregroundProperty is null)
 		{
 			// Elements without Foreground (e.g., Panel, Border) just store
 			// the inherited brush so their children can pull it.
-			_themeForeground = parentThemeForeground;
+			_inheritedForeground = parentForeground;
 			return;
 		}
 
@@ -391,8 +480,8 @@ public partial class FrameworkElement
 
 		// Store the inherited foreground and apply to the DP at Inheritance precedence.
 		// Using Inheritance precedence ensures Local/Style values take priority.
-		_themeForeground = parentThemeForeground;
-		this.SetValue(foregroundProperty, parentThemeForeground, DependencyPropertyValuePrecedences.Inheritance);
+		_inheritedForeground = parentForeground;
+		this.SetValue(foregroundProperty, parentForeground, DependencyPropertyValuePrecedences.Inheritance);
 	}
 
 	// MUX Reference framework.cpp, lines 3401-3492
@@ -407,8 +496,8 @@ public partial class FrameworkElement
 	/// - SetFreezeForeground(true): store brush in TextFormatting, block parent inheritance
 	/// - SetFreezeForeground(false): unblock, children re-inherit from parent
 	/// - MarkInheritedPropertyDirty: bumps generation counter so children re-pull
-	/// In Uno, we store the brush in _themeForeground and the flag in _isForegroundFrozen,
-	/// then propagate to children during the theme walk (PropagateThemeToChildren).
+	/// In Uno, we store the brush in _inheritedForeground and the flag in _isForegroundFrozen,
+	/// then push to children via PropagateForegroundToChildren (replacing WinUI's lazy pull).
 	/// </remarks>
 	internal void NotifyThemeChangedForInheritedProperties(Theme theme, bool freeze)
 	{
@@ -450,7 +539,7 @@ public partial class FrameworkElement
 				if (brush is not null)
 				{
 					// Store frozen state (matches WinUI TextFormatting fields)
-					_themeForeground = brush;
+					_inheritedForeground = brush;
 					_isForegroundFrozen = true;
 
 					// Apply to the DP at Inheritance precedence so it's visible
@@ -461,6 +550,10 @@ public partial class FrameworkElement
 							foregroundProperty, brush,
 							DependencyPropertyValuePrecedences.Inheritance);
 					}
+
+					// MUX Reference: MarkInheritedPropertyDirty — push to children
+					// since Foreground no longer has DP auto-cascade (Inherits removed).
+					PropagateForegroundToChildren(brush);
 				}
 			}
 			finally
@@ -473,7 +566,7 @@ public partial class FrameworkElement
 			// MUX Reference framework.cpp line 3453-3465:
 			// SetFreezeForeground(false), m_cInheritedPropGenerationCounter++
 			_isForegroundFrozen = false;
-			_themeForeground = null;
+			_inheritedForeground = null;
 
 			// Clear the value we set at Inheritance precedence
 			DependencyProperty foregroundProperty = GetForegroundProperty();
@@ -522,14 +615,14 @@ public partial class FrameworkElement
 	/// </summary>
 	private void ClearThemeStateOnUnloaded()
 	{
-		// Clear inherited theme foreground when leaving the tree to prevent
+		// Clear inherited foreground when leaving the tree to prevent
 		// stale values from leaking to elements loaded later in the same
 		// parent (e.g., between runtime tests). Elements with explicit
 		// RequestedTheme (_isForegroundFrozen) retain their brush because
 		// they own the theme boundary.
 		if (!_isForegroundFrozen)
 		{
-			_themeForeground = null;
+			_inheritedForeground = null;
 		}
 
 		// Clear stored theme so that when this element re-enters the tree

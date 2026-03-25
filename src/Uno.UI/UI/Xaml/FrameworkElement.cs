@@ -466,15 +466,15 @@ namespace Microsoft.UI.Xaml
 				((IDependencyObjectStoreProvider)this).Store.ApplyElementNameBindings();
 				UpdateThemeBindings(ResourceUpdateReason.ResolvedOnLoading);
 
-				// MUX Reference: CUIElement::Enter / EnsureTextFormatting
-				// Pull inherited theme foreground from parent when entering the visual tree.
-				// Only apply when there IS a parent with a frozen theme foreground, meaning
-				// we're inside a theme boundary (RequestedTheme != Default ancestor).
-				// Without a theme boundary, foreground inheritance works normally via the DP system.
-				if (RequestedTheme == ElementTheme.Default && effectiveTheme != Theme.None)
+				// MUX Reference: CUIElement::Enter / EnsureTextFormatting / PullInheritedTextFormatting
+				// Pull inherited foreground from parent when entering the visual tree.
+				// Since Foreground no longer has FrameworkPropertyMetadataOptions.Inherits,
+				// we must manually pull from the parent's _inheritedForeground (which carries
+				// both theme-resolved and explicitly-set foreground values).
+				if (RequestedTheme == ElementTheme.Default)
 				{
 					var parent = this.GetParent() as FrameworkElement;
-					if (parent?._themeForeground is { } parentFg)
+					if (parent?._inheritedForeground is { } parentFg)
 					{
 						EnsureThemeForeground(parentFg);
 					}

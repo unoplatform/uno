@@ -620,7 +620,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					SolidColorBrushHelper.Black,
-					FrameworkPropertyMetadataOptions.Inherits,
+					FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((Control)s)?.OnForegroundColorChanged(e.OldValue as Brush, e.NewValue as Brush)
 				)
 			);
@@ -946,6 +946,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 		{
 			OnForegroundColorChangedPartial(oldValue, newValue);
+			OnForegroundPropertyChanged(newValue);
 		}
 
 		partial void OnForegroundColorChangedPartial(Brush oldValue, Brush newValue);

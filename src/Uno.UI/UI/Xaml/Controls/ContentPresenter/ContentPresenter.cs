@@ -238,7 +238,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				SolidColorBrushHelper.Black,
-				FrameworkPropertyMetadataOptions.Inherits,
+				FrameworkPropertyMetadataOptions.None,
 				propertyChangedCallback: (s, e) => ((ContentPresenter)s)?.OnForegroundColorChanged(e.OldValue as Brush, e.NewValue as Brush)
 			)
 		);
@@ -728,6 +728,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	protected virtual void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 	{
 		OnForegroundColorChangedPartial(oldValue, newValue);
+		OnForegroundPropertyChanged(newValue);
 	}
 
 	partial void OnForegroundColorChangedPartial(Brush oldValue, Brush newValue);

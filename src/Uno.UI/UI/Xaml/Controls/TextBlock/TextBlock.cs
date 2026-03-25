@@ -492,13 +492,15 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: SolidColorBrushHelper.Black,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).Subscribe((Brush)e.OldValue, (Brush)e.NewValue)
 				)
 			);
 
 		private void Subscribe(Brush oldValue, Brush newValue)
 		{
+			OnForegroundPropertyChanged(newValue);
+
 			var newOnInvalidateRender = _foregroundChanged ?? (() => OnForegroundChanged());
 
 			_foregroundBrushChangedSubscription?.Dispose();
