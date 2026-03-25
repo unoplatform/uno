@@ -44,6 +44,13 @@ class TextInputConnection : BaseInputConnection
 
 	public delegate bool KeyboardEventHandler(KeyEvent? keyEvent);
 
+	/// <summary>
+	/// Callback invoked when the composing region changes.
+	/// Parameters: composingStart, composingEnd, composingText (nullable), fullText.
+	/// Used by <see cref="AndroidImeTextBoxExtension"/> to detect composition state transitions.
+	/// </summary>
+	internal Action<int, int, string?, string>? CompositionStateChanged { get; set; }
+
 	public TextInputConnection(View target, EditorInfo editorInfo, KeyboardEventHandler keyboardHandler) : base(target, true)
 	{
 		_target = target;
@@ -91,6 +98,10 @@ class TextInputConnection : BaseInputConnection
 				Selection.SetSelection(_editable, _activeTextBox.SelectionStart, _activeTextBox.SelectionStart + _activeTextBox.SelectionLength);
 
 				_activeTextBox.SelectionChanged += OnActiveTextBoxSelectionChanged;
+
+				// Proactively send cursor position so the IME candidate window
+				// is correctly positioned on the very first composition.
+				SendCursorAnchorInfo();
 			}
 		}
 	}
@@ -102,6 +113,20 @@ class TextInputConnection : BaseInputConnection
 			this.LogDebug()?.Debug($"OnActiveTextBoxTextChanged: {_activeTextBox.Text}");
 
 			UpdateEditableSelectionAndText();
+		}
+	}
+
+	/// <summary>
+	/// Sends the current cursor anchor info to the IME immediately.
+	/// Called when ActiveTextBox is set to ensure the candidate window
+	/// is positioned correctly before any editing occurs.
+	/// </summary>
+	internal void SendCursorAnchorInfo()
+	{
+		var info = GetCursorAnchorInfo();
+		if (info is not null)
+		{
+			_imm.UpdateCursorAnchorInfo(_target, info);
 		}
 	}
 
@@ -462,6 +487,36 @@ class TextInputConnection : BaseInputConnection
 		{
 			_cursorAnchorInfoBuilder.SetComposingText(-1, "");
 		}
+
+		// Set insertion marker location so the IME candidate window
+		// appears near the caret rather than at a default position.
+		if (_activeTextBox is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, XamlRoot: { } xamlRoot })
+		{
+			var selEnd = _activeTextBox.SelectionStart + _activeTextBox.SelectionLength;
+			var caretRect = parsedText.GetRectForIndex(selEnd);
+			var transform = _activeTextBox.TextBoxView.DisplayBlock.TransformToVisual(null);
+			var caretPoint = transform.TransformPoint(
+				new Windows.Foundation.Point(caretRect.Left, caretRect.Top));
+			var caretBottom = transform.TransformPoint(
+				new Windows.Foundation.Point(caretRect.Left, caretRect.Top + caretRect.Height));
+			var scale = xamlRoot.RasterizationScale;
+
+			// Coordinates are in screen pixels. We use an identity matrix
+			// since we already transform to absolute screen coordinates.
+			_cursorAnchorInfoBuilder.SetMatrix(new global::Android.Graphics.Matrix());
+
+			int[] viewOffset = new int[2];
+			_target.GetLocationOnScreen(viewOffset);
+
+			var markerX = (float)(caretPoint.X * scale) + viewOffset[0];
+			var markerTop = (float)(caretPoint.Y * scale) + viewOffset[1];
+			var markerBottom = (float)(caretBottom.Y * scale) + viewOffset[1];
+
+			_cursorAnchorInfoBuilder.SetInsertionMarkerLocation(
+				markerX, markerTop, markerBottom, markerBottom,
+				CursorAnchorFlags.HasVisibleRegion);
+		}
+
 		return _cursorAnchorInfoBuilder.Build();
 	}
 
@@ -720,10 +775,25 @@ class TextInputConnection : BaseInputConnection
 			_imm.UpdateExtractedText(
 				_target, _extractRequest.Token, GetExtractedText(_extractRequest));
 		}
-		if (_monitorCursorUpdate)
+		// Always send cursor anchor info so the IME candidate window
+		// tracks the caret position, even if the IME didn't explicitly
+		// request cursor monitoring via RequestCursorUpdates.
 		{
 			var info = GetCursorAnchorInfo();
 			_imm.UpdateCursorAnchorInfo(_target, info);
+		}
+
+		// Notify IME extension of composition state changes
+		if (composingRegionChanged || textChanged)
+		{
+			var composingStart = _editable.ComposingStart;
+			var composingEnd = _editable.ComposingEnd;
+			string? composingText = null;
+			if (composingStart >= 0 && composingEnd > composingStart && composingEnd <= _editable.Length())
+			{
+				composingText = _editable.SubSequence(composingStart, composingEnd)?.ToString();
+			}
+			CompositionStateChanged?.Invoke(composingStart, composingEnd, composingText, _editable.ToString());
 		}
 	}
 

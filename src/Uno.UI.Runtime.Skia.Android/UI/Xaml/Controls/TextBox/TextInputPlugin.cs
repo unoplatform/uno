@@ -1,4 +1,5 @@
-﻿using Android.Content;
+﻿using System;
+using Android.Content;
 using Android.OS;
 using Android.Text;
 using Android.Views;
@@ -23,7 +24,20 @@ internal sealed class TextInputPlugin
 	private TextInputConnection? _inputConnection;
 	private EditorInfo? _editorInfo;
 
-	internal TextInputPlugin(View view)
+	/// <summary>
+	/// Gets the currently active <see cref="TextInputConnection"/>, if any.
+	/// Used by <see cref="AndroidImeTextBoxExtension"/> to subscribe to composition state changes.
+	/// </summary>
+	internal TextInputConnection? ActiveInputConnection => _inputConnection;
+
+	/// <summary>
+	/// Raised when a new <see cref="TextInputConnection"/> is created (e.g., when the system
+	/// calls <c>OnCreateInputConnection</c>). The <see cref="AndroidImeTextBoxExtension"/>
+	/// uses this to re-subscribe to composition state changes on the new connection.
+	/// </summary>
+	internal event Action<TextInputConnection>? InputConnectionCreated;
+
+	internal TextInputPlugin(UnoSKCanvasView view)
 	{
 		_view = view;
 		_imm = (InputMethodManager?)view.Context!.GetSystemService(Context.InputMethodService);
@@ -260,7 +274,9 @@ internal sealed class TextInputPlugin
 			}
 		}
 
-		return _inputConnection = new TextInputConnection(_view, editorInfo ?? new(), HandleKeyEvent);
+		_inputConnection = new TextInputConnection(_view, editorInfo ?? new(), HandleKeyEvent);
+		InputConnectionCreated?.Invoke(_inputConnection);
+		return _inputConnection;
 	}
 
 	public bool HandleKeyEvent(KeyEvent? keyEvent)
