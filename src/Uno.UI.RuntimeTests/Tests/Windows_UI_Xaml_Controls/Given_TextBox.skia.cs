@@ -25,7 +25,8 @@ using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
-
+using Uno.UI.Xaml.Controls.Extensions;
+using Uno.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
@@ -5235,6 +5236,407 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(outerScrollViewer.VerticalOffset < outerScrollViewer.ScrollableHeight,
 				"Outer ScrollViewer should scroll to the caret at the middle, not to the bottom.");
 		}
+
+		#region IME Composition Tests
+
+		[TestMethod]
+		public async Task When_IME_Composition_Committed()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+			fake.SimulateCompositionUpdate("你");
+			await WindowHelper.WaitForIdle();
+			fake.SimulateCompositionComplete("你好");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("你好", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Cancelled()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			// Cancel without committing — text should retain last composition
+			fake.SimulateCompositionCancel();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ni", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Events_Fired()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			TextCompositionStartedEventArgs startedArgs = null;
+			TextCompositionChangedEventArgs changedArgs = null;
+			TextCompositionEndedEventArgs endedArgs = null;
+
+			SUT.TextCompositionStarted += (s, e) => startedArgs = e;
+			SUT.TextCompositionChanged += (s, e) => changedArgs = e;
+			SUT.TextCompositionEnded += (s, e) => endedArgs = e;
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(startedArgs);
+			Assert.AreEqual(0, startedArgs.StartIndex);
+			Assert.IsNotNull(changedArgs);
+			Assert.AreEqual(0, changedArgs.StartIndex);
+			Assert.AreEqual(2, changedArgs.Length);
+
+			fake.SimulateCompositionComplete("你");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(endedArgs);
+			Assert.AreEqual(0, endedArgs.StartIndex);
+			Assert.AreEqual(1, endedArgs.Length);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_StartIndex_Correct()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Type "Hello" first
+			foreach (var c in "Hello")
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.AreEqual("Hello", SUT.Text);
+
+			TextCompositionStartedEventArgs startedArgs = null;
+			SUT.TextCompositionStarted += (s, e) => startedArgs = e;
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(startedArgs);
+			Assert.AreEqual(5, startedArgs.StartIndex);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Keyboard_Input_Suppressed_During_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			var textBeforeKey = SUT.Text;
+
+			// Send a regular character during composition — should be ignored
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 'x'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(textBeforeKey, SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_In_Middle_Of_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "Hello World" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Position cursor at index 5 (between "Hello" and " World")
+			SUT.SelectionStart = 5;
+			SUT.SelectionLength = 0;
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate(" beautiful");
+			await WindowHelper.WaitForIdle();
+			fake.SimulateCompositionComplete(" beautiful");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Hello beautiful World", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_IME_ReadOnly_TextBox_Ignores_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "Original", IsReadOnly = true };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Original", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_External_Text_Change_Cancels_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+
+			// Externally set text during composition
+			SUT.Text = "Replaced";
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.IsComposing);
+			Assert.AreEqual("Replaced", SUT.Text);
+			Assert.IsTrue(fake.EndImeSessionCalled, "EndImeSession should be called when composition is cancelled by external text change");
+		}
+
+		[TestMethod]
+		public async Task When_IME_External_Text_Change_From_Binding_Cancels_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+
+			// Simulate a binding update by setting Text in TextChanged handler
+			SUT.TextChanged += (s, e) =>
+			{
+				if (SUT.Text == "ni")
+				{
+					// This mimics a binding that transforms the text
+					SUT.Text = "override";
+				}
+			};
+
+			// Trigger TextChanged by committing — but the handler overrides the text
+			fake.SimulateCompositionComplete("ni");
+			await WindowHelper.WaitForIdle();
+
+			// The composition committed "ni", then TextChanged set "override"
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_SelectionStart_Change_During_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "Hello" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Position at end
+			SUT.SelectionStart = 5;
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+			Assert.AreEqual("Helloni", SUT.Text);
+
+			// Externally change SelectionStart during composition
+			SUT.SelectionStart = 0;
+			await WindowHelper.WaitForIdle();
+
+			// SelectionStart change should work — it doesn't change Text,
+			// so composition state should remain intact
+			Assert.AreEqual(0, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Caret_Follows_CursorPosition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("nihao", cursorPosition: 5);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(5, SUT.SelectionStart); // cursor at end of "nihao"
+
+			// Simulate cursor moving within composition (e.g., arrow key)
+			fake.SimulateCompositionUpdate("nihao", cursorPosition: 2);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, SUT.SelectionStart); // cursor after "ni"
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Internal_Text_Change_Does_Not_Cancel()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+			// Reset after focus setup — EndImeSession may be called during focus management
+			fake.EndImeSessionCalled = false;
+
+			// Another composition update — internal change, should NOT cancel
+			fake.SimulateCompositionUpdate("nihao");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+			Assert.IsFalse(fake.EndImeSessionCalled, "EndImeSession should NOT be called for IME-driven text changes");
+			Assert.AreEqual("nihao", SUT.Text);
+		}
+
+		private class FakeImeTextBoxExtension : IImeTextBoxExtension
+		{
+			public bool IsComposing { get; private set; }
+			public bool EndImeSessionCalled { get; set; }
+
+			public event EventHandler CompositionStarted;
+			public event EventHandler<ImeCompositionEventArgs> CompositionUpdated;
+			public event EventHandler<ImeCompositionEventArgs> CompositionCompleted;
+			public event EventHandler CompositionEnded;
+
+			public void StartImeSession(TextBox textBox) { }
+
+			public void EndImeSession()
+			{
+				EndImeSessionCalled = true;
+				if (IsComposing)
+				{
+					IsComposing = false;
+					CompositionEnded?.Invoke(this, EventArgs.Empty);
+				}
+			}
+
+			public void SimulateCompositionStart()
+			{
+				IsComposing = true;
+				CompositionStarted?.Invoke(this, EventArgs.Empty);
+			}
+
+			public void SimulateCompositionUpdate(string text, int cursorPosition = -1)
+			{
+				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text, cursorPosition));
+			}
+
+			public void SimulateCompositionComplete(string text)
+			{
+				IsComposing = false;
+				CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(text));
+				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
+
+			public void SimulateCompositionCancel()
+			{
+				IsComposing = false;
+				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
+		}
+
+		#endregion
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{

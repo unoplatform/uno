@@ -1,0 +1,63 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_IME_Composition"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="600"
+	d:DesignWidth="400">
+
+	<StackPanel Spacing="8" Padding="16">
+		<TextBlock Text="IME Composition Debug" FontSize="20" FontWeight="Bold" />
+		<TextBlock Text="Type in the TextBox below to see IME composition event flow (works on X11, Win32, Android)." FontSize="12" Opacity="0.7" />
+
+		<TextBox x:Name="InputTextBox" Header="Input TextBox" PlaceholderText="Type here to test IME..." />
+
+		<Border Background="{ThemeResource SystemControlBackgroundListLowBrush}" CornerRadius="4" Padding="12">
+			<StackPanel Spacing="4">
+				<TextBlock Text="IME Status" FontWeight="SemiBold" />
+
+				<StackPanel Orientation="Horizontal" Spacing="4">
+					<TextBlock Text="Backend:" />
+					<TextBlock x:Name="BackendText" Text="Detecting..." FontWeight="SemiBold" />
+				</StackPanel>
+
+				<StackPanel Orientation="Horizontal" Spacing="4">
+					<TextBlock Text="State:" />
+					<TextBlock x:Name="StateText" Text="Idle" FontWeight="SemiBold" />
+				</StackPanel>
+			</StackPanel>
+		</Border>
+
+		<Border Background="{ThemeResource SystemControlBackgroundListLowBrush}" CornerRadius="4" Padding="12">
+			<StackPanel Spacing="4">
+				<TextBlock Text="Last Events" FontWeight="SemiBold" />
+
+				<StackPanel Orientation="Horizontal" Spacing="4">
+					<TextBlock Text="Commit:" />
+					<TextBlock x:Name="LastCommitText" Text="(none)" FontStyle="Italic" />
+				</StackPanel>
+
+				<StackPanel Orientation="Horizontal" Spacing="4">
+					<TextBlock Text="Preedit:" />
+					<TextBlock x:Name="LastPreeditText" Text="(none)" FontStyle="Italic" />
+				</StackPanel>
+
+				<StackPanel Orientation="Horizontal" Spacing="4">
+					<TextBlock Text="Last Key:" />
+					<TextBlock x:Name="LastKeyText" Text="(none)" FontStyle="Italic" />
+				</StackPanel>
+			</StackPanel>
+		</Border>
+
+		<Border Background="{ThemeResource SystemControlBackgroundListLowBrush}" CornerRadius="4" Padding="12">
+			<StackPanel Spacing="4">
+				<TextBlock Text="Event Log" FontWeight="SemiBold" />
+				<ScrollViewer MaxHeight="200">
+					<TextBlock x:Name="EventLogText" Text="" FontSize="11" FontFamily="Consolas, monospace" TextWrapping="Wrap" />
+				</ScrollViewer>
+			</StackPanel>
+		</Border>
+	</StackPanel>
+</UserControl>
