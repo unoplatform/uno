@@ -1203,6 +1203,17 @@ namespace Microsoft.UI.Xaml
 
 		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
+			// WinUI: Foreground propagates through TextFormatting, NOT through DP inheritance.
+			// In Uno, Foreground has FrameworkPropertyMetadataOptions.Inherits which auto-cascades
+			// to ALL descendants. This breaks element-level theming because a parent's theme change
+			// cascades Foreground through theme boundaries (elements with explicit RequestedTheme).
+			// Block the cascade at theme boundaries, matching WinUI's TextFormatting freeze behavior.
+			if (parentProperty.Name == "Foreground"
+				&& ActualInstance is FrameworkElement { IsForegroundInheritanceBlocked: true })
+			{
+				return;
+			}
+
 			var (localProperty, propertyDetails) = GetLocalPropertyDetails(parentProperty);
 
 			if (localProperty != null)
