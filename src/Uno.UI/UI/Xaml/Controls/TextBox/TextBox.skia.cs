@@ -819,6 +819,7 @@ public partial class TextBox
 		base.OnBringIntoViewRequested(e);
 
 		if (_isSkiaTextBox
+			&& (e.TargetElement is null || e.TargetElement == this)
 			&& FocusState != FocusState.Unfocused
 			&& TextBoxView?.DisplayBlock is { } displayBlock
 			&& displayBlock.ParsedText is { } parsedText)
