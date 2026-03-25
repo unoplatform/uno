@@ -2858,6 +2858,59 @@ public class Given_ElementTheme
 			$"Foreground should be consistent before and after hover. Before={beforeHoverFg}, After={afterHoverFg}");
 	}
 
+	[TestMethod]
+	public async Task When_CheckBox_In_Dark_Theme_Foreground_Stays_Correct_After_PointerOver()
+	{
+		// Repro: CheckBox in Dark-themed container shows correct white text,
+		// keeps white text during hover, but reverts to black (Light theme value)
+		// after mouse leaves. The visual state storyboard animation for
+		// UncheckedNormal re-applies {ThemeResource CheckBoxForegroundUnchecked}
+		// but resolves it with the wrong (app-level Light) theme context.
+		var container = new Border
+		{
+			Width = 300,
+			Height = 300,
+			RequestedTheme = ElementTheme.Dark,
+		};
+		var checkBox = new CheckBox { Content = "Accept terms" };
+		container.Child = checkBox;
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(checkBox);
+		await WindowHelper.WaitForIdle();
+
+		var contentPresenter = checkBox.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		Assert.IsNotNull(contentPresenter, "CheckBox should have a ContentPresenter template child");
+
+		// Initial state: UncheckedNormal — foreground should be white in Dark theme
+		var initialFg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(initialFg, "ContentPresenter should have a SolidColorBrush foreground initially");
+		Assert.IsTrue(initialFg.Value.R > 128,
+			$"Initial foreground in Dark theme should be light/white. Got R={initialFg.Value.R}, color={initialFg}");
+
+		// Hover: UncheckedPointerOver
+		VisualStateManager.GoToState(checkBox, "UncheckedPointerOver", false);
+		await WindowHelper.WaitForIdle();
+
+		var hoverFg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(hoverFg, "ContentPresenter should have foreground during hover");
+		Assert.IsTrue(hoverFg.Value.R > 128,
+			$"Hover foreground in Dark theme should be light/white. Got R={hoverFg.Value.R}, color={hoverFg}");
+
+		// Leave hover: back to UncheckedNormal
+		VisualStateManager.GoToState(checkBox, "UncheckedNormal", false);
+		await WindowHelper.WaitForIdle();
+
+		var afterHoverFg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(afterHoverFg, "ContentPresenter should have foreground after hover exit");
+		Assert.IsTrue(afterHoverFg.Value.R > 128,
+			$"After hover exit, foreground in Dark theme should be light/white. Got R={afterHoverFg.Value.R}, color={afterHoverFg}");
+
+		// Foreground should be consistent across all states
+		Assert.AreEqual(initialFg, afterHoverFg,
+			$"Foreground should be consistent before and after hover. Before={initialFg}, After={afterHoverFg}");
+	}
+
 	#endregion
 
 	#region WinUI Gap Fix Coverage
