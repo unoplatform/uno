@@ -8,9 +8,8 @@
 	d:DesignHeight="800"
 	d:DesignWidth="400">
 
-	<!-- Reproduces: ScrollView with SafeArea.Insets and multiline TextBox inside a modal-like layout.
-		 Tests that scrolling and ChangeView work correctly when the soft keyboard opens
-		 and the content area is inset for SoftInput. -->
+	<!-- Reproduces: multiline TextBox with disabled internal scrolling inside an outer ScrollViewer.
+		 Tests that the outer ScrollViewer scrolls to the caret position on focus and text changes. -->
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -39,8 +38,7 @@
 					BorderThickness="0" VerticalAlignment="Center" />
 		</Grid>
 
-		<!-- ScrollViewer with SafeArea.Insets to handle soft keyboard.
-			 The outer ScrollViewer handles all scrolling; the TextBox's internal
+		<!-- The outer ScrollViewer handles all scrolling; the TextBox's internal
 			 scrolling is disabled so it grows naturally with content. -->
 		<ScrollViewer x:Name="ContentScrollViewer"
 					  Grid.Row="1"

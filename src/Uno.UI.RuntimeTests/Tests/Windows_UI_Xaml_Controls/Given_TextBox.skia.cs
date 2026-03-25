@@ -5141,11 +5141,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.Focus(FocusState.Programmatic);
 			textBox.SelectionStart = textBox.Text.Length;
 			await WindowHelper.WaitForIdle();
-			await Task.Delay(500);
 
 			// The outer ScrollViewer should have scrolled down to bring the caret into view.
-			Assert.IsTrue(outerScrollViewer.VerticalOffset > 0,
-				"Outer ScrollViewer should scroll to bring the caret at the end into view.");
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset > 0,
+				timeoutMS: 2000,
+				message: "Outer ScrollViewer should scroll to bring the caret at the end into view.");
 
 			var offsetAfterFocus = outerScrollViewer.VerticalOffset;
 
@@ -5153,10 +5154,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.SafeRaiseEvent(UIElement.KeyDownEvent,
 				new KeyRoutedEventArgs(textBox, VirtualKey.Enter, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
-			await Task.Delay(500);
 
-			Assert.IsTrue(outerScrollViewer.VerticalOffset >= offsetAfterFocus,
-				"Outer ScrollViewer should scroll further after adding a new line.");
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset >= offsetAfterFocus,
+				timeoutMS: 2000,
+				message: "Outer ScrollViewer should scroll further after adding a new line.");
 		}
 
 		[TestMethod]
@@ -5194,13 +5196,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.Focus(FocusState.Programmatic);
 			textBox.SelectionStart = textBox.Text.Length / 2;
 			await WindowHelper.WaitForIdle();
-			await Task.Delay(500);
 
-			var offsetAtMiddle = outerScrollViewer.VerticalOffset;
+			// Wait for the ScrollViewer to scroll to the caret.
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset > 0,
+				timeoutMS: 2000,
+				message: "Outer ScrollViewer should scroll to bring the caret into view.");
 
 			// The scroll offset for cursor at the middle should be less than
 			// the maximum scrollable height (it should NOT scroll to the bottom).
-			Assert.IsTrue(offsetAtMiddle < outerScrollViewer.ScrollableHeight,
+			Assert.IsTrue(outerScrollViewer.VerticalOffset < outerScrollViewer.ScrollableHeight,
 				"Outer ScrollViewer should scroll to the caret at the middle, not to the bottom.");
 		}
 
