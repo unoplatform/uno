@@ -108,6 +108,18 @@ namespace Microsoft.UI.Xaml
 
 		internal ResourceUpdateReason ResourceBindingUpdateReason { get; set; }
 
+		/// <summary>
+		/// Deferred theme resource reference for Style Setters.
+		/// When set, the Setter stores the reference itself (not the resolved value) and
+		/// resolves lazily when the style is applied to a control.
+		/// </summary>
+		/// <remarks>
+		/// MUX Reference: PreserveThemeResourceExtension() in TypeTableStructs.h
+		/// WinUI stores a CThemeResource on Setter.Value for Style Setters and creates
+		/// a live binding only when the Style is applied to a control.
+		/// </remarks>
+		internal ThemeResourceReference? ThemeResourceRef { get; set; }
+
 		public Setter(DependencyProperty targetProperty, object value)
 		{
 			Property = targetProperty;
@@ -139,7 +151,13 @@ namespace Microsoft.UI.Xaml
 		{
 			if (Property != null)
 			{
-				if (ThemeResourceKey.HasValue)
+				if (ThemeResourceRef is { } themeRef)
+				{
+					// Use pinned-dictionary path: resolve from the stored ThemeResourceReference
+					// and create a binding on the target control.
+					ResourceResolver.ApplyThemeResource(o, Property, themeRef, precedence: null);
+				}
+				else if (ThemeResourceKey.HasValue)
 				{
 					ResourceResolver.ApplyResource(o, Property, ThemeResourceKey.Value, ResourceBindingUpdateReason, context: ThemeResourceContext, precedence: null);
 				}
@@ -163,22 +181,49 @@ namespace Microsoft.UI.Xaml
 			{
 				RefreshBindingPath();
 
-				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, DependencyPropertyValuePrecedences.Animations, ResourceBindingUpdateReason))
+				if (ThemeResourceRef is { } themeRef)
+				{
+					// Use pinned-dictionary path for VisualState setters with ThemeResource
+					if (path.DataContext is IDependencyObjectStoreProvider provider)
+					{
+						var property = DependencyProperty.GetProperty(path.DataContext.GetType(), path.LeafPropertyName);
+						if (property != null)
+						{
+							var value = themeRef.RefreshValue(path.DataContext as DependencyObject);
+							path.Value = value;
+							var targetRef = themeRef.CloneForTarget(DependencyPropertyValuePrecedences.Animations, path);
+							provider.Store.SetThemeResourceBinding(property, targetRef);
+							return;
+						}
+					}
+				}
+				else if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, DependencyPropertyValuePrecedences.Animations, ResourceBindingUpdateReason))
 				{
 					// Applied as theme binding, no need to do more
 					return;
 				}
-				else
-				{
-					path.Value = Value;
-				}
+
+				path.Value = Value;
 			}
 		}
 
 		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
-		internal override bool TryGetSetterValue(out object? value, DependencyObject _)
+		internal override bool TryGetSetterValue(out object? value, DependencyObject owner)
 		{
-			if (ThemeResourceKey.HasValue)
+			if (ThemeResourceRef is { } themeRef)
+			{
+				// Use pinned-dictionary path: resolve from the stored target dictionary
+				value = themeRef.RefreshValue(owner);
+				if (value is not null)
+				{
+					value = BindingPropertyHelper.Convert(Property!.Type, value);
+					return true;
+				}
+
+				value = null;
+				return false;
+			}
+			else if (ThemeResourceKey.HasValue)
 			{
 				if (ResourceResolver.TryStaticRetrieval(ThemeResourceKey.Value, ThemeResourceContext, out value))
 				{

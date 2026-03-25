@@ -204,13 +204,16 @@ public partial class FrameworkElement
 
 		bool themeChanged = oldBase != newBase || forceRefresh;
 
-		// 2. PUSH this element's theme to global context for resource lookups
+		// 2. PUSH this element's theme to global context
+		// The push/pop is still needed because ResourceDictionary.GetActiveThemeDictionary()
+		// uses the global theme stack to determine which theme sub-dictionary to return.
+		// Even though ThemeResourceReference pins the target dictionary, the dictionary's
+		// TryGetValue still needs to know the active theme to select Light/Dark sub-dict.
 		var currentActiveTheme = ResourceDictionary.GetActiveTheme();
 		string themeKey;
 		bool needsPush;
 		if (newBase == Theme.None)
 		{
-			// No explicit theme resolved - use current active theme, don't push
 			themeKey = currentActiveTheme.Key;
 			needsPush = false;
 		}
@@ -234,10 +237,6 @@ public partial class FrameworkElement
 			}
 			else if (themeChanged)
 			{
-				// MUX Reference: CUIElement/CControl/CTextBlock::PullInheritedTextFormatting
-				// For children inheriting theme (RequestedTheme == Default),
-				// pull the frozen foreground from the parent, just as WinUI children
-				// pull from parent's TextFormatting during EnsureTextFormatting.
 				var parent = this.GetParent() as FrameworkElement;
 				var parentFg = parent?._themeForeground;
 				if (parentFg is not null)
@@ -246,8 +245,6 @@ public partial class FrameworkElement
 				}
 				else if (_themeForeground is not null)
 				{
-					// Parent no longer has a frozen foreground (e.g., root switched
-					// from Dark back to Default). Clear our stale inherited value.
 					_themeForeground = null;
 					_isForegroundFrozen = false;
 
@@ -261,7 +258,7 @@ public partial class FrameworkElement
 				}
 			}
 
-			// 4. Update theme resources (uses pushed global context)
+			// 4. Update theme resources via pinned-dictionary path
 			if (themeChanged)
 			{
 				UpdateThemeBindings(ResourceUpdateReason.ThemeResource);
@@ -277,9 +274,6 @@ public partial class FrameworkElement
 			}
 
 			// 7. Persist theme AFTER core walk (MUX Reference: Theming.cpp line 155)
-			// Placed inside the virtual method so subclasses (e.g., PopupRoot)
-			// can omit persistence — matching WinUI where CPopupRoot overrides
-			// NotifyThemeChanged and never calls SetTheme on itself.
 			SetTheme(theme);
 		}
 		finally
