@@ -3360,4 +3360,185 @@ public class Given_ElementTheme
 	}
 
 	#endregion
+
+	#region Parent Theme Change Preserves Explicit Child Theme (BasicThemeResources Repro)
+
+	/// <summary>
+	/// Full reproduction of the BasicThemeResources sample page.
+	/// Instantiates the physical XAML file with three columns (Default, Dark, Light),
+	/// each containing four Border+TextBlock rows with {ThemeResource}/{StaticResource}
+	/// combinations. Verifies every text foreground color after initial load, after
+	/// switching to Dark, and after switching back to Default.
+	///
+	/// WinUI behaviour:
+	///   Initial (app=Light):  col0=black text, col1=white text, col2=black text
+	///   After Local Dark:     col0=white,      col1=white,      col2=black  (col2 keeps Light)
+	///   After Local Default:  col0=black,      col1=white,      col2=black  (col1 keeps Dark)
+	/// </summary>
+	[TestMethod]
+	public async Task When_ParentThemeChanges_BasicThemeResources_FullRepro()
+	{
+		var page = new Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.BasicThemeResources_Test();
+
+		WindowHelper.WindowContent = page;
+		await WindowHelper.WaitForLoaded(page);
+		await WindowHelper.WaitForIdle();
+
+		// --- Grab every named element ---
+		var col0Panel = (StackPanel)page.FindName("col0Panel");
+		var col1Panel = (StackPanel)page.FindName("col1Panel");
+		var col2Panel = (StackPanel)page.FindName("col2Panel");
+
+		// Borders
+		var col0_bg0 = (Border)page.FindName("col0_ThemeResource_Themed");
+		var col0_bg1 = (Border)page.FindName("col0_StaticResource_Themed");
+		var col0_bg2 = (Border)page.FindName("col0_ThemeResource_Static");
+		var col0_bg3 = (Border)page.FindName("col0_StaticResource_Static");
+
+		var col1_bg0 = (Border)page.FindName("col1_ThemeResource_Themed");
+		var col1_bg1 = (Border)page.FindName("col1_StaticResource_Themed");
+		var col1_bg2 = (Border)page.FindName("col1_ThemeResource_Static");
+		var col1_bg3 = (Border)page.FindName("col1_StaticResource_Static");
+
+		var col2_bg0 = (Border)page.FindName("col2_ThemeResource_Themed");
+		var col2_bg1 = (Border)page.FindName("col2_StaticResource_Themed");
+		var col2_bg2 = (Border)page.FindName("col2_ThemeResource_Static");
+		var col2_bg3 = (Border)page.FindName("col2_StaticResource_Static");
+
+		// TextBlocks (4 per column = 12 total)
+		var col0_texts = new[]
+		{
+			(TextBlock)page.FindName("col0_text0"),
+			(TextBlock)page.FindName("col0_text1"),
+			(TextBlock)page.FindName("col0_text2"),
+			(TextBlock)page.FindName("col0_text3"),
+		};
+		var col1_texts = new[]
+		{
+			(TextBlock)page.FindName("col1_text0"),
+			(TextBlock)page.FindName("col1_text1"),
+			(TextBlock)page.FindName("col1_text2"),
+			(TextBlock)page.FindName("col1_text3"),
+		};
+		var col2_texts = new[]
+		{
+			(TextBlock)page.FindName("col2_text0"),
+			(TextBlock)page.FindName("col2_text1"),
+			(TextBlock)page.FindName("col2_text2"),
+			(TextBlock)page.FindName("col2_text3"),
+		};
+
+		// Helper: extract foreground color of a TextBlock
+		static Windows.UI.Color? Fg(TextBlock tb) => (tb.Foreground as SolidColorBrush)?.Color;
+		static Windows.UI.Color Bg(Border b) => ((SolidColorBrush)b.Background).Color;
+
+		var yellow = Windows.UI.Color.FromArgb(255, 255, 255, 0);
+		var blue = Windows.UI.Color.FromArgb(255, 0, 0, 255);
+		var green = Windows.UI.Color.FromArgb(255, 0, 128, 0);
+		var gray = Windows.UI.Color.FromArgb(255, 128, 128, 128);
+
+		// =====================================================================
+		// INITIAL STATE  (app is Light, page has no explicit RequestedTheme)
+		// =====================================================================
+
+		// --- Backgrounds ---
+		// Col 0 (Default→Light): ThemeResource=Yellow, StaticResource=resolved-at-parse
+		Assert.AreEqual(yellow, Bg(col0_bg0), "Init col0 row0 ThemeResource bg should be Yellow (Light)");
+		Assert.AreEqual(green, Bg(col0_bg2), "Init col0 row2 ThemeResource on static should be Green");
+		Assert.AreEqual(green, Bg(col0_bg3), "Init col0 row3 StaticResource on static should be Green");
+
+		// Col 1 (Dark): ThemeResource=Blue
+		Assert.AreEqual(blue, Bg(col1_bg0), "Init col1 row0 ThemeResource bg should be Blue (Dark)");
+		Assert.AreEqual(green, Bg(col1_bg2), "Init col1 row2 ThemeResource on static should be Green");
+		Assert.AreEqual(green, Bg(col1_bg3), "Init col1 row3 StaticResource on static should be Green");
+
+		// Col 2 (Light): ThemeResource=Yellow
+		Assert.AreEqual(yellow, Bg(col2_bg0), "Init col2 row0 ThemeResource bg should be Yellow (Light)");
+		Assert.AreEqual(green, Bg(col2_bg2), "Init col2 row2 ThemeResource on static should be Green");
+		Assert.AreEqual(green, Bg(col2_bg3), "Init col2 row3 StaticResource on static should be Green");
+
+		// --- Foregrounds (text color): the key part of the repro ---
+		// Capture a Light-theme foreground and a Dark-theme foreground as reference
+		var lightFg = Fg(col0_texts[0]);
+		var darkFg = Fg(col1_texts[0]);
+		Assert.IsNotNull(lightFg, "col0 text should have a SolidColorBrush foreground");
+		Assert.IsNotNull(darkFg, "col1 text should have a SolidColorBrush foreground");
+		Assert.AreNotEqual(lightFg, darkFg,
+			$"Light foreground ({lightFg}) and Dark foreground ({darkFg}) must differ");
+
+		// Col 0 (Default→Light): all texts should have light foreground (black-ish)
+		foreach (var (tb, i) in col0_texts.Select((t, i) => (t, i)))
+			Assert.AreEqual(lightFg, Fg(tb), $"Init col0_text{i} should have Light foreground");
+
+		// Col 1 (Dark): all texts should have dark foreground (white-ish)
+		foreach (var (tb, i) in col1_texts.Select((t, i) => (t, i)))
+			Assert.AreEqual(darkFg, Fg(tb), $"Init col1_text{i} should have Dark foreground");
+
+		// Col 2 (Light): all texts should have light foreground (black-ish)
+		foreach (var (tb, i) in col2_texts.Select((t, i) => (t, i)))
+			Assert.AreEqual(lightFg, Fg(tb), $"Init col2_text{i} should have Light foreground");
+
+		// =====================================================================
+		// SET ROOT TO DARK  (simulates clicking "Local Dark" button)
+		// =====================================================================
+		page.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// Backgrounds
+		Assert.AreEqual(blue, Bg(col0_bg0), "Dark: col0 row0 ThemeResource should switch to Blue");
+		Assert.AreEqual(blue, Bg(col1_bg0), "Dark: col1 row0 ThemeResource should stay Blue");
+		Assert.AreEqual(yellow, Bg(col2_bg0),
+			"Dark: col2 row0 ThemeResource MUST stay Yellow (explicit Light child)");
+
+		// Foregrounds — THE KEY ASSERTIONS
+		// Col 0 (Default→now Dark): white text
+		foreach (var (tb, i) in col0_texts.Select((t, i) => (t, i)))
+			Assert.AreEqual(darkFg, Fg(tb),
+				$"Dark: col0_text{i} should switch to Dark foreground, got {Fg(tb)}");
+
+		// Col 1 (explicit Dark): white text (unchanged)
+		foreach (var (tb, i) in col1_texts.Select((t, i) => (t, i)))
+			Assert.AreEqual(darkFg, Fg(tb),
+				$"Dark: col1_text{i} should stay Dark foreground, got {Fg(tb)}");
+
+		// Col 2 (explicit Light): MUST stay black text
+		foreach (var (tb, i) in col2_texts.Select((t, i) => (t, i)))
+			Assert.AreEqual(lightFg, Fg(tb),
+				$"Dark: col2_text{i} MUST keep Light foreground, got {Fg(tb)}");
+
+		// ActualTheme
+		Assert.AreEqual(ElementTheme.Dark, col0Panel.ActualTheme, "Dark: col0 ActualTheme");
+		Assert.AreEqual(ElementTheme.Dark, col1Panel.ActualTheme, "Dark: col1 ActualTheme");
+		Assert.AreEqual(ElementTheme.Light, col2Panel.ActualTheme, "Dark: col2 ActualTheme must stay Light");
+
+		// =====================================================================
+		// SET ROOT BACK TO DEFAULT  (simulates clicking "Local Default" button)
+		// =====================================================================
+		page.RequestedTheme = ElementTheme.Default;
+		await WindowHelper.WaitForIdle();
+
+		// Backgrounds
+		Assert.AreEqual(yellow, Bg(col0_bg0), "Default: col0 row0 ThemeResource should revert to Yellow");
+		Assert.AreEqual(blue, Bg(col1_bg0),
+			"Default: col1 row0 ThemeResource MUST stay Blue (explicit Dark child)");
+		Assert.AreEqual(yellow, Bg(col2_bg0), "Default: col2 row0 ThemeResource should stay Yellow");
+
+		// Foregrounds
+		// Col 0 (Default→Light): black text
+		foreach (var (tb, i) in col0_texts.Select((t, i) => (t, i)))
+			Assert.AreEqual(lightFg, Fg(tb),
+				$"Default: col0_text{i} should revert to Light foreground, got {Fg(tb)}");
+
+		// Col 1 (explicit Dark): MUST stay white text
+		foreach (var (tb, i) in col1_texts.Select((t, i) => (t, i)))
+			Assert.AreEqual(darkFg, Fg(tb),
+				$"Default: col1_text{i} MUST keep Dark foreground, got {Fg(tb)}");
+
+		// Col 2 (explicit Light): black text
+		foreach (var (tb, i) in col2_texts.Select((t, i) => (t, i)))
+			Assert.AreEqual(lightFg, Fg(tb),
+				$"Default: col2_text{i} should stay Light foreground, got {Fg(tb)}");
+	}
+
+	#endregion
 }
