@@ -196,6 +196,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		NativeUno.uno_set_window_close_callbacks(&WindowShouldClose, &WindowClose);
 
+		NativeUno.uno_set_ime_callbacks(&OnImeInsertText, &OnImeSetMarkedText, &OnImeUnmarkText, &OnImeGetCaretRect);
+
 		NativeUno.uno_set_window_screen_change_callbacks(&ScreenChanged, &ScreenParametersChanged);
 		ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new MacOSDisplayInformationExtension(o));
 	}
@@ -213,6 +215,28 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	}
 
 	private static void Unregister(nint handle) => _windows.Remove(handle);
+
+	/// <summary>
+	/// Returns the native window handle for the given XamlRoot, or 0 if not found.
+	/// Used by IME extension to activate/deactivate native IME routing.
+	/// </summary>
+	internal static nint GetNativeHandleForXamlRoot(XamlRoot? xamlRoot)
+	{
+		if (xamlRoot is null)
+		{
+			return 0;
+		}
+
+		foreach (var (handle, weak) in _windows)
+		{
+			if (weak.TryGetTarget(out var host) && host._xamlRoot == xamlRoot)
+			{
+				return handle;
+			}
+		}
+
+		return 0;
+	}
 
 	private static MacOSWindowHost? GetWindowHost(nint handle)
 	{
@@ -339,6 +363,79 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		{
 			Application.Current.RaiseRecoverableUnhandledException(e);
 			return 0;
+		}
+	}
+
+	// IME (Input Method Editor) callbacks for NSTextInputClient composition support
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static unsafe void OnImeInsertText(nint handle, ushort* textPtr, int length)
+	{
+		try
+		{
+			var text = new string((char*)textPtr, 0, length);
+			if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(MacOSWindowHost).Log().Trace($"OnImeInsertText: '{text}'");
+			}
+			MacOSImeTextBoxExtension.Instance.OnInsertText(text);
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static unsafe void OnImeSetMarkedText(nint handle, ushort* textPtr, int length, int selectedStart, int selectedLength)
+	{
+		try
+		{
+			var text = length > 0 ? new string((char*)textPtr, 0, length) : string.Empty;
+			if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(MacOSWindowHost).Log().Trace($"OnImeSetMarkedText: '{text}' selected: [{selectedStart}..{selectedStart + selectedLength}]");
+			}
+			MacOSImeTextBoxExtension.Instance.OnSetMarkedText(text, selectedStart, selectedLength);
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnImeUnmarkText(nint handle)
+	{
+		try
+		{
+			if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(MacOSWindowHost).Log().Trace("OnImeUnmarkText");
+			}
+			MacOSImeTextBoxExtension.Instance.OnUnmarkText();
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static unsafe void OnImeGetCaretRect(nint handle, double* x, double* y, double* width, double* height)
+	{
+		try
+		{
+			var rect = MacOSImeTextBoxExtension.Instance.GetCaretRect();
+			*x = rect.X;
+			*y = rect.Y;
+			*width = rect.Width;
+			*height = rect.Height;
+		}
+		catch (Exception e)
+		{
+			*x = *y = *width = *height = 0;
+			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 

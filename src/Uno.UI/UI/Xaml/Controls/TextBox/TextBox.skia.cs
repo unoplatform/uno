@@ -86,6 +86,8 @@ public partial class TextBox
 	static TextBox()
 	{
 		_platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
+		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
+		InitializeIme();
 	}
 
 	internal CaretDisplayMode CaretMode
@@ -1606,13 +1608,6 @@ public partial class TextBox
 		var index = Text.IndexOf('\r', i);
 		return index == -1 ? Text.Length - 1 : index;
 	}
-
-	partial void InitializePartial()
-	{
-		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
-		InitializeIme();
-	}
-
 
 	partial void OnTextChangedPartial()
 	{

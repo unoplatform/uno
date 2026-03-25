@@ -1,23 +1,26 @@
+#nullable enable
 using System;
 using Windows.Foundation;
 using Uno.Disposables;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class TextBox
 {
-	private static IImeTextBoxExtension _imeExtension;
-	private static TextBox _activeImeTextBox;
+	private static IImeTextBoxExtension? _imeExtension;
+
+	private static TextBox? _activeImeTextBox;
 	private bool _isComposing;
 	private int _compositionStartIndex;
 	private int _compositionLength;
 	private int _compositionResolvedLength;
 
-	public event TypedEventHandler<TextBox, TextCompositionStartedEventArgs> TextCompositionStarted;
-	public event TypedEventHandler<TextBox, TextCompositionChangedEventArgs> TextCompositionChanged;
-	public event TypedEventHandler<TextBox, TextCompositionEndedEventArgs> TextCompositionEnded;
+	public event TypedEventHandler<TextBox, TextCompositionStartedEventArgs>? TextCompositionStarted;
+	public event TypedEventHandler<TextBox, TextCompositionChangedEventArgs>? TextCompositionChanged;
+	public event TypedEventHandler<TextBox, TextCompositionEndedEventArgs>? TextCompositionEnded;
 
 	internal bool IsComposing => _isComposing;
 	internal int CompositionStartIndex => _compositionStartIndex;
@@ -30,19 +33,18 @@ public partial class TextBox
 	internal int CompositionUnderlineStart => _compositionStartIndex + _compositionResolvedLength;
 	internal int CompositionUnderlineLength => Math.Max(0, _compositionLength - _compositionResolvedLength);
 
-	private void InitializeIme()
+	private static void InitializeIme()
 	{
-		if (_imeExtension is null)
+		if (!ApiExtensibility.CreateInstance<IImeTextBoxExtension>(typeof(TextBox), out var imeExtension))
 		{
-			_ = ApiExtensibility.CreateInstance(null, out _imeExtension);
-			if (_imeExtension is not null)
-			{
-				_imeExtension.CompositionStarted += static (_, _) => _activeImeTextBox?.OnImeCompositionStarted();
-				_imeExtension.CompositionUpdated += static (_, e) => _activeImeTextBox?.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength);
-				_imeExtension.CompositionCompleted += static (_, e) => _activeImeTextBox?.OnImeCompositionCompleted(e.Text);
-				_imeExtension.CompositionEnded += static (_, _) => _activeImeTextBox?.OnImeCompositionEnded();
-			}
+			typeof(TextBox).LogDebug()?.Debug("No IME extension registered or registration returned null, IME composition will not be supported.");
+			return;
 		}
+		imeExtension.CompositionStarted += static (_, _) => _activeImeTextBox?.OnImeCompositionStarted();
+		imeExtension.CompositionUpdated += static (_, e) => _activeImeTextBox?.OnImeCompositionUpdated(e.Text, e.CursorPosition, e.ResolvedLength);
+		imeExtension.CompositionCompleted += static (_, e) => _activeImeTextBox?.OnImeCompositionCompleted(e.Text);
+		imeExtension.CompositionEnded += static (_, _) => _activeImeTextBox?.OnImeCompositionEnded();
+		_imeExtension = imeExtension;
 	}
 
 	private void StartImeSession()
@@ -183,13 +185,7 @@ public partial class TextBox
 		}
 	}
 
-	private void InvalidateTextBoxRender()
-	{
-		if (TextBoxView?.DisplayBlock.Visual is { } visual)
-		{
-			Visual.Compositor.InvalidateRender(visual);
-		}
-	}
+	private void InvalidateTextBoxRender() => TextBoxView?.DisplayBlock.InvalidateInlines(false);
 
 	/// <summary>
 	/// Installs a fake IME extension for testing. The extension's events are
