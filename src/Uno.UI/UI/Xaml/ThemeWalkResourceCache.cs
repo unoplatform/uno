@@ -58,17 +58,32 @@ internal sealed class ThemeWalkResourceCache
 
 	/// <summary>
 	/// Tries to retrieve a cached resource value.
+	/// Only returns values when a caching session is active.
 	/// </summary>
 	public bool TryGetCachedValue(ResourceDictionary dictionary, SpecializedResourceDictionary.ResourceKey key, out object? value)
 	{
+		if (!_isCachingThemeResources)
+		{
+			value = null;
+			return false;
+		}
+
 		return _cache.TryGetValue((dictionary, key), out value);
 	}
 
 	/// <summary>
 	/// Caches a resolved resource value for the given dictionary and key.
+	/// Only caches when a session is active (via BeginCachingThemeResources),
+	/// to prevent the global dictionary from retaining strong references
+	/// to per-instance ResourceDictionaries indefinitely.
 	/// </summary>
 	public void CacheValue(ResourceDictionary dictionary, SpecializedResourceDictionary.ResourceKey key, object? value)
 	{
+		if (!_isCachingThemeResources)
+		{
+			return;
+		}
+
 		_cache[(dictionary, key)] = value;
 	}
 
