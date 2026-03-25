@@ -66,6 +66,7 @@ namespace Microsoft.UI.Xaml
 
 		private readonly DependencyPropertyDetailsCollection _properties;
 		private ResourceBindingCollection? _resourceBindings;
+		private ThemeResourceMap? _themeResources;
 
 		private DependencyProperty _parentDataContextProperty = UIElement.DataContextProperty;
 
@@ -550,6 +551,7 @@ namespace Microsoft.UI.Xaml
 					{
 						// If a non-theme value is being set, clear any theme binding so it's not overwritten if the theme changes.
 						_resourceBindings?.ClearBinding(property, precedence);
+						_themeResources?.Clear(property, precedence);
 					}
 
 					// Value may or may not have changed based on the precedence
@@ -1385,6 +1387,85 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
+		/// Stores a <see cref="Data.ThemeResourceReference"/> on this object for the given property.
+		/// The reference pins the providing dictionary for O(1) re-resolution on theme change.
+		/// </summary>
+		/// <remarks>
+		/// MUX Reference: CDependencyObject::SetThemeResourceBinding in Theming.cpp
+		/// </remarks>
+		internal void SetThemeResourceBinding(DependencyProperty property, Data.ThemeResourceReference themeRef)
+		{
+			_themeResources ??= new ThemeResourceMap();
+
+			// Resolve the effective precedence using the same logic as SetResourceBinding
+			var precedence = themeRef.Precedence;
+			if (precedence == DependencyPropertyValuePrecedences.Local && _overriddenPrecedences?.Count > 0)
+			{
+				precedence = _overriddenPrecedences.Peek() ?? precedence;
+			}
+
+			_themeResources.Set(property, precedence, themeRef);
+		}
+
+		/// <summary>
+		/// Updates all <see cref="Data.ThemeResourceReference"/> entries by re-resolving
+		/// from their pinned dictionaries. Called during theme change walks.
+		/// </summary>
+		/// <remarks>
+		/// MUX Reference: CDependencyObject::UpdateAllThemeReferences in Theming.cpp
+		/// </remarks>
+		internal void UpdateAllThemeReferences(DependencyObject? owner, ThemeWalkResourceCache? cache = null)
+		{
+			if (_themeResources is not { HasEntries: true })
+			{
+				return;
+			}
+
+			var entries = _themeResources.GetAll();
+			for (var i = 0; i < entries.Count; i++)
+			{
+				var entry = entries[i];
+				try
+				{
+					var newValue = entry.Reference.RefreshValue(owner, cache);
+					var convertedValue = BindingPropertyHelper.Convert(entry.Property.Type, newValue);
+
+					// Only apply if we actually have a value. Deferred entries that haven't
+					// been resolved yet (null target dict, null last value) will be resolved
+					// by the _resourceBindings fallback path during loading.
+					if (convertedValue is null && entry.Reference.LastResolvedValue is null)
+					{
+						continue;
+					}
+
+					if (entry.Reference.SetterBindingPath is { } bindingPath)
+					{
+						try
+						{
+							_isSettingPersistentResourceBinding = true;
+							bindingPath.Value = convertedValue;
+						}
+						finally
+						{
+							_isSettingPersistentResourceBinding = false;
+						}
+					}
+					else
+					{
+						SetValue(entry.Property, convertedValue, entry.Precedence, isPersistentResourceBinding: true);
+					}
+				}
+				catch (Exception e)
+				{
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+					{
+						this.Log().Warn($"Failed to update theme resource binding for {entry.Property.Name}", e);
+					}
+				}
+			}
+		}
+
+		/// <summary>
 		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
 		/// </summary>
 		internal void UpdateResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null, ResourceDictionary? containingDictionary = null)
@@ -1392,6 +1473,13 @@ namespace Microsoft.UI.Xaml
 			if (updateReason == ResourceUpdateReason.None)
 			{
 				throw new ArgumentException();
+			}
+
+			// Phase 1: Update theme resources via pinned-dictionary path (no tree walk needed)
+			// MUX Reference: CDependencyObject::UpdateAllThemeReferences() in Theming.cpp
+			if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
+			{
+				UpdateAllThemeReferences(ActualInstance);
 			}
 
 			ResourceDictionary[]? dictionariesInScope = null;
@@ -1413,6 +1501,7 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
+			// Phase 2: Update remaining resource bindings (StaticResourceLoading, HotReload) via tree walk
 			if (_resourceBindings?.HasBindings == true)
 			{
 				dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
@@ -1476,10 +1565,23 @@ namespace Microsoft.UI.Xaml
 			var wasSet = false;
 			foreach (var dict in dictionariesInScope)
 			{
-				if (dict.TryGetValue(binding.ResourceKey, out var value, shouldCheckSystem: false))
+				if (dict.TryGetValue(binding.ResourceKey, out var value, out var providingDict, shouldCheckSystem: false))
 				{
 					wasSet = true;
 					SetResourceBindingValue(property, binding, value);
+
+					// Pin the providing dictionary in the _themeResources entry (if any)
+					// so that subsequent theme changes can re-resolve from it directly.
+					if (providingDict is not null && _themeResources is not null)
+					{
+						var themeRef = _themeResources.Get(property, binding.Precedence);
+						themeRef?.SetTargetDictionary(providingDict);
+						if (themeRef is not null)
+						{
+							themeRef.LastResolvedValue = value;
+						}
+					}
+
 					break;
 				}
 			}

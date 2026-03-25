@@ -8,6 +8,7 @@ using Uno.Extensions;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
+using Uno.UI.DataBinding;
 
 namespace Uno.UI.Helpers.Xaml
 {
@@ -33,14 +34,23 @@ namespace Uno.UI.Helpers.Xaml
 			setter.ThemeResourceKey = !themeResourceName.IsNullOrEmpty() ? themeResourceName : null;
 			setter.ThemeResourceContext = parseContext as XamlParseContext;
 
+			var updateReason = ResourceUpdateReason.None;
 			if (isTheme)
 			{
-				setter.ResourceBindingUpdateReason |= ResourceUpdateReason.ThemeResource;
+				updateReason |= ResourceUpdateReason.ThemeResource;
 			}
 			if (isHotReload)
 			{
-				setter.ResourceBindingUpdateReason |= ResourceUpdateReason.HotReload;
+				updateReason |= ResourceUpdateReason.HotReload;
 			}
+			setter.ResourceBindingUpdateReason |= updateReason;
+
+			// MUX Reference: PreserveThemeResourceExtension() in TypeTableStructs.h
+			// For Style Setters with ThemeResource values, DON'T pre-resolve at parse time.
+			// WinUI stores the CThemeResource markup extension and resolves lazily when the
+			// Style is applied to a specific control. At that point, the control is in the
+			// visual tree and the correct dictionaries are in scope.
+			// The ThemeResourceRef will be created in Setter.ApplyTo when the style is applied.
 
 			return setter;
 		}
