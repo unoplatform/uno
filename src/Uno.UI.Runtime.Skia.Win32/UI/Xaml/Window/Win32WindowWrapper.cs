@@ -312,6 +312,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					// only do it the first time when we really need to
 					return new LRESULT(0);
 				}
+			case PInvoke.WM_IME_STARTCOMPOSITION:
+				Win32ImeTextBoxExtension.Instance.OnWmImeStartComposition();
+				return new LRESULT(0);
+			case PInvoke.WM_IME_COMPOSITION:
+				Win32ImeTextBoxExtension.Instance.OnWmImeComposition(lParam);
+				return new LRESULT(0);
+			case PInvoke.WM_IME_ENDCOMPOSITION:
+				Win32ImeTextBoxExtension.Instance.OnWmImeEndComposition();
+				return new LRESULT(0);
 			case PInvoke.WM_KEYDOWN:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
 				OnKey(wParam, lParam, true);
