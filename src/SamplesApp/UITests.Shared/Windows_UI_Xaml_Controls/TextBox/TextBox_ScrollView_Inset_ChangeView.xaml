@@ -1,0 +1,89 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_ScrollView_Inset_ChangeView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="800"
+	d:DesignWidth="400">
+
+	<!-- Reproduces: ScrollView with SafeArea.Insets and multiline TextBox inside a modal-like layout.
+		 Tests that scrolling and ChangeView work correctly when the soft keyboard opens
+		 and the content area is inset for SoftInput. -->
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<!-- Header bar simulating a modal navigation bar -->
+		<Grid Grid.Row="0" Background="#6A1B9A" Padding="16,8" CornerRadius="12,12,0,0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+
+			<Button Grid.Column="0" Content="Cancel"
+					Foreground="White" Background="Transparent"
+					BorderThickness="0" VerticalAlignment="Center" />
+
+			<TextBlock Grid.Column="1" Text="Session Narrative"
+					   Foreground="White" FontSize="18" FontWeight="SemiBold"
+					   HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+			<Button Grid.Column="2" Content="OK"
+					Foreground="White" Background="Transparent"
+					BorderThickness="0" VerticalAlignment="Center" />
+		</Grid>
+
+		<!-- ScrollViewer with SafeArea.Insets to handle soft keyboard.
+			 The outer ScrollViewer handles all scrolling; the TextBox's internal
+			 scrolling is disabled so it grows naturally with content. -->
+		<ScrollViewer x:Name="ContentScrollViewer"
+					  Grid.Row="1"
+					  Padding="28,0">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<TextBlock Text="Please review, edit, and add relevant detail so that this accurately summarizes your session."
+						   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+						   FontSize="14"
+						   TextWrapping="Wrap"
+						   Margin="0,12,0,0" />
+
+				<Grid Grid.Row="1">
+					<TextBox
+						x:Name="NarrativeTextBox"
+						AcceptsReturn="True"
+						TextWrapping="Wrap"
+						VerticalAlignment="Top"
+						HorizontalAlignment="Stretch"
+						PlaceholderText="Session Narrative"
+						Margin="0,16"
+						MinHeight="48"
+						BorderThickness="1"
+						BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+						ScrollViewer.VerticalScrollMode="Disabled"
+						ScrollViewer.VerticalScrollBarVisibility="Disabled"
+						ScrollViewer.IsDeferredScrollingEnabled="False" />
+				</Grid>
+			</Grid>
+		</ScrollViewer>
+
+		<!-- Save button at bottom -->
+		<Button Grid.Row="2"
+				Content="Save Session Note"
+				HorizontalAlignment="Stretch"
+				Margin="16,30"
+				Padding="12"
+				Background="#6A1B9A"
+				Foreground="White"
+				HorizontalContentAlignment="Center" />
+	</Grid>
+</UserControl>
