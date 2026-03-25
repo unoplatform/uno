@@ -74,28 +74,60 @@ internal sealed class ThemeResourceReference
 	}
 
 	/// <summary>
-	/// Re-resolves the theme resource value from the pinned dictionary.
+	/// Re-resolves the theme resource value from the pinned dictionary only.
+	/// Used during theme change walks where the ancestor walk is handled by the caller.
 	/// </summary>
-	/// <param name="owner">The DependencyObject that owns this theme resource binding.
-	/// Used for tree-walk fallback if the pinned dictionary is dead.</param>
+	/// <param name="owner">The DependencyObject that owns this theme resource binding.</param>
 	/// <param name="cache">Optional per-walk cache to avoid redundant dictionary lookups.</param>
 	/// <returns>The resolved value for the current theme.</returns>
 	/// <remarks>
-	/// MUX Reference: CThemeResource::RefreshValue() in ThemeResource.cpp
+	/// MUX Reference: CThemeResource::RefreshValue() in ThemeResource.cpp (lines 64-129)
 	///
-	/// 1. If pinned dictionary is alive: look up the key there (O(1) dictionary lookup).
-	///    The dictionary's GetActiveThemeDictionary() automatically returns the correct
-	///    theme sub-dictionary for the current theme.
-	/// 2. If pinned dictionary is dead (element removed or hot-reload): fall back to
-	///    tree-walk from owner position + re-pin the new dictionary.
-	/// 3. If tree-walk also fails: return LastResolvedValue (WinUI behavior for dead dict).
+	/// Looks up the key in the pinned dictionary. If the dictionary is dead (teardown),
+	/// returns LastResolvedValue. Does NOT do tree-walk — that's handled by
+	/// UpdateAllThemeReferences (matching WinUI's UpdateThemeReference which walks
+	/// ancestors before calling RefreshValue).
 	/// </remarks>
 	public object? RefreshValue(DependencyObject? owner, ThemeWalkResourceCache? cache = null)
+	{
+		// Try pinned dictionary (fast path)
+		if (_targetDictionary is not null && _targetDictionary.TryGetTarget(out var dict))
+		{
+			// Check cache first
+			if (cache is not null && cache.TryGetCachedValue(dict, ResourceKey, out var cachedValue))
+			{
+				LastResolvedValue = cachedValue;
+				return cachedValue;
+			}
+
+			if (dict.TryGetValue(ResourceKey, out var value, shouldCheckSystem: false))
+			{
+				cache?.CacheValue(dict, ResourceKey, value);
+				LastResolvedValue = value;
+				return value;
+			}
+		}
+
+		// Uno extension: Try top-level as last resort (for hot-reload/unpinned refs)
+		if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, ParseContext, out var topLevelValue))
+		{
+			LastResolvedValue = topLevelValue;
+			return topLevelValue;
+		}
+
+		// WinUI: If target dictionary is dead, returns m_lastResolvedThemeValue
+		return LastResolvedValue;
+	}
+
+	/// <summary>
+	/// Re-resolves the theme resource value with full tree-walk fallback.
+	/// Used during initial resolution and hot-reload, NOT during theme change walks.
+	/// </summary>
+	public object? RefreshValueWithTreeWalk(DependencyObject? owner, ThemeWalkResourceCache? cache = null)
 	{
 		// 1. Try pinned dictionary (fast path)
 		if (_targetDictionary is not null && _targetDictionary.TryGetTarget(out var dict))
 		{
-			// Check cache first
 			if (cache is not null && cache.TryGetCachedValue(dict, ResourceKey, out var cachedValue))
 			{
 				LastResolvedValue = cachedValue;
