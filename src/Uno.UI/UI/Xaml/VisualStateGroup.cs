@@ -380,7 +380,7 @@ namespace Microsoft.UI.Xaml
 					return;
 				}
 
-		#if UNO_HAS_ENHANCED_LIFECYCLE
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				// The theme push is still needed because ResourceDictionary.GetActiveThemeDictionary()
 				// uses the global theme stack to select the correct Light/Dark sub-dictionary.
 				var needsThemePush = false;
