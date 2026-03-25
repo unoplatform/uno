@@ -2911,6 +2911,58 @@ public class Given_ElementTheme
 			$"Foreground should be consistent before and after hover. Before={initialFg}, After={afterHoverFg}");
 	}
 
+	[TestMethod]
+	public async Task When_Checked_CheckBox_In_Dark_Theme_Has_Correct_Fill()
+	{
+		// Repro: mirrors ElementLevelTheme.xaml — a page (default/Light theme)
+		// containing both Light and Dark themed borders with checked CheckBoxes.
+		// The Dark CheckBox's NormalRectangle.Fill must match the Light one
+		// (both should be the accent color, not transparent/wrong).
+		var root = (Grid)XamlReader.Load("""
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				  Width="600" Height="300">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Border Grid.Column="0" RequestedTheme="Light">
+					<StackPanel>
+						<CheckBox x:Name="lightCb" Content="Light check" IsChecked="True" />
+					</StackPanel>
+				</Border>
+				<Border Grid.Column="1" RequestedTheme="Dark">
+					<StackPanel>
+						<CheckBox x:Name="darkCb" Content="Remember me" IsChecked="True" />
+					</StackPanel>
+				</Border>
+			</Grid>
+			""");
+
+		WindowHelper.WindowContent = root;
+		var lightCb = (CheckBox)root.FindName("lightCb");
+		var darkCb = (CheckBox)root.FindName("darkCb");
+		await WindowHelper.WaitForLoaded(darkCb);
+		await WindowHelper.WaitForIdle();
+
+		var lightRect = lightCb.FindVisualChildByName("NormalRectangle") as Microsoft.UI.Xaml.Shapes.Rectangle;
+		var darkRect = darkCb.FindVisualChildByName("NormalRectangle") as Microsoft.UI.Xaml.Shapes.Rectangle;
+		Assert.IsNotNull(lightRect, "Light CheckBox should have NormalRectangle");
+		Assert.IsNotNull(darkRect, "Dark CheckBox should have NormalRectangle");
+
+		var lightFill = (lightRect.Fill as SolidColorBrush)?.Color;
+		var darkFill = (darkRect.Fill as SolidColorBrush)?.Color;
+
+		Assert.IsNotNull(lightFill, $"Light NormalRectangle.Fill should be a SolidColorBrush");
+		Assert.IsNotNull(darkFill, $"Dark NormalRectangle.Fill should be a SolidColorBrush");
+
+		Assert.IsTrue(lightFill.Value.B > 100,
+			$"Light CheckBox fill should be accent blue. Got B={lightFill.Value.B}, color={lightFill}");
+		Assert.IsTrue(darkFill.Value.B > 100,
+			$"Dark CheckBox fill should be accent blue, not grey. Got B={darkFill.Value.B}, color={darkFill}. " +
+			$"Light fill for comparison={lightFill}");
+	}
+
 	#endregion
 
 	#region WinUI Gap Fix Coverage
