@@ -545,6 +545,76 @@ namespace Microsoft.UI.Xaml
 		public global::System.Collections.Generic.ICollection<object> Keys
 			=> _values.Keys.Select(k => ConvertKey(k)).ToList();
 
+		/// <summary>
+		/// Enumerates key-value pairs without materializing lazy entries.
+		/// Lazy or alias entries are resolved transiently (the resolved value is returned
+		/// but NOT stored back to the dictionary, preserving theme-aware re-resolution).
+		/// </summary>
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		public IEnumerable<KeyValuePair<object, object>> GetKeyValuePairsNonMaterialized()
+		{
+			// Snapshot entries to avoid InvalidOperationException if an initializer
+			// causes _values to mutate during enumeration.
+			var snapshot = new List<KeyValuePair<SpecializedResourceDictionary.ResourceKey, object>>(_values.Count);
+			foreach (var kvp in _values)
+			{
+				snapshot.Add(kvp);
+			}
+
+			foreach (var kvp in snapshot)
+			{
+				var value = kvp.Value;
+				if (value is LazyInitializer lazyInitializer)
+				{
+					// Resolve lazily but do NOT store back — preserves re-resolution capability
+					bool pushedScope = false;
+					bool pushedSource = false;
+
+					try
+					{
+						bool hasEmptyCurrentScope = lazyInitializer.CurrentScope.Sources.IsEmpty;
+						if (!hasEmptyCurrentScope)
+						{
+							ResourceResolver.PushNewScope(lazyInitializer.CurrentScope);
+							pushedScope = true;
+						}
+
+						if (!FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries)
+						{
+							ResourceResolver.PushSourceToScope(this);
+							pushedSource = true;
+						}
+
+						value = lazyInitializer.Initializer();
+					}
+					catch
+					{
+						value = null;
+					}
+					finally
+					{
+						if (pushedSource)
+						{
+							ResourceResolver.PopSourceFromScope();
+						}
+
+						if (pushedScope)
+						{
+							ResourceResolver.PopScope();
+						}
+					}
+				}
+
+				if (value is StaticResourceAliasRedirect alias)
+				{
+					ResourceResolver.ResolveResourceStatic(alias.ResourceKey, out var target, alias.ParseContext);
+					value = target;
+				}
+
+				yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key), value);
+			}
+		}
+
 		private static object ConvertKey(ResourceKey resourceKey)
 			=> resourceKey.TypeKey ?? (object)resourceKey.Key;
 
