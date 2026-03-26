@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference FrameworkElementAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 
@@ -210,10 +210,11 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	protected override AutomationPeer GetLabeledByCore()
 	{
-		if (AutomationProperties.GetLabeledBy(Owner) is IFrameworkElement label)
-		// UNO TODO: Implement GetAutomationPeer on UIElement
+		// WinUI uses GetOrCreateAutomationPeer() to ensure the peer exists
+		// when resolving LabeledBy references.
+		if (AutomationProperties.GetLabeledBy(Owner) is UIElement labelElement)
 		{
-			return label.GetAutomationPeer();
+			return labelElement.GetOrCreateAutomationPeer();
 		}
 
 		return base.GetLabeledByCore();
@@ -253,6 +254,11 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	protected override string GetNameCore()
 	{
+		if (Owner is null)
+		{
+			return base.GetNameCore();
+		}
+
 		if (AutomationProperties.GetName(Owner) is string name && !string.IsNullOrEmpty(name))
 		{
 			return name;
@@ -261,6 +267,11 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		if (GetLabeledBy() is AutomationPeer labelAutomationPeer && labelAutomationPeer.GetName() is string label && !string.IsNullOrEmpty(label))
 		{
 			return label;
+		}
+
+		if ((Owner as FrameworkElement)?.GetPlainText() is string plainText && !string.IsNullOrEmpty(plainText))
+		{
+			return plainText;
 		}
 
 		if (GetSimpleAccessibilityName() is string simpleAccessibilityName && !string.IsNullOrEmpty(simpleAccessibilityName))

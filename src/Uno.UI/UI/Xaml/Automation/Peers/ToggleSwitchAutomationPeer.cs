@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TreeViewListAutomationPeer.cpp, tag winui3/release/1.8.4
+// MUX Reference ToggleSwitchAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 
 using DirectUI;
 using Microsoft.UI.Xaml.Controls;
@@ -65,7 +65,9 @@ public partial class ToggleSwitchAutomationPeer : FrameworkElementAutomationPeer
 				// We only want to include the OnContent if custom content has been provided.
 				// The default value of OnContent is the string "On", but including this in the UIA Name adds no value, since this information is
 				// already included in the ToggleState. Narrator reads out both the ToggleState and the Name (We don't want it to read "On On ToggleSwitch").
-				if (owner.OnContent is { } onContent)
+				// WinUI uses IsPropertyDefaultByIndex to detect custom vs default content.
+				var hasCustomOnContent = owner.GetCurrentHighestValuePrecedence(Controls.ToggleSwitch.OnContentProperty) != DependencyPropertyValuePrecedences.DefaultValue;
+				if (hasCustomOnContent && owner.OnContent is { } onContent)
 				{
 					onOffContentText = onContent.ToString() ?? string.Empty;
 				}
@@ -73,7 +75,8 @@ public partial class ToggleSwitchAutomationPeer : FrameworkElementAutomationPeer
 			else
 			{
 				// As above, we only include custom OffContent.
-				if (owner.OffContent is { } offContent)
+				var hasCustomOffContent = owner.GetCurrentHighestValuePrecedence(Controls.ToggleSwitch.OffContentProperty) != DependencyPropertyValuePrecedences.DefaultValue;
+				if (hasCustomOffContent && owner.OffContent is { } offContent)
 				{
 					onOffContentText = offContent.ToString() ?? string.Empty;
 				}
@@ -81,7 +84,6 @@ public partial class ToggleSwitchAutomationPeer : FrameworkElementAutomationPeer
 
 			if (!string.IsNullOrEmpty(headerText) && !string.IsNullOrEmpty(onOffContentText))
 			{
-				// Return the header text followed by the on/off content separated by a space:
 				return $"{headerText} {onOffContentText}";
 			}
 			else if (!string.IsNullOrEmpty(headerText))
@@ -90,7 +92,6 @@ public partial class ToggleSwitchAutomationPeer : FrameworkElementAutomationPeer
 			}
 			else
 			{
-				// onOffContentText might be empty, but that's ok.
 				return onOffContentText;
 			}
 		}

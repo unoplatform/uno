@@ -70,10 +70,10 @@ public static class AriaMapper
 	/// Gets the semantic element type for an automation peer based on its control type and patterns.
 	/// </summary>
 	/// <param name="peer">The automation peer.</param>
+	/// <param name="owner">The optional owner UIElement (used for additional context).</param>
 	/// <returns>The semantic element type to create.</returns>
-	public static SemanticElementType GetSemanticElementType(AutomationPeer peer)
+	public static SemanticElementType GetSemanticElementType(AutomationPeer peer, UIElement? owner = null)
 	{
-		// TextBlocks with a HeadingLevel set should be headings
 		if (peer.GetHeadingLevel() != AutomationHeadingLevel.None)
 		{
 			return SemanticElementType.Heading;
@@ -81,7 +81,6 @@ public static class AriaMapper
 
 		var controlType = peer.GetAutomationControlType();
 
-		// Determine element type based on control type and available patterns
 		return controlType switch
 		{
 			AutomationControlType.Button => GetButtonType(peer),
@@ -94,6 +93,14 @@ public static class AriaMapper
 			AutomationControlType.ListItem => SemanticElementType.ListItem,
 			AutomationControlType.Hyperlink => SemanticElementType.Link,
 			AutomationControlType.Header => SemanticElementType.Heading,
+			AutomationControlType.Tab => SemanticElementType.TabList,
+			AutomationControlType.TabItem => SemanticElementType.Tab,
+			AutomationControlType.Tree => SemanticElementType.Tree,
+			AutomationControlType.TreeItem => SemanticElementType.TreeItem,
+			AutomationControlType.DataGrid => SemanticElementType.Grid,
+			AutomationControlType.DataItem => SemanticElementType.GridRow,
+			AutomationControlType.Menu => SemanticElementType.Menu,
+			AutomationControlType.MenuItem => SemanticElementType.MenuItem,
 			_ => SemanticElementType.Generic
 		};
 	}
@@ -113,17 +120,14 @@ public static class AriaMapper
 	/// </summary>
 	private static SemanticElementType GetTextBoxType(AutomationPeer peer)
 	{
-		// Check if it's a password field
 		if (peer.IsPassword())
 		{
 			return SemanticElementType.Password;
 		}
 
-		// Check if it's a multiline textbox by examining the owner
 		if (peer is FrameworkElementAutomationPeer frameworkPeer &&
 			frameworkPeer.Owner is Microsoft.UI.Xaml.Controls.TextBox textBox)
 		{
-			// TextBox is multiline if AcceptsReturn is true
 			if (textBox.AcceptsReturn)
 			{
 				return SemanticElementType.TextArea;
@@ -143,15 +147,13 @@ public static class AriaMapper
 		var controlType = peer.GetAutomationControlType();
 		var attributes = new AriaAttributes
 		{
-			// Basic attributes from AutomationPeer
 			Role = GetAriaRole(controlType),
 			Label = ResolveLabel(peer),
 			Disabled = !peer.IsEnabled(),
 		};
 
-		// FullDescription → aria-description
 		var fullDescription = peer.GetFullDescription();
-		// HelpText → aria-description fallback (VoiceOver reads this as secondary context)
+		// HelpText is used as a fallback because VoiceOver reads it as secondary context
 		var helpText = peer.GetHelpText();
 		if (!string.IsNullOrEmpty(fullDescription))
 		{
@@ -162,19 +164,17 @@ public static class AriaMapper
 			attributes.Description = helpText;
 		}
 
-		// IsRequiredForForm → aria-required
 		if (peer.IsRequiredForForm())
 		{
 			attributes.Required = true;
 		}
 
-		// Landmark type → ARIA landmark role (VoiceOver rotor landmark navigation)
+		// VoiceOver uses landmark roles for rotor navigation
 		var landmarkType = peer.GetLandmarkType();
 		if (landmarkType != AutomationLandmarkType.None)
 		{
 			attributes.LandmarkRole = GetLandmarkRole(landmarkType);
 
-			// Use localized landmark type for aria-roledescription on Custom landmarks
 			if (landmarkType == AutomationLandmarkType.Custom)
 			{
 				var localizedLandmarkType = peer.GetLocalizedLandmarkType();
@@ -185,7 +185,6 @@ public static class AriaMapper
 			}
 		}
 
-		// Position in set (for list items, tree items, etc.)
 		var positionInSet = peer.GetPositionInSet();
 		if (positionInSet > 0)
 		{
@@ -198,66 +197,70 @@ public static class AriaMapper
 			attributes.SizeOfSet = sizeOfSet;
 		}
 
-		// Heading level
 		var headingLevel = peer.GetHeadingLevel();
 		if (headingLevel != AutomationHeadingLevel.None)
 		{
 			attributes.Level = (int)headingLevel;
 		}
 
-		// Toggle pattern (checkboxes, radio buttons, toggle buttons)
-		if (peer.GetPattern(PatternInterface.Toggle) is IToggleProvider toggleProvider)
+		// Pattern queries are wrapped in try-catch because some peers (e.g.,
+		// CalendarViewBaseItemAutomationPeer) may throw NRE if queried before
+		// they are fully initialized in the visual tree.
+		try
 		{
-			attributes.Checked = ConvertToggleStateToAriaChecked(toggleProvider.ToggleState);
-		}
-
-		// ExpandCollapse pattern (comboboxes, expanders, tree items)
-		if (peer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
-		{
-			attributes.Expanded = expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.Expanded ||
-								  expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.PartiallyExpanded;
-
-			// HasPopup for comboboxes and menus
-			if (controlType == AutomationControlType.ComboBox)
+			if (peer.GetPattern(PatternInterface.Toggle) is IToggleProvider toggleProvider)
 			{
-				attributes.HasPopup = "listbox";
+				attributes.Checked = ConvertToggleStateToAriaChecked(toggleProvider.ToggleState);
 			}
-			else if (controlType == AutomationControlType.Menu || controlType == AutomationControlType.MenuItem)
+
+			if (peer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
 			{
-				attributes.HasPopup = "menu";
-			}
-		}
+				attributes.Expanded = expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.Expanded ||
+									  expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.PartiallyExpanded;
 
-		// Selection pattern (selection containers like listboxes)
-		if (peer.GetPattern(PatternInterface.Selection) is ISelectionProvider selectionProvider)
-		{
-			attributes.MultiSelectable = selectionProvider.CanSelectMultiple;
-		}
-
-		// SelectionItem pattern (list items, radio buttons, etc.)
-		if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
-		{
-			attributes.Selected = selectionItemProvider.IsSelected;
-		}
-
-		// RangeValue pattern (sliders, progress bars, spinners)
-		if (peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider rangeValueProvider)
-		{
-			attributes.ValueNow = rangeValueProvider.Value;
-			attributes.ValueMin = rangeValueProvider.Minimum;
-			attributes.ValueMax = rangeValueProvider.Maximum;
-
-			// aria-valuetext for VoiceOver: read human-friendly text instead of raw number
-			// Use the automation name if it contains the value context (e.g., "Volume: 50%")
-			if (peer is FrameworkElementAutomationPeer frameworkPeerRange &&
-				frameworkPeerRange.Owner is Slider slider)
-			{
-				var headerText = slider.Header?.ToString();
-				if (!string.IsNullOrEmpty(headerText))
+				if (controlType == AutomationControlType.ComboBox)
 				{
-					attributes.ValueText = $"{headerText}: {rangeValueProvider.Value}";
+					attributes.HasPopup = "listbox";
+				}
+				else if (controlType == AutomationControlType.Menu || controlType == AutomationControlType.MenuItem)
+				{
+					attributes.HasPopup = "menu";
 				}
 			}
+
+			if (peer.GetPattern(PatternInterface.Selection) is ISelectionProvider selectionProvider)
+			{
+				attributes.MultiSelectable = selectionProvider.CanSelectMultiple;
+			}
+
+			if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
+			{
+				attributes.Selected = selectionItemProvider.IsSelected;
+			}
+
+			if (peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider rangeValueProvider)
+			{
+				attributes.ValueNow = rangeValueProvider.Value;
+				attributes.ValueMin = rangeValueProvider.Minimum;
+				attributes.ValueMax = rangeValueProvider.Maximum;
+
+				// aria-valuetext for VoiceOver: read human-friendly text instead of raw number
+				// Use the automation name if it contains the value context (e.g., "Volume: 50%")
+				if (peer is FrameworkElementAutomationPeer frameworkPeerRange &&
+					frameworkPeerRange.Owner is Slider slider)
+				{
+					var headerText = slider.Header?.ToString();
+					if (!string.IsNullOrEmpty(headerText))
+					{
+						attributes.ValueText = $"{headerText}: {rangeValueProvider.Value}";
+					}
+				}
+			}
+		}
+		catch
+		{
+			// Some peers may throw if queried before fully initialized.
+			// Attributes will be updated later when properties change.
 		}
 
 		return attributes;
@@ -280,66 +283,75 @@ public static class AriaMapper
 	}
 
 	/// <summary>
-	/// Resolves a label for an automation peer using a fallback chain:
-	/// 1. peer.GetName() — the standard automation name
-	/// 2. AutomationProperties.GetName() — explicitly set name
-	/// 3. Content.ToString() — for ContentControls (buttons, etc.) with text content
-	/// 4. First child TextBlock.Text — for controls with text children
-	/// This ensures buttons, toggle buttons, and other controls get meaningful labels.
+	/// Resolves a label for an automation peer using a fallback chain aligned with WinUI's
+	/// FrameworkElementAutomationPeer::GetNameCore():
+	/// 1. peer.GetName() — the standard automation name (already resolves AutomationProperties.Name,
+	///    LabeledBy, and PlainText internally via GetNameCore)
+	/// 2. Content.ToString() — for ContentControls (buttons, etc.) with text content (Skia-specific)
+	/// 3. First child TextBlock.Text — for controls with text children (Skia-specific)
 	/// </summary>
 	public static string? ResolveLabel(AutomationPeer peer)
 	{
-		// 1. Standard automation peer name
-		var name = peer.GetName();
-		if (!string.IsNullOrEmpty(name))
+		try
 		{
-			return name;
-		}
-
-		// Try to get the owner element for further resolution
-		if (peer is not FrameworkElementAutomationPeer frameworkPeer)
-		{
-			return name;
-		}
-
-		var owner = frameworkPeer.Owner;
-
-		// 2. AutomationProperties.Name (explicitly set on the element)
-		var automationName = AutomationProperties.GetName(owner);
-		if (!string.IsNullOrEmpty(automationName))
-		{
-			return automationName;
-		}
-
-		// 3. For ContentControls, try Content.ToString()
-		if (owner is ContentControl contentControl && contentControl.Content is not null)
-		{
-			var contentString = contentControl.Content switch
+			// 1. Standard automation peer name — this already resolves:
+			//    - AutomationProperties.Name
+			//    - LabeledBy → peer.GetName()
+			//    - GetPlainText / GetAccessibilityInnerText
+			// Matches WinUI's GetNameCore resolution chain.
+			var name = peer.GetName();
+			if (!string.IsNullOrEmpty(name))
 			{
-				string s => s,
-				// Avoid calling ToString() on UIElement / complex objects
-				UIElement => null,
-				_ => contentControl.Content.ToString()
-			};
-			if (!string.IsNullOrEmpty(contentString))
-			{
-				return contentString;
+				return name;
 			}
-		}
 
-		// 4. Walk immediate children looking for a TextBlock with text
-		if (owner is UIElement uiElement)
-		{
-			foreach (var child in uiElement.GetChildren())
+			// Try to get the owner element for Skia-specific fallbacks
+			if (peer is not FrameworkElementAutomationPeer frameworkPeer)
 			{
-				if (child is TextBlock textBlock && !string.IsNullOrEmpty(textBlock.Text))
+				return name;
+			}
+
+			var owner = frameworkPeer.Owner;
+
+			// 2. For ContentControls, try Content.ToString()
+			// This is a Skia-specific enhancement for buttons with non-text content
+			if (owner is ContentControl contentControl && contentControl.Content is not null)
+			{
+				var contentString = contentControl.Content switch
 				{
-					return textBlock.Text;
+					string s => s,
+					// Avoid calling ToString() on UIElement / complex objects
+					UIElement => null,
+					_ => contentControl.Content.ToString()
+				};
+				if (!string.IsNullOrEmpty(contentString))
+				{
+					return contentString;
 				}
 			}
-		}
 
-		return name; // May still be empty, but we tried
+			// 3. Walk immediate children looking for a TextBlock with text
+			// This is a Skia-specific enhancement for controls with text children
+			if (owner is UIElement uiElement)
+			{
+				foreach (var child in uiElement.GetChildren())
+				{
+					if (child is TextBlock textBlock && !string.IsNullOrEmpty(textBlock.Text))
+					{
+						return textBlock.Text;
+					}
+				}
+			}
+
+			return name; // May still be empty, but we tried
+		}
+		catch (Exception ex)
+		{
+			// Some peers may throw if queried before fully initialized.
+			// Return empty rather than crashing the accessibility system.
+			System.Diagnostics.Debug.WriteLine($"[A11y] AriaMapper.ResolveLabel failed for {peer.GetType().Name}: {ex.Message}");
+			return null;
+		}
 	}
 
 	/// <summary>
@@ -411,7 +423,27 @@ public enum SemanticElementType
 	/// <summary>anchor element</summary>
 	Link,
 	Switch,
-	ToggleButton
+	ToggleButton,
+	/// <summary>div with role="tablist"</summary>
+	TabList,
+	/// <summary>div with role="tab"</summary>
+	Tab,
+	/// <summary>div with role="tree"</summary>
+	Tree,
+	/// <summary>div with role="treeitem"</summary>
+	TreeItem,
+	/// <summary>div with role="grid"</summary>
+	Grid,
+	/// <summary>div with role="row"</summary>
+	GridRow,
+	/// <summary>div with role="gridcell"</summary>
+	GridCell,
+	/// <summary>div with role="columnheader"</summary>
+	ColumnHeader,
+	/// <summary>div with role="menu"</summary>
+	Menu,
+	/// <summary>div with role="menuitem"</summary>
+	MenuItem
 }
 
 /// <summary>

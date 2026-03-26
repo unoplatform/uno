@@ -131,7 +131,6 @@ namespace Uno.UI.Runtime.Skia {
 			label: string | null,
 			disabled: boolean
 		): void {
-			console.log(`[A11y] TS createButtonElement: handle=${handle} parent=${parentHandle} label='${label}' disabled=${disabled}`);
 			const element = document.createElement('button');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
@@ -188,7 +187,6 @@ namespace Uno.UI.Runtime.Skia {
 			pressed: string,
 			disabled: boolean
 		): void {
-			console.log(`[A11y] TS createToggleButtonElement: handle=${handle} parent=${parentHandle} label='${label}' pressed=${pressed} disabled=${disabled}`);
 			const element = document.createElement('button');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
@@ -245,7 +243,6 @@ namespace Uno.UI.Runtime.Skia {
 			isOn: string,
 			disabled: boolean
 		): void {
-			console.log(`[A11y] TS createSwitchElement: handle=${handle} parent=${parentHandle} label='${label}' checked=${isOn} disabled=${disabled}`);
 			const element = document.createElement('button');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
@@ -305,7 +302,6 @@ namespace Uno.UI.Runtime.Skia {
 			orientation: string,
 			valueText: string | null
 		): void {
-			console.log(`[A11y] TS createSliderElement: handle=${handle} parent=${parentHandle} value=${value} min=${min} max=${max} step=${step} orient=${orientation}`);
 			const element = document.createElement('input');
 			element.type = 'range';
 			this.applyCommonStyles(element, x, y, width, height, handle);
@@ -365,7 +361,6 @@ namespace Uno.UI.Runtime.Skia {
 			checkedState: string | null,
 			label: string | null
 		): void {
-			console.log(`[A11y] TS createCheckboxElement: handle=${handle} parent=${parentHandle} checked='${checkedState}' label='${label}'`);
 			const element = document.createElement('input');
 			element.type = 'checkbox';
 			this.applyCommonStyles(element, x, y, width, height, handle);
@@ -378,12 +373,15 @@ namespace Uno.UI.Runtime.Skia {
 				element.setAttribute('aria-label', label);
 			}
 
-			// Set checked state
+			// Set checked state (WCAG 4.1.2: aria-checked must match visual state)
 			if (checkedState === 'true') {
 				element.checked = true;
+				element.setAttribute('aria-checked', 'true');
 			} else if (checkedState === 'mixed') {
 				element.indeterminate = true;
 				element.setAttribute('aria-checked', 'mixed');
+			} else {
+				element.setAttribute('aria-checked', 'false');
 			}
 
 			const callbacks = this.getCallbacks();
@@ -414,7 +412,6 @@ namespace Uno.UI.Runtime.Skia {
 			label: string | null,
 			groupName: string | null
 		): void {
-			console.log(`[A11y] TS createRadioElement: handle=${handle} parent=${parentHandle} checked=${checked} label='${label}' group='${groupName}'`);
 			const element = document.createElement('input');
 			element.type = 'radio';
 			this.applyCommonStyles(element, x, y, width, height, handle);
@@ -461,7 +458,6 @@ namespace Uno.UI.Runtime.Skia {
 			level: number,
 			label: string | null
 		): void {
-			console.log(`[A11y] TS createHeadingElement: handle=${handle} parent=${parentHandle} level=h${level} label='${label}'`);
 			// Clamp heading level to valid h1-h6 range
 			const clampedLevel = Math.max(1, Math.min(6, level));
 			const element = document.createElement(`h${clampedLevel}`) as HTMLHeadingElement;
@@ -504,7 +500,6 @@ namespace Uno.UI.Runtime.Skia {
 			password: boolean,
 			isReadOnly: boolean
 		): void {
-			console.log(`[A11y] TS createTextBoxElement: handle=${handle} parent=${parentHandle} multiline=${multiline} readOnly=${isReadOnly}`);
 			let element: HTMLInputElement | HTMLTextAreaElement;
 
 			if (multiline) {
@@ -570,7 +565,6 @@ namespace Uno.UI.Runtime.Skia {
 			expanded: boolean,
 			selectedValue: string | null
 		): void {
-			console.log(`[A11y] TS createComboBoxElement: handle=${handle} parent=${parentHandle} expanded=${expanded} selectedValue='${selectedValue}'`);
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
@@ -586,12 +580,20 @@ namespace Uno.UI.Runtime.Skia {
 
 			const callbacks = this.getCallbacks();
 
-			// Keyboard handlers for expand/collapse (T061)
+			// Keyboard handlers for expand/collapse (WAI-ARIA combobox pattern)
 			element.addEventListener('keydown', (e) => {
 				if (e.key === 'Enter' || e.key === ' ' || (e.key === 'ArrowDown' && e.altKey)) {
 					e.preventDefault();
 					if (callbacks.onExpandCollapse) {
 						callbacks.onExpandCollapse(handle);
+					}
+				} else if (e.key === 'Escape') {
+					// Escape collapses an open popup (WAI-ARIA combobox pattern)
+					if (element.getAttribute('aria-expanded') === 'true') {
+						e.preventDefault();
+						if (callbacks.onExpandCollapse) {
+							callbacks.onExpandCollapse(handle);
+						}
 					}
 				}
 			});
@@ -621,7 +623,6 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			multiselect: boolean
 		): void {
-			console.log(`[A11y] TS createListBoxElement: handle=${handle} parent=${parentHandle} multiselect=${multiselect}`);
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
@@ -652,7 +653,6 @@ namespace Uno.UI.Runtime.Skia {
 			positionInSet: number,
 			sizeOfSet: number
 		): void {
-			console.log(`[A11y] TS createListItemElement: handle=${handle} parent=${parentHandle} selected=${selected} pos=${positionInSet}/${sizeOfSet}`);
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
@@ -689,7 +689,6 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the value of a slider element and its ARIA attributes.
 		 */
 		public static updateSliderValue(handle: number, value: number, min: number, max: number, valueText: string | null): void {
-			console.log(`[A11y] TS updateSliderValue: handle=${handle} value=${value} min=${min} max=${max} valueText='${valueText}'`);
 			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement;
 			if (element && element.type === 'range') {
 				element.min = String(min);
@@ -715,11 +714,43 @@ namespace Uno.UI.Runtime.Skia {
 			selectionStart: number,
 			selectionEnd: number
 		): void {
-			console.log(`[A11y] TS updateTextBoxValue: handle=${handle} valueLen=${value?.length ?? 0} sel=${selectionStart}-${selectionEnd}`);
 			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement | HTMLTextAreaElement;
 			if (element && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
 				element.value = value;
-				element.setSelectionRange(selectionStart, selectionEnd);
+				// Validate selection range to prevent exceptions
+				const maxLen = value.length;
+				const start = Math.max(0, Math.min(selectionStart, maxLen));
+				const end = Math.max(start, Math.min(selectionEnd, maxLen));
+				try {
+					element.setSelectionRange(start, end);
+				} catch {
+					// Some input types (e.g., password in some browsers) don't support setSelectionRange
+				}
+			}
+		}
+
+		/**
+		 * Updates the read-only state of a text input element.
+		 */
+		public static updateTextBoxReadOnly(handle: number, isReadOnly: boolean): void {
+			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement | HTMLTextAreaElement;
+			if (element && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
+				element.readOnly = isReadOnly;
+				if (isReadOnly) {
+					element.setAttribute('aria-readonly', 'true');
+				} else {
+					element.removeAttribute('aria-readonly');
+				}
+			}
+		}
+
+		/**
+		 * Updates the placeholder text of a text input element.
+		 */
+		public static updateTextBoxPlaceholder(handle: number, placeholder: string): void {
+			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement | HTMLTextAreaElement;
+			if (element && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
+				element.placeholder = placeholder ?? '';
 			}
 		}
 
@@ -727,10 +758,29 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the expanded/collapsed state of a combobox element.
 		 */
 		public static updateExpandCollapseState(handle: number, expanded: boolean): void {
-			console.log(`[A11y] TS updateExpandCollapseState: handle=${handle} expanded=${expanded}`);
 			const element = document.getElementById(`uno-semantics-${handle}`);
 			if (element) {
 				element.setAttribute('aria-expanded', String(expanded));
+				// Clear activedescendant when collapsing
+				if (!expanded) {
+					element.removeAttribute('aria-activedescendant');
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-activedescendant on a combobox/listbox to point to the active option.
+		 * Screen readers use this to announce the currently focused option without moving DOM focus.
+		 */
+		public static updateActiveDescendant(containerHandle: number, activeItemHandle: number): void {
+			const container = document.getElementById(`uno-semantics-${containerHandle}`);
+			if (container) {
+				if (activeItemHandle !== 0) {
+					const activeId = `uno-semantics-${activeItemHandle}`;
+					container.setAttribute('aria-activedescendant', activeId);
+				} else {
+					container.removeAttribute('aria-activedescendant');
+				}
 			}
 		}
 
@@ -738,7 +788,6 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the selected state of a list item element.
 		 */
 		public static updateSelectionState(handle: number, selected: boolean): void {
-			console.log(`[A11y] TS updateSelectionState: handle=${handle} selected=${selected}`);
 			const element = document.getElementById(`uno-semantics-${handle}`);
 			if (element) {
 				element.setAttribute('aria-selected', String(selected));
@@ -749,7 +798,6 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the disabled state of an element.
 		 */
 		public static updateDisabledState(handle: number, disabled: boolean): void {
-			console.log(`[A11y] TS updateDisabledState: handle=${handle} disabled=${disabled}`);
 			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLButtonElement | HTMLInputElement;
 			if (element) {
 				if ('disabled' in element) {
@@ -773,13 +821,12 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			label: string | null
 		): void {
-			console.log(`[A11y] TS createLinkElement: handle=${handle} parent=${parentHandle} label='${label}'`);
 			const element = document.createElement('a');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			element.tabIndex = 0;
 			element.style.pointerEvents = 'none';
-			element.setAttribute('role', 'link');
+			// Native <a> has implicit role="link" — no need to set explicitly
 
 			if (label) {
 				element.setAttribute('aria-label', label);
@@ -795,10 +842,448 @@ namespace Uno.UI.Runtime.Skia {
 			});
 
 			element.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter') {
+				if (e.key === 'Enter' || e.key === ' ') {
 					e.preventDefault();
 					if (callbacks.onInvoke) {
 						callbacks.onInvoke(handle);
+					}
+				}
+			});
+
+			this.appendToParent(element, parentHandle, index);
+		}
+
+		// ===== Tab/Tree/Grid/Menu Semantic Elements =====
+
+		/**
+		 * Creates a tablist container element.
+		 */
+		public static createTabListElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null
+		): void {
+			const element = document.createElement('div');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+			element.setAttribute('role', 'tablist');
+			element.tabIndex = 0;
+			element.style.pointerEvents = 'none';
+			if (label) {
+				element.setAttribute('aria-label', label);
+			}
+			this.appendToParent(element, parentHandle, index);
+		}
+
+		/**
+		 * Creates a tab element with selection and keyboard support.
+		 */
+		public static createTabElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null,
+			selected: boolean,
+			positionInSet: number,
+			sizeOfSet: number
+		): void {
+			const element = document.createElement('div');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+			element.setAttribute('role', 'tab');
+			element.setAttribute('aria-selected', String(selected));
+			element.tabIndex = selected ? 0 : -1;
+			element.style.pointerEvents = 'none';
+			if (label) {
+				element.setAttribute('aria-label', label);
+			}
+			if (positionInSet > 0 && sizeOfSet > 0) {
+				element.setAttribute('aria-posinset', String(positionInSet));
+				element.setAttribute('aria-setsize', String(sizeOfSet));
+			}
+
+			const callbacks = this.getCallbacks();
+			element.addEventListener('click', () => {
+				if (callbacks.onSelection) {
+					callbacks.onSelection(handle);
+				}
+			});
+			element.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					if (callbacks.onSelection) {
+						callbacks.onSelection(handle);
+					}
+				}
+			});
+
+			this.appendToParent(element, parentHandle, index);
+		}
+
+		/**
+		 * Creates a tree container element.
+		 */
+		public static createTreeElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null,
+			multiselectable: boolean
+		): void {
+			const element = document.createElement('div');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+			element.setAttribute('role', 'tree');
+			element.tabIndex = 0;
+			element.style.pointerEvents = 'none';
+			if (label) {
+				element.setAttribute('aria-label', label);
+			}
+			if (multiselectable) {
+				element.setAttribute('aria-multiselectable', 'true');
+			}
+			this.appendToParent(element, parentHandle, index);
+		}
+
+		/**
+		 * Creates a treeitem element with level, expanded state, and selection.
+		 */
+		public static createTreeItemElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null,
+			level: number,
+			expanded: string,
+			selected: boolean,
+			positionInSet: number,
+			sizeOfSet: number
+		): void {
+			const element = document.createElement('div');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+			element.setAttribute('role', 'treeitem');
+			element.tabIndex = -1;
+			element.style.pointerEvents = 'none';
+			if (label) {
+				element.setAttribute('aria-label', label);
+			}
+			if (level > 0) {
+				element.setAttribute('aria-level', String(level));
+			}
+			// expanded: "true", "false", or "none" (leaf node)
+			if (expanded !== 'none') {
+				element.setAttribute('aria-expanded', expanded);
+			}
+			element.setAttribute('aria-selected', String(selected));
+			if (positionInSet > 0 && sizeOfSet > 0) {
+				element.setAttribute('aria-posinset', String(positionInSet));
+				element.setAttribute('aria-setsize', String(sizeOfSet));
+			}
+
+			const callbacks = this.getCallbacks();
+			element.addEventListener('click', () => {
+				if (callbacks.onSelection) {
+					callbacks.onSelection(handle);
+				}
+			});
+			// WAI-ARIA tree item keyboard pattern
+			element.addEventListener('keydown', (e) => {
+				const currentExpanded = element.getAttribute('aria-expanded');
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					if (callbacks.onSelection) {
+						callbacks.onSelection(handle);
+					}
+				} else if (e.key === 'ArrowRight') {
+					if (currentExpanded === 'false') {
+						// Expand collapsed node
+						e.preventDefault();
+						if (callbacks.onExpandCollapse) {
+							callbacks.onExpandCollapse(handle);
+						}
+					} else if (currentExpanded === 'true') {
+						// Move to first child
+						e.preventDefault();
+						const firstChild = element.querySelector('[role="treeitem"]') as HTMLElement;
+						if (firstChild) {
+							firstChild.focus();
+						}
+					}
+				} else if (e.key === 'ArrowLeft') {
+					if (currentExpanded === 'true') {
+						// Collapse expanded node
+						e.preventDefault();
+						if (callbacks.onExpandCollapse) {
+							callbacks.onExpandCollapse(handle);
+						}
+					} else {
+						// Move to parent tree item
+						e.preventDefault();
+						const parentItem = element.parentElement?.closest('[role="treeitem"]') as HTMLElement;
+						if (parentItem) {
+							parentItem.focus();
+						}
+					}
+				} else if (e.key === 'ArrowDown') {
+					// Move to next visible tree item
+					e.preventDefault();
+					const allItems = Array.from(element.closest('[role="tree"]')?.querySelectorAll('[role="treeitem"]') ?? []) as HTMLElement[];
+					const currentIndex = allItems.indexOf(element);
+					if (currentIndex >= 0 && currentIndex < allItems.length - 1) {
+						allItems[currentIndex + 1].focus();
+					}
+				} else if (e.key === 'ArrowUp') {
+					// Move to previous visible tree item
+					e.preventDefault();
+					const allItems = Array.from(element.closest('[role="tree"]')?.querySelectorAll('[role="treeitem"]') ?? []) as HTMLElement[];
+					const currentIndex = allItems.indexOf(element);
+					if (currentIndex > 0) {
+						allItems[currentIndex - 1].focus();
+					}
+				} else if (e.key === 'Home') {
+					// Move to first tree item
+					e.preventDefault();
+					const firstItem = element.closest('[role="tree"]')?.querySelector('[role="treeitem"]') as HTMLElement;
+					if (firstItem) {
+						firstItem.focus();
+					}
+				} else if (e.key === 'End') {
+					// Move to last tree item
+					e.preventDefault();
+					const allItems = element.closest('[role="tree"]')?.querySelectorAll('[role="treeitem"]');
+					if (allItems && allItems.length > 0) {
+						(allItems[allItems.length - 1] as HTMLElement).focus();
+					}
+				}
+			});
+
+			this.appendToParent(element, parentHandle, index);
+		}
+
+		/**
+		 * Creates a grid/table container element with row/column count.
+		 */
+		public static createGridElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null,
+			rowCount: number,
+			colCount: number
+		): void {
+			const element = document.createElement('table');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+			element.setAttribute('role', 'grid');
+			element.tabIndex = 0;
+			element.style.pointerEvents = 'none';
+			if (label) {
+				element.setAttribute('aria-label', label);
+			}
+			if (rowCount > 0) {
+				element.setAttribute('aria-rowcount', String(rowCount));
+			}
+			if (colCount > 0) {
+				element.setAttribute('aria-colcount', String(colCount));
+			}
+			this.appendToParent(element, parentHandle, index);
+		}
+
+		/**
+		 * Creates a grid row element.
+		 */
+		public static createGridRowElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			rowIndex: number
+		): void {
+			const element = document.createElement('div');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+			element.setAttribute('role', 'row');
+			element.style.pointerEvents = 'none';
+			if (rowIndex > 0) {
+				element.setAttribute('aria-rowindex', String(rowIndex));
+			}
+			this.appendToParent(element, parentHandle, index);
+		}
+
+		/**
+		 * Creates a grid cell element.
+		 */
+		public static createGridCellElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null,
+			rowIndex: number,
+			colIndex: number
+		): void {
+			const element = document.createElement('div');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+			element.setAttribute('role', 'gridcell');
+			element.tabIndex = -1;
+			element.style.pointerEvents = 'none';
+			if (label) {
+				element.setAttribute('aria-label', label);
+			}
+			if (rowIndex > 0) {
+				element.setAttribute('aria-rowindex', String(rowIndex));
+			}
+			if (colIndex > 0) {
+				element.setAttribute('aria-colindex', String(colIndex));
+			}
+			this.appendToParent(element, parentHandle, index);
+		}
+
+		/**
+		 * Creates a column header element.
+		 */
+		public static createColumnHeaderElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null,
+			colIndex: number
+		): void {
+			const element = document.createElement('div');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+			element.setAttribute('role', 'columnheader');
+			element.tabIndex = -1;
+			element.style.pointerEvents = 'none';
+			if (label) {
+				element.setAttribute('aria-label', label);
+			}
+			if (colIndex > 0) {
+				element.setAttribute('aria-colindex', String(colIndex));
+			}
+			this.appendToParent(element, parentHandle, index);
+		}
+
+		/**
+		 * Creates a menu container element.
+		 */
+		public static createMenuElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null
+		): void {
+			const element = document.createElement('div');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+			element.setAttribute('role', 'menu');
+			element.tabIndex = 0;
+			element.style.pointerEvents = 'none';
+			if (label) {
+				element.setAttribute('aria-label', label);
+			}
+			this.appendToParent(element, parentHandle, index);
+		}
+
+		/**
+		 * Creates a menuitem element.
+		 */
+		public static createMenuItemElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null,
+			disabled: boolean,
+			hasSubmenu: boolean
+		): void {
+			const element = document.createElement('div');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+			element.setAttribute('role', 'menuitem');
+			element.tabIndex = -1;
+			element.style.pointerEvents = 'none';
+			if (label) {
+				element.setAttribute('aria-label', label);
+			}
+			if (disabled) {
+				element.setAttribute('aria-disabled', 'true');
+			}
+			if (hasSubmenu) {
+				element.setAttribute('aria-haspopup', 'menu');
+			}
+
+			const callbacks = this.getCallbacks();
+			element.addEventListener('click', () => {
+				if (callbacks.onInvoke) {
+					callbacks.onInvoke(handle);
+				}
+			});
+			// WAI-ARIA menu item keyboard pattern
+			element.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					if (callbacks.onInvoke) {
+						callbacks.onInvoke(handle);
+					}
+				} else if (e.key === 'ArrowDown') {
+					// Move to next menu item
+					e.preventDefault();
+					const allItems = Array.from(element.parentElement?.querySelectorAll('[role="menuitem"]') ?? []) as HTMLElement[];
+					const currentIndex = allItems.indexOf(element);
+					if (currentIndex >= 0 && currentIndex < allItems.length - 1) {
+						allItems[currentIndex + 1].focus();
+					}
+				} else if (e.key === 'ArrowUp') {
+					// Move to previous menu item
+					e.preventDefault();
+					const allItems = Array.from(element.parentElement?.querySelectorAll('[role="menuitem"]') ?? []) as HTMLElement[];
+					const currentIndex = allItems.indexOf(element);
+					if (currentIndex > 0) {
+						allItems[currentIndex - 1].focus();
+					}
+				} else if (e.key === 'ArrowRight' && hasSubmenu) {
+					// Open submenu
+					e.preventDefault();
+					if (callbacks.onExpandCollapse) {
+						callbacks.onExpandCollapse(handle);
+					}
+				} else if (e.key === 'Escape') {
+					// Close menu (move focus to parent)
+					e.preventDefault();
+					const parentMenu = element.parentElement;
+					if (parentMenu) {
+						parentMenu.focus();
 					}
 				}
 			});
@@ -903,7 +1388,8 @@ namespace Uno.UI.Runtime.Skia {
 				}
 
 				const callbacks = SemanticElements.getCallbacks();
-				element.addEventListener('click', () => {
+				element.addEventListener('click', (e) => {
+					e.preventDefault();
 					if (callbacks.onSelection) {
 						callbacks.onSelection(itemHandle);
 					}

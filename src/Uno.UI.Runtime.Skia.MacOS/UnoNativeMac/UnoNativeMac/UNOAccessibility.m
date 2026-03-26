@@ -5,12 +5,11 @@
 #import "UNOAccessibility.h"
 #import "UNOWindow.h"
 
-// Native macOS notifications not publicly documented (matching Flutter's AccessibilityBridgeMac)
+// Native macOS notifications not publicly documented
 static NSString* const kAccessibilityLiveRegionCreatedNotification = @"AXLiveRegionCreated";
 static NSString* const kAccessibilityLiveRegionChangedNotification = @"AXLiveRegionChanged";
 static NSString* const kAccessibilityExpandedChanged = @"AXExpandedChanged";
 
-// Global dictionary mapping handles to accessibility elements
 static NSMutableDictionary<NSNumber*, UNOAccessibilityElement*> *g_elements = nil;
 
 static UNOAccessibilityElement *g_rootElement = nil;
@@ -23,6 +22,7 @@ static accessibility_focus_fn_ptr g_focusCallback = NULL;
 static accessibility_increment_fn_ptr g_incrementCallback = NULL;
 static accessibility_decrement_fn_ptr g_decrementCallback = NULL;
 static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
+static accessibility_set_value_fn_ptr g_setValueCallback = NULL;
 
 #pragma mark - UNOAccessibilityElement
 
@@ -47,6 +47,8 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 		_unoRangeMin = 0;
 		_unoRangeMax = 100;
 		_unoIsSelected = NO;
+		_unoIsReadOnly = NO;
+		_unoIsModal = NO;
 		_unoPositionInSet = 0;
 		_unoSizeOfSet = 0;
 	}
@@ -56,7 +58,6 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 #pragma mark - NSAccessibility protocol - Role
 
 - (NSAccessibilityRole)accessibilityRole {
-	// If a landmark role is set, map it to the appropriate NSAccessibilityRole
 	if (_unoLandmarkRole) {
 		if ([_unoLandmarkRole isEqualToString:@"main"])       return NSAccessibilityGroupRole;
 		if ([_unoLandmarkRole isEqualToString:@"navigation"]) return NSAccessibilityGroupRole;
@@ -66,18 +67,23 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 	}
 
 	if (!_unoRole) {
-		return NSAccessibilityGroupRole;
+		// Elements with a label but no explicit role are accessible groups (named containers).
+		// Elements with no role AND no label should be transparent to VoiceOver —
+		// use NSAccessibilityUnknownRole so VoiceOver doesn't announce "group".
+		if (_unoLabel && _unoLabel.length > 0) {
+			return NSAccessibilityGroupRole;
+		}
+		return NSAccessibilityUnknownRole;
 	}
 
-	// Map role strings (matching AutomationControlType / shared AriaMapper roles)
-	// to NSAccessibilityRole. These mappings align with Flutter's
-	// FlutterPlatformNodeDelegateMac pattern.
+	// Map role strings to NSAccessibilityRole
 	if ([_unoRole isEqualToString:@"button"])        return NSAccessibilityButtonRole;
 	if ([_unoRole isEqualToString:@"calendar"])      return NSAccessibilityGridRole;
 	if ([_unoRole isEqualToString:@"checkbox"])      return NSAccessibilityCheckBoxRole;
 	if ([_unoRole isEqualToString:@"combobox"])      return NSAccessibilityComboBoxRole;
 	if ([_unoRole isEqualToString:@"edit"])          return NSAccessibilityTextFieldRole;
 	if ([_unoRole isEqualToString:@"textbox"])       return NSAccessibilityTextFieldRole;
+	if ([_unoRole isEqualToString:@"textarea"])      return NSAccessibilityTextAreaRole;
 	if ([_unoRole isEqualToString:@"link"])          return NSAccessibilityLinkRole;
 	if ([_unoRole isEqualToString:@"hyperlink"])     return NSAccessibilityLinkRole;
 	if ([_unoRole isEqualToString:@"image"])         return NSAccessibilityImageRole;
@@ -142,25 +148,22 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 		if ([_unoLandmarkRole isEqualToString:@"navigation"]) return @"AXLandmarkNavigation";
 		if ([_unoLandmarkRole isEqualToString:@"search"])     return @"AXLandmarkSearch";
 		if ([_unoLandmarkRole isEqualToString:@"region"])     return @"AXLandmarkRegion";
-		// Note: "form" has no dedicated AX subrole; it falls through.
+		if ([_unoLandmarkRole isEqualToString:@"form"])       return @"AXLandmarkForm";
 	}
 
-	// Switch subrole for ToggleSwitch elements
 	if ([_unoRole isEqualToString:@"switch"]) {
 		return NSAccessibilitySwitchSubrole;
 	}
 
-	// Support heading levels for VoiceOver heading navigation (VO+Command+H)
+	// VoiceOver heading navigation (VO+Command+H)
 	if (_unoHeadingLevel > 0 && _unoHeadingLevel <= 9) {
 		return @"AXHeading";
 	}
 
-	// Secure text field subrole for password boxes
 	if (_unoIsPassword) {
 		return NSAccessibilitySecureTextFieldSubrole;
 	}
 
-	// Expand/collapse disclosure triangle subrole
 	if (_unoHasExpandCollapse) {
 		return NSAccessibilityOutlineRowSubrole;
 	}
@@ -169,12 +172,30 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 }
 
 - (NSString *)accessibilityRoleDescription {
+	NSString *baseDescription = nil;
+
 	if (_unoRoleDescription) {
-		return _unoRoleDescription;
+		baseDescription = _unoRoleDescription;
+	} else {
+		NSAccessibilitySubrole subrole = [self accessibilitySubrole];
+		baseDescription = NSAccessibilityRoleDescription([self accessibilityRole], subrole);
 	}
 
-	NSAccessibilitySubrole subrole = [self accessibilitySubrole];
-	return NSAccessibilityRoleDescription([self accessibilityRole], subrole);
+	// Append "X of Y" position info for VoiceOver announcement.
+	// VoiceOver only automatically announces position for list rows and radio buttons,
+	// so we include it in the role description for other control types.
+	if (_unoPositionInSet > 0 && _unoSizeOfSet > 0) {
+		NSAccessibilityRole role = [self accessibilityRole];
+		// Skip for roles where VoiceOver handles position natively
+		if (role != NSAccessibilityRowRole && role != NSAccessibilityRadioButtonRole) {
+			return [NSString stringWithFormat:@"%@, %ld of %ld",
+				baseDescription ?: @"",
+				(long)_unoPositionInSet,
+				(long)_unoSizeOfSet];
+		}
+	}
+
+	return baseDescription;
 }
 
 #pragma mark - NSAccessibility protocol - Label / Value / Help
@@ -212,23 +233,81 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 	return nil;
 }
 
+- (void)setAccessibilityValue:(id)value {
+	NSAccessibilityRole role = [self accessibilityRole];
+
+	// Only allow value setting for editable text fields
+	if ((role == NSAccessibilityTextFieldRole || role == NSAccessibilityTextAreaRole) &&
+		!_unoIsReadOnly && !_unoIsPassword && g_setValueCallback) {
+		NSString *stringValue = nil;
+		if ([value isKindOfClass:[NSString class]]) {
+			stringValue = (NSString *)value;
+		} else if (value) {
+			stringValue = [value description];
+		}
+		if (stringValue) {
+			g_setValueCallback(_unoHandle, [stringValue UTF8String]);
+		}
+	}
+}
+
+- (BOOL)isAccessibilityEditable {
+	NSAccessibilityRole role = [self accessibilityRole];
+	if (role == NSAccessibilityTextFieldRole || role == NSAccessibilityTextAreaRole) {
+		return !_unoIsReadOnly;
+	}
+	return NO;
+}
+
 - (NSString *)accessibilityTitle {
-	// For buttons and controls, the title is the label
 	NSAccessibilityRole role = [self accessibilityRole];
 	if (role == NSAccessibilityButtonRole ||
 		role == NSAccessibilityCheckBoxRole ||
 		role == NSAccessibilityRadioButtonRole) {
 		return _unoLabel;
 	}
+	// VoiceOver uses the title as the field label (e.g., "Name", "Email")
+	if (role == NSAccessibilityTextFieldRole ||
+		role == NSAccessibilityTextAreaRole) {
+		return _unoLabel;
+	}
+	// VoiceOver announces the group name when entering the group
+	if (role == NSAccessibilityGroupRole && _unoLabel) {
+		return _unoLabel;
+	}
+	if (role == NSAccessibilitySliderRole) {
+		return _unoLabel;
+	}
+	if (role == NSAccessibilityComboBoxRole) {
+		return _unoLabel;
+	}
+	if (role == NSAccessibilityListRole) {
+		return _unoLabel;
+	}
+	// VoiceOver announces the item text along with the role
+	if (role == NSAccessibilityRowRole) {
+		return _unoLabel;
+	}
+	if (role == NSAccessibilityMenuItemRole) {
+		return _unoLabel;
+	}
 	return nil;
 }
 
 - (NSString *)accessibilityHelp {
-	// Return description if available (from FullDescription/HelpText), fall back to help
-	if (_unoDescription) {
+	// accessibilityHelp is read by VoiceOver after a pause (secondary context).
+	// It maps to FullDescription or HelpText from WinUI.
+	return _unoHelp;
+}
+
+- (NSString *)accessibilityPlaceholderValue {
+	// accessibilityPlaceholderValue is announced for empty text fields.
+	// It maps to the description (PlaceholderText when Header is set).
+	NSAccessibilityRole role = [self accessibilityRole];
+	if ((role == NSAccessibilityTextFieldRole || role == NSAccessibilityTextAreaRole) && _unoDescription) {
 		return _unoDescription;
 	}
-	return _unoHelp;
+	return nil;
 }
 
 #pragma mark - NSAccessibility protocol - Heading Level
@@ -238,7 +317,32 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 	if (_unoHeadingLevel > 0) {
 		[names addObject:@"AXHeadingLevel"];
 	}
+	if (_unoPositionInSet > 0) {
+		[names addObject:@"AXARIAPosInSet"];
+		[names addObject:@"AXARIASetSize"];
+	}
+	// Remove expand/collapse attributes for elements that don't support them.
+	// Without this, VoiceOver announces "collapsed" on buttons, textboxes, etc.
+	if (!_unoHasExpandCollapse) {
+		[names removeObject:NSAccessibilityExpandedAttribute];
+		[names removeObject:NSAccessibilityDisclosureLevelAttribute];
+	}
 	return names;
+}
+
+- (id)accessibilityAttributeValue:(NSString *)attribute {
+	// VoiceOver queries AXHeadingLevel to announce "heading level N"
+	if ([attribute isEqualToString:@"AXHeadingLevel"] && _unoHeadingLevel > 0) {
+		return @(_unoHeadingLevel);
+	}
+	// VoiceOver queries AXARIAPosInSet / AXARIASetSize to announce "X of Y"
+	if ([attribute isEqualToString:@"AXARIAPosInSet"] && _unoPositionInSet > 0) {
+		return @(_unoPositionInSet);
+	}
+	if ([attribute isEqualToString:@"AXARIASetSize"] && _unoSizeOfSet > 0) {
+		return @(_unoSizeOfSet);
+	}
+	return [super accessibilityAttributeValue:attribute];
 }
 
 #pragma mark - NSAccessibility protocol - Frame (screen coordinates)
@@ -248,9 +352,7 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 		return NSZeroRect;
 	}
 	// _unoFrame is in window coordinates (top-left origin, as used by Uno)
-	// We need to convert to screen coordinates (bottom-left origin, as used by macOS)
-
-	// First, convert from top-left origin to bottom-left origin (within the window content area)
+	// Convert from Uno's top-left origin to macOS screen coordinates (bottom-left origin)
 	NSView *contentView = [g_window contentView];
 	CGFloat contentHeight = contentView.bounds.size.height;
 
@@ -261,7 +363,6 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 		_unoFrame.size.height
 	);
 
-	// Then convert from window coordinates to screen coordinates
 	NSRect screenRect = [g_window convertRectToScreen:windowRect];
 
 	return screenRect;
@@ -286,7 +387,6 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 }
 
 - (NSArray *)accessibilityChildren {
-	// Only return visible children
 	NSMutableArray *visibleChildren = [[NSMutableArray alloc] init];
 	for (UNOAccessibilityElement *child in _unoChildren) {
 		if (child.unoVisible) {
@@ -302,6 +402,11 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 	if (!_unoVisible) return NO;
 	if (_unoFocusable) return YES;
 	if (_unoRole != nil) return YES;
+	// Named containers (e.g., StackPanel with AutomationProperties.Name="My albums")
+	// should be accessibility elements so VoiceOver announces the group name.
+	if (_unoLabel != nil && _unoLabel.length > 0) return YES;
+	// Landmark regions should always be accessibility elements
+	if (_unoLandmarkRole != nil) return YES;
 	return NO;
 }
 
@@ -315,6 +420,10 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 
 - (BOOL)isAccessibilitySelected {
 	return _unoIsSelected;
+}
+
+- (BOOL)isAccessibilityModal {
+	return _unoIsModal;
 }
 
 - (void)setAccessibilityFocused:(BOOL)focused {
@@ -350,14 +459,19 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 
 #pragma mark - NSAccessibility protocol - Expand/Collapse
 
+// VoiceOver queries isAccessibilityExpanded/isAccessibilityDisclosed via the modern
+// NSAccessibility protocol. ANY BOOL return value (including NO) causes VoiceOver to
+// announce "collapsed" or "expanded". The only way to prevent this for non-expandable
+// elements is to make them not respond to these selectors at all.
+// See respondsToSelector: override below.
+
 - (NSInteger)accessibilityDisclosureLevel {
-	if (_unoHasExpandCollapse) {
-		return 0; // Level 0 = top level
-	}
-	return -1;
+	// Only called when respondsToSelector: returns YES (i.e., _unoHasExpandCollapse)
+	return 0; // Level 0 = top level
 }
 
 - (BOOL)isAccessibilityDisclosed {
+	// Only called when respondsToSelector: returns YES (i.e., _unoHasExpandCollapse)
 	return _unoIsExpanded;
 }
 
@@ -368,7 +482,22 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 }
 
 - (BOOL)isAccessibilityExpanded {
+	// Only called when respondsToSelector: returns YES (i.e., _unoHasExpandCollapse)
 	return _unoIsExpanded;
+}
+
+- (BOOL)respondsToSelector:(SEL)selector {
+	// Prevent VoiceOver from querying expand/collapse state on non-expandable elements.
+	// Without this, VoiceOver announces "collapsed" on buttons, text boxes, etc.
+	if (!_unoHasExpandCollapse) {
+		if (selector == @selector(isAccessibilityExpanded) ||
+			selector == @selector(isAccessibilityDisclosed) ||
+			selector == @selector(setAccessibilityDisclosed:) ||
+			selector == @selector(accessibilityDisclosureLevel)) {
+			return NO;
+		}
+	}
+	return [super respondsToSelector:selector];
 }
 
 #pragma mark - NSAccessibility protocol - Actions
@@ -452,7 +581,6 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 		}
 	}
 
-	// Check if point is within our frame
 	NSRect frame = [self accessibilityFrame];
 	if (NSPointInRect(point, frame)) {
 		return self;
@@ -466,12 +594,20 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 #pragma mark - C API for P/Invoke
 
 void uno_accessibility_init(NSWindow* window) {
-	g_window = window;
-	if (!g_elements) {
+	// Clear all stale state from any previous window. When tests create and
+	// destroy many windows rapidly, g_elements would otherwise accumulate
+	// thousands of stale entries pointing to deallocated views, causing
+	// crashes in Metal rendering and the macOS accessibility system.
+	if (g_elements) {
+		[g_elements removeAllObjects];
+	} else {
 		g_elements = [[NSMutableDictionary alloc] init];
 	}
+	g_rootElement = nil;
+	g_focusedElement = nil;
+	g_window = window;
 #if DEBUG
-	NSLog(@"UNOAccessibility: initialized for window %p", window);
+	NSLog(@"UNOAccessibility: initialized for window %p (cleared stale elements)", window);
 #endif
 }
 
@@ -487,6 +623,10 @@ void uno_accessibility_set_range_callbacks(accessibility_increment_fn_ptr increm
 
 void uno_accessibility_set_expand_collapse_callback(accessibility_expand_collapse_fn_ptr expandCollapse) {
 	g_expandCollapseCallback = expandCollapse;
+}
+
+void uno_accessibility_set_value_callback(accessibility_set_value_fn_ptr setValue) {
+	g_setValueCallback = setValue;
 }
 
 static UNOAccessibilityElement* _Nullable findElement(intptr_t handle) {
@@ -510,7 +650,6 @@ void uno_accessibility_add_element(intptr_t parentHandle, intptr_t handle, int32
 	const char* role, const char* label,
 	bool focusable, bool visible) {
 
-	// Find or create the parent
 	UNOAccessibilityElement *parent = nil;
 	if (parentHandle != 0) {
 		parent = findElement(parentHandle);
@@ -526,7 +665,6 @@ void uno_accessibility_add_element(intptr_t parentHandle, intptr_t handle, int32
 		}
 	}
 
-	// Create the new element
 	UNOAccessibilityElement *element = [[UNOAccessibilityElement alloc] initWithHandle:handle parent:parent ?: (id)g_window];
 	element.unoFrame = NSMakeRect(x, y, width, height);
 	element.unoRole = role ? [NSString stringWithUTF8String:role] : nil;
@@ -534,10 +672,8 @@ void uno_accessibility_add_element(intptr_t parentHandle, intptr_t handle, int32
 	element.unoFocusable = focusable;
 	element.unoVisible = visible;
 
-	// Register the element
 	g_elements[@(handle)] = element;
 
-	// Add it to the parent's children
 	if (parent) {
 		if (index >= 0 && index < (int32_t)parent.unoChildren.count) {
 			[parent.unoChildren insertObject:element atIndex:index];
@@ -560,30 +696,44 @@ void uno_accessibility_remove_element(intptr_t parentHandle, intptr_t handle) {
 		return;
 	}
 
-	// Clear global references if this element is the focused or root element
-	if (g_focusedElement == element) {
-		g_focusedElement = nil;
-	}
-	if (g_rootElement == element) {
-		g_rootElement = nil;
+	// Use iterative removal instead of recursion to prevent stack overflow
+	// when removing deeply nested element trees. Collect all handles to remove
+	// by walking the tree breadth-first, then remove them in a single pass.
+	NSMutableArray<NSNumber*> *handlesToRemove = [[NSMutableArray alloc] init];
+	NSMutableArray<UNOAccessibilityElement*> *queue = [[NSMutableArray alloc] initWithObjects:element, nil];
+
+	while (queue.count > 0) {
+		@autoreleasepool {
+			UNOAccessibilityElement *current = queue.firstObject;
+			[queue removeObjectAtIndex:0];
+			[handlesToRemove addObject:@(current.unoHandle)];
+
+			for (UNOAccessibilityElement *child in current.unoChildren) {
+				[queue addObject:child];
+			}
+		}
 	}
 
-	// Remove from parent's children
 	UNOAccessibilityElement *parent = findElement(parentHandle);
 	if (parent) {
 		[parent.unoChildren removeObject:element];
 	}
 
-	// Recursively remove all children from the global dictionary
-	for (UNOAccessibilityElement *child in [element.unoChildren copy]) {
-		uno_accessibility_remove_element(handle, child.unoHandle);
+	for (NSNumber *key in handlesToRemove) {
+		UNOAccessibilityElement *elem = g_elements[key];
+		if (elem) {
+			if (g_focusedElement == elem) {
+				g_focusedElement = nil;
+			}
+			if (g_rootElement == elem) {
+				g_rootElement = nil;
+			}
+		}
+		[g_elements removeObjectForKey:key];
 	}
 
-	// Remove from global dictionary
-	[g_elements removeObjectForKey:@(handle)];
-
 #if DEBUG
-	NSLog(@"UNOAccessibility: removed element handle=%ld", (long)handle);
+	NSLog(@"UNOAccessibility: removed element handle=%ld (and %lu descendants)", (long)handle, (unsigned long)(handlesToRemove.count - 1));
 #endif
 }
 
@@ -631,6 +781,8 @@ void uno_accessibility_update_enabled(intptr_t handle, bool enabled) {
 	UNOAccessibilityElement *element = findElement(handle);
 	if (element) {
 		element.unoEnabled = enabled;
+		// Notify VoiceOver of the enabled state change so it re-reads the element
+		NSAccessibilityPostNotification(element, NSAccessibilityValueChangedNotification);
 	}
 }
 
@@ -683,8 +835,7 @@ void uno_accessibility_update_expand_collapse(intptr_t handle, bool hasExpandCol
 		element.unoHasExpandCollapse = hasExpandCollapse;
 		element.unoIsExpanded = isExpanded;
 		if (hasExpandCollapse) {
-			// Match Flutter's AccessibilityBridgeMac: use Row notifications for row/treeitem
-			// roles, and AXExpandedChanged for everything else
+			// Use Row notifications for row/treeitem roles, and AXExpandedChanged for everything else
 			NSAccessibilityRole role = [element accessibilityRole];
 			if (role == NSAccessibilityRowRole || role == NSAccessibilityOutlineRole) {
 				NSAccessibilityPostNotification(element,
@@ -742,6 +893,27 @@ void uno_accessibility_update_required(intptr_t handle, bool required) {
 	}
 }
 
+void uno_accessibility_update_read_only(intptr_t handle, bool readOnly) {
+	UNOAccessibilityElement *element = findElement(handle);
+	if (element) {
+		element.unoIsReadOnly = readOnly;
+	}
+}
+
+void uno_accessibility_update_modal(intptr_t handle, bool isModal) {
+	UNOAccessibilityElement *element = findElement(handle);
+	if (element) {
+		element.unoIsModal = isModal;
+		if (isModal) {
+			// When a modal opens, VoiceOver needs the dialog role + modal flag
+			// and a layout notification so it restricts navigation to the dialog
+			element.unoRole = @"dialog";
+			NSAccessibilityPostNotification(g_window, NSAccessibilityFocusedUIElementChangedNotification);
+		}
+		NSAccessibilityPostNotification(g_window, NSAccessibilityLayoutChangedNotification);
+	}
+}
+
 void uno_accessibility_set_focused(intptr_t handle) {
 	UNOAccessibilityElement *element = findElement(handle);
 	if (element) {
@@ -787,9 +959,8 @@ void uno_accessibility_post_layout_changed(void) {
 }
 
 void uno_accessibility_post_children_changed(void) {
-	// Match Flutter's AccessibilityBridgeMac CHILDREN_CHANGED:
 	// NSAccessibilityCreatedNotification on the window is the only way
-	// to make VoiceOver pick up layout changes reliably.
+	// to make VoiceOver pick up structural changes reliably.
 	if (g_window) {
 		NSAccessibilityPostNotification(g_window, NSAccessibilityCreatedNotification);
 #if DEBUG

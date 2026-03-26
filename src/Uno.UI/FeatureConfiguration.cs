@@ -70,6 +70,14 @@ namespace Uno.UI
 			/// Note: This is incompatible with the way accessibility works on UWP.
 			/// </remarks>
 			public static bool UseSimpleAccessibility { get; set; }
+
+			/// <summary>
+			/// When set to <c>true</c>, enables the accessibility semantic tree automatically
+			/// on WebAssembly without requiring user interaction with the "Enable Accessibility" button.
+			/// This is similar to Flutter's <c>SemanticsBinding.instance.ensureSemantics()</c>.
+			/// Set this in your application startup before the host is built. The default value is <c>false</c>.
+			/// </summary>
+			public static bool AutoEnableAccessibility { get; set; }
 		}
 
 		public static class ComboBox

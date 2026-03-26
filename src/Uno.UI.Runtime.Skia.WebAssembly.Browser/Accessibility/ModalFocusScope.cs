@@ -48,7 +48,10 @@ internal sealed partial class ModalFocusScope
 	/// </summary>
 	internal void Activate(ModalFocusScope? parentScope)
 	{
-		Console.WriteLine($"[A11y] MODAL FOCUS: Activate modal={_modalHandle} trigger={_triggerHandle} focusableChildren={_focusableChildren.Count} hasParent={parentScope is not null}");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"Activate modal={_modalHandle} trigger={_triggerHandle} focusableChildren={_focusableChildren.Count} hasParent={parentScope is not null}");
+		}
 		_parentScope = parentScope;
 		_isActive = true;
 
@@ -66,7 +69,10 @@ internal sealed partial class ModalFocusScope
 	/// </summary>
 	internal void Deactivate()
 	{
-		Console.WriteLine($"[A11y] MODAL FOCUS: Deactivate modal={_modalHandle} trigger={_triggerHandle}");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"Deactivate modal={_modalHandle} trigger={_triggerHandle}");
+		}
 		_isActive = false;
 		NativeMethods.DeactivateFocusTrap(_modalHandle);
 	}
@@ -76,7 +82,10 @@ internal sealed partial class ModalFocusScope
 	/// </summary>
 	internal void UpdateChildren(List<IntPtr> focusableChildren)
 	{
-		Console.WriteLine($"[A11y] MODAL FOCUS: UpdateChildren modal={_modalHandle} count={focusableChildren.Count}");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"UpdateChildren modal={_modalHandle} count={focusableChildren.Count}");
+		}
 		_focusableChildren.Clear();
 		_focusableChildren.AddRange(focusableChildren);
 

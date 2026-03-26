@@ -25,7 +25,7 @@ internal sealed partial class FocusSynchronizer
 
 	/// <summary>
 	/// Gets whether a focus synchronization operation is in progress.
-	/// Used to prevent infinite XAML↔browser focus loops.
+	/// Used to prevent infinite XAML-browser focus loops.
 	/// </summary>
 	internal bool IsSyncing => _isSyncing;
 
@@ -48,13 +48,16 @@ internal sealed partial class FocusSynchronizer
 	/// </summary>
 	internal void Initialize()
 	{
-		Console.WriteLine("[A11y] FocusSynchronizer.Initialize: subscribing to FocusManager.GotFocus and LostFocus");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug("[A11y] FocusSynchronizer.Initialize: subscribing to FocusManager.GotFocus and LostFocus");
+		}
 		FocusManager.GotFocus += OnXamlGotFocus;
 		FocusManager.LostFocus += OnXamlLostFocus;
 	}
 
 	/// <summary>
-	/// Handles XAML→Browser focus direction.
+	/// Handles XAML->Browser focus direction.
 	/// Called when FocusManager.GotFocus fires.
 	/// Resolves the focused element to its nearest semantic ancestor before syncing to the browser.
 	/// </summary>
@@ -62,57 +65,58 @@ internal sealed partial class FocusSynchronizer
 	{
 		if (_isSyncing)
 		{
-			Console.WriteLine($"[A11y] FOCUS SYNC: OnXamlGotFocus SKIPPED (already syncing) element={args.NewFocusedElement?.GetType().Name}");
 			return;
 		}
 
 		if (args.NewFocusedElement is not UIElement element)
 		{
-			Console.WriteLine($"[A11y] FOCUS SYNC: OnXamlGotFocus SKIPPED (not UIElement) element={args.NewFocusedElement?.GetType().Name}");
 			return;
 		}
 
 		var handle = element.Visual.Handle;
 		if (handle == IntPtr.Zero)
 		{
-			Console.WriteLine($"[A11y] FOCUS SYNC: OnXamlGotFocus SKIPPED (handle=0) element={element.GetType().Name}");
 			return;
 		}
 
-		// Resolve to the nearest element that exists in the semantic DOM tree.
-		// Many UIElements (Grid, Border, SplitView, etc.) are pruned from the
-		// semantic tree and don't have corresponding DOM nodes. Trying to focus
-		// them would fail with "element NOT FOUND" in JS.
-		var semanticHandle = _accessibility.ResolveToSemanticHandle(element);
-		if (semanticHandle == IntPtr.Zero)
-		{
-			Console.WriteLine($"[A11y] FOCUS SYNC: OnXamlGotFocus SKIPPED (no semantic element found) element={element.GetType().Name} handle={handle}");
-			return;
-		}
-
-		if (semanticHandle != handle)
-		{
-			Console.WriteLine($"[A11y] FOCUS SYNC: XAML→Browser element={element.GetType().Name} handle={handle} resolved to semantic ancestor={semanticHandle} prev={_currentFocusedHandle}");
-		}
-		else
-		{
-			Console.WriteLine($"[A11y] FOCUS SYNC: XAML→Browser element={element.GetType().Name} handle={semanticHandle} prev={_currentFocusedHandle}");
-		}
-
-		_isSyncing = true;
 		try
 		{
-			_previousFocusedHandle = _currentFocusedHandle;
-			_currentFocusedHandle = semanticHandle;
+			// Resolve to the nearest element that exists in the semantic DOM tree.
+			// Many UIElements (Grid, Border, SplitView, etc.) are pruned from the
+			// semantic tree and don't have corresponding DOM nodes.
+			var semanticHandle = _accessibility.ResolveToSemanticHandle(element);
+			if (semanticHandle == IntPtr.Zero)
+			{
+				// No semantic element found — fall back to the direct handle.
+				// The JS side will gracefully handle "not found" cases.
+				// This prevents focus from being silently dropped during page
+				// navigation or when focusing non-semantic elements.
+				semanticHandle = handle;
+			}
 
-			NativeMethods.FocusSemanticElement(semanticHandle);
+			_isSyncing = true;
+			try
+			{
+				_previousFocusedHandle = _currentFocusedHandle;
+				_currentFocusedHandle = semanticHandle;
 
-			// Track for focus recovery (US5)
-			TrackFocusedElement(element);
+				NativeMethods.FocusSemanticElement(semanticHandle);
+
+				// Track for focus recovery
+				TrackFocusedElement(element);
+			}
+			finally
+			{
+				_isSyncing = false;
+			}
 		}
-		finally
+		catch (Exception ex)
 		{
 			_isSyncing = false;
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"[A11y] FocusSynchronizer.OnXamlGotFocus failed for {element.GetType().Name}: {ex.Message}", ex);
+			}
 		}
 	}
 
@@ -128,24 +132,21 @@ internal sealed partial class FocusSynchronizer
 	}
 
 	/// <summary>
-	/// Handles Browser→XAML focus direction.
+	/// Handles Browser->XAML focus direction.
 	/// Called from the existing OnFocus JSExport when a semantic element receives browser focus.
 	/// </summary>
 	internal void OnBrowserFocus(IntPtr handle, UIElement? owner)
 	{
 		if (_isSyncing)
 		{
-			Console.WriteLine($"[A11y] FOCUS SYNC: OnBrowserFocus SKIPPED (already syncing) handle={handle}");
 			return;
 		}
 
 		if (owner is not Control control || !control.IsFocusable)
 		{
-			Console.WriteLine($"[A11y] FOCUS SYNC: OnBrowserFocus SKIPPED (not focusable) handle={handle} owner={owner?.GetType().Name}");
 			return;
 		}
 
-		Console.WriteLine($"[A11y] FOCUS SYNC: Browser→XAML handle={handle} owner={owner.GetType().Name} prev={_currentFocusedHandle}");
 		_isSyncing = true;
 		try
 		{
@@ -153,8 +154,15 @@ internal sealed partial class FocusSynchronizer
 			_currentFocusedHandle = handle;
 			control.Focus(FocusState.Keyboard);
 
-			// Track for focus recovery (US5)
+			// Track for focus recovery
 			TrackFocusedElement(owner!);
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"[A11y] FocusSynchronizer.OnBrowserFocus failed for handle={handle}: {ex.Message}", ex);
+			}
 		}
 		finally
 		{
@@ -231,67 +239,73 @@ internal sealed partial class FocusSynchronizer
 	/// </summary>
 	private void RecoverFocus(UIElement lostElement)
 	{
-		Console.WriteLine($"[A11y] FOCUS RECOVERY: element={lostElement.GetType().Name} handle={lostElement.Visual.Handle}");
 		UntrackFocusedElement();
 
-		// Try next focusable sibling
-		var parent = lostElement.GetParent() as UIElement;
-		if (parent is not null)
+		try
 		{
-			var children = parent.GetChildren();
-			bool foundLost = false;
-
-			// Look for the next focusable sibling after the lost element
-			foreach (var child in children)
+			// Try next focusable sibling
+			var parent = lostElement.GetParent() as UIElement;
+			if (parent is not null)
 			{
-				if (child == lostElement)
+				var children = parent.GetChildren();
+				bool foundLost = false;
+
+				// Look for the next focusable sibling after the lost element
+				foreach (var child in children)
 				{
-					foundLost = true;
-					continue;
+					if (child == lostElement)
+					{
+						foundLost = true;
+						continue;
+					}
+
+					if (foundLost && child is Control nextControl && nextControl.IsFocusable && nextControl.IsEnabled)
+					{
+						nextControl.Focus(FocusState.Keyboard);
+						return;
+					}
 				}
 
-				if (foundLost && child is Control nextControl && nextControl.IsFocusable && nextControl.IsEnabled)
+				// Try siblings before the lost element
+				foreach (var child in children)
 				{
-					Console.WriteLine($"[A11y] FOCUS RECOVERY: recovered to next sibling={nextControl.GetType().Name} handle={nextControl.Visual.Handle}");
-					nextControl.Focus(FocusState.Keyboard);
+					if (child == lostElement)
+					{
+						break;
+					}
+
+					if (child is Control prevControl && prevControl.IsFocusable && prevControl.IsEnabled)
+					{
+						prevControl.Focus(FocusState.Keyboard);
+						return;
+					}
+				}
+			}
+
+			// Try nearest focusable ancestor
+			var ancestor = parent;
+			while (ancestor is not null)
+			{
+				if (ancestor is Control ancestorControl && ancestorControl.IsFocusable && ancestorControl.IsEnabled)
+				{
+					ancestorControl.Focus(FocusState.Keyboard);
 					return;
 				}
+
+				ancestor = ancestor.GetParent() as UIElement;
 			}
 
-			// Try siblings before the lost element
-			foreach (var child in children)
-			{
-				if (child == lostElement)
-				{
-					break;
-				}
-
-				if (child is Control prevControl && prevControl.IsFocusable && prevControl.IsEnabled)
-				{
-					Console.WriteLine($"[A11y] FOCUS RECOVERY: recovered to prev sibling={prevControl.GetType().Name} handle={prevControl.Visual.Handle}");
-					prevControl.Focus(FocusState.Keyboard);
-					return;
-				}
-			}
+			// Fallback: blur the current focus (focus moves to body)
+			_currentFocusedHandle = IntPtr.Zero;
 		}
-
-		// Try nearest focusable ancestor
-		var ancestor = parent;
-		while (ancestor is not null)
+		catch (Exception ex)
 		{
-			if (ancestor is Control ancestorControl && ancestorControl.IsFocusable && ancestorControl.IsEnabled)
+			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				Console.WriteLine($"[A11y] FOCUS RECOVERY: recovered to ancestor={ancestorControl.GetType().Name} handle={ancestorControl.Visual.Handle}");
-				ancestorControl.Focus(FocusState.Keyboard);
-				return;
+				this.Log().Error($"[A11y] FocusSynchronizer.RecoverFocus failed: {ex.Message}", ex);
 			}
-
-			ancestor = ancestor.GetParent() as UIElement;
+			_currentFocusedHandle = IntPtr.Zero;
 		}
-
-		// Fallback: blur the current focus (focus moves to body)
-		Console.WriteLine("[A11y] FOCUS RECOVERY: no target found — focus moves to body");
-		_currentFocusedHandle = IntPtr.Zero;
 	}
 
 	private static partial class NativeMethods
