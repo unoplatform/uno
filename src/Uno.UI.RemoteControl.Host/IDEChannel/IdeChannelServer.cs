@@ -92,7 +92,7 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 	#endregion
 
 	/// <inheritdoc />
-	public async ValueTask<bool> WaitForReady(CancellationToken ct = default)
+	public async Task<bool> WaitForReady(CancellationToken ct = default)
 	{
 		var session = Volatile.Read(ref _session);
 		if (session is null)
