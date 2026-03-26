@@ -477,18 +477,16 @@ public partial class DependencyObjectStore
 			return;
 		}
 
-		// Skip if this binding matches only because of ThemeResource and
-		// Phase 1 (UpdateAllThemeReferences) already handled it via _themeResources.
+		// Skip if the update is a pure theme change and Phase 1 already handled it.
+		// Do NOT skip during loading (ResolvedOnLoading) — Phase 2's tree walk is
+		// required to resolve the resource with the correct theme context and to
+		// pin the providing dictionary for future theme changes.
 		// MUX Reference: WinUI's NotifyThemeChangedCore processes theme resources
 		// only through UpdateAllThemeReferences, not through resource bindings.
-		if ((updateReason & ResourceUpdateReason.ThemeResource) != 0
+		if (updateReason == ResourceUpdateReason.ThemeResource
 			&& _themeResources?.Get(property, binding.Precedence) is not null)
 		{
-			var nonThemeMatch = binding.UpdateReason & updateReason & ~ResourceUpdateReason.ThemeResource;
-			if (nonThemeMatch == ResourceUpdateReason.None)
-			{
-				return;
-			}
+			return;
 		}
 
 		if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
