@@ -126,12 +126,12 @@ partial class ClientHotReloadProcessor
 
 			UpdateGlobalResources(updatedTypes);
 
+			FrameworkElement? rootElement = null;
 #if HAS_UNO || HAS_UNO_WINUI
 			// For secondary ALC windows (e.g. Studio Live inner app), start scanning
 			// from the window's content directly — it resolves to the AlcContentHost
 			// subtree, scoping the update to the inner app only.
 			// For normal windows, start from the full visual tree root.
-			FrameworkElement? rootElement = null;
 			if (window.TryGetContentFromSecondaryAlc(out var alcContent) && alcContent is FrameworkElement alcRoot)
 			{
 				rootElement = alcRoot;
