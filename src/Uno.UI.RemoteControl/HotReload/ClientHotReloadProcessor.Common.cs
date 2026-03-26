@@ -65,18 +65,22 @@ namespace Uno.UI.RemoteControl.HotReload
 					yield return match;
 				}
 
-				// Scope tree walk by ALC: if this element is an AlcContentHost, check if its
-				// content comes from a different ALC than our processor's. If so, skip its
-				// children — they will be processed by the other ALC's own processor.
+				// Stop at AlcContentHost boundaries — the inner app's own processor
+				// will handle its subtree starting from window.Content (which resolves
+				// to the AlcContentHost content via TryGetContentFromSecondaryAlc).
+				var skipChildren = false;
 #if HAS_UNO
-				// TODO: Use alcHost.LoadContext directly once Uno.UI NuGet includes the property.
-				if (fe is Uno.UI.Xaml.Controls.AlcContentHost { LoadContext: { } contentAlc }
-					&& contentAlc != _processorAlc)
+				if (fe is Uno.UI.Xaml.Controls.AlcContentHost)
 				{
-					// Children belong to a different ALC — skip them
+					if (_log.IsEnabled(LogLevel.Information))
+					{
+						_log.Info("[HotReload] AlcContentHost encountered — skipping children (handled by inner ALC processor)");
+					}
+
+					skipChildren = true;
 				}
-				else
 #endif
+				if (!skipChildren)
 				{
 					var idx = 0;
 					foreach (var child in fe.EnumerateChildren())

@@ -43,7 +43,7 @@ partial class Window
 
 	}
 
-	private partial bool TryGetContentFromSecondaryAlc(out UIElement? content)
+	internal partial bool TryGetContentFromSecondaryAlc(out UIElement? content)
 	{
 		if (IsSecondaryAlcContent(_secondaryAlcContent))
 		{
