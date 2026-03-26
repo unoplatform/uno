@@ -5152,11 +5152,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// Now type an Enter to add a new line — the caret moves further down.
 			textBox.SafeRaiseEvent(UIElement.KeyDownEvent,
-				new KeyRoutedEventArgs(textBox, VirtualKey.Enter, VirtualKeyModifiers.None));
+				new KeyRoutedEventArgs(textBox, VirtualKey.Enter, VirtualKeyModifiers.None, unicodeKey: '\r'));
 			await WindowHelper.WaitForIdle();
 
 			await WindowHelper.WaitFor(
-				() => outerScrollViewer.VerticalOffset >= offsetAfterFocus,
+				() => outerScrollViewer.VerticalOffset > offsetAfterFocus,
 				timeoutMS: 2000,
 				message: "Outer ScrollViewer should scroll further after adding a new line.");
 		}
