@@ -132,7 +132,7 @@ public partial class Window
 
 	partial void InitializeWindowingFlavor();
 	partial void InitializeAlcState(Assembly callingAssembly);
-	private partial bool TryGetContentFromSecondaryAlc(out UIElement? content);
+	internal partial bool TryGetContentFromSecondaryAlc(out UIElement? content);
 	private partial bool TrySetContentFromSecondaryAlc(UIElement? value, ContentControl host, Assembly callingAssembly);
 
 #pragma warning disable 67
