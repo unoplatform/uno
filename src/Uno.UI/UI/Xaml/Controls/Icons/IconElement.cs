@@ -52,8 +52,18 @@ public partial class IconElement : FrameworkElement
 			typeof(IconElement),
 			new FrameworkPropertyMetadata(
 				SolidColorBrushHelper.White,
-				FrameworkPropertyMetadataOptions.Inherits,
-				propertyChangedCallback: (s, e) => ((IconElement)s).OnForegroundChanged(e)
+				propertyChangedCallback: (s, e) =>
+				{
+					var icon = (IconElement)s;
+					icon.OnForegroundChanged(e);
+					if (!TextFormattingHelper.IsProcessingInheritedNotification)
+					{
+						var tf = icon._textFormatting ??= TextFormatting.CreateDefault();
+						tf.SetFieldValue("Foreground", e.NewValue);
+						GlobalTextFormattingCounter.Invalidate();
+						icon.MarkInheritedPropertyDirty("Foreground", e.NewValue);
+					}
+				}
 			)
 		);
 
