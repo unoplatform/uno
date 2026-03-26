@@ -86,6 +86,14 @@ namespace Microsoft.UI.Xaml
 				_flags |= frameworkMetadata.IsPropMethodCall ? Flags.IsPropMethodCall : Flags.None;
 			}
 
+			// Mark text formatting properties for the TextFormatting system.
+			// These properties participate in the lazy-pull inheritance mechanism
+			// instead of (or in addition to) the DP Inherits cascade.
+			if (TextFormattingHelper.IsTextFormattingPropertyName(name))
+			{
+				_flags |= Flags.IsTextFormattingProperty;
+			}
+
 			_flags |= ownerType.Assembly.Equals(typeof(DependencyProperty).Assembly) ? Flags.IsUnoType : Flags.None;
 
 			if (ownerType == typeof(FrameworkElement))
@@ -351,6 +359,13 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal bool IsUnoType
 			=> (_flags & Flags.IsUnoType) != 0;
+
+		/// <summary>
+		/// Determines if the property is a text formatting property managed by
+		/// the <see cref="TextFormatting"/> system (Foreground, FontSize, etc.).
+		/// </summary>
+		internal bool IsTextFormattingProperty
+			=> (_flags & Flags.IsTextFormattingProperty) != 0;
 
 		/// <summary>
 		/// Get the specified dependency property on the specified owner type.
@@ -757,6 +772,12 @@ namespace Microsoft.UI.Xaml
 			IsInherited = (1 << 6),
 
 			IsPropMethodCall = (1 << 7),
+
+			/// <summary>
+			/// Set when the property is a text formatting property that participates
+			/// in the TextFormatting inheritance system (Foreground, FontSize, etc.).
+			/// </summary>
+			IsTextFormattingProperty = (1 << 8),
 		}
 	}
 }
