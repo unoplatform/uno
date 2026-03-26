@@ -373,7 +373,8 @@ namespace Uno.UI
 
 			// Resolve current value from the pinned dictionary
 			var value = themeRef.RefreshValue(owner);
-			owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
+			// MUX Reference: Theming.cpp:385-393 — SetValue uses baseValueSource (resolved precedence)
+			owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), effectivePrecedence);
 
 			// Clone the reference for the target DO (with target's precedence, sharing pinned dictionary)
 			var targetRef = themeRef.CloneForTarget(effectivePrecedence);

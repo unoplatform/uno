@@ -45,13 +45,6 @@ namespace Uno.UI.Helpers.Xaml
 			}
 			setter.ResourceBindingUpdateReason |= updateReason;
 
-			// MUX Reference: PreserveThemeResourceExtension() in TypeTableStructs.h
-			// For Style Setters with ThemeResource values, DON'T pre-resolve at parse time.
-			// WinUI stores the CThemeResource markup extension and resolves lazily when the
-			// Style is applied to a specific control. At that point, the control is in the
-			// visual tree and the correct dictionaries are in scope.
-			// The ThemeResourceRef will be created in Setter.ApplyTo when the style is applied.
-
 			return setter;
 		}
 

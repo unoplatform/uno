@@ -2961,6 +2961,9 @@ public class Given_ElementTheme
 		Assert.IsTrue(darkFill.Value.B > 100,
 			$"Dark CheckBox fill should be accent blue, not grey. Got B={darkFill.Value.B}, color={darkFill}. " +
 			$"Light fill for comparison={lightFill}");
+		// Light and Dark themes use different shades of accent (e.g. #FF005A9E vs #FF76B9ED).
+		Assert.AreNotEqual(lightFill.Value, darkFill.Value,
+			$"Light and Dark fills should differ (different theme dictionaries). Light={lightFill}, Dark={darkFill}");
 	}
 
 	#endregion

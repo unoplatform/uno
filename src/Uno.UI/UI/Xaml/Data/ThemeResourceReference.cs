@@ -33,6 +33,17 @@ internal sealed class ThemeResourceReference
 	public object? LastResolvedValue { get; internal set; }
 
 	/// <summary>
+	/// Whether this reference has been resolved at least once.
+	/// Distinguishes "not yet resolved" (deferred) from "resolved to null" (e.g. x:Null).
+	/// </summary>
+	/// <remarks>
+	/// MUX Reference: WinUI uses CValue type system — valueAny means "unset/unresolved",
+	/// valueNull means "resolved to null". In C# both map to null, so we track this explicitly.
+	/// See CThemeResource::SetLastResolvedValue and CValue::IsUnset() in CValue.h.
+	/// </remarks>
+	internal bool IsResolved { get; set; }
+
+	/// <summary>
 	/// Assembly parse context for fallback resolution when the pinned dictionary is dead.
 	/// </summary>
 	public object? ParseContext { get; }
@@ -67,6 +78,7 @@ internal sealed class ThemeResourceReference
 			? new WeakReference<ResourceDictionary>(targetDictionary)
 			: null;
 		LastResolvedValue = initialValue;
+		IsResolved = initialValue is not null;
 		ParseContext = parseContext;
 		UpdateReason = updateReason;
 		Precedence = precedence;
@@ -96,14 +108,14 @@ internal sealed class ThemeResourceReference
 			// Check cache first
 			if (cache is not null && cache.TryGetCachedValue(dict, ResourceKey, out var cachedValue))
 			{
-				LastResolvedValue = cachedValue;
+				SetResolvedValue(cachedValue);
 				return cachedValue;
 			}
 
 			if (dict.TryGetValue(ResourceKey, out var value, shouldCheckSystem: false))
 			{
 				cache?.CacheValue(dict, ResourceKey, value);
-				LastResolvedValue = value;
+				SetResolvedValue(value);
 				return value;
 			}
 		}
@@ -111,7 +123,7 @@ internal sealed class ThemeResourceReference
 		// Uno extension: Try top-level as last resort (for hot-reload/unpinned refs)
 		if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, ParseContext, out var topLevelValue))
 		{
-			LastResolvedValue = topLevelValue;
+			SetResolvedValue(topLevelValue);
 			return topLevelValue;
 		}
 
@@ -130,14 +142,14 @@ internal sealed class ThemeResourceReference
 		{
 			if (cache is not null && cache.TryGetCachedValue(dict, ResourceKey, out var cachedValue))
 			{
-				LastResolvedValue = cachedValue;
+				SetResolvedValue(cachedValue);
 				return cachedValue;
 			}
 
 			if (dict.TryGetValue(ResourceKey, out var value, shouldCheckSystem: false))
 			{
 				cache?.CacheValue(dict, ResourceKey, value);
-				LastResolvedValue = value;
+				SetResolvedValue(value);
 				return value;
 			}
 		}
@@ -155,7 +167,7 @@ internal sealed class ThemeResourceReference
 						// Re-pin the new dictionary
 						_targetDictionary = new WeakReference<ResourceDictionary>(newProvidingDict);
 						cache?.CacheValue(newProvidingDict, ResourceKey, value);
-						LastResolvedValue = value;
+						SetResolvedValue(value);
 						return value;
 					}
 				}
@@ -165,7 +177,7 @@ internal sealed class ThemeResourceReference
 		// 3. Try top-level resources as last resort
 		if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, ParseContext, out var topLevelValue))
 		{
-			LastResolvedValue = topLevelValue;
+			SetResolvedValue(topLevelValue);
 			return topLevelValue;
 		}
 
@@ -205,6 +217,13 @@ internal sealed class ThemeResourceReference
 
 		// Share the same pinned dictionary
 		clone._targetDictionary = _targetDictionary;
+		clone.IsResolved = IsResolved;
 		return clone;
+	}
+
+	private void SetResolvedValue(object? value)
+	{
+		LastResolvedValue = value;
+		IsResolved = true;
 	}
 }

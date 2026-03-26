@@ -159,6 +159,7 @@ public partial class DependencyObjectStore
 					if (dict.TryGetValue(themeRef.ResourceKey, out var ancestorValue, shouldCheckSystem: false))
 					{
 						themeRef.LastResolvedValue = ancestorValue;
+						themeRef.IsResolved = true;
 						newValue = ancestorValue;
 						resolved = true;
 						break;
@@ -178,10 +179,11 @@ public partial class DependencyObjectStore
 			// MUX: Theming.cpp:385-393 — SetValue with resolved value
 			var convertedValue = BindingPropertyHelper.Convert(property.Type, newValue);
 
-			// Skip deferred entries that haven't been resolved yet (null target dict,
-			// null last value). They will be resolved by the _resourceBindings fallback
-			// path during loading.
-			if (convertedValue is null && themeRef.LastResolvedValue is null)
+			// Skip deferred entries that haven't been resolved yet. They will be resolved
+			// by the _resourceBindings fallback path during loading.
+			// MUX Reference: WinUI uses CValue::IsUnset() to distinguish "not yet resolved"
+			// from "resolved to null" (x:Null). We use IsResolved for the same purpose.
+			if (convertedValue is null && !themeRef.IsResolved)
 			{
 				// MUX: Theming.cpp:397 — store ref back even if we skip the value set
 				_themeResources.Set(property, precedence, themeRef);
