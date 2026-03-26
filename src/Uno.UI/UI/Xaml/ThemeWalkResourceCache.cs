@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using Uno.Disposables;
 using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml;
@@ -41,8 +40,9 @@ internal sealed class ThemeWalkResourceCache
 	private bool _isCachingThemeResources;
 
 	/// <summary>
-	/// Begins a caching session. Returns an IDisposable that clears the cache when disposed.
-	/// Reentrant-safe: nested calls return no-op disposables.
+	/// Begins a caching session. Returns a struct guard that clears the cache when disposed.
+	/// Reentrant-safe: nested calls return no-op guards.
+	/// Uses a struct to avoid heap allocation (WinUI uses stack-allocated wil::scope_exit).
 	/// </summary>
 	/// <remarks>
 	/// MUX Reference: ThemeWalkResourceCache::BeginCachingThemeResources()
@@ -51,19 +51,36 @@ internal sealed class ThemeWalkResourceCache
 	/// - UpdateLayout (elements entering tree)
 	/// - AppBarButton VSM updates
 	/// </remarks>
-	internal IDisposable BeginCachingThemeResources()
+	internal CacheSession BeginCachingThemeResources()
 	{
 		if (!_isCachingThemeResources)
 		{
 			_isCachingThemeResources = true;
-			return Disposable.Create(() =>
-			{
-				_isCachingThemeResources = false;
-				_cache.Clear();
-			});
+			return new CacheSession(this);
 		}
 
-		return Disposable.Empty;
+		return default; // no-op: _cache field is null
+	}
+
+	/// <summary>
+	/// Zero-allocation disposable guard for a caching session.
+	/// When used with <c>using var</c>, the compiler calls Dispose() directly
+	/// on the struct without boxing to IDisposable.
+	/// </summary>
+	internal readonly struct CacheSession : IDisposable
+	{
+		private readonly ThemeWalkResourceCache? _owner;
+
+		internal CacheSession(ThemeWalkResourceCache owner) => _owner = owner;
+
+		public void Dispose()
+		{
+			if (_owner is not null)
+			{
+				_owner._isCachingThemeResources = false;
+				_owner._cache.Clear();
+			}
+		}
 	}
 
 	/// <summary>
