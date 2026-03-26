@@ -477,6 +477,20 @@ public partial class DependencyObjectStore
 			return;
 		}
 
+		// Skip if this binding matches only because of ThemeResource and
+		// Phase 1 (UpdateAllThemeReferences) already handled it via _themeResources.
+		// MUX Reference: WinUI's NotifyThemeChangedCore processes theme resources
+		// only through UpdateAllThemeReferences, not through resource bindings.
+		if ((updateReason & ResourceUpdateReason.ThemeResource) != 0
+			&& _themeResources?.Get(property, binding.Precedence) is not null)
+		{
+			var nonThemeMatch = binding.UpdateReason & updateReason & ~ResourceUpdateReason.ThemeResource;
+			if (nonThemeMatch == ResourceUpdateReason.None)
+			{
+				return;
+			}
+		}
+
 		if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
 		{
 			// Add the current dictionaries to the resolver scope,
