@@ -3,6 +3,7 @@
 using System;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
@@ -27,6 +28,11 @@ internal sealed partial class LiveRegionManager
 	private Timer? _assertiveDebounceTimer;
 	private long _politeThrottleTimestamp;
 	private long _assertiveThrottleTimestamp;
+	/// <summary>
+	/// When set, only announcements from elements inside the modal are allowed through.
+	/// Background live region changes are suppressed while a modal is active.
+	/// </summary>
+	internal IntPtr ActiveModalHandle { get; set; }
 
 	/// <summary>
 	/// Handles a LiveRegionChanged automation event from an AutomationPeer.
@@ -36,12 +42,36 @@ internal sealed partial class LiveRegionManager
 		var liveSetting = peer.GetLiveSetting();
 		var content = peer.GetName();
 
-		Console.WriteLine($"[A11y] LIVE REGION: HandleLiveRegionChanged peer={peer.GetType().Name} liveSetting={liveSetting} content='{content}'");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"HandleLiveRegionChanged peer={peer.GetType().Name} liveSetting={liveSetting} content='{content}'");
+		}
 
 		if (string.IsNullOrEmpty(content))
 		{
-			Console.WriteLine("[A11y] LIVE REGION: SKIPPED (empty content)");
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug("HandleLiveRegionChanged skipped (empty content)");
+			}
 			return;
+		}
+
+		// Modal-aware filtering: when a modal dialog is active, suppress live region
+		// changes from background elements. Only announcements from elements within
+		// the modal (or assertive system announcements with no owner) pass through.
+		if (ActiveModalHandle != IntPtr.Zero)
+		{
+			if (peer is FrameworkElementAutomationPeer { Owner: { } liveOwner })
+			{
+				if (!IsDescendantOfModal(liveOwner, ActiveModalHandle))
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug("HandleLiveRegionChanged suppressed (background element during modal)");
+					}
+					return;
+				}
+			}
 		}
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -52,7 +82,10 @@ internal sealed partial class LiveRegionManager
 		switch (liveSetting)
 		{
 			case AutomationLiveSetting.Off:
-				Console.WriteLine("[A11y] LIVE REGION: liveSetting=Off — no-op");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug("HandleLiveRegionChanged liveSetting=Off, no-op");
+				}
 				break;
 			case AutomationLiveSetting.Polite:
 				EnqueuePolite(content);
@@ -63,9 +96,29 @@ internal sealed partial class LiveRegionManager
 		}
 	}
 
+	/// <summary>
+	/// Checks whether the given element is a descendant of the modal dialog.
+	/// </summary>
+	private static bool IsDescendantOfModal(UIElement element, IntPtr modalHandle)
+	{
+		var current = element as DependencyObject;
+		while (current is not null)
+		{
+			if (current is UIElement uiElement && uiElement.Visual.Handle == modalHandle)
+			{
+				return true;
+			}
+			current = (current as FrameworkElement)?.Parent;
+		}
+		return false;
+	}
+
 	private void EnqueuePolite(string content)
 	{
-		Console.WriteLine($"[A11y] LIVE REGION: EnqueuePolite content='{content}' debounce={DebounceMs}ms");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"EnqueuePolite content='{content}' debounce={DebounceMs}ms");
+		}
 		_pendingPoliteContent = content;
 		_politeDebounceTimer?.Dispose();
 		_politeDebounceTimer = new Timer(_ => FlushPolite(), null, DebounceMs, Timeout.Infinite);
@@ -73,7 +126,10 @@ internal sealed partial class LiveRegionManager
 
 	private void EnqueueAssertive(string content)
 	{
-		Console.WriteLine($"[A11y] LIVE REGION: EnqueueAssertive content='{content}' debounce={DebounceMs}ms");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"EnqueueAssertive content='{content}' debounce={DebounceMs}ms");
+		}
 		_pendingAssertiveContent = content;
 		_assertiveDebounceTimer?.Dispose();
 		_assertiveDebounceTimer = new Timer(_ => FlushAssertive(), null, DebounceMs, Timeout.Infinite);
@@ -102,7 +158,10 @@ internal sealed partial class LiveRegionManager
 		}
 
 		_politeThrottleTimestamp = now;
-		Console.WriteLine($"[A11y] LIVE REGION: FlushPolite ANNOUNCING content='{content}'");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"FlushPolite announcing content='{content}'");
+		}
 		NativeMethods.UpdateLiveRegionContent(IntPtr.Zero, content, 1);
 	}
 
@@ -129,7 +188,10 @@ internal sealed partial class LiveRegionManager
 		}
 
 		_assertiveThrottleTimestamp = now;
-		Console.WriteLine($"[A11y] LIVE REGION: FlushAssertive ANNOUNCING content='{content}'");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"FlushAssertive announcing content='{content}'");
+		}
 		NativeMethods.UpdateLiveRegionContent(IntPtr.Zero, content, 2);
 	}
 
@@ -138,7 +200,10 @@ internal sealed partial class LiveRegionManager
 	/// </summary>
 	internal void ClearPending()
 	{
-		Console.WriteLine("[A11y] LIVE REGION: ClearPending — clearing all pending announcements");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug("ClearPending — clearing all pending announcements");
+		}
 		_politeDebounceTimer?.Dispose();
 		_politeDebounceTimer = null;
 		_assertiveDebounceTimer?.Dispose();

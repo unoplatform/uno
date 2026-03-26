@@ -526,6 +526,10 @@ internal static partial class NativeUno
 	internal static unsafe partial void uno_accessibility_set_expand_collapse_callback(
 		delegate* unmanaged[Cdecl]<nint, void> expandCollapseCallback);
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_accessibility_set_value_callback(
+		delegate* unmanaged[Cdecl]<nint, nint, void> setValueCallback);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial void uno_accessibility_add_element(
 		nint parentHandle, nint handle, int index,
@@ -590,6 +594,12 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_accessibility_update_required(nint handle, [MarshalAs(UnmanagedType.I1)] bool required);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_read_only(nint handle, [MarshalAs(UnmanagedType.I1)] bool readOnly);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_modal(nint handle, [MarshalAs(UnmanagedType.I1)] bool isModal);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial void uno_accessibility_update_description(nint handle, string? description);

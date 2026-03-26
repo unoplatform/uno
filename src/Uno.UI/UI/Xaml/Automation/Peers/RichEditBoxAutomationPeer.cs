@@ -22,10 +22,11 @@ public partial class RichEditBoxAutomationPeer : FrameworkElementAutomationPeer
 
 	protected override IEnumerable<AutomationPeer> GetDescribedByCore()
 	{
-		var owner = Owner as Controls.RichEditBox;
-		TextBoxPlaceholderTextHelper.SetupPlaceholderTextBlockDescribedBy(owner);
+		if (Owner is Controls.RichEditBox owner)
+		{
+			TextBoxPlaceholderTextHelper.SetupPlaceholderTextBlockDescribedBy(owner);
+		}
 
-		return null; //DT TODO: This will be fixed with FrameworkAP
-					 //GetAutomationPeerCollection(AutomationProperties.DescribedByProperty);
+		return base.GetDescribedByCore();
 	}
 }

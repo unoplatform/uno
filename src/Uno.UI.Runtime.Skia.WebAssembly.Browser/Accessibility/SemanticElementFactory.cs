@@ -1,8 +1,9 @@
 #nullable enable
 
 using System;
-using System.Globalization;
+using System.Collections.Generic;
 using System.Runtime.InteropServices.JavaScript;
+using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -44,8 +45,6 @@ internal static partial class SemanticElementFactory
 		var attributes = AriaMapper.GetAriaAttributes(peer);
 		var capabilities = AriaMapper.GetPatternCapabilities(peer);
 
-		Console.WriteLine($"[A11y] SemanticElementFactory.CreateElement: type={elementType} handle={handle} parent={parentHandle} index={index?.ToString(CultureInfo.InvariantCulture) ?? "append"} label='{attributes.Label}' pos=({x},{y}) size={width}x{height}");
-
 		var created = elementType switch
 		{
 			SemanticElementType.Button => CreateButtonElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
@@ -62,6 +61,16 @@ internal static partial class SemanticElementFactory
 			SemanticElementType.ListItem => CreateListItemElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
 			SemanticElementType.Link => CreateLinkElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
 			SemanticElementType.Heading => CreateHeadingElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
+			SemanticElementType.TabList => CreateTabListElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
+			SemanticElementType.Tab => CreateTabElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
+			SemanticElementType.Tree => CreateTreeElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
+			SemanticElementType.TreeItem => CreateTreeItemElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
+			SemanticElementType.Grid => CreateGridElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
+			SemanticElementType.GridRow => CreateGridRowElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
+			SemanticElementType.GridCell => CreateGridCellElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
+			SemanticElementType.ColumnHeader => CreateColumnHeaderElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
+			SemanticElementType.Menu => CreateMenuElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
+			SemanticElementType.MenuItem => CreateMenuItemElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
 			_ => CreateGenericElement(peer, handle, parentHandle, index, x, y, width, height, attributes)
 		};
 
@@ -129,6 +138,18 @@ internal static partial class SemanticElementFactory
 			}
 		}
 
+		// Apply aria-labelledby when LabeledBy is set
+		if (created && !string.IsNullOrEmpty(attributes.LabelledBy))
+		{
+			NativeMethods.UpdateAriaLabelledBy(handle, attributes.LabelledBy);
+		}
+
+		// Apply relationship attributes (aria-describedby, aria-controls, aria-flowto)
+		if (created)
+		{
+			ApplyRelationshipAttributes(peer, handle);
+		}
+
 		return created;
 	}
 
@@ -146,7 +167,6 @@ internal static partial class SemanticElementFactory
 		float height,
 		AriaAttributes attributes)
 	{
-		Console.WriteLine($"[A11y] CREATE BUTTON: handle={handle} parent={parentHandle} label='{attributes.Label}' disabled={attributes.Disabled} pos=({x},{y}) size={width}x{height}");
 		NativeMethods.CreateButtonElement(
 			parentHandle,
 			handle,
@@ -187,7 +207,6 @@ internal static partial class SemanticElementFactory
 				groupName = radioButton.GroupName;
 			}
 
-			Console.WriteLine($"[A11y] CREATE RADIO: handle={handle} parent={parentHandle} label='{attributes.Label}' checked={isChecked} group='{groupName}' pos=({x},{y}) size={width}x{height}");
 			NativeMethods.CreateRadioElement(
 				parentHandle,
 				handle,
@@ -202,7 +221,6 @@ internal static partial class SemanticElementFactory
 		}
 		else
 		{
-			Console.WriteLine($"[A11y] CREATE CHECKBOX: handle={handle} parent={parentHandle} label='{attributes.Label}' checked='{attributes.Checked}' pos=({x},{y}) size={width}x{height}");
 			NativeMethods.CreateCheckboxElement(
 				parentHandle,
 				handle,
@@ -252,7 +270,6 @@ internal static partial class SemanticElementFactory
 			orientation = "vertical";
 		}
 
-		Console.WriteLine($"[A11y] CREATE SLIDER: handle={handle} parent={parentHandle} value={value} min={min} max={max} step={step} orientation={orientation} valueText='{attributes.ValueText}' pos=({x},{y}) size={width}x{height}");
 		NativeMethods.CreateSliderElement(
 			parentHandle,
 			handle,
@@ -288,6 +305,7 @@ internal static partial class SemanticElementFactory
 	{
 		var value = "";
 		var isReadOnly = false;
+		string? placeholder = null;
 
 		if (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
 		{
@@ -295,7 +313,19 @@ internal static partial class SemanticElementFactory
 			isReadOnly = valueProvider.IsReadOnly;
 		}
 
-		Console.WriteLine($"[A11y] CREATE TEXTBOX: handle={handle} parent={parentHandle} multiline={multiline} password={password} readOnly={isReadOnly} valueLen={value?.Length ?? 0} pos=({x},{y}) size={width}x{height}");
+		// Extract placeholder text from the control
+		if (peer is FrameworkElementAutomationPeer feap)
+		{
+			if (feap.Owner is TextBox tb)
+			{
+				placeholder = tb.PlaceholderText;
+			}
+			else if (feap.Owner is PasswordBox pb)
+			{
+				placeholder = pb.PlaceholderText;
+			}
+		}
+
 		NativeMethods.CreateTextBoxElement(
 			parentHandle,
 			handle,
@@ -308,6 +338,13 @@ internal static partial class SemanticElementFactory
 			multiline,
 			password,
 			isReadOnly);
+
+		// Set native placeholder on the input element
+		if (!string.IsNullOrEmpty(placeholder))
+		{
+			NativeMethods.UpdateTextBoxPlaceholder(handle, placeholder);
+		}
+
 		return true;
 	}
 
@@ -335,7 +372,6 @@ internal static partial class SemanticElementFactory
 			selectedValue = selected.ToString();
 		}
 
-		Console.WriteLine($"[A11y] CREATE COMBOBOX: handle={handle} parent={parentHandle} expanded={expanded} selectedValue='{selectedValue}' pos=({x},{y}) size={width}x{height}");
 		NativeMethods.CreateComboBoxElement(
 			parentHandle,
 			handle,
@@ -365,7 +401,6 @@ internal static partial class SemanticElementFactory
 	{
 		var multiselect = attributes.MultiSelectable ?? false;
 
-		Console.WriteLine($"[A11y] CREATE LISTBOX: handle={handle} parent={parentHandle} multiselect={multiselect} pos=({x},{y}) size={width}x{height}");
 		NativeMethods.CreateListBoxElement(
 			parentHandle,
 			handle,
@@ -396,7 +431,6 @@ internal static partial class SemanticElementFactory
 		var positionInSet = attributes.PositionInSet ?? 0;
 		var sizeOfSet = attributes.SizeOfSet ?? 0;
 
-		Console.WriteLine($"[A11y] CREATE LISTITEM: handle={handle} parent={parentHandle} selected={selected} pos={positionInSet}/{sizeOfSet} at=({x},{y}) size={width}x{height}");
 		NativeMethods.CreateListItemElement(
 			parentHandle,
 			handle,
@@ -425,7 +459,6 @@ internal static partial class SemanticElementFactory
 		float height,
 		AriaAttributes attributes)
 	{
-		Console.WriteLine($"[A11y] CREATE LINK: handle={handle} parent={parentHandle} label='{attributes.Label}' pos=({x},{y}) size={width}x{height}");
 		NativeMethods.CreateLinkElement(
 			parentHandle,
 			handle,
@@ -454,7 +487,6 @@ internal static partial class SemanticElementFactory
 	{
 		var level = attributes.Level ?? 2; // Default to h2 if no heading level specified
 
-		Console.WriteLine($"[A11y] CREATE HEADING: handle={handle} parent={parentHandle} level=h{level} label='{attributes.Label}' pos=({x},{y}) size={width}x{height}");
 		NativeMethods.CreateHeadingElement(
 			parentHandle,
 			handle,
@@ -484,7 +516,6 @@ internal static partial class SemanticElementFactory
 		AriaAttributes attributes)
 	{
 		var pressed = attributes.Checked ?? "false";
-		Console.WriteLine($"[A11y] CREATE TOGGLE BUTTON: handle={handle} parent={parentHandle} label='{attributes.Label}' pressed='{pressed}' disabled={attributes.Disabled} pos=({x},{y}) size={width}x{height}");
 		NativeMethods.CreateToggleButtonElement(
 			parentHandle,
 			handle,
@@ -515,7 +546,6 @@ internal static partial class SemanticElementFactory
 		AriaAttributes attributes)
 	{
 		var isOn = attributes.Checked ?? "false";
-		Console.WriteLine($"[A11y] CREATE SWITCH: handle={handle} parent={parentHandle} label='{attributes.Label}' checked='{isOn}' disabled={attributes.Disabled} pos=({x},{y}) size={width}x{height}");
 		NativeMethods.CreateSwitchElement(
 			parentHandle,
 			handle,
@@ -527,6 +557,328 @@ internal static partial class SemanticElementFactory
 			attributes.Label,
 			isOn,
 			attributes.Disabled);
+		return true;
+	}
+
+	/// <summary>
+	/// Creates a tablist container element.
+	/// </summary>
+	private static bool CreateTabListElement(
+		AutomationPeer peer,
+		IntPtr handle,
+		IntPtr parentHandle,
+		int? index,
+		float x,
+		float y,
+		float width,
+		float height,
+		AriaAttributes attributes)
+	{
+		NativeMethods.CreateTabListElement(
+			parentHandle,
+			handle,
+			index,
+			x,
+			y,
+			width,
+			height,
+			attributes.Label);
+		return true;
+	}
+
+	/// <summary>
+	/// Creates a tab element with selection and position.
+	/// </summary>
+	private static bool CreateTabElement(
+		AutomationPeer peer,
+		IntPtr handle,
+		IntPtr parentHandle,
+		int? index,
+		float x,
+		float y,
+		float width,
+		float height,
+		AriaAttributes attributes)
+	{
+		var selected = attributes.Selected ?? false;
+		var positionInSet = attributes.PositionInSet ?? 0;
+		var sizeOfSet = attributes.SizeOfSet ?? 0;
+
+		NativeMethods.CreateTabElement(
+			parentHandle,
+			handle,
+			index,
+			x,
+			y,
+			width,
+			height,
+			attributes.Label,
+			selected,
+			positionInSet,
+			sizeOfSet);
+		return true;
+	}
+
+	/// <summary>
+	/// Creates a tree container element.
+	/// </summary>
+	private static bool CreateTreeElement(
+		AutomationPeer peer,
+		IntPtr handle,
+		IntPtr parentHandle,
+		int? index,
+		float x,
+		float y,
+		float width,
+		float height,
+		AriaAttributes attributes)
+	{
+		var multiselectable = attributes.MultiSelectable ?? false;
+
+		NativeMethods.CreateTreeElement(
+			parentHandle,
+			handle,
+			index,
+			x,
+			y,
+			width,
+			height,
+			attributes.Label,
+			multiselectable);
+		return true;
+	}
+
+	/// <summary>
+	/// Creates a treeitem element with level, expanded state, and selection.
+	/// </summary>
+	private static bool CreateTreeItemElement(
+		AutomationPeer peer,
+		IntPtr handle,
+		IntPtr parentHandle,
+		int? index,
+		float x,
+		float y,
+		float width,
+		float height,
+		AriaAttributes attributes)
+	{
+		var level = attributes.Level ?? 1;
+		var selected = attributes.Selected ?? false;
+		var positionInSet = attributes.PositionInSet ?? 0;
+		var sizeOfSet = attributes.SizeOfSet ?? 0;
+
+		// Determine expanded state: "true", "false", or "none" (leaf node)
+		var expanded = "none";
+		if (attributes.Expanded.HasValue)
+		{
+			expanded = attributes.Expanded.Value ? "true" : "false";
+		}
+
+		NativeMethods.CreateTreeItemElement(
+			parentHandle,
+			handle,
+			index,
+			x,
+			y,
+			width,
+			height,
+			attributes.Label,
+			level,
+			expanded,
+			selected,
+			positionInSet,
+			sizeOfSet);
+		return true;
+	}
+
+	/// <summary>
+	/// Creates a grid/table container element with row/column count.
+	/// </summary>
+	private static bool CreateGridElement(
+		AutomationPeer peer,
+		IntPtr handle,
+		IntPtr parentHandle,
+		int? index,
+		float x,
+		float y,
+		float width,
+		float height,
+		AriaAttributes attributes)
+	{
+		var rowCount = 0;
+		var colCount = 0;
+
+		if (peer.GetPattern(PatternInterface.Grid) is IGridProvider gridProvider)
+		{
+			rowCount = gridProvider.RowCount;
+			colCount = gridProvider.ColumnCount;
+		}
+
+		NativeMethods.CreateGridElement(
+			parentHandle,
+			handle,
+			index,
+			x,
+			y,
+			width,
+			height,
+			attributes.Label,
+			rowCount,
+			colCount);
+		return true;
+	}
+
+	/// <summary>
+	/// Creates a grid row element.
+	/// </summary>
+	private static bool CreateGridRowElement(
+		AutomationPeer peer,
+		IntPtr handle,
+		IntPtr parentHandle,
+		int? index,
+		float x,
+		float y,
+		float width,
+		float height,
+		AriaAttributes attributes)
+	{
+		var rowIndex = attributes.PositionInSet ?? 0;
+
+		NativeMethods.CreateGridRowElement(
+			parentHandle,
+			handle,
+			index,
+			x,
+			y,
+			width,
+			height,
+			rowIndex);
+		return true;
+	}
+
+	/// <summary>
+	/// Creates a grid cell element.
+	/// </summary>
+	private static bool CreateGridCellElement(
+		AutomationPeer peer,
+		IntPtr handle,
+		IntPtr parentHandle,
+		int? index,
+		float x,
+		float y,
+		float width,
+		float height,
+		AriaAttributes attributes)
+	{
+		var rowIndex = 0;
+		var colIndex = 0;
+
+		if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider gridItemProvider)
+		{
+			rowIndex = gridItemProvider.Row;
+			colIndex = gridItemProvider.Column;
+		}
+
+		NativeMethods.CreateGridCellElement(
+			parentHandle,
+			handle,
+			index,
+			x,
+			y,
+			width,
+			height,
+			attributes.Label,
+			rowIndex,
+			colIndex);
+		return true;
+	}
+
+	/// <summary>
+	/// Creates a column header element.
+	/// </summary>
+	private static bool CreateColumnHeaderElement(
+		AutomationPeer peer,
+		IntPtr handle,
+		IntPtr parentHandle,
+		int? index,
+		float x,
+		float y,
+		float width,
+		float height,
+		AriaAttributes attributes)
+	{
+		var colIndex = 0;
+		if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider gridItemProvider)
+		{
+			colIndex = gridItemProvider.Column;
+		}
+
+		NativeMethods.CreateColumnHeaderElement(
+			parentHandle,
+			handle,
+			index,
+			x,
+			y,
+			width,
+			height,
+			attributes.Label,
+			colIndex);
+		return true;
+	}
+
+	/// <summary>
+	/// Creates a menu container element.
+	/// </summary>
+	private static bool CreateMenuElement(
+		AutomationPeer peer,
+		IntPtr handle,
+		IntPtr parentHandle,
+		int? index,
+		float x,
+		float y,
+		float width,
+		float height,
+		AriaAttributes attributes)
+	{
+		NativeMethods.CreateMenuElement(
+			parentHandle,
+			handle,
+			index,
+			x,
+			y,
+			width,
+			height,
+			attributes.Label);
+		return true;
+	}
+
+	/// <summary>
+	/// Creates a menuitem element.
+	/// </summary>
+	private static bool CreateMenuItemElement(
+		AutomationPeer peer,
+		IntPtr handle,
+		IntPtr parentHandle,
+		int? index,
+		float x,
+		float y,
+		float width,
+		float height,
+		AriaAttributes attributes)
+	{
+		var hasSubmenu = attributes.Expanded.HasValue; // If it can expand, it has a submenu
+
+		NativeMethods.CreateMenuItemElement(
+			parentHandle,
+			handle,
+			index,
+			x,
+			y,
+			width,
+			height,
+			attributes.Label,
+			attributes.Disabled,
+			hasSubmenu);
 		return true;
 	}
 
@@ -545,9 +897,6 @@ internal static partial class SemanticElementFactory
 		float height,
 		AriaAttributes attributes)
 	{
-		var controlType = peer.GetAutomationControlType();
-		Console.WriteLine($"[A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType={controlType} handle={handle} — returning false to use generic AddSemanticElement fallback");
-
 		// Returns false to signal caller should use the existing AddSemanticElement for backward compatibility
 		return false;
 	}
@@ -558,7 +907,67 @@ internal static partial class SemanticElementFactory
 	/// </summary>
 	private static bool SupportsAriaPositionInSet(SemanticElementType elementType)
 	{
-		return elementType is SemanticElementType.ListItem or SemanticElementType.RadioButton;
+		return elementType is SemanticElementType.ListItem or SemanticElementType.RadioButton
+			or SemanticElementType.Tab or SemanticElementType.TreeItem
+			or SemanticElementType.MenuItem or SemanticElementType.GridRow;
+	}
+
+	/// <summary>
+	/// Applies ARIA relationship attributes (describedby, controls, flowto) to a semantic element.
+	/// Resolves AutomationPeer collections to space-separated DOM element IDs.
+	/// </summary>
+	private static void ApplyRelationshipAttributes(AutomationPeer peer, IntPtr handle)
+	{
+		var describedByIds = ResolvePeerCollectionToIdList(peer.GetDescribedBy());
+		if (describedByIds is not null)
+		{
+			NativeMethods.UpdateAriaDescribedBy(handle, describedByIds);
+		}
+
+		var controlledIds = ResolvePeerCollectionToIdList(peer.GetControlledPeers());
+		if (controlledIds is not null)
+		{
+			NativeMethods.UpdateAriaControls(handle, controlledIds);
+		}
+
+		var flowsToIds = ResolvePeerCollectionToIdList(peer.GetFlowsTo());
+		if (flowsToIds is not null)
+		{
+			NativeMethods.UpdateAriaFlowTo(handle, flowsToIds);
+		}
+	}
+
+	/// <summary>
+	/// Resolves a collection of AutomationPeers to a space-separated list of DOM element IDs
+	/// using the uno-semantics-{handle} convention.
+	/// </summary>
+	internal static string? ResolvePeerCollectionToIdList(IEnumerable<AutomationPeer>? peers)
+	{
+		if (peers is null)
+		{
+			return null;
+		}
+
+		StringBuilder? sb = null;
+		foreach (var relatedPeer in peers)
+		{
+			if (relatedPeer is FrameworkElementAutomationPeer { Owner: { } relatedOwner })
+			{
+				var relatedHandle = relatedOwner.Visual.Handle;
+				if (relatedHandle != IntPtr.Zero)
+				{
+					sb ??= new StringBuilder();
+					if (sb.Length > 0)
+					{
+						sb.Append(' ');
+					}
+					sb.Append("uno-semantics-");
+					sb.Append(relatedHandle);
+				}
+			}
+		}
+
+		return sb?.ToString();
 	}
 
 	private static partial class NativeMethods
@@ -622,5 +1031,54 @@ internal static partial class SemanticElementFactory
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLive")]
 		internal static partial void UpdateAriaLive(IntPtr handle, string ariaLive);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaDescribedBy")]
+		internal static partial void UpdateAriaDescribedBy(IntPtr handle, string idList);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaControls")]
+		internal static partial void UpdateAriaControls(IntPtr handle, string idList);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaFlowTo")]
+		internal static partial void UpdateAriaFlowTo(IntPtr handle, string idList);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxPlaceholder")]
+		internal static partial void UpdateTextBoxPlaceholder(IntPtr handle, string placeholder);
+
+		// ===== Tab / Tree / Grid / Menu Element Creation =====
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createTabListElement")]
+		internal static partial void CreateTabListElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createTabElement")]
+		internal static partial void CreateTabElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, bool selected, int positionInSet, int sizeOfSet);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createTreeElement")]
+		internal static partial void CreateTreeElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, bool multiselectable);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createTreeItemElement")]
+		internal static partial void CreateTreeItemElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int level, string expanded, bool selected, int positionInSet, int sizeOfSet);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createGridElement")]
+		internal static partial void CreateGridElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int rowCount, int colCount);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createGridRowElement")]
+		internal static partial void CreateGridRowElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, int rowIndex);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createGridCellElement")]
+		internal static partial void CreateGridCellElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int rowIndex, int colIndex);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createColumnHeaderElement")]
+		internal static partial void CreateColumnHeaderElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int colIndex);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createMenuElement")]
+		internal static partial void CreateMenuElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createMenuItemElement")]
+		internal static partial void CreateMenuItemElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, bool disabled, bool hasSubmenu);
+
+		// ===== Relationship Updates =====
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLabelledBy")]
+		internal static partial void UpdateAriaLabelledBy(IntPtr handle, string idList);
 	}
 }

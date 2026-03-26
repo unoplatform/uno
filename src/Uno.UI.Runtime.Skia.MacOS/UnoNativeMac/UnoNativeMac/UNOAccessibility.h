@@ -12,8 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 // An accessibility element that represents a single XAML UIElement in the accessibility tree.
 // VoiceOver queries these objects for role, label, frame, children, etc.
-// This mirrors the semantic tree approach used by Flutter's AccessibilityBridgeMac
-// and Uno's WASM implementation (parallel DOM tree with ARIA attributes).
 @interface UNOAccessibilityElement : NSAccessibilityElement <NSAccessibilityButton, NSAccessibilityCheckBox, NSAccessibilityStaticText, NSAccessibilityGroup>
 
 @property (nonatomic) intptr_t unoHandle;
@@ -30,15 +28,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BOOL unoRequired; // maps to ARIA aria-required
 @property (nonatomic) NSInteger unoHeadingLevel; // 0=none, 1-9=heading levels
 @property (nonatomic) BOOL unoIsPassword;
-@property (nonatomic) BOOL unoHasExpandCollapse; // true if element supports expand/collapse
+@property (nonatomic) BOOL unoHasExpandCollapse;
 @property (nonatomic) BOOL unoIsExpanded;
-@property (nonatomic) BOOL unoHasRangeValue; // true if element supports increment/decrement
+@property (nonatomic) BOOL unoHasRangeValue;
 @property (nonatomic) double unoRangeMin;
 @property (nonatomic) double unoRangeMax;
 @property (nonatomic) BOOL unoIsSelected; // maps to ARIA aria-selected
+@property (nonatomic) BOOL unoIsReadOnly;
 @property (nonatomic) NSInteger unoPositionInSet; // maps to ARIA aria-posinset (1-based, 0=unset)
 @property (nonatomic) NSInteger unoSizeOfSet; // maps to ARIA aria-setsize (0=unset)
 @property (nonatomic, strong, nullable) NSString *unoLandmarkRole; // landmark type (main, navigation, search, form, region)
+@property (nonatomic) BOOL unoIsModal; // true for modal dialogs (VoiceOver restricts navigation)
 @property (nonatomic, weak, nullable) id unoParent;
 @property (nonatomic, strong) NSMutableArray<UNOAccessibilityElement *> *unoChildren;
 
@@ -52,12 +52,14 @@ typedef void (*accessibility_focus_fn_ptr)(intptr_t handle);
 typedef void (*accessibility_increment_fn_ptr)(intptr_t handle);
 typedef void (*accessibility_decrement_fn_ptr)(intptr_t handle);
 typedef void (*accessibility_expand_collapse_fn_ptr)(intptr_t handle);
+typedef void (*accessibility_set_value_fn_ptr)(intptr_t handle, const char* _Nonnull value);
 
 // Setup
 void uno_accessibility_init(NSWindow* _Nonnull window);
 void uno_accessibility_set_callbacks(accessibility_invoke_fn_ptr invoke, accessibility_focus_fn_ptr focus);
 void uno_accessibility_set_range_callbacks(accessibility_increment_fn_ptr increment, accessibility_decrement_fn_ptr decrement);
 void uno_accessibility_set_expand_collapse_callback(accessibility_expand_collapse_fn_ptr expandCollapse);
+void uno_accessibility_set_value_callback(accessibility_set_value_fn_ptr setValue);
 
 // Element management
 void uno_accessibility_add_element(intptr_t parentHandle, intptr_t handle, int32_t index,
@@ -86,6 +88,8 @@ void uno_accessibility_update_selected(intptr_t handle, bool isSelected);
 void uno_accessibility_update_position_in_set(intptr_t handle, int32_t position, int32_t setSize);
 void uno_accessibility_update_landmark(intptr_t handle, const char* _Nullable landmarkRole);
 void uno_accessibility_update_required(intptr_t handle, bool required);
+void uno_accessibility_update_read_only(intptr_t handle, bool readOnly);
+void uno_accessibility_update_modal(intptr_t handle, bool isModal);
 
 // Focus
 void uno_accessibility_set_focused(intptr_t handle);

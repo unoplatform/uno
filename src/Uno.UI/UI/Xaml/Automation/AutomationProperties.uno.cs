@@ -165,7 +165,6 @@ public sealed partial class AutomationProperties
 			return "button";
 		}
 
-		// Fall back to AutomationControlType from the peer
 		var peer = uIElement.GetOrCreateAutomationPeer();
 		if (peer?.GetAutomationControlType() is { } type)
 		{

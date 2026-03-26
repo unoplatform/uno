@@ -20,7 +20,7 @@ public partial class RichTextBlockOverflowAutomationPeer : FrameworkElementAutom
 	{
 		if (patternInterface == PatternInterface.Text)
 		{
-			if (m_textPattern is not { })
+			if (m_textPattern is null)
 			{
 				//UNO TODO:
 
@@ -51,53 +51,10 @@ public partial class RichTextBlockOverflowAutomationPeer : FrameworkElementAutom
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Text;
 
-	// We populate automation peer children from its block collection recursively
-	// Here we need to eliminate all text elements which are
-	// are present in the previous RichTextBlock/RichTextBlockOverflow
-	// overflowing to next RichTextOverflow if any
+	// UNO TODO: WinUI populates automation peer children from the block collection,
+	// filtering by overflow position using AppendAutomationPeerChildren. That method
+	// is currently stubbed on TextElement. Until implemented, fall back to base.
+	// See WinUI: RichTextBlockOverflowAutomationPeer_Partial.cpp
 	protected override IList<AutomationPeer> GetChildrenCore()
-	{
-		var owner = Owner as Controls.RichTextBlockOverflow;
-
-		var posContentStart = 0;
-		var posOverflowStart = int.MaxValue;
-
-		var returnValue = base.GetChildrenCore();
-
-		if (owner.ContentStart is { } contentStart)
-		{
-			posContentStart = contentStart.Offset;
-
-			if (owner.HasOverflowContent)
-			{
-				if (owner.OverflowContentTarget?.ContentStart is { } spOverflowStart)
-				{
-					posOverflowStart = spOverflowStart.Offset;
-				}
-			}
-		}
-
-		var spSourceControl = owner.ContentSource;
-		var spBlocks = spSourceControl.Blocks;
-		var count = spBlocks.Count;
-
-		for (var i = 0; i < count; i++)
-		{
-			var spBlock = spBlocks[i];
-			if (owner.HasOverflowContent)
-			{
-				var blockStart = spBlock.ContentStart;
-
-				if (blockStart.Offset >= posOverflowStart)
-				{
-					break;
-				}
-			}
-
-			//UNO TODO: AppendAutomationPeerChildren
-			returnValue = spBlock.AppendAutomationPeerChildren(posContentStart, posOverflowStart);
-		}
-
-		return returnValue;
-	}
+		=> base.GetChildrenCore();
 }

@@ -33,7 +33,10 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	/// <param name="multiselectable">Whether multiple items can be selected.</param>
 	internal VirtualizedSemanticRegion(IntPtr containerHandle, string role, string? label, bool multiselectable)
 	{
-		Console.WriteLine($"[A11y] VIRTUALIZED: Register container={containerHandle} role='{role}' label='{label}' multiselectable={multiselectable}");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"Register container={containerHandle} role='{role}' label='{label}' multiselectable={multiselectable}");
+		}
 		_containerHandle = containerHandle;
 		NativeMethods.RegisterVirtualizedContainer(containerHandle, role, label ?? string.Empty, multiselectable);
 	}
@@ -52,7 +55,10 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	/// </summary>
 	internal void OnItemRealized(IntPtr itemHandle, int index, int totalCount, float x, float y, float width, float height, string role, string label)
 	{
-		Console.WriteLine($"[A11y] VIRTUALIZED: ItemRealized container={_containerHandle} item={itemHandle} index={index} total={totalCount} role='{role}' label='{label}' pos=({x},{y}) size={width}x{height}");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"ItemRealized container={_containerHandle} item={itemHandle} index={index} total={totalCount} role='{role}' label='{label}' pos=({x},{y}) size={width}x{height}");
+		}
 		_totalItemCount = totalCount;
 		_realizedHandles[index] = itemHandle;
 		NativeMethods.AddVirtualizedItem(_containerHandle, itemHandle, index, totalCount, x, y, width, height, role, label);
@@ -66,11 +72,17 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		// Don't remove if focus-pinned
 		if (_isFocusPinned && _pinnedIndex == index)
 		{
-			Console.WriteLine($"[A11y] VIRTUALIZED: ItemUnrealized SKIPPED (focus-pinned) container={_containerHandle} item={itemHandle} index={index}");
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"ItemUnrealized skipped (focus-pinned) container={_containerHandle} item={itemHandle} index={index}");
+			}
 			return;
 		}
 
-		Console.WriteLine($"[A11y] VIRTUALIZED: ItemUnrealized container={_containerHandle} item={itemHandle} index={index}");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"ItemUnrealized container={_containerHandle} item={itemHandle} index={index}");
+		}
 		_realizedHandles.Remove(index);
 		NativeMethods.RemoveVirtualizedItem(itemHandle);
 	}
@@ -80,7 +92,10 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	/// </summary>
 	internal void UpdateItemCount(int totalCount)
 	{
-		Console.WriteLine($"[A11y] VIRTUALIZED: UpdateItemCount container={_containerHandle} oldCount={_totalItemCount} newCount={totalCount}");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"UpdateItemCount container={_containerHandle} oldCount={_totalItemCount} newCount={totalCount}");
+		}
 		_totalItemCount = totalCount;
 		NativeMethods.UpdateVirtualizedItemCount(_containerHandle, totalCount);
 	}
@@ -90,7 +105,10 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	/// </summary>
 	internal void PinFocusedItem(int index)
 	{
-		Console.WriteLine($"[A11y] VIRTUALIZED: PinFocusedItem container={_containerHandle} index={index}");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"PinFocusedItem container={_containerHandle} index={index}");
+		}
 		_isFocusPinned = true;
 		_pinnedIndex = index;
 	}
@@ -100,7 +118,10 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	/// </summary>
 	internal void UnpinFocusedItem()
 	{
-		Console.WriteLine($"[A11y] VIRTUALIZED: UnpinFocusedItem container={_containerHandle} wasIndex={_pinnedIndex}");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"UnpinFocusedItem container={_containerHandle} wasIndex={_pinnedIndex}");
+		}
 		_isFocusPinned = false;
 		_pinnedIndex = null;
 	}
@@ -109,7 +130,10 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	{
 		if (!_disposed)
 		{
-			Console.WriteLine($"[A11y] VIRTUALIZED: Dispose container={_containerHandle} realizedCount={_realizedHandles.Count}");
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Dispose container={_containerHandle} realizedCount={_realizedHandles.Count}");
+			}
 			_disposed = true;
 			_realizedHandles.Clear();
 			NativeMethods.UnregisterVirtualizedContainer(_containerHandle);

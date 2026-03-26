@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using System.Collections.Generic;
+using DirectUI;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
@@ -21,6 +23,16 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		protected override bool IsPasswordCore()
 		{
 			return true;
+		}
+
+		protected override IEnumerable<AutomationPeer> GetDescribedByCore()
+		{
+			if (Owner is PasswordBox owner)
+			{
+				TextBoxPlaceholderTextHelper.SetupPlaceholderTextBlockDescribedBy(owner);
+			}
+
+			return base.GetDescribedByCore();
 		}
 	}
 }
