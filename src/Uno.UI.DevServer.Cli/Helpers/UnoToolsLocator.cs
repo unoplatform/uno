@@ -235,6 +235,13 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 						StartTime = s.StartTime,
 						IdeChannelId = s.IdeChannelId,
 						SolutionPath = s.SolutionPath,
+						ProcessChain = ambient.GetProcessChain(s)
+							.Select(node => new ProcessChainEntry
+							{
+								ProcessId = node.ProcessId,
+								ProcessName = node.ProcessName,
+							})
+							.ToList(),
 						IsInWorkspace = isInWorkspace,
 					};
 				})

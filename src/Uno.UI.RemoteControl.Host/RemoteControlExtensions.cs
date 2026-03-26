@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
-using Uno.UI.RemoteControl.Helpers;
+using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Server.AppLaunch;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.ServerCore.Configuration;
@@ -52,6 +53,35 @@ namespace Uno.UI.RemoteControl.Host
 						await HandleAppLaunchRegistrationRequest(app, assemblyPath, context, isDebug, ide, plugin);
 					})
 				.WithName("AppLaunchRegistration(Assembly)");
+
+			app.MapPost(
+					"/devserver/idechannel/{channelId}",
+					async (string channelId, IIdeChannelManager ideChannelManager, AmbientRegistry ambientRegistry, ILoggerFactory loggerFactory) =>
+					{
+						var logger = loggerFactory.CreateLogger("DevServerIdeChannelRebind");
+						if (string.IsNullOrWhiteSpace(channelId))
+						{
+							return Results.BadRequest("channelId is required.");
+						}
+
+						logger.LogInformation(
+							"IDE channel rebind requested: {ChannelId} (current: {CurrentChannelId}, connected: {IsConnected})",
+							channelId,
+							ideChannelManager.ChannelId ?? "<none>",
+							ideChannelManager.IsConnected);
+
+						var rebound = await ideChannelManager.RebindAsync(channelId);
+						if (!rebound)
+						{
+							return Results.Problem(
+								detail: $"Failed to configure IDE channel '{channelId}'.",
+								statusCode: StatusCodes.Status500InternalServerError);
+						}
+
+						ambientRegistry.UpdateIdeChannel(channelId);
+						return Results.Ok(new { ideChannelId = channelId });
+					})
+				.WithName("DevServerIdeChannelRebind");
 			return app;
 		}
 

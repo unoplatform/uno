@@ -20,6 +20,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	private SKRect _currentBounds;
 	private SKImageFilter? _filter;
+	private SKPaint? _opacityPaint;
 	private bool _hasBackdropBrushInput;
 	private bool _hasBackdropBrushInputPrivate; // this one is reset and set during effect generation and is only copied to _hasBackdropBrushInput once done. This avoids needless invalidations when HasBackdropBrushInput is reset then set immediately.
 
@@ -1593,7 +1594,15 @@ $$"""
 	internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 	{
 		UpdateFilter(bounds);
-		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter });
+		var rec = new SKCanvasSaveLayerRec { Backdrop = _filter };
+		if (opacity < 1)
+		{
+			_opacityPaint ??= new SKPaint();
+			_opacityPaint.Color = new SKColor(0xFF, 0xFF, 0xFF, (byte)(0xFF * opacity));
+			rec.Paint = _opacityPaint;
+		}
+
+		canvas.SaveLayer(rec);
 		canvas.Restore();
 	}
 
@@ -1615,6 +1624,7 @@ $$"""
 		base.DisposeInternal();
 
 		_filter?.Dispose();
+		_opacityPaint?.Dispose();
 	}
 
 	internal override bool CanPaint() => _effect is not null;

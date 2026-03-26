@@ -2,8 +2,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
 using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
+using Uno.UI.RemoteControl.DevServer.Tests.Telemetry;
 using Uno.UI.RemoteControl.VS.Helpers;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.AppLaunch;

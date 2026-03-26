@@ -34,20 +34,25 @@ internal abstract class X11Renderer : IDisposable
 
 		var display = _x11Window.Display;
 		var window = _x11Window.Window;
-		using var lockDisposable = X11Helper.XLock(display);
 
 		if (_host is X11XamlRootHost { Closed.IsCompleted: true })
 		{
 			return;
 		}
 
-		MakeCurrent();
+		using (X11Helper.XLock(display))
+		{
+			MakeCurrent();
+		}
 
 		_surface?.Canvas.Clear(_background);
 		var nativeElementClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
 			_surface?.Dispose();
-			_surface = UpdateSize((int)size.Width, (int)size.Height);
+			using (X11Helper.XLock(display))
+			{
+				_surface = UpdateSize((int)size.Width, (int)size.Height);
+			}
 			_surface.Canvas.Clear(_background);
 			_airspaceHelper?.Dispose();
 			_airspaceHelper = new X11AirspaceRenderHelper(display, window, (int)size.Width, (int)size.Height);
@@ -55,8 +60,12 @@ internal abstract class X11Renderer : IDisposable
 		});
 
 		_airspaceHelper?.XShapeClip(nativeElementClipPath);
-		Flush();
-		_ = XLib.XFlush(display);
+
+		using (X11Helper.XLock(display))
+		{
+			Flush();
+			_ = XLib.XFlush(display);
+		}
 	}
 
 	protected abstract SKSurface UpdateSize(int width, int height);

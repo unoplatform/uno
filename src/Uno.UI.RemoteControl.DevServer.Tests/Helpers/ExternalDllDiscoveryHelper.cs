@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using System.IO;
+﻿using System.IO;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Helpers;

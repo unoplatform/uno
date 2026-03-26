@@ -55,6 +55,7 @@ internal sealed record ActiveServerSummary
 	public string? IdeChannelId { get; init; }
 	public string? SolutionPath { get; init; }
 	public bool IsInWorkspace { get; init; }
+	public IReadOnlyList<ProcessChainEntry>? ProcessChain { get; init; }
 }
 
 internal sealed record AddInSummary
