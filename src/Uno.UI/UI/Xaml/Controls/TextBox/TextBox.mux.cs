@@ -4,9 +4,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBox
 	{
-#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
 		private bool _forceFocusedVisualState;
-#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
 		private bool _isPointerOver;
 

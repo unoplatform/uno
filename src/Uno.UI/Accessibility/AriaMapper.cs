@@ -284,11 +284,11 @@ public static class AriaMapper
 
 	/// <summary>
 	/// Resolves a label for an automation peer using a fallback chain aligned with WinUI's
-	/// FrameworkElementAutomationPeer::GetNameCore():
-	/// 1. peer.GetName() — the standard automation name (already resolves AutomationProperties.Name,
-	///    LabeledBy, and PlainText internally via GetNameCore)
-	/// 2. Content.ToString() — for ContentControls (buttons, etc.) with text content (Skia-specific)
-	/// 3. First child TextBlock.Text — for controls with text children (Skia-specific)
+	/// <c>FrameworkElementAutomationPeer::GetNameCore()</c> while preserving Skia-specific fallbacks:
+	/// 1. <c>peer.GetName()</c>
+	/// 2. Owner-side <c>AutomationProperties.LabeledBy</c> / <c>AutomationProperties.Name</c>
+	/// 3. <c>Content.ToString()</c> for content controls
+	/// 4. First child <see cref="TextBlock"/> text
 	/// </summary>
 	public static string? ResolveLabel(AutomationPeer peer)
 	{
@@ -305,7 +305,7 @@ public static class AriaMapper
 				return name;
 			}
 
-			// Try to get the owner element for Skia-specific fallbacks
+			// Try to get the owner element for additional fallbacks.
 			if (peer is not FrameworkElementAutomationPeer frameworkPeer)
 			{
 				return name;
@@ -313,7 +313,31 @@ public static class AriaMapper
 
 			var owner = frameworkPeer.Owner;
 
-			// 2. For ContentControls, try Content.ToString()
+			// 2. Explicit owner-side fallback for LabeledBy / Name.
+			// In most cases peer.GetName() already covers these, but some peers can still
+			// surface an empty name while the owner metadata is available.
+			var labeledBy = AutomationProperties.GetLabeledBy(owner);
+			if (labeledBy is TextBlock labelTextBlock && !string.IsNullOrEmpty(labelTextBlock.Text))
+			{
+				return labelTextBlock.Text;
+			}
+			else if (labeledBy is UIElement labelElement)
+			{
+				var labelPeer = labelElement.GetOrCreateAutomationPeer();
+				var labelName = labelPeer?.GetName();
+				if (!string.IsNullOrEmpty(labelName))
+				{
+					return labelName;
+				}
+			}
+
+			var automationName = AutomationProperties.GetName(owner);
+			if (!string.IsNullOrEmpty(automationName))
+			{
+				return automationName;
+			}
+
+			// 3. For ContentControls, try Content.ToString()
 			// This is a Skia-specific enhancement for buttons with non-text content
 			if (owner is ContentControl contentControl && contentControl.Content is not null)
 			{
@@ -330,7 +354,7 @@ public static class AriaMapper
 				}
 			}
 
-			// 3. Walk immediate children looking for a TextBlock with text
+			// 4. Walk immediate children looking for a TextBlock with text
 			// This is a Skia-specific enhancement for controls with text children
 			if (owner is UIElement uiElement)
 			{

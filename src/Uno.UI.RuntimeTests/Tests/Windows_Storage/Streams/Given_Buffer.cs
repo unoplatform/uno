@@ -101,6 +101,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_GetByteGreaterThanLength()
 		{
 			var sut = new Buffer(42) { Length = 21 };
@@ -157,6 +158,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_ToArrayWithCount_Then_ResultLengthIsCount()
 		{
 			// Buffer's length equals

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -18,7 +18,42 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 	private string? _workDirectory;
 
 	public async Task<DiscoveryInfo> DiscoverAsync(string workDirectory)
+		=> await DiscoverAsync(workDirectory, null);
+
+	public async Task<DiscoveryInfo> DiscoverAsync(string workDirectory, WorkspaceResolution? workspaceResolution)
 	{
+		var discoveryStopwatch = Stopwatch.StartNew();
+
+		var normalizedWorkDirectory = Path.GetFullPath(workDirectory);
+		workspaceResolution ??= new WorkspaceResolution
+		{
+			RequestedWorkingDirectory = normalizedWorkDirectory,
+			EffectiveWorkspaceDirectory = normalizedWorkDirectory,
+			ResolutionKind = WorkspaceResolutionKind.CurrentDirectory,
+			CandidateSolutions = SolutionFileFinder.FindSolutionFiles(normalizedWorkDirectory),
+		};
+
+		if (!workspaceResolution.IsResolved)
+		{
+			discoveryStopwatch.Stop();
+			return new DiscoveryInfo
+			{
+				RequestedWorkingDirectory = workspaceResolution.RequestedWorkingDirectory,
+				WorkingDirectory = workspaceResolution.RequestedWorkingDirectory,
+				EffectiveWorkspaceDirectory = workspaceResolution.EffectiveWorkspaceDirectory,
+				SelectedSolutionPath = workspaceResolution.SelectedSolutionPath,
+				SelectedGlobalJsonPath = workspaceResolution.SelectedGlobalJsonPath,
+				ResolutionKind = workspaceResolution.ResolutionKind,
+				SelectionSource = workspaceResolution.SelectionSource,
+				CandidateSolutions = workspaceResolution.CandidateSolutions,
+				DiscoveryDurationMs = discoveryStopwatch.ElapsedMilliseconds,
+				Errors = workspaceResolution.ResolutionKind == WorkspaceResolutionKind.NoCandidates
+					? []
+					: ["Workspace could not be resolved."],
+			};
+		}
+
+		workDirectory = workspaceResolution.EffectiveWorkspaceDirectory!;
 		_workDirectory = workDirectory;
 		string? globalJsonPath = null;
 		string? unoSdkSource = null;
@@ -38,7 +73,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		var warnings = new List<string>();
 		var errors = new List<string>();
 
-		var globalJsonResult = await ParseGlobalJsonForUnoSdk(workDirectory);
+		var globalJsonResult = await GlobalJsonLocator.ParseGlobalJsonForUnoSdkAsync(workDirectory, _logger);
 		globalJsonPath = globalJsonResult.globalJsonPath;
 		unoSdkPackage = globalJsonResult.sdkPackage;
 		unoSdkVersion = globalJsonResult.sdkVersion;
@@ -175,24 +210,23 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		}
 
 		// Lookup active DevServers via AmbientRegistry
+		// Show all servers on this machine, with IsInWorkspace flag for matching solution or directory.
 		var activeServers = new List<ActiveServerInfo>();
 		try
 		{
-			var solutionFiles = Directory.EnumerateFiles(workDirectory, "*.sln")
+			var localSolutions = Directory.EnumerateFiles(workDirectory, "*.sln")
 				.Concat(Directory.EnumerateFiles(workDirectory, "*.slnx"))
-				.ToArray();
-			var solution = solutionFiles.FirstOrDefault();
-			if (solution is not null)
-			{
-				var solutionFull = Path.GetFullPath(solution);
-				var ambient = new AmbientRegistry(NullLogger.Instance);
-				activeServers = ambient.GetActiveDevServers()
-					.Where(s =>
-						!string.IsNullOrWhiteSpace(s.SolutionPath)
-						&& Path.GetFullPath(s.SolutionPath).Equals(solutionFull, StringComparison.OrdinalIgnoreCase)
-						&& s.MachineName == Environment.MachineName
-						&& s.UserName == Environment.UserName)
-					.Select(s => new ActiveServerInfo
+				.Select(f => Path.GetFullPath(f))
+				.ToHashSet(StringComparer.OrdinalIgnoreCase);
+			var workDirFull = Path.GetFullPath(workDirectory);
+
+			var ambient = new AmbientRegistry(NullLogger.Instance);
+			activeServers = ambient.GetActiveDevServers()
+				.Where(s => s.MachineName == Environment.MachineName && s.UserName == Environment.UserName)
+				.Select(s =>
+				{
+					var isInWorkspace = IsServerLocal(s.SolutionPath, localSolutions, workDirFull);
+					return new ActiveServerInfo
 					{
 						ProcessId = s.ProcessId,
 						Port = s.Port,
@@ -200,18 +234,30 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 						ParentProcessId = s.ParentProcessId,
 						StartTime = s.StartTime,
 						IdeChannelId = s.IdeChannelId,
-					})
-					.ToList();
-			}
+						SolutionPath = s.SolutionPath,
+						IsInWorkspace = isInWorkspace,
+					};
+				})
+				.ToList();
 		}
 		catch (Exception ex)
 		{
 			_logger.LogDebug(ex, "AmbientRegistry lookup failed");
 		}
 
+		discoveryStopwatch.Stop();
+
 		return new DiscoveryInfo
 		{
+			RequestedWorkingDirectory = workspaceResolution.RequestedWorkingDirectory,
 			WorkingDirectory = workDirectory,
+			EffectiveWorkspaceDirectory = workspaceResolution.EffectiveWorkspaceDirectory,
+			SelectedSolutionPath = workspaceResolution.SelectedSolutionPath,
+			SelectedGlobalJsonPath = workspaceResolution.SelectedGlobalJsonPath,
+			ResolutionKind = workspaceResolution.ResolutionKind,
+			SelectionSource = workspaceResolution.SelectionSource,
+			CandidateSolutions = workspaceResolution.CandidateSolutions,
+			DiscoveryDurationMs = discoveryStopwatch.ElapsedMilliseconds,
 			GlobalJsonPath = globalJsonPath,
 			UnoSdkSource = unoSdkSource,
 			UnoSdkSourcePath = unoSdkSourcePath,
@@ -296,24 +342,6 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		return hostPath;
 	}
 
-	private static string? FindGlobalJson(string startPath)
-	{
-		var currentPath = startPath;
-		while (currentPath != null)
-		{
-			var globalJsonPath = Path.Combine(currentPath, "global.json");
-			if (File.Exists(globalJsonPath))
-			{
-				return globalJsonPath;
-			}
-
-			var parent = Directory.GetParent(currentPath);
-			currentPath = parent?.FullName;
-		}
-
-		return null;
-	}
-
 	private async Task<(string? sdkPackage, string? sdkVersion)> GetSdkVersionFromGlobalJson(string searchDirectory)
 	{
 		var result = await ParseGlobalJsonForUnoSdk(searchDirectory);
@@ -335,46 +363,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 	}
 
 	private async Task<(string? globalJsonPath, string? sdkPackage, string? sdkVersion)> ParseGlobalJsonForUnoSdk(string searchDirectory)
-	{
-		try
-		{
-			var globalJsonPath = FindGlobalJson(searchDirectory);
-			if (globalJsonPath is null)
-			{
-				return (null, null, null);
-			}
-
-			var content = await File.ReadAllTextAsync(globalJsonPath);
-			using var document = JsonDocument.Parse(
-				content,
-				new()
-				{
-					CommentHandling = JsonCommentHandling.Skip,
-					AllowTrailingCommas = true
-				});
-
-			if (document.RootElement.TryGetProperty("msbuild-sdks", out var sdksElement))
-			{
-				if (sdksElement.TryGetProperty("Uno.Sdk", out var unoSdkElement))
-				{
-					return (globalJsonPath, "Uno.Sdk", unoSdkElement.GetString() ?? "");
-				}
-
-				if (sdksElement.TryGetProperty("Uno.Sdk.Private", out var unoSdkPrivateElement))
-				{
-					return (globalJsonPath, "Uno.Sdk.Private", unoSdkPrivateElement.GetString() ?? "");
-				}
-			}
-
-			return (globalJsonPath, null, null);
-		}
-		catch (Exception ex)
-		{
-			_logger.LogWarning(ex, "Failed to parse global.json: {ErrorMessage}", ex.Message);
-		}
-
-		return (null, null, null);
-	}
+		=> await GlobalJsonLocator.ParseGlobalJsonForUnoSdkAsync(searchDirectory, _logger);
 
 	private async Task InstallUnoSdk(string packageId, string version)
 	{
@@ -409,6 +398,53 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		{
 			_logger.LogDebug("Package {SdkPackage} version {Version} installed successfully", packageId, version);
 		}
+	}
+
+	/// <summary>
+	/// Determines if a server is "local" to the working directory by matching
+	/// its solution against any solution in the directory, or by checking if
+	/// the solution resides within the working directory (for solution-less or
+	/// multi-solution repos).
+	/// </summary>
+	private static bool IsServerLocal(string? serverSolutionPath, HashSet<string> localSolutions, string workDirFull)
+	{
+		if (string.IsNullOrWhiteSpace(serverSolutionPath))
+		{
+			return false;
+		}
+
+		string serverSolutionFull;
+		try
+		{
+			serverSolutionFull = Path.GetFullPath(serverSolutionPath);
+		}
+		catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
+		{
+			// Malformed path from AmbientRegistry — treat as non-workspace
+			return false;
+		}
+
+		// Direct match: server's solution is one of the solutions in the working directory
+		if (localSolutions.Contains(serverSolutionFull))
+		{
+			return true;
+		}
+
+		// Directory match: server's solution is inside the working directory tree
+		var serverDir = Path.GetDirectoryName(serverSolutionFull);
+		if (serverDir is not null)
+		{
+			var normalizedServerDir = serverDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+			var normalizedWorkDir = workDirFull.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+			if (normalizedServerDir.StartsWith(normalizedWorkDir, StringComparison.OrdinalIgnoreCase)
+				&& (normalizedServerDir.Length == normalizedWorkDir.Length
+					|| normalizedServerDir[normalizedWorkDir.Length] is '/' or '\\'))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	internal static IReadOnlyList<string> GetNuGetCachePaths(string? workingDirectory = null)

@@ -25,7 +25,7 @@ using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
-using Uno.UI.Xaml.Media;
+
 using static Private.Infrastructure.TestServices;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
@@ -39,9 +39,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	/// </summary>
 	public partial class Given_TextBox
 	{
-		// Apple platforms (macOS, iOS, Mac Catalyst, tvOS) use Command key for standard shortcuts
-		private readonly VirtualKeyModifiers _platformCtrlKey = DeviceTargetHelper.PlatformCommandModifier;
-
 		[TestMethod]
 		public async Task When_Basic_Input()
 		{
@@ -383,6 +380,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Trailing_Space_Overflows_ScrollViewer_Viewport()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "some text that is longer than the width of the text box"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var scrollableWidthWithoutTrailingSpaces = ((ScrollViewer)SUT.ContentElement).ScrollableWidth;
+
+			SUT.Text += new string(' ', 20);
+			await UITestHelper.WaitForIdle();
+			Assert.IsGreaterThan(scrollableWidthWithoutTrailingSpaces + 50, ((ScrollViewer)SUT.ContentElement).ScrollableWidth);
+		}
+
+		[TestMethod]
 		public async Task When_Ctrl_A()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -443,6 +460,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("hello world", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Alt_Or_Win_Key_Alone()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "hello world" };
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Test Option/Alt keys
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Menu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(1, keyDownCount);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(2, keyDownCount);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(3, keyDownCount);
+
+			// Test Command/Windows keys
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(4, keyDownCount);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(5, keyDownCount);
 		}
 
 		[TestMethod]
@@ -3371,6 +3432,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var _ = new TextBoxFeatureConfigDisposable();
 			using var __ = new DisposableAction(() => (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
 
+			Clipboard.Clear();
+
 			var SUT = new TextBox
 			{
 				Width = 40
@@ -3384,15 +3447,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await KeyboardHelper.InputText("hello", SUT);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("hello", SUT.Text);
@@ -3403,30 +3458,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
 			await WindowHelper.WaitForIdle();
 
+			// Right-click to open context menu
 			mouse.PressRight();
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
 
-			var flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
-			Assert.HasCount(3, flyoutItems);
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout);
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
 
-			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitFor(() => flyout.IsOpen);
+
+			var undoButton = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands)
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.Z && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(undoButton, "Undo button should be present in the context menu");
+
+			await WindowHelper.WaitFor(() => undoButton.IsLoaded);
+
+			mouse.MoveTo(undoButton.GetAbsoluteBounds().GetCenter());
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => !flyout.IsOpen);
+
 			Assert.AreEqual("", SUT.Text);
 
 			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
 			await WindowHelper.WaitForIdle();
 
+			// Right-click to open context menu again
 			mouse.PressRight();
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
 
-			flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
-			Assert.HasCount(3, flyoutItems);
+			await WindowHelper.WaitFor(() => flyout.IsOpen);
 
-			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
+			var redoButton = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands)
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.Y && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(redoButton, "Redo button should be present in the context menu");
+			await WindowHelper.WaitFor(() => redoButton.IsLoaded);
+
+			mouse.MoveTo(redoButton.GetAbsoluteBounds().GetCenter());
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
@@ -4359,38 +4434,109 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
+			// Light mode: caret should appear as a dark pixel on the white background.
+			// The exact rendered color depends on visual tree opacity and compositing,
+			// so we use a threshold check rather than exact color matching.
 			var random = new Random();
 			var i = 0;
 			for (; i < 20; i++)
 			{
 				await Task.Delay(random.Next(75, 126));
 				var screenshot = await UITestHelper.ScreenShot(SUT);
-				// this color is the result of alpha blending 0xE4000000 (the default caret color) on top of 0xFFFFFFFF
-				var black = Colors.White.AlphaBlend(((SolidColorBrush)DefaultBrushes.TextForegroundBrush).Color);
-				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), black) &&
-					!HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), black))
+				if (HasDarkPixelOnlyInLeftHalf(screenshot))
 				{
 					break;
 				}
 			}
 
-			Assert.IsLessThan(20, i);
+			Assert.IsLessThan(20, i, "Light mode: caret not found as dark pixel in left half");
 
 			using var _2 = ThemeHelper.UseDarkTheme();
 			await WindowHelper.WaitForIdle();
 
+			// Re-focus to force visual states to re-apply with the new theme resources.
+			// Visual state animations (e.g., TextControlBackgroundFocused) use ThemeResource
+			// values that were resolved when the state was first entered.
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Dark mode: caret should appear as a lighter pixel on the dark background.
 			for (; i < 20; i++)
 			{
 				await Task.Delay(random.Next(75, 126));
 				var screenshot = await UITestHelper.ScreenShot(SUT);
-				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), Colors.White) &&
-					!HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.White))
+				if (HasLightPixelOnlyInLeftHalf(screenshot))
 				{
 					break;
 				}
 			}
 
-			Assert.IsLessThan(20, i);
+			Assert.IsLessThan(20, i, "Dark mode: caret not found as light pixel in left half");
+		}
+
+		/// <summary>
+		/// Checks if the left half has a dark pixel (luminance &lt; 200) that isn't in the right half.
+		/// Used for detecting the caret in light mode where the exact color depends on compositing.
+		/// </summary>
+		private static bool HasDarkPixelOnlyInLeftHalf(RawBitmap screenshot)
+		{
+			var innerMargin = 3; // Skip border pixels
+			var midX = screenshot.Width / 2;
+			var darkColors = new System.Collections.Generic.HashSet<Color>();
+			for (var x = innerMargin; x < midX; x++)
+			{
+				for (var y = innerMargin; y < screenshot.Height - innerMargin; y++)
+				{
+					var px = screenshot.GetPixel(x, y);
+					if (px.A > 0x20 && (px.R + px.G + px.B) / 3 < 200)
+					{
+						darkColors.Add(px);
+					}
+				}
+			}
+
+			foreach (var dark in darkColors)
+			{
+				if (!HasColorInRectangle(screenshot, new Rectangle(midX, 0, midX, screenshot.Height), dark))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Checks if the left half has a lighter pixel than the background,
+		/// that isn't in the right half. Used for detecting the caret in dark mode.
+		/// </summary>
+		private static bool HasLightPixelOnlyInLeftHalf(RawBitmap screenshot)
+		{
+			var innerMargin = 3;
+			var midX = screenshot.Width / 2;
+
+			// Determine the dominant background color in the right half (no caret there)
+			var bgPixel = screenshot.GetPixel(screenshot.Width - innerMargin - 5, screenshot.Height / 2);
+			var bgLum = (bgPixel.R + bgPixel.G + bgPixel.B) / 3;
+
+			for (var x = innerMargin; x < midX; x++)
+			{
+				for (var y = innerMargin; y < screenshot.Height - innerMargin; y++)
+				{
+					var px = screenshot.GetPixel(x, y);
+					var pxLum = (px.R + px.G + px.B) / 3;
+					// Look for pixels significantly lighter than the background
+					if (px != bgPixel && pxLum > bgLum + 50)
+					{
+						if (!HasColorInRectangle(screenshot, new Rectangle(midX, 0, midX, screenshot.Height), px))
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
 		}
 
 		[TestMethod]
@@ -4878,6 +5024,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			return false;
 		}
+
+#if HAS_UNO // SelectAll is not available for PasswordBox on WinUI.
+		[TestMethod]
+		public async Task When_PasswordBox_ContextFlyout_Commands_Available()
+		{
+			try
+			{
+				var SUT = new PasswordBox { Password = "secret pass", Width = 200 };
+				CopyPlaceholderTextToClipboard();
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Select(0, 4);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "PasswordBox should have TextCommandBarFlyout as ContextFlyout");
+				var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+
+				flyout.ShowAt(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+
+				Assert.IsFalse(hasCut, "Cut should NOT be available for PasswordBox (security)");
+				Assert.IsFalse(hasCopy, "Copy should NOT be available for PasswordBox (security)");
+				Assert.IsTrue(hasPaste, "Paste should be available for PasswordBox");
+				Assert.IsTrue(hasSelectAll, "Select All should be available for PasswordBox");
+
+				flyout.Hide();
+			}
+			finally
+			{
+				ClearClipboard();
+			}
+		}
+#endif
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{

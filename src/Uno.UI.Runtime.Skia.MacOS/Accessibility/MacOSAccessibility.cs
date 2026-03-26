@@ -607,10 +607,24 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		var attributes = AriaMapper.GetAriaAttributes(peer);
 
 		// Description → accessibilityHelp (VoiceOver reads this as secondary context)
-		// AriaMapper resolves FullDescription > HelpText > PlaceholderText (when Header set)
+		// AriaMapper resolves FullDescription > HelpText.
 		if (!string.IsNullOrEmpty(attributes.Description))
 		{
 			NativeUno.uno_accessibility_update_help(handle, attributes.Description);
+		}
+
+		// PlaceholderText is surfaced as the empty-field description when a Header already
+		// provides the primary label. VoiceOver reads this via accessibilityPlaceholderValue.
+		if (peer is FrameworkElementAutomationPeer feap)
+		{
+			if (feap.Owner is TextBox tb && !string.IsNullOrEmpty(tb.Header?.ToString()) && !string.IsNullOrEmpty(tb.PlaceholderText))
+			{
+				NativeUno.uno_accessibility_update_description(handle, tb.PlaceholderText);
+			}
+			else if (feap.Owner is PasswordBox pb && !string.IsNullOrEmpty(pb.Header?.ToString()) && !string.IsNullOrEmpty(pb.PlaceholderText))
+			{
+				NativeUno.uno_accessibility_update_description(handle, pb.PlaceholderText);
+			}
 		}
 
 		if (!string.IsNullOrEmpty(attributes.RoleDescription))
@@ -734,6 +748,61 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		}
 
 		return base.ResolveRole(peer, owner);
+	}
+
+	/// <summary>
+	/// Resolves a label for an automation peer with macOS-specific fallbacks.
+	/// Extends the shared mapper with Header/PlaceholderText fallbacks used by VoiceOver.
+	/// </summary>
+	private new static string? ResolveLabel(AutomationPeer peer)
+	{
+		var label = AriaMapper.ResolveLabel(peer);
+		if (!string.IsNullOrEmpty(label))
+		{
+			return label;
+		}
+
+		if (peer is FrameworkElementAutomationPeer frameworkPeer)
+		{
+			var owner = frameworkPeer.Owner;
+
+			if (owner is TextBox textBox)
+			{
+				var header = textBox.Header?.ToString();
+				if (!string.IsNullOrEmpty(header))
+				{
+					return header;
+				}
+
+				if (!string.IsNullOrEmpty(textBox.PlaceholderText))
+				{
+					return textBox.PlaceholderText;
+				}
+			}
+			else if (owner is PasswordBox passwordBox)
+			{
+				var header = passwordBox.Header?.ToString();
+				if (!string.IsNullOrEmpty(header))
+				{
+					return header;
+				}
+
+				if (!string.IsNullOrEmpty(passwordBox.PlaceholderText))
+				{
+					return passwordBox.PlaceholderText;
+				}
+			}
+			else if (owner is ComboBox comboBox)
+			{
+				var header = comboBox.Header?.ToString();
+				if (!string.IsNullOrEmpty(header))
+				{
+					return header;
+				}
+			}
+		}
+
+		return label;
 	}
 
 	// Platform-specific property update implementations (called from SkiaAccessibilityBase routing)

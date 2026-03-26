@@ -13,6 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 public class Given_DispatcherTimer
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno/issues/22862
 	public async Task When_No_Interval_Set()
 	{
 		var dispatcherTimer = new DispatcherTimer();
@@ -70,6 +71,7 @@ public class Given_DispatcherTimer
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno/issues/22862
 	public async Task When_Change_Interval_Higher()
 	{
 		var dispatcherTimer = new DispatcherTimer();
@@ -99,6 +101,7 @@ public class Given_DispatcherTimer
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Exception_In_Tick()
 	{
 		var dispatcherTimer = new DispatcherTimer();

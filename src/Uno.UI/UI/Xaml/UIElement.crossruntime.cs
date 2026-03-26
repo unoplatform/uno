@@ -57,6 +57,13 @@ namespace Microsoft.UI.Xaml
 			IsLoading = false;
 			IsLoaded = true;
 
+			// Propagate VisualTree to ContextFlyout (matches WinUI UIElement::EnterImpl
+			// which calls Enter on the ContextFlyout when entering the tree).
+			if (ContextFlyout is { } contextFlyout && this.GetVisualTree() is { } visualTree)
+			{
+				contextFlyout.SetVisualTree(visualTree);
+			}
+
 			OnFwEltLoaded();
 			UpdateHitTest();
 		}

@@ -6613,8 +6613,7 @@
     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
     <Setter Property="Padding" Value="{ThemeResource TextControlThemePadding}" />
-    <!-- Uno TODO: TextCommandBarFlyout isn't implemented but ContextFlyout is mapped to long-press on some platforms, causing an undismissable invisible popup to appear #12165 -->
-    <!--<Setter Property="ContextFlyout" Value="{StaticResource TextControlCommandBarContextFlyout}" />-->
+    <Setter Property="ContextFlyout" Value="{StaticResource TextControlCommandBarContextFlyout}" />
     <Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
     <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="Template">
@@ -9337,8 +9336,7 @@
     <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}" />
     <Setter Property="Padding" Value="{ThemeResource TextControlThemePadding}" />
     <Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
-    <!-- Uno TODO: TextCommandBarFlyout isn't implemented but ContextFlyout is mapped to long-press on some platforms, causing an undismissable invisible popup to appear #12165 -->
-    <!--<Setter Property="ContextFlyout" Value="{StaticResource TextControlCommandBarContextFlyout}" />-->
+    <Setter Property="ContextFlyout" Value="{StaticResource TextControlCommandBarContextFlyout}" />
     <Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
     <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
@@ -11853,7 +11851,8 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0" VerticalAlignment="Center" Height="{StaticResource CheckBoxSize}" Width="{StaticResource CheckBoxSize}">
               <Rectangle x:Name="NormalRectangle" Fill="{ThemeResource CheckBoxCheckBackgroundFillUnchecked}" Stroke="{ThemeResource CheckBoxCheckBackgroundStrokeUnchecked}" StrokeThickness="{StaticResource CheckBoxBorderThickness}" UseLayoutRounding="False" Height="{StaticResource CheckBoxSize}" Width="{StaticResource CheckBoxSize}" contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" contract7NotPresent:RadiusX="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" contract7NotPresent:RadiusY="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
-              <controls:AnimatedIcon x:Name="CheckGlyph" Foreground="{ThemeResource CheckBoxCheckGlyphForegroundUnchecked}" contract7NotPresent:Opacity="0" Margin="0,1,0,-1">
+              <!-- WinUI uses the AnimatedAcceptVisualSource for drawing the glyph, while we depend on the FallbackIconSource, so we need to remove the Margin to keep the check glyph centered -->
+              <controls:AnimatedIcon x:Name="CheckGlyph" Foreground="{ThemeResource CheckBoxCheckGlyphForegroundUnchecked}" contract7NotPresent:Opacity="0" win:Margin="0,1,0,-1">
                 <animatedvisuals:AnimatedAcceptVisualSource />
                 <controls:AnimatedIcon.FallbackIconSource>
                   <controls:FontIconSource x:Name="DownLevelCheckGlyph" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{StaticResource CheckBoxCheckedGlyph}" FontSize="{StaticResource CheckBoxGlyphSize}" />

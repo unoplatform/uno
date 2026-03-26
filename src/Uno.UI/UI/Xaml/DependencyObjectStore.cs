@@ -532,6 +532,11 @@ namespace Microsoft.UI.Xaml
 						TryClearBinding(value, propertyDetails);
 					}
 
+					if (!_inheritanceContextEnabled && precedence == DependencyPropertyValuePrecedences.Inheritance)
+					{
+						value = DependencyProperty.UnsetValue;
+					}
+
 					var previousValue = GetValue(propertyDetails);
 					var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
 
@@ -1391,7 +1396,7 @@ namespace Microsoft.UI.Xaml
 
 			ResourceDictionary[]? dictionariesInScope = null;
 
-			if (updateReason == ResourceUpdateReason.ThemeResource &&
+			if ((updateReason & ResourceUpdateReason.ThemeResource) != 0 &&
 				_properties.HasBindings)
 			{
 				dictionariesInScope = GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();

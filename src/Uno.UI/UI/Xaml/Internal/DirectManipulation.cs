@@ -97,6 +97,17 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 	public bool IsCompleted => _state is States.Completed;
 
+	public bool IsInertial => _state is States.Inertial;
+
+	/// <summary>
+	/// Force-completes this manipulation, stopping any running inertia.
+	/// Used to clean up old inertial DMs when a new manipulation starts for the same handler.
+	/// </summary>
+	public void ForceComplete()
+	{
+		_recognizer.CompleteGesture();
+	}
+
 	public bool IsPointerType(Windows.Devices.Input.PointerDeviceType type)
 		=> _recognizer.PendingManipulation is { PointerDeviceType: var currentType } && currentType == (Microsoft.UI.Input.PointerDeviceType)type;
 
@@ -140,6 +151,11 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 		// "continue" multi-touch: else if(lastActiveHandler.IsInBoundsForResume())
 		else
 		{
+			if (_state is States.Inertial)
+			{
+				Trace?.Invoke($"[DirectManipulation] [{args.CurrentPoint.Pointer}] CanAddPointerAt returned false during inertia in TryProcessEnter — a new DM may be created.");
+			}
+
 			// Pointer is out-of-range, let continue normal processing (and potentially start another direct-manipulation).
 
 			return false;
@@ -181,6 +197,11 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 		// "continue" multi-touch: else if(lastActiveHandler.IsInBoundsForResume())
 		else
 		{
+			if (_state is States.Inertial)
+			{
+				Trace?.Invoke($"[DirectManipulation] [{args.CurrentPoint.Pointer}] CanAddPointerAt returned false during inertia in TryProcessDown — a new DM may be created.");
+			}
+
 			// Pointer is out-of-range, let continue normal processing (and potentially start another direct-manipulation).
 
 			return false;
@@ -197,6 +218,13 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 			using var _ = WithCurrent(args);
 			_recognizer.ProcessDownEvent(args.CurrentPoint);
+
+			// If the recognizer immediately rejected the manipulation (e.g. settings = None from PreventDirectManipulation),
+			// complete directly. ManipulationAborted is not used here as it implies ManipulationConfigured was received.
+			if (_state is States.Preparing && _recognizer.PendingManipulation is null)
+			{
+				OnDirectManipulationCompleting();
+			}
 		}
 	}
 
@@ -430,8 +458,6 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 		Trace?.Invoke($"[DirectManipulation] [{args.Pointers[0]}] Update @={args.Position.ToDebugString()} | Δ=({args.Delta} | v={args.Velocities}){(args.IsInertial ? " *inertial*" : "")}");
 
-		Debug.Assert(!args.IsInertial || _inertiaHandler is not null);
-
 		var unhandledDelta = args.Delta;
 		if (args.IsInertial && _inertiaHandler is { } inertialHandler)
 		{
@@ -468,6 +494,15 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 				isHandled = true;
 			}
 		}
+
+		if (!isHandled)
+		{
+			// No handler claimed the inertia. Complete the gesture now to prevent
+			// the GestureRecognizer's internal InertiaProcessor from firing
+			// unclaimed inertial update events.
+			Trace?.Invoke("[DirectManipulation] No handler claimed inertia, completing gesture.");
+			_recognizer.CompleteGesture();
+		}
 	}
 
 	private void OnDirectManipulationCompleted(GestureRecognizer recognizer, ManipulationCompletedEventArgs args)
@@ -491,13 +526,21 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 	private void OnDirectManipulationAborted(GestureRecognizer recognizer, GestureRecognizer.Manipulation manip)
 	{
 		Trace?.Invoke("[DirectManipulation] Aborted");
+		OnDirectManipulationCompleting();
+	}
 
+	/// <summary>
+	/// Completes the direct manipulation, notifying handlers and transitioning to the Completed state.
+	/// Used both when the manipulation is aborted via event and when the recognizer immediately rejects it.
+	/// </summary>
+	private void OnDirectManipulationCompleting()
+	{
 		_state = States.Completed;
 
 		// Even if cancelled we still want to notify the handlers that the manipulation has completed to avoid leaking state.
 		foreach (var handler in Handlers)
 		{
-			handler.OnCompleted(recognizer, null);
+			handler.OnCompleted(_recognizer, null);
 		}
 	}
 	#endregion

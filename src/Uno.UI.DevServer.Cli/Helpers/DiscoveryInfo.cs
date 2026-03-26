@@ -3,9 +3,44 @@ namespace Uno.UI.DevServer.Cli.Helpers;
 public sealed class DiscoveryInfo
 {
 	/// <summary>
+	/// Gets the working directory originally requested by the caller.
+	/// </summary>
+	public string? RequestedWorkingDirectory { get; init; }
+
+	/// <summary>
 	/// Gets the working directory used for discovery.
 	/// </summary>
 	public string? WorkingDirectory { get; init; }
+
+	/// <summary>
+	/// Gets the effective workspace directory selected for discovery.
+	/// </summary>
+	public string? EffectiveWorkspaceDirectory { get; init; }
+
+	/// <summary>
+	/// Gets the selected solution path for the workspace.
+	/// </summary>
+	public string? SelectedSolutionPath { get; init; }
+
+	/// <summary>
+	/// Gets the selected global.json used to identify the Uno workspace.
+	/// </summary>
+	public string? SelectedGlobalJsonPath { get; init; }
+
+	/// <summary>
+	/// Gets how the workspace was resolved.
+	/// </summary>
+	public WorkspaceResolutionKind? ResolutionKind { get; init; }
+
+	/// <summary>
+	/// Gets whether the selected workspace was automatic, roots-confirmed, or explicitly chosen.
+	/// </summary>
+	public WorkspaceSelectionSource? SelectionSource { get; init; }
+
+	/// <summary>
+	/// Gets all candidate solution paths that were considered during workspace resolution.
+	/// </summary>
+	public IReadOnlyList<string> CandidateSolutions { get; init; } = [];
 
 	/// <summary>
 	/// Gets the resolved path to global.json if found.
@@ -93,6 +128,11 @@ public sealed class DiscoveryInfo
 	public string? AddInsDiscoveryMethod { get; init; }
 
 	/// <summary>
+	/// Gets the total discovery duration in milliseconds.
+	/// </summary>
+	public long DiscoveryDurationMs { get; init; }
+
+	/// <summary>
 	/// Gets the duration of add-in discovery in milliseconds.
 	/// </summary>
 	public long AddInsDiscoveryDurationMs { get; init; }
@@ -129,4 +169,11 @@ public sealed class ActiveServerInfo
 	public int ParentProcessId { get; init; }
 	public DateTime StartTime { get; init; }
 	public string? IdeChannelId { get; init; }
+	public string? SolutionPath { get; init; }
+
+	/// <summary>
+	/// True when this server's solution matches one of the working directory's
+	/// solutions, or when the solution resides within the working directory tree.
+	/// </summary>
+	public bool IsInWorkspace { get; init; }
 }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!--
+		Auto Code-Behind Generation for WinUI targets.
+
+		On WinUI builds (IsWinAppSdk=true), the main Uno.UI.SourceGenerators analyzer is removed.
+		The separate Uno.UI.SourceGenerators.WinAppSDK assembly provides the standalone
+		XamlCodeBehindGenerator which always runs when loaded.
+	-->
+
+	<!-- CompilerVisible items must be outside targets so GenerateMSBuildEditorConfigFile sees them -->
+	<ItemGroup Condition="'$(IsWinAppSdk)'=='true'">
+		<CompilerVisibleProperty Include="UnoGenerateCodeBehind" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="UnoGenerateCodeBehind" />
+	</ItemGroup>
+
+	<!--
+		On WinUI builds, Uno.UI.SourceGenerators.props is not imported, so XAML files
+		are never added to AdditionalFiles. The code-behind generator needs them there.
+	-->
+	<Target Name="_InjectAdditionalFilesForWinUI"
+			BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore"
+			Condition="'$(IsWinAppSdk)'=='true'">
+		<ItemGroup>
+			<AdditionalFiles Include="@(Page)" SourceItemGroup="Page" />
+			<AdditionalFiles Include="@(ApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
+
+			<!-- Normalize paths to absolute so the generator sees consistent identities -->
+			<_AdditionalFilesCleanup Include="@(AdditionalFiles)" />
+			<AdditionalFiles Remove="@(_AdditionalFilesCleanup)" />
+			<AdditionalFiles Condition="'@(_AdditionalFilesCleanup)'!=''" Include="@(_AdditionalFilesCleanup->'$([System.IO.Path]::GetFullPath('%(_AdditionalFilesCleanup.Identity)'))')" />
+		</ItemGroup>
+	</Target>
+
+</Project>

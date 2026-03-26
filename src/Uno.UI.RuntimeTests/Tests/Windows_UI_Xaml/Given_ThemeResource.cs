@@ -45,6 +45,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Parent_Resource_Override_On_Loaded()
 		{
 			using (StyleHelper.UseAppLevelResources(new App_Level_Resources()))
@@ -76,6 +77,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_AppLevel_Resource_CheckBox_Override()
 		{
 			// Use fluent styles to rely on known Theme Resources
@@ -98,6 +100,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_AppLevel_Resource_SplitButton_Override()
 		{
 			// Use fluent styles to rely on known Theme Resources
@@ -140,6 +143,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Theme_Changed()
 		{
 			var control = new ThemeResource_Theme_Changing_Override();

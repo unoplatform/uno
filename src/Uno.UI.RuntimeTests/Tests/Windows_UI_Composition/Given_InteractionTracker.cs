@@ -21,6 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
 [TestClass]
 [RunsOnUIThread]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 public partial class Given_InteractionTracker
 {
 	private static InteractionTracker SetupTracker(Compositor compositor)
@@ -120,6 +121,7 @@ public partial class Given_InteractionTracker
 #if !HAS_COMPOSITION_API
 	[Ignore("Composition APIs are not supported on this platform.")]
 #endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_TryUpdatePositionWithAdditionalVelocity_TwoCalls()
 	{
 		var border = new Border()

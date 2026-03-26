@@ -66,6 +66,7 @@ internal class McpUpstreamClient
 				TransportMode = HttpTransportMode.StreamableHttp,
 			});
 
+			var notificationGuard = new MonitorDecisions.StartOnceGuard();
 			var options = new McpClientOptions
 			{
 				ClientInfo = new Implementation
@@ -82,9 +83,17 @@ internal class McpUpstreamClient
 							log.LogTrace("Upstream MCP notified tool list changed");
 
 							// ToolListChanged has no meaningful params — no deserialization needed
-							if (_toolListChanged is { } callback)
+							if (_toolListChanged is { } callback && notificationGuard.TryStart())
 							{
-								await callback();
+								try
+								{
+									await callback();
+								}
+								catch (Exception ex)
+								{
+									log.LogError(ex, "Error while handling tool list changed notification");
+									notificationGuard.Reset();
+								}
 							}
 						})
 					],
@@ -108,10 +117,19 @@ internal class McpUpstreamClient
 
 			log.LogTrace("Upstream MCP responded with {Count} tools", tools?.Count);
 
-			// Always notify — 0 tools is a valid response and must unblock waiters
-			if (_toolListChanged is { } toolsCallback)
+			// Always notify — 0 tools is a valid response and must unblock waiters.
+			// Skip if the notification handler already fired to avoid duplicate downstream events.
+			if (_toolListChanged is { } toolsCallback && notificationGuard.TryStart())
 			{
-				await toolsCallback();
+				try
+				{
+					await toolsCallback();
+				}
+				catch (Exception ex)
+				{
+					log.LogError(ex, "Error while handling tool list changed callback after ListTools");
+					notificationGuard.Reset();
+				}
 			}
 		}
 		catch (Exception ex)
