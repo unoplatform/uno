@@ -423,22 +423,16 @@ public partial class FrameworkElement
 			// MUX Reference framework.cpp line 3415-3451:
 			// EnsureTextFormatting, SetRequestedThemeForSubTree, LookupThemeResource,
 			// SetForeground, SetFreezeForeground(true), MarkInheritedPropertyDirty
-
-			// Check if the Foreground DP is explicitly set (locally, by style, or animated).
-			// If so, that value takes priority and we don't need to freeze.
-			// Matches WinUI: HasLocalOrModifierValue || IsPropertySetByStyle
+			//
+			// WinUI skips the freeze when Foreground is set by style/local
+			// (framework.cpp line 3410) because children pull the parent's
+			// current Foreground via PullInheritedTextFormatting. Uno does
+			// not have that pull model — children inherit via _themeForeground.
+			// We always resolve the default theme brush so _themeForeground is
+			// populated for child inheritance. Setting the DP at Inheritance
+			// precedence is a no-op when a higher-precedence value (style/local)
+			// already exists.
 			DependencyProperty foregroundProperty = GetForegroundProperty();
-			if (foregroundProperty is not null)
-			{
-				var precedence = this.GetCurrentHighestValuePrecedence(foregroundProperty);
-				if (precedence == DependencyPropertyValuePrecedences.Local
-					|| precedence == DependencyPropertyValuePrecedences.ExplicitStyle
-					|| precedence == DependencyPropertyValuePrecedences.ImplicitStyle
-					|| precedence == DependencyPropertyValuePrecedences.Animations)
-				{
-					return;
-				}
-			}
 
 			// Resolve the theme's default text foreground brush
 			var themeKey = Theming.GetBaseValue(theme) == Theme.Light ? "Light" : "Dark";
