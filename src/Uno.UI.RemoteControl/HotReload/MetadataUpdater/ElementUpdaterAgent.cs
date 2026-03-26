@@ -155,7 +155,10 @@ internal sealed class ElementUpdateAgent : IDisposable
 		// in System.Private.CoreLib is executed before System.Text.Json clears it's own cache.)
 		// This would ensure that caches and updates more lower in the application stack are up to date
 		// before ones higher in the stack are recomputed.
-		var sortedAssemblies = TopologicalSort(_alc.Assemblies.ToArray());
+		//
+		// When running in a non-default ALC, ElementMetadataUpdateHandler attributes live on
+		// shared assemblies (Uno.UI, Extensions) in the default ALC. Scan both ALCs.
+		var sortedAssemblies = TopologicalSort(GetAllRelevantAssemblies());
 		_elementHandlerActions.Clear();
 		foreach (var assembly in sortedAssemblies)
 		{
@@ -378,6 +381,39 @@ internal sealed class ElementUpdateAgent : IDisposable
 		}
 
 		return sortedAssemblies;
+	}
+
+	/// <summary>
+	/// Returns assemblies from the current ALC and, if different, the default ALC.
+	/// Ensures handlers on shared assemblies are discovered in non-default ALC scenarios.
+	/// Deduplicated by name — current ALC takes precedence.
+	/// </summary>
+	private Assembly[] GetAllRelevantAssemblies()
+	{
+		var currentAssemblies = _alc.Assemblies.ToArray();
+		if (_alc == AssemblyLoadContext.Default)
+		{
+			return currentAssemblies;
+		}
+
+		var seen = new HashSet<string>(StringComparer.Ordinal);
+		var result = new List<Assembly>(currentAssemblies.Length * 2);
+
+		foreach (var asm in currentAssemblies)
+		{
+			seen.Add(asm.GetName().Name!);
+			result.Add(asm);
+		}
+
+		foreach (var asm in AssemblyLoadContext.Default.Assemblies)
+		{
+			if (seen.Add(asm.GetName().Name!))
+			{
+				result.Add(asm);
+			}
+		}
+
+		return result.ToArray();
 	}
 
 	public void Dispose()

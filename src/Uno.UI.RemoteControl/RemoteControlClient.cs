@@ -25,8 +25,8 @@ namespace Uno.UI.RemoteControl;
 
 public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposable
 {
-	// Legacy override for the default singleton client.
-	private static IFrameTransport? _defaultConnectionTransportOverride;
+	// Pre-configured options for the next Initialize call, set by PreConfigureNextInstance.
+	private static RemoteControlClientOptions? _pendingInstanceOptions;
 
 	// All clients created via Initialize/CreateAdditional, tracked as weak references
 	// so disposed/collected clients are automatically pruned.
@@ -140,22 +140,10 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// </remarks>
 	public static RemoteControlClient Initialize(Type appType)
 	{
-		// When a transport override is pending, this Initialize call is for a nested/secondary app
-		// loaded in a shared ALC. Use AdditionalClient options so we don't replace/dispose the
-		// host's Instance, but enable hot reload and pass the transport explicitly.
-		var overrideTransport = Interlocked.Exchange(ref _defaultConnectionTransportOverride, null);
-		RemoteControlClient client;
-		if (overrideTransport is not null)
-		{
-			var options = RemoteControlClientOptions.AdditionalClient with { EnableHotReloadProcessor = true };
-			client = CreateClient(appType, endpoints: null, additionalServerProcessorsDiscoveryPath: null, options: options, connectionTransportOverride: overrideTransport);
-		}
-		else
-		{
-			client = CreateClient(appType, endpoints: null, additionalServerProcessorsDiscoveryPath: null, options: RemoteControlClientOptions.DefaultClient, connectionTransportOverride: null);
-		}
+		var pendingOptions = Interlocked.Exchange(ref _pendingInstanceOptions, null);
+		var options = pendingOptions ?? RemoteControlClientOptions.DefaultClient;
 
-		return client;
+		return CreateClient(appType, endpoints: null, additionalServerProcessorsDiscoveryPath: null, options: options);
 	}
 
 	/// <summary>
@@ -171,7 +159,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// </remarks>
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	internal static RemoteControlClient Initialize(Type appType, ServerEndpointAttribute[]? endpoints)
-		=> CreateClient(appType, endpoints, additionalServerProcessorsDiscoveryPath: null, options: RemoteControlClientOptions.DefaultClient, connectionTransportOverride: null);
+		=> CreateClient(appType, endpoints, additionalServerProcessorsDiscoveryPath: null, options: RemoteControlClientOptions.DefaultClient);
 
 	/// <summary>
 	/// Initializes the remote control client with explicit server endpoints and an additional processors discovery path.
@@ -195,8 +183,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 			appType,
 			endpoints,
 			additionalServerProcessorsDiscoveryPath,
-			RemoteControlClientOptions.DefaultClient with { AutoRegisterAppIdentity = autoRegisterAppIdentity },
-			connectionTransportOverride: null);
+			RemoteControlClientOptions.DefaultClient with { AutoRegisterAppIdentity = autoRegisterAppIdentity });
 
 	/// <summary>
 	/// Creates an additional remote control client independent from <see cref="Instance"/>.
@@ -212,28 +199,26 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 			throw new ArgumentNullException(nameof(transport));
 		}
 
-		var effectiveOptions = options ?? RemoteControlClientOptions.AdditionalClient;
+		var effectiveOptions = (options ?? RemoteControlClientOptions.AdditionalClient) with { ConnectionTransportOverride = transport };
 		if (effectiveOptions.SetAsDefaultInstance)
 		{
 			throw new ArgumentException("Additional client options must not set SetAsDefaultInstance=true.", nameof(options));
 		}
 
-		return CreateClient(appType, endpoints: null, additionalServerProcessorsDiscoveryPath: null, effectiveOptions, connectionTransportOverride: transport);
+		return CreateClient(appType, endpoints: null, additionalServerProcessorsDiscoveryPath: null, effectiveOptions);
 	}
 
 	private static RemoteControlClient CreateClient(
 		Type appType,
 		ServerEndpointAttribute[]? endpoints,
 		string? additionalServerProcessorsDiscoveryPath,
-		RemoteControlClientOptions options,
-		IFrameTransport? connectionTransportOverride)
+		RemoteControlClientOptions options)
 	{
 		var client = new RemoteControlClient(
 			appType,
 			endpoints,
 			additionalServerProcessorsDiscoveryPath,
-			options,
-			connectionTransportOverride);
+			options);
 
 		// Track every client as a weak reference for ActiveClients enumeration.
 		lock (_clientsLock)
@@ -272,15 +257,16 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	public Type AppType { get; }
 
 	/// <summary>
-	/// Override the connection transport used by the client.
+	/// Pre-configures options for the next <see cref="Initialize(Type)"/> call.
+	/// Used by Studio Live to inject a DevServer transport and specify that
+	/// the nested app should be the default instance in its ALC.
 	/// </summary>
-	/// <remarks>
-	/// This is a very advanced feature and should be used only when a custom transport is available.
-	/// Mostly for unit testing or very special scenarios.
-	/// </remarks>
-	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static void OverrideConnectionTransportWhenClientAvailable(IFrameTransport transport)
-		=> _defaultConnectionTransportOverride = transport;
+	/// <param name="options">
+	/// The options to apply to the next <see cref="Initialize(Type)"/> call.
+	/// Use <see cref="RemoteControlClientOptions.ConnectionTransportOverride"/> to inject a transport.
+	/// </param>
+	public static void PreConfigureNextInstance(RemoteControlClientOptions options)
+		=> _pendingInstanceOptions = options ?? throw new ArgumentNullException(nameof(options));
 
 	/// <summary>
 	/// Gets the minimum interval between re-connection attempts.
@@ -348,16 +334,14 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	private RemoteControlClient(Type appType,
 		ServerEndpointAttribute[]? endpoints = null,
 		string? additionalServerProcessorsDiscoveryPath = null,
-		RemoteControlClientOptions? options = null,
-		IFrameTransport? connectionTransportOverride = null)
+		RemoteControlClientOptions? options = null)
 	{
 		var effectiveOptions = options ?? RemoteControlClientOptions.DefaultClient;
 
 		AppType = appType;
 		_additionalServerProcessorsDiscoveryPath = additionalServerProcessorsDiscoveryPath;
 		_autoRegisterAppIdentity = effectiveOptions.AutoRegisterAppIdentity;
-		_connectionTransportOverride = connectionTransportOverride
-			?? (effectiveOptions.SetAsDefaultInstance ? _defaultConnectionTransportOverride : null);
+		_connectionTransportOverride = effectiveOptions.ConnectionTransportOverride;
 
 		_status = new StatusSink(this, effectiveOptions.RegisterDiagnosticView);
 		var error = default(ConnectionError?);

@@ -126,14 +126,27 @@ partial class ClientHotReloadProcessor
 
 			UpdateGlobalResources(updatedTypes);
 
-			// Each ALC has its own ClientHotReloadProcessor with its own CurrentWindow.
-			// Use the window's visual tree root directly — ALC scoping is handled by
-			// each processor only seeing its own assemblies and handler registrations.
-#if HAS_UNO_WINUI
-			var rootElement = window.Content?.XamlRoot?.VisualTree.RootElement;
-#else
-			var rootElement = window.Content?.XamlRoot?.Content;
+#if HAS_UNO || HAS_UNO_WINUI
+			// For secondary ALC windows (e.g. Studio Live inner app), start scanning
+			// from the window's content directly — it resolves to the AlcContentHost
+			// subtree, scoping the update to the inner app only.
+			// For normal windows, start from the full visual tree root.
+			FrameworkElement? rootElement = null;
+			if (window.TryGetContentFromSecondaryAlc(out var alcContent) && alcContent is FrameworkElement alcRoot)
+			{
+				rootElement = alcRoot;
+			}
 #endif
+
+			if (rootElement is null)
+			{
+#if HAS_UNO_WINUI
+				rootElement = window.Content?.XamlRoot?.VisualTree.RootElement as FrameworkElement;
+#else
+				rootElement = window.Content?.XamlRoot?.Content as FrameworkElement;
+#endif
+			}
+
 			if (rootElement is null)
 			{
 				if (_log.IsEnabled(LogLevel.Error))
@@ -241,7 +254,7 @@ partial class ClientHotReloadProcessor
 			// Forced iteration to capture all state before doing ui update
 			var instancesToUpdate = await treeIterator.ToArrayAsync();
 
-			// Iterate through the visual tree and either invoke ElementUpdate, 
+			// Iterate through the visual tree and either invoke ElementUpdate,
 			// or replace the element with a new one
 			foreach (var (element, elementHandlers, elementMappedType) in instancesToUpdate)
 			{
