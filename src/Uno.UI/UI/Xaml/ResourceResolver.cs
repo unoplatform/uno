@@ -411,10 +411,10 @@ namespace Uno.UI
 							updateReason, precedence, bindingPath);
 						provider.Store.SetThemeResourceBinding(property, themeRef);
 					}
-					else
-					{
-						provider.Store.SetResourceBinding(property, resourceKey, updateReason, context, precedence, bindingPath);
-					}
+
+					// Always register ResourceBinding for re-pin at load time and
+					// HotReload support, matching the dual-registration in ApplyResource.
+					provider.Store.SetResourceBinding(property, resourceKey, updateReason, context, precedence, bindingPath);
 
 					return true;
 				}

@@ -250,8 +250,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 							ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
 							try
 							{
-								// Force re-resolution via the store's UpdateResourceBindings
-								frameProvider.Store.UpdateResourceBindings(Data.ResourceUpdateReason.ThemeResource, targetElement);
+								// Re-resolve only the pinned-dictionary path (Phase 1).
+								// Keyframes are not in the visual tree, so tree-walk (Phase 2)
+								// and child propagation (Phase 3) are unnecessary.
+								// MUX Reference: WinUI resolves keyframe theme values via
+								// UpdateAllThemeReferences, not per-frame UpdateResourceBindings.
+								frameProvider.Store.UpdateAllThemeReferences(null);
 								// Read the updated value
 								value = frame.Value;
 							}
