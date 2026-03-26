@@ -3544,4 +3544,102 @@ public class Given_ElementTheme
 	}
 
 	#endregion
+
+	#region ToolTip Theme Propagation
+
+	[TestMethod]
+	public async Task When_Slider_Tooltip_Opens_After_Dynamic_Theme_Switch_Foreground_Matches_Theme()
+	{
+		// Reproduces: Slider tooltip text stays black after switching container
+		// from Light to Dark theme, instead of turning white.
+		// The critical sequence: open tooltip in Light, close, switch to Dark, reopen.
+
+		var slider = new Slider
+		{
+			Minimum = 0,
+			Maximum = 100,
+			Value = 50,
+			Width = 300,
+			Orientation = Orientation.Horizontal,
+			IsThumbToolTipEnabled = true,
+		};
+
+		var container = new Border
+		{
+			RequestedTheme = ElementTheme.Light,
+			Width = 400,
+			Height = 200,
+			Child = slider,
+			Background = new SolidColorBrush(Colors.White),
+		};
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(container);
+		await WindowHelper.WaitForIdle();
+
+		// Get the Slider's thumb and its ToolTip
+		var thumb = MUXControlsTestApp.Utilities.VisualTreeUtils.FindVisualChildByName(slider, "HorizontalThumb");
+		Assert.IsNotNull(thumb, "HorizontalThumb should exist");
+
+		var toolTip = ToolTipService.GetToolTip(thumb) as ToolTip;
+#if HAS_UNO
+		// Uno stores Slider tooltips via GetToolTipReference (internal)
+		toolTip ??= ToolTipService.GetToolTipReference(thumb);
+#endif
+		Assert.IsNotNull(toolTip, "Slider thumb should have a ToolTip");
+
+		try
+		{
+			// Phase 1: Open tooltip in Light theme (establishes initial state)
+			toolTip.IsOpen = true;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+
+			// Verify Light theme foreground (should be dark/black text)
+			var lightForeground = toolTip.Foreground as SolidColorBrush;
+			Assert.IsNotNull(lightForeground, "ToolTip Foreground should be a SolidColorBrush in Light theme");
+			Assert.IsTrue(lightForeground.Color.R < 100,
+				$"In Light theme, ToolTip Foreground should be dark, but was {lightForeground.Color}");
+
+			// Close the tooltip
+			toolTip.IsOpen = false;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(200);
+
+			// Phase 2: Switch container to Dark theme
+			container.RequestedTheme = ElementTheme.Dark;
+			await WindowHelper.WaitForIdle();
+
+			// Phase 3: Reopen tooltip - this is where the bug manifests
+			toolTip.IsOpen = true;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+
+			// Verify Dark theme foreground (should be white/light text)
+			var darkForeground = toolTip.Foreground as SolidColorBrush;
+			Assert.IsNotNull(darkForeground, "ToolTip Foreground should be a SolidColorBrush in Dark theme");
+			Assert.IsTrue(darkForeground.Color.R > 200,
+				$"In Dark theme, ToolTip Foreground R should be > 200 (white), but was {darkForeground.Color} (R={darkForeground.Color.R})");
+
+			// Also verify the TextBlock content has the correct effective Foreground
+			var textBlock = toolTip.Content as TextBlock;
+			Assert.IsNotNull(textBlock, "ToolTip content should be a TextBlock (Slider thumb tooltip)");
+
+			var textBlockForeground = textBlock.Foreground as SolidColorBrush;
+			Assert.IsNotNull(textBlockForeground, "TextBlock Foreground should be a SolidColorBrush");
+			Assert.IsTrue(textBlockForeground.Color.R > 200,
+				$"TextBlock Foreground R should be > 200 (white for Dark theme), but was {textBlockForeground.Color} (R={textBlockForeground.Color.R})");
+		}
+		finally
+		{
+			toolTip.IsOpen = false;
+#if HAS_UNO
+			VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot);
+#endif
+		}
+	}
+
+	#endregion
 }
