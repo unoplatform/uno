@@ -238,8 +238,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				SolidColorBrushHelper.Black,
-				FrameworkPropertyMetadataOptions.Inherits,
-				propertyChangedCallback: (s, e) => ((ContentPresenter)s)?.OnForegroundColorChanged(e.OldValue as Brush, e.NewValue as Brush)
+				propertyChangedCallback: (s, e) =>
+				{
+					var cp = (ContentPresenter)s;
+					cp?.OnForegroundColorChanged(e.OldValue as Brush, e.NewValue as Brush);
+					cp?.OnTextFormattingPropertyChanged("Foreground", e.NewValue);
+				}
 			)
 		);
 
@@ -260,8 +264,13 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				FontWeights.Normal,
-				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-				(s, e) => ((ContentPresenter)s)?.OnFontWeightChanged((FontWeight)e.OldValue, (FontWeight)e.NewValue)
+				FrameworkPropertyMetadataOptions.AffectsMeasure,
+				(s, e) =>
+				{
+					var cp = (ContentPresenter)s;
+					cp?.OnFontWeightChanged((FontWeight)e.OldValue, (FontWeight)e.NewValue);
+					cp?.OnTextFormattingPropertyChanged("FontWeight", e.NewValue);
+				}
 			)
 		);
 
@@ -282,8 +291,13 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				14.0,
-				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-				(s, e) => ((ContentPresenter)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
+				FrameworkPropertyMetadataOptions.AffectsMeasure,
+				(s, e) =>
+				{
+					var cp = (ContentPresenter)s;
+					cp?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue);
+					cp?.OnTextFormattingPropertyChanged("FontSize", e.NewValue);
+				}
 			)
 		);
 
@@ -304,8 +318,13 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				FontFamily.Default,
-				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-				(s, e) => ((ContentPresenter)s)?.OnFontFamilyChanged(e.OldValue as FontFamily, e.NewValue as FontFamily)
+				FrameworkPropertyMetadataOptions.AffectsMeasure,
+				(s, e) =>
+				{
+					var cp = (ContentPresenter)s;
+					cp?.OnFontFamilyChanged(e.OldValue as FontFamily, e.NewValue as FontFamily);
+					cp?.OnTextFormattingPropertyChanged("FontFamily", e.NewValue);
+				}
 			)
 		);
 	#endregion
@@ -325,8 +344,13 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				FontStyle.Normal,
-				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-				(s, e) => ((ContentPresenter)s)?.OnFontStyleChanged((FontStyle)e.OldValue, (FontStyle)e.NewValue)
+				FrameworkPropertyMetadataOptions.AffectsMeasure,
+				(s, e) =>
+				{
+					var cp = (ContentPresenter)s;
+					cp?.OnFontStyleChanged((FontStyle)e.OldValue, (FontStyle)e.NewValue);
+					cp?.OnTextFormattingPropertyChanged("FontStyle", e.NewValue);
+				}
 			)
 		);
 	#endregion
@@ -339,7 +363,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		set => SetFontStretchValue(value);
 	}
 
-	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal)]
 	public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
 	#endregion
 
@@ -763,6 +787,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	private protected virtual void OnFontStretchChanged(FontStretch oldValue, FontStretch newValue)
 	{
 		OnFontStretchChangedPartial(oldValue, newValue);
+		OnTextFormattingPropertyChanged("FontStretch", newValue);
 	}
 
 	partial void OnFontStretchChangedPartial(FontStretch oldValue, FontStretch newValue);

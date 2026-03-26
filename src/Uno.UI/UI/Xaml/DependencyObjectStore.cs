@@ -1024,6 +1024,25 @@ namespace Microsoft.UI.Xaml
 
 			PropagateInheritedProperties(childStore);
 
+			// MUX ref: depends.cpp:2262 — increment counter on tree entry
+			// so all descendants' TextFormatting becomes stale.
+			GlobalTextFormattingCounter.Invalidate();
+
+			// MUX ref: EnsureTextFormatting / PullInheritedTextFormatting on tree entry.
+			// Create TextFormatting and pull inherited values from parent.
+			if (childStore.ActualInstance is UIElement childElement)
+			{
+				childElement._textFormatting ??= TextFormatting.CreateDefault();
+				childElement.PullInheritedTextFormatting();
+				childElement._textFormatting.SetIsUpToDate();
+			}
+			else if (childStore.ActualInstance is Documents.TextElement childTextElement)
+			{
+				childTextElement._textFormatting ??= TextFormatting.CreateDefault();
+				childTextElement.PullInheritedTextFormatting();
+				childTextElement._textFormatting.SetIsUpToDate();
+			}
+
 			// This weak reference ensure that the disposable will not link
 			// the caller and the callee, in the same way "newValueActionWeak"
 			// does not link the callee to the caller.
@@ -1176,6 +1195,14 @@ namespace Microsoft.UI.Xaml
 		// Internal for unit testing
 		internal object GetDefaultValue(DependencyProperty dp)
 		{
+			// MUX ref: GetPropertyOffset → GetGroupCreator → EnsureTextFormatting
+			// For text formatting properties at default, return the inherited value
+			// from TextFormatting instead of the DP system default.
+			if (dp.IsTextFormattingProperty && TryGetTextFormattingValue(dp, out var tfValue) && tfValue is not null)
+			{
+				return tfValue;
+			}
+
 			var actualInstance = ActualInstance;
 			var defaultValue = dp.GetDefaultValue(actualInstance, actualInstance?.GetType());
 			if (GetCurrentHighestValuePrecedence(dp) == DependencyPropertyValuePrecedences.DefaultValue &&
@@ -1186,6 +1213,30 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return defaultValue;
+		}
+
+		/// <summary>
+		/// Attempts to get a text property's value from the TextFormatting system.
+		/// Called when a text formatting property has no local/style/animation value
+		/// (at DefaultValue precedence). Triggers EnsureTextFormatting to lazily pull
+		/// inherited values from the parent.
+		/// </summary>
+		private bool TryGetTextFormattingValue(DependencyProperty dp, out object? value)
+		{
+			value = null;
+
+			if (ActualInstance is ITextFormattingOwner owner)
+			{
+				owner.EnsureTextFormatting(dp, forGetValue: true);
+				var tf = owner.TextFormatting;
+				if (tf is not null)
+				{
+					value = tf.GetFieldValue(dp.Name);
+					return value is not null;
+				}
+			}
+
+			return false;
 		}
 
 		private object? GetHighestValueFromDetails(DependencyPropertyDetails details)
@@ -1203,16 +1254,9 @@ namespace Microsoft.UI.Xaml
 
 		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
-			// WinUI: Foreground propagates through TextFormatting, NOT through DP inheritance.
-			// In Uno, Foreground has FrameworkPropertyMetadataOptions.Inherits which auto-cascades
-			// to ALL descendants. This breaks element-level theming because a parent's theme change
-			// cascades Foreground through theme boundaries (elements with explicit RequestedTheme).
-			// Block the cascade at theme boundaries, matching WinUI's TextFormatting freeze behavior.
-			if (IsForegroundDependencyProperty(parentProperty)
-				&& ActualInstance is FrameworkElement { IsForegroundInheritanceBlocked: true })
-			{
-				return;
-			}
+			// NOTE: Foreground cascade blocking removed. Text formatting properties
+			// (Foreground, FontSize, etc.) no longer use DP Inherits — they propagate
+			// through the TextFormatting system with FreezeForeground at theme boundaries.
 
 			var (localProperty, propertyDetails) = GetLocalPropertyDetails(parentProperty);
 
@@ -1889,6 +1933,100 @@ namespace Microsoft.UI.Xaml
 			_dpChangedEventArgsPool.Return(eventArgs);
 		}
 
+		/// <summary>
+		/// Raises property change notifications for a text formatting property
+		/// WITHOUT modifying the DP system storage. This is the Uno equivalent
+		/// of WinUI's NotifyPropertyChanged called from MarkInheritedPropertyDirty.
+		/// </summary>
+		/// <remarks>
+		/// Raises: PropertyChanged callback, AffectsMeasure/AffectsArrange/AffectsRender,
+		/// backing field update, RegisterPropertyChangedCallback handlers, generic callbacks.
+		/// Does NOT: store value, cascade via HasInherits, update auto-parent.
+		/// </remarks>
+		internal void RaiseTextFormattingPropertyChanged(DependencyProperty property, object oldValue, object newValue)
+		{
+			var actualInstanceAlias = ActualInstance;
+			if (actualInstanceAlias is null)
+			{
+				return;
+			}
+
+			var propertyMetadata = property.Metadata;
+
+			// Layout invalidation
+			if (propertyMetadata is FrameworkPropertyMetadata frameworkPropertyMetadata)
+			{
+				if (frameworkPropertyMetadata.Options.HasAffectsMeasure())
+				{
+					actualInstanceAlias.InvalidateMeasure();
+				}
+
+				if (frameworkPropertyMetadata.Options.HasAffectsArrange())
+				{
+					actualInstanceAlias.InvalidateArrange();
+				}
+
+				if (frameworkPropertyMetadata.Options.HasAffectsRender())
+				{
+					if (actualInstanceAlias is UIElement elt)
+					{
+						var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(elt);
+						visual.Compositor.InvalidateRender(visual);
+					}
+				}
+
+				// NOTE: We intentionally skip HasInherits() cascade here.
+				// TextFormatting handles its own propagation via MarkInheritedPropertyDirty.
+			}
+
+			// Backing field update
+			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);
+
+			// PropertyChanged callback
+			var eventArgs = _dpChangedEventArgsPool.Rent();
+			eventArgs.PropertyInternal = property;
+			eventArgs.OldValueInternal = oldValue;
+			eventArgs.NewValueInternal = newValue;
+
+			TextFormattingHelper.IsProcessingInheritedNotification = true;
+			try
+			{
+				if (propertyMetadata.HasPropertyChanged)
+				{
+					propertyMetadata.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
+				}
+
+				// OnPropertyChanged2
+				if (actualInstanceAlias is IDependencyObjectInternal doInternal)
+				{
+					doInternal.OnPropertyChanged2(eventArgs);
+				}
+
+				// RegisterPropertyChangedCallback handlers
+				var propertyDetails = _properties.FindPropertyDetails(property);
+				if (propertyDetails is { CanRaisePropertyChanged: true })
+				{
+					propertyDetails.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
+				}
+
+				// Generic callbacks
+				var instanceRef = _originalObjectRef ?? ThisWeakReference;
+				var currentCallbacks = _genericCallbacks.Data;
+				for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
+				{
+					currentCallbacks[callbackIndex].Invoke(instanceRef, property, eventArgs);
+				}
+			}
+			finally
+			{
+				TextFormattingHelper.IsProcessingInheritedNotification = false;
+			}
+
+			eventArgs.OldValueInternal = null;
+			eventArgs.NewValueInternal = null;
+			_dpChangedEventArgsPool.Return(eventArgs);
+		}
+
 		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, object? newValue)
 		{
 			var propagateUnregistering = (_unregisteringInheritedProperties || _parentUnregisteringInheritedProperties) && property == _dataContextProperty;
@@ -1961,6 +2099,15 @@ namespace Microsoft.UI.Xaml
 			}
 
 			propertyDetails.SetValue(value, precedence);
+
+			// MUX ref: When a text formatting property is cleared (UnsetValue),
+			// increment the global counter BEFORE the new effective value is computed.
+			// This ensures TextFormatting.IsOld returns true when GetDefaultValue
+			// calls EnsureTextFormatting to compute the new inherited value.
+			if (value == DependencyProperty.UnsetValue && propertyDetails.Property.IsTextFormattingProperty)
+			{
+				GlobalTextFormattingCounter.Invalidate();
+			}
 
 			if (value == DependencyProperty.UnsetValue && precedence >= DependencyPropertyValuePrecedences.Local)
 			{
