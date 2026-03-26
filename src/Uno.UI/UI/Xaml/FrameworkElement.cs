@@ -154,11 +154,11 @@ namespace Microsoft.UI.Xaml
 #if !SUPPORTS_RTL
 		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
 #endif
-		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, Options =
+		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight
 #if SUPPORTS_RTL
-			FrameworkPropertyMetadataOptions.AffectsMeasure |
+			, Options = FrameworkPropertyMetadataOptions.AffectsMeasure
 #endif
-			FrameworkPropertyMetadataOptions.Inherits)]
+			)]
 		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
 
 		#endregion
@@ -396,8 +396,6 @@ namespace Microsoft.UI.Xaml
 		{
 			this.StoreTryEnableHardReferences();
 
-			var effectiveTheme = GetTheme();
-
 			// Apply active style and default style when we enter the visual tree.
 			ApplyStyles();
 
@@ -409,18 +407,10 @@ namespace Microsoft.UI.Xaml
 			UpdateThemeBindings(ResourceUpdateReason.ResolvedOnLoading);
 
 			// MUX Reference: CUIElement::Enter / EnsureTextFormatting
-			// Pull inherited theme foreground from parent when entering the visual tree.
-			// Only apply when there IS a parent with a frozen theme foreground, meaning
-			// we're inside a theme boundary (RequestedTheme != Default ancestor).
-			// Without a theme boundary, foreground inheritance works normally via the DP system.
-			if (RequestedTheme == ElementTheme.Default && effectiveTheme != Theme.None)
-			{
-				var parent = this.GetParent() as FrameworkElement;
-				if (parent?._themeForeground is { } parentFg)
-				{
-					EnsureThemeForeground(parentFg);
-				}
-			}
+			// TextFormatting inheritance is handled by the TextFormatting system.
+			// On tree entry, DependencyObject.RegisterInheritedPropertyChangedCallback
+			// calls PullInheritedTextFormatting which pulls all text properties
+			// (including frozen foreground) from the parent's TextFormatting.
 		}
 
 		partial void OnUnloadedPartial()

@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontFamily.Default,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontFamilyChanged()
 				)
 			);
@@ -81,7 +81,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontStyle.Normal,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontStyleChanged()
 				)
 			);
@@ -103,7 +103,7 @@ namespace Microsoft.UI.Xaml.Documents
 			set => SetFontStretchValue(value);
 		}
 
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal)]
 		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
 
 		protected virtual void OnFontStretchChanged()
@@ -130,7 +130,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: 14.0,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontSizeChanged()
 				)
 			);
@@ -190,7 +190,7 @@ namespace Microsoft.UI.Xaml.Documents
 			typeof(TextElement),
 			new FrameworkPropertyMetadata(
 				defaultValue: SolidColorBrushHelper.Black,
-				options: FrameworkPropertyMetadataOptions.Inherits,
+				options: FrameworkPropertyMetadataOptions.None,
 				propertyChangedCallback: (instance, args) => ((TextElement)instance).OnForegroundChanged()
 		));
 
@@ -219,7 +219,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontWeights.Normal,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontWeightChanged()
 				)
 			);
@@ -248,7 +248,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: 0,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnCharacterSpacingChanged()
 				)
 			);
@@ -270,7 +270,7 @@ namespace Microsoft.UI.Xaml.Documents
 			set => SetTextDecorationsValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = TextDecorations.None, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true, ChangedCallbackName = nameof(OnTextDecorationsChanged))]
+		[GeneratedDependencyProperty(DefaultValue = TextDecorations.None, ChangedCallback = true, ChangedCallbackName = nameof(OnTextDecorationsChanged))]
 		public static DependencyProperty TextDecorationsProperty { get; } = CreateTextDecorationsProperty();
 
 		protected virtual void OnTextDecorationsChanged()
@@ -297,7 +297,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: BaseLineAlignment.Baseline,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnBaseLineAlignmentChanged()
 				)
 			);
@@ -316,7 +316,7 @@ namespace Microsoft.UI.Xaml.Documents
 		/// <summary>
 		/// Identifies for the AllowFocusOnInteraction dependency property.
 		/// </summary>
-		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		[GeneratedDependencyProperty(DefaultValue = true)]
 		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
 
 		/// <summary>
