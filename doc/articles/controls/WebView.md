@@ -304,7 +304,7 @@ The type of `nativeControl` varies per platform:
 | Platform | Native Control Type | Notes |
 |----------|-------------------|-------|
 | **Android** | `Android.Webkit.WebView` | Standard Android WebView |
-| **iOS / Mac Catalyst** | `WebKit.WKWebView` | Via `UnoWKWebView`, which extends `WKWebView` |
+| **iOS** | `WebKit.WKWebView` | Via `UnoWKWebView`, which extends `WKWebView` |
 | **macOS (Skia)** | `MacOSNativeWebView` | Internal wrapper using native WebKit via P/Invoke |
 | **Windows (Win32/Skia)** | N/A | Uses a native HWND; not directly accessible via `Content` |
 | **Linux (X11)** | N/A | Uses a GTK `WebKit.WebView` hosted in a separate window |
