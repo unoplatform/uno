@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Uno.Disposables;
+using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml;
 
@@ -24,9 +25,11 @@ internal sealed class ThemeWalkResourceCache
 	/// </summary>
 	internal static ThemeWalkResourceCache Instance { get; } = new();
 
-	// Key: (ResourceDictionary, ResourceKey) -> resolved value
+	// Key: (ResourceDictionary, ResourceKey) -> weak reference to resolved value.
 	// ResourceDictionary uses reference equality (default for classes).
-	private readonly Dictionary<(ResourceDictionary Dict, SpecializedResourceDictionary.ResourceKey Key), object?> _cache = new();
+	// WinUI uses xref::weakref_ptr<CDependencyObject> for cached values,
+	// so we use ManagedWeakReference to match — the cache must not extend object lifetimes.
+	private readonly Dictionary<(ResourceDictionary Dict, SpecializedResourceDictionary.ResourceKey Key), ManagedWeakReference> _cache = new();
 
 	private bool _isCachingThemeResources;
 
@@ -60,6 +63,10 @@ internal sealed class ThemeWalkResourceCache
 	/// Tries to retrieve a cached resource value.
 	/// Only returns values when a caching session is active.
 	/// </summary>
+	/// <remarks>
+	/// MUX Reference: ThemeWalkResourceCache::TryGetCachedResource()
+	/// WinUI guards with if (m_isCachingThemeResources) and uses weakref_ptr::lock_noref.
+	/// </remarks>
 	public bool TryGetCachedValue(ResourceDictionary dictionary, SpecializedResourceDictionary.ResourceKey key, out object? value)
 	{
 		if (!_isCachingThemeResources)
@@ -68,7 +75,14 @@ internal sealed class ThemeWalkResourceCache
 			return false;
 		}
 
-		return _cache.TryGetValue((dictionary, key), out value);
+		if (_cache.TryGetValue((dictionary, key), out var weakRef) && weakRef.TryGetTarget<object>(out var target))
+		{
+			value = target;
+			return true;
+		}
+
+		value = null;
+		return false;
 	}
 
 	/// <summary>
@@ -77,14 +91,22 @@ internal sealed class ThemeWalkResourceCache
 	/// to prevent the global dictionary from retaining strong references
 	/// to per-instance ResourceDictionaries indefinitely.
 	/// </summary>
+	/// <remarks>
+	/// MUX Reference: ThemeWalkResourceCache::AddCachedResource()
+	/// WinUI guards with if (m_isCachingThemeResources) and stores a weakref_ptr.
+	/// </remarks>
 	public void CacheValue(ResourceDictionary dictionary, SpecializedResourceDictionary.ResourceKey key, object? value)
 	{
-		if (!_isCachingThemeResources)
+		if (!_isCachingThemeResources || value is null)
 		{
 			return;
 		}
 
-		_cache[(dictionary, key)] = value;
+		var cacheKey = (dictionary, key);
+		if (!_cache.ContainsKey(cacheKey))
+		{
+			_cache[cacheKey] = WeakReferencePool.RentWeakReference(this, value);
+		}
 	}
 
 	/// <summary>
