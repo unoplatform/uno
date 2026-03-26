@@ -545,6 +545,61 @@ namespace Microsoft.UI.Xaml
 		public global::System.Collections.Generic.ICollection<object> Keys
 			=> _values.Keys.Select(k => ConvertKey(k)).ToList();
 
+		/// <summary>
+		/// Enumerates key-value pairs without materializing lazy entries.
+		/// Lazy or alias entries are resolved transiently (the resolved value is returned
+		/// but NOT stored back to the dictionary, preserving theme-aware re-resolution).
+		/// </summary>
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		public IEnumerable<KeyValuePair<object, object>> GetKeyValuePairsNonMaterialized()
+		{
+			foreach (var kvp in _values)
+			{
+				var value = kvp.Value;
+				if (value is LazyInitializer lazyInitializer)
+				{
+					// Resolve lazily but do NOT store back — preserves re-resolution capability
+					try
+					{
+						bool hasEmptyCurrentScope = lazyInitializer.CurrentScope.Sources.IsEmpty;
+						if (!hasEmptyCurrentScope)
+						{
+							ResourceResolver.PushNewScope(lazyInitializer.CurrentScope);
+						}
+
+						if (!FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries)
+						{
+							ResourceResolver.PushSourceToScope(this);
+						}
+
+						value = lazyInitializer.Initializer();
+
+						if (!FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries)
+						{
+							ResourceResolver.PopSourceFromScope();
+						}
+
+						if (!hasEmptyCurrentScope)
+						{
+							ResourceResolver.PopScope();
+						}
+					}
+					catch
+					{
+						value = null;
+					}
+				}
+
+				if (value is StaticResourceAliasRedirect alias)
+				{
+					ResourceResolver.ResolveResourceStatic(alias.ResourceKey, out var target, alias.ParseContext);
+					value = target;
+				}
+
+				yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key), value);
+			}
+		}
+
 		private static object ConvertKey(ResourceKey resourceKey)
 			=> resourceKey.TypeKey ?? (object)resourceKey.Key;
 
