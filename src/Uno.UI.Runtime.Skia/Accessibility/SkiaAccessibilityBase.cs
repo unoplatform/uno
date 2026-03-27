@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 
@@ -529,7 +530,17 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	{
 		if (e.NewValue is false && sender is UIElement element)
 		{
-			RecoverFocus(element);
+			// Only recover focus if the element is still the focused element.
+			// The framework's own focus management may already handle this case
+			// (e.g., when a button disables itself during command execution).
+			if (IsElementCurrentlyFocused(element))
+			{
+				RecoverFocus(element);
+			}
+			else
+			{
+				UntrackFocusedElement();
+			}
 		}
 	}
 
@@ -537,8 +548,28 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	{
 		if (sender is UIElement element)
 		{
-			RecoverFocus(element);
+			// Only recover focus if the element is still the focused element.
+			// During navigation, the framework handles focus transfer itself.
+			if (IsElementCurrentlyFocused(element))
+			{
+				RecoverFocus(element);
+			}
+			else
+			{
+				UntrackFocusedElement();
+			}
 		}
+	}
+
+	private static bool IsElementCurrentlyFocused(UIElement element)
+	{
+		if (element.XamlRoot is null)
+		{
+			return false;
+		}
+
+		var focusedElement = FocusManager.GetFocusedElement(element.XamlRoot);
+		return ReferenceEquals(focusedElement, element);
 	}
 
 	/// <summary>
