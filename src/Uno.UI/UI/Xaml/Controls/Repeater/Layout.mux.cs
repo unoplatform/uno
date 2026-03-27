@@ -226,7 +226,7 @@ partial class Layout
 	protected internal void InvalidateMeasure()
 	{
 #if HAS_UNO
-		NotifyMeasureInvalidatedUno();
+		_measureInvalidatedHandlers?.Invoke(this, null);
 #endif
 		MeasureInvalidated?.Invoke(this, null);
 	}
@@ -238,7 +238,7 @@ partial class Layout
 	protected void InvalidateArrange()
 	{
 #if HAS_UNO
-		NotifyArrangeInvalidatedUno();
+		_arrangeInvalidatedHandlers?.Invoke(this, null);
 #endif
 		ArrangeInvalidated?.Invoke(this, null);
 	}

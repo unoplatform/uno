@@ -32,9 +32,4 @@ partial class Layout
 			handler,
 			(h, s, e) => (h as TypedEventHandler<Layout, object>)?.Invoke((Layout)s, e)
 		);
-
-	// Hook into InvalidateMeasure/InvalidateArrange (declared in Layout.mux.cs) to also
-	// fire the weak-reference handlers so consumers using Register*Invalidated() are notified.
-	partial void NotifyMeasureInvalidatedUno() => _measureInvalidatedHandlers?.Invoke(this, null);
-	partial void NotifyArrangeInvalidatedUno() => _arrangeInvalidatedHandlers?.Invoke(this, null);
 }
