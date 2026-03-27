@@ -512,10 +512,11 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		private DataTemplate GetDataTemplate(string content)
 		{
 			return (DataTemplate)XamlReader.Load(
-					   string.Format(@"<DataTemplate  
+					   string.Format(@"<DataTemplate
 							xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
 						   {0}
 						</DataTemplate>", content));
 		}
+
 	}
 }
