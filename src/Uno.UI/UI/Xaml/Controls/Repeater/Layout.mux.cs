@@ -44,7 +44,7 @@ partial class Layout
 		return m_forcedIndexBasedLayoutOrientationDbg;
 	}
 
-	void SetForcedIndexBasedLayoutOrientationDbg(IndexBasedLayoutOrientation forcedIndexBasedLayoutOrientation)
+	internal void SetForcedIndexBasedLayoutOrientationDbg(IndexBasedLayoutOrientation forcedIndexBasedLayoutOrientation)
 	{
 		m_forcedIndexBasedLayoutOrientationDbg = forcedIndexBasedLayoutOrientation;
 		m_isForcedIndexBasedLayoutOrientationSetDbg = true;
