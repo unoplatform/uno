@@ -470,9 +470,14 @@ public class Given_WebView2
 		await webView.EnsureCoreWebView2Async();
 
 		string message = null;
+		bool navigationCompleted = false;
 		webView.WebMessageReceived += (s, e) =>
 		{
 			message = e.WebMessageAsJson;
+		};
+		webView.NavigationCompleted += (s, e) =>
+		{
+			navigationCompleted = true;
 		};
 
 		var html =
@@ -503,12 +508,14 @@ public class Given_WebView2
 
 		// First, verify PostMessage works before remove/add
 		webView.NavigateToString(html);
+		await TestServices.WindowHelper.WaitFor(() => navigationCompleted, 2000);
 		await webView.ExecuteScriptAsync("sendWebMessage()");
 		await TestServices.WindowHelper.WaitFor(() => message is not null, 2000);
 		Assert.IsNotNull(message, "PostMessage should work before remove/add");
 
 		// Remove WebView2 from visual tree
 		message = null;
+		navigationCompleted = false;
 		border.Child = null;
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -518,6 +525,7 @@ public class Given_WebView2
 
 		// Navigate again and verify PostMessage still works
 		webView.NavigateToString(html);
+		await TestServices.WindowHelper.WaitFor(() => navigationCompleted, 2000);
 		await webView.ExecuteScriptAsync("sendWebMessage()");
 		await TestServices.WindowHelper.WaitFor(() => message is not null, 2000);
 		Assert.IsNotNull(message, "PostMessage should still work after removing and re-adding WebView2 to visual tree");
