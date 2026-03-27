@@ -13,6 +13,7 @@ using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Server.AppLaunch;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.ServerCore.Configuration;
+using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.VS.Helpers;
 

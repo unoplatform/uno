@@ -19,6 +19,7 @@ using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Host.Extensibility;
 using Uno.UI.RemoteControl.Host.Configuration;
 using Uno.UI.RemoteControl.Host.Helpers;
+using Uno.UI.RemoteControl.ServerCore.Configuration;
 using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Host.Mcp;
 using Uno.UI.RemoteControl.Server.AppLaunch;
