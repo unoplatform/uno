@@ -477,23 +477,6 @@ public partial class DependencyObjectStore
 			return;
 		}
 
-		// Skip if the update is a pure theme change and Phase 1 already handled it.
-		// Do NOT skip during loading (ResolvedOnLoading) — Phase 2's tree walk is
-		// required to resolve the resource with the correct theme context and to
-		// pin the providing dictionary for future theme changes.
-		// Only skip for loaded FrameworkElements where Phase 1's ancestor walk
-		// actually ran. Non-FrameworkElement DOs (brushes, animations, etc.) cannot
-		// do the ancestor walk, so Phase 2's tree-walk (using resourceContextProvider)
-		// is still required to resolve and pin the providing dictionary.
-		// MUX Reference: WinUI's NotifyThemeChangedCore processes theme resources
-		// only through UpdateAllThemeReferences, not through resource bindings.
-		if (updateReason == ResourceUpdateReason.ThemeResource
-			&& ActualInstance is FrameworkElement { IsLoaded: true }
-			&& _themeResources?.Get(property, binding.Precedence) is not null)
-		{
-			return;
-		}
-
 		if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
 		{
 			// Add the current dictionaries to the resolver scope,
