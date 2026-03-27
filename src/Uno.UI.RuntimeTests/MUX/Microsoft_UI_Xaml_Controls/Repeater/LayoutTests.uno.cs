@@ -11,7 +11,6 @@ using Common;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
-	[TestClass]
 	public partial class LayoutTests
 	{
 		[TestMethod]

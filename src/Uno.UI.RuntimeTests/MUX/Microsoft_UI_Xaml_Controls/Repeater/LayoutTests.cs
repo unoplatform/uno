@@ -44,7 +44,7 @@ using System.Threading.Tasks;
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
-	public class LayoutTests : MUXApiTestBase
+	public partial class LayoutTests : MUXApiTestBase
 	{
 		[TestMethod]
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
