@@ -31,6 +31,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		private KeyFrameScheduler<object> _frameScheduler;
+		private IKeyFrame<object> _currentFrame;
 		private (int count, TimeSpan time) _playStatus;
 
 		public ObjectAnimationUsingKeyFrames()
@@ -93,6 +94,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			Reset();
 
 			State = TimelineState.Active;
+
+			// MUX Reference: CAnimation::GetAnimationBaseValue / ReadBaseValuesFromTargetOrHandoff
+			// Ensure keyframe theme resources are resolved with the target element's
+			// effective theme before playback begins. This is needed because keyframe
+			// values may have been resolved with the wrong theme context during template
+			// materialization or resource binding updates outside a theme walk.
+			EnsureKeyFrameThemeResources();
 
 			_playStatus = default;
 			_frameScheduler = new KeyFrameScheduler<object>(
@@ -199,77 +207,35 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			_frameScheduler?.Dispose();
 			_frameScheduler = null;
+			_currentFrame = null;
 
 			State = TimelineState.Stopped;
 		}
 
 		private IDisposable OnFrame(object currentValue, IKeyFrame<object> frame, TimeSpan duration)
 		{
-			var value = frame.Value;
-
-			// MUX Reference: ObjectAnimationUsingKeyFrames.cpp, CAnimation::NotifyThemeChangedCore
-			// WinUI resolves ThemeResource KeyFrame values lazily using the target element's
-			// current theme at the moment the animation applies the value. In Uno, KeyFrame
-			// values are pre-resolved during template materialization which may use the wrong
-			// theme context (app-level instead of element-level). We re-resolve here using
-			// the target element's actual theme.
-			if (frame is IDependencyObjectStoreProvider frameProvider)
-			{
-				var targetElement = PropertyInfo?.DataContext as FrameworkElement;
-				if (targetElement is not null)
-				{
-					var effectiveTheme = targetElement.GetTheme();
-					if (effectiveTheme != Theme.None)
-					{
-						// Check if the KeyFrame has ThemeResource bindings (in _themeResources or _resourceBindings)
-						var themeRefs = frameProvider.Store.GetThemeResourceReferences(ObjectKeyFrame.ValueProperty);
-						var resourceBindings = frameProvider.Store.GetResourceBindingsForProperty(ObjectKeyFrame.ValueProperty);
-
-						bool hasThemeBinding = false;
-						foreach (var _ in themeRefs ?? System.Linq.Enumerable.Empty<Data.ThemeResourceReference>())
-						{
-							hasThemeBinding = true;
-							break;
-						}
-						if (!hasThemeBinding)
-						{
-							foreach (var rb in resourceBindings)
-							{
-								if ((rb.UpdateReason & Data.ResourceUpdateReason.ThemeResource) != 0)
-								{
-									hasThemeBinding = true;
-									break;
-								}
-							}
-						}
-
-						if (hasThemeBinding)
-						{
-							// Push the target element's theme and re-resolve the KeyFrame value
-							var themeKey = Theming.GetBaseValue(effectiveTheme) == Theme.Light ? "Light" : "Dark";
-							ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-							try
-							{
-								// Re-resolve only the pinned-dictionary path (Phase 1).
-								// Keyframes are not in the visual tree, so tree-walk (Phase 2)
-								// and child propagation (Phase 3) are unnecessary.
-								// MUX Reference: WinUI resolves keyframe theme values via
-								// UpdateAllThemeReferences, not per-frame UpdateResourceBindings.
-								frameProvider.Store.UpdateAllThemeReferences(null);
-								// Read the updated value
-								value = frame.Value;
-							}
-							finally
-							{
-								ResourceDictionary.PopRequestedThemeForSubTree();
-							}
-						}
-					}
-				}
-			}
-
-			SetValue(value);
+			// MUX Reference: CAnimation::UpdateAnimationUsingKeyFrames (animation.cpp:247)
+			// WinUI reads keyframe values directly — theme resources have already been
+			// resolved during NotifyThemeChangedCore tree walk propagation (which reaches
+			// keyframes via: Element → VisualStateGroups → VisualState → Storyboard →
+			// Animation → KeyFrameCollection → ObjectKeyFrame.UpdateAllThemeReferences).
+			_currentFrame = frame;
+			SetValue(frame.Value);
 			return null;
+		}
+
+		// MUX Reference: CAnimation::NotifyThemeChangedCore (animation.cpp:1030)
+		// WinUI requests an immediate animation tick so updated keyframe values
+		// are applied to the target. In Uno, keyframe values have already been
+		// refreshed by UpdateAllThemeReferences during the theme walk (via
+		// UpdateChildResourceBindings propagation). We re-apply the current
+		// frame's value directly.
+		private protected override void OnThemeChanged()
+		{
+			if (_currentFrame is not null && State != TimelineState.Stopped)
+			{
+				SetValue(_currentFrame.Value);
+			}
 		}
 
 		private void OnFramesEnd(KeyFrameScheduler<object>.EndReason endReason)
@@ -309,6 +275,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			_frameScheduler?.Dispose();
 			_frameScheduler = null;
+			_currentFrame = lastKeyFrame;
 
 			State = TimelineState.Filling;
 			SetValue(lastKeyFrame.Value);
@@ -346,6 +313,41 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				_frameScheduler.Dispose();
 				_frameScheduler = null;
+			}
+		}
+
+		/// <summary>
+		/// Resolves all keyframe theme resources with the target element's effective theme.
+		/// Called once at Begin time to ensure keyframe values match the element-level theme.
+		/// </summary>
+		private void EnsureKeyFrameThemeResources()
+		{
+			if (PropertyInfo?.DataContext is not FrameworkElement targetElement)
+			{
+				return;
+			}
+
+			var effectiveTheme = targetElement.GetTheme();
+			if (effectiveTheme == Theme.None)
+			{
+				return;
+			}
+
+			var themeKey = Theming.GetBaseValue(effectiveTheme) == Theme.Light ? "Light" : "Dark";
+			ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+			try
+			{
+				foreach (var keyFrame in KeyFrames)
+				{
+					if (keyFrame is IDependencyObjectStoreProvider provider)
+					{
+						provider.Store.UpdateAllThemeReferences(null);
+					}
+				}
+			}
+			finally
+			{
+				ResourceDictionary.PopRequestedThemeForSubTree();
 			}
 		}
 
