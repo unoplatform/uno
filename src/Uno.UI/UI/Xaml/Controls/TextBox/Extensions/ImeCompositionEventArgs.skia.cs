@@ -23,10 +23,18 @@ internal class ImeCompositionEventArgs : EventArgs
 	/// </summary>
 	public int ResolvedLength { get; }
 
-	public ImeCompositionEventArgs(string text, int cursorPosition = -1, int resolvedLength = 0)
+	/// <summary>
+	/// When true, the platform has already applied the text to the TextBox
+	/// (e.g., Android's InputConnection), so the IME handler should only
+	/// update composition tracking state without calling ProcessTextInput again.
+	/// </summary>
+	public bool TextAlreadyApplied { get; }
+
+	public ImeCompositionEventArgs(string text, int cursorPosition = -1, int resolvedLength = 0, bool textAlreadyApplied = false)
 	{
 		Text = text;
 		CursorPosition = cursorPosition;
 		ResolvedLength = resolvedLength;
+		TextAlreadyApplied = textAlreadyApplied;
 	}
 }
