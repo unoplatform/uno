@@ -15,7 +15,7 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed class TextInputPlugin
 {
-	private readonly UnoSKCanvasView _view;
+	private readonly View _view;
 	private readonly InputMethodManager? _imm;
 	private readonly AutofillManager? _afm;
 	private InputTypes _inputTypes = InputTypes.TextVariationNormal;
@@ -23,7 +23,7 @@ internal sealed class TextInputPlugin
 	private TextInputConnection? _inputConnection;
 	private EditorInfo? _editorInfo;
 
-	internal TextInputPlugin(UnoSKCanvasView view)
+	internal TextInputPlugin(View view)
 	{
 		_view = view;
 		_imm = (InputMethodManager?)view.Context!.GetSystemService(Context.InputMethodService);
