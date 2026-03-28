@@ -67,10 +67,11 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			RunOnUIThread.Execute(() =>
 			{
 				var realizationRects = new List<Rect>();
+				var visibleRects = new List<Rect>();
 
 				var repeater = new ItemsRepeater()
 				{
-					Layout = GetMonitoringLayout(new Size(500, 500), realizationRects),
+					Layout = GetMonitoringLayout(new Size(500, 500), realizationRects, visibleRects),
 					HorizontalCacheLength = 0.0,
 					VerticalCacheLength = 0.0
 				};
@@ -80,13 +81,17 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 				Verify.AreEqual(2, realizationRects.Count);
+				Verify.AreEqual(2, visibleRects.Count);
 				Verify.AreEqual(new Rect(0, 0, 0, 0), realizationRects[0]);
+				Verify.AreEqual(realizationRects[0], visibleRects[0]);
 #else
 				// TODO: Uno specific: In our case only one Measure loop occurs
 				// possibly because of a different parent tree of the test.
 				Verify.AreEqual(1, realizationRects.Count);
+				Verify.AreEqual(1, visibleRects.Count);
 				//Verify.AreEqual(new Rect(0, 0, 0, 0), realizationRects[0]);
 				realizationRects.Insert(0, default);
+				visibleRects.Insert(0, default);
 #endif
 
 				if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
@@ -103,9 +108,12 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					// validating something reasonable here to avoid flakiness.
 					Verify.IsLessThan(500.0, realizationRects[1].Width);
 					Verify.IsLessThan(500.0, realizationRects[1].Height);
+					// When HorizontalCacheLength=0 and VerticalCacheLength=0, VisibleRect == RealizationRect.
+					Verify.AreEqual(realizationRects[1], visibleRects[1]);
 				}
 
 				realizationRects.Clear();
+				visibleRects.Clear();
 			});
 		}
 
@@ -207,6 +215,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		public async Task ValidateOneScrollPresenterScenario()
 		{
+			var visibleRects = new List<Rect>();
 			var realizationRects = new List<Rect>();
 			var scrollPresenter = (ScrollPresenter)null;
 			var scrollCompletedEvent = new AutoResetEvent(false);
@@ -216,7 +225,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				var repeater = new ItemsRepeater()
 				{
-					Layout = GetMonitoringLayout(new Size(500, 600), realizationRects),
+					Layout = GetMonitoringLayout(new Size(500, 600), realizationRects, visibleRects),
 					HorizontalCacheLength = 0.0,
 					VerticalCacheLength = 0.0
 				};
@@ -230,6 +239,11 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				Content = scrollPresenter;
 				Content.UpdateLayout();
+
+				Verify.AreEqual(2, visibleRects.Count);
+				Verify.AreEqual(new Rect(0, 0, 0, 0), visibleRects[0]);
+				Verify.AreEqual(new Rect(0, 0, 200, 300), visibleRects[1]);
+				visibleRects.Clear();
 
 				Verify.AreEqual(2, realizationRects.Count);
 				Verify.AreEqual(new Rect(0, 0, 0, 0), realizationRects[0]);
@@ -257,6 +271,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			RunOnUIThread.Execute(() =>
 			{
+				Verify.AreEqual(new Rect(0, 100, 200, 300), visibleRects.Last());
+				visibleRects.Clear();
 				Verify.AreEqual(new Rect(0, 100, 200, 300), realizationRects.Last());
 				realizationRects.Clear();
 
@@ -270,6 +286,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			RunOnUIThread.Execute(() =>
 			{
+				Verify.AreEqual(new Rect(300, 100, 200, 300), visibleRects.Last());
+				visibleRects.Clear();
+
 				Verify.AreEqual(new Rect(300, 100, 200, 300), realizationRects.Last());
 				realizationRects.Clear();
 
@@ -283,13 +302,18 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			RunOnUIThread.Execute(() =>
 			{
+				Verify.AreEqual(
+					new Rect(300, 100, 100, 150),
+					realizationRects.Last());
+				realizationRects.Clear();
+
 				// There are some known differences in InteractionTracker zoom between RS1 and RS2.
 				Verify.AreEqual(
 					PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone2) ?
 					new Rect(300, 100, 100, 150) :
 					new Rect(150, 100, 100, 150),
-					realizationRects.Last());
-				realizationRects.Clear();
+					visibleRects.Last());
+				visibleRects.Clear();
 			});
 		}
 
@@ -522,9 +546,12 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			var scrollPresenter = (ScrollPresenter)null;
 			var repeater = (ItemsRepeater)null;
+			var measureVisibleRects = new List<Rect>();
 			var measureRealizationRects = new List<Rect>();
+			var arrangeVisibleRects = new List<Rect>();
 			var arrangeRealizationRects = new List<Rect>();
 			var fullCacheEvent = new ManualResetEvent(initialState: false);
+			bool fullCacheReached = false;
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -540,17 +567,38 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				{
 					MeasureLayoutFunc = (availableSize, context) =>
 					{
-						measureRealizationRects.Add(context.RealizationRect);
+						if (fullCacheReached)
+						{
+							Log.Comment("Measure pass - full cache already reached.");
+						}
+						else
+						{
+							Log.Comment("Measure pass - adding VisibleRect: {0}, RealizationRect: {1}", context.VisibleRect, context.RealizationRect);
+
+							measureVisibleRects.Add(context.VisibleRect);
+							measureRealizationRects.Add(context.RealizationRect);
+						}
 						return new Size(1000, 2000);
 					},
 
 					ArrangeLayoutFunc = (finalSize, context) =>
 					{
-						arrangeRealizationRects.Add(context.RealizationRect);
-
-						if (context.RealizationRect.Height == scrollPresenter.Height * (repeater.VerticalCacheLength + 1))
+						if (fullCacheReached)
 						{
-							fullCacheEvent.Set();
+							Log.Comment("Arrange pass - full cache already reached.");
+						}
+						else
+						{
+							Log.Comment("Arrange pass - adding VisibleRect: {0}, RealizationRect: {1}", context.VisibleRect, context.RealizationRect);
+
+							arrangeVisibleRects.Add(context.VisibleRect);
+							arrangeRealizationRects.Add(context.RealizationRect);
+
+							if (context.RealizationRect.Height == scrollPresenter.Height * (repeater.VerticalCacheLength + 1))
+							{
+								fullCacheReached = true;
+								fullCacheEvent.Set();
+							}
 						}
 
 						return finalSize;
@@ -579,7 +627,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					(1 + cacheLength) * scrollPresenter.Width,
 					(1 + cacheLength) * scrollPresenter.Height);
 
-				Log.Comment("Validate that the realization window reached full size.");
+				Log.Comment("Validate that the realization window reached full size. Measure passes: {0}, Arrange passes: {1}", measureRealizationRects.Count, arrangeRealizationRects.Count);
+				Log.Comment("expectedRealizationWindow: {0}, measureRealizationRects.Last(): {1}", expectedRealizationWindow, measureRealizationRects.Last());
+				Log.Comment("expectedRealizationWindow: {0}, arrangeRealizationRects.Last(): {1}", expectedRealizationWindow, arrangeRealizationRects.Last());
 				Verify.AreEqual(expectedRealizationWindow, measureRealizationRects.Last());
 
 				Verify.AreEqual(expectedRealizationWindow, arrangeRealizationRects.Last());
@@ -596,6 +646,22 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					Verify.AreEqual(-40, arrangeRealizationRects[i].Y - arrangeRealizationRects[i - 1].Y);
 					Verify.AreEqual(80, arrangeRealizationRects[i].Width - arrangeRealizationRects[i - 1].Width);
 					Verify.AreEqual(80, arrangeRealizationRects[i].Height - arrangeRealizationRects[i - 1].Height);
+				}
+
+				// Skipping first recording measureVisibleRects[0] since both the realization and visible rects are still empty at that point.
+				Log.Comment("Validate expected measure visible rects");
+				for (int i = 1; i < measureVisibleRects.Count; ++i)
+				{
+					Log.Comment("expectedVisibleWindow: {0}, visibleRect: {1}", expectedVisibleWindow, measureVisibleRects[i]);
+					Verify.AreEqual(expectedVisibleWindow, measureVisibleRects[i]);
+				}
+
+				// Skipping first recording arrangeVisibleRects[0] since both the realization and visible rects are still empty at that point.
+				Log.Comment("Validate expected arrange visible rects");
+				for (int i = 1; i < arrangeVisibleRects.Count; ++i)
+				{
+					Log.Comment("expectedVisibleWindow: {0}, visibleRect: {1}", expectedVisibleWindow, arrangeVisibleRects[i]);
+					Verify.AreEqual(expectedVisibleWindow, arrangeVisibleRects[i]);
 				}
 			});
 		}
@@ -1348,13 +1414,17 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		private static VirtualizingLayout GetMonitoringLayout(Size desiredSize, List<Rect> realizationRects)
+		private static VirtualizingLayout GetMonitoringLayout(Size desiredSize, List<Rect> realizationRects, List<Rect> visibleRects = null)
 		{
 			return new MockVirtualizingLayout
 			{
 				MeasureLayoutFunc = (availableSize, context) =>
 				{
 					realizationRects.Add(context.RealizationRect);
+					if (visibleRects != null)
+					{
+						visibleRects.Add(context.VisibleRect);
+					}
 					return desiredSize;
 				},
 

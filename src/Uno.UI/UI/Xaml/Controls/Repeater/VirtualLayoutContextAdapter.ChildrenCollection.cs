@@ -1,5 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference VirtualLayoutContextAdapter.h, commit 5f9e851133b3
+// Note: ChildrenCollection<T> and its Iterator are defined as private inner classes inline
+// in the C++ header. In Uno, the template is specialized to UIElement.
 
 using System;
 using System.Collections;
@@ -7,72 +10,71 @@ using System.Collections.Generic;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+partial class VirtualLayoutContextAdapter
 {
-	internal partial class VirtualLayoutContextAdapter
+	private class ChildrenCollection : IReadOnlyList<UIElement>, IEnumerable<UIElement>
 	{
-		private class ChildrenCollection : IReadOnlyList<UIElement>, IEnumerable<UIElement>
+		private VirtualizingLayoutContext m_context;
+
+		public ChildrenCollection(VirtualizingLayoutContext context)
 		{
-			private VirtualizingLayoutContext m_context;
-
-			public ChildrenCollection(VirtualizingLayoutContext context)
-			{
-				m_context = context;
-			}
-
-			public int Count => m_context.ItemCount;
-
-			public UIElement this[int index] => m_context.GetOrCreateElementAt(index, ElementRealizationOptions.None);
-
-			public IEnumerator<UIElement> GetEnumerator()
-				=> new Iterator(this);
-
-			IEnumerator IEnumerable.GetEnumerator()
-				=> GetEnumerator();
+			m_context = context;
 		}
 
-		private class Iterator : IEnumerator<UIElement>
+		public int Count => m_context.ItemCount;
+
+		public UIElement this[int index] => m_context.GetOrCreateElementAt(index, ElementRealizationOptions.None);
+
+		public IEnumerator<UIElement> GetEnumerator()
+			=> new Iterator(this);
+
+		IEnumerator IEnumerable.GetEnumerator()
+			=> GetEnumerator();
+	}
+
+	private class Iterator : IEnumerator<UIElement>
+	{
+		private readonly IReadOnlyList<UIElement> m_childCollection;
+		private int m_currentIndex = -1; // UNO:: This is 0 on WinUI
+
+		public Iterator(IReadOnlyList<UIElement> childCollection)
 		{
-			private readonly IReadOnlyList<UIElement> m_childCollection;
-			private int m_currentIndex = -1; // UNO:: This is 0 on WinUI
+			m_childCollection = childCollection;
+		}
 
-			public Iterator(IReadOnlyList<UIElement> childCollection)
-			{
-				m_childCollection = childCollection;
-			}
-
-			object IEnumerator.Current => Current;
-			public UIElement Current
-			{
-				get
-				{
-					if (m_currentIndex < m_childCollection.Count)
-					{
-						return m_childCollection[m_currentIndex];
-					}
-					else
-					{
-						throw new IndexOutOfRangeException();
-					}
-				}
-			}
-
-			public bool MoveNext()
+		object IEnumerator.Current => Current;
+		public UIElement Current
+		{
+			get
 			{
 				if (m_currentIndex < m_childCollection.Count)
 				{
-					++m_currentIndex;
-					return m_currentIndex < m_childCollection.Count;
+					return m_childCollection[m_currentIndex];
 				}
 				else
 				{
 					throw new IndexOutOfRangeException();
 				}
 			}
-
-			public void Reset() { }
-
-			public void Dispose() { }
 		}
+
+		public bool MoveNext()
+		{
+			if (m_currentIndex < m_childCollection.Count)
+			{
+				++m_currentIndex;
+				return m_currentIndex < m_childCollection.Count;
+			}
+			else
+			{
+				throw new IndexOutOfRangeException();
+			}
+		}
+
+		public void Reset() { }
+
+		public void Dispose() { }
 	}
 }

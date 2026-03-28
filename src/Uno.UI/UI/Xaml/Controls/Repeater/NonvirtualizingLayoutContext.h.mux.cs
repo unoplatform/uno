@@ -4,9 +4,7 @@
 
 namespace Microsoft.UI.Xaml.Controls;
 
-/// <summary>
-/// Represents the base class for layout context types that do not support virtualization.
-/// </summary>
-public partial class NonVirtualizingLayoutContext : LayoutContext
+partial class NonVirtualizingLayoutContext
 {
+	private LayoutContextAdapter m_contextAdapter;
 }

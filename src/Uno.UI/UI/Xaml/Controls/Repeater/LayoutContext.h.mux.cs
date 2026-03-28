@@ -4,10 +4,12 @@
 
 namespace Microsoft.UI.Xaml.Controls;
 
-/// <summary>
-/// Represents the base class for an object that facilitates communication between an attached layout
-/// and its host container.
-/// </summary>
-public partial class LayoutContext : global::Microsoft.UI.Xaml.DependencyObject
+partial class LayoutContext
 {
+#if DEBUG
+	// Inline accessors defined in C++ header under #ifdef DBG.
+	public int Indent { get; set; }
+#else
+	public int Indent => 0;
+#endif
 }

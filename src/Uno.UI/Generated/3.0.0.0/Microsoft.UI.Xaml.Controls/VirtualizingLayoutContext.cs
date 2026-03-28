@@ -12,16 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ItemCount
 		// Skipping already declared property RealizationRect
 		// Skipping already declared property RecommendedAnchorIndex
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Rect VisibleRect
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Rect VirtualizingLayoutContext.VisibleRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20VirtualizingLayoutContext.VisibleRect");
-			}
-		}
-#endif
+		// Skipping already declared property VisibleRect
 		// Skipping already declared property LayoutOriginCore
 		// Skipping already declared property RecommendedAnchorIndexCore
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.VirtualizingLayoutContext()
@@ -44,12 +35,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecommendedAnchorIndexCore.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOriginCore.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOriginCore.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected virtual global::Windows.Foundation.Rect VisibleRectCore()
-		{
-			throw new global::System.NotImplementedException("The member Rect VirtualizingLayoutContext.VisibleRectCore() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20VirtualizingLayoutContext.VisibleRectCore%28%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.VisibleRectCore()
 	}
 }
