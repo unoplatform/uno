@@ -87,11 +87,13 @@ internal sealed partial class FocusSynchronizer
 			var semanticHandle = _accessibility.ResolveToSemanticHandle(element);
 			if (semanticHandle == IntPtr.Zero)
 			{
-				// No semantic element found — fall back to the direct handle.
-				// The JS side will gracefully handle "not found" cases.
-				// This prevents focus from being silently dropped during page
-				// navigation or when focusing non-semantic elements.
-				semanticHandle = handle;
+				// No semantic element found — still track the focused element
+				// for recovery purposes, but skip the native DOM focus sync.
+				// Attempting to focus a raw visual handle can cause the browser
+				// to redirect focus to a different DOM element, which feeds back
+				// through OnBrowserFocus and changes XAML focus unexpectedly.
+				TrackFocusedElement(element);
+				return;
 			}
 
 			_isSyncing = true;
@@ -220,7 +222,16 @@ internal sealed partial class FocusSynchronizer
 	{
 		if (e.NewValue is false && sender is UIElement element)
 		{
-			RecoverFocus(element);
+			// Do NOT call RecoverFocus when an element becomes disabled.
+			// WinUI retains focus on disabled controls; the framework's own
+			// focus management (not the accessibility layer) is responsible for
+			// focus recovery. Proactively moving focus here interferes with
+			// transient disable/re-enable cycles such as ButtonBase command
+			// execution toggling ICommand.CanExecute.
+			if (!IsElementCurrentlyFocused(element))
+			{
+				UntrackFocusedElement();
+			}
 		}
 	}
 
@@ -228,8 +239,28 @@ internal sealed partial class FocusSynchronizer
 	{
 		if (sender is UIElement element)
 		{
-			RecoverFocus(element);
+			// Only recover focus if the element is still the focused element.
+			// During navigation, the framework handles focus transfer itself.
+			if (IsElementCurrentlyFocused(element))
+			{
+				RecoverFocus(element);
+			}
+			else
+			{
+				UntrackFocusedElement();
+			}
 		}
+	}
+
+	private static bool IsElementCurrentlyFocused(UIElement element)
+	{
+		if (element.XamlRoot is null)
+		{
+			return false;
+		}
+
+		var focusedElement = FocusManager.GetFocusedElement(element.XamlRoot);
+		return ReferenceEquals(focusedElement, element);
 	}
 
 	/// <summary>

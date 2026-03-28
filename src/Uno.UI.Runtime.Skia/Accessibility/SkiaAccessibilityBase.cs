@@ -530,17 +530,18 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	{
 		if (e.NewValue is false && sender is UIElement element)
 		{
-			// Only recover focus if the element is still the focused element.
-			// The framework's own focus management may already handle this case
-			// (e.g., when a button disables itself during command execution).
-			if (IsElementCurrentlyFocused(element))
-			{
-				RecoverFocus(element);
-			}
-			else
+			// Do NOT call RecoverFocus when an element becomes disabled.
+			// WinUI retains focus on disabled controls; the framework's own
+			// focus management (not the accessibility layer) is responsible for
+			// focus recovery. Proactively moving focus here interferes with
+			// transient disable/re-enable cycles such as ButtonBase command
+			// execution toggling ICommand.CanExecute.
+			if (!IsElementCurrentlyFocused(element))
 			{
 				UntrackFocusedElement();
 			}
+			// If still focused, keep tracking so OnTrackedElementUnloaded
+			// can handle the case where the element is later removed.
 		}
 	}
 
