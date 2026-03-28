@@ -380,7 +380,26 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		IntPtr rootXWindow = XLib.XRootWindow(display, screen);
 		_x11Window = CreateSoftwareRenderWindow(display, screen, size, rootXWindow);
 		var topWindowDisplay = XLib.XOpenDisplay(IntPtr.Zero);
-		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? true)
+		if (FeatureConfiguration.Rendering.UseVulkanOnX11)
+		{
+			try
+			{
+				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+				_renderer = X11VulkanRenderer.Create(this, TopX11Window);
+			}
+			catch (Exception e)
+			{
+				this.Log().Info($"Vulkan rendering not available: {e.Message}. Falling back to OpenGL.");
+				if (_x11TopWindow is not null)
+				{
+					_ = XLib.XDestroyWindow(_x11TopWindow.Value.Display, _x11TopWindow.Value.Window);
+					_x11TopWindow = null;
+				}
+				_renderer = null;
+			}
+		}
+
+		if (_renderer is null && (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? true))
 		{
 			try
 			{
@@ -430,10 +449,13 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				}
 			}
 		}
-		else
+		if (_renderer is null)
 		{
 			this.Log().Info($"Forcing software rendering.");
-			_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+			if (_x11TopWindow is null)
+			{
+				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+			}
 			_renderer = new X11SoftwareRenderer(this, TopX11Window);
 		}
 
