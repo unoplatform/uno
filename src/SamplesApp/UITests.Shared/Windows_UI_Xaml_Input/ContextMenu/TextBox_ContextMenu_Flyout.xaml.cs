@@ -8,7 +8,7 @@ using Uno.UI.Samples.Controls;
 namespace UITests.Shared.Windows_UI_Xaml_Input.ContextMenu;
 
 /// <summary>
-/// Repro sample for TextCommandBarFlyout visual and behavioral bugs on Skia (kahua-private#436).
+/// Repro sample for TextCommandBarFlyout visual and behavioral bugs on Skia.
 /// Issues covered:
 /// 1. DropShadow incorrect size
 /// 2. Scrollbar appearing in context menu
@@ -17,7 +17,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Input.ContextMenu;
 /// 5. Clipboard commands intermittently missing (PrimaryCommands = 0)
 /// 6. TextBox states affecting context menu commands
 /// </summary>
-[Sample("Input", Name = "TextBox ContextMenu Flyout", Description = "TextCommandBarFlyout visual/behavioral bugs repro (kahua-private#436)", IsManualTest = true)]
+[Sample("Input", Name = "TextBox ContextMenu Flyout", Description = "TextCommandBarFlyout visual/behavioral bugs repro", IsManualTest = true)]
 public sealed partial class TextBox_ContextMenu_Flyout : Page
 {
 	private int _eventCounter;

@@ -17,7 +17,7 @@
 		<!-- Header -->
 		<StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,12">
 			<TextBlock Text="TextBox Context Menu (TextCommandBarFlyout) Issues" FontSize="18" FontWeight="SemiBold" />
-			<TextBlock Text="Repro scenarios for TextCommandBarFlyout visual and behavioral bugs on Skia (kahua-private#436)."
+			<TextBlock Text="Repro scenarios for TextCommandBarFlyout visual and behavioral bugs on Skia."
 					   TextWrapping="Wrap" Foreground="Gray" />
 		</StackPanel>
 

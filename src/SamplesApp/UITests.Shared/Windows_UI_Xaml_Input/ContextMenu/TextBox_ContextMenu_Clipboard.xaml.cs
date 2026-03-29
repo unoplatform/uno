@@ -9,7 +9,7 @@ using Windows.ApplicationModel.DataTransfer;
 namespace UITests.Shared.Windows_UI_Xaml_Input.ContextMenu;
 
 /// <summary>
-/// Repro sample for clipboard access failures and keyboard shortcut issues (kahua-private#436).
+/// Repro sample for clipboard access failures and keyboard shortcut issues.
 /// Issues covered:
 /// 1. Clipboard.GetContent() returns empty
 /// 2. Clipboard round-trip failures
@@ -17,7 +17,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Input.ContextMenu;
 /// 4. Shift+End not selecting text (WASM)
 /// 5. Additional keyboard shortcut issues
 /// </summary>
-[Sample("Input", Name = "TextBox ContextMenu Clipboard", Description = "Clipboard and keyboard shortcut bugs repro (kahua-private#436)", IsManualTest = true)]
+[Sample("Input", Name = "TextBox ContextMenu Clipboard", Description = "Clipboard and keyboard shortcut bugs repro", IsManualTest = true)]
 public sealed partial class TextBox_ContextMenu_Clipboard : Page
 {
 	private int _eventCounter;
