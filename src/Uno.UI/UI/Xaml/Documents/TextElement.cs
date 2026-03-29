@@ -65,7 +65,12 @@ namespace Microsoft.UI.Xaml.Documents
 				new FrameworkPropertyMetadata(
 					defaultValue: FontFamily.Default,
 					options: FrameworkPropertyMetadataOptions.None,
-					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontFamilyChanged()
+					propertyChangedCallback: (s, e) =>
+					{
+						var te = (TextElement)s;
+						te.OnFontFamilyChanged();
+						te.OnTextFormattingPropertyChanged("FontFamily", e.NewValue);
+					}
 				)
 			);
 
@@ -97,7 +102,12 @@ namespace Microsoft.UI.Xaml.Documents
 				new FrameworkPropertyMetadata(
 					defaultValue: FontStyle.Normal,
 					options: FrameworkPropertyMetadataOptions.None,
-					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontStyleChanged()
+					propertyChangedCallback: (s, e) =>
+					{
+						var te = (TextElement)s;
+						te.OnFontStyleChanged();
+						te.OnTextFormattingPropertyChanged("FontStyle", e.NewValue);
+					}
 				)
 			);
 
@@ -124,6 +134,7 @@ namespace Microsoft.UI.Xaml.Documents
 		protected virtual void OnFontStretchChanged()
 		{
 			OnFontStretchChangedPartial();
+			OnTextFormattingPropertyChanged("FontStretch", FontStretch);
 		}
 
 		partial void OnFontStretchChangedPartial();
@@ -146,7 +157,12 @@ namespace Microsoft.UI.Xaml.Documents
 				new FrameworkPropertyMetadata(
 					defaultValue: 14.0,
 					options: FrameworkPropertyMetadataOptions.None,
-					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontSizeChanged()
+					propertyChangedCallback: (s, e) =>
+					{
+						var te = (TextElement)s;
+						te.OnFontSizeChanged();
+						te.OnTextFormattingPropertyChanged("FontSize", e.NewValue);
+					}
 				)
 			);
 
@@ -163,7 +179,22 @@ namespace Microsoft.UI.Xaml.Documents
 
 		public Brush Foreground
 		{
-			get => (Brush)GetValue(ForegroundProperty);
+			get
+			{
+				// MUX ref: In WinUI, Foreground is a TextFormatting storage group property.
+				// GetValue calls EnsureTextFormatting which returns the inherited value when
+				// Foreground is not set locally. Uno replicates this via TextFormatting.
+				// WinUI ref: CDependencyObject::GetPropertyOffset (storage group path).
+				if (IsPropertyDefault(ForegroundProperty))
+				{
+					EnsureTextFormatting(ForegroundProperty, forGetValue: true);
+					if (((ITextFormattingOwner)this).TextFormatting?.Foreground is { } inherited)
+					{
+						return inherited;
+					}
+				}
+				return (Brush)GetValue(ForegroundProperty);
+			}
 			set
 			{
 				if (value != null && !(value is SolidColorBrush))
@@ -181,8 +212,16 @@ namespace Microsoft.UI.Xaml.Documents
 			typeof(TextElement),
 			new FrameworkPropertyMetadata(
 				defaultValue: SolidColorBrushHelper.Black,
-				options: FrameworkPropertyMetadataOptions.None,
-				propertyChangedCallback: (instance, args) => ((TextElement)instance).OnForegroundChanged()
+				// MUX ref: TextElement_Foreground uses IsInherited in WinUI's DP system.
+				// Restoring Inherits ensures run.Foreground returns the inherited theme foreground
+				// from ancestor Control/ContentPresenter via DP Inherits, matching WinUI behavior.
+				options: FrameworkPropertyMetadataOptions.Inherits,
+				propertyChangedCallback: (instance, args) =>
+				{
+					var te = (TextElement)instance;
+					te.OnForegroundChanged();
+					te.OnTextFormattingPropertyChanged("Foreground", args.NewValue);
+				}
 		));
 
 		protected virtual void OnForegroundChanged()
@@ -211,7 +250,12 @@ namespace Microsoft.UI.Xaml.Documents
 				new FrameworkPropertyMetadata(
 					defaultValue: FontWeights.Normal,
 					options: FrameworkPropertyMetadataOptions.None,
-					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontWeightChanged()
+					propertyChangedCallback: (s, e) =>
+					{
+						var te = (TextElement)s;
+						te.OnFontWeightChanged();
+						te.OnTextFormattingPropertyChanged("FontWeight", e.NewValue);
+					}
 				)
 			);
 
@@ -240,7 +284,12 @@ namespace Microsoft.UI.Xaml.Documents
 				new FrameworkPropertyMetadata(
 					defaultValue: 0,
 					options: FrameworkPropertyMetadataOptions.None,
-					propertyChangedCallback: (s, e) => ((TextElement)s).OnCharacterSpacingChanged()
+					propertyChangedCallback: (s, e) =>
+					{
+						var te = (TextElement)s;
+						te.OnCharacterSpacingChanged();
+						te.OnTextFormattingPropertyChanged("CharacterSpacing", e.NewValue);
+					}
 				)
 			);
 
@@ -267,9 +316,37 @@ namespace Microsoft.UI.Xaml.Documents
 		protected virtual void OnTextDecorationsChanged()
 		{
 			OnTextDecorationsChangedPartial();
+			OnTextFormattingPropertyChanged("TextDecorations", TextDecorations);
 		}
 
 		partial void OnTextDecorationsChangedPartial();
+
+		#endregion
+
+		#region Language Dependency Property
+
+		public string Language
+		{
+			get => (string)GetValue(LanguageProperty);
+			set => SetValue(LanguageProperty, value);
+		}
+
+		// MUX ref: TextElement_Language has IsInheritedProperty + IsStorageGroup flags.
+		// Hand-written to add OnTextFormattingPropertyChanged callback.
+		public static DependencyProperty LanguageProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Language),
+				typeof(string),
+				typeof(TextElement),
+				new FrameworkPropertyMetadata(
+					default(string),
+					propertyChangedCallback: (s, e) =>
+					{
+						var te = (TextElement)s;
+						te.OnTextFormattingPropertyChanged("Language", e.NewValue);
+					}
+				)
+			);
 
 		#endregion
 

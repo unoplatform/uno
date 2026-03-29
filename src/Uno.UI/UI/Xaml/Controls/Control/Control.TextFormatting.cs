@@ -42,8 +42,11 @@ public partial class Control
 			_textFormatting.Foreground = parent.Foreground;
 		}
 
-		// Language — always copy (on FrameworkElement)
-		_textFormatting.Language = parent.Language;
+		// MUX ref: Control.cpp:145 checks FrameworkElement_Language
+		if (IsPropertyDefault(FrameworkElement.LanguageProperty))
+		{
+			_textFormatting.Language = parent.Language;
+		}
 
 		if (IsPropertyDefault(FontSizeProperty))
 		{
@@ -78,7 +81,11 @@ public partial class Control
 			_textFormatting.FlowDirection = parent.FlowDirection;
 		}
 
-		// IsTextScaleFactorEnabled — always copy (no hand-written DP on Control)
-		_textFormatting.IsTextScaleFactorEnabled = parent.IsTextScaleFactorEnabled;
+		// MUX ref: Control.cpp:185 checks Control_IsTextScaleFactorEnabled AND
+		// FrameworkElement_IsTextScaleFactorEnabledInternal (Uno doesn't have the latter).
+		if (IsPropertyDefault(Control.IsTextScaleFactorEnabledProperty))
+		{
+			_textFormatting.IsTextScaleFactorEnabled = parent.IsTextScaleFactorEnabled;
+		}
 	}
 }

@@ -46,9 +46,11 @@ public partial class TextBlock
 			_textFormatting.Foreground = parent.Foreground;
 		}
 
-		// Language is on FrameworkElement — always copy at TextBlock level
 		// MUX ref: TextBlock.cpp:652 checks FrameworkElement_Language
-		_textFormatting.Language = parent.Language;
+		if (IsPropertyDefault(FrameworkElement.LanguageProperty))
+		{
+			_textFormatting.Language = parent.Language;
+		}
 
 		if (IsPropertyDefault(FontSizeProperty))
 		{
@@ -85,8 +87,12 @@ public partial class TextBlock
 			_textFormatting.FlowDirection = parent.FlowDirection;
 		}
 
-		// IsTextScaleFactorEnabled — always copy (no DP on TextBlock)
-		_textFormatting.IsTextScaleFactorEnabled = parent.IsTextScaleFactorEnabled;
+		// MUX ref: TextBlock.cpp:702 checks TextBlock_IsTextScaleFactorEnabled AND
+		// FrameworkElement_IsTextScaleFactorEnabledInternal (Uno doesn't have the latter).
+		if (IsPropertyDefault(TextBlock.IsTextScaleFactorEnabledProperty))
+		{
+			_textFormatting.IsTextScaleFactorEnabled = parent.IsTextScaleFactorEnabled;
+		}
 	}
 
 	/// <summary>

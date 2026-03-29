@@ -26,8 +26,10 @@ public partial class FrameworkElement
 		}
 
 		// MUX ref: framework.cpp:510-515 — Language is checked
-		// LanguageProperty is auto-generated on all platforms.
-		_textFormatting.Language = parent.Language;
+		if (IsPropertyDefault(FrameworkElement.LanguageProperty))
+		{
+			_textFormatting.Language = parent.Language;
+		}
 
 		_textFormatting.FontSize = parent.FontSize;
 		_textFormatting.FontWeight = parent.FontWeight;

@@ -38,8 +38,11 @@ public partial class ContentPresenter
 			_textFormatting.Foreground = parent.Foreground;
 		}
 
-		// Language — always copy (on FrameworkElement)
-		_textFormatting.Language = parent.Language;
+		// MUX ref: ContentPresenter.cpp:1076 checks FrameworkElement_Language
+		if (IsPropertyDefault(FrameworkElement.LanguageProperty))
+		{
+			_textFormatting.Language = parent.Language;
+		}
 
 		if (IsPropertyDefault(FontSizeProperty))
 		{
@@ -73,7 +76,11 @@ public partial class ContentPresenter
 			_textFormatting.FlowDirection = parent.FlowDirection;
 		}
 
-		// IsTextScaleFactorEnabled — always copy (no hand-written DP on ContentPresenter)
-		_textFormatting.IsTextScaleFactorEnabled = parent.IsTextScaleFactorEnabled;
+		// MUX ref: ContentPresenter.cpp:1121 checks ContentPresenter_IsTextScaleFactorEnabled AND
+		// FrameworkElement_IsTextScaleFactorEnabledInternal (Uno doesn't have the latter).
+		if (IsPropertyDefault(ContentPresenter.IsTextScaleFactorEnabledProperty))
+		{
+			_textFormatting.IsTextScaleFactorEnabled = parent.IsTextScaleFactorEnabled;
+		}
 	}
 }
