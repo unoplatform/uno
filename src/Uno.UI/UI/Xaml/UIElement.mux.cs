@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml
 		// Cached automation peer, mirrors WinUI's m_tpAP field.
 		// Ensures peer identity is stable across calls so that reference
 		// comparisons (e.g. HasKeyboardFocusImpl, SetFocusHelper) work correctly.
-		private AutomationPeer? _cachedAutomationPeer;
+		private AutomationPeer? _uiElementAutomationPeer;
 
 		/// <summary>
 		/// Set to True when the imminent Focus(FocusState) call needs to use an animation if bringing the focused
@@ -140,16 +140,11 @@ namespace Microsoft.UI.Xaml
 			// identity-based checks (HasKeyboardFocusImpl, SetFocusHelper) work correctly.
 			if (Visibility != Visibility.Collapsed && isPopupOpen)
 			{
-				if (_cachedAutomationPeer is null)
-				{
-					_cachedAutomationPeer = OnCreateAutomationPeerInternal();
-				}
-
-				return _cachedAutomationPeer;
+				return _uiElementAutomationPeer ??= OnCreateAutomationPeerInternal();
 			}
 			else
 			{
-				_cachedAutomationPeer = null;
+				_uiElementAutomationPeer = null;
 				return null;
 			}
 		}
@@ -488,10 +483,9 @@ namespace Microsoft.UI.Xaml
 			//return pParent;
 		}
 
-		//UNO TODO: Implement GetUIElementParentInternal on UIElement
 		internal DependencyObject GetAccessKeyScopeOwner()
 		{
-			throw new NotImplementedException("GetUIElementParentInternal is not implemented on UIElement");
+			return (DependencyObject)GetValue(AccessKeyScopeOwnerProperty);
 		}
 
 		/// <summary>
