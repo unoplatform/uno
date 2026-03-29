@@ -126,13 +126,16 @@ internal static class TextFormattingHelper
 		"FontStretch" => TextElement.FontStretchProperty,
 		"CharacterSpacing" => TextElement.CharacterSpacingProperty,
 		"TextDecorations" => TextElement.TextDecorationsProperty,
+		// MUX ref: InheritedProperties.cpp:622 — Language maps to TextElement_Language
+		"Language" => TextElement.LanguageProperty,
 		_ => null
 	};
 
 	private static DependencyProperty GetFrameworkElementProperty(string name) => name switch
 	{
 		"FlowDirection" => FrameworkElement.FlowDirectionProperty,
-		// Language is auto-generated; include when available
+		// MUX ref: InheritedProperties.cpp:622 — Language maps to FrameworkElement_Language
+		"Language" => FrameworkElement.LanguageProperty,
 		_ => null
 	};
 }

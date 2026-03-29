@@ -625,6 +625,8 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					SolidColorBrushHelper.Black,
+					// Inherits needed for Foreground to cascade from ancestor theme resources.
+					FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) =>
 					{
 						var c = (Control)s;

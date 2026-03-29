@@ -73,14 +73,7 @@ namespace Microsoft.UI.Xaml.Documents
 			typeof(global::Microsoft.UI.Xaml.Documents.TextElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LanguageProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Language), typeof(string),
-			typeof(global::Microsoft.UI.Xaml.Documents.TextElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
-#endif
+		// Skipping already declared property LanguageProperty
 		// Skipping already declared property TextDecorationsProperty
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -229,20 +222,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Language
-		{
-			get
-			{
-				return (string)this.GetValue(LanguageProperty);
-			}
-			set
-			{
-				this.SetValue(LanguageProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property Language
 		// Skipping already declared property Name
 		// Skipping already declared property TextDecorations
 		// Skipping already declared property XamlRoot

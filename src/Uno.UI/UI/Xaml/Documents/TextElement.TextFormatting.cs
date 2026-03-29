@@ -152,12 +152,61 @@ public abstract partial class TextElement : ITextFormattingOwner
 			tf.TextDecorations = parent.TextDecorations;
 		}
 
+		// MUX ref: TextElement.cpp:208 checks TextElement_Language
+		if (IsPropertyDefault(LanguageProperty))
+		{
+			tf.Language = parent.Language;
+		}
+
 		// FlowDirection: In WinUI, only Run has FlowDirection on TextElement
 		// (TextElement.cpp:242-246). In Uno, Run doesn't have FlowDirectionProperty,
 		// so we always copy from parent.
 		tf.FlowDirection = parent.FlowDirection;
 
-		tf.IsTextScaleFactorEnabled = parent.IsTextScaleFactorEnabled;
+		// MUX ref: TextElement.cpp:248 checks TextElement_IsTextScaleFactorEnabled
+		if (IsPropertyDefault(IsTextScaleFactorEnabledProperty))
+		{
+			tf.IsTextScaleFactorEnabled = parent.IsTextScaleFactorEnabled;
+		}
+	}
+
+	/// <summary>
+	/// Called from PropertyChanged callbacks for text formatting DPs.
+	/// Updates the TextFormatting storage and invalidates the global counter.
+	/// MUX ref: CTextElement::MarkInheritedPropertyDirty (TextElement.cpp:271-280).
+	/// </summary>
+	private void OnTextFormattingPropertyChanged(string propertyName, object newValue)
+	{
+		if (TextFormattingHelper.IsProcessingInheritedNotification)
+		{
+			return;
+		}
+
+		var tf =
+#if __WASM__
+			((UIElement)(object)this)._textFormatting;
+#else
+			_textFormatting;
+#endif
+
+		if (tf is null)
+		{
+			tf = TF.CreateDefault();
+#if __WASM__
+			((UIElement)(object)this)._textFormatting = tf;
+#else
+			_textFormatting = tf;
+#endif
+		}
+
+		tf.SetFieldValue(propertyName, newValue);
+
+		// MUX ref: InvalidateInheritedProperty — depends.cpp:2706
+		GlobalTextFormattingCounter.Invalidate();
+
+		// TextElement children are inline children (Run inside Span/Hyperlink).
+		// The generation counter invalidation is sufficient for them to re-pull
+		// on next access via EnsureTextFormatting.
 	}
 
 	/// <summary>

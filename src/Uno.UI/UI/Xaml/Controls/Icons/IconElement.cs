@@ -34,12 +34,58 @@ public partial class IconElement : FrameworkElement
 #endif
 	Brush Foreground
 	{
-		get => (Brush)GetValue(ForegroundProperty);
+		get
+		{
+			// MUX ref: In WinUI, Foreground is a TextFormatting storage group property.
+			// CIconElement::PullInheritedTextFormatting checks IsPropertyDefault(IconElement_Foreground)
+			// before pulling. When not locally set, the inherited value is returned.
+			// WinUI ref: icon.cpp:39-84 (CIconElement::PullInheritedTextFormatting).
+			if (IsPropertyDefault(ForegroundProperty))
+			{
+				EnsureTextFormatting(ForegroundProperty, forGetValue: true);
+				if (_textFormatting?.Foreground is { } inherited)
+				{
+					return inherited;
+				}
+			}
+			return (Brush)GetValue(ForegroundProperty);
+		}
 		set
 		{
 			SetValue(ForegroundProperty, value);
 			_foregroundStrongref = value;
 		}
+	}
+
+	/// <summary>
+	/// Pulls inherited text formatting from parent, checking IsPropertyDefault for Foreground.
+	/// MUX ref: CIconElement::PullInheritedTextFormatting (icon.cpp:39-84).
+	/// </summary>
+	internal override void PullInheritedTextFormatting()
+	{
+		var parent = GetParentTextFormatting();
+
+		_textFormatting.FontFamily = parent.FontFamily;
+
+		if (IsPropertyDefault(ForegroundProperty) && !_textFormatting.FreezeForeground)
+		{
+			_textFormatting.Foreground = parent.Foreground;
+		}
+
+		_textFormatting.Language = parent.Language;
+		_textFormatting.FontSize = parent.FontSize;
+		_textFormatting.FontWeight = parent.FontWeight;
+		_textFormatting.FontStyle = parent.FontStyle;
+		_textFormatting.FontStretch = parent.FontStretch;
+		_textFormatting.CharacterSpacing = parent.CharacterSpacing;
+		_textFormatting.TextDecorations = parent.TextDecorations;
+
+		if (IsPropertyDefault(FrameworkElement.FlowDirectionProperty))
+		{
+			_textFormatting.FlowDirection = parent.FlowDirection;
+		}
+
+		_textFormatting.IsTextScaleFactorEnabled = parent.IsTextScaleFactorEnabled;
 	}
 
 	/// <summary>
@@ -52,6 +98,9 @@ public partial class IconElement : FrameworkElement
 			typeof(IconElement),
 			new FrameworkPropertyMetadata(
 				SolidColorBrushHelper.White,
+				// MUX ref: IconElement_Foreground uses IsInherited in WinUI's DP system.
+				// Restoring Inherits ensures icon foreground propagates from parent Controls.
+				FrameworkPropertyMetadataOptions.Inherits,
 				propertyChangedCallback: (s, e) =>
 				{
 					var icon = (IconElement)s;

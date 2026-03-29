@@ -165,12 +165,49 @@ namespace Microsoft.UI.Xaml
 #endif
 		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight
 #if SUPPORTS_RTL
-			, Options = FrameworkPropertyMetadataOptions.AffectsMeasure
+			, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.Inherits
+#else
+			, Options = FrameworkPropertyMetadataOptions.Inherits
 #endif
 			)]
 		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
 
 		#endregion
+
+		#region Language Dependency Property
+
+		public string Language
+		{
+			get => (string)GetValue(LanguageProperty);
+			set => SetValue(LanguageProperty, value);
+		}
+
+		// MUX ref: FrameworkElement_Language has IsInheritedProperty + IsStorageGroup flags.
+		// Hand-written to add Inherits flag and OnTextFormattingPropertyChanged callback
+		// (the auto-generated version had neither).
+		public static DependencyProperty LanguageProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Language),
+				typeof(string),
+				typeof(FrameworkElement),
+				new FrameworkPropertyMetadata(
+					default(string),
+					FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) =>
+					{
+						if (s is FrameworkElement fe && !TextFormattingHelper.IsProcessingInheritedNotification)
+						{
+							var tf = fe._textFormatting ??= TextFormatting.CreateDefault();
+							tf.SetFieldValue("Language", e.NewValue);
+							GlobalTextFormattingCounter.Invalidate();
+							fe.MarkInheritedPropertyDirty("Language", e.NewValue);
+						}
+					}
+				)
+			);
+
+		#endregion
+
 		internal void RaiseSizeChanged(SizeChangedEventArgs args)
 		{
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS

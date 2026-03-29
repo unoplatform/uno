@@ -238,6 +238,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				SolidColorBrushHelper.Black,
+				// Inherits needed for Foreground to cascade from ancestor theme resources.
+				FrameworkPropertyMetadataOptions.Inherits,
 				propertyChangedCallback: (s, e) =>
 				{
 					var cp = (ContentPresenter)s;
