@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -23,18 +24,18 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 /// <summary>
 /// Manages the macOS VoiceOver accessibility tree for Skia-rendered Uno applications.
 /// Creates a parallel native accessibility tree (UNOAccessibilityElement objects) that
-/// mirrors the XAML visual tree, similar to:
-/// - Flutter's AccessibilityBridgeMac (Chromium AXTree → NSAccessibility)
-/// - Uno WASM's WebAssemblyAccessibility (parallel DOM tree with ARIA attributes)
+/// mirrors the XAML visual tree.
 ///
-/// Uses the shared <see cref="AriaMapper"/> to resolve ARIA attributes from
+/// Uses the shared <see cref="AriaMapper"/> to resolve attributes from
 /// automation peers, with macOS-specific attribute resolution for VoiceOver.
 /// </summary>
-internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
+internal class MacOSAccessibility : SkiaAccessibilityBase
 {
 	private static MacOSAccessibility? _instance;
 	private nint _windowHandle;
 	private bool _accessibilityTreeInitialized;
+	private nint _activeModalHandle;
+	private nint _modalTriggerHandle;
 
 	internal static MacOSAccessibility Instance => _instance ??= new MacOSAccessibility();
 
@@ -45,11 +46,7 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 			this.Log().Trace($"Initializing {nameof(MacOSAccessibility)}");
 		}
 
-		AccessibilityAnnouncer.AccessibilityImpl = this;
-		UIElementAccessibilityHelper.ExternalOnChildAdded = OnChildAdded;
-		UIElementAccessibilityHelper.ExternalOnChildRemoved = OnChildRemoved;
-		VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = OnSizeOrOffsetChanged;
-		AutomationPeer.AutomationPeerListener = this;
+		RegisterCallbacks();
 	}
 
 	internal static unsafe void Register()
@@ -59,6 +56,7 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 		NativeUno.uno_accessibility_set_callbacks(&OnNativeInvoke, &OnNativeFocus);
 		NativeUno.uno_accessibility_set_range_callbacks(&OnNativeIncrement, &OnNativeDecrement);
 		NativeUno.uno_accessibility_set_expand_collapse_callback(&OnNativeExpandCollapse);
+		NativeUno.uno_accessibility_set_value_callback(&OnNativeSetValue);
 
 		MacOSWindowNative.NativeWindowReady += Instance.OnNativeWindowReady;
 	}
@@ -76,6 +74,14 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 		{
 			if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 			{
+				// WinUI 3 pattern implementations (e.g., ButtonAutomationPeer::InvokeImpl)
+				// check IsEnabled and return UIA_E_ELEMENTNOTENABLED if disabled.
+				// Guard here as well so all patterns are protected uniformly.
+				if (owner is Control { IsEnabled: false })
+				{
+					return;
+				}
+
 				var peer = owner.GetOrCreateAutomationPeer();
 				if (peer is IInvokeProvider invokeProvider)
 				{
@@ -217,7 +223,36 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 		}
 	}
 
-	public bool IsAccessibilityEnabled => _windowHandle != nint.Zero;
+	// Called from native code when VoiceOver sets a text value on an element
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnNativeSetValue(nint handle, nint valuePtr)
+	{
+		if (handle == nint.Zero || valuePtr == nint.Zero)
+		{
+			return;
+		}
+
+		try
+		{
+			var value = Marshal.PtrToStringUTF8(valuePtr);
+			if (value != null &&
+				GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
+			{
+				var peer = owner.GetOrCreateAutomationPeer();
+				if (peer?.GetPattern(PatternInterface.Value) is IValueProvider valueProvider &&
+					!valueProvider.IsReadOnly)
+				{
+					valueProvider.SetValue(value);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			ApplicationExtensions.RaiseRecoverableUnhandledExceptionOrLog(Application.Current, e, typeof(MacOSAccessibility));
+		}
+	}
+
+	public override bool IsAccessibilityEnabled => _windowHandle != nint.Zero;
 
 	internal void Initialize(nint windowHandle)
 	{
@@ -312,9 +347,9 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 		return new Vector3(x, y, 0);
 	}
 
-	private void OnChildAdded(UIElement parent, UIElement child, int? index)
+	protected override void OnChildAdded(UIElement parent, UIElement child, int? index)
 	{
-		if (IsAccessibilityEnabled && _accessibilityTreeInitialized)
+		if (_accessibilityTreeInitialized)
 		{
 			// Only process elements that are part of the live visual tree.
 			// ExternalOnChildAdded fires for ANY AddChild call, including during
@@ -341,6 +376,7 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 				}
 
 				AddAccessibilityElement(parent.Visual.Handle, child, index);
+				TryRegisterModalDialog(child);
 				foreach (var childChild in child.GetChildren())
 				{
 					OnChildAdded(child, childChild, null);
@@ -356,19 +392,10 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 		}
 	}
 
-	private void OnChildRemoved(UIElement parent, UIElement child)
+	protected override void OnChildRemoved(UIElement parent, UIElement child)
 	{
-		if (IsAccessibilityEnabled && _accessibilityTreeInitialized)
+		if (_accessibilityTreeInitialized)
 		{
-			// Only process removals for elements that are part of the live visual tree.
-			// This mirrors the guard in OnChildAdded: if the parent wasn't in the
-			// visual tree when the child was added, the child was never registered
-			// in the native accessibility tree, so there's nothing to remove.
-			if (!parent.IsActiveInVisualTree)
-			{
-				return;
-			}
-
 			// If the child had AccessibilityView=Raw when added, it was skipped
 			// in the native tree but its children were reparented to the semantic
 			// parent. Remove those reparented children from the native tree.
@@ -382,11 +409,15 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 				return;
 			}
 
+			// Always attempt removal — the native side handles missing elements
+			// gracefully via dictionary lookup. Skipping removal when the parent
+			// is no longer in the visual tree would leak elements because during
+			// teardown, parents are removed before children.
 			NativeUno.uno_accessibility_remove_element(parent.Visual.Handle, child.Visual.Handle);
 		}
 	}
 
-	private void OnSizeOrOffsetChanged(Visual visual)
+	protected override void OnSizeOrOffsetChanged(Visual visual)
 	{
 		if (IsAccessibilityEnabled && _accessibilityTreeInitialized
 			&& visual is ContainerVisual containerVisual
@@ -421,30 +452,9 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 			IsAccessibilityFocusable(control, isFocusable));
 	}
 
-	private static bool IsAccessibilityFocusable(DependencyObject dependencyObject, bool isFocusable)
-	{
-		if (!isFocusable && dependencyObject is not (TextBlock or RichTextBlock))
-		{
-			return false;
-		}
-
-		var accessibilityView = AutomationProperties.GetAccessibilityView(dependencyObject);
-		if (accessibilityView == AccessibilityView.Raw)
-		{
-			return false;
-		}
-
-		if ((dependencyObject as UIElement)?.GetOrCreateAutomationPeer() is null)
-		{
-			return false;
-		}
-
-		return true;
-	}
 
 	/// <summary>
 	/// Creates the Accessibility Object Model (AOM) from the root element.
-	/// This mirrors the WASM implementation's CreateAOM approach.
 	/// </summary>
 	internal void CreateAOM(UIElement rootElement)
 	{
@@ -464,7 +474,6 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 			IsAccessibilityFocusable(rootElement, rootElement.IsFocusable),
 			true);
 
-		// Apply attributes to the native element
 		if (peer != null)
 		{
 			ApplyAttributes(rootHandle, peer, rootElement);
@@ -487,7 +496,6 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 		var accessibilityView = AutomationProperties.GetAccessibilityView(child);
 		if (accessibilityView == AccessibilityView.Raw)
 		{
-			// Still process children, but parent them to the Raw element's parent
 			foreach (var childChild in child.GetChildren())
 			{
 				BuildAccessibilityTreeRecursive(parentHandle, childChild);
@@ -504,8 +512,7 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 	}
 
 	/// <summary>
-	/// Adds a single accessibility element. This is the macOS equivalent of
-	/// the WASM AddSemanticElement method.
+	/// Adds a single accessibility element to the native macOS accessibility tree.
 	/// </summary>
 	private void AddAccessibilityElement(nint parentHandle, UIElement child, int? index)
 	{
@@ -524,10 +531,17 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					this.Log().Debug($"Failed to resolve role for {child}: {e.Message}");
+					this.Log().Warn($"[A11y] Failed to resolve role for {child.GetType().Name} handle={child.Visual.Handle}: {e.Message}");
 				}
+			}
+
+			// Log when a peer has no role — this causes the native layer to fall back
+			// to NSAccessibilityGroupRole which makes VoiceOver announce "group"
+			if (role == null && this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[A11y] No role resolved for {child.GetType().Name} handle={child.Visual.Handle} peer={peer.GetType().Name} — will default to group in native layer");
 			}
 
 			try
@@ -536,9 +550,9 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					this.Log().Debug($"Failed to resolve label for {child}: {e.Message}");
+					this.Log().Warn($"[A11y] Failed to resolve label for {child.GetType().Name} handle={child.Visual.Handle}: {e.Message}");
 				}
 			}
 		}
@@ -552,7 +566,6 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 			isFocusable,
 			child.Visual.IsVisible);
 
-		// Apply attributes to the native element
 		if (peer != null)
 		{
 			try
@@ -568,14 +581,12 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 			}
 		}
 
-		// Set initial enabled state
 		if (child is Control control)
 		{
 			NativeUno.uno_accessibility_update_enabled(child.Visual.Handle, control.IsEnabled);
 		}
 
-		// Fire AXLiveRegionCreated for live region elements (matching Flutter's
-		// AccessibilityBridgeMac LIVE_REGION_CREATED notification)
+		// Fire AXLiveRegionCreated for elements with a live setting
 		if (peer != null)
 		{
 			var liveSetting = AutomationProperties.GetLiveSetting(child);
@@ -587,29 +598,23 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 	}
 
 	/// <summary>
-	/// Applies accessibility attributes to the native element, combining shared
-	/// AriaMapper attributes with macOS-specific resolution (VoiceOver needs).
+	/// Applies accessibility attributes to the native element using the shared
+	/// AriaAttributes from <see cref="AriaMapper"/>. All semantic resolution is
+	/// centralized in the shared mapper; this method only translates to native calls.
 	/// </summary>
 	private static void ApplyAttributes(nint handle, AutomationPeer peer, UIElement? owner = null)
 	{
 		var attributes = AriaMapper.GetAriaAttributes(peer);
 
-		// FullDescription → accessibilityHelp (VoiceOver reads this as secondary context).
-		// HelpText → accessibilityHelp (fallback when no FullDescription).
-		// These are separate from the short description/placeholder.
-		var fullDescription = peer.GetFullDescription();
-		var helpText = peer.GetHelpText();
-		if (!string.IsNullOrEmpty(fullDescription))
+		// Description → accessibilityHelp (VoiceOver reads this as secondary context)
+		// AriaMapper resolves FullDescription > HelpText.
+		if (!string.IsNullOrEmpty(attributes.Description))
 		{
-			NativeUno.uno_accessibility_update_help(handle, fullDescription);
-		}
-		else if (!string.IsNullOrEmpty(helpText))
-		{
-			NativeUno.uno_accessibility_update_help(handle, helpText);
+			NativeUno.uno_accessibility_update_help(handle, attributes.Description);
 		}
 
-		// PlaceholderText as description when Header is set (macOS-specific label enrichment).
-		// VoiceOver reads this as additional context for the text field.
+		// PlaceholderText is surfaced as the empty-field description when a Header already
+		// provides the primary label. VoiceOver reads this via accessibilityPlaceholderValue.
 		if (peer is FrameworkElementAutomationPeer feap)
 		{
 			if (feap.Owner is TextBox tb && !string.IsNullOrEmpty(tb.Header?.ToString()) && !string.IsNullOrEmpty(tb.PlaceholderText))
@@ -622,26 +627,28 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 			}
 		}
 
-		// Role description (custom landmark description)
 		if (!string.IsNullOrEmpty(attributes.RoleDescription))
 		{
 			NativeUno.uno_accessibility_update_role_description(handle, attributes.RoleDescription);
 		}
 
-		// Heading level
 		if (attributes.Level is > 0)
 		{
 			NativeUno.uno_accessibility_update_heading_level(handle, attributes.Level.Value);
 		}
 
-		// Password (resolved directly from peer)
 		if (peer.IsPassword())
 		{
 			NativeUno.uno_accessibility_update_is_password(handle, true);
 		}
 
-		// Required (resolved directly from peer)
-		if (peer.IsRequiredForForm())
+		// Read-only state for text fields (VoiceOver uses this to determine editability)
+		if (peer.GetPattern(PatternInterface.Value) is IValueProvider vp)
+		{
+			NativeUno.uno_accessibility_update_read_only(handle, vp.IsReadOnly);
+		}
+
+		if (attributes.Required)
 		{
 			NativeUno.uno_accessibility_update_required(handle, true);
 		}
@@ -671,19 +678,16 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 			NativeUno.uno_accessibility_update_value(handle, valueProvider.Value);
 		}
 
-		// Expand/Collapse
 		if (attributes.Expanded != null)
 		{
 			NativeUno.uno_accessibility_update_expand_collapse(handle, true, attributes.Expanded.Value);
 		}
 
-		// Selected
 		if (attributes.Selected != null)
 		{
 			NativeUno.uno_accessibility_update_selected(handle, attributes.Selected.Value);
 		}
 
-		// Position in set
 		if (attributes.PositionInSet is > 0)
 		{
 			NativeUno.uno_accessibility_update_position_in_set(handle,
@@ -691,13 +695,11 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 				attributes.SizeOfSet ?? 0);
 		}
 
-		// Landmark
 		if (!string.IsNullOrEmpty(attributes.LandmarkRole))
 		{
 			NativeUno.uno_accessibility_update_landmark(handle, attributes.LandmarkRole);
 		}
 
-		// Disabled state
 		if (attributes.Disabled)
 		{
 			NativeUno.uno_accessibility_update_enabled(handle, false);
@@ -721,7 +723,7 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 	/// overrides for controls that need different roles than the ARIA mapper provides
 	/// (e.g. ToggleSwitch → "switch", Text → "text").
 	/// </summary>
-	private static string? ResolveRole(AutomationPeer peer, UIElement owner)
+	protected override string? ResolveRole(AutomationPeer peer, UIElement owner)
 	{
 		var controlType = peer.GetAutomationControlType();
 
@@ -745,15 +747,14 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 			return "textarea";
 		}
 
-		return AriaMapper.GetAriaRole(controlType);
+		return base.ResolveRole(peer, owner);
 	}
 
 	/// <summary>
 	/// Resolves a label for an automation peer with macOS-specific fallbacks.
-	/// Extends the shared AriaMapper.ResolveLabel with TextBox/PasswordBox Header
-	/// and PlaceholderText, and ComboBox Header fallbacks for VoiceOver.
+	/// Extends the shared mapper with Header/PlaceholderText fallbacks used by VoiceOver.
 	/// </summary>
-	private static string? ResolveLabel(AutomationPeer peer)
+	private new static string? ResolveLabel(AutomationPeer peer)
 	{
 		var label = AriaMapper.ResolveLabel(peer);
 		if (!string.IsNullOrEmpty(label))
@@ -761,7 +762,6 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 			return label;
 		}
 
-		// macOS-specific: TextBox/PasswordBox/ComboBox header/placeholder fallbacks
 		if (peer is FrameworkElementAutomationPeer frameworkPeer)
 		{
 			var owner = frameworkPeer.Owner;
@@ -805,148 +805,81 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 		return label;
 	}
 
-	// IUnoAccessibility
+	// Platform-specific property update implementations (called from SkiaAccessibilityBase routing)
 
-	public void AnnouncePolite(string text)
-		=> NativeUno.uno_accessibility_announce(text, assertive: false);
+	protected override void UpdateName(nint handle, AutomationPeer peer, string? label)
+		=> NativeUno.uno_accessibility_update_label(handle, label);
 
-	public void AnnounceAssertive(string text)
-		=> NativeUno.uno_accessibility_announce(text, assertive: true);
-
-	// IAutomationPeerListener
-
-	public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
+	protected override void UpdateToggleState(nint handle, AutomationPeer peer, ToggleState newState)
 	{
-		if (!IsAccessibilityEnabled || !_accessibilityTreeInitialized)
-		{
-			return;
-		}
-
-		if (automationProperty == AutomationElementIdentifiers.NameProperty &&
-			TryGetPeerOwner(peer, out var element))
-		{
-			var label = ResolveLabel(peer);
-			NativeUno.uno_accessibility_update_label(element.Visual.Handle, label ?? (string)newValue);
-		}
-		else if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			var ariaChecked = AriaMapper.ConvertToggleStateToAriaChecked((ToggleState)newValue);
-			NativeUno.uno_accessibility_update_value(element.Visual.Handle, ConvertCheckedToNativeValue(ariaChecked));
-		}
-		else if (automationProperty == RangeValuePatternIdentifiers.ValueProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			if (newValue is double doubleValue)
-			{
-				NativeUno.uno_accessibility_update_value(element.Visual.Handle, doubleValue.ToString("G", CultureInfo.InvariantCulture));
-			}
-		}
-		else if (automationProperty == ValuePatternIdentifiers.ValueProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			NativeUno.uno_accessibility_update_value(element.Visual.Handle, newValue as string);
-		}
-		else if (automationProperty == ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			var isExpanded = newValue is ExpandCollapseState state && state == ExpandCollapseState.Expanded;
-			NativeUno.uno_accessibility_update_expand_collapse(element.Visual.Handle, true, isExpanded);
-		}
-		else if (automationProperty == AutomationElementIdentifiers.IsEnabledProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			NativeUno.uno_accessibility_update_enabled(element.Visual.Handle, newValue is true);
-		}
-		else if (automationProperty == AutomationElementIdentifiers.HelpTextProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			NativeUno.uno_accessibility_update_help(element.Visual.Handle, newValue as string);
-		}
-		else if (automationProperty == AutomationElementIdentifiers.HeadingLevelProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			var level = newValue is AutomationHeadingLevel headingLevel ? headingLevel switch
-			{
-				AutomationHeadingLevel.Level1 => 1,
-				AutomationHeadingLevel.Level2 => 2,
-				AutomationHeadingLevel.Level3 => 3,
-				AutomationHeadingLevel.Level4 => 4,
-				AutomationHeadingLevel.Level5 => 5,
-				AutomationHeadingLevel.Level6 => 6,
-				AutomationHeadingLevel.Level7 => 7,
-				AutomationHeadingLevel.Level8 => 8,
-				AutomationHeadingLevel.Level9 => 9,
-				_ => 0,
-			} : 0;
-			NativeUno.uno_accessibility_update_heading_level(element.Visual.Handle, level);
-		}
-		else if (automationProperty == SelectionItemPatternIdentifiers.IsSelectedProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			NativeUno.uno_accessibility_update_selected(element.Visual.Handle, newValue is true);
-		}
-		else if (automationProperty == AutomationElementIdentifiers.LandmarkTypeProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			var landmarkType = newValue is AutomationLandmarkType lt ? lt : AutomationLandmarkType.None;
-			var landmarkRole = AriaMapper.GetLandmarkRole(landmarkType);
-			NativeUno.uno_accessibility_update_landmark(element.Visual.Handle, landmarkRole);
-		}
-		else if (automationProperty == RangeValuePatternIdentifiers.MinimumProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			if (newValue is double min &&
-				peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider rangeProvider)
-			{
-				NativeUno.uno_accessibility_update_range_bounds(element.Visual.Handle, min, rangeProvider.Maximum);
-			}
-		}
-		else if (automationProperty == RangeValuePatternIdentifiers.MaximumProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			if (newValue is double max &&
-				peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider rangeProvider)
-			{
-				NativeUno.uno_accessibility_update_range_bounds(element.Visual.Handle, rangeProvider.Minimum, max);
-			}
-		}
+		var ariaChecked = AriaMapper.ConvertToggleStateToAriaChecked(newState);
+		NativeUno.uno_accessibility_update_value(handle, ConvertCheckedToNativeValue(ariaChecked));
 	}
 
-	public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
+	protected override void UpdateRangeValue(nint handle, AutomationPeer peer, double value)
+		=> NativeUno.uno_accessibility_update_value(handle, value.ToString("G", CultureInfo.InvariantCulture));
+
+	protected override void UpdateRangeBounds(nint handle, double min, double max)
+		=> NativeUno.uno_accessibility_update_range_bounds(handle, min, max);
+
+	protected override void UpdateTextValue(nint handle, string? value)
+		=> NativeUno.uno_accessibility_update_value(handle, value);
+
+	protected override void UpdateExpandCollapseState(nint handle, bool isExpanded)
+		=> NativeUno.uno_accessibility_update_expand_collapse(handle, true, isExpanded);
+
+	protected override void UpdateEnabled(nint handle, bool enabled)
+		=> NativeUno.uno_accessibility_update_enabled(handle, enabled);
+
+	protected override void UpdateSelected(nint handle, bool selected)
+		=> NativeUno.uno_accessibility_update_selected(handle, selected);
+
+	protected override void UpdateHelpText(nint handle, string? helpText)
+		=> NativeUno.uno_accessibility_update_help(handle, helpText);
+
+	protected override void UpdateHeadingLevel(nint handle, int level)
+		=> NativeUno.uno_accessibility_update_heading_level(handle, level);
+
+	protected override void UpdateLandmark(nint handle, string? landmarkRole)
+		=> NativeUno.uno_accessibility_update_landmark(handle, landmarkRole);
+
+	protected override void UpdateIsReadOnly(nint handle, bool isReadOnly)
+		=> NativeUno.uno_accessibility_update_read_only(handle, isReadOnly);
+
+	protected override void UpdateFocusable(nint handle, bool focusable)
+		=> NativeUno.uno_accessibility_update_focusable(handle, focusable);
+
+	protected override void UpdateIsOffscreen(nint handle, bool isOffscreen)
+		=> NativeUno.uno_accessibility_update_visibility(handle, !isOffscreen);
+
+	// Override event routing from base to add macOS-specific events
+	public override void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 	{
-		if (!IsAccessibilityEnabled || !_accessibilityTreeInitialized)
+		if (!_accessibilityTreeInitialized)
 		{
 			return;
 		}
 
+		// Let base handle common events (focus, text changes, structure)
+		base.NotifyAutomationEvent(peer, eventId);
+
+		// macOS-specific event handling
 		switch (eventId)
 		{
-			case AutomationEvents.AutomationFocusChanged when TryGetPeerOwner(peer, out var focusedElement):
-				NativeUno.uno_accessibility_set_focused(focusedElement.Visual.Handle);
-				break;
-
 			case AutomationEvents.InvokePatternOnInvoked when TryGetPeerOwner(peer, out _):
-				NativeUno.uno_accessibility_post_layout_changed();
-				break;
-
 			case AutomationEvents.SelectionItemPatternOnElementSelected when TryGetPeerOwner(peer, out _):
-				NativeUno.uno_accessibility_post_layout_changed();
-				break;
-
 			case AutomationEvents.SelectionPatternOnInvalidated:
 				NativeUno.uno_accessibility_post_layout_changed();
 				break;
 
-			case AutomationEvents.TextPatternOnTextSelectionChanged:
-				break;
-
 			case AutomationEvents.LiveRegionChanged when TryGetPeerOwner(peer, out var liveElement):
-				// Fire native VoiceOver live region notifications (matching Flutter's
-				// AccessibilityBridgeMac LIVE_REGION_CHANGED / ALERT pattern)
+				if (_activeModalHandle != nint.Zero && !IsDescendantOf(liveElement, _activeModalHandle))
+				{
+					break;
+				}
+
 				NativeUno.uno_accessibility_post_live_region_changed(liveElement.Visual.Handle);
 
-				// Also use announcement API as a fallback for VoiceOver to speak the text
 				var label = ResolveLabel(peer);
 				if (!string.IsNullOrEmpty(label))
 				{
@@ -961,57 +894,84 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 					}
 				}
 				break;
-
-			case AutomationEvents.StructureChanged:
-				// Match Flutter's AccessibilityBridgeMac CHILDREN_CHANGED:
-				// NSAccessibilityCreatedNotification on the window is the only way
-				// to make VoiceOver reliably pick up structural changes.
-				NativeUno.uno_accessibility_post_children_changed();
-				break;
 		}
 	}
 
-	public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
+	protected override void SetNativeFocus(nint handle)
+		=> NativeUno.uno_accessibility_set_focused(handle);
+
+	protected override void OnNativeStructureChanged()
+		=> NativeUno.uno_accessibility_post_children_changed();
+
+	protected override void AnnounceOnPlatform(string text, bool assertive)
+		=> NativeUno.uno_accessibility_announce(text, assertive);
+
+	// Modal dialog support: ContentDialog gets modal focus trapping for VoiceOver.
+
+	private void TryRegisterModalDialog(UIElement element)
 	{
-		if (!IsAccessibilityEnabled || string.IsNullOrEmpty(displayString))
+		if (element is ContentDialog dialog)
 		{
-			return;
-		}
-
-		var assertive = notificationProcessing == AutomationNotificationProcessing.ImportantAll ||
-						notificationProcessing == AutomationNotificationProcessing.ImportantMostRecent;
-
-		NativeUno.uno_accessibility_announce(displayString, assertive);
-	}
-
-	public bool ListenerExistsHelper(AutomationEvents eventId)
-		=> IsAccessibilityEnabled;
-
-	public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
-	{
-		// Forward to NotifyAutomationEvent to keep macOS handling unified
-		NotifyAutomationEvent(peer, eventId);
-	}
-
-	private static bool TryGetPeerOwner(AutomationPeer peer, [NotNullWhen(true)] out UIElement? owner)
-	{
-		if (peer is FrameworkElementAutomationPeer { Owner: { } element })
-		{
-			owner = element;
-			return true;
-		}
-
-		if (peer is ItemAutomationPeer itemPeer)
-		{
-			var parent = itemPeer.GetParent();
-			if (parent is FrameworkElementAutomationPeer { Owner: { } parentElement })
+			dialog.Opened += (s, e) =>
 			{
-				owner = parentElement;
-				return true;
-			}
-		}
+				if (!IsAccessibilityEnabled)
+				{
+					return;
+				}
 
-		owner = null;
-		return false;
+				// Remember what had focus before the dialog opened
+				_modalTriggerHandle = TrackedFocusedElement?.Visual.Handle ?? nint.Zero;
+				_activeModalHandle = dialog.Visual.Handle;
+
+				// Mark the dialog as modal so VoiceOver restricts navigation
+				NativeUno.uno_accessibility_update_modal(dialog.Visual.Handle, true);
+
+				// Announce the dialog title so VoiceOver users know a dialog appeared
+				var dialogPeer = dialog.GetOrCreateAutomationPeer();
+				var dialogTitle = dialogPeer?.GetName();
+				if (!string.IsNullOrEmpty(dialogTitle))
+				{
+					AnnounceAssertive(dialogTitle);
+				}
+
+			};
+
+			dialog.Closed += (s, e) =>
+			{
+				if (!IsAccessibilityEnabled)
+				{
+					return;
+				}
+
+				// Remove modal flag
+				NativeUno.uno_accessibility_update_modal(dialog.Visual.Handle, false);
+
+				// Restore focus to the element that triggered the dialog,
+				// or fall back to the root element if nothing was focused before.
+				if (_modalTriggerHandle != nint.Zero)
+				{
+					NativeUno.uno_accessibility_set_focused(_modalTriggerHandle);
+				}
+				else
+				{
+					// No trigger element — try focusing the root element
+					var rootElement = Microsoft.UI.Xaml.Window.CurrentSafe?.RootElement;
+					if (rootElement is not null)
+					{
+						var firstFocusable = FindFirstFocusableChild(rootElement);
+						if (firstFocusable is not null)
+						{
+							NativeUno.uno_accessibility_set_focused(firstFocusable.Visual.Handle);
+						}
+					}
+				}
+
+				_activeModalHandle = nint.Zero;
+				_modalTriggerHandle = nint.Zero;
+
+				// Clear duplicate tracking so the next announcement always goes through
+				ResetAnnouncementTracking();
+			};
+		}
 	}
 }

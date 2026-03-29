@@ -28,6 +28,11 @@ namespace Microsoft.UI.Xaml
 
 		private KeyboardNavigationMode _keyboardNavigationMode = UnsetKeyboardNavigationMode;
 
+		// Cached automation peer, mirrors WinUI's m_tpAP field.
+		// Ensures peer identity is stable across calls so that reference
+		// comparisons (e.g. HasKeyboardFocusImpl, SetFocusHelper) work correctly.
+		private AutomationPeer? _cachedAutomationPeer;
+
 		/// <summary>
 		/// Set to True when the imminent Focus(FocusState) call needs to use an animation if bringing the focused
 		/// element into view.
@@ -130,39 +135,22 @@ namespace Microsoft.UI.Xaml
 				isPopupOpen = popup.IsOpen;
 			}
 
-			// this condition checks that if Control is visible and if it's popup then it must be open
+			// This condition checks that if Control is visible and if it's popup then it must be open.
+			// Mirrors WinUI's m_tpAP caching: the peer is created once and reused so that
+			// identity-based checks (HasKeyboardFocusImpl, SetFocusHelper) work correctly.
 			if (Visibility != Visibility.Collapsed && isPopupOpen)
 			{
-				// TODO Uno: Our simplified version just returns new automation peer
-				return OnCreateAutomationPeerInternal();
-				//if (!m_tpAP)
-				//{
-				//	ctl::ComPtr<xaml_automation_peers::IAutomationPeer> spAP;
-				//	if (FAILED(UIElementGenerated::OnCreateAutomationPeerProtected(&spAP)))
-				//	{
-				//		RRETURN(E_FAIL);
-				//	}
-				//	else if (!spAP)
-				//	{
-				//		RRETURN(S_false);
-				//	}
+				if (_cachedAutomationPeer is null)
+				{
+					_cachedAutomationPeer = OnCreateAutomationPeerInternal();
+				}
 
-				//	// This FX peer gains state when the AutomationPeer is stored in m_tpAP, so mark as
-				//	// having state. Otherwise, a stateless FX peer will be released, which will
-				//	// release the automation peer.
-				//	IFC(MarkHasState());
-
-				//	SetPtrValue(m_tpAP, spAP.Get());
-				//}
+				return _cachedAutomationPeer;
 			}
 			else
 			{
+				_cachedAutomationPeer = null;
 				return null;
-				//if (m_tpAP)
-				//{
-				//	m_tpAP.Clear();
-				//}
-				//RRETURN(S_false);
 			}
 		}
 

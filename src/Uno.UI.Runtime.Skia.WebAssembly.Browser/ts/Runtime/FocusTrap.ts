@@ -29,10 +29,10 @@ namespace Uno.UI.Runtime.Skia {
 			const modalElement = document.getElementById(`uno-semantics-${modalHandle}`);
 			const hiddenElements: FocusTrapState["hiddenElements"] = [];
 
-			if (semanticsRoot) {
+			if (semanticsRoot && modalElement) {
 				const allElements = semanticsRoot.querySelectorAll("[id^='uno-semantics-']");
 				allElements.forEach((el: HTMLElement) => {
-					if (el !== modalElement && !modalElement?.contains(el)) {
+					if (el !== modalElement && !modalElement.contains(el)) {
 						hiddenElements.push({
 							element: el,
 							originalAriaHidden: el.getAttribute("aria-hidden"),
@@ -117,11 +117,16 @@ namespace Uno.UI.Runtime.Skia {
 			// Reactivate parent trap or clear
 			FocusTrap.activeTrap = trap.parentState;
 
-			// Restore focus to trigger element
+			// Restore focus to trigger element, with fallback to parent trap or body
 			if (trap.triggerHandle) {
 				const triggerElement = document.getElementById(`uno-semantics-${trap.triggerHandle}`);
 				if (triggerElement) {
 					triggerElement.focus();
+				} else if (trap.parentState && trap.parentState.focusableHandles.length > 0) {
+					const fallback = document.getElementById(`uno-semantics-${trap.parentState.focusableHandles[0]}`);
+					if (fallback) {
+						fallback.focus();
+					}
 				}
 			}
 		}

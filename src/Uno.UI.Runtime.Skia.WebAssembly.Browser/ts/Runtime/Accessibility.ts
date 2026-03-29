@@ -20,6 +20,8 @@ namespace Uno.UI.Runtime.Skia {
 		private static managedOnFocus: any;
 		private static managedOnBlur: any;
 
+		private static managedIsAutoEnableAccessibility: () => boolean;
+
 		private static createLiveElement(kind: string) {
 			const element = document.createElement("div");
 			element.classList.add("uno-aria-live");
@@ -34,6 +36,7 @@ namespace Uno.UI.Runtime.Skia {
 			// Wire up managed callbacks from WebAssemblyAccessibility.cs
 			const accessibilityExports = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility;
 			this.managedEnableAccessibility = accessibilityExports.EnableAccessibility;
+			this.managedIsAutoEnableAccessibility = accessibilityExports.IsAutoEnableAccessibility;
 			this.managedOnScroll = accessibilityExports.OnScroll;
 			this.managedOnInvoke = accessibilityExports.OnInvoke;
 			this.managedOnToggle = accessibilityExports.OnToggle;
@@ -52,24 +55,31 @@ namespace Uno.UI.Runtime.Skia {
 			this.containerElement.appendChild(this.politeElement);
 			this.containerElement.appendChild(this.assertiveElement);
 
-			// Create enable accessibility button (for screen reader activation)
-			this.enableAccessibilityButton = document.createElement("div");
-			this.enableAccessibilityButton.id = "uno-enable-accessibility";
-			this.enableAccessibilityButton.setAttribute("aria-live", "polite");
-			this.enableAccessibilityButton.setAttribute("role", "button");
-			this.enableAccessibilityButton.setAttribute("tabindex", "0");
-			this.enableAccessibilityButton.setAttribute("aria-label", "Enable accessibility");
-			this.enableAccessibilityButton.addEventListener("click", this.onEnableAccessibilityButtonClicked.bind(this));
+			const autoEnable = this.managedIsAutoEnableAccessibility();
 
-			// Also add a keydown listener so keyboard users can activate it via Enter/Space
-			this.enableAccessibilityButton.addEventListener("keydown", (e) => {
-				if (e.key === "Enter" || e.key === " ") {
-					e.preventDefault();
-					this.onEnableAccessibilityButtonClicked(e as any);
-				}
-			});
+			if (!autoEnable) {
+				// Create enable accessibility button (for screen reader activation)
+				this.enableAccessibilityButton = document.createElement("div");
+				this.enableAccessibilityButton.id = "uno-enable-accessibility";
+				this.enableAccessibilityButton.setAttribute("aria-live", "polite");
+				this.enableAccessibilityButton.setAttribute("role", "button");
+				this.enableAccessibilityButton.setAttribute("tabindex", "0");
+				this.enableAccessibilityButton.setAttribute("aria-label", "Enable accessibility");
+				this.enableAccessibilityButton.addEventListener("click", this.onEnableAccessibilityButtonClicked.bind(this));
 
-			this.containerElement.appendChild(this.enableAccessibilityButton);
+				// Also add a keydown listener so keyboard users can activate it via Enter/Space
+				this.enableAccessibilityButton.addEventListener("keydown", (e) => {
+					if (e.key === "Enter" || e.key === " ") {
+						e.preventDefault();
+						this.onEnableAccessibilityButtonClicked(e as any);
+					}
+				});
+
+				// Prepend so the button is the first focusable element in the DOM,
+				// reachable by the very first Tab press (inspired by Flutter's
+				// DesktopSemanticsEnabler which prepends its placeholder to <body>).
+				this.containerElement.prepend(this.enableAccessibilityButton);
+			}
 
 			// Create semantic DOM root container (hidden but accessible).
 			// Uses position:fixed to match the canvas coordinate system (which is also
@@ -88,6 +98,14 @@ namespace Uno.UI.Runtime.Skia {
 			this.semanticsRoot.setAttribute("aria-label", "Application content");
 			this.containerElement.appendChild(this.semanticsRoot);
 
+			if (autoEnable) {
+				// Auto-enable accessibility without requiring user interaction.
+				// The C# EnableAccessibility() has retry logic for when
+				// Window/RootElement aren't ready yet.
+				console.log('[A11y] Auto-enabling accessibility (FeatureConfiguration.AutomationPeer.AutoEnableAccessibility = true)');
+				this.managedEnableAccessibility();
+				LiveRegion.initialize();
+			}
 		}
 
 		/// <summary>
@@ -202,7 +220,19 @@ namespace Uno.UI.Runtime.Skia {
 			let child = document.createElement("div");
 			child.innerText = text;
 			ariaLiveElement.appendChild(child);
-			setTimeout(() => ariaLiveElement.removeChild(child), 300);
+			setTimeout(() => {
+				if (child.parentNode === ariaLiveElement) {
+					ariaLiveElement.removeChild(child);
+				}
+			}, 300);
+		}
+
+		/**
+		 * Returns true if the "Enable Accessibility" button is still in the DOM
+		 * (i.e. accessibility has not yet been activated by the user).
+		 */
+		public static isEnableAccessibilityButtonActive(): boolean {
+			return document.getElementById("uno-enable-accessibility") !== null;
 		}
 
 		private static onEnableAccessibilityButtonClicked(evt: MouseEvent) {
@@ -222,7 +252,6 @@ namespace Uno.UI.Runtime.Skia {
 		 * C# fires focus synchronously but the JS DOM mutation hasn't been flushed yet.
 		 */
 		public static focusSemanticElement(handle: number) {
-			console.log(`[A11y] TS focusSemanticElement: handle=${handle}`);
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				element.focus();
@@ -232,7 +261,6 @@ namespace Uno.UI.Runtime.Skia {
 				requestAnimationFrame(() => {
 					const retryElement = Accessibility.getSemanticElementByHandle(handle);
 					if (retryElement) {
-						console.log(`[A11y] TS focusSemanticElement: DEFERRED SUCCESS handle=${handle}`);
 						retryElement.focus();
 					} else {
 						console.warn(`[A11y] TS focusSemanticElement: element NOT FOUND handle=${handle} (after retry)`);
@@ -290,6 +318,17 @@ namespace Uno.UI.Runtime.Skia {
 				parent.getAttribute('role') === 'tablist') {
 				// Tablist group: only affect tab-role children
 				groupSelector = '[role="tab"]';
+			} else if (activeElement.getAttribute('role') === 'option' &&
+				parent.getAttribute('role') === 'listbox') {
+				// Listbox group: only affect option-role children
+				groupSelector = '[role="option"]';
+			} else if (activeElement.getAttribute('role') === 'menuitem' &&
+				parent.getAttribute('role') === 'menu') {
+				// Menu group: only affect menuitem-role children
+				groupSelector = '[role="menuitem"]';
+			} else if (activeElement.getAttribute('role') === 'treeitem') {
+				// Tree group: affect treeitem-role siblings at same level
+				groupSelector = '[role="treeitem"]';
 			}
 
 			if (!groupSelector) {
@@ -450,6 +489,17 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
+		public static updateAriaLevel(handle: number, level: number): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (level > 0) {
+					element.setAttribute("aria-level", String(level));
+				} else {
+					element.removeAttribute("aria-level");
+				}
+			}
+		}
+
 		public static updatePositionInSet(handle: number, positionInSet: number, sizeOfSet: number): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
@@ -499,6 +549,66 @@ namespace Uno.UI.Runtime.Skia {
 			if (element) {
 				element.setAttribute("aria-live", ariaLive);
 				element.setAttribute("aria-atomic", "true");
+			}
+		}
+
+		/**
+		 * Updates aria-describedby on a semantic element.
+		 * References other semantic elements by their IDs (space-separated).
+		 */
+		/**
+		 * Updates aria-labelledby on a semantic element.
+		 * References the labeling element by its DOM ID.
+		 */
+		public static updateAriaLabelledBy(handle: number, idList: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (idList) {
+					element.setAttribute("aria-labelledby", idList);
+				} else {
+					element.removeAttribute("aria-labelledby");
+				}
+			}
+		}
+
+		public static updateAriaDescribedBy(handle: number, idList: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (idList) {
+					element.setAttribute("aria-describedby", idList);
+				} else {
+					element.removeAttribute("aria-describedby");
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-controls on a semantic element.
+		 * References other semantic elements by their IDs (space-separated).
+		 */
+		public static updateAriaControls(handle: number, idList: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (idList) {
+					element.setAttribute("aria-controls", idList);
+				} else {
+					element.removeAttribute("aria-controls");
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-flowto on a semantic element.
+		 * Defines the next element(s) in an alternative reading order.
+		 */
+		public static updateAriaFlowTo(handle: number, idList: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (idList) {
+					element.setAttribute("aria-flowto", idList);
+				} else {
+					element.removeAttribute("aria-flowto");
+				}
 			}
 		}
 

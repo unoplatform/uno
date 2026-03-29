@@ -210,10 +210,11 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	protected override AutomationPeer GetLabeledByCore()
 	{
-		if (AutomationProperties.GetLabeledBy(Owner) is IFrameworkElement label)
-		// UNO TODO: Implement GetAutomationPeer on UIElement
+		// WinUI uses GetOrCreateAutomationPeer() to ensure the peer exists
+		// when resolving LabeledBy references.
+		if (AutomationProperties.GetLabeledBy(Owner) is UIElement labelElement)
 		{
-			return label.GetAutomationPeer();
+			return labelElement.GetOrCreateAutomationPeer();
 		}
 
 		return base.GetLabeledByCore();
@@ -266,6 +267,11 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		if (GetLabeledBy() is AutomationPeer labelAutomationPeer && labelAutomationPeer.GetName() is string label && !string.IsNullOrEmpty(label))
 		{
 			return label;
+		}
+
+		if ((Owner as FrameworkElement)?.GetPlainText() is string plainText && !string.IsNullOrEmpty(plainText))
+		{
+			return plainText;
 		}
 
 		if (GetSimpleAccessibilityName() is string simpleAccessibilityName && !string.IsNullOrEmpty(simpleAccessibilityName))

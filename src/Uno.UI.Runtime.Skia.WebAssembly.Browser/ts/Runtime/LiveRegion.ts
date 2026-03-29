@@ -58,12 +58,14 @@ namespace Uno.UI.Runtime.Skia {
 				return;
 			}
 
-			// Clear and re-set to trigger screen reader announcement
+			// Clear and re-set to trigger screen reader announcement.
+			// Use setTimeout(0) instead of requestAnimationFrame to ensure the DOM
+			// mutation crosses a task boundary — some screen readers (NVDA, JAWS) require
+			// this to detect the change and announce the new content.
 			region.textContent = "";
-			// Use a microtask to ensure the DOM mutation triggers the announcement
-			requestAnimationFrame(() => {
+			setTimeout(() => {
 				region.textContent = content;
-			});
+			}, 0);
 		}
 
 		/**
