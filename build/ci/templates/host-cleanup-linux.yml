@@ -1,13 +1,35 @@
+# Reusable AzDO template: Cleanup unused dependencies on Linux CI agents.
+#
+# This list is based on what the base image contains and
+# may need to be adjusted as new software gets installed.
+# Use the `du` command to determine what can be uninstalled.
 steps:
-- bash: |
-    echo "=== Disk usage BEFORE cleanup ==="
-    df -h /
-    sudo rm -rf ~/.cargo ~/.rustup ~/.dotnet /usr/share/swift /opt/microsoft/msedge /usr/local/.ghcup /usr/lib/mono /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
-    sudo snap remove lxd --purge || true
-    sudo snap remove core20 --purge || true
-    sudo snap remove snapd --purge || true
-    sudo apt-get purge -y snapd || true
-    echo "=== Disk usage AFTER cleanup ==="
-    df -h /
-  displayName: 'Free disk space (Linux)'
-  condition: eq(variables['Agent.OS'], 'Linux')
+  - bash: |
+      # Use sudo only when available (containers may not have it)
+      if command -v sudo >/dev/null 2>&1; then
+        SUDO="sudo"
+      else
+        SUDO=""
+      fi
+
+      echo "Disk space before cleanup:"
+      df -h /
+
+      rm -rf ~/.cargo ~/.rustup ~/.dotnet
+
+      $SUDO rm -rf /usr/share/swift || true
+      $SUDO rm -rf /opt/microsoft/msedge || true
+      $SUDO rm -rf /usr/local/.ghcup || true
+      $SUDO rm -rf /usr/lib/mono || true
+      $SUDO rm -rf /usr/local/lib/android || true
+      $SUDO rm -rf /opt/ghc || true
+      $SUDO rm -rf /opt/hostedtoolcache/CodeQL || true
+
+      $SUDO snap remove lxd || true
+      $SUDO snap remove core20 || true
+      $SUDO apt-get purge -y snapd || true
+
+      echo "Disk space after cleanup:"
+      df -h /
+    displayName: Cleanup unused host dependencies
+    condition: eq(variables['Agent.OS'], 'Linux')
