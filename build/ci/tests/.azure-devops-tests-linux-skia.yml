@@ -31,6 +31,8 @@ jobs:
   steps:
   - checkout: none
 
+  - template: ../templates/host-cleanup-linux.yml
+
   - task: DownloadPipelineArtifact@2
     displayName: Downloading $(SamplesAppArtifactName)
     inputs:
@@ -73,6 +75,8 @@ jobs:
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
+
+  - template: ../templates/host-cleanup-linux.yml
 
   - task: DownloadPipelineArtifact@2
     displayName: Downloading $(SamplesAppArtifactName)

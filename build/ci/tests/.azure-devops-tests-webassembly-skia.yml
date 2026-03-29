@@ -44,6 +44,8 @@ jobs:
 
   steps:
 
+  - template: ../templates/host-cleanup-linux.yml
+
   - task: DownloadPipelineArtifact@2
     displayName: Downloading $(SamplesAppArtifactName)
     inputs:

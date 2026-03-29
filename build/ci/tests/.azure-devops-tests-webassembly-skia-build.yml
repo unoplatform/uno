@@ -29,6 +29,7 @@ jobs:
     clean: true
     fetchDepth: 1
 
+  - template: ../templates/host-cleanup-linux.yml
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-windows.yml
     parameters:

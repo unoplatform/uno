@@ -1,23 +1,13 @@
 steps:
 - bash: |
-    # This list is based on what the base image contains and
-    # may need to be adjusted as new software gets installed.
-    # Use the `du` command below to determine what can be
-    # uninstalled.
-    
-    rm -fR ~/.cargo
-    rm -fR ~/.rustup
-    rm -fR ~/.dotnet
-    sudo rm -fR /usr/share/swift
-    sudo rm -fR /opt/microsoft/msedge
-    sudo rm -fR /usr/local/.ghcup
-    sudo rm -fR /usr/lib/mono
-    sudo snap remove lxd
-    sudo snap remove core20
-    sudo apt remove snapd
-
-    df -h
-    # du -h -d 3 /
-
-  displayName: 'Cleanup unused image dependencies (Linux)'
+    echo "=== Disk usage BEFORE cleanup ==="
+    df -h /
+    sudo rm -rf ~/.cargo ~/.rustup ~/.dotnet /usr/share/swift /opt/microsoft/msedge /usr/local/.ghcup /usr/lib/mono /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+    sudo snap remove lxd --purge || true
+    sudo snap remove core20 --purge || true
+    sudo snap remove snapd --purge || true
+    sudo apt-get purge -y snapd || true
+    echo "=== Disk usage AFTER cleanup ==="
+    df -h /
+  displayName: 'Free disk space (Linux)'
   condition: eq(variables['Agent.OS'], 'Linux')
