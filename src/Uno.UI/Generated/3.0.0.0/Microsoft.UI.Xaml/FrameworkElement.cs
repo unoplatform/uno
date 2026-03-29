@@ -42,14 +42,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property FocusVisualSecondaryThicknessProperty
 		// Skipping already declared property HeightProperty
 		// Skipping already declared property HorizontalAlignmentProperty
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LanguageProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Language), typeof(string),
-			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
-#endif
+		// Skipping already declared property LanguageProperty
 		// Skipping already declared property MarginProperty
 		// Skipping already declared property MaxHeightProperty
 		// Skipping already declared property MaxWidthProperty
@@ -76,20 +69,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Height
 		// Skipping already declared property HorizontalAlignment
 		// Skipping already declared property IsLoaded
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public string Language
-		{
-			get
-			{
-				return (string)this.GetValue(LanguageProperty);
-			}
-			set
-			{
-				this.SetValue(LanguageProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property Language
 		// Skipping already declared property Margin
 		// Skipping already declared property MaxHeight
 		// Skipping already declared property MaxWidth
