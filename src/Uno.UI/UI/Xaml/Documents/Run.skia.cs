@@ -209,7 +209,12 @@ namespace Microsoft.UI.Xaml.Documents
 				float textSizeX;
 				if (typeface is not null && typeface != defaultTypeface)
 				{
-					var (details, task) = FontDetailsCache.GetFont(typeface.FamilyName, (float)FontSize, FontWeight, FontStretch, FontStyle);
+					// Use the same effective font parameters as the primary font (from TextFormatting)
+					// rather than the raw DP values, which may not reflect inherited values.
+					var fallbackFontWeight = IsPropertyDefault(FontWeightProperty) ? (_textFormatting?.FontWeight ?? FontWeight) : FontWeight;
+					var fallbackFontStretch = IsPropertyDefault(FontStretchProperty) ? (_textFormatting?.FontStretch ?? FontStretch) : FontStretch;
+					var fallbackFontStyle = IsPropertyDefault(FontStyleProperty) ? (_textFormatting?.FontStyle ?? FontStyle) : FontStyle;
+					var (details, task) = FontDetailsCache.GetFont(typeface.FamilyName, fontSize, fallbackFontWeight, fallbackFontStretch, fallbackFontStyle);
 					if (task.IsCompletedSuccessfully)
 					{
 						fallbackFont = task.Result;

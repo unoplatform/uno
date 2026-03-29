@@ -513,6 +513,8 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: SolidColorBrushHelper.Black,
+					// Inherits needed for Foreground to cascade from ancestor theme resources.
+					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) =>
 					{
 						var tb = (TextBlock)s;
