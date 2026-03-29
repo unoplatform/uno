@@ -934,12 +934,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 					AnnounceAssertive(dialogTitle);
 				}
 
-				// Focus the first focusable child in the dialog
-				var firstFocusable = FindFirstFocusableChild(dialog);
-				if (firstFocusable is not null)
-				{
-					firstFocusable.Focus(FocusState.Programmatic);
-				}
 			};
 
 			dialog.Closed += (s, e) =>

@@ -21,7 +21,10 @@ public partial class FocusManager
 	private static void FocusNative(UIElement? control)
 	{
 		// Resign native first responder so keyboard events return to the managed layer and are properly processed by the focused element.
-		if (control?.XamlRoot is { } xamlRoot)
+		// Use control's XamlRoot if available, otherwise try the current window's root
+		// to ensure ResignNativeFocus is called even when clearing focus (control == null).
+		var xamlRoot = control?.XamlRoot ?? Window.CurrentSafe?.RootElement?.XamlRoot;
+		if (xamlRoot is not null)
 		{
 			XamlRootMap.GetHostForRoot(xamlRoot)?.ResignNativeFocus();
 		}
