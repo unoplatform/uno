@@ -149,7 +149,7 @@ public partial class AutomationProperties
 			"IsDataValidForForm",
 			typeof(bool),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(true));
 
 	/// <summary>
 	/// Identifies the IsDialog attached property, which indicates whether the element represents a dialog.

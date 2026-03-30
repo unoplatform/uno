@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// <summary>
 /// Exposes TextBox types to Microsoft UI Automation.
 /// </summary>
-public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer, IValueProvider
+public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer, Provider.IValueProvider
 {
 	public TextBoxAutomationPeer(TextBox owner) : base(owner)
 	{
@@ -32,35 +32,20 @@ public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer, IVa
 		return base.GetPatternCore(patternInterface);
 	}
 
-	/// <summary>
-	/// Gets the text value of the TextBox.
-	/// </summary>
-	public string Value => (Owner as TextBox)?.Text ?? string.Empty;
+	// IValueProvider
 
-	/// <summary>
-	/// Gets whether the TextBox is read-only.
-	/// </summary>
-	public bool IsReadOnly => (Owner as TextBox)?.IsReadOnly ?? false;
+	public string Value => ((TextBox)Owner).Text ?? string.Empty;
 
-	/// <summary>
-	/// Sets the text value of the TextBox.
-	/// </summary>
+	public bool IsReadOnly => ((TextBox)Owner).IsReadOnly;
+
 	public void SetValue(string value)
 	{
-		if (!IsEnabled())
-		{
-			throw new InvalidOperationException("Element not enabled");
-		}
-
 		if (IsReadOnly)
 		{
-			throw new InvalidOperationException("Element is read-only");
+			throw new System.InvalidOperationException("Cannot set value on a read-only TextBox.");
 		}
 
-		if (Owner is TextBox textBox)
-		{
-			textBox.Text = value;
-		}
+		((TextBox)Owner).Text = value;
 	}
 
 	/// <summary>
@@ -73,6 +58,54 @@ public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer, IVa
 		{
 			RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty, oldValue, newValue);
 		}
+	}
+
+	protected override string GetNameCore()
+	{
+		var baseName = base.GetNameCore();
+		if (!string.IsNullOrEmpty(baseName))
+		{
+			return baseName;
+		}
+
+		// WinUI3 uses the Header as the accessible name for TextBox when no
+		// explicit Name or LabeledBy is set.
+		if (Owner is TextBox { Header: { } header })
+		{
+			var headerText = header.ToString();
+			if (!string.IsNullOrEmpty(headerText))
+			{
+				return headerText;
+			}
+		}
+
+		// Fall back to PlaceholderText when no Header is available.
+		if (Owner is TextBox { PlaceholderText: { } placeholder } && !string.IsNullOrEmpty(placeholder))
+		{
+			return placeholder;
+		}
+
+		return string.Empty;
+	}
+
+	protected override string GetHelpTextCore()
+	{
+		var baseHelp = base.GetHelpTextCore();
+		if (!string.IsNullOrEmpty(baseHelp))
+		{
+			return baseHelp;
+		}
+
+		// When Header provides the name, PlaceholderText serves as help text
+		// (shown as the Narrator hint). This matches WinUI3 behavior.
+		if (Owner is TextBox { Header: { } header, PlaceholderText: { } placeholder }
+			&& !string.IsNullOrEmpty(header.ToString())
+			&& !string.IsNullOrEmpty(placeholder))
+		{
+			return placeholder;
+		}
+
+		return string.Empty;
 	}
 
 	protected override IEnumerable<AutomationPeer> GetDescribedByCore()
