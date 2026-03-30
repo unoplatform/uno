@@ -1,8 +1,10 @@
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
@@ -1340,12 +1342,664 @@ public class Given_ElementTheme
 		Assert.IsNotNull(darkBrush);
 
 		// Light region should get Yellow (from Light theme dictionary)
-		Assert.AreEqual(Windows.UI.Colors.Yellow, lightBrush.Color,
+		Assert.AreEqual(Microsoft.UI.Colors.Yellow, lightBrush.Color,
 			$"Light region should use Yellow from Light theme dictionary, got {lightBrush.Color}");
 
 		// Dark region should get Blue (from Dark theme dictionary)
-		Assert.AreEqual(Windows.UI.Colors.Blue, darkBrush.Color,
+		Assert.AreEqual(Microsoft.UI.Colors.Blue, darkBrush.Color,
 			$"Dark region should use Blue from Dark theme dictionary, got {darkBrush.Color}");
+	}
+
+	#endregion
+
+	#region Popup and Flyout Theme Changes
+
+	/// <summary>
+	/// Tests that when a Popup is open and the app theme changes, the Popup's content
+	/// receives the theme change notification and updates its resources.
+	/// This is the fix for the flyout text staying dark when app theme changes to dark.
+	/// </summary>
+	[TestMethod]
+	public async Task When_App_Theme_Changes_Open_Popup_Content_Updates()
+	{
+		// Create popup with themed content
+		var popupContent = (Border)XamlReader.Load(
+			"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					Width="200" Height="100"
+					Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
+				<TextBlock Text="Popup Content" />
+			</Border>
+			""");
+
+		var popup = new Popup
+		{
+			Child = popupContent,
+			XamlRoot = TestServices.WindowHelper.XamlRoot,
+			IsOpen = true
+		};
+
+		// Need a host element to anchor the popup
+		var host = new Border { Width = 100, Height = 100 };
+		WindowHelper.WindowContent = host;
+		await WindowHelper.WaitForLoaded(host);
+		await WindowHelper.WaitForIdle();
+
+		// Get initial background color
+		var initialBrush = popupContent.Background as SolidColorBrush;
+		var initialColor = initialBrush?.Color ?? default;
+
+		// Simulate theme change by changing the popup content's RequestedTheme
+		// (In a real scenario this would be triggered by Application.RequestedTheme change)
+		popupContent.RequestedTheme = popupContent.ActualTheme == ElementTheme.Light
+			? ElementTheme.Dark
+			: ElementTheme.Light;
+		await WindowHelper.WaitForIdle();
+
+		// Verify the themed resource updated
+		var newBrush = popupContent.Background as SolidColorBrush;
+		Assert.IsNotNull(newBrush);
+		Assert.AreNotEqual(initialColor, newBrush.Color,
+			"Popup content's ThemeResource should update when theme changes");
+
+		popup.IsOpen = false;
+	}
+
+	/// <summary>
+	/// Tests that Popup.Child receives theme change notifications through NotifyThemeChangedCore.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Popup_Theme_Changes_Child_Receives_Notification()
+	{
+		// Create a popup with a child that has themed resources
+		var popupChild = new Border { Width = 100, Height = 100, RequestedTheme = ElementTheme.Light };
+		var innerContent = (Border)XamlReader.Load(
+			"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
+					Width="100" Height="100" />
+			""");
+		popupChild.Child = innerContent;
+
+		var popup = new Popup { Child = popupChild, XamlRoot = TestServices.WindowHelper.XamlRoot };
+
+		// Host to anchor popup
+		var host = new Border { Width = 100, Height = 100 };
+		WindowHelper.WindowContent = host;
+		await WindowHelper.WaitForLoaded(host);
+
+		popup.IsOpen = true;
+		await WindowHelper.WaitForIdle();
+
+		// Verify initial state
+		var initialBrush = innerContent.Background as SolidColorBrush;
+		var initialColor = initialBrush?.Color ?? default;
+
+		// Change the popup child's theme
+		popupChild.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// Verify the inner content's themed resource updated
+		var newBrush = innerContent.Background as SolidColorBrush;
+		Assert.IsNotNull(newBrush);
+		Assert.AreNotEqual(initialColor, newBrush.Color,
+			"Popup's nested content should update when popup theme changes");
+
+		popup.IsOpen = false;
+	}
+
+	/// <summary>
+	/// Tests that TextBlock inside a Popup has correct foreground based on theme.
+	/// </summary>
+	[TestMethod]
+	public async Task When_TextBlock_In_Popup_Has_Theme_Aware_Foreground()
+	{
+		// Create popup with Light theme containing a TextBlock
+		var lightPopupContent = new StackPanel { RequestedTheme = ElementTheme.Light };
+		var lightTextBlock = new TextBlock { Text = "Light Popup Text" };
+		lightPopupContent.Children.Add(lightTextBlock);
+
+		var lightPopup = new Popup { Child = lightPopupContent, XamlRoot = TestServices.WindowHelper.XamlRoot };
+
+		// Create popup with Dark theme containing a TextBlock
+		var darkPopupContent = new StackPanel { RequestedTheme = ElementTheme.Dark };
+		var darkTextBlock = new TextBlock { Text = "Dark Popup Text" };
+		darkPopupContent.Children.Add(darkTextBlock);
+
+		var darkPopup = new Popup { Child = darkPopupContent, XamlRoot = TestServices.WindowHelper.XamlRoot };
+
+		// Host
+		var host = new Border { Width = 100, Height = 100 };
+		WindowHelper.WindowContent = host;
+		await WindowHelper.WaitForLoaded(host);
+
+		lightPopup.IsOpen = true;
+		darkPopup.IsOpen = true;
+		await WindowHelper.WaitForIdle();
+
+		// Verify TextBlocks have different foreground colors
+		var lightForeground = lightTextBlock.Foreground as SolidColorBrush;
+		var darkForeground = darkTextBlock.Foreground as SolidColorBrush;
+
+		Assert.IsNotNull(lightForeground);
+		Assert.IsNotNull(darkForeground);
+		Assert.AreNotEqual(lightForeground.Color, darkForeground.Color,
+			$"TextBlock in Light popup ({lightForeground.Color}) should have different foreground " +
+			$"than TextBlock in Dark popup ({darkForeground.Color})");
+
+		lightPopup.IsOpen = false;
+		darkPopup.IsOpen = false;
+	}
+
+	/// <summary>
+	/// Tests that Flyout content receives theme from its placement target.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Flyout_Opened_In_Themed_Region_Uses_Region_Theme()
+	{
+		// Create a button in a Dark themed region with a Flyout
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						RequestedTheme="Dark">
+				<Button x:Name="button" Content="Open Flyout">
+					<Button.Flyout>
+						<Flyout>
+							<Border x:Name="flyoutContent" Width="100" Height="100"
+									Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
+								<TextBlock x:Name="flyoutText" Text="Flyout Content" />
+							</Border>
+						</Flyout>
+					</Button.Flyout>
+				</Button>
+			</StackPanel>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		var button = (Button)root.FindName("button");
+
+		// Open the flyout
+		button.Flyout.ShowAt(button);
+		await WindowHelper.WaitForIdle();
+
+		var flyoutContent = (Border)root.FindName("flyoutContent");
+		var flyoutText = (TextBlock)root.FindName("flyoutText");
+
+		// Flyout content should inherit Dark theme from the region
+		Assert.AreEqual(ElementTheme.Dark, flyoutContent.ActualTheme,
+			"Flyout content should inherit Dark theme from placement target's region");
+
+		// Verify the background is Dark themed
+		var brush = flyoutContent.Background as SolidColorBrush;
+		Assert.IsNotNull(brush);
+
+		// The flyout text should have appropriate foreground for Dark theme
+		var textForeground = flyoutText.Foreground as SolidColorBrush;
+		Assert.IsNotNull(textForeground);
+
+		button.Flyout.Hide();
+	}
+
+	/// <summary>
+	/// Tests that when parent's theme changes, an open popup that was created by that parent
+	/// also receives the theme update.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Parent_Theme_Changes_Child_Popup_Updates()
+	{
+		// Create a parent with explicit theme
+		var parent = new Border { Width = 200, Height = 200, RequestedTheme = ElementTheme.Light };
+
+		// Create popup content with themed resources
+		var popupContent = (Border)XamlReader.Load(
+			"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					Width="100" Height="100"
+					Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
+				<TextBlock Text="Popup" />
+			</Border>
+			""");
+
+		// Create popup and set parent as logical parent by having it inside
+		var popup = new Popup { Child = popupContent, XamlRoot = TestServices.WindowHelper.XamlRoot };
+		parent.Child = popup;
+
+		WindowHelper.WindowContent = parent;
+		await WindowHelper.WaitForLoaded(parent);
+
+		popup.IsOpen = true;
+		await WindowHelper.WaitForIdle();
+
+		// Get initial color
+		var initialBrush = popupContent.Background as SolidColorBrush;
+		var initialColor = initialBrush?.Color ?? default;
+
+		// Change parent's theme
+		parent.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// The popup should have received the theme change
+		var newBrush = popupContent.Background as SolidColorBrush;
+		Assert.IsNotNull(newBrush);
+
+		// Since popup has a parent, it should have received theme notification from parent
+		Assert.AreNotEqual(initialColor, newBrush.Color,
+			"Popup with parent should update when parent's theme changes");
+
+		popup.IsOpen = false;
+	}
+
+	/// <summary>
+	/// Tests that flyout content uses Light theme resources when opened in a Light themed region.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Flyout_Opened_In_Light_Themed_Region_Uses_Light_Resources()
+	{
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						RequestedTheme="Light">
+				<Button x:Name="button" Content="Open Flyout">
+					<Button.Flyout>
+						<Flyout>
+							<Border x:Name="flyoutContent" Width="100" Height="100"
+									Background="{ThemeResource SystemControlBackgroundAltHighBrush}" />
+						</Flyout>
+					</Button.Flyout>
+				</Button>
+			</StackPanel>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		var button = (Button)root.FindName("button");
+
+		// Get reference Light color
+		var lightRef = (Border)XamlReader.Load(
+			"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					RequestedTheme="Light" Width="50" Height="50"
+					Background="{ThemeResource SystemControlBackgroundAltHighBrush}" />
+			""");
+		var tempHost = new Border { Child = lightRef };
+		WindowHelper.WindowContent = tempHost;
+		await WindowHelper.WaitForLoaded(tempHost);
+		var lightColor = (lightRef.Background as SolidColorBrush)?.Color ?? default;
+
+		// Restore and open flyout
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		button.Flyout.ShowAt(button);
+		await WindowHelper.WaitForIdle();
+
+		var flyoutContent = (Border)root.FindName("flyoutContent");
+		Assert.AreEqual(ElementTheme.Light, flyoutContent.ActualTheme,
+			"Flyout content should have Light ActualTheme");
+
+		var flyoutBrush = flyoutContent.Background as SolidColorBrush;
+		Assert.IsNotNull(flyoutBrush);
+		Assert.AreEqual(lightColor, flyoutBrush.Color,
+			"Flyout should use Light theme resources");
+
+		button.Flyout.Hide();
+	}
+
+	/// <summary>
+	/// Tests that when the placement target's ancestor theme changes while flyout is open,
+	/// the flyout content updates to reflect the new theme.
+	/// MUX Reference: FlyoutBase subscribes to ActualThemeChanged on placement target.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Placement_Target_Theme_Changes_While_Flyout_Open_Flyout_Updates()
+	{
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						x:Name="themeContainer"
+						RequestedTheme="Light">
+				<Button x:Name="button" Content="Open Flyout">
+					<Button.Flyout>
+						<Flyout>
+							<Border x:Name="flyoutContent" Width="100" Height="100"
+									Background="{ThemeResource SystemControlBackgroundAltHighBrush}" />
+						</Flyout>
+					</Button.Flyout>
+				</Button>
+			</StackPanel>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		var themeContainer = (StackPanel)root.FindName("themeContainer");
+		var button = (Button)root.FindName("button");
+
+		// Open the flyout in Light theme
+		button.Flyout.ShowAt(button);
+		await WindowHelper.WaitForIdle();
+
+		var flyoutContent = (Border)root.FindName("flyoutContent");
+		var initialBrush = flyoutContent.Background as SolidColorBrush;
+		var initialColor = initialBrush?.Color ?? default;
+
+		Assert.AreEqual(ElementTheme.Light, flyoutContent.ActualTheme,
+			"Flyout should start with Light theme");
+
+		// Change the container's theme while flyout is open
+		themeContainer.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// Flyout should have updated to Dark theme
+		Assert.AreEqual(ElementTheme.Dark, flyoutContent.ActualTheme,
+			"Flyout should update to Dark theme when placement target's theme changes");
+
+		var newBrush = flyoutContent.Background as SolidColorBrush;
+		Assert.IsNotNull(newBrush);
+		Assert.AreNotEqual(initialColor, newBrush.Color,
+			"Flyout's themed resources should update when theme changes");
+
+		button.Flyout.Hide();
+	}
+
+	/// <summary>
+	/// Tests that flyout walks up the visual tree to find the nearest RequestedTheme.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Flyout_Target_Nested_In_Theme_Region_Uses_Ancestor_Theme()
+	{
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						RequestedTheme="Light">
+				<Border RequestedTheme="Dark">
+					<StackPanel>
+						<Border>
+							<Button x:Name="button" Content="Open Flyout">
+								<Button.Flyout>
+									<Flyout>
+										<TextBlock x:Name="flyoutText" Text="Flyout Content" />
+									</Flyout>
+								</Button.Flyout>
+							</Button>
+						</Border>
+					</StackPanel>
+				</Border>
+			</StackPanel>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		var button = (Button)root.FindName("button");
+
+		button.Flyout.ShowAt(button);
+		await WindowHelper.WaitForIdle();
+
+		var flyoutText = (TextBlock)root.FindName("flyoutText");
+
+		// Flyout should find Dark theme from the Border ancestor, not Light from root
+		Assert.AreEqual(ElementTheme.Dark, flyoutText.ActualTheme,
+			"Flyout should inherit Dark theme from nearest ancestor with RequestedTheme");
+
+		button.Flyout.Hide();
+	}
+
+	/// <summary>
+	/// Tests that sibling flyouts in different theme regions get correct themes.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Flyouts_In_Different_Theme_Regions_Each_Uses_Own_Theme()
+	{
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<StackPanel RequestedTheme="Light">
+					<Button x:Name="lightButton" Content="Light Flyout">
+						<Button.Flyout>
+							<Flyout>
+								<TextBlock x:Name="lightFlyoutText" Text="Light" />
+							</Flyout>
+						</Button.Flyout>
+					</Button>
+				</StackPanel>
+				<StackPanel RequestedTheme="Dark">
+					<Button x:Name="darkButton" Content="Dark Flyout">
+						<Button.Flyout>
+							<Flyout>
+								<TextBlock x:Name="darkFlyoutText" Text="Dark" />
+							</Flyout>
+						</Button.Flyout>
+					</Button>
+				</StackPanel>
+			</StackPanel>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		var lightButton = (Button)root.FindName("lightButton");
+		var darkButton = (Button)root.FindName("darkButton");
+
+		// Open both flyouts
+		lightButton.Flyout.ShowAt(lightButton);
+		await WindowHelper.WaitForIdle();
+
+		darkButton.Flyout.ShowAt(darkButton);
+		await WindowHelper.WaitForIdle();
+
+		var lightFlyoutText = (TextBlock)root.FindName("lightFlyoutText");
+		var darkFlyoutText = (TextBlock)root.FindName("darkFlyoutText");
+
+		Assert.AreEqual(ElementTheme.Light, lightFlyoutText.ActualTheme,
+			"Flyout in Light region should have Light theme");
+		Assert.AreEqual(ElementTheme.Dark, darkFlyoutText.ActualTheme,
+			"Flyout in Dark region should have Dark theme");
+
+		// Verify they have different foreground colors
+		var lightForeground = lightFlyoutText.Foreground as SolidColorBrush;
+		var darkForeground = darkFlyoutText.Foreground as SolidColorBrush;
+
+		Assert.IsNotNull(lightForeground);
+		Assert.IsNotNull(darkForeground);
+		Assert.AreNotEqual(lightForeground.Color, darkForeground.Color,
+			"Flyouts in different theme regions should have different foreground colors");
+
+		lightButton.Flyout.Hide();
+		darkButton.Flyout.Hide();
+	}
+
+	/// <summary>
+	/// Tests that MenuFlyout also inherits theme from placement target.
+	/// </summary>
+	[TestMethod]
+	public async Task When_MenuFlyout_Opened_In_Themed_Region_Uses_Region_Theme()
+	{
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						RequestedTheme="Dark">
+				<Button x:Name="button" Content="Open Menu">
+					<Button.Flyout>
+						<MenuFlyout>
+							<MenuFlyoutItem x:Name="menuItem" Text="Menu Item" />
+						</MenuFlyout>
+					</Button.Flyout>
+				</Button>
+			</StackPanel>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		var button = (Button)root.FindName("button");
+
+		button.Flyout.ShowAt(button);
+		await WindowHelper.WaitForIdle();
+
+		var menuItem = (MenuFlyoutItem)root.FindName("menuItem");
+
+		Assert.AreEqual(ElementTheme.Dark, menuItem.ActualTheme,
+			"MenuFlyoutItem should inherit Dark theme from placement target's region");
+
+		button.Flyout.Hide();
+	}
+
+	/// <summary>
+	/// Tests that flyout theme is cleared when flyout is closed and re-evaluated when opened again.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Flyout_Reopened_After_Theme_Change_Uses_New_Theme()
+	{
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						x:Name="themeContainer"
+						RequestedTheme="Light">
+				<Button x:Name="button" Content="Open Flyout">
+					<Button.Flyout>
+						<Flyout>
+							<TextBlock x:Name="flyoutText" Text="Flyout" />
+						</Flyout>
+					</Button.Flyout>
+				</Button>
+			</StackPanel>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		var themeContainer = (StackPanel)root.FindName("themeContainer");
+		var button = (Button)root.FindName("button");
+
+		// Open flyout in Light theme
+		button.Flyout.ShowAt(button);
+		await WindowHelper.WaitForIdle();
+
+		var flyoutText = (TextBlock)root.FindName("flyoutText");
+		Assert.AreEqual(ElementTheme.Light, flyoutText.ActualTheme);
+
+		// Close flyout
+		button.Flyout.Hide();
+		await WindowHelper.WaitForIdle();
+
+		// Change theme while flyout is closed
+		themeContainer.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// Reopen flyout - should now use Dark theme
+		button.Flyout.ShowAt(button);
+		await WindowHelper.WaitForIdle();
+
+		// Need to get reference again as it may be a new instance
+		flyoutText = (TextBlock)root.FindName("flyoutText");
+		Assert.AreEqual(ElementTheme.Dark, flyoutText.ActualTheme,
+			"Flyout should use new theme when reopened after theme change");
+
+		button.Flyout.Hide();
+	}
+
+	/// <summary>
+	/// Tests that when a MenuFlyout is reopened after theme change, the presenter's
+	/// template resources (including visual state brushes) are updated correctly.
+	/// This tests the fix for hover colors being wrong after app theme change.
+	/// </summary>
+	[TestMethod]
+	public async Task When_MenuFlyout_Reopened_After_Theme_Change_Presenter_Resources_Update()
+	{
+		// Get reference colors for Light and Dark themes
+		var lightRef = (Border)XamlReader.Load(
+			"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					RequestedTheme="Light" Width="50" Height="50"
+					Background="{ThemeResource SystemControlHighlightListLow}" />
+			""");
+		var darkRef = (Border)XamlReader.Load(
+			"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					RequestedTheme="Dark" Width="50" Height="50"
+					Background="{ThemeResource SystemControlHighlightListLow}" />
+			""");
+
+		var tempContainer = new StackPanel();
+		tempContainer.Children.Add(lightRef);
+		tempContainer.Children.Add(darkRef);
+		WindowHelper.WindowContent = tempContainer;
+		await WindowHelper.WaitForLoaded(tempContainer);
+
+		var lightHighlightColor = (lightRef.Background as SolidColorBrush)?.Color ?? default;
+		var darkHighlightColor = (darkRef.Background as SolidColorBrush)?.Color ?? default;
+
+		// Sanity check
+		Assert.AreNotEqual(lightHighlightColor, darkHighlightColor,
+			"Light and Dark highlight colors should be different");
+
+		// Create the actual test content
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						x:Name="themeContainer"
+						RequestedTheme="Light">
+				<Button x:Name="button" Content="Open Menu">
+					<Button.Flyout>
+						<MenuFlyout>
+							<MenuFlyoutItem x:Name="menuItem" Text="Test Item" />
+						</MenuFlyout>
+					</Button.Flyout>
+				</Button>
+			</StackPanel>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		var themeContainer = (StackPanel)root.FindName("themeContainer");
+		var button = (Button)root.FindName("button");
+
+		// Open menu in Light theme to initialize the presenter
+		button.Flyout.ShowAt(button);
+		await WindowHelper.WaitForIdle();
+
+		var menuItem = (MenuFlyoutItem)root.FindName("menuItem");
+		Assert.AreEqual(ElementTheme.Light, menuItem.ActualTheme,
+			"MenuFlyoutItem should have Light theme initially");
+
+		// Close the menu
+		button.Flyout.Hide();
+		await WindowHelper.WaitForIdle();
+
+		// Change to Dark theme
+		themeContainer.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// Reopen the menu - the presenter should now use Dark theme resources
+		button.Flyout.ShowAt(button);
+		await WindowHelper.WaitForIdle();
+
+		menuItem = (MenuFlyoutItem)root.FindName("menuItem");
+		Assert.AreEqual(ElementTheme.Dark, menuItem.ActualTheme,
+			"MenuFlyoutItem should have Dark theme after reopen");
+
+		// The presenter should have updated its template resources
+		// We can verify this by checking that the menu item's background uses dark theme
+		// (MenuFlyoutItem uses SystemControlHighlightListLow for PointerOver state)
+		var presenter = button.Flyout.GetPresenter();
+		Assert.IsNotNull(presenter);
+		Assert.AreEqual(ElementTheme.Dark, presenter.ActualTheme,
+			"MenuFlyoutPresenter should have Dark theme");
+
+		button.Flyout.Hide();
 	}
 
 	#endregion

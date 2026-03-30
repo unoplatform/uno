@@ -159,6 +159,24 @@ public partial class Popup
 		Application.PropagateResourcesChanged(Child, updateReason);
 	}
 
+	/// <summary>
+	/// Override to propagate theme changes to the popup's child, which is in an isolated visual tree.
+	/// </summary>
+	/// <remarks>
+	/// MUX Reference: Popup.cpp CPopup::NotifyThemeChangedCore (line 3611)
+	/// </remarks>
+	private protected override void NotifyThemeChangedCore(Theme theme)
+	{
+		// Call base to update this popup's theme and bindings
+		base.NotifyThemeChangedCore(theme);
+
+		// Explicitly propagate to child, which is not part of the normal visual tree
+		if (Child is FrameworkElement childFE)
+		{
+			childFE.NotifyThemeChanged(theme);
+		}
+	}
+
 	public LightDismissOverlayMode LightDismissOverlayMode
 	{
 		get

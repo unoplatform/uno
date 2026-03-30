@@ -16,6 +16,7 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
@@ -61,6 +62,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private bool m_isPositionedForDateTimePicker;
 
 		private bool m_openingCanceled;
+
+		// Tracks if we've overridden the flyout presenter's RequestedTheme
+		private bool m_isFlyoutPresenterRequestedThemeOverridden;
+
+		// The placement target we've subscribed to for ActualThemeChanged
+		private FrameworkElement _placementTargetForTheme;
 
 		[NotImplemented]
 		private InputDeviceType m_inputDeviceTypeUsedToOpen;
@@ -348,6 +355,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				}
 				IsOpen = false;
 
+				// Clear theme subscription when flyout closes (MUX: SetPlacementTarget(nullptr))
+				SetPlacementTargetForTheme(null);
+
 				OnClosed();
 
 				RemoveFromOpenFlyouts();
@@ -420,6 +430,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			XamlRoot = placementTarget?.XamlRoot;
 			_popup.XamlRoot = XamlRoot;
 			_popup.PlacementTarget = placementTarget;
+			SetPlacementTargetForTheme(placementTarget);
 			UpdatePopupPanelSizePartial();
 
 			if (showOptions != null)
@@ -577,6 +588,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			UpdatePopupPanelSizePartial();
 
+			// Forward theme from placement target to presenter (MUX: line 1529)
+			ForwardThemeToPresenter();
+
 			_popup.IsOpen = true;
 
 			AddToOpenFlyouts();
@@ -588,6 +602,120 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				_openFlyouts.Add(this);
 			}
+		}
+
+		/// <summary>
+		/// Forwards the theme from the placement target to the flyout presenter.
+		/// Walks up the visual tree from the placement target to find the first element
+		/// with an explicit RequestedTheme, then applies that theme to the presenter and popup.
+		/// </summary>
+		/// <remarks>
+		/// MUX Reference: FlyoutBase_Partial.cpp ForwardThemeToPresenter (line 1534)
+		/// </remarks>
+		private void ForwardThemeToPresenter()
+		{
+			var presenter = GetPresenter();
+			if (presenter == null || _popup == null || Target == null)
+			{
+				return;
+			}
+
+			// MUX: We'll only override the requested theme on the presenter if its value hasn't been explicitly set.
+			// Otherwise, we'll abide by its existing value.
+			// Check if RequestedTheme property is at its default (never explicitly set) or we've overridden it before.
+			var isPropertyDefault = presenter.GetCurrentHighestValuePrecedence(FrameworkElement.RequestedThemeProperty)
+				== DependencyPropertyValuePrecedences.DefaultValue;
+
+			if (!isPropertyDefault && !m_isFlyoutPresenterRequestedThemeOverridden)
+			{
+				return;
+			}
+
+			var currentFlyoutPresenterTheme = presenter.RequestedTheme;
+
+			// Walk up the tree from the placement target to find an element with RequestedTheme
+			var requestedTheme = ElementTheme.Default;
+			DependencyObject current = Target;
+
+			while (current != null)
+			{
+				if (current is FrameworkElement fe)
+				{
+					requestedTheme = fe.RequestedTheme;
+					if (requestedTheme != ElementTheme.Default)
+					{
+						break;
+					}
+
+					// MUX: If the target is in a Popup and the Popup is in the Visual Tree, we want to inherit the theme
+					// from that Popup's parent. Otherwise we will get the App's theme, which might not be what is expected.
+					var parent = VisualTreeHelper.GetParent(current);
+					if (parent is PopupRoot)
+					{
+						current = fe.Parent;
+					}
+					else
+					{
+						current = parent;
+					}
+				}
+				else
+				{
+					current = VisualTreeHelper.GetParent(current);
+				}
+			}
+
+			// Apply the found theme to the presenter
+			if (requestedTheme != currentFlyoutPresenterTheme)
+			{
+				presenter.RequestedTheme = requestedTheme;
+				m_isFlyoutPresenterRequestedThemeOverridden = true;
+			}
+
+			// MUX: Also set the popup's theme. If there is a SystemBackdrop on the menu, it'll be watching
+			// the theme on the popup itself rather than the presenter set as the popup's child.
+			_popup.RequestedTheme = requestedTheme;
+
+			// Ensure ThemeResource bindings in the presenter's template (including visual states) are updated.
+			// We use NotifyThemeChanged instead of PropagateResourcesChanged because PropagateResourcesChanged
+			// returns early for elements with explicit RequestedTheme (which we just set above).
+			// NotifyThemeChanged properly propagates to all children including visual state resources.
+			var effectiveTheme = requestedTheme != ElementTheme.Default
+				? Theming.FromElementTheme(requestedTheme)
+				: Theming.FromElementTheme(Target.ActualTheme);
+			presenter.NotifyThemeChanged(effectiveTheme);
+		}
+
+		/// <summary>
+		/// Sets up or clears the ActualThemeChanged subscription on the placement target.
+		/// </summary>
+		/// <remarks>
+		/// MUX Reference: FlyoutBase_Partial.cpp SetPlacementTarget (line 2975)
+		/// </remarks>
+		private void SetPlacementTargetForTheme(FrameworkElement placementTarget)
+		{
+			// Clear old subscription if any
+			if (_placementTargetForTheme != null)
+			{
+				_placementTargetForTheme.ActualThemeChanged -= OnPlacementTargetActualThemeChanged;
+				_placementTargetForTheme = null;
+			}
+
+			// Subscribe to new placement target
+			if (placementTarget != null)
+			{
+				_placementTargetForTheme = placementTarget;
+				_placementTargetForTheme.ActualThemeChanged += OnPlacementTargetActualThemeChanged;
+			}
+		}
+
+		/// <summary>
+		/// Handler for placement target's ActualThemeChanged event.
+		/// Forwards theme changes to the flyout presenter.
+		/// </summary>
+		private void OnPlacementTargetActualThemeChanged(FrameworkElement sender, object args)
+		{
+			ForwardThemeToPresenter();
 		}
 
 		private void SetPopupPosition(FrameworkElement placementTarget, Point? positionInTarget)

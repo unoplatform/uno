@@ -362,6 +362,12 @@ namespace Microsoft.UI.Xaml
 					// We need to invoke them using the right resource context.
 					ResourceResolver.PushNewScope(_xamlScope);
 
+					// Push the element's theme context so ThemeResource lookups use the correct theme.
+					// This is needed for elements with explicit RequestedTheme (e.g., flyout presenters).
+					var actualTheme = (element as FrameworkElement)?.ActualTheme ?? ElementTheme.Light;
+					var themeKey = actualTheme == ElementTheme.Light ? "Light" : "Dark";
+					ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+
 					// This block is a manual enumeration to avoid the foreach pattern
 					// See https://github.com/dotnet/runtime/issues/56309 for details
 					var settersEnumerator = target.setters.GetEnumerator();
@@ -376,6 +382,7 @@ namespace Microsoft.UI.Xaml
 				}
 				finally
 				{
+					ResourceDictionary.PopRequestedThemeForSubTree();
 					ResourceResolver.PopScope();
 				}
 

@@ -485,6 +485,15 @@ namespace Microsoft.UI.Xaml
 						PropagateResourcesChanged(root, updateReason);
 					}
 
+					// MUX Reference: xcpcore.cpp line 7840
+					// Notify open popups of theme change
+					if (updateReason == ResourceUpdateReason.ThemeResource &&
+						contentRoot.VisualTree.PopupRoot is { } popupRoot)
+					{
+						var theme = Theming.FromElementTheme(ActualElementTheme);
+						popupRoot.NotifyOpenPopupsOfThemeChange(theme);
+					}
+
 					// Start from the real root, which may not be a FrameworkElement on some platforms
 					View GetTreeRoot(ContentRoot contentRoot)
 					{

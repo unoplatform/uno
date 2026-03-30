@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -189,6 +190,36 @@ internal partial class PopupRoot : Canvas
 		{
 			var didCloseAPopup = CloseTopmostPopup(FocusState.Keyboard, PopupFilter.LightDismissOrFlyout);
 			args.Handled = didCloseAPopup;
+		}
+	}
+
+	/// <summary>
+	/// Notify open popups that the app's theme has changed.
+	/// </summary>
+	/// <remarks>
+	/// MUX Reference: Popup.cpp CPopupRoot::NotifyThemeChanged (line 5360)
+	/// An open popup's content is set as child of PopupRoot, and we want to prevent that child
+	/// from getting the PopupRoot's theme in EnterImpl. So the PopupRoot's theme is never changed.
+	/// Instead, when a popup is opened, it will propagate the theme to its content.
+	/// </remarks>
+	internal void NotifyOpenPopupsOfThemeChange(Theme theme)
+	{
+		var node = _openPopups.First;
+		while (node != null)
+		{
+			var next = node.Next;
+			if (!node.Value.IsDisposed && node.Value.Target is Popup popup)
+			{
+				// Similar to WinUI's ShouldPopupRootNotifyThemeChange:
+				// An AppBar gets theme change notification from its owner page.
+				// A parented popup gets theme change notification from its parent.
+				// Only notify popups that don't have a parent in the visual tree.
+				if (popup.GetParent() == null)
+				{
+					popup.NotifyThemeChanged(theme);
+				}
+			}
+			node = next;
 		}
 	}
 }

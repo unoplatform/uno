@@ -359,6 +359,13 @@ namespace Microsoft.UI.Xaml.Controls
 			parentPresenterTheme = pParentMenuFlyoutPresenter.RequestedTheme;
 			pSubMenuFlyoutPresenter.RequestedTheme = parentPresenterTheme;
 
+			// Propagate theme to ensure ThemeResource bindings (including visual states) are updated.
+			// Just setting RequestedTheme isn't enough for cached visual state resources.
+			var effectiveTheme = parentPresenterTheme != ElementTheme.Default
+				? Theming.FromElementTheme(parentPresenterTheme)
+				: Theming.FromElementTheme(pParentMenuFlyoutPresenter.ActualTheme);
+			pSubMenuFlyoutPresenter.NotifyThemeChanged(effectiveTheme);
+
 			// Set the sub presenter's DataContext from the parent presenter's DataContext
 			spDataContext = pParentMenuFlyoutPresenter.DataContext;
 			pSubMenuFlyoutPresenter.DataContext = spDataContext;
@@ -370,6 +377,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// Set the popup's FlowDirection from the current FlowDirection
 			spPopupAsFE = m_tpPopup;
 			spPopupAsFE.FlowDirection = flowDirection;
+
+			// Also set the popup's theme. If there is a SystemBackdrop on the menu, it'll be watching
+			// the theme on the popup itself rather than the presenter set as the popup's child.
+			spPopupAsFE.RequestedTheme = parentPresenterTheme;
 
 			// Set the sub presenter's Language from the parent presenter's Language
 			pSubMenuFlyoutPresenter.Language = pParentMenuFlyoutPresenter.Language;
