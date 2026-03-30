@@ -65,6 +65,22 @@
 				<Pack>true</Pack>
 				<PackagePath>lib/$(NetCurrent)</PackagePath>
 			</Content>
+			<Content Include="../Uno.UI.Runtime.Skia.Win32.WinRT/bin/$(Configuration)/$(NetPreviousWinAppSDK)/*.dll">
+				<Pack>true</Pack>
+				<PackagePath>lib/$(NetPrevious)</PackagePath>
+			</Content>
+			<Content Include="../Uno.UI.Runtime.Skia.Win32.WinRT/bin/$(Configuration)/$(NetPreviousWinAppSDK)/*.pdb">
+				<Pack>true</Pack>
+				<PackagePath>lib/$(NetPrevious)</PackagePath>
+			</Content>
+			<Content Include="../Uno.UI.Runtime.Skia.Win32.WinRT/bin/$(Configuration)/$(NetCurrentWinAppSDK)/*.dll">
+				<Pack>true</Pack>
+				<PackagePath>lib/$(NetCurrent)</PackagePath>
+			</Content>
+			<Content Include="../Uno.UI.Runtime.Skia.Win32.WinRT/bin/$(Configuration)/$(NetCurrentWinAppSDK)/*.pdb">
+				<Pack>true</Pack>
+				<PackagePath>lib/$(NetCurrent)</PackagePath>
+			</Content>
 		</ItemGroup>
 	</Target>
 

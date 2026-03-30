@@ -30,7 +30,10 @@ using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Uno.Gaming.Input.Internal;
 using Uno.Graphics;
+using Uno.UI.Runtime.Skia.Win32.Input;
+using Uno.UI.Runtime.Skia.Win32.Support.WinRT;
 using Uno.UI.UI.Input.Internal;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -97,6 +100,17 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 			ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), player => Activator.CreateInstance(mediaExtensionType, player)!);
 		}
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new Win32NativeOpenGLWrapper(xamlRoot));
+
+		ApiExtensibility.Register(typeof(IGamepadExtension), _ =>
+		{
+			IWinRTGamepadProvider? provider = null;
+			if (Type.GetType("Uno.UI.Runtime.Skia.Win32.WinRT.WinRTGamepadProvider, Uno.UI.Runtime.Skia.Win32.WinRT") is { } providerType)
+			{
+				provider = (IWinRTGamepadProvider)Activator.CreateInstance(providerType)!;
+			}
+
+			return new Win32GamepadExtension(provider);
+		});
 	}
 
 	public Win32Host(Func<Application> appBuilder) : this(appBuilder, false)

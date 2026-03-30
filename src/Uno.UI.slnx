@@ -428,6 +428,9 @@
     <Project Path="Uno.UI.Runtime.Skia.Win32.Support/Uno.UI.Runtime.Skia.Win32.Support.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
+    <Project Path="Uno.UI.Runtime.Skia.Win32.WinRT/Uno.UI.Runtime.Skia.Win32.WinRT.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
     <Project Path="Uno.UI.Runtime.Skia.Win32/Uno.UI.Runtime.Skia.Win32.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>

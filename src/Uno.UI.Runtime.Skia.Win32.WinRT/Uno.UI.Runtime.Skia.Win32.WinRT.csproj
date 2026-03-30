@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>$(NetWinAppSDKPreviousAndCurrent)</TargetFrameworks>
+		<IsPackable>false</IsPackable>
+		<Nullable>enable</Nullable>
+		<Description>WinRT API bridge for Uno Platform Skia Win32 Runtime</Description>
+
+		<CommonOverridePackageId>uno.winui.runtime.skia.win32</CommonOverridePackageId>
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+	</PropertyGroup>
+
+	<!-- Override TFM when cross-targeting is active, matching the current NetX version -->
+	<Choose>
+		<When Condition="$(UnoTargetFrameworkOverride.StartsWith('net10.0'))">
+			<PropertyGroup>
+				<TargetFrameworks>$(NetCurrentWinAppSDK)</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+		<When Condition="$(UnoTargetFrameworkOverride.StartsWith('net9.0'))">
+			<PropertyGroup>
+				<TargetFrameworks>$(NetPreviousWinAppSDK)</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+	</Choose>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.Runtime.Skia.Win32.Support\Uno.UI.Runtime.Skia.Win32.Support.csproj" />
+	</ItemGroup>
+
+</Project>

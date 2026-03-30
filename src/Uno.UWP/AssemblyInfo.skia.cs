@@ -7,4 +7,5 @@ using global::System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.MacOS")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32.WinRT")]
 [assembly: InternalsVisibleTo("Uno.UI.XamlHost.Skia.Wpf")]
