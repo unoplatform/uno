@@ -50,38 +50,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
-			{
-				IsParsing = true,
-				// Source 0\MainPage.xaml (Line 12:6)
-				Children = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
-					new global::Microsoft.UI.Xaml.Controls.Button
+					IsParsing = true,
+					// Source 0\MainPage.xaml (Line 12:6)
+					Children = 
 					{
-						IsParsing = true,
-						Name = "namedButton",
-						Content = @"Button With Handler",
-						// Source 0\MainPage.xaml (Line 14:4)
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.Button
+							{
+								IsParsing = true,
+								Name = "namedButton",
+								Content = @"Button With Handler",
+								// Source 0\MainPage.xaml (Line 14:4)
+							}
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							{
+							__nameScope.RegisterName("namedButton", __p1);
+							__that.namedButton = __p1;
+							var Click_Handler = new __MainPage_d6cd66944958ced0c513e0a04797b51d.__UseConΞ0_GriΞ0_But_Cli_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
+							/* second level */ __p1.Click += Click_Handler.Invoke;
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							__p1.CreationComplete();
+							}
+							))
+						)
+						,
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-					{
-					__nameScope.RegisterName("namedButton", __p1);
-					__that.namedButton = __p1;
-					var Click_Handler = new __MainPage_d6cd66944958ced0c513e0a04797b51d.__UseConΞ0_GriΞ0_But_Cli_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
-					/* second level */ __p1.Click += Click_Handler.Invoke;
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
-					,
 				}
-			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-			{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-			__p1.CreationComplete();
-			}
-			))
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+				{
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this

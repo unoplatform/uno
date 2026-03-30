@@ -50,89 +50,111 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 			base.IsParsing = true;
 			// Source 0\Grid_Uses_Common_Syntax.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
-			{
-				IsParsing = true,
-				Name = "grid",
-				ColumnDefinitions = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+					IsParsing = true,
+					Name = "grid",
+					ColumnDefinitions = 
 					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-						// Source 0\Grid_Uses_Common_Syntax.xaml (Line 15:14)
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+							{
+								Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
+								// Source 0\Grid_Uses_Common_Syntax.xaml (Line 15:14)
+							}
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+							{
+								Width = new global::Microsoft.UI.Xaml.GridLength(2f, global::Microsoft.UI.Xaml.GridUnitType.Star),
+								// Source 0\Grid_Uses_Common_Syntax.xaml (Line 16:14)
+							}
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+							{
+								Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
+								// Source 0\Grid_Uses_Common_Syntax.xaml (Line 17:14)
+							}
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+							{
+								Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
+								// Source 0\Grid_Uses_Common_Syntax.xaml (Line 18:14)
+							}
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+							{
+								Width = new global::Microsoft.UI.Xaml.GridLength(300f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
+								// Source 0\Grid_Uses_Common_Syntax.xaml (Line 19:14)
+							}
+						)
+						,
 					}
 					,
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+					RowDefinitions = 
 					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(2f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-						// Source 0\Grid_Uses_Common_Syntax.xaml (Line 16:14)
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.RowDefinition
+							{
+								Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
+								// Source 0\Grid_Uses_Common_Syntax.xaml (Line 22:14)
+							}
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.RowDefinition
+							{
+								Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
+								// Source 0\Grid_Uses_Common_Syntax.xaml (Line 23:14)
+							}
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.RowDefinition
+							{
+								Height = new global::Microsoft.UI.Xaml.GridLength(25f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
+								// Source 0\Grid_Uses_Common_Syntax.xaml (Line 24:14)
+							}
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.RowDefinition
+							{
+								Height = new global::Microsoft.UI.Xaml.GridLength(14f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
+								// Source 0\Grid_Uses_Common_Syntax.xaml (Line 25:14)
+							}
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.RowDefinition
+							{
+								Height = new global::Microsoft.UI.Xaml.GridLength(20f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
+								// Source 0\Grid_Uses_Common_Syntax.xaml (Line 26:14)
+							}
+						)
+						,
 					}
 					,
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
-					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
-						// Source 0\Grid_Uses_Common_Syntax.xaml (Line 17:14)
-					}
-					,
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
-					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-						// Source 0\Grid_Uses_Common_Syntax.xaml (Line 18:14)
-					}
-					,
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
-					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(300f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
-						// Source 0\Grid_Uses_Common_Syntax.xaml (Line 19:14)
-					}
-					,
+					// Source 0\Grid_Uses_Common_Syntax.xaml (Line 10:6)
 				}
-				,
-				RowDefinitions = 
+				.Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7_XamlApply((Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7XamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 				{
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
-					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-						// Source 0\Grid_Uses_Common_Syntax.xaml (Line 22:14)
-					}
-					,
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
-					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
-						// Source 0\Grid_Uses_Common_Syntax.xaml (Line 23:14)
-					}
-					,
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
-					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(25f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
-						// Source 0\Grid_Uses_Common_Syntax.xaml (Line 24:14)
-					}
-					,
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
-					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(14f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
-						// Source 0\Grid_Uses_Common_Syntax.xaml (Line 25:14)
-					}
-					,
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
-					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(20f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
-						// Source 0\Grid_Uses_Common_Syntax.xaml (Line 26:14)
-					}
-					,
+				__nameScope.RegisterName("grid", __p1);
+				__that.grid = __p1;
+				// FieldModifier public
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7);
+				__p1.CreationComplete();
 				}
-				,
-				// Source 0\Grid_Uses_Common_Syntax.xaml (Line 10:6)
-			}
-			.Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7_XamlApply((Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7XamlApplyExtensions.XamlApplyHandler2)(__p1 => 
-			{
-			__nameScope.RegisterName("grid", __p1);
-			__that.grid = __p1;
-			// FieldModifier public
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7);
-			__p1.CreationComplete();
-			}
-			))
+				))
+			)
 			;
 			
 			this

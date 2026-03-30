@@ -46,7 +46,9 @@ namespace TestRepro
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem)
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem)
+					)
 				;
 			}
 			)
@@ -81,30 +83,32 @@ namespace TestRepro
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
 					this.__rootInstance = 
-					new global::Microsoft.UI.Xaml.Controls.TextBlock
-					{
-						IsParsing = true,
-						Name = "tb",
-						// Source 0\MyResourceDictionary.xaml (Line 12:5)
-					}
-					.MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_XamlApply((MyResourceDictionary_92716e07ff456818f6d4125e055d4d57XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-					{
-					/* _isTopLevelDictionary:True */
-					__that._component_0 = __p1;
-					__nameScope.RegisterName("tb", __p1);
-					__that.tb = __p1;
-					__p1.SetBinding(
-						global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-						new Microsoft.UI.Xaml.Data.Binding()
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.Controls.TextBlock
 						{
-							Mode = BindingMode.OneWay,
+							IsParsing = true,
+							Name = "tb",
+							// Source 0\MyResourceDictionary.xaml (Line 12:5)
 						}
-							.BindingApply(___b => /*defaultBindModeOneWay*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is global::TestRepro.MyModel ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null , new [] {"MyString"}))
-					);
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57);
-					__p1.CreationComplete();
-					}
-					))
+						.MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_XamlApply((MyResourceDictionary_92716e07ff456818f6d4125e055d4d57XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+						{
+						/* _isTopLevelDictionary:True */
+						__that._component_0 = __p1;
+						__nameScope.RegisterName("tb", __p1);
+						__that.tb = __p1;
+						__p1.SetBinding(
+							global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+							new Microsoft.UI.Xaml.Data.Binding()
+							{
+								Mode = BindingMode.OneWay,
+							}
+								.BindingApply(___b => /*defaultBindModeOneWay*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is global::TestRepro.MyModel ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null , new [] {"MyString"}))
+						);
+						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57);
+						__p1.CreationComplete();
+						}
+						))
+					)
 					;
 					if (__rootInstance is FrameworkElement __fe)
 					{
@@ -195,7 +199,9 @@ namespace MyProject
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 			private object Get_1(object __ResourceOwner_1) =>
-				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem)
+				global::MyProject.GlobalStaticResources.__PreserveProperties(
+					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem)
+				)
 				;
 
 			private global::Microsoft.UI.Xaml.ResourceDictionary _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
@@ -258,30 +264,32 @@ namespace MyProject.__Resources
 				var __that = this;
 				this.__ResourceOwner_1 = __ResourceOwner_1;
 				this.__rootInstance = 
-				new global::Microsoft.UI.Xaml.Controls.TextBlock
-				{
-					IsParsing = true,
-					Name = "tb",
-					// Source 0\MyResourceDictionary.xaml (Line 12:5)
-				}
-				.MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_XamlApply((MyResourceDictionary_92716e07ff456818f6d4125e055d4d57XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-				{
-				/* _isTopLevelDictionary:True */
-				__that._component_0 = __p1;
-				__nameScope.RegisterName("tb", __p1);
-				__that.tb = __p1;
-				__p1.SetBinding(
-					global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-					new Microsoft.UI.Xaml.Data.Binding()
+				global::MyProject.GlobalStaticResources.__PreserveProperties(
+					new global::Microsoft.UI.Xaml.Controls.TextBlock
 					{
-						Mode = BindingMode.OneWay,
+						IsParsing = true,
+						Name = "tb",
+						// Source 0\MyResourceDictionary.xaml (Line 12:5)
 					}
-						.BindingApply(___b => /*defaultBindModeOneWay*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is global::TestRepro.MyModel ___tctx ? (TryGetInstance_xBind_2(___tctx, out var bindResult2) ? (true, bindResult2) : (false, default)) : (false, default), null , new [] {"MyString"}))
-				);
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57);
-				__p1.CreationComplete();
-				}
-				))
+					.MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_XamlApply((MyResourceDictionary_92716e07ff456818f6d4125e055d4d57XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+					{
+					/* _isTopLevelDictionary:True */
+					__that._component_0 = __p1;
+					__nameScope.RegisterName("tb", __p1);
+					__that.tb = __p1;
+					__p1.SetBinding(
+						global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+						new Microsoft.UI.Xaml.Data.Binding()
+						{
+							Mode = BindingMode.OneWay,
+						}
+							.BindingApply(___b => /*defaultBindModeOneWay*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is global::TestRepro.MyModel ___tctx ? (TryGetInstance_xBind_2(___tctx, out var bindResult2) ? (true, bindResult2) : (false, default)) : (false, default), null , new [] {"MyString"}))
+					);
+					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57);
+					__p1.CreationComplete();
+					}
+					))
+				)
 				;
 				if (__rootInstance is FrameworkElement __fe)
 				{

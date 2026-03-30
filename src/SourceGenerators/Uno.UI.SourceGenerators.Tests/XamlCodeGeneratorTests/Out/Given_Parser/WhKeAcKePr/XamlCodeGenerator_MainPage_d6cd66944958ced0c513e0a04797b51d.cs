@@ -50,48 +50,54 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
-			{
-				IsParsing = true,
-				KeyboardAccelerators = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
-					new global::Microsoft.UI.Xaml.Input.KeyboardAccelerator
+					IsParsing = true,
+					KeyboardAccelerators = 
 					{
-						Key = global::Windows.System.VirtualKey.F,
-						Modifiers = global::Windows.System.VirtualKeyModifiers.Control,
-						// Source 0\MainPage.xaml (Line 7:5)
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Input.KeyboardAccelerator
+							{
+								Key = global::Windows.System.VirtualKey.F,
+								Modifiers = global::Windows.System.VirtualKeyModifiers.Control,
+								// Source 0\MainPage.xaml (Line 7:5)
+							}
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							{
+							// Key F
+							var Invoked_Handler = new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_Gri_KeyAccΞ0_KeyAcc_Inv_Invoked_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
+							/* second level */ __p1.Invoked += Invoked_Handler.Invoke;
+							}
+							))
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Input.KeyboardAccelerator
+							{
+								Key = global::Windows.System.VirtualKey.F5,
+								// Source 0\MainPage.xaml (Line 8:5)
+							}
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							{
+							// Key F5
+							var Invoked_Handler = new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_Gri_KeyAccΞ1_KeyAcc_Inv_Invoked_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
+							/* second level */ __p1.Invoked += Invoked_Handler.Invoke;
+							}
+							))
+						)
+						,
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-					{
-					// Key F
-					var Invoked_Handler = new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_Gri_KeyAccΞ0_KeyAcc_Inv_Invoked_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
-					/* second level */ __p1.Invoked += Invoked_Handler.Invoke;
-					}
-					))
 					,
-					new global::Microsoft.UI.Xaml.Input.KeyboardAccelerator
-					{
-						Key = global::Windows.System.VirtualKey.F5,
-						// Source 0\MainPage.xaml (Line 8:5)
-					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-					{
-					// Key F5
-					var Invoked_Handler = new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_Gri_KeyAccΞ1_KeyAcc_Inv_Invoked_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
-					/* second level */ __p1.Invoked += Invoked_Handler.Invoke;
-					}
-					))
-					,
+					// Source 0\MainPage.xaml (Line 5:3)
 				}
-				,
-				// Source 0\MainPage.xaml (Line 5:3)
-			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-			{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-			__p1.CreationComplete();
-			}
-			))
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+				{
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this
