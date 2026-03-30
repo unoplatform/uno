@@ -5,7 +5,7 @@ IFS=$'\n\t'
 
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
 
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-linux-runtimetests-$UITEST_RUNTIME_TEST_GROUP.txt
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/retry-failed-tests/failed-tests-skia-linux-runtimetests-$UITEST_RUNTIME_TEST_GROUP.txt
 export TEST_RESULTS_FILE=$BUILD_SOURCESDIRECTORY/build/skia-linux-runtime-tests-results.xml
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then

@@ -57,5 +57,5 @@ steps:
     displayName: Publish variables
     inputs:
       PathtoPublish: $(System.artifactsdirectory)
-      ArtifactName: nbgv_cache
+      ArtifactName: cache-nbgv
       ArtifactType: Container

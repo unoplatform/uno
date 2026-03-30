@@ -55,7 +55,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)/logs
-      ArtifactName: samplesapp-wasm-native-logs
+      ArtifactName: logs-samplesapp-wasm-native-build
       ArtifactType: Container
 
 - job: Wasm_UITests_Snap
@@ -119,7 +119,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-results
+      ArtifactName: results-uitests
       ArtifactType: Container
 
 
@@ -209,7 +209,7 @@ jobs:
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-        artifactName: uitests-failure-results
+        artifactName: retry-failed-tests
         downloadPath: '$(build.sourcesdirectory)/build'
 
    ## First ui tests run
@@ -251,13 +251,13 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-results
+      ArtifactName: results-uitests
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:
-      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: uitests-failure-results
+      PathtoPublish: $(build.sourcesdirectory)/build/retry-failed-tests
+      ArtifactName: retry-failed-tests
       ArtifactType: Container

@@ -84,5 +84,5 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: skia-samples-app-binlog
+      ArtifactName: logs-samplesapp-skia-build
       ArtifactType: Container

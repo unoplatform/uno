@@ -90,7 +90,7 @@ jobs:
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-        artifactName: uitests-failure-results
+        artifactName: retry-failed-tests
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: ../templates/dotnet-install.yml
@@ -114,7 +114,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: android-skia-results
+      ArtifactName: results-android-skia
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
@@ -122,6 +122,6 @@ jobs:
     displayName: Publish Failed Tests Results
     retryCountOnTaskFailure: 3
     inputs:
-      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: uitests-failure-results
+      PathtoPublish: $(build.sourcesdirectory)/build/retry-failed-tests
+      ArtifactName: retry-failed-tests
       ArtifactType: Container

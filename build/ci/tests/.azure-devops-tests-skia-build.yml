@@ -40,7 +40,7 @@ jobs:
   - task: DownloadPipelineArtifact@2
     displayName: Restoring macOS native assets
     inputs:
-      artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
+      artifact: nuget-macos-native-skia
       path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
 
   - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:UnoTargetFrameworkOverride=net9.0 /p:Configuration=Release /p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
@@ -68,5 +68,5 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)\logs
-      ArtifactName: skia-samples-app-binlog
+      ArtifactName: logs-samplesapp-skia-build
       ArtifactType: Container

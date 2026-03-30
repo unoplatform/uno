@@ -56,7 +56,7 @@ jobs:
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-        artifactName: uitests-failure-results
+        artifactName: retry-failed-tests
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: ../templates/dotnet-install.yml
@@ -161,7 +161,7 @@ jobs:
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-results
+      ArtifactName: results-uitests
       ArtifactType: Container
 
   # logs files are large, so we create them outside of `artifactstagingdirectory` and publish
@@ -172,7 +172,7 @@ jobs:
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/ios-ui-tests-logs
-      ArtifactName: uitests-results-ios-logs
+      ArtifactName: results-ios-logs
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
@@ -180,6 +180,6 @@ jobs:
     condition: always()
     retryCountOnTaskFailure: 10
     inputs:
-      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: uitests-failure-results
+      PathtoPublish: $(build.sourcesdirectory)/build/retry-failed-tests
+      ArtifactName: retry-failed-tests
       ArtifactType: Container

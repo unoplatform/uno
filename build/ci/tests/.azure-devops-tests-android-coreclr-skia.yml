@@ -90,7 +90,7 @@ jobs:
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-        artifactName: uitests-android-coreclr-failure-results
+        artifactName: retry-failed-tests-android-skia-coreclr
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: ../templates/dotnet-install.yml
@@ -117,7 +117,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: android-coreclr-skia-results
+      ArtifactName: results-android-skia-coreclr
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
@@ -127,6 +127,6 @@ jobs:
     continueOnError: true
     retryCountOnTaskFailure: 3
     inputs:
-      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: uitests-android-coreclr-failure-results
+      PathtoPublish: $(build.sourcesdirectory)/build/retry-failed-tests
+      ArtifactName: retry-failed-tests-android-skia-coreclr
       ArtifactType: Container

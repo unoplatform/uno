@@ -110,7 +110,7 @@ jobs:
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)/logs
-      ArtifactName: ios-uitest-build-logs
+      ArtifactName: logs-samplesapp-ios-native-build
       ArtifactType: Container
 
 ##

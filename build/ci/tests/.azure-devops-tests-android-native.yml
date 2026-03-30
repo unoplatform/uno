@@ -170,7 +170,7 @@ jobs:
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-        artifactName: uitests-failure-results
+        artifactName: retry-failed-tests
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: ../templates/dotnet-install.yml
@@ -244,7 +244,7 @@ jobs:
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-results
+      ArtifactName: results-uitests
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
@@ -252,6 +252,6 @@ jobs:
     condition: always()
     retryCountOnTaskFailure: 10
     inputs:
-      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: uitests-failure-results
+      PathtoPublish: $(build.sourcesdirectory)/build/retry-failed-tests
+      ArtifactName: retry-failed-tests
       ArtifactType: Container

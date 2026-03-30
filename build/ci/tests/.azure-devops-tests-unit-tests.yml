@@ -61,7 +61,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts
+      ArtifactName: nuget-unit-test-artifacts
       ArtifactType: Container
 
   - pwsh: |
@@ -84,5 +84,5 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: unit-tests-binlogs-$(XAML_FLAVOR_BUILD)
+      ArtifactName: logs-unit-tests
       ArtifactType: Container

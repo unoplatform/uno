@@ -42,4 +42,4 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       targetPath: $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
-      artifactName: NugetPackages-Artifacts-skia-macos-native${{ parameters.AssetNativeSuffix }}-$(XAML_FLAVOR_BUILD)
+      artifactName: nuget-macos-native-skia
