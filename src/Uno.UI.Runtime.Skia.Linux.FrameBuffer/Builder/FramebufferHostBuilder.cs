@@ -89,6 +89,12 @@ public class FramebufferHostBuilder : IPlatformHostBuilder
 	/// For more details on RMLVO, see https://xkbcommon.org/doc/current/xkb-intro.html#RMLVO-intro
 	/// and https://github.com/xkbcommon/libxkbcommon/blob/99e9b0fc558fb838a04c568bea033c52ffbe704b/include/xkbcommon/xkbcommon.h#L468
 	/// </summary>
+	public FramebufferHostBuilder XkbKeymap(XKBKeymapParams keymapParams)
+	{
+		KeymapParams = keymapParams;
+		return this;
+	}
+
 	/// <summary>
 	/// Reverts the mouse wheel scroll direction to the raw libinput values without
 	/// the default inversion applied by the framebuffer host. This can be useful for
@@ -97,12 +103,6 @@ public class FramebufferHostBuilder : IPlatformHostBuilder
 	public FramebufferHostBuilder ReverseMouseWheel(bool reverse = true)
 	{
 		IsMouseWheelReversed = reverse;
-		return this;
-	}
-
-	public FramebufferHostBuilder XkbKeymap(XKBKeymapParams keymapParams)
-	{
-		KeymapParams = keymapParams;
 		return this;
 	}
 
