@@ -64,7 +64,8 @@ jobs:
       flattenFolders: false
 
   - pwsh: |
-      $artifactName = "uitests-ios-skia-build-$env:XAML_FLAVOR_BUILD-attempt$env:SYSTEM_JOBATTEMPT"
+      $artifactName = "samplesapp-ios-skia"
+      if ([int]$env:SYSTEM_JOBATTEMPT -gt 1) { $artifactName += "-attempt$env:SYSTEM_JOBATTEMPT" }
       Write-Host "Publishing iOS Samples artifact: $artifactName"
       Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName]$artifactName"
       Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName;isOutput=true]$artifactName"

@@ -102,7 +102,7 @@ jobs:
     retryCountOnTaskFailure: 10
     inputs:
       targetPath: $(build.artifactstagingdirectory)/bin
-      ArtifactName: ios-uitest-build
+      ArtifactName: samplesapp-ios-native
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish iOS build logs'
@@ -124,7 +124,7 @@ jobs:
       JobDisplayName: 'Automated Tests ${{ AutomatedTestGroup.key }}'
       TestRunName: 'iOS Native Automated Tests ${{ AutomatedTestGroup.key }}'
       JobTimeoutInMinutes: 90
-      SamplesAppArtifactName: 'ios-uitest-build'
+      SamplesAppArtifactName: 'samplesapp-ios-native'
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_AUTOMATED_GROUP: ${{ AutomatedTestGroup.key }}
@@ -146,7 +146,7 @@ jobs:
       JobDisplayName: 'Runtime Tests ${{ RuntimeTestGroup.key }}'
       TestRunName: 'iOS Native Runtime Tests ${{ RuntimeTestGroup.key }}'
       JobTimeoutInMinutes: 90
-      SamplesAppArtifactName: 'ios-uitest-build'
+      SamplesAppArtifactName: 'samplesapp-ios-native'
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_TEST_TIMEOUT: '90m'
@@ -180,7 +180,7 @@ jobs:
       JobDisplayName: 'Snapshot Tests ${{ snapshotGroup.key }}'
       TestRunName: 'iOS Native Snapshot Tests ${{ snapshotGroup.key }}'
       JobTimeoutInMinutes: 60
-      SamplesAppArtifactName: 'ios-uitest-build'
+      SamplesAppArtifactName: 'samplesapp-ios-native'
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: true
       UITEST_SNAPSHOTS_GROUP: '0${{ snapshotGroup.key }}' # Example: 01, 02, 03, 04, 05
