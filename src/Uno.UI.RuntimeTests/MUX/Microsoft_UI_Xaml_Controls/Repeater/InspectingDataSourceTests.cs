@@ -169,11 +169,13 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			ItemsRepeater repeater = null;
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
+#pragma warning disable CS0618 // Type or member is obsolete
 				repeater = new ItemsRepeater()
 				{
 					ItemsSource = data,
 					Animator = new DefaultElementAnimator()
 				};
+#pragma warning restore CS0618
 
 				Content = new Microsoft.UI.Xaml.Controls.ScrollViewer()
 				{

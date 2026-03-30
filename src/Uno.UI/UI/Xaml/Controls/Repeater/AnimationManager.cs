@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
 using System.Collections.Specialized;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
@@ -9,6 +10,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	[Obsolete("Use TransitionManager instead. AnimationManager is deprecated and will be removed in a future version.")]
 	internal partial class AnimationManager
 	{
 		ItemsRepeater m_owner;
