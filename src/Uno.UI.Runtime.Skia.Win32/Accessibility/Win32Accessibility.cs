@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -25,7 +26,7 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 	private nint _hwnd;
 	private bool _accessibilityTreeInitialized;
 	private Win32RawElementProvider? _rootProvider;
-	private readonly Dictionary<UIElement, Win32RawElementProvider> _providers = new();
+	private readonly ConditionalWeakTable<UIElement, Win32RawElementProvider> _providers = new();
 	private DispatcherQueue? _dispatcherQueue;
 	private readonly HashSet<Win32RawElementProvider> _pendingStructureChanges = new();
 
@@ -100,7 +101,7 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 
 		// Create root provider only; child providers are created lazily during navigation.
 		_rootProvider = new Win32RawElementProvider(rootElement, _hwnd, isRoot: true, this);
-		_providers[rootElement] = _rootProvider;
+		_providers.AddOrUpdate(rootElement, _rootProvider);
 		_dispatcherQueue = rootElement.DispatcherQueue;
 		_accessibilityTreeInitialized = true;
 
@@ -183,11 +184,11 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 		}
 
 		var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this);
-		_providers[element] = provider;
+		_providers.AddOrUpdate(element, provider);
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Debug($"[UIA] Created provider for {provider.DescribeElement()} (peer={peer.GetType().Name}, total providers={_providers.Count})");
+			this.Log().Debug($"[UIA] Created provider for {provider.DescribeElement()} (peer={peer.GetType().Name})");
 		}
 
 		return provider;
@@ -268,8 +269,10 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 
 	private void CleanupProviders(UIElement element)
 	{
-		if (_providers.Remove(element, out var provider))
+		if (_providers.TryGetValue(element, out var provider))
 		{
+			_providers.Remove(element);
+
 			// Disconnect the provider from UIA so stale COM references are released.
 			// This matches WinUI3's CUIAWrapper::Invalidate() which calls
 			// UiaDisconnectProvider(this) when the automation peer is destroyed.
