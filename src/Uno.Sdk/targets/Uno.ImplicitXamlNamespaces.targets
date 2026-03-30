@@ -1,0 +1,249 @@
+<Project>
+	<PropertyGroup>
+		<UnoEnableImplicitXamlNamespaces Condition="'$(UnoEnableImplicitXamlNamespaces)'==''">false</UnoEnableImplicitXamlNamespaces>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(UnoEnableImplicitXamlNamespaces)'=='true'">
+		<!-- Default implicit xmlns declarations injected when missing -->
+		<UnoImplicitXamlPrefix Include="" Namespace="http://schemas.microsoft.com/winfx/2006/xaml/presentation" />
+		<UnoImplicitXamlPrefix Include="x" Namespace="http://schemas.microsoft.com/winfx/2006/xaml" />
+		<UnoImplicitXamlPrefix Include="d" Namespace="http://schemas.microsoft.com/expression/blend/2008" />
+		<UnoImplicitXamlPrefix Include="mc" Namespace="http://schemas.openxmlformats.org/markup-compatibility/2006" />
+	</ItemGroup>
+
+	<!-- WinAppSDK XAML preprocessing: inject implicit xmlns before XamlPreCompile -->
+	<UsingTask TaskName="UnoInjectImplicitXamlNamespaces"
+			   TaskFactory="RoslynCodeTaskFactory"
+			   AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll"
+			   Condition="'$(UnoEnableImplicitXamlNamespaces)'=='true' AND '$(IsWinAppSdk)'=='true'">
+		<ParameterGroup>
+			<SourceFiles ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+			<OutputDirectory ParameterType="System.String" Required="true" />
+			<ImplicitPrefixes ParameterType="System.String" Required="true" />
+			<GlobalClrNamespaces ParameterType="System.String" />
+			<ProcessedFiles ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System" />
+			<Using Namespace="System.IO" />
+			<Using Namespace="System.Collections.Generic" />
+			<Using Namespace="System.Linq" />
+			<Using Namespace="System.Text" />
+			<Code Type="Fragment" Language="cs">
+<![CDATA[
+var processedList = new List<Microsoft.Build.Framework.ITaskItem>();
+
+// Parse implicit prefixes: "=ns1,x=ns2,d=ns3,mc=ns4"
+var prefixEntries = new List<(string Prefix, string Namespace)>();
+if (!string.IsNullOrEmpty(ImplicitPrefixes))
+{
+	foreach (var entry in ImplicitPrefixes.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+	{
+		var parts = entry.Split(new[] { '=' }, 2);
+		if (parts.Length == 2)
+		{
+			prefixEntries.Add((parts[0], parts[1]));
+		}
+	}
+}
+
+if (prefixEntries.Count == 0)
+{
+	ProcessedFiles = SourceFiles;
+	return true;
+}
+
+Directory.CreateDirectory(OutputDirectory);
+
+foreach (var item in SourceFiles)
+{
+	var sourcePath = item.GetMetadata("FullPath");
+	if (string.IsNullOrEmpty(sourcePath) || !File.Exists(sourcePath))
+	{
+		processedList.Add(item);
+		continue;
+	}
+
+	var ext = Path.GetExtension(sourcePath);
+	if (!ext.Equals(".xaml", StringComparison.OrdinalIgnoreCase))
+	{
+		processedList.Add(item);
+		continue;
+	}
+
+	var xamlText = File.ReadAllText(sourcePath);
+
+	// Find root element (skip <?xml?> and <!-- -->)
+	var pos = 0;
+	while (pos < xamlText.Length)
+	{
+		pos = xamlText.IndexOf('<', pos);
+		if (pos < 0) break;
+
+		if (pos + 1 < xamlText.Length && xamlText[pos + 1] == '?')
+		{
+			pos = xamlText.IndexOf("?>", pos, StringComparison.Ordinal);
+			if (pos < 0) break;
+			pos += 2;
+			continue;
+		}
+		if (pos + 3 < xamlText.Length && xamlText[pos + 1] == '!' && xamlText[pos + 2] == '-' && xamlText[pos + 3] == '-')
+		{
+			pos = xamlText.IndexOf("-->", pos, StringComparison.Ordinal);
+			if (pos < 0) break;
+			pos += 3;
+			continue;
+		}
+		break;
+	}
+
+	if (pos < 0 || pos >= xamlText.Length)
+	{
+		processedList.Add(item);
+		continue;
+	}
+
+	// Find end of root opening tag
+	var inStr = false;
+	var strChar = '"';
+	var tagEnd = -1;
+	for (var i = pos + 1; i < xamlText.Length; i++)
+	{
+		var c = xamlText[i];
+		if (inStr) { if (c == strChar) inStr = false; }
+		else
+		{
+			if (c == '"' || c == '\'') { inStr = true; strChar = c; }
+			else if (c == '>') { tagEnd = i; break; }
+		}
+	}
+
+	if (tagEnd < 0)
+	{
+		processedList.Add(item);
+		continue;
+	}
+
+	var rootTag = xamlText.Substring(pos, tagEnd - pos + 1);
+
+	// Parse existing xmlns declarations
+	var existingPrefixes = new HashSet<string>();
+	var searchPos = 0;
+	while (searchPos < rootTag.Length)
+	{
+		var idx = rootTag.IndexOf("xmlns", searchPos, StringComparison.Ordinal);
+		if (idx < 0) break;
+		var after = idx + 5;
+		if (after >= rootTag.Length) break;
+		if (rootTag[after] == '=')
+		{
+			existingPrefixes.Add("");
+			searchPos = after + 1;
+		}
+		else if (rootTag[after] == ':')
+		{
+			var eqPos = rootTag.IndexOf('=', after + 1);
+			if (eqPos > 0)
+			{
+				existingPrefixes.Add(rootTag.Substring(after + 1, eqPos - after - 1).Trim());
+				searchPos = eqPos + 1;
+			}
+			else searchPos = after + 1;
+		}
+		else searchPos = after + 1;
+	}
+
+	// Determine what to inject
+	var injection = new StringBuilder();
+	foreach (var (prefix, ns) in prefixEntries)
+	{
+		if (!existingPrefixes.Contains(prefix))
+		{
+			if (string.IsNullOrEmpty(prefix))
+				injection.Append(" xmlns=\"" + ns + "\"");
+			else
+				injection.Append(" xmlns:" + prefix + "=\"" + ns + "\"");
+		}
+	}
+
+	// Add mc:Ignorable for 'd' if needed
+	if (prefixEntries.Any(p => p.Prefix == "d") && !existingPrefixes.Contains("d") && !rootTag.Contains("mc:Ignorable"))
+	{
+		injection.Append(" mc:Ignorable=\"d\"");
+	}
+
+	if (injection.Length == 0)
+	{
+		processedList.Add(item);
+		continue;
+	}
+
+	// Insert before closing '>' or '/>'
+	var insertPos = tagEnd;
+	if (tagEnd > 0 && xamlText[tagEnd - 1] == '/')
+		insertPos = tagEnd - 1;
+
+	var modified = xamlText.Substring(0, insertPos) + injection.ToString() + xamlText.Substring(insertPos);
+
+	// Write to intermediate directory, preserving relative path structure
+	var relativePath = item.GetMetadata("Link");
+	if (string.IsNullOrEmpty(relativePath))
+		relativePath = item.ItemSpec;
+	var outputPath = Path.Combine(OutputDirectory, relativePath);
+	Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+	File.WriteAllText(outputPath, modified);
+
+	// Create new item pointing to the modified file
+	var newItem = new Microsoft.Build.Utilities.TaskItem(outputPath);
+	item.CopyMetadataTo(newItem);
+	newItem.SetMetadata("OriginalXamlPath", sourcePath);
+	processedList.Add(newItem);
+}
+
+ProcessedFiles = processedList.ToArray();
+]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
+	<Target Name="_UnoInjectImplicitXamlNamespaces"
+			BeforeTargets="XamlPreCompile;MarkupCompilePass1"
+			Condition="'$(UnoEnableImplicitXamlNamespaces)'=='true' AND '$(IsWinAppSdk)'=='true'">
+
+		<PropertyGroup>
+			<_UnoImplicitXamlnsOutputDir>$(IntermediateOutputPath)_ImplicitXamlns\</_UnoImplicitXamlnsOutputDir>
+			<_UnoImplicitXamlPrefixesSerialized>@(UnoImplicitXamlPrefix->'%(Identity)=%(Namespace)', ',')</_UnoImplicitXamlPrefixesSerialized>
+			<_UnoGlobalXamlClrNamespacesSerialized>@(GlobalXamlNamespace, ',')</_UnoGlobalXamlClrNamespacesSerialized>
+		</PropertyGroup>
+
+		<!-- Process Page items -->
+		<UnoInjectImplicitXamlNamespaces
+			Condition="'@(Page)' != ''"
+			SourceFiles="@(Page)"
+			OutputDirectory="$(_UnoImplicitXamlnsOutputDir)"
+			ImplicitPrefixes="$(_UnoImplicitXamlPrefixesSerialized)"
+			GlobalClrNamespaces="$(_UnoGlobalXamlClrNamespacesSerialized)">
+			<Output TaskParameter="ProcessedFiles" ItemName="_UnoProcessedPageFiles" />
+		</UnoInjectImplicitXamlNamespaces>
+
+		<!-- Process ApplicationDefinition items -->
+		<UnoInjectImplicitXamlNamespaces
+			Condition="'@(ApplicationDefinition)' != ''"
+			SourceFiles="@(ApplicationDefinition)"
+			OutputDirectory="$(_UnoImplicitXamlnsOutputDir)"
+			ImplicitPrefixes="$(_UnoImplicitXamlPrefixesSerialized)"
+			GlobalClrNamespaces="$(_UnoGlobalXamlClrNamespacesSerialized)">
+			<Output TaskParameter="ProcessedFiles" ItemName="_UnoProcessedAppDefFiles" />
+		</UnoInjectImplicitXamlNamespaces>
+
+		<!-- Replace Page and ApplicationDefinition items with preprocessed versions -->
+		<ItemGroup Condition="'@(_UnoProcessedPageFiles)' != ''">
+			<Page Remove="@(Page)" />
+			<Page Include="@(_UnoProcessedPageFiles)" />
+		</ItemGroup>
+		<ItemGroup Condition="'@(_UnoProcessedAppDefFiles)' != ''">
+			<ApplicationDefinition Remove="@(ApplicationDefinition)" />
+			<ApplicationDefinition Include="@(_UnoProcessedAppDefFiles)" />
+		</ItemGroup>
+	</Target>
+</Project>

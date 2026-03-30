@@ -36,7 +36,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private static readonly char[] _dotArray = new[] { '.' };
 		private static readonly char[] _parenthesesArray = new[] { '(', ')' };
 
-		private static readonly Dictionary<string, string[]> _knownNamespaces = new Dictionary<string, string[]>
+		private static readonly Dictionary<string, string[]> _defaultKnownNamespaces = new Dictionary<string, string[]>
 		{
 			{
 				XamlConstants.PresentationXamlXmlNamespace,
@@ -49,6 +49,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			},
 		};
+
+		private readonly Dictionary<string, string[]> _knownNamespaces;
 
 		private static readonly string[] FrameworkTemplateTypes = new[] { "DataTemplate", "ControlTemplate", "ItemsPanelTemplate" };
 
@@ -223,7 +225,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			GeneratorExecutionContext generatorContext,
 			bool xamlResourcesTrimming,
 			IDictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap,
-			string[] includeXamlNamespaces)
+			string[] includeXamlNamespaces,
+			string[] globalXamlClrNamespaces)
 		{
 			Generation = generation;
 			_fileDefinition = file;
@@ -247,6 +250,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_xamlTypeToXamlTypeBaseMap = xamlTypeToXamlTypeBaseMap;
 			_includeXamlNamespaces = includeXamlNamespaces;
 			_disableBindableTypeProvidersGeneration = disableBindableTypeProvidersGeneration;
+
+			// Build instance-level known namespaces, extended with user global CLR namespaces
+			if (globalXamlClrNamespaces.Length > 0)
+			{
+				_knownNamespaces = new Dictionary<string, string[]>(_defaultKnownNamespaces);
+				var extended = _defaultKnownNamespaces[XamlConstants.PresentationXamlXmlNamespace]
+					.Concat(globalXamlClrNamespaces)
+					.ToArray();
+				_knownNamespaces[XamlConstants.PresentationXamlXmlNamespace] = extended;
+			}
+			else
+			{
+				_knownNamespaces = _defaultKnownNamespaces;
+			}
 
 			InitCaches();
 

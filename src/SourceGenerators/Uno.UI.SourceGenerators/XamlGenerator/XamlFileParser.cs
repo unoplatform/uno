@@ -33,6 +33,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _includeXamlNamespacesProperty;
 		private readonly string[] _excludeXamlNamespaces;
 		private readonly string[] _includeXamlNamespaces;
+		private readonly bool _enableImplicitXamlNamespaces;
+		private readonly (string Prefix, string Namespace)[] _implicitXamlPrefixes;
+		private readonly string _implicitXamlPrefixesHash;
 
 		/// <summary>
 		/// Usages of this field should be careful, since we avoid xaml parse caching if we use it.
@@ -42,13 +45,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private int _depth;
 
-		public XamlFileParser(string excludeXamlNamespacesProperty, string includeXamlNamespacesProperty, string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
+		public XamlFileParser(
+			string excludeXamlNamespacesProperty,
+			string includeXamlNamespacesProperty,
+			string[] excludeXamlNamespaces,
+			string[] includeXamlNamespaces,
+			RoslynMetadataHelper roslynMetadataHelper,
+			bool enableImplicitXamlNamespaces = false,
+			(string Prefix, string Namespace)[]? implicitXamlPrefixes = null)
 		{
 			_excludeXamlNamespacesProperty = excludeXamlNamespacesProperty;
 			_excludeXamlNamespaces = excludeXamlNamespaces;
 
 			_includeXamlNamespacesProperty = includeXamlNamespacesProperty;
 			_includeXamlNamespaces = includeXamlNamespaces;
+
+			_enableImplicitXamlNamespaces = enableImplicitXamlNamespaces;
+			_implicitXamlPrefixes = implicitXamlPrefixes ?? Array.Empty<(string, string)>();
+			_implicitXamlPrefixesHash = enableImplicitXamlNamespaces
+				? string.Join("|", _implicitXamlPrefixes.Select(p => p.Prefix + "=" + p.Namespace))
+				: "";
 
 			_metadataHelper = roslynMetadataHelper;
 		}
@@ -96,7 +112,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var sourceText = src.Item.File.GetText(ct) ?? throw new Exception($"Failed to read additional file '{sourcePath}'");
 				var sourceLink = src.Link.Replace('\\', '/');
 
-				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, sourcePath, sourceLink, sourceText.GetChecksum());
+				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, _implicitXamlPrefixesHash, sourcePath, sourceLink, sourceText.GetChecksum());
 				if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
 				{
 					_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
@@ -114,7 +130,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Force the line info, otherwise it will be enabled only when the debugger is attached.
 				var settings = new XamlXmlReaderSettings { ProvideLineInfo = true };
 
-				var document = RewriteForXBind(sourceText);
+				var originalString = sourceText.ToString();
+				var withImplicitNs = RewriteForImplicitNamespaces(originalString);
+				var document = RewriteForXBind(SourceText.From(withImplicitNs));
 
 				using var reader = new XamlXmlReader(document, context, settings, IsIncluded);
 				if (!reader.Read())
@@ -167,6 +185,199 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Catastrophic failure, we are unable to parse the file at all (i.e. no XamlFileDefinition).
 				// This will prevent generation of **ALL** XAML files and should be avoided as much as possible.
 				throw new XamlParsingException("Failed to parse file", e, 1, 1, src.Item.File.Path);
+			}
+		}
+
+		private string RewriteForImplicitNamespaces(string xamlText)
+		{
+			if (!_enableImplicitXamlNamespaces || _implicitXamlPrefixes.Length == 0)
+			{
+				return xamlText;
+			}
+
+			// Find the root element's opening tag, skipping XML declarations and comments
+			var pos = 0;
+			while (pos < xamlText.Length)
+			{
+				pos = xamlText.IndexOf('<', pos);
+				if (pos < 0)
+				{
+					return xamlText; // No elements found
+				}
+
+				// Skip XML declaration <?xml ... ?>
+				if (pos + 1 < xamlText.Length && xamlText[pos + 1] == '?')
+				{
+					pos = xamlText.IndexOf("?>", pos, StringComparison.Ordinal);
+					if (pos < 0)
+					{
+						return xamlText;
+					}
+
+					pos += 2;
+					continue;
+				}
+
+				// Skip comments <!-- ... -->
+				if (pos + 3 < xamlText.Length && xamlText[pos + 1] == '!' && xamlText[pos + 2] == '-' && xamlText[pos + 3] == '-')
+				{
+					pos = xamlText.IndexOf("-->", pos, StringComparison.Ordinal);
+					if (pos < 0)
+					{
+						return xamlText;
+					}
+
+					pos += 3;
+					continue;
+				}
+
+				// Found the root element
+				break;
+			}
+
+			if (pos < 0 || pos >= xamlText.Length)
+			{
+				return xamlText;
+			}
+
+			// Find the end of the opening tag (the closing '>' that isn't inside a string)
+			var rootStart = pos;
+			var tagEnd = FindRootTagEnd(xamlText, rootStart);
+			if (tagEnd < 0)
+			{
+				return xamlText;
+			}
+
+			// Extract the root element's opening tag text
+			var rootTag = xamlText.Substring(rootStart, tagEnd - rootStart + 1);
+
+			// Parse existing xmlns declarations
+			var existingPrefixes = new HashSet<string>();
+			ParseExistingXmlns(rootTag, existingPrefixes);
+
+			// Determine which implicit prefixes need to be injected
+			var toInject = new List<(string Prefix, string Namespace)>();
+			foreach (var (prefix, ns) in _implicitXamlPrefixes)
+			{
+				if (!existingPrefixes.Contains(prefix))
+				{
+					toInject.Add((prefix, ns));
+				}
+			}
+
+			if (toInject.Count == 0)
+			{
+				return xamlText; // All implicit namespaces already declared
+			}
+
+			// Build the xmlns attributes to inject
+			var sb = new System.Text.StringBuilder();
+			foreach (var (prefix, ns) in toInject)
+			{
+				if (string.IsNullOrEmpty(prefix))
+				{
+					sb.Append($" xmlns=\"{ns}\"");
+				}
+				else
+				{
+					sb.Append($" xmlns:{prefix}=\"{ns}\"");
+				}
+			}
+
+			// Also add mc:Ignorable for 'd' if we injected both 'd' and 'mc' and there's no existing mc:Ignorable
+			if (toInject.Any(p => p.Prefix == "d") && !rootTag.Contains("mc:Ignorable", StringComparison.Ordinal))
+			{
+				sb.Append(" mc:Ignorable=\"d\"");
+			}
+
+			var injection = sb.ToString();
+
+			// Insert before the closing '>' (or '/>' for self-closing)
+			var insertPos = tagEnd;
+			if (tagEnd > 0 && xamlText[tagEnd - 1] == '/')
+			{
+				insertPos = tagEnd - 1;
+			}
+
+			return xamlText.Substring(0, insertPos) + injection + xamlText.Substring(insertPos);
+		}
+
+		private static int FindRootTagEnd(string text, int startPos)
+		{
+			var inString = false;
+			var stringChar = '"';
+
+			for (var i = startPos + 1; i < text.Length; i++)
+			{
+				var c = text[i];
+
+				if (inString)
+				{
+					if (c == stringChar)
+					{
+						inString = false;
+					}
+				}
+				else
+				{
+					if (c == '"' || c == '\'')
+					{
+						inString = true;
+						stringChar = c;
+					}
+					else if (c == '>')
+					{
+						return i;
+					}
+				}
+			}
+
+			return -1;
+		}
+
+		private static void ParseExistingXmlns(string rootTag, HashSet<string> prefixes)
+		{
+			// Find all xmlns and xmlns:prefix declarations
+			var pos = 0;
+			while (pos < rootTag.Length)
+			{
+				var idx = rootTag.IndexOf("xmlns", pos, StringComparison.Ordinal);
+				if (idx < 0)
+				{
+					break;
+				}
+
+				var afterXmlns = idx + 5; // length of "xmlns"
+				if (afterXmlns >= rootTag.Length)
+				{
+					break;
+				}
+
+				if (rootTag[afterXmlns] == '=')
+				{
+					// Default namespace: xmlns="..."
+					prefixes.Add("");
+					pos = afterXmlns + 1;
+				}
+				else if (rootTag[afterXmlns] == ':')
+				{
+					// Prefixed namespace: xmlns:prefix="..."
+					var eqPos = rootTag.IndexOf('=', afterXmlns + 1);
+					if (eqPos > 0)
+					{
+						var prefix = rootTag.Substring(afterXmlns + 1, eqPos - afterXmlns - 1).Trim();
+						prefixes.Add(prefix);
+						pos = eqPos + 1;
+					}
+					else
+					{
+						pos = afterXmlns + 1;
+					}
+				}
+				else
+				{
+					pos = afterXmlns + 1;
+				}
 			}
 		}
 

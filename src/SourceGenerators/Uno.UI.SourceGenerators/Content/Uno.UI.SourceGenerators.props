@@ -109,6 +109,9 @@
 		<CompilerVisibleProperty Include="UnoPlatformDefaultSymbolsFontFamily" />
 		<CompilerVisibleProperty Include="ExcludeXamlNamespacesProperty" />
 		<CompilerVisibleProperty Include="IncludeXamlNamespacesProperty" />
+		<CompilerVisibleProperty Include="UnoEnableImplicitXamlNamespaces" />
+		<CompilerVisibleProperty Include="UnoGlobalXamlClrNamespacesProperty" />
+		<CompilerVisibleProperty Include="UnoImplicitXamlPrefixesProperty" />
 		<CompilerVisibleProperty Include="XamlGeneratorAnalyzerSuppressionsProperty" />
 		<CompilerVisibleProperty Include="UnoEnableXamlFuzzyMatching" />
 		<CompilerVisibleProperty Include="UnoXamlResourcesTrimming"/>
@@ -327,6 +330,18 @@
 			<Output
 					TaskParameter="Value"
 					PropertyName="DefineConstantsProperty" />
+		</CreateProperty>
+
+		<CreateProperty Value="@(GlobalXamlNamespace, ',')">
+			<Output
+					TaskParameter="Value"
+					PropertyName="UnoGlobalXamlClrNamespacesProperty" />
+		</CreateProperty>
+
+		<CreateProperty Value="@(UnoImplicitXamlPrefix->'%(Identity)=%(Namespace)', ',')">
+			<Output
+					TaskParameter="Value"
+					PropertyName="UnoImplicitXamlPrefixesProperty" />
 		</CreateProperty>
 
 	</Target>

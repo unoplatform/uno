@@ -13,10 +13,11 @@ internal partial class XamlFileParser
 {
 	private struct CachedFileKey : IEquatable<CachedFileKey>
 	{
-		public CachedFileKey(string includeXamlNamespaces, string excludeXamlNamespaces, string file, string link, ImmutableArray<byte> checksum)
+		public CachedFileKey(string includeXamlNamespaces, string excludeXamlNamespaces, string implicitXamlPrefixesHash, string file, string link, ImmutableArray<byte> checksum)
 		{
 			IncludeXamlNamespaces = includeXamlNamespaces;
 			ExcludeXamlNamespaces = excludeXamlNamespaces;
+			ImplicitXamlPrefixesHash = implicitXamlPrefixesHash;
 			File = file;
 			Link = link;
 			Checksum = checksum;
@@ -24,6 +25,7 @@ internal partial class XamlFileParser
 
 		public string IncludeXamlNamespaces { get; }
 		public string ExcludeXamlNamespaces { get; }
+		public string ImplicitXamlPrefixesHash { get; }
 		public string File { get; }
 		public string Link { get; }
 		public ImmutableArray<byte> Checksum { get; }
@@ -33,6 +35,7 @@ internal partial class XamlFileParser
 		public bool Equals(CachedFileKey other) =>
 			IncludeXamlNamespaces == other.IncludeXamlNamespaces &&
 			ExcludeXamlNamespaces == other.ExcludeXamlNamespaces &&
+			ImplicitXamlPrefixesHash == other.ImplicitXamlPrefixesHash &&
 			File == other.File &&
 			ByteSequenceComparer.Equals(Checksum, other.Checksum);
 
@@ -41,6 +44,7 @@ internal partial class XamlFileParser
 			var hashCode = -145098327;
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(IncludeXamlNamespaces);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ExcludeXamlNamespaces);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ImplicitXamlPrefixesHash);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(File);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Link);
 			hashCode = hashCode * -1521134295 + ByteSequenceComparer.GetHashCode(Checksum);
