@@ -106,6 +106,20 @@ dotnet test Uno.UI/Uno.UI.Tests.csproj                  # Unit tests (40-60s)
 
 **CRITICAL**: **NEVER CANCEL** builds. Set timeouts to 15+ minutes. Favor Skia desktop for faster builds.
 
+### File Encoding (CRITICAL)
+
+All `.cs` files in this repo use **UTF-8 with BOM** and **CRLF** line endings. Many AI code-writing tools (including Claude Code's Write tool) produce files with LF and no BOM by default. This mismatch causes mass `IDE0055` formatting errors that are promoted to build errors.
+
+**After creating any new `.cs` file**, immediately convert it:
+
+```bash
+for f in File1.cs File2.cs; do
+  printf '\xEF\xBB\xBF' > "$f.tmp" && sed 's/$/\r/' "$f" >> "$f.tmp" && mv "$f.tmp" "$f"
+done
+```
+
+Do this **before** attempting any build.
+
 ---
 
 ## Architecture Overview
