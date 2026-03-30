@@ -4,6 +4,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--  ColorPaletteResources MUST be in a separate file to work at runtime  -->
+                <ResourceDictionary Source="ColorPaletteResourcesTheme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid Padding="16" ColumnSpacing="24">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="350" />
@@ -67,26 +76,9 @@
                         Style="{StaticResource CaptionTextBlockStyle}"
                         Text="Controls below use the scoped ColorPaletteResources" />
 
-                    <!--  Preview Controls Container - ColorPaletteResources in ThemeDictionaries  -->
-                    <!--  Note: "Default" key is used as Dark theme fallback, "Light" for light theme  -->
-                    <Grid x:Name="PreviewControlsContainer" RequestedTheme="Light">
-                        <Grid.Resources>
-                            <ResourceDictionary>
-                                <ResourceDictionary.ThemeDictionaries>
-                                    <ResourceDictionary x:Key="Light">
-                                        <ResourceDictionary.MergedDictionaries>
-                                            <ColorPaletteResources x:Name="LightPalette" />
-                                        </ResourceDictionary.MergedDictionaries>
-                                    </ResourceDictionary>
-                                    <ResourceDictionary x:Key="Default">
-                                        <ResourceDictionary.MergedDictionaries>
-                                            <ColorPaletteResources x:Name="DarkPalette" />
-                                        </ResourceDictionary.MergedDictionaries>
-                                    </ResourceDictionary>
-                                </ResourceDictionary.ThemeDictionaries>
-                            </ResourceDictionary>
-                        </Grid.Resources>
-                        <StackPanel Spacing="12">
+                    <!--  Preview Controls Container  -->
+                    <!--  ColorPaletteResources defined at UserControl.Resources level  -->
+                    <StackPanel x:Name="PreviewControlsContainer" Spacing="12">
                             <!--  ToggleButton (toggled - shows accent color)  -->
                             <TextBlock FontWeight="SemiBold" Text="ToggleButton" />
                             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -191,8 +183,7 @@
                                     GroupName="PreviewRadio"
                                     IsChecked="False" />
                             </StackPanel>
-                        </StackPanel>
-                    </Grid>
+                    </StackPanel>
 
                     <!--  Color Swatches Summary  -->
                     <TextBlock

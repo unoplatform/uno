@@ -1,0 +1,22 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  ColorPaletteResources must be defined in a separate file for runtime updates to work  -->
+    <!--  See: https://github.com/microsoft/microsoft-ui-xaml/issues/3784  -->
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+            <ResourceDictionary.MergedDictionaries>
+                <!--  Dark theme (Default is fallback for Dark)  -->
+                <ColorPaletteResources x:Key="Default" Accent="Green" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <ResourceDictionary.MergedDictionaries>
+                <!--  Light theme  -->
+                <ColorPaletteResources x:Key="Light" Accent="Red" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+</ResourceDictionary>

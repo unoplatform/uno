@@ -66,15 +66,36 @@ public sealed partial class ColorPaletteResourcesTests : UserControl
 	{
 		ColorSwatchesSummary.ItemsSource = _activeOverrides;
 
-		// Get references to the named palettes from ThemeDictionaries
-		// Note: "Default" key is used as the Dark theme fallback
-		_lightPalette = (ColorPaletteResources)((ResourceDictionary)PreviewControlsContainer.Resources
-			.ThemeDictionaries["Light"]).MergedDictionaries[0];
-		_darkPalette = (ColorPaletteResources)((ResourceDictionary)PreviewControlsContainer.Resources
-			.ThemeDictionaries["Default"]).MergedDictionaries[0];
+		// Get references to ColorPaletteResources from the merged theme dictionary file
+		// Path: Resources -> MergedDictionaries[0] (theme file) -> ThemeDictionaries -> MergedDictionaries[0] (CPR)
+		var themeDict = (ResourceDictionary)Resources.MergedDictionaries[0];
+		_lightPalette = FindColorPaletteResources(themeDict, "Light");
+		_darkPalette = FindColorPaletteResources(themeDict, "Default"); // "Default" is used for Dark theme
 
 		CreateColorEditors();
 		InitializePalette();
+	}
+
+	private static ColorPaletteResources FindColorPaletteResources(ResourceDictionary themeDict, string themeKey)
+	{
+		if (themeDict.ThemeDictionaries.TryGetValue(themeKey, out var value))
+		{
+			if (value is ColorPaletteResources cpr)
+			{
+				return cpr;
+			}
+			else if (value is ResourceDictionary rd)
+			{
+				foreach (var merged in rd.MergedDictionaries)
+				{
+					if (merged is ColorPaletteResources mergedCpr)
+					{
+						return mergedCpr;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	private void CreateColorEditors()
@@ -167,34 +188,6 @@ public sealed partial class ColorPaletteResourcesTests : UserControl
 
 	private static void ClearPalette(ColorPaletteResources palette)
 	{
-		// Reset all color properties to null (unset)
-		palette.Accent = null;
-		palette.AltHigh = null;
-		palette.AltLow = null;
-		palette.AltMedium = null;
-		palette.AltMediumHigh = null;
-		palette.AltMediumLow = null;
-		palette.BaseHigh = null;
-		palette.BaseLow = null;
-		palette.BaseMedium = null;
-		palette.BaseMediumHigh = null;
-		palette.BaseMediumLow = null;
-		palette.ChromeAltLow = null;
-		palette.ChromeBlackHigh = null;
-		palette.ChromeBlackLow = null;
-		palette.ChromeBlackMedium = null;
-		palette.ChromeBlackMediumLow = null;
-		palette.ChromeDisabledHigh = null;
-		palette.ChromeDisabledLow = null;
-		palette.ChromeGray = null;
-		palette.ChromeHigh = null;
-		palette.ChromeLow = null;
-		palette.ChromeMedium = null;
-		palette.ChromeMediumLow = null;
-		palette.ChromeWhite = null;
-		palette.ErrorText = null;
-		palette.ListLow = null;
-		palette.ListMedium = null;
 	}
 
 	private void ApplyPaletteToContainer()
@@ -212,25 +205,25 @@ public sealed partial class ColorPaletteResourcesTests : UserControl
 
 	private void ForceThemeUpdate()
 	{
-		// Use DispatcherQueue to allow UI to process theme changes (pattern from Fluent Theme Editor)
+		// Toggle theme on this UserControl (which has the ThemeDictionaries in its Resources)
 		_ = DispatcherQueue.TryEnqueue(() =>
 		{
-			var current = PreviewControlsContainer.RequestedTheme;
+			var current = RequestedTheme;
 			if (current == ElementTheme.Light)
 			{
-				PreviewControlsContainer.RequestedTheme = ElementTheme.Dark;
-				PreviewControlsContainer.RequestedTheme = ElementTheme.Light;
+				RequestedTheme = ElementTheme.Dark;
+				RequestedTheme = ElementTheme.Light;
 			}
 			else if (current == ElementTheme.Dark)
 			{
-				PreviewControlsContainer.RequestedTheme = ElementTheme.Light;
-				PreviewControlsContainer.RequestedTheme = ElementTheme.Dark;
+				RequestedTheme = ElementTheme.Light;
+				RequestedTheme = ElementTheme.Dark;
 			}
 			else // Default
 			{
-				PreviewControlsContainer.RequestedTheme = ElementTheme.Light;
-				PreviewControlsContainer.RequestedTheme = ElementTheme.Dark;
-				PreviewControlsContainer.RequestedTheme = ElementTheme.Default;
+				RequestedTheme = ElementTheme.Light;
+				RequestedTheme = ElementTheme.Dark;
+				RequestedTheme = ElementTheme.Default;
 			}
 		});
 	}
