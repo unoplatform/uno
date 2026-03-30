@@ -132,7 +132,9 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
-    <!--UNO TODO: ListViewItemPresenter isn't supported https://github.com/unoplatform/uno/issues/1444 -->
+    <!-- TODO Uno: In WinUI, GridViewItem uses ListViewItemPresenter with CheckMode="Overlay".
+         GridViewItemPresenter doesn't share chrome yet, so GridViewItem uses the expanded style.
+         Once GridViewItemPresenter chrome is shared, switch to DefaultGridViewItemStyle. -->
     <!-- <Style TargetType="GridViewItem" BasedOn="{StaticResource DefaultGridViewItemStyle}" /> -->
     <Style TargetType="GridViewItem" BasedOn="{StaticResource GridViewItemExpanded}" />
 

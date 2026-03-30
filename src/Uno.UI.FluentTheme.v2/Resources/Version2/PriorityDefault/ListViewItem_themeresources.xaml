@@ -58,6 +58,29 @@
             <SolidColorBrush x:Key="ListViewItemSelectedForegroundThemeBrush" Color="#FFFFFFFF" />
             <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBackgroundThemeBrush" Color="#FF5F37BE" />
             <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBorderThemeBrush" Color="#FF5F37BE" />
+            <!-- MUX Reference: New ListViewItemPresenter resources for rounded chrome -->
+            <CornerRadius x:Key="ListViewItemCornerRadius">4</CornerRadius>
+            <CornerRadius x:Key="ListViewItemCheckBoxCornerRadius">3</CornerRadius>
+            <CornerRadius x:Key="ListViewItemSelectionIndicatorCornerRadius">1.5</CornerRadius>
+            <x:Boolean x:Key="ListViewItemSelectionIndicatorVisualEnabled">True</x:Boolean>
+            <StaticResource x:Key="ListViewItemCheckPressedBrush" ResourceKey="TextOnAccentFillColorSecondaryBrush" />
+            <StaticResource x:Key="ListViewItemCheckDisabledBrush" ResourceKey="TextOnAccentFillColorDisabledBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxPointerOverBrush" ResourceKey="ControlAltFillColorSecondaryBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxPressedBrush" ResourceKey="ControlAltFillColorSecondaryBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxDisabledBrush" ResourceKey="ControlAltFillColorSecondaryBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxSelectedBrush" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxSelectedPointerOverBrush" ResourceKey="AccentFillColorSecondaryBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxSelectedPressedBrush" ResourceKey="AccentFillColorTertiaryBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxSelectedDisabledBrush" ResourceKey="AccentFillColorDisabledBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxPointerOverBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxPressedBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxDisabledBorderBrush" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+            <StaticResource x:Key="ListViewItemBackgroundSelectedDisabled" ResourceKey="SubtleFillColorSecondaryBrush" />
+            <StaticResource x:Key="ListViewItemSelectionIndicatorBrush" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="ListViewItemSelectionIndicatorPointerOverBrush" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="ListViewItemSelectionIndicatorPressedBrush" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="ListViewItemSelectionIndicatorDisabledBrush" ResourceKey="AccentFillColorDisabledBrush" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <StaticResource x:Key="ListViewItemBorderBackground" ResourceKey="SystemControlHighlightListAccentLowBrush" />
@@ -112,6 +135,29 @@
             <SolidColorBrush x:Key="ListViewItemSelectedForegroundThemeBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
             <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBackgroundThemeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBorderThemeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <!-- MUX Reference: New ListViewItemPresenter resources for rounded chrome (HighContrast) -->
+            <CornerRadius x:Key="ListViewItemCornerRadius">4</CornerRadius>
+            <CornerRadius x:Key="ListViewItemCheckBoxCornerRadius">3</CornerRadius>
+            <CornerRadius x:Key="ListViewItemSelectionIndicatorCornerRadius">1.5</CornerRadius>
+            <x:Boolean x:Key="ListViewItemSelectionIndicatorVisualEnabled">True</x:Boolean>
+            <SolidColorBrush x:Key="ListViewItemCheckPressedBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="ListViewItemCheckDisabledBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <SolidColorBrush x:Key="ListViewItemCheckBoxPointerOverBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="ListViewItemCheckBoxPressedBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="ListViewItemCheckBoxDisabledBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="ListViewItemCheckBoxSelectedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="ListViewItemCheckBoxSelectedPointerOverBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="ListViewItemCheckBoxSelectedPressedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="ListViewItemCheckBoxSelectedDisabledBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <SolidColorBrush x:Key="ListViewItemCheckBoxBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="ListViewItemCheckBoxPointerOverBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="ListViewItemCheckBoxPressedBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+            <SolidColorBrush x:Key="ListViewItemCheckBoxDisabledBorderBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <StaticResource x:Key="ListViewItemBackgroundSelectedDisabled" ResourceKey="SystemControlDisabledChromeHighBrush" />
+            <SolidColorBrush x:Key="ListViewItemSelectionIndicatorBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="ListViewItemSelectionIndicatorPointerOverBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="ListViewItemSelectionIndicatorPressedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="ListViewItemSelectionIndicatorDisabledBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <x:Double x:Key="ListViewItemContentOffsetX">-40.5</x:Double>
@@ -166,12 +212,33 @@
             <SolidColorBrush x:Key="ListViewItemSelectedForegroundThemeBrush" Color="#FF000000" />
             <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBackgroundThemeBrush" Color="#FF5F37BE" />
             <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBorderThemeBrush" Color="#FF5F37BE" />
+            <!-- MUX Reference: New ListViewItemPresenter resources for rounded chrome -->
+            <CornerRadius x:Key="ListViewItemCornerRadius">4</CornerRadius>
+            <CornerRadius x:Key="ListViewItemCheckBoxCornerRadius">3</CornerRadius>
+            <CornerRadius x:Key="ListViewItemSelectionIndicatorCornerRadius">1.5</CornerRadius>
+            <x:Boolean x:Key="ListViewItemSelectionIndicatorVisualEnabled">True</x:Boolean>
+            <StaticResource x:Key="ListViewItemCheckPressedBrush" ResourceKey="TextOnAccentFillColorSecondaryBrush" />
+            <StaticResource x:Key="ListViewItemCheckDisabledBrush" ResourceKey="TextOnAccentFillColorDisabledBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxPointerOverBrush" ResourceKey="ControlAltFillColorSecondaryBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxPressedBrush" ResourceKey="ControlAltFillColorSecondaryBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxDisabledBrush" ResourceKey="ControlAltFillColorSecondaryBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxSelectedBrush" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxSelectedPointerOverBrush" ResourceKey="AccentFillColorSecondaryBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxSelectedPressedBrush" ResourceKey="AccentFillColorTertiaryBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxSelectedDisabledBrush" ResourceKey="AccentFillColorDisabledBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxPointerOverBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxPressedBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+            <StaticResource x:Key="ListViewItemCheckBoxDisabledBorderBrush" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+            <StaticResource x:Key="ListViewItemBackgroundSelectedDisabled" ResourceKey="SubtleFillColorSecondaryBrush" />
+            <StaticResource x:Key="ListViewItemSelectionIndicatorBrush" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="ListViewItemSelectionIndicatorPointerOverBrush" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="ListViewItemSelectionIndicatorPressedBrush" ResourceKey="AccentFillColorDefaultBrush" />
+            <StaticResource x:Key="ListViewItemSelectionIndicatorDisabledBrush" ResourceKey="AccentFillColorDisabledBrush" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
-    <!--UNO TODO: ListViewItemPresenter isn't supported https://github.com/unoplatform/uno/issues/1444-->
-    <!-- <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}" /> -->
-    <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemExpanded}" />
+    <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}" />
 
     <Style x:Key="DefaultListViewItemStyle" TargetType="ListViewItem">
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -195,7 +262,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListViewItem">
-                    <ListViewItemPresenter ContentTransitions="{TemplateBinding ContentTransitions}"
+                    <!-- MUX Reference ListViewItem_themeresources.xaml, tag winui3/release/1.8.4 -->
+                    <ListViewItemPresenter x:Name="Root"
+                        ContentTransitions="{TemplateBinding ContentTransitions}"
                         Control.IsTemplateFocusTarget="True"
                         FocusVisualMargin="{TemplateBinding FocusVisualMargin}"
                         FocusVisualPrimaryBrush="{TemplateBinding FocusVisualPrimaryBrush}"
@@ -223,7 +292,29 @@
                         HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                         ContentMargin="{TemplateBinding Padding}"
-                        CheckMode="{ThemeResource ListViewItemCheckMode}" />
+                        CheckMode="{ThemeResource ListViewItemCheckMode}"
+                        CornerRadius="{ThemeResource ListViewItemCornerRadius}"
+                        CheckPressedBrush="{ThemeResource ListViewItemCheckPressedBrush}"
+                        CheckDisabledBrush="{ThemeResource ListViewItemCheckDisabledBrush}"
+                        CheckBoxPointerOverBrush="{ThemeResource ListViewItemCheckBoxPointerOverBrush}"
+                        CheckBoxPressedBrush="{ThemeResource ListViewItemCheckBoxPressedBrush}"
+                        CheckBoxDisabledBrush="{ThemeResource ListViewItemCheckBoxDisabledBrush}"
+                        CheckBoxSelectedBrush="{ThemeResource ListViewItemCheckBoxSelectedBrush}"
+                        CheckBoxSelectedPointerOverBrush="{ThemeResource ListViewItemCheckBoxSelectedPointerOverBrush}"
+                        CheckBoxSelectedPressedBrush="{ThemeResource ListViewItemCheckBoxSelectedPressedBrush}"
+                        CheckBoxSelectedDisabledBrush="{ThemeResource ListViewItemCheckBoxSelectedDisabledBrush}"
+                        CheckBoxBorderBrush="{ThemeResource ListViewItemCheckBoxBorderBrush}"
+                        CheckBoxPointerOverBorderBrush="{ThemeResource ListViewItemCheckBoxPointerOverBorderBrush}"
+                        CheckBoxPressedBorderBrush="{ThemeResource ListViewItemCheckBoxPressedBorderBrush}"
+                        CheckBoxDisabledBorderBrush="{ThemeResource ListViewItemCheckBoxDisabledBorderBrush}"
+                        CheckBoxCornerRadius="{ThemeResource ListViewItemCheckBoxCornerRadius}"
+                        SelectionIndicatorCornerRadius="{ThemeResource ListViewItemSelectionIndicatorCornerRadius}"
+                        SelectionIndicatorVisualEnabled="{ThemeResource ListViewItemSelectionIndicatorVisualEnabled}"
+                        SelectionIndicatorBrush="{ThemeResource ListViewItemSelectionIndicatorBrush}"
+                        SelectionIndicatorPointerOverBrush="{ThemeResource ListViewItemSelectionIndicatorPointerOverBrush}"
+                        SelectionIndicatorPressedBrush="{ThemeResource ListViewItemSelectionIndicatorPressedBrush}"
+                        SelectionIndicatorDisabledBrush="{ThemeResource ListViewItemSelectionIndicatorDisabledBrush}"
+                        SelectedDisabledBackground="{ThemeResource ListViewItemBackgroundSelectedDisabled}" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

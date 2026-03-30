@@ -1,17 +1,25 @@
-﻿#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Microsoft.UI.Xaml.Controls.Primitives
+﻿// MUX Reference GridViewItemTemplateSettings.g.cpp, tag winui3/release/1.8.4
+
+namespace Microsoft.UI.Xaml.Controls.Primitives;
+
+public partial class GridViewItemTemplateSettings : DependencyObject
 {
-	public partial class GridViewItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
+	/// <summary>
+	/// Gets the number of items that are being dragged as part of a drag-and-drop operation.
+	/// </summary>
+	public int DragItemsCount
 	{
-		[global::Uno.NotImplemented]
-		public int DragItemsCount
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings", "GridViewItemTemplateSettings.DragItemsCount");
-				return 0;
-			}
-		}
+		get => (int)GetValue(DragItemsCountProperty);
+		internal set => SetValue(DragItemsCountProperty, value);
 	}
+
+	/// <summary>
+	/// Identifies the DragItemsCount dependency property.
+	/// </summary>
+	public static DependencyProperty DragItemsCountProperty { get; } =
+		DependencyProperty.Register(
+			nameof(DragItemsCount),
+			typeof(int),
+			typeof(GridViewItemTemplateSettings),
+			new FrameworkPropertyMetadata(0));
 }

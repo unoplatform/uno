@@ -1,30 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+﻿using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+/// <summary>
+/// Represents the container for an item in a ListView control.
+/// </summary>
+public partial class ListViewItem : SelectorItem
 {
 	/// <summary>
-	/// An basic implementation for an item container
+	/// Initializes a new instance of the ListViewItem class.
 	/// </summary>
-	/// <remarks>This container supports vertical scrolling and stretching for the whole item.</remarks>
-	public partial class ListViewItem : SelectorItem
+	public ListViewItem()
 	{
-		public ListViewItem()
-		{
-			DefaultStyleKey = typeof(ListViewItem);
-		}
-
-		[global::Uno.NotImplemented]
-		public ListViewItemTemplateSettings TemplateSettings { get; } = new();
-
-		protected override AutomationPeer OnCreateAutomationPeer()
-		{
-			return new ListViewItemAutomationPeer(this);
-		}
+		DefaultStyleKey = typeof(ListViewItem);
+		TemplateSettings = new ListViewItemTemplateSettings();
 	}
+
+	/// <summary>
+	/// Gets the calculated settings for the ListViewItem template.
+	/// </summary>
+	public ListViewItemTemplateSettings TemplateSettings { get; }
 }

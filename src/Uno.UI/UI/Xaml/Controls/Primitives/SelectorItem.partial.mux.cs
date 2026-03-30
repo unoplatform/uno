@@ -42,6 +42,23 @@ partial class SelectorItem
 		}
 	}
 
+	// MUX Reference ListViewBaseItem_Partial.cpp, tag winui3/release/1.8.4
+	// Note: In WinUI, SetDragItemsCountDisplay is a virtual method on the internal
+	// ListViewBaseItem class. In Uno, ListViewBaseItem does not exist, so this base
+	// implementation lives on SelectorItem and is overridden by ListViewItem/GridViewItem.
+
+	/// <summary>
+	/// Sets the value to display as the dragged item count.
+	/// </summary>
+	/// <param name="dragItemsCount">The number of items being dragged.</param>
+	internal virtual void SetDragItemsCountDisplay(uint dragItemsCount)
+	{
+		// Base implementation is a no-op.
+		// In WinUI, the base ListViewBaseItem::SetDragItemsCountDisplay updates the chrome.
+		// Uno does not use the chrome system, so this is a no-op at the base level.
+		// ListViewItem and GridViewItem override this to set TemplateSettings.DragItemsCount.
+	}
+
 	//---------------------------------------------------------------------------
 	//
 	//  Synopsis:

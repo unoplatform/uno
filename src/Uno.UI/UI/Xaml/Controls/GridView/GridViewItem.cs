@@ -1,21 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.UI.Xaml.Controls.Primitives;
+﻿using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+/// <summary>
+/// Represents the container for an item in a GridView control.
+/// </summary>
+public partial class GridViewItem : SelectorItem
 {
-	public partial class GridViewItem : SelectorItem
+	/// <summary>
+	/// Initializes a new instance of the GridViewItem class.
+	/// </summary>
+	public GridViewItem()
 	{
-		public GridViewItem()
-		{
-			Initialize();
+		Initialize();
 
-			DefaultStyleKey = typeof(GridViewItem);
-		}
-
-		partial void Initialize();
-
-		public GridViewItemTemplateSettings TemplateSettings { get; } = new();
+		DefaultStyleKey = typeof(GridViewItem);
+		TemplateSettings = new GridViewItemTemplateSettings();
 	}
+
+	partial void Initialize();
+
+	/// <summary>
+	/// Gets the calculated settings for the GridViewItem template.
+	/// </summary>
+	public GridViewItemTemplateSettings TemplateSettings { get; }
 }
