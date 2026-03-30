@@ -230,7 +230,9 @@
       <StaticResource x:Key="ListViewItemSelectionIndicatorDisabledBrush" ResourceKey="AccentFillColorDisabledBrush" />
     </ResourceDictionary>
   </ResourceDictionary.ThemeDictionaries>
-  <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}" />
+  <!-- Uno-specific: the default implicit style points to ListViewItemPresenter, which isn't supported.
+       Use the expanded template instead. See https://github.com/unoplatform/uno/issues/1444 -->
+  <!-- <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}" /> -->
   <Style x:Key="DefaultListViewItemStyle" TargetType="ListViewItem">
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
     <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
@@ -696,4 +698,7 @@
     </Setter>
   </Style>
   <x:Boolean x:Key="ListViewBaseItemRoundedChromeEnabled">True</x:Boolean>
+  <!-- Uno-specific: ListViewItemPresenter isn't supported, use expanded template instead.
+       See https://github.com/unoplatform/uno/issues/1444 -->
+  <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemExpanded}" />
 </ResourceDictionary>

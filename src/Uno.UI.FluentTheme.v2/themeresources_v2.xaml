@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="ios android wasm skia" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:uc="using:Uno.UI.Controls" xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:not_win="http://uno.ui/not_win" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:wasm="http://uno.ui/wasm" xmlns:uno="using:Uno.UI.Xaml.Controls" xmlns:automation="clr-namespace:Microsoft.UI.Xaml.Automation" xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:animatedVisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:contract8Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,8)" xmlns:contract12Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,12)" xmlns:contract12NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,12)" xmlns:contract5Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:contract5NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:netstdref="http://uno.ui/netstdref" xmlns:skia="http://uno.ui/skia" xmlns:contract6NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract4NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:unouwp="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Uno.WinUI,1)" xmlns:ios="http://uno.ui/ios" xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:android="http://uno.ui/android" xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="ios android wasm skia" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:uc="using:Uno.UI.Controls" xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:not_win="http://uno.ui/not_win" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:wasm="http://uno.ui/wasm" xmlns:uno="using:Uno.UI.Xaml.Controls" xmlns:automation="clr-namespace:Microsoft.UI.Xaml.Automation" xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:animatedVisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:contract8Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,8)" xmlns:contract12Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,12)" xmlns:contract12NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,12)" xmlns:contract5Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:contract5NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:netstdref="http://uno.ui/netstdref" xmlns:skia="http://uno.ui/skia" xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract4NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:unouwp="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Uno.WinUI,1)" xmlns:ios="http://uno.ui/ios" xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:android="http://uno.ui/android" xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <ResourceDictionary.ThemeDictionaries>
     <ResourceDictionary xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="ios android wasm skia" x:Key="Default">
       <Color x:Key="SystemControlTransparentColor">#00000000</Color>
@@ -1082,7 +1082,7 @@
       <StaticResource x:Key="InfoBarBorderBrush" ResourceKey="CardStrokeColorDefaultBrush" />
       <Thickness x:Key="InfoBarBorderThickness">1</Thickness>
       <x:Double x:Key="ListViewItemContentOffsetX">-40.5</x:Double>
-      <x:Double x:Key="ListViewItemDisabledThemeOpacity">0.55</x:Double>
+      <x:Double x:Key="ListViewItemDisabledThemeOpacity">0.3</x:Double>
       <x:Double x:Key="ListViewItemDragThemeOpacity">0.80</x:Double>
       <x:Double x:Key="ListViewItemReorderThemeOpacity">0.80</x:Double>
       <x:Double x:Key="ListViewItemReorderTargetThemeOpacity">0.50</x:Double>
@@ -1096,21 +1096,21 @@
       <StaticResource x:Key="ListViewItemBackground" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="ListViewItemBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
       <StaticResource x:Key="ListViewItemBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
-      <StaticResource x:Key="ListViewItemBackgroundSelected" ResourceKey="AccentFillColorDefaultBrush" />
-      <StaticResource x:Key="ListViewItemBackgroundSelectedPointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
-      <StaticResource x:Key="ListViewItemBackgroundSelectedPressed" ResourceKey="AccentFillColorTertiaryBrush" />
+      <StaticResource x:Key="ListViewItemBackgroundSelected" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemBackgroundSelectedPointerOver" ResourceKey="SubtleFillColorTertiaryBrush" />
+      <StaticResource x:Key="ListViewItemBackgroundSelectedPressed" ResourceKey="SubtleFillColorSecondaryBrush" />
       <StaticResource x:Key="ListViewItemForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="ListViewItemForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="ListViewItemForegroundPressed" ResourceKey="TextFillColorPrimaryBrush" />
-      <StaticResource x:Key="ListViewItemForegroundSelected" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
-      <StaticResource x:Key="ListViewItemForegroundSelectedPointerOver" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
-      <StaticResource x:Key="ListViewItemForegroundSelectedPressed" ResourceKey="TextOnAccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemForegroundSelected" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="ListViewItemForegroundSelectedPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="ListViewItemForegroundSelectedPressed" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="ListViewItemFocusVisualPrimaryBrush" ResourceKey="FocusStrokeColorOuterBrush" />
       <StaticResource x:Key="ListViewItemFocusVisualSecondaryBrush" ResourceKey="FocusStrokeColorInnerBrush" />
       <StaticResource x:Key="ListViewItemFocusBorderBrush" ResourceKey="FocusStrokeColorOuterBrush" />
       <StaticResource x:Key="ListViewItemFocusSecondaryBorderBrush" ResourceKey="TextFillColorPrimaryBrush" />
-      <StaticResource x:Key="ListViewItemCheckBrush" ResourceKey="TextFillColorSecondaryBrush" />
-      <StaticResource x:Key="ListViewItemCheckBoxBrush" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckBrush" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxBrush" ResourceKey="ControlAltFillColorSecondaryBrush" />
       <StaticResource x:Key="ListViewItemDragBackground" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="ListViewItemDragForeground" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
       <StaticResource x:Key="ListViewItemPlaceholderBackground" ResourceKey="ControlStrongFillColorDisabledBrush" />
@@ -1133,6 +1133,28 @@
       <SolidColorBrush x:Key="ListViewItemSelectedForegroundThemeBrush" Color="#FFFFFFFF" />
       <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBackgroundThemeBrush" Color="#FF5F37BE" />
       <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBorderThemeBrush" Color="#FF5F37BE" />
+      <x:Boolean x:Key="ListViewItemSelectionIndicatorVisualEnabled">True</x:Boolean>
+      <CornerRadius x:Key="ListViewItemCornerRadius">4</CornerRadius>
+      <CornerRadius x:Key="ListViewItemCheckBoxCornerRadius">3</CornerRadius>
+      <CornerRadius x:Key="ListViewItemSelectionIndicatorCornerRadius">1.5</CornerRadius>
+      <StaticResource x:Key="ListViewItemCheckPressedBrush" ResourceKey="TextOnAccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckDisabledBrush" ResourceKey="TextOnAccentFillColorDisabledBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxPointerOverBrush" ResourceKey="ControlAltFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxPressedBrush" ResourceKey="ControlAltFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxDisabledBrush" ResourceKey="ControlAltFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxSelectedBrush" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxSelectedPointerOverBrush" ResourceKey="AccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxSelectedPressedBrush" ResourceKey="AccentFillColorTertiaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxSelectedDisabledBrush" ResourceKey="AccentFillColorDisabledBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxPointerOverBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxPressedBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxDisabledBorderBrush" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+      <StaticResource x:Key="ListViewItemBackgroundSelectedDisabled" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemSelectionIndicatorBrush" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="ListViewItemSelectionIndicatorPointerOverBrush" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="ListViewItemSelectionIndicatorPressedBrush" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="ListViewItemSelectionIndicatorDisabledBrush" ResourceKey="AccentFillColorDisabledBrush" />
       <Thickness x:Key="MediaTransportControlsTitleSafeBounds">48,0,48,27</Thickness>
       <StaticResource x:Key="MediaTransportControlsPanelBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
       <StaticResource x:Key="MediaTransportControlsFlyoutBackground" ResourceKey="AcrylicBackgroundFillColorDefaultBrush" />
@@ -2926,7 +2948,7 @@
       <StaticResource x:Key="InfoBarBorderBrush" ResourceKey="CardStrokeColorDefaultBrush" />
       <Thickness x:Key="InfoBarBorderThickness">1</Thickness>
       <x:Double x:Key="ListViewItemContentOffsetX">-40.5</x:Double>
-      <x:Double x:Key="ListViewItemDisabledThemeOpacity">0.55</x:Double>
+      <x:Double x:Key="ListViewItemDisabledThemeOpacity">0.3</x:Double>
       <x:Double x:Key="ListViewItemDragThemeOpacity">0.80</x:Double>
       <x:Double x:Key="ListViewItemReorderThemeOpacity">0.80</x:Double>
       <x:Double x:Key="ListViewItemReorderTargetThemeOpacity">0.50</x:Double>
@@ -2940,21 +2962,21 @@
       <StaticResource x:Key="ListViewItemBackground" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="ListViewItemBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
       <StaticResource x:Key="ListViewItemBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
-      <StaticResource x:Key="ListViewItemBackgroundSelected" ResourceKey="AccentFillColorDefaultBrush" />
-      <StaticResource x:Key="ListViewItemBackgroundSelectedPointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
-      <StaticResource x:Key="ListViewItemBackgroundSelectedPressed" ResourceKey="AccentFillColorTertiaryBrush" />
+      <StaticResource x:Key="ListViewItemBackgroundSelected" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemBackgroundSelectedPointerOver" ResourceKey="SubtleFillColorTertiaryBrush" />
+      <StaticResource x:Key="ListViewItemBackgroundSelectedPressed" ResourceKey="SubtleFillColorSecondaryBrush" />
       <StaticResource x:Key="ListViewItemForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="ListViewItemForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="ListViewItemForegroundPressed" ResourceKey="TextFillColorPrimaryBrush" />
-      <StaticResource x:Key="ListViewItemForegroundSelected" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
-      <StaticResource x:Key="ListViewItemForegroundSelectedPointerOver" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
-      <StaticResource x:Key="ListViewItemForegroundSelectedPressed" ResourceKey="TextOnAccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemForegroundSelected" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="ListViewItemForegroundSelectedPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="ListViewItemForegroundSelectedPressed" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="ListViewItemFocusVisualPrimaryBrush" ResourceKey="FocusStrokeColorOuterBrush" />
       <StaticResource x:Key="ListViewItemFocusVisualSecondaryBrush" ResourceKey="FocusStrokeColorInnerBrush" />
       <StaticResource x:Key="ListViewItemFocusBorderBrush" ResourceKey="FocusStrokeColorOuterBrush" />
       <StaticResource x:Key="ListViewItemFocusSecondaryBorderBrush" ResourceKey="TextFillColorPrimaryBrush" />
-      <StaticResource x:Key="ListViewItemCheckBrush" ResourceKey="TextFillColorSecondaryBrush" />
-      <StaticResource x:Key="ListViewItemCheckBoxBrush" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckBrush" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxBrush" ResourceKey="ControlAltFillColorSecondaryBrush" />
       <StaticResource x:Key="ListViewItemDragBackground" ResourceKey="SubtleFillColorTransparentBrush" />
       <StaticResource x:Key="ListViewItemDragForeground" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
       <StaticResource x:Key="ListViewItemPlaceholderBackground" ResourceKey="ControlStrongFillColorDisabledBrush" />
@@ -2977,6 +2999,28 @@
       <SolidColorBrush x:Key="ListViewItemSelectedForegroundThemeBrush" Color="#FF000000" />
       <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBackgroundThemeBrush" Color="#FF5F37BE" />
       <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBorderThemeBrush" Color="#FF5F37BE" />
+      <x:Boolean x:Key="ListViewItemSelectionIndicatorVisualEnabled">True</x:Boolean>
+      <CornerRadius x:Key="ListViewItemCornerRadius">4</CornerRadius>
+      <CornerRadius x:Key="ListViewItemCheckBoxCornerRadius">3</CornerRadius>
+      <CornerRadius x:Key="ListViewItemSelectionIndicatorCornerRadius">1.5</CornerRadius>
+      <StaticResource x:Key="ListViewItemCheckPressedBrush" ResourceKey="TextOnAccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckDisabledBrush" ResourceKey="TextOnAccentFillColorDisabledBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxPointerOverBrush" ResourceKey="ControlAltFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxPressedBrush" ResourceKey="ControlAltFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxDisabledBrush" ResourceKey="ControlAltFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxSelectedBrush" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxSelectedPointerOverBrush" ResourceKey="AccentFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxSelectedPressedBrush" ResourceKey="AccentFillColorTertiaryBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxSelectedDisabledBrush" ResourceKey="AccentFillColorDisabledBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxPointerOverBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxPressedBorderBrush" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+      <StaticResource x:Key="ListViewItemCheckBoxDisabledBorderBrush" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+      <StaticResource x:Key="ListViewItemBackgroundSelectedDisabled" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="ListViewItemSelectionIndicatorBrush" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="ListViewItemSelectionIndicatorPointerOverBrush" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="ListViewItemSelectionIndicatorPressedBrush" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="ListViewItemSelectionIndicatorDisabledBrush" ResourceKey="AccentFillColorDisabledBrush" />
       <Thickness x:Key="MediaTransportControlsTitleSafeBounds">48,0,48,27</Thickness>
       <StaticResource x:Key="MediaTransportControlsPanelBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
       <StaticResource x:Key="MediaTransportControlsFlyoutBackground" ResourceKey="AcrylicBackgroundFillColorDefaultBrush" />
@@ -4757,34 +4801,34 @@
       <StaticResource x:Key="InfoBarHyperlinkButtonForeground" ResourceKey="SystemColorHotlightColorBrush" />
       <StaticResource x:Key="InfoBarBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
       <Thickness x:Key="InfoBarBorderThickness">2</Thickness>
-      <StaticResource x:Key="ListViewItemBorderBackground" ResourceKey="SystemControlHighlightListAccentLowBrush" />
-      <StaticResource x:Key="ListViewItemBackground" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="ListViewItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
-      <StaticResource x:Key="ListViewItemBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
-      <StaticResource x:Key="ListViewItemBackgroundSelected" ResourceKey="SystemControlHighlightListAccentMediumLowBrush" />
-      <StaticResource x:Key="ListViewItemBackgroundSelectedPointerOver" ResourceKey="SystemControlHighlightListAccentMediumBrush" />
-      <StaticResource x:Key="ListViewItemBackgroundSelectedPressed" ResourceKey="SystemControlHighlightListAccentVeryHighBrush" />
-      <StaticResource x:Key="ListViewItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
-      <StaticResource x:Key="ListViewItemForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="ListViewItemForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="ListViewItemForegroundSelected" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="ListViewItemForegroundSelectedPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="ListViewItemForegroundSelectedPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="ListViewItemFocusVisualPrimaryBrush" ResourceKey="SystemControlFocusVisualPrimaryBrush" />
-      <StaticResource x:Key="ListViewItemFocusVisualSecondaryBrush" ResourceKey="SystemControlFocusVisualSecondaryBrush" />
-      <StaticResource x:Key="ListViewItemFocusBorderBrush" ResourceKey="SystemControlForegroundAltHighBrush" />
-      <StaticResource x:Key="ListViewItemFocusSecondaryBorderBrush" ResourceKey="SystemControlForegroundBaseHighBrush" />
-      <StaticResource x:Key="ListViewItemCheckBrush" ResourceKey="SystemControlForegroundBaseMediumHighBrush" />
-      <StaticResource x:Key="ListViewItemCheckBoxBrush" ResourceKey="SystemControlForegroundBaseMediumHighBrush" />
-      <StaticResource x:Key="ListViewItemDragBackground" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="ListViewItemDragForeground" ResourceKey="SystemControlHighlightAltChromeWhiteBrush" />
-      <StaticResource x:Key="ListViewItemPlaceholderBackground" ResourceKey="SystemControlDisabledChromeDisabledHighBrush" />
-      <StaticResource x:Key="ListViewItemMultiArrangeOverlayTextBorder" ResourceKey="SystemControlBackgroundChromeWhiteBrush" />
-      <StaticResource x:Key="ListViewItemMultiArrangeOverlayTextBackground" ResourceKey="SystemControlBackgroundAccentBrush" />
+      <SolidColorBrush x:Key="ListViewItemBorderBackground" Color="{ThemeResource SystemColorButtonFaceColor}" />
+      <SolidColorBrush x:Key="ListViewItemBackground" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="ListViewItemBackgroundPointerOver" Color="{ThemeResource SystemColorHighlightColor}" />
+      <SolidColorBrush x:Key="ListViewItemBackgroundPressed" Color="{ThemeResource SystemColorHighlightColor}" />
+      <SolidColorBrush x:Key="ListViewItemBackgroundSelected" Color="{ThemeResource SystemColorHighlightColor}" />
+      <SolidColorBrush x:Key="ListViewItemBackgroundSelectedPointerOver" Color="{ThemeResource SystemColorHighlightColor}" />
+      <SolidColorBrush x:Key="ListViewItemBackgroundSelectedPressed" Color="{ThemeResource SystemColorHighlightColor}" />
+      <SolidColorBrush x:Key="ListViewItemForeground" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemForegroundPointerOver" Color="{ThemeResource SystemColorHighlightTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemForegroundPressed" Color="{ThemeResource SystemColorHighlightTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemForegroundSelected" Color="{ThemeResource SystemColorHighlightTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemForegroundSelectedPressed" Color="{ThemeResource SystemColorHighlightTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemForegroundSelectedPointerOver" Color="{ThemeResource SystemColorHighlightTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemFocusVisualPrimaryBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemFocusVisualSecondaryBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="ListViewItemFocusBorderBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemFocusSecondaryBorderBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemCheckBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemCheckBoxBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+      <SolidColorBrush x:Key="ListViewItemDragBackground" Color="Transparent" />
+      <SolidColorBrush x:Key="ListViewItemDragForeground" Color="{ThemeResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemPlaceholderBackground" Color="{ThemeResource SystemColorButtonFaceColor}" />
+      <SolidColorBrush x:Key="ListViewItemMultiArrangeOverlayTextBorder" Color="{ThemeResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemMultiArrangeOverlayTextBackground" Color="{ThemeResource SystemColorWindowColor}" />
       <x:Boolean x:Key="ListViewItemSelectionCheckMarkVisualEnabled">True</x:Boolean>
       <ListViewItemPresenterCheckMode x:Key="ListViewItemCheckMode">Inline</ListViewItemPresenterCheckMode>
       <x:Double x:Key="ListViewItemContentOffsetX">-40.5</x:Double>
-      <x:Double x:Key="ListViewItemDisabledThemeOpacity">0.55</x:Double>
+      <x:Double x:Key="ListViewItemDisabledThemeOpacity">0.3</x:Double>
       <x:Double x:Key="ListViewItemDragThemeOpacity">0.80</x:Double>
       <x:Double x:Key="ListViewItemReorderThemeOpacity">0.80</x:Double>
       <x:Double x:Key="ListViewItemReorderTargetThemeOpacity">0.50</x:Double>
@@ -4809,6 +4853,28 @@
       <SolidColorBrush x:Key="ListViewItemSelectedForegroundThemeBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
       <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBackgroundThemeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
       <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBorderThemeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+      <x:Boolean x:Key="ListViewItemSelectionIndicatorVisualEnabled">True</x:Boolean>
+      <CornerRadius x:Key="ListViewItemCornerRadius">4</CornerRadius>
+      <CornerRadius x:Key="ListViewItemCheckBoxCornerRadius">3</CornerRadius>
+      <CornerRadius x:Key="ListViewItemSelectionIndicatorCornerRadius">1.5</CornerRadius>
+      <SolidColorBrush x:Key="ListViewItemCheckPressedBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemCheckDisabledBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemCheckBoxPointerOverBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+      <SolidColorBrush x:Key="ListViewItemCheckBoxPressedBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+      <SolidColorBrush x:Key="ListViewItemCheckBoxDisabledBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+      <SolidColorBrush x:Key="ListViewItemCheckBoxSelectedBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="ListViewItemCheckBoxSelectedPointerOverBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="ListViewItemCheckBoxSelectedPressedBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="ListViewItemCheckBoxSelectedDisabledBrush" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="ListViewItemCheckBoxBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemCheckBoxPointerOverBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemCheckBoxPressedBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemCheckBoxDisabledBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemBackgroundSelectedDisabled" Color="{ThemeResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="ListViewItemSelectionIndicatorBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemSelectionIndicatorPointerOverBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemSelectionIndicatorPressedBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+      <SolidColorBrush x:Key="ListViewItemSelectionIndicatorDisabledBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
       <Thickness x:Key="MediaTransportControlsTitleSafeBounds">48,0,48,27</Thickness>
       <StaticResource x:Key="MediaTransportControlsPanelBackground" ResourceKey="SystemControlPageBackgroundAltMediumBrush" />
       <StaticResource x:Key="MediaTransportControlsFlyoutBackground" ResourceKey="SystemControlPageBackgroundAltMediumBrush" />
@@ -16915,14 +16981,14 @@
     <Setter Property="Foreground" Value="{ThemeResource ListViewItemForeground}" />
     <Setter Property="TabNavigation" Value="Local" />
     <Setter Property="IsHoldingEnabled" Value="True" />
-    <Setter Property="Padding" Value="12,0,12,0" />
+    <Setter Property="Padding" Value="16,0,12,0" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}" />
     <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}" />
     <Setter Property="AllowDrop" Value="False" />
     <Setter Property="UseSystemFocusVisuals" Value="True" />
-    <Setter Property="FocusVisualMargin" Value="0" />
+    <Setter Property="FocusVisualMargin" Value="1" />
     <Setter Property="FocusVisualPrimaryBrush" Value="{ThemeResource ListViewItemFocusVisualPrimaryBrush}" />
     <Setter Property="FocusVisualPrimaryThickness" Value="2" />
     <Setter Property="FocusVisualSecondaryBrush" Value="{ThemeResource ListViewItemFocusVisualSecondaryBrush}" />
@@ -16930,7 +16996,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ListViewItem">
-          <ListViewItemPresenter ContentTransitions="{TemplateBinding ContentTransitions}" Control.IsTemplateFocusTarget="True" FocusVisualMargin="{TemplateBinding FocusVisualMargin}" FocusVisualPrimaryBrush="{TemplateBinding FocusVisualPrimaryBrush}" FocusVisualPrimaryThickness="{TemplateBinding FocusVisualPrimaryThickness}" FocusVisualSecondaryBrush="{TemplateBinding FocusVisualSecondaryBrush}" FocusVisualSecondaryThickness="{TemplateBinding FocusVisualSecondaryThickness}" SelectionCheckMarkVisualEnabled="{ThemeResource ListViewItemSelectionCheckMarkVisualEnabled}" CheckBrush="{ThemeResource ListViewItemCheckBrush}" CheckBoxBrush="{ThemeResource ListViewItemCheckBoxBrush}" DragBackground="{ThemeResource ListViewItemDragBackground}" DragForeground="{ThemeResource ListViewItemDragForeground}" FocusBorderBrush="{ThemeResource ListViewItemFocusBorderBrush}" FocusSecondaryBorderBrush="{ThemeResource ListViewItemFocusSecondaryBorderBrush}" PlaceholderBackground="{ThemeResource ListViewItemPlaceholderBackground}" PointerOverBackground="{ThemeResource ListViewItemBackgroundPointerOver}" PointerOverForeground="{ThemeResource ListViewItemForegroundPointerOver}" SelectedBackground="{ThemeResource ListViewItemBackgroundSelected}" SelectedForeground="{ThemeResource ListViewItemForegroundSelected}" SelectedPointerOverBackground="{ThemeResource ListViewItemBackgroundSelectedPointerOver}" PressedBackground="{ThemeResource ListViewItemBackgroundPressed}" SelectedPressedBackground="{ThemeResource ListViewItemBackgroundSelectedPressed}" DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}" DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}" ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" ContentMargin="{TemplateBinding Padding}" CheckMode="{ThemeResource ListViewItemCheckMode}" />
+          <ListViewItemPresenter x:Name="Root" ContentTransitions="{TemplateBinding ContentTransitions}" Control.IsTemplateFocusTarget="True" FocusVisualMargin="{TemplateBinding FocusVisualMargin}" FocusVisualPrimaryBrush="{TemplateBinding FocusVisualPrimaryBrush}" FocusVisualPrimaryThickness="{TemplateBinding FocusVisualPrimaryThickness}" FocusVisualSecondaryBrush="{TemplateBinding FocusVisualSecondaryBrush}" FocusVisualSecondaryThickness="{TemplateBinding FocusVisualSecondaryThickness}" SelectionCheckMarkVisualEnabled="{ThemeResource ListViewItemSelectionCheckMarkVisualEnabled}" CheckBrush="{ThemeResource ListViewItemCheckBrush}" CheckBoxBrush="{ThemeResource ListViewItemCheckBoxBrush}" DragBackground="{ThemeResource ListViewItemDragBackground}" DragForeground="{ThemeResource ListViewItemDragForeground}" FocusBorderBrush="{ThemeResource ListViewItemFocusBorderBrush}" FocusSecondaryBorderBrush="{ThemeResource ListViewItemFocusSecondaryBorderBrush}" PlaceholderBackground="{ThemeResource ListViewItemPlaceholderBackground}" PointerOverBackground="{ThemeResource ListViewItemBackgroundPointerOver}" PointerOverForeground="{ThemeResource ListViewItemForegroundPointerOver}" SelectedBackground="{ThemeResource ListViewItemBackgroundSelected}" SelectedForeground="{ThemeResource ListViewItemForegroundSelected}" SelectedPointerOverBackground="{ThemeResource ListViewItemBackgroundSelectedPointerOver}" PressedBackground="{ThemeResource ListViewItemBackgroundPressed}" SelectedPressedBackground="{ThemeResource ListViewItemBackgroundSelectedPressed}" DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}" DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}" ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" ContentMargin="{TemplateBinding Padding}" CheckMode="{ThemeResource ListViewItemCheckMode}" CornerRadius="{ThemeResource ListViewItemCornerRadius}" CheckPressedBrush="{ThemeResource ListViewItemCheckPressedBrush}" CheckDisabledBrush="{ThemeResource ListViewItemCheckDisabledBrush}" CheckBoxPointerOverBrush="{ThemeResource ListViewItemCheckBoxPointerOverBrush}" CheckBoxPressedBrush="{ThemeResource ListViewItemCheckBoxPressedBrush}" CheckBoxDisabledBrush="{ThemeResource ListViewItemCheckBoxDisabledBrush}" CheckBoxSelectedBrush="{ThemeResource ListViewItemCheckBoxSelectedBrush}" CheckBoxSelectedPointerOverBrush="{ThemeResource ListViewItemCheckBoxSelectedPointerOverBrush}" CheckBoxSelectedPressedBrush="{ThemeResource ListViewItemCheckBoxSelectedPressedBrush}" CheckBoxSelectedDisabledBrush="{ThemeResource ListViewItemCheckBoxSelectedDisabledBrush}" CheckBoxBorderBrush="{ThemeResource ListViewItemCheckBoxBorderBrush}" CheckBoxPointerOverBorderBrush="{ThemeResource ListViewItemCheckBoxPointerOverBorderBrush}" CheckBoxPressedBorderBrush="{ThemeResource ListViewItemCheckBoxPressedBorderBrush}" CheckBoxDisabledBorderBrush="{ThemeResource ListViewItemCheckBoxDisabledBorderBrush}" CheckBoxCornerRadius="{ThemeResource ListViewItemCheckBoxCornerRadius}" SelectionIndicatorCornerRadius="{ThemeResource ListViewItemSelectionIndicatorCornerRadius}" SelectionIndicatorVisualEnabled="{ThemeResource ListViewItemSelectionIndicatorVisualEnabled}" SelectionIndicatorBrush="{ThemeResource ListViewItemSelectionIndicatorBrush}" SelectionIndicatorPointerOverBrush="{ThemeResource ListViewItemSelectionIndicatorPointerOverBrush}" SelectionIndicatorPressedBrush="{ThemeResource ListViewItemSelectionIndicatorPressedBrush}" SelectionIndicatorDisabledBrush="{ThemeResource ListViewItemSelectionIndicatorDisabledBrush}" SelectedDisabledBackground="{ThemeResource ListViewItemBackgroundSelectedDisabled}" />
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -16945,7 +17011,7 @@
     <Setter Property="TabNavigation" Value="Local" />
     <Setter Property="IsHoldingEnabled" Value="True" />
     <Setter Property="Padding" Value="12,0,12,0" />
-    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}" />
     <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}" />
@@ -16955,7 +17021,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ListViewItem">
-          <Grid x:Name="ContentBorder" Control.IsTemplateFocusTarget="True" FocusVisualMargin="{TemplateBinding FocusVisualMargin}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" RenderTransformOrigin="0.5,0.5">
+          <Grid x:Name="ContentBorder" Control.IsTemplateFocusTarget="True" FocusVisualMargin="{TemplateBinding FocusVisualMargin}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
               <ScaleTransform x:Name="ContentBorderScale" />
             </Grid.RenderTransform>
@@ -17372,6 +17438,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <x:Boolean x:Key="ListViewBaseItemRoundedChromeEnabled">True</x:Boolean>
   <Style TargetType="MediaTransportControls" BasedOn="{StaticResource DefaultMediaTransportControlsStyle}" />
   <Style x:Key="DefaultMediaTransportControlsStyle" TargetType="MediaTransportControls">
     <Setter Property="IsTabStop" Value="False" />
