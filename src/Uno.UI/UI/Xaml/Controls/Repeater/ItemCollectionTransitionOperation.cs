@@ -1,4 +1,4 @@
-// MUX Reference (generated), tag winui3/release/1.6-stable
+﻿// MUX Reference (generated), tag winui3/release/1.6-stable
 
 namespace Microsoft.UI.Xaml.Controls;
 

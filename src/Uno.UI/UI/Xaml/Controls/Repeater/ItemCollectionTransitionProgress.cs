@@ -1,4 +1,4 @@
-// MUX Reference ItemCollectionTransitionProgress.h + ItemCollectionTransitionProgress.cpp, tag winui3/release/1.6-stable
+﻿// MUX Reference ItemCollectionTransitionProgress.h + ItemCollectionTransitionProgress.cpp, tag winui3/release/1.6-stable
 
 using Microsoft.UI.Xaml;
 

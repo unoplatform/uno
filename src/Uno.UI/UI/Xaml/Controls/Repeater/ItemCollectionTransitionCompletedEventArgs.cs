@@ -1,4 +1,4 @@
-// MUX Reference ItemCollectionTransitionCompletedEventArgs.h + ItemCollectionTransitionCompletedEventArgs.cpp, tag winui3/release/1.6-stable
+﻿// MUX Reference ItemCollectionTransitionCompletedEventArgs.h + ItemCollectionTransitionCompletedEventArgs.cpp, tag winui3/release/1.6-stable
 
 using Microsoft.UI.Xaml;
 
