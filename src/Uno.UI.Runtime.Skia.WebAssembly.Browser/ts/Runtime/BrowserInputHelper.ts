@@ -8,11 +8,14 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static async lockKeys(keyCodes: string[]): Promise<void> {
-			if ((navigator as any).keyboard) {
-				await (navigator as any).keyboard.lock(
-					keyCodes.length > 0 ? keyCodes : undefined
-				);
+			if (!BrowserInputHelper.isKeyboardLockSupported()) {
+				throw new Error("Keyboard lock is not supported by this browser.");
 			}
+
+			const kb = (navigator as any).keyboard;
+			await kb.lock(
+				keyCodes.length > 0 ? keyCodes : undefined
+			);
 		}
 
 		public static isKeyboardLockSupported(): boolean {

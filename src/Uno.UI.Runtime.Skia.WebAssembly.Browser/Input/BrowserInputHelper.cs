@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Threading.Tasks;
 
 namespace Uno.UI.Runtime.Skia;
@@ -45,7 +46,9 @@ public static partial class BrowserInputHelper
 	/// When locked, these keys are delivered to the app instead of being
 	/// intercepted by the browser or OS.
 	/// Requires HTTPS and a supported browser (e.g. Chrome/Edge).
-	/// The page must be in fullscreen mode for the lock to take effect.
+	/// The browser may also require the page to be in fullscreen mode and the call
+	/// to originate from a user gesture (such as a key press or pointer interaction);
+	/// if these conditions are not met, the operation may fail.
 	/// </summary>
 	/// <param name="keyCodes">
 	/// Browser key codes in <c>KeyboardEvent.code</c> format
@@ -53,9 +56,10 @@ public static partial class BrowserInputHelper
 	/// If empty, all keys are locked.
 	/// </param>
 	/// <returns>A task that completes when the keys are locked, or faults if the browser
-	/// refuses the request.</returns>
+	/// refuses the lock request (for example, when HTTPS, fullscreen, or user-gesture
+	/// requirements are not satisfied, or the browser does not support the API).</returns>
 	public static Task LockKeysAsync(params string[] keyCodes)
-		=> NativeMethods.LockKeys(keyCodes);
+		=> NativeMethods.LockKeys(keyCodes ?? Array.Empty<string>());
 
 	/// <summary>
 	/// Unlocks all previously locked keys, restoring default browser key handling.
