@@ -85,9 +85,9 @@ public class AutoSuggestBoxIntegrationTests : BaseDxamlTestClass
 		{
 			var autoSuggestBox = new AutoSuggestBox();
 
-			VERIFY_IS_TRUE(autoSuggestBox.AutoMaximizeSuggestionArea);
-			autoSuggestBox.AutoMaximizeSuggestionArea = false;
 			VERIFY_IS_FALSE(autoSuggestBox.AutoMaximizeSuggestionArea);
+			autoSuggestBox.AutoMaximizeSuggestionArea = true;
+			VERIFY_IS_TRUE(autoSuggestBox.AutoMaximizeSuggestionArea);
 
 			VERIFY_IS_NULL(autoSuggestBox.ItemsSource);
 			autoSuggestBox.ItemsSource = itemList;
