@@ -710,4 +710,29 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			return dpi / (float)PInvoke.USER_DEFAULT_SCREEN_DPI;
 		}
 	}
+
+	public override unsafe void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
+	{
+		DWM_SYSTEMBACKDROP_TYPE backdropType = backdrop switch
+		{
+			Microsoft.UI.Xaml.Media.MicaBackdrop { Kind: Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt }
+				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_TABBEDWINDOW,
+			Microsoft.UI.Xaml.Media.MicaBackdrop
+				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_MAINWINDOW,
+			Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop
+				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_TRANSIENTWINDOW,
+			_ => DWM_SYSTEMBACKDROP_TYPE.DWMSBT_AUTO,
+		};
+
+		var hResult = PInvoke.DwmSetWindowAttribute(
+			_hwnd,
+			DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE,
+			&backdropType,
+			(uint)sizeof(DWM_SYSTEMBACKDROP_TYPE));
+
+		if (hResult.Failed)
+		{
+			this.LogError()?.Error($"Failed to set system backdrop: {Win32Helper.GetErrorMessage(hResult)}");
+		}
+	}
 }

@@ -154,6 +154,7 @@ DwmIsCompositionEnabled
 DwmExtendFrameIntoClientArea
 DwmSetWindowAttribute
 DwmDefWindowProc
+DWM_SYSTEMBACKDROP_TYPE
 EmptyClipboard
 EnableMouseInPointer
 EndPaint

@@ -11,5 +11,5 @@ public partial class MicaController
 	/// Determines whether the mica material is supported on the current operating system.
 	/// </summary>
 	/// <returns>True if the mica material is supported on the current operating system; otherwise, false.</returns>
-	public static bool IsSupported() => OperatingSystem.IsMacOS();
+	public static bool IsSupported() => OperatingSystem.IsMacOS() || OperatingSystem.IsWindows();
 }
