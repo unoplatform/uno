@@ -24,6 +24,11 @@ public partial class AutoSuggestBoxTextChangedEventArgs : DependencyObject
 	/// <summary>
 	/// Identifies the Reason dependency property.
 	/// </summary>
+	/// <remarks>
+	/// C++ default is ProgrammaticChange (m_reason = ProgrammaticChange in constructor).
+	/// The default here is the enum default (UserInput = 0). In practice, Reason is always
+	/// set explicitly before the event fires, so this difference has no observable effect.
+	/// </remarks>
 	public static DependencyProperty ReasonProperty { get; } =
 		DependencyProperty.Register(
 			nameof(Reason),

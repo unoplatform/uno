@@ -28,6 +28,12 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class AutoSuggestBox
 {
 #if HAS_UNO
+	// C++ destructor (~AutoSuggestBox):
+	// if (m_tpInputPane) { remove_Showing(m_sipEvents[0]); remove_Hiding(m_sipEvents[1]); }
+	// ASSERT(!m_isOverlayVisible);
+	// Note: Uno does not support cleanup via finalizers. SIP event handlers are
+	// removed via SerialDisposable revokers and the Unloaded event handler.
+
 	/// <summary>
 	/// Initializes a new instance of the AutoSuggestBox class.
 	/// </summary>
@@ -170,6 +176,11 @@ partial class AutoSuggestBox
 			{
 				AutomationProperties.SetName(m_tpTextBoxPart, automationName);
 			}
+
+			// TODO Uno: Pass ValidationContext and ValidationCommand to TextBox when InputValidation is implemented
+			// C++ AutoSuggestBox_Partial.cpp lines 286-296:
+			// textBoxValidation->put_ValidationContext(context);
+			// textBoxValidation2->put_ValidationCommand(command);
 		}
 
 		// Configure Suggestions part (ListView)
@@ -478,8 +489,10 @@ partial class AutoSuggestBox
 			return;
 		}
 
-		// TODO UNO: Apply elevation effect to the popup's immediate child
-		// ApplyElevationEffect(m_tpPopupPart);
+		// TODO Uno: C++ TraceLogging: TraceLoggingWrite("ASBSuggestionListOpened")
+
+		// TODO Uno: C++ line 682: ApplyElevationEffect(m_tpPopupPart.AsOrNull<IUIElement>().Get())
+		// Adds shadow/elevation to the popup. Requires ApplyElevationEffect infrastructure.
 
 		UpdateSuggestionListPosition();
 	}
@@ -520,11 +533,20 @@ partial class AutoSuggestBox
 			}
 
 			// Update query button's AutomationProperties.Name to "Search" by default
+			// C++ line ~843: DXamlCore::GetLocalizedResourceString(UIA_AUTOSUGGESTBOX_QUERY)
 			var automationName = AutomationProperties.GetName(m_tpTextBoxQueryButtonPart);
 			if (string.IsNullOrEmpty(automationName))
 			{
-				// TODO UNO: Use localized resource string
-				AutomationProperties.SetName(m_tpTextBoxQueryButtonPart, "Search");
+				string searchName;
+				try
+				{
+					searchName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutoSuggestBoxQueryButton);
+				}
+				catch
+				{
+					searchName = "Search";
+				}
+				AutomationProperties.SetName(m_tpTextBoxQueryButtonPart, searchName);
 			}
 		}
 	}
@@ -574,6 +596,7 @@ partial class AutoSuggestBox
 	/// </summary>
 	private void OnSuggestionSelectionChanged_Internal(object sender, SelectionChangedEventArgs args)
 	{
+		// TODO Uno: C++ TraceLogging: TraceLoggingWrite("ASBSuggestionSelectionChanged")
 		var selectedItem = m_tpSuggestionsPart?.SelectedItem;
 
 		// ASB handles keyboard navigation on behalf of the suggestion box.
@@ -704,6 +727,25 @@ partial class AutoSuggestBox
 	{
 		OnItemsChanged_Internal(args);
 	}
+
+#if false // TODO Uno: Wire when TextBox.CandidateWindowBoundsChanged becomes available
+	// C++ AutoSuggestBox_Partial.cpp line ~730
+	// Handler for CandidateWindowBoundsChanged event on the TextBox.
+	// Responds to IME candidate window bounds changes, updates m_candidateWindowBoundsRect,
+	// then re-runs alignment/positioning so the suggestion list avoids the candidate window.
+	private void OnTextBoxCandidateWindowBoundsChanged(TextBox sender, CandidateWindowBoundsChangedEventArgs args)
+	{
+		// C++ original:
+		// auto pArgs = static_cast<CCandidateWindowBoundsChangedEventArgs*>(args);
+		// m_candidateWindowBoundsRect = pArgs->m_bounds;
+		// UpdateSuggestionListPosition();
+		// UpdateSuggestionListSize();
+
+		m_candidateWindowBoundsRect = args.Bounds;
+		UpdateSuggestionListPosition();
+		UpdateSuggestionListSize();
+	}
+#endif
 
 	#endregion
 
@@ -1153,6 +1195,8 @@ partial class AutoSuggestBox
 
 	/// <summary>
 	/// Updates the suggestion list's ItemsSource.
+	/// C++ creates a ReversedVector wrapper when m_suggestionListPosition == Above
+	/// and no legacy ScaleTransform part exists, then binds it as ItemsSource.
 	/// </summary>
 	private void UpdateSuggestionListItemsSource()
 	{
@@ -1163,27 +1207,41 @@ partial class AutoSuggestBox
 			// m_tpListItemOrderTransformPart, the suggestion list's ItemsSource is bound to the
 			// ASB's ItemsSource, so no need to update it.
 
-			if (m_suggestionListPosition == SuggestionListPosition.Above)
-			{
-				// TODO UNO: Implement ReversedVector for above positioning
-				// For now, just propagate ItemsSource directly
-			}
-
-			// Propagate ItemsSource from ASB to the suggestion list
 			if (m_tpSuggestionsPart is ItemsControl itemsControl)
 			{
-				itemsControl.ItemsSource = ItemsSource;
+				if (m_suggestionListPosition == SuggestionListPosition.Above)
+				{
+					// Detach previous reversed vector if any
+					m_spReversedVector?.Detach();
+					m_spReversedVector = null;
+
+					if (Items is IList<object> sourceList && sourceList.Count > 0)
+					{
+						m_spReversedVector = new ReversedVector(sourceList);
+						itemsControl.ItemsSource = m_spReversedVector;
+						ScrollLastItemIntoView();
+					}
+					else
+					{
+						itemsControl.ItemsSource = ItemsSource;
+					}
+				}
+				else
+				{
+					// Detach reversed vector when switching back to Below
+					m_spReversedVector?.Detach();
+					m_spReversedVector = null;
+					itemsControl.ItemsSource = ItemsSource;
+				}
 			}
 		}
 	}
 
 	/// <summary>
 	/// Scrolls the last item into view.
+	/// Called when the suggestion list position changes to Above (reversed vector).
 	/// </summary>
-	// TODO UNO: This method should be called when the suggestion list position changes to Above
-#pragma warning disable IDE0051 // Private member is unused
 	private void ScrollLastItemIntoView()
-#pragma warning restore IDE0051
 	{
 		if (m_tpSuggestionsPart is ListViewBase listViewBase)
 		{
@@ -1220,6 +1278,7 @@ partial class AutoSuggestBox
 			{
 				m_tpTextBoxQueryButtonPart.Visibility = Visibility.Visible;
 				m_tpTextBoxQueryButtonPart.SetValue(ContentControl.ContentProperty, queryIcon);
+				// TODO Uno: C++ sets cursor to arrow on the query button: SetCursor(MouseCursorArrow)
 			}
 			else
 			{
@@ -1248,6 +1307,8 @@ partial class AutoSuggestBox
 		if (value != currentText)
 		{
 			Text = value;
+			// TODO Uno: InvokeValidationCommand(this, value) when InputValidation is implemented
+			// C++ AutoSuggestBox_Partial.cpp line 2663
 		}
 	}
 
@@ -1332,8 +1393,16 @@ partial class AutoSuggestBox
 				UpdateSuggestionListVisibility();
 			}
 
-			// TODO UNO: Raise automation events for layout invalidated
-			// AutomationPeer.RaiseAutomationEvent(AutomationEvents.LayoutInvalidated);
+			// C++: Raise LayoutInvalidated automation event on the suggestion list
+			// so screen readers are notified when the suggestion list content changes.
+			if (AutomationPeer.ListenerExistsHelper(AutomationEvents.LayoutInvalidated))
+			{
+				if (m_tpSuggestionsPart is UIElement suggestionsElement)
+				{
+					var peer = FrameworkElementAutomationPeer.FromElement(suggestionsElement);
+					peer?.RaiseAutomationEvent(AutomationEvents.LayoutInvalidated);
+				}
+			}
 		}
 		finally
 		{
@@ -1372,11 +1441,22 @@ partial class AutoSuggestBox
 
 	/// <summary>
 	/// Internal helper function to handle the Showing event from InputPane.
+	/// C++ AutoSuggestBox_Partial.cpp lines 2543-2634
 	/// </summary>
 	private void OnSipShowingInternal(InputPaneVisibilityEventArgs args)
 	{
 		if (m_tpTextBoxPart is not null && args is not null)
 		{
+			// C++: Store args for deferred re-invocation
+			m_tpSipArgs = args;
+
+			// TODO Uno: Display orientation tracking
+			// C++ checks if display orientation has changed since last invocation.
+			// If changed, calls OnSipHidingInternal() to reset scroll actions before proceeding.
+			// Original:
+			// auto currentOrientation = XamlDisplay::GetDisplayOrientation();
+			// if (m_displayOrientation != currentOrientation) { OnSipHidingInternal(); m_displayOrientation = currentOrientation; }
+
 			var sipOverlayArea = args.OccludedRect;
 			var isTextBoxFocused = IsTextBoxFocusedElement();
 
@@ -1385,17 +1465,38 @@ partial class AutoSuggestBox
 				m_hasFocus = true;
 			}
 
-			if (!m_isSipVisible && m_hasFocus)
+			if (m_wkRootScrollViewer is not null && m_wkRootScrollViewer.TryGetTarget(out var rootScrollViewer))
 			{
-				m_isSipVisible = true;
-
-				AlignmentHelper(sipOverlayArea);
-
-				// Expands the suggestion list if there is already text in the textbox
-				var text = m_tpTextBoxPart.Text;
-				if (!string.IsNullOrEmpty(text))
+				// C++: Deferred showing logic — if the root ScrollViewer's ScrollableHeight is 0
+				// and we haven't already deferred, enqueue a callback to re-invoke OnSipShowingInternal
+				// with the stored args. This handles the case where layout hasn't completed yet.
+				if (!m_isSipVisible && m_hasFocus)
 				{
-					UpdateSuggestionListVisibility();
+					var scrollableHeight = rootScrollViewer.ScrollableHeight;
+					if (scrollableHeight == 0 && !s_fDeferredShowing)
+					{
+						s_fDeferredShowing = true;
+						_ = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+						{
+							s_fDeferredShowing = false;
+							if (m_tpSipArgs is not null)
+							{
+								OnSipShowingInternal(m_tpSipArgs);
+							}
+						});
+						return;
+					}
+
+					m_isSipVisible = true;
+
+					AlignmentHelper(sipOverlayArea);
+
+					// Expands the suggestion list if there is already text in the textbox
+					var text = m_tpTextBoxPart.Text;
+					if (!string.IsNullOrEmpty(text))
+					{
+						UpdateSuggestionListVisibility();
+					}
 				}
 			}
 		}
@@ -1457,7 +1558,7 @@ partial class AutoSuggestBox
 					var actualTextBoxHeight = m_tpTextBoxPart?.ActualHeight ?? 0;
 					var bottomY = point.Y + actualTextBoxHeight;
 
-					// Updates the visual state of the ASB depending on the orientation
+					// TODO Uno: Call ChangeVisualState() when display orientation tracking is implemented
 					// ChangeVisualState();
 
 					var layoutBounds = GetAdjustedLayoutBounds();
@@ -1560,6 +1661,9 @@ partial class AutoSuggestBox
 	{
 		try
 		{
+			// TODO Uno: C++ lines 2056-2063: When popup IsWindowed(), should use
+			// CalculateAvailableMonitorRect instead of GetAdjustedLayoutBounds
+			// for multi-monitor/windowed popup layout bounds.
 			var layoutBounds = GetAdjustedLayoutBounds();
 
 			UIElement referenceElement = null;
@@ -1851,7 +1955,9 @@ partial class AutoSuggestBox
 	/// </summary>
 	private void SetupOverlayState()
 	{
-		// TODO UNO: Implement overlay state setup if needed
+		// TODO Uno: Implement overlay state setup using LTE infrastructure when available.
+		// C++ creates layout transition elements for the light dismiss overlay.
+		// See CreateLTEs(), PositionLTEs() below.
 	}
 
 	/// <summary>
@@ -1859,8 +1965,39 @@ partial class AutoSuggestBox
 	/// </summary>
 	private void TeardownOverlayState()
 	{
-		// TODO UNO: Implement overlay state teardown if needed
+		// TODO Uno: Implement overlay state teardown using LTE infrastructure when available.
+		// C++ calls DestroyLTEs() and clears overlay references.
 	}
+
+#if false // TODO Uno: LTE (Layout Transition Element) methods for light dismiss overlay.
+	// These require core XAML infrastructure (CLayoutTransitionElement) not yet available in Uno.
+	// C++ AutoSuggestBox_Partial.cpp
+
+	// CreateLTEs: Creates layout transition elements for the overlay and the AutoSuggestBox itself.
+	// C++ lines ~1850-1920
+	// - Creates an overlay LTE (m_overlayLayoutTransition) with the brush from LightDismissOverlayBackground
+	// - Creates a control LTE (m_layoutTransition) for the AutoSuggestBox
+	// - Attaches both to the parent element (m_parentElementForLTEs)
+	private void CreateLTEs() { }
+
+	// PositionLTEs: Positions layout transition elements based on the current control position.
+	// C++ lines ~1920-1980
+	// - Calculates the offset from the parent element
+	// - Sets the overlay LTE to fill the entire parent
+	// - Sets the control LTE to match the AutoSuggestBox's position and size
+	private void PositionLTEs() { }
+
+	// DestroyLTEs: Removes and destroys layout transition elements.
+	// C++ lines ~1980-2010
+	// - Detaches LTEs from parent
+	// - Clears m_overlayLayoutTransition, m_layoutTransition, m_parentElementForLTEs
+	private void DestroyLTEs() { }
+
+	// ShouldUseParentedLTE: Determines if parented layout transition elements should be used.
+	// C++ lines ~2010-2040
+	// - Returns true if the popup is not windowed (i.e., rendered inline)
+	private bool ShouldUseParentedLTE() => false;
+#endif
 
 	#endregion
 
@@ -1922,6 +2059,24 @@ partial class AutoSuggestBox
 		}
 	}
 
+	// C++ AutoSuggestBox_Partial.cpp lines 1801-1831: ChangeVisualState
+	// Sets Landscape/Portrait visual states based on m_displayOrientation.
+	// Original C++:
+	// void AutoSuggestBox::ChangeVisualState()
+	// {
+	//     BOOLEAN ignored;
+	//     auto orientation = m_displayOrientation;
+	//     if (orientation == XamlDisplay::Orientation::Landscape || orientation == XamlDisplay::Orientation::LandscapeFlipped)
+	//     {
+	//         GoToState(TRUE, c_VisualStateLandscape, &ignored);
+	//     }
+	//     else
+	//     {
+	//         GoToState(TRUE, c_VisualStatePortrait, &ignored);
+	//     }
+	// }
+	// TODO Uno: Implement when display orientation tracking (m_displayOrientation) is available.
+
 	// GetKeyboardModifiers is inherited from Control
 
 	/// <summary>
@@ -1954,6 +2109,10 @@ partial class AutoSuggestBox
 			_ => false
 		};
 	}
+
+	// C++: static void OnInkingFunctionButtonClicked(CDependencyObject* nativeAutoSuggestBox)
+	// Resolves a CDependencyObject to AutoSuggestBox and calls ProgrammaticSubmitQuery().
+	// Not needed in Uno — inking function button is platform-specific Windows functionality.
 
 	/// <summary>
 	/// Updates description visibility.
