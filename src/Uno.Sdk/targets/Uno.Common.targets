@@ -136,6 +136,17 @@
 		<UnoDspImportColors Include="Styles\*.zip" Generator="CSharp" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
 	</ItemGroup>
 
+	<!-- Copy Content files to the output folder like APPX packaging does. -->
+	<Target Name="_UnoBeforeCopyLocal"
+			BeforeTargets="CopyFilesToOutputDirectory;_CopyFilesMarkedCopyLocal"
+			Condition="'$(UnoRuntimeIdentifier)' == 'Skia' OR '$(UnoUIRuntimeIdentifier)' == 'Skia'">
+		<ItemGroup>
+			<ContentWithTargetPath
+				Update="@(ContentWithTargetPath)"
+				CopyToOutputDirectory="Always" />
+		</ItemGroup>
+	</Target>
+
 	<ItemGroup Condition="($(UnoFeatures.Contains(';configuration;')) OR $(UnoFeatures.Contains(';Extensions;'))) AND Exists('appsettings.json')">
 		<EmbeddedResource Include="appsettings.json" />
 		<EmbeddedResource Include="appsettings.*.json" DependentUpon="appsettings.json" />
