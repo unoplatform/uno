@@ -61,12 +61,16 @@ public partial class ResourceQualifier
 				var ietfLanguageTags = cultures.Select(c => c.IetfLanguageTag);
 				var ietfLanguageParentTags = cultures.Select(c => c.Parent.IetfLanguageTag);
 				var twoLetterLanguageTags = cultures.Select(c => c.TwoLetterISOLanguageName);
+				var cultureNames = cultures.Select(c => c.Name);
+				var parentCultureNames = cultures.Select(c => c.Parent.Name);
 
-				var allCulture = Enumerable.Concat(
-					ietfLanguageTags,
-					twoLetterLanguageTags.Concat(ietfLanguageParentTags));
+				var allTags = ietfLanguageTags
+					.Concat(ietfLanguageParentTags)
+					.Concat(twoLetterLanguageTags)
+					.Concat(cultureNames)
+					.Concat(parentCultureNames);
 
-				_languageTags = new HashSet<string>(allCulture.Distinct(), StringComparer.InvariantCultureIgnoreCase);
+				_languageTags = new HashSet<string>(allTags.Distinct(), StringComparer.InvariantCultureIgnoreCase);
 			}
 
 			return _languageTags;
@@ -75,7 +79,29 @@ public partial class ResourceQualifier
 
 	private static bool IsLanguageTag(string str)
 	{
-		return LanguageTags.Contains(str);
+		if (LanguageTags.Contains(str))
+		{
+			return true;
+		}
+
+		// Fallback for language tags with region/script subtags (e.g., quz-PE,
+		// ca-Es-VALENCIA) that may not be enumerated by GetCultures() on all
+		// platforms. Only attempt this for strings containing a dash, to avoid
+		// false positives on file extensions like "png" (ISO 639-3 Pangwa).
+		if (str.IndexOf('-') >= 0)
+		{
+			try
+			{
+				var culture = new CultureInfo(str);
+				return !string.IsNullOrEmpty(culture.Name);
+			}
+			catch (CultureNotFoundException)
+			{
+				return false;
+			}
+		}
+
+		return false;
 	}
 
 	#endregion
