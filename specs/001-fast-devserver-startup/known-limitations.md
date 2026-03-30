@@ -4,7 +4,7 @@ Known limitations of the current DevServer architecture, documented during imple
 
 ---
 
-## L1. AmbientRegistry Reuse: Single IDEChannel Connection
+## L1. AmbientRegistry Reuse: Single Active IDEChannel
 
 **Phase**: 1b (Controller Bypass)
 **Date**: 2026-02-14
@@ -16,12 +16,22 @@ Phase 1b introduces reuse of existing DevServer instances via AmbientRegistry. W
 
 ### Limitation
 
-The Host only supports **a single IDEChannel connection** (named pipe) at a time (`IdeChannelServer.cs`, `maxNumberOfServerInstances: 1`). This means:
+The Host only supports **a single active IDEChannel connection** (named pipe) at a time (`IdeChannelServer.cs`, `maxNumberOfServerInstances: 1`). This means:
 
 | Scenario | Works? | Reason |
 |----------|:---:|--------|
 | IDE + MCP CLI on same solution | Yes | MCP uses HTTP (`/mcp`), not the named pipe |
-| IDE-A + IDE-B on same solution | No | Both need the IDEChannel pipe |
+| IDE-A + IDE-B on same solution | Partially | The Host can be reused, but only one active IDE channel can own the pipe at a time |
+
+### Current target behavior
+
+`uno.devserver start --ideChannel <id>` should **reuse** an already-running Host for the same solution and replace the active IDE channel in-place. This avoids killing a Host owned by another launcher while still letting a new IDE session attach.
+
+This is intentionally narrower than full multi-tenant support:
+
+- The Host remains **single-channel**
+- Rebinding the active channel is supported
+- Simultaneous pipe connections from multiple IDEs are still unsupported
 
 ### Liveness Monitoring
 
@@ -50,6 +60,7 @@ If any of these scenarios becomes real:
 
 ### Potential resolution
 
-- Make `IdeChannelServer` multi-connection (`maxNumberOfServerInstances > 1`)
+- Keep the current single-channel design, but allow **channel replacement** on an already-running Host
+- Later, if needed, make `IdeChannelServer` multi-connection (`maxNumberOfServerInstances > 1`)
 - Add per-IDE routing in `ApplicationLaunchMonitor` and processors
 - Isolate `AssemblyLoadContext` per IDE connection

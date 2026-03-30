@@ -274,6 +274,14 @@ internal static class DevServerProcessHelper
 		else
 		{
 			logger.LogInformation("Command completed successfully.");
+			if (!string.IsNullOrWhiteSpace(stdOut))
+			{
+				logger.LogDebug("Host stdout:\n{Output}", stdOut);
+			}
+			if (!string.IsNullOrWhiteSpace(stdErr))
+			{
+				logger.LogDebug("Host stderr:\n{ErrorOutput}", stdErr);
+			}
 		}
 
 		return (process.ExitCode, stdOut, stdErr);

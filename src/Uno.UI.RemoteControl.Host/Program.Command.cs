@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
@@ -39,6 +41,24 @@ partial class Program
 				var existingBySolution = ambient.GetActiveDevServerForPath(solution);
 				if (existingBySolution is not null)
 				{
+					if (!string.IsNullOrWhiteSpace(ideChannel))
+					{
+						await Console.Out.WriteLineAsync($"A DevServer is already running for solution {Path.GetFullPath(solution)} (PID {existingBySolution.ProcessId}, Port {existingBySolution.Port}). Reusing the existing instance and updating the IDE channel.");
+
+						var rebound = await TryUpdateExistingIdeChannelAsync(existingBySolution.Port, ideChannel);
+						if (!rebound)
+						{
+							await Console.Error.WriteLineAsync($"Failed to update the IDE channel for the running DevServer on port {existingBySolution.Port}.");
+							Environment.ExitCode = 1;
+							return;
+						}
+
+						await CsprojUserGenerator.SetCsprojUserPort(solution, existingBySolution.Port);
+						await Console.Out.WriteLineAsync($"DevServer is ready on port {existingBySolution.Port}");
+						Environment.ExitCode = 0;
+						return;
+					}
+
 					await Console.Out.WriteLineAsync($"A DevServer is already running for solution {Path.GetFullPath(solution)} (PID {existingBySolution.ProcessId}, Port {existingBySolution.Port}). Not starting a new one.");
 					Environment.ExitCode = 0;
 					return;
@@ -51,6 +71,28 @@ partial class Program
 				var existingByPort = ambient.GetActiveDevServerForPort(httpPort);
 				if (existingByPort is not null)
 				{
+					if (!string.IsNullOrWhiteSpace(ideChannel))
+					{
+						await Console.Out.WriteLineAsync($"A DevServer is already running on port {httpPort} (PID {existingByPort.ProcessId}). Reusing the existing instance and updating the IDE channel.");
+
+						var rebound = await TryUpdateExistingIdeChannelAsync(httpPort, ideChannel);
+						if (!rebound)
+						{
+							await Console.Error.WriteLineAsync($"Failed to update the IDE channel for the running DevServer on port {httpPort}.");
+							Environment.ExitCode = 1;
+							return;
+						}
+
+						if (!string.IsNullOrWhiteSpace(existingByPort.SolutionPath))
+						{
+							await CsprojUserGenerator.SetCsprojUserPort(existingByPort.SolutionPath, httpPort);
+						}
+
+						await Console.Out.WriteLineAsync($"DevServer is ready on port {httpPort}");
+						Environment.ExitCode = 0;
+						return;
+					}
+
 					await Console.Out.WriteLineAsync($"A DevServer is already running on port {httpPort} (PID {existingByPort.ProcessId}). Not starting a new one.");
 					Environment.ExitCode = 0;
 					return;
@@ -283,10 +325,13 @@ partial class Program
 		{
 			var processName = TryGetProcessName(s.ProcessId);
 			var parentName = TryGetProcessName(s.ParentProcessId);
+			var processChain = FormatProcessChain(ambient.GetProcessChain(s));
 			await Console.Out.WriteLineAsync($"Process ID: {s.ProcessId}{(processName is not null ? $" ({processName})" : "")}");
 			await Console.Out.WriteLineAsync($"  Parent PID: {s.ParentProcessId}{(parentName is not null ? $" ({parentName})" : "")}");
 			await Console.Out.WriteLineAsync($"  Port: {s.Port}");
 			await Console.Out.WriteLineAsync($"  Solution: {s.SolutionPath ?? "N/A"}");
+			await Console.Out.WriteLineAsync($"  IDE Channel: {s.IdeChannelId ?? "<none>"}");
+			await Console.Out.WriteLineAsync($"  Process Chain: {processChain}");
 			await Console.Out.WriteLineAsync($"  Machine: {s.MachineName}");
 			await Console.Out.WriteLineAsync($"  User: {s.UserName}");
 			await Console.Out.WriteLineAsync($"  Started: {s.StartTime:yyyy-MM-dd HH:mm:ss} UTC");
@@ -367,6 +412,37 @@ partial class Program
 		return false;
 	}
 
+	private static async Task<bool> TryUpdateExistingIdeChannelAsync(int port, string ideChannel)
+	{
+		var url = $"http://127.0.0.1:{port.ToString(CultureInfo.InvariantCulture)}/devserver/idechannel/{Uri.EscapeDataString(ideChannel)}";
+		await Console.Out.WriteLineAsync($"Rebinding IDE channel on running DevServer: POST {url}");
+
+		using var httpClient = new HttpClient
+		{
+			Timeout = TimeSpan.FromSeconds(10),
+		};
+
+		try
+		{
+			using var response = await httpClient.PostAsync(url, content: null);
+
+			var body = await response.Content.ReadAsStringAsync();
+			await Console.Out.WriteLineAsync($"Rebind response: {(int)response.StatusCode} {response.StatusCode}{(string.IsNullOrWhiteSpace(body) ? "" : $" — {body}")}");
+
+			if (response.IsSuccessStatusCode)
+			{
+				return true;
+			}
+
+			return false;
+		}
+		catch (Exception ex)
+		{
+			await Console.Error.WriteLineAsync($"Failed to update the IDE channel on the running DevServer: {ex.Message}");
+			return false;
+		}
+	}
+
 	private static string? TryGetProcessName(int pid)
 	{
 		try
@@ -379,6 +455,20 @@ partial class Program
 			return null;
 		}
 	}
+
+	private static string FormatProcessChain(IReadOnlyList<AmbientRegistry.ProcessChainNode> chain)
+		=> string.Join(
+			" → ",
+			chain.Reverse().Select(node =>
+			{
+				var name = node.ProcessName is not null
+					&& node.ProcessName.StartsWith("Uno.UI.RemoteControl.Host", StringComparison.OrdinalIgnoreCase)
+					? "Host"
+					: node.ProcessName;
+				return name is { Length: > 0 }
+					? $"{name} ({node.ProcessId})"
+					: node.ProcessId.ToString(CultureInfo.InvariantCulture);
+			}));
 
 	private static int EnsureTcpPort()
 	{

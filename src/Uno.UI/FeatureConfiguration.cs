@@ -560,7 +560,7 @@ namespace Uno.UI
 			/// whitespace characters, in which case disabling this flag will prevent the TextBlock
 			/// from rendering the font's "replacement character" symbol (e.g. �) instead of just a white space.
 			/// </summary>
-			public static bool RenderWhiteSpace { get; set; } = true;
+			public static bool RenderWhiteSpace { get; set; }
 		}
 
 		public static class TextBox

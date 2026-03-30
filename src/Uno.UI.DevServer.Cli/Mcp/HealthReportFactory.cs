@@ -153,6 +153,13 @@ internal static class HealthReportFactory
 					IdeChannelId = s.IdeChannelId,
 					SolutionPath = s.SolutionPath,
 					IsInWorkspace = s.IsInWorkspace,
+					ProcessChain = s.ProcessChain.Count > 0
+						? s.ProcessChain.Select(p => new ProcessChainEntry
+						{
+							ProcessId = p.ProcessId,
+							ProcessName = p.ProcessName,
+						}).ToList()
+						: null,
 				}).ToList()
 				: null,
 		};

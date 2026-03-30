@@ -5,7 +5,7 @@
 #nullable enable
 
 using System;
-
+using System.Runtime.CompilerServices;
 using Uno.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -1789,11 +1789,11 @@ namespace Microsoft.UI.Xaml.Input
 				if (CanRaiseFocusEventChange() &&
 					RaiseAndProcessGettingAndLosingFocusEvents(
 						_focusedElement,
-						newFocusTarget,
+						ref newFocusTarget,
 						nonCoercedFocusState,
 						focusNavigationDirection,
 						movement.CanCancel,
-						correlationId).Canceled)
+						correlationId))
 				{
 					success = true;
 					focusCancelled = true;
@@ -2142,12 +2142,12 @@ namespace Microsoft.UI.Xaml.Input
 				}
 
 				/*
-		        The new focused element is  navigated to during Engagement if:
-		        1. It is the engaged control OR
-		        2. It is a child of the engaged control OR
-		        3. It is a popup opened during engagement OR
-		        4. It is the descendant of a popup opened during engagement
-		        */
+				The new focused element is  navigated to during Engagement if:
+				1. It is the engaged control OR
+				2. It is a child of the engaged control OR
+				3. It is a popup opened during engagement OR
+				4. It is the descendant of a popup opened during engagement
+				*/
 				isNavigatedTo =
 					isChild ||
 					isSelf ||
@@ -2618,14 +2618,18 @@ namespace Microsoft.UI.Xaml.Input
 			}
 		}
 
-		private ChangingFocusEventRaiseResult RaiseChangingFocusEvent<TArgs>(
+		/// <summary>
+		/// Returns true if the event was cancelled.
+		/// </summary>
+		private bool RaiseChangingFocusEvent<TArgs>(
 			DependencyObject? losingFocusElement,
 			DependencyObject? gettingFocusElement,
 			FocusState newFocusState,
 			FocusNavigationDirection navigationDirection,
 			RoutedEvent routedEvent,
 			Guid correlationId,
-			ChangingFocusEventArgsFactory<TArgs> argsFactory)
+			ChangingFocusEventArgsFactory<TArgs> argsFactory,
+			out DependencyObject? finalGettingFocusElement)
 			where TArgs : RoutedEventArgs, IChangingFocusEventArgs
 		{
 			//Locking focus to prevent Focus changes in Getting/Losing focus handlers
@@ -2671,7 +2675,7 @@ namespace Microsoft.UI.Xaml.Input
 					GettingFocus?.Invoke(null, (args as GettingFocusEventArgs)!);
 				}
 
-				var finalGettingFocusElement = args.NewFocusedElement;
+				finalGettingFocusElement = args.NewFocusedElement;
 
 				// Check if :
 				// 1. Focus was redirected
@@ -2705,9 +2709,9 @@ namespace Microsoft.UI.Xaml.Input
 					|| (finalGettingFocusElement == losingFocusElement)
 					|| (gettingFocusElement != null && (finalGettingFocusElement == null)))
 				{
-					return new ChangingFocusEventRaiseResult(canceled: true);
+					return true;
 				}
-				return new ChangingFocusEventRaiseResult(canceled: false, finalGettingFocusElement);
+				return false;
 			}
 			finally
 			{
@@ -2718,9 +2722,9 @@ namespace Microsoft.UI.Xaml.Input
 		/// <summary>
 		/// Returns true if the focus change is cancelled.
 		/// </summary>
-		private ChangingFocusEventRaiseResult RaiseAndProcessGettingAndLosingFocusEvents(
+		private bool RaiseAndProcessGettingAndLosingFocusEvents(
 			DependencyObject? pOldFocus,
-			DependencyObject? pFocusTarget,
+			ref DependencyObject? pFocusTarget,
 			FocusState focusState,
 			FocusNavigationDirection focusNavigationDirection,
 			bool focusChangeCancellable,
@@ -2732,19 +2736,19 @@ namespace Microsoft.UI.Xaml.Input
 
 			bool focusRedirected = false;
 
-			var losingFocusRaiseResult = RaiseChangingFocusEvent(
-				pOldFocus,
-				pNewFocus,
-				focusState,
-				focusNavigationDirection,
-				UIElement.LosingFocusEvent,
-				correlationId,
-				CreateLosingFocusEventArgs);
-			if (losingFocusRaiseResult.Canceled)
+			DependencyObject? pFinalNewFocus;
+			if (RaiseChangingFocusEvent(
+					pOldFocus,
+					pNewFocus,
+					focusState,
+					focusNavigationDirection,
+					UIElement.LosingFocusEvent,
+					correlationId,
+					CreateLosingFocusEventArgs,
+					out pFinalNewFocus))
 			{
-				return new ChangingFocusEventRaiseResult(canceled: true);
+				return true;
 			}
-			var pFinalNewFocus = losingFocusRaiseResult.FinalGettingFocusElement;
 
 			if (pNewFocus != pFinalNewFocus)
 			{
@@ -2755,19 +2759,18 @@ namespace Microsoft.UI.Xaml.Input
 			{
 				pFinalNewFocus = null;
 
-				var gettingFocusRaiseResult = RaiseChangingFocusEvent(
-					pOldFocus,
-					pNewFocus,
-					focusState,
-					focusNavigationDirection,
-					UIElement.GettingFocusEvent,
-					correlationId,
-					CreateGettingFocusEventArgs);
-				if (gettingFocusRaiseResult.Canceled)
+				if (RaiseChangingFocusEvent(
+						pOldFocus,
+						pNewFocus,
+						focusState,
+						focusNavigationDirection,
+						UIElement.GettingFocusEvent,
+						correlationId,
+						CreateGettingFocusEventArgs,
+						out pFinalNewFocus))
 				{
-					return new ChangingFocusEventRaiseResult(canceled: true);
+					return true;
 				}
-				pFinalNewFocus = gettingFocusRaiseResult.FinalGettingFocusElement;
 
 				if (pNewFocus != pFinalNewFocus)
 				{
@@ -2779,24 +2782,22 @@ namespace Microsoft.UI.Xaml.Input
 			{
 				if (!ShouldUpdateFocus(pFinalNewFocus, focusState))
 				{
-					return new ChangingFocusEventRaiseResult(canceled: true);
+					return true;
 				}
 
-				var redirectedRaiseResult = RaiseAndProcessGettingAndLosingFocusEvents(
-					pOldFocus,
-					pFinalNewFocus,
-					focusState,
-					focusNavigationDirection,
-					focusChangeCancellable,
-					correlationId);
-				if (redirectedRaiseResult.Canceled)
+				if (RaiseAndProcessGettingAndLosingFocusEvents(
+						pOldFocus,
+						ref pFinalNewFocus,
+						focusState,
+						focusNavigationDirection,
+						focusChangeCancellable,
+						correlationId))
 				{
-					return new ChangingFocusEventRaiseResult(canceled: true);
+					return true;
 				}
-				pFinalNewFocus = redirectedRaiseResult.FinalGettingFocusElement;
 				pFocusTarget = pFinalNewFocus;
 			}
-			return new ChangingFocusEventRaiseResult(canceled: false, pFocusTarget);
+			return false;
 		}
 
 		private bool IsValidTabStopSearchCandidate(DependencyObject? element)
@@ -3032,16 +3033,13 @@ namespace Microsoft.UI.Xaml.Input
 
 					// Raise changing focus events. We cannot cancel or redirect focus here.
 					// RaiseAndProcessGettingAndLosingFocusEvents returns true if a focus change has been cancelled.
-					var gettingLosingRaiseResult = RaiseAndProcessGettingAndLosingFocusEvents(
+					var focusChangeCancelled = RaiseAndProcessGettingAndLosingFocusEvents(
 						null /*pOldFocus*/,
-						focusTarget,
+						ref focusTarget,
 						GetRealFocusStateForFocusedElement(),
 						FocusNavigationDirection.None,
 						false /*focusChangeCancellable*/,
 						correlationId);
-					focusTarget = gettingLosingRaiseResult.FinalGettingFocusElement;
-
-					var focusChangeCancelled = gettingLosingRaiseResult.Canceled;
 
 					MUX_ASSERT(!focusChangeCancelled);
 					_currentFocusOperationCancellable = true;
@@ -3095,17 +3093,16 @@ namespace Microsoft.UI.Xaml.Input
 					using var focusLockGuard = new UnsafeFocusLockOverrideGuard(this);
 					DependencyObject? currentlyFocusedElement = _focusedElement;
 
+					DependencyObject? nullRef = null;
 					// Raise changing focus events. We cannot cancel or redirect focus here.
 					// RaiseAndProcessGettingAndLosingFocusEvents returns true if a focus change has been cancelled.
-					var gettingLosingRaiseResult = RaiseAndProcessGettingAndLosingFocusEvents(
+					var focusChangeCancelled = RaiseAndProcessGettingAndLosingFocusEvents(
 						focusedElement,
-						null /*focusTarget*/,
+						ref nullRef /*focusTarget*/,
 						FocusState.Unfocused,
 						FocusNavigationDirection.None,
 						false /*focusChangeCancellable*/,
 						correlationId);
-
-					bool focusChangeCancelled = gettingLosingRaiseResult.Canceled;
 
 					MUX_ASSERT(!focusChangeCancelled);
 					_currentFocusOperationCancellable = true;

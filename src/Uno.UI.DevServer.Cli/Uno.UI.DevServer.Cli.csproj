@@ -19,14 +19,16 @@
 	
 	<PropertyGroup>
 		<PackageId>Uno.DevServer</PackageId>
-		<PackageDescription>A dotnet tool to manage the devserver in a CLI environment</PackageDescription>
-		<Title>Uno Platform DevServer CLI tool</Title>
+		<PackageDescription>CLI tool for managing the Uno Platform DevServer — local development server for Hot Reload, IDE integration, and AI-powered MCP tools.</PackageDescription>
+		<Title>Uno Platform DevServer CLI</Title>
 		<PackageType>DotnetTool;McpServer</PackageType>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
 		<None Include=".mcp\server.json" Pack="true" PackagePath=".mcp\" />
+		<None Include="README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -44,6 +46,7 @@
 	<ItemGroup>
 		<!-- Linked from Host for controller bypass -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\AmbientRegistry.cs" Link="Mcp\AmbientRegistry.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Host\AmbientRegistry.Diagnostics.cs" Link="Mcp\AmbientRegistry.Diagnostics.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\CsprojUserGenerator.cs" Link="Helpers\CsprojUserGenerator.cs" />
 	</ItemGroup>
 
