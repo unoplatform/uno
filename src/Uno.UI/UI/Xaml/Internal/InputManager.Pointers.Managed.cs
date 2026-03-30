@@ -400,6 +400,11 @@ internal partial class InputManager
 
 		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
+#if __SKIA__
+			// Dismiss AccessKey mode on pointer interaction (matches WinUI behavior).
+			_inputManager.ContentRoot.AccessKeyExport.ProcessPointerInput();
+#endif
+
 			// If 2+ mouse buttons are pressed, we only respond to the first.
 			if (args.CurrentPoint is { PointerDeviceType: PointerDeviceType.Mouse, Properties.HasMultipleButtonsPressed: true })
 			{

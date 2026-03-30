@@ -1,0 +1,100 @@
+<Page
+	x:Class="UITests.Windows_UI_Xaml_Input.AccessKeys.AccessKeys_Basic"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid Padding="16">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<!-- Instructions -->
+		<StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,12">
+			<TextBlock Text="AccessKey Sample" Style="{ThemeResource TitleTextBlockStyle}" />
+			<TextBlock TextWrapping="Wrap" Style="{ThemeResource BodyTextBlockStyle}"
+				Text="Press and release Alt to enter access key display mode. Then press the access key character to invoke the control. Press Escape to exit display mode." />
+			<StackPanel Orientation="Horizontal" Spacing="8">
+				<TextBlock Text="Display mode active:" Style="{ThemeResource BodyTextBlockStyle}" VerticalAlignment="Center" />
+				<TextBlock x:Name="DisplayModeIndicator" Text="No" Foreground="{ThemeResource SystemFillColorCriticalBrush}" FontWeight="Bold" VerticalAlignment="Center" />
+			</StackPanel>
+		</StackPanel>
+
+		<!-- Test Controls -->
+		<ScrollViewer Grid.Row="1" MaxHeight="300" Margin="0,0,0,12">
+			<StackPanel Spacing="12">
+
+				<!-- Section 1: Basic Buttons with AccessKeys -->
+				<TextBlock Text="Basic AccessKey Buttons" Style="{ThemeResource SubtitleTextBlockStyle}" />
+				<StackPanel Orientation="Horizontal" Spacing="8">
+					<Button x:Name="ButtonA" Content="Button _A" AccessKey="A" />
+					<Button x:Name="ButtonB" Content="Button _B" AccessKey="B" />
+					<Button x:Name="ButtonC" Content="Button _C" AccessKey="C" />
+				</StackPanel>
+
+				<!-- Section 2: Multi-character AccessKey -->
+				<TextBlock Text="Multi-Character AccessKey" Style="{ThemeResource SubtitleTextBlockStyle}" />
+				<StackPanel Orientation="Horizontal" Spacing="8">
+					<Button x:Name="ButtonXY" Content="Button XY" AccessKey="XY" />
+					<Button x:Name="ButtonXZ" Content="Button XZ" AccessKey="XZ" />
+				</StackPanel>
+
+				<!-- Section 3: AccessKey on other control types -->
+				<TextBlock Text="AccessKeys on Various Controls" Style="{ThemeResource SubtitleTextBlockStyle}" />
+				<StackPanel Orientation="Horizontal" Spacing="8">
+					<CheckBox x:Name="CheckD" Content="Check _D" AccessKey="D" />
+					<ToggleSwitch x:Name="ToggleE" Header="Toggle _E" AccessKey="E" />
+				</StackPanel>
+
+				<!-- Section 4: AccessKey Scope (nested scopes) -->
+				<TextBlock Text="AccessKey Scope" Style="{ThemeResource SubtitleTextBlockStyle}" />
+				<StackPanel x:Name="ScopePanel" Orientation="Horizontal" Spacing="8"
+					IsAccessKeyScope="True">
+					<Button x:Name="ScopeButton1" Content="Scope Item 1" AccessKey="1" />
+					<Button x:Name="ScopeButton2" Content="Scope Item 2" AccessKey="2" />
+				</StackPanel>
+
+				<!-- Section 5: ExitDisplayModeOnAccessKeyInvoked = false -->
+				<TextBlock Text="Stay in Display Mode (ExitDisplayModeOnAccessKeyInvoked=false)" Style="{ThemeResource SubtitleTextBlockStyle}" />
+				<StackPanel Orientation="Horizontal" Spacing="8">
+					<Button x:Name="ButtonStay" Content="Stay _F" AccessKey="F"
+						ExitDisplayModeOnAccessKeyInvoked="False" />
+				</StackPanel>
+
+				<!-- Section 6: Disabled control (should be skipped) -->
+				<TextBlock Text="Disabled Control (should not activate)" Style="{ThemeResource SubtitleTextBlockStyle}" />
+				<StackPanel Orientation="Horizontal" Spacing="8">
+					<Button x:Name="ButtonDisabled" Content="Disabled _G" AccessKey="G" IsEnabled="False" />
+					<Button x:Name="ButtonH" Content="Enabled _H" AccessKey="H" />
+				</StackPanel>
+
+				<!-- Section 7: Programmatic control -->
+				<TextBlock Text="Programmatic Control" Style="{ThemeResource SubtitleTextBlockStyle}" />
+				<StackPanel Orientation="Horizontal" Spacing="8">
+					<Button x:Name="EnterModeButton" Content="Enter Display Mode" Click="EnterModeButton_Click" />
+					<Button x:Name="ExitModeButton" Content="Exit Display Mode" Click="ExitModeButton_Click" />
+					<Button x:Name="ClearLogButton" Content="Clear Log" Click="ClearLogButton_Click" />
+				</StackPanel>
+			</StackPanel>
+		</ScrollViewer>
+
+		<!-- Event Log -->
+		<Grid Grid.Row="2">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<TextBlock Grid.Row="0" Text="Event Log:" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,0,0,4" />
+			<Border Grid.Row="1" BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}" BorderThickness="1" Padding="8" CornerRadius="4">
+				<ScrollViewer x:Name="LogScroller">
+					<TextBlock x:Name="EventLog" TextWrapping="Wrap" IsTextSelectionEnabled="True" />
+				</ScrollViewer>
+			</Border>
+		</Grid>
+	</Grid>
+</Page>

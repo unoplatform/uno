@@ -1957,7 +1957,9 @@ namespace Microsoft.UI.Xaml.Input
 			// Input Host Manager
 			NotifyFocusChanged(shouldBringIntoView, animateIfBringIntoView);
 
+#if __SKIA__
 			_contentRoot.AccessKeyExport.UpdateScope();
+#endif
 
 			// Request the playing sound for changing focus with the keyboard, gamepad or remote input
 			if ((coercedFocusState == FocusState.Keyboard && _contentRoot.InputManager.ShouldRequestFocusSound()) &&

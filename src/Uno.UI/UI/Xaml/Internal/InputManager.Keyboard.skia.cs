@@ -2,12 +2,12 @@
 using System.Diagnostics.CodeAnalysis;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Input;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Windows.System;
 using DirectUI;
-using Uno.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -57,6 +57,25 @@ partial class InputManager
 			else
 			{
 				_inputManager.LastInputDeviceType = InputDeviceType.Keyboard;
+			}
+
+			// Process AccessKey input before normal key routing.
+			// In WinUI, AccessKey processing happens in the pre-translate phase.
+			var akExport = _inputManager.ContentRoot.AccessKeyExport;
+			var akMessage = AccessKeyInputMessage.FromKeyEventArgs(args, down);
+			bool akHandled = akExport.TryProcessInputForAccessKey(in akMessage);
+
+			// When in AK mode and a character key is pressed down, also process the character.
+			// In WinUI this comes via separate WM_CHAR messages; in Uno we synthesize from KeyDown.
+			if (down && akExport.IsActive && args.UnicodeKey is char unicodeKey && unicodeKey != '\0')
+			{
+				akExport.TryProcessInputForCharacterReceived(unicodeKey);
+			}
+
+			if (akHandled)
+			{
+				args.Handled = true;
+				return;
 			}
 
 			var originalSource1 = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;

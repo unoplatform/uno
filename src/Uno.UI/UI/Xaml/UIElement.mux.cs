@@ -483,11 +483,45 @@ namespace Microsoft.UI.Xaml
 			//return pParent;
 		}
 
-		//UNO TODO: Implement GetUIElementParentInternal on UIElement
-		internal DependencyObject GetAccessKeyScopeOwner()
+		internal DependencyObject? GetAccessKeyScopeOwner()
 		{
-			throw new NotImplementedException("GetUIElementParentInternal is not implemented on UIElement");
+			return GetValue(AccessKeyScopeOwnerProperty) as DependencyObject;
 		}
+
+#if __SKIA__
+		/// <summary>
+		/// Raises the AccessKeyInvoked event and returns whether it was handled.
+		/// </summary>
+		// MUX Reference UIElement.cpp, lines 15005-15025
+		internal bool RaiseAccessKeyInvoked()
+		{
+			var args = new AccessKeyInvokedEventArgs();
+			AccessKeyInvoked?.Invoke(this, args);
+			return args.Handled;
+		}
+
+		/// <summary>
+		/// Raises the AccessKeyDisplayRequested event.
+		/// </summary>
+		// MUX Reference UIElement.cpp, lines 15027-15047
+		internal void RaiseAccessKeyShown(string pressedKeys)
+		{
+			// TODO Uno: KeyTip auto-show not implemented (deferred work)
+			var args = new AccessKeyDisplayRequestedEventArgs { PressedKeys = pressedKeys };
+			AccessKeyDisplayRequested?.Invoke(this, args);
+		}
+
+		/// <summary>
+		/// Raises the AccessKeyDisplayDismissed event.
+		/// </summary>
+		// MUX Reference UIElement.cpp, lines 15049-15065
+		internal void RaiseAccessKeyHidden()
+		{
+			// TODO Uno: KeyTip auto-hide not implemented (deferred work)
+			var args = new AccessKeyDisplayDismissedEventArgs();
+			AccessKeyDisplayDismissed?.Invoke(this, args);
+		}
+#endif
 
 		/// <summary>
 		/// Override this method and return TRUE in order to navigate among automation children in reverse order.

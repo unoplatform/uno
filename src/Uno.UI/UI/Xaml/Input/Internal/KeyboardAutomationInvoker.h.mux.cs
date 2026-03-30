@@ -35,7 +35,11 @@ internal static class KeyboardAutomationInvoker
 			// let's try creating an automation peer
 			ownerAutomationPeer = frameworkElement.OnCreateAutomationPeerInternal();
 			// Want to print a message when there is no automation peer for the owner and the item is not a scope (and can be navigated into).
-			if (ownerAutomationPeer is null && !AccessKeys.IsAccessKeyScope(pDO))
+			if (ownerAutomationPeer is null
+#if __SKIA__
+				&& !AccessKeys.IsAccessKeyScope(pDO)
+#endif
+			)
 			{
 				if (typeof(KeyboardAutomationInvoker).Log().IsEnabled(LogLevel.Debug))
 				{
@@ -113,7 +117,7 @@ internal static class KeyboardAutomationInvoker
 			}
 		}
 
-		// At this point we diverge from the XBox implementation. XBOX shell includes support for list view multi-selection 
+		// At this point we diverge from the XBox implementation. XBOX shell includes support for list view multi-selection
 		// as well as combo box dismiss when a combobox item was selected
 		// For now this will wait for PM guidance as far as how this looks from an access keys standpoint.
 		return false;

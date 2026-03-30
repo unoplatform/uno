@@ -345,11 +345,46 @@ namespace Microsoft.UI.Xaml.Documents
 			return null;
 		}
 
-		//UNO TODO: Implement GetAccessKeyScopeOwner on TextElement
 		internal DependencyObject GetAccessKeyScopeOwner()
 		{
-			return null;
+			return GetValue(AccessKeyScopeOwnerProperty) as DependencyObject;
 		}
+
+#if __SKIA__
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Documents.TextElement, global::Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs> AccessKeyInvoked;
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Documents.TextElement, global::Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs> AccessKeyDisplayDismissed;
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Documents.TextElement, global::Microsoft.UI.Xaml.Input.AccessKeyDisplayRequestedEventArgs> AccessKeyDisplayRequested;
+#endif
+
+#if __SKIA__
+		/// <summary>
+		/// Raises the AccessKeyInvoked event and returns whether it was handled.
+		/// </summary>
+		internal bool RaiseAccessKeyInvoked()
+		{
+			var args = new Input.AccessKeyInvokedEventArgs();
+			AccessKeyInvoked?.Invoke(this, args);
+			return args.Handled;
+		}
+
+		/// <summary>
+		/// Raises the AccessKeyDisplayRequested event.
+		/// </summary>
+		internal void RaiseAccessKeyShown(string pressedKeys)
+		{
+			var args = new Input.AccessKeyDisplayRequestedEventArgs { PressedKeys = pressedKeys };
+			AccessKeyDisplayRequested?.Invoke(this, args);
+		}
+
+		/// <summary>
+		/// Raises the AccessKeyDisplayDismissed event.
+		/// </summary>
+		internal void RaiseAccessKeyHidden()
+		{
+			var args = new Input.AccessKeyDisplayDismissedEventArgs();
+			AccessKeyDisplayDismissed?.Invoke(this, args);
+		}
+#endif
 #endif
 
 		partial void OnNameChangedPartial(string newValue);
