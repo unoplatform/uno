@@ -3,7 +3,7 @@ set -x #echo on
 set -euo pipefail
 IFS=$'\n\t'
 
-cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries
+cd $BUILD_SOURCESDIRECTORY/build/samplesapp-wasm-native
 
 npm i chromedriver@127.0.0
 npm i puppeteer@22.14.0
@@ -20,7 +20,7 @@ dotnet tool install dotnet-serve --version 1.10.140 --tool-path $BUILD_SOURCESDI
 export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
 
 export UNO_UITEST_TARGETURI=http://localhost:8000
-export UNO_UITEST_DRIVERPATH_CHROME=$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/node_modules/chromedriver/lib/chromedriver
+export UNO_UITEST_DRIVERPATH_CHROME=$BUILD_SOURCESDIRECTORY/build/samplesapp-wasm-native/node_modules/chromedriver/lib/chromedriver
 export UNO_UITEST_CHROME_BINARY_PATH=~/.cache/puppeteer/chrome/linux-127.0.6533.72/chrome-linux64/chrome
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP=automated}
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/wasm-automated-$SITE_SUFFIX-$UITEST_AUTOMATED_GROUP-$UITEST_RUNTIME_TEST_GROUP
@@ -71,7 +71,7 @@ fi
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
 ## The python server serves the current working directory, and may be changed by the nunit runner
-dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-$SITE_SUFFIX" &
+dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/samplesapp-wasm-native/site-$SITE_SUFFIX" &
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
     UNO_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST`

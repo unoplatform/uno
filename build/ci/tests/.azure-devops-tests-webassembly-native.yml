@@ -47,7 +47,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       targetPath: $(build.artifactstagingdirectory)/bin
-      artifactName: wasm-uitest-binaries
+      artifactName: samplesapp-wasm-native
 
   - task: PublishBuildArtifacts@1
     condition: always()
@@ -55,7 +55,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)/logs
-      ArtifactName: wasm-uitest-binaries-logs
+      ArtifactName: samplesapp-wasm-native-logs
       ArtifactType: Container
 
 - job: Wasm_UITests_Snap
@@ -82,8 +82,8 @@ jobs:
   - task: DownloadPipelineArtifact@2
     displayName: Restoring uitest binaries
     inputs:
-      artifact: wasm-uitest-binaries
-      path: $(build.sourcesdirectory)/build/wasm-uitest-binaries
+      artifact: samplesapp-wasm-native
+      path: $(build.sourcesdirectory)/build/samplesapp-wasm-native
 
   - bash: |
       set -euo pipefail
@@ -93,7 +93,7 @@ jobs:
       dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       dotnet tool install dotnet-serve --version 1.10.140 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
-      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net10.0-WinUI" &
+      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/samplesapp-wasm-native/site-net10.0-WinUI" &
       cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests
       npm install
       node app
@@ -201,8 +201,8 @@ jobs:
   - task: DownloadPipelineArtifact@2
     displayName: Restoring uitest binaries
     inputs:
-      artifact: wasm-uitest-binaries
-      path: $(build.sourcesdirectory)/build/wasm-uitest-binaries
+      artifact: samplesapp-wasm-native
+      path: $(build.sourcesdirectory)/build/samplesapp-wasm-native
 
   - task: DownloadBuildArtifacts@0
     condition: gt(variables['System.JobAttempt'], 1)

@@ -23,7 +23,7 @@ jobs:
   condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['SetScope.SkiaScreenshots'], 'true')))
 
   variables:
-    SamplesAppArtifactName: skia-generic-samples-app-WinUI
+    SamplesAppArtifactName: samplesapp-desktop-skia
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
@@ -66,7 +66,7 @@ jobs:
     vmImage: ${{ parameters.vmLinuxImage }}
 
   variables:
-    SamplesAppArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
+    SamplesAppArtifactName: samplesapp-desktop-skia
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
