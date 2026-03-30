@@ -296,6 +296,7 @@ public partial class Window
 
 #if __SKIA__
 	private Microsoft.UI.Xaml.Media.SystemBackdrop? _systemBackdrop;
+	private Brush? _originalRootBackground;
 
 	/// <summary>
 	/// Gets or sets the system backdrop used to render materials like Mica and Acrylic.
@@ -313,18 +314,33 @@ public partial class Window
 
 	private void UpdateRootVisualBackgroundForBackdrop(Media.SystemBackdrop? backdrop)
 	{
+		if (!IsBackdropSupported(backdrop))
+		{
+			return;
+		}
+
 		if (RootElement is Controls.Panel rootPanel)
 		{
 			if (backdrop is not null)
 			{
+				_originalRootBackground ??= rootPanel.Background;
 				rootPanel.Background = new Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
 			}
 			else
 			{
-				rootPanel.Background = new Media.SolidColorBrush(ThemingHelper.GetRootVisualBackground());
+				rootPanel.Background = _originalRootBackground
+					?? new Media.SolidColorBrush(ThemingHelper.GetRootVisualBackground());
+				_originalRootBackground = null;
 			}
 		}
 	}
+
+	private static bool IsBackdropSupported(Media.SystemBackdrop? backdrop) => backdrop switch
+	{
+		Media.MicaBackdrop => Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported(),
+		Media.DesktopAcrylicBackdrop => Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsSupported(),
+		_ => false,
+	};
 #endif
 
 	internal Brush? Background
@@ -338,7 +354,18 @@ public partial class Window
 		}
 	}
 
-	internal void NotifyContentLoaded() => _windowImplementation.NotifyContentLoaded();
+	internal void NotifyContentLoaded()
+	{
+		_windowImplementation.NotifyContentLoaded();
+
+#if __SKIA__
+		// Re-apply pending system backdrop now that the root visual is available.
+		if (_systemBackdrop is not null)
+		{
+			UpdateRootVisualBackgroundForBackdrop(_systemBackdrop);
+		}
+#endif
+	}
 
 	internal IDisposable RegisterBackgroundChangedEvent(EventHandler handler)
 		=> WeakEventHelper.RegisterEvent(
