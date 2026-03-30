@@ -102,7 +102,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			UpdateVisualStates(useTransitions: IsLoaded);
 		}
 
-		private protected Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
+		private protected Selector Selector => GetParentSelector();
 
 		internal override UIElement VisualParent => Selector ?? base.VisualParent;
 
@@ -125,16 +125,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			base.OnIsEnabledChanged(e);
 		}
-
-		partial void OnIsSelectedChangedPartial(bool oldIsSelected, bool newIsSelected)
-		{
-			UpdateCommonStates(useTransitions: IsLoaded);
-			OnIsSelectedChanged();
-
-			Selector?.NotifyListItemSelected(this, oldIsSelected, newIsSelected);
-		}
-
-		internal protected virtual void OnIsSelectedChanged() { }
 
 		/// <summary>
 		/// Override context requested handling for ListViewItem and GridViewItem.
@@ -466,81 +456,5 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 		}
 
-		private protected override void ChangeVisualState(bool useTransitions)
-		{
-			// !!!!!! WARNING: This method is actually not used (at least on skia and wasm) !!!!!!
-			// cf. UpdateCommonStates instead ...
-
-			base.ChangeVisualState(useTransitions);
-
-			if (IsListViewBaseItem)
-			{
-				var criteria = new ListViewBaseItemVisualStatesCriteria();
-
-				criteria.isEnabled = IsEnabled;
-				criteria.isSelected = IsSelected;
-				criteria.focusState = FocusState;
-
-				// Pressed state should be handled whether it's mouse or touch
-				// m_inCheckboxPressedForTouch is not used because it is part of the 8.1 template
-				criteria.isPressed = IsPointerPressed;
-				criteria.isPointerOver = IsPointerOver;
-				//criteria.isDragVisualCaptured = m_dragVisualCaptured; // Uno TODO
-
-				if (Selector is ListViewBase spListView)
-				{
-					criteria.isDragging = spListView.IsInDragDrop();
-					criteria.isDraggedOver = spListView.IsDragOverItem(this);
-					criteria.dragItemsCount = spListView.DragItemsCount();
-					criteria.isItemDragPrimary = spListView.IsContainerDragDropOwner(this);
-
-					// Holding gesture will show drag visual
-					criteria.canDrag = spListView.CanDragItems;
-					criteria.canReorder = spListView.CanReorderItems;
-					if (spListView.GetIsHolding())
-					{
-						criteria.isHolding = true;
-						// Uno TODO
-						//if (m_isHolding)
-						//{
-						//	criteria.isItemDragPrimary = true;
-						//}
-					}
-
-					criteria.isMultiSelect = spListView.IsMultiSelectCheckBoxEnabled;
-
-					var selectionMode = spListView.SelectionMode;
-
-					// if the ListView selection mode is None, we should appear as not Selected
-					criteria.isSelected &= (selectionMode != ListViewSelectionMode.None);
-
-					// Read-only mode
-					{
-						bool isItemClickEnabled = false;
-
-						isItemClickEnabled = spListView.IsItemClickEnabled;
-
-						if (selectionMode == ListViewSelectionMode.None && !isItemClickEnabled)
-						{
-							criteria.isPressed = false;
-							criteria.isPointerOver = false;
-						}
-					}
-
-					if (criteria.isMultiSelect)
-					{
-
-						criteria.isMultiSelect &= spListView.SelectionMode == ListViewSelectionMode.Multiple;
-					}
-
-					criteria.isInsideListView = true;
-
-					foreach (var state in VisualStatesHelper.GetValidVisualStatesListViewBaseItem(criteria))
-					{
-						GoToState(useTransitions, state);
-					}
-				}
-			}
-		}
 	}
 }
