@@ -268,6 +268,12 @@ partial class AutoSuggestBox
 
 	#endregion
 
+	// TODO Uno: LightDismissOverlayMode property change handling
+	// C++ OnPropertyChanged2 handles AutoSuggestBox_LightDismissOverlayMode by calling ReevaluateIsOverlayVisible().
+	// Currently deferred because LightDismissOverlayMode is [NotImplemented] in the Generated stubs.
+	// When implemented, register a propertyChangedCallback on LightDismissOverlayModeProperty that calls
+	// ReevaluateIsOverlayVisible().
+
 	#region Property Changed Callbacks
 
 #if HAS_UNO
@@ -281,16 +287,13 @@ partial class AutoSuggestBox
 
 	private void OnTextPropertyChanged(DependencyPropertyChangedEventArgs e)
 	{
-		// When Text property changes, update the TextBox if it exists
+		// When Text property changes, update the TextBox if it exists.
+		// C++: OnPropertyChanged2 calls UpdateTextBoxText(value, ProgrammaticChange)
+		// which also sets SelectionStart to end of text.
 		if (m_tpTextBoxPart is not null)
 		{
 			var newText = e.NewValue as string ?? "";
-			var currentText = m_tpTextBoxPart.Text;
-			if (newText != currentText)
-			{
-				m_textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
-				m_tpTextBoxPart.Text = newText;
-			}
+			UpdateTextBoxText(newText, AutoSuggestionBoxTextChangeReason.ProgrammaticChange);
 		}
 	}
 

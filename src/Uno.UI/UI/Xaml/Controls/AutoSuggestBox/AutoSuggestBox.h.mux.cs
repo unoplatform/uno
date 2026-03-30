@@ -164,6 +164,10 @@ partial class AutoSuggestBox
 	private bool m_handlingCollectionChange = false;
 #endif
 
+	// Reversed vector wrapper for Above positioning
+	// C++: wrl::ComPtr<ReversedVector> m_spReversedVector
+	private ReversedVector m_spReversedVector;
+
 	// Display orientation
 	// TODO UNO: Add display orientation tracking if needed
 	// private XamlDisplay.Orientation m_displayOrientation = XamlDisplay.Orientation.None;
@@ -187,8 +191,12 @@ partial class AutoSuggestBox
 	private InputPane m_tpInputPane;
 
 	// InputPane visibility event args (for deferred showing)
-	// TODO UNO: Implement InputPaneVisibilityEventArgs handling if needed
-	// private InputPaneVisibilityEventArgs m_tpSipArgs;
+	// C++: TrackerPtr<IInputPaneVisibilityEventArgs> m_tpSipArgs
+	private InputPaneVisibilityEventArgs m_tpSipArgs;
+
+	// Static flag for deferred SIP showing
+	// C++: static BOOLEAN s_fDeferredShowing
+	private static bool s_fDeferredShowing = false;
 
 	/// <summary>
 	/// Helper function to determine if the suggestion list is vertically mirrored.
