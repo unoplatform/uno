@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// ItemsRepeater.cpp, commit 3f3e328
+// MUX Reference ItemsRepeater.cpp, tag winui3/release/1.8.1
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -78,11 +78,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		//public Microsoft.UI.Xaml.Controls.IElementFactoryShim ItemTemplateShim() { return m_itemTemplateWrapper; };
 		internal ViewManager ViewManager => m_viewManager;
+		internal TransitionManager TransitionManager => m_transitionManager;
+
+#pragma warning disable CS0618 // Type or member is obsolete
+		[Obsolete("Use TransitionManager instead. AnimationManager is deprecated and will be removed in a future version.")]
 		internal AnimationManager AnimationManager => m_animationManager;
+#pragma warning restore CS0618
 
 		private bool IsProcessingCollectionChange => m_processingItemsSourceChange != null;
 
+		TransitionManager m_transitionManager;
+#pragma warning disable CS0618 // Type or member is obsolete
 		AnimationManager m_animationManager;
+#pragma warning restore CS0618
 		ViewManager m_viewManager;
 		ViewportManager m_viewportManager;
 
@@ -116,6 +124,11 @@ namespace Microsoft.UI.Xaml.Controls
 		Layout m_layout;
 		ElementAnimator m_animator;
 
+		// If no ItemCollectionTransitionProvider is explicitly provided, we'll retrieve a default one
+		// from the Layout object. In that case, we'll want to know that we own that object and can
+		// overwrite it if the Layout object changes.
+		bool m_ownsTransitionProvider = true;
+
 		// Bug where DataTemplate with no content causes a crash.
 		// See: https://github.com/microsoft/microsoft-ui-xaml/issues/776
 		// Solution: Have flag that is only true when DataTemplate exists but it is empty.
@@ -130,7 +143,10 @@ namespace Microsoft.UI.Xaml.Controls
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_ItemsRepeater);
 
 			_repeaterChildren = new UIElementCollection(this);
+			m_transitionManager = new TransitionManager(this);
+#pragma warning disable CS0618 // Type or member is obsolete
 			m_animationManager = new AnimationManager(this);
+#pragma warning restore CS0618
 			m_viewManager = new ViewManager(this);
 			//if (SharedHelpers.IsRS5OrHigher())
 			{
@@ -333,7 +349,7 @@ namespace Microsoft.UI.Xaml.Controls
 					if (virtInfo.ArrangeBounds != ItemsRepeater.InvalidRect &&
 						newBounds != virtInfo.ArrangeBounds)
 					{
-						m_animationManager.OnElementBoundsChanged(element, virtInfo.ArrangeBounds, newBounds);
+						m_transitionManager.OnElementBoundsChanged(element, virtInfo.ArrangeBounds, newBounds);
 					}
 
 					virtInfo.ArrangeBounds = newBounds;
@@ -341,7 +357,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			m_viewportManager.OnOwnerArranged();
-			m_animationManager.OnOwnerArranged();
+			m_transitionManager.OnOwnerArranged();
 
 			return arrangeSize;
 		}
@@ -527,10 +543,16 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				OnLayoutChanged(args.OldValue as Layout, args.NewValue as Layout);
 			}
+			else if (property == ItemTransitionProviderProperty)
+			{
+				OnTransitionProviderChanged(args.OldValue as ItemCollectionTransitionProvider, args.NewValue as ItemCollectionTransitionProvider);
+			}
+#pragma warning disable CS0618 // Type or member is obsolete
 			else if (property == AnimatorProperty)
 			{
 				OnAnimatorChanged(args.OldValue as ElementAnimator, args.NewValue as ElementAnimator);
 			}
+#pragma warning restore CS0618
 			else if (property == HorizontalCacheLengthProperty)
 			{
 				m_viewportManager.HorizontalCacheLength = (double)args.NewValue;
@@ -846,7 +868,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			m_viewManager.OnLayoutChanging();
-			m_animationManager.OnLayoutChanging();
+			m_transitionManager.OnLayoutChanging();
 
 			if (oldValue != null)
 			{
@@ -889,6 +911,11 @@ namespace Microsoft.UI.Xaml.Controls
 				newValue.RegisterMeasureInvalidated(InvalidateMeasureForLayout).DisposeWith(disposables);
 				newValue.RegisterArrangeInvalidated(InvalidateArrangeForLayout).DisposeWith(disposables);
 				_layoutSubscriptionsRevoker.Disposable = disposables;
+
+				if (m_ownsTransitionProvider)
+				{
+					m_transitionManager.OnTransitionProviderChanged(newValue.CreateDefaultItemTransitionProvider());
+				}
 			}
 
 			bool isVirtualizingLayout = newValue is VirtualizingLayout;
@@ -896,6 +923,14 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateMeasure();
 		}
 
+		void OnTransitionProviderChanged(ItemCollectionTransitionProvider oldValue, ItemCollectionTransitionProvider newValue)
+		{
+			m_ownsTransitionProvider = false;
+			m_transitionManager.OnTransitionProviderChanged(newValue);
+		}
+
+#pragma warning disable CS0618 // Type or member is obsolete
+		[Obsolete("Use OnTransitionProviderChanged instead.")]
 		void OnAnimatorChanged(ElementAnimator oldValue, ElementAnimator newValue)
 		{
 			m_animationManager.OnAnimatorChanged(newValue);
@@ -906,6 +941,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_animator = newValue;
 			}
 		}
+#pragma warning restore CS0618
 
 		void OnItemsSourceViewChanged(object sender, NotifyCollectionChangedEventArgs args)
 		{
@@ -932,7 +968,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_processingItemsSourceChange = args;
 			using var processingChange = Disposable.Create(() => m_processingItemsSourceChange = null);
 
-			m_animationManager.OnItemsSourceChanged(sender, args);
+			m_transitionManager.OnItemsSourceChanged(sender, args);
 			m_viewManager.OnItemsSourceChanged(sender, args);
 
 			var layout = Layout;

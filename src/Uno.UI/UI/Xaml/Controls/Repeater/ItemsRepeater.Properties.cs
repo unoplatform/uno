@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.UI.Xaml;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -60,10 +61,35 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-		#region Animator (DP - With default callback)
+		#region ItemTransitionProvider (DP - With default callback)
+		/// <summary>
+		/// Identifies the ItemTransitionProvider dependency property.
+		/// </summary>
+		public static DependencyProperty ItemTransitionProviderProperty { get; } = DependencyProperty.Register(
+			nameof(ItemTransitionProvider), typeof(ItemCollectionTransitionProvider), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(ItemCollectionTransitionProvider), OnPropertyChanged));
+
+		/// <summary>
+		/// Gets or sets an object that provides animated transition effects on ItemsRepeater child elements.
+		/// </summary>
+		public ItemCollectionTransitionProvider ItemTransitionProvider
+		{
+			get => (ItemCollectionTransitionProvider)GetValue(ItemTransitionProviderProperty);
+			set => SetValue(ItemTransitionProviderProperty, value);
+		}
+		#endregion
+
+		#region Animator (DP - With default callback) [Obsolete]
+		/// <summary>
+		/// Identifies the Animator dependency property.
+		/// </summary>
+		[Obsolete("Use ItemTransitionProviderProperty instead. Animator is deprecated and will be removed in a future version.")]
 		public static DependencyProperty AnimatorProperty { get; } = DependencyProperty.Register(
 			"Animator", typeof(ElementAnimator), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(ElementAnimator), OnPropertyChanged));
 
+		/// <summary>
+		/// Gets or sets the animation provider for the repeater.
+		/// </summary>
+		[Obsolete("Use ItemTransitionProvider instead. Animator is deprecated and will be removed in a future version.")]
 		public ElementAnimator Animator
 		{
 			get => (ElementAnimator)GetValue(AnimatorProperty);

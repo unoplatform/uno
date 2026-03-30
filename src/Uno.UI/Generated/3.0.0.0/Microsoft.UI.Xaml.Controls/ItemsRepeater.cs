@@ -15,7 +15,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property HorizontalCacheLength
 		// Skipping already declared property Background
 		// Skipping already declared property ItemsSourceView
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		// Skipping already declared property ItemTransitionProvider
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider ItemTransitionProvider
 		{
@@ -35,7 +36,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ItemsSourceProperty
 		// Skipping already declared property LayoutProperty
 		// Skipping already declared property VerticalCacheLengthProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		// Skipping already declared property ItemTransitionProviderProperty
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ItemTransitionProviderProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(

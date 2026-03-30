@@ -105,7 +105,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						boundsChangeCalls.Add(new CallInfo(repeater.GetElementIndex(element), context, oldBounds, newBounds));
 					}
 				};
+#pragma warning disable CS0618 // Type or member is obsolete
 				repeater.Animator = animator;
+#pragma warning restore CS0618
 
 				renderingEvent.Reset();
 				data.Insert(0, "new item");
