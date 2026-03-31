@@ -91,6 +91,16 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2Find Find
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreWebView2Find CoreWebView2.Find is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2Find%20CoreWebView2.Find");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint FrameId
 		{
 			get
@@ -461,6 +471,7 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.DocumentTitle.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.Environment.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.FaviconUri.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.Find.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.FrameId.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.IsDefaultDownloadDialogOpen.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.IsDocumentPlayingAudio.get

@@ -122,6 +122,13 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2FindOptions CreateFindOptions()
+		{
+			throw new global::System.NotImplementedException("The member CoreWebView2FindOptions CoreWebView2Environment.CreateFindOptions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2FindOptions%20CoreWebView2Environment.CreateFindOptions%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest CreateWebResourceRequest(string uri, string Method, global::Windows.Storage.Streams.IRandomAccessStream postData, string Headers)
 		{
 			throw new global::System.NotImplementedException("The member CoreWebView2WebResourceRequest CoreWebView2Environment.CreateWebResourceRequest(string uri, string Method, IRandomAccessStream postData, string Headers) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2WebResourceRequest%20CoreWebView2Environment.CreateWebResourceRequest%28string%20uri%2C%20string%20Method%2C%20IRandomAccessStream%20postData%2C%20string%20Headers%29");

@@ -75,6 +75,8 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.ScreenCaptureStarting.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.ScreenCaptureStarting.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.FrameCreated.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.FrameCreated.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RemoveHostObjectFromScript(string name)
@@ -204,6 +206,22 @@ namespace Microsoft.Web.WebView2.Core
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Frame", "event TypedEventHandler<CoreWebView2Frame, CoreWebView2ScreenCaptureStartingEventArgs> CoreWebView2Frame.ScreenCaptureStarting");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Frame, global::Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs> FrameCreated
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Frame", "event TypedEventHandler<CoreWebView2Frame, CoreWebView2FrameCreatedEventArgs> CoreWebView2Frame.FrameCreated");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Frame", "event TypedEventHandler<CoreWebView2Frame, CoreWebView2FrameCreatedEventArgs> CoreWebView2Frame.FrameCreated");
 			}
 		}
 #endif
