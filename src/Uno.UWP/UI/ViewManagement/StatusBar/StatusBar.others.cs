@@ -14,8 +14,6 @@ namespace Windows.UI.ViewManagement
 	[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public sealed partial class StatusBar
 	{
-		private static StatusBar _statusBar;
-
 		internal StatusBar()
 		{
 		}
