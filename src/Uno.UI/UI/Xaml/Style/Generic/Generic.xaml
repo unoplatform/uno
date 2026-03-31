@@ -3239,6 +3239,7 @@
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 						<ContentPresenter x:Name="ContentPresenter"
+										  BackgroundSizing="{TemplateBinding BackgroundSizing}"
 										  BorderBrush="{TemplateBinding BorderBrush}"
 										  BorderThickness="{TemplateBinding BorderThickness}"
 										  Content="{TemplateBinding Content}"
