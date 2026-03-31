@@ -489,6 +489,14 @@ namespace Uno.UWPSyncGenerator
 			{
 				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
+			// Microsoft.UI.IClosableNotifier / ClosableNotifierHandler: Correct location would be Uno.UWP,
+			// but was previously introduced in Uno.UI.Composition.
+			// Tracked by https://github.com/unoplatform/uno/issues/22927
+			else if (@namespace == "Microsoft.UI"
+				&& type.Name is "IClosableNotifier" or "ClosableNotifierHandler")
+			{
+				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
+			}
 
 			if (type.Name.Contains("AsyncAction", StringComparison.Ordinal) ||
 				type.Name.Contains("AsyncOperation", StringComparison.Ordinal) ||
