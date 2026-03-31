@@ -7,8 +7,10 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
+#if HAS_UNO
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
+#endif
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
