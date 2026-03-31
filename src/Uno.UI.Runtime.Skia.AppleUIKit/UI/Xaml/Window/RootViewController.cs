@@ -140,13 +140,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 				}
 				else
 				{
-					// svgPath is null meaning the clip path became empty (all native areas
-					// are covered by Skia content). Clear the CAShapeLayer mask so that
-					// NativeOverlayLayer.HitTest returns nil and touches pass through to
-					// the TopViewLayer for Skia input handling.
-					// NOTE: Previously this checked `_lastSvgClipPath is not null`, but
-					// _lastSvgClipPath was already set to null before the lambda ran,
-					// so ClearNativeClipping was never called.
 					ClearNativeClipping();
 				}
 			});
