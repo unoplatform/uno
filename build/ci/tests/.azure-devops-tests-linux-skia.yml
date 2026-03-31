@@ -13,6 +13,7 @@ parameters:
   runSnapshotTests: true
   jobPrefix: 'Skia_Linux'
   testRunTitle: 'Linux Skia Runtime Tests'
+  testResultLabel: ''
 
 jobs:
 
@@ -103,13 +104,14 @@ jobs:
     env:
       SamplesAppArtifactPath: $(SamplesAppArtifactPath)
       SamplesAppArtifactName: $(SamplesAppArtifactName)
+      UNO_TEST_RESULT_LABEL: ${{ parameters.testResultLabel }}
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
       testRunTitle: '${{ parameters.testRunTitle }}'
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/skia-linux-runtime-tests-results.xml'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-linux${{ parameters.testResultLabel }}-runtime-tests-results.xml'
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
 

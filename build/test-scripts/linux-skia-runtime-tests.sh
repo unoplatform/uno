@@ -4,9 +4,10 @@ set -euo pipefail
 IFS=$'\n\t'
 
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
+export UNO_TEST_RESULT_LABEL=${UNO_TEST_RESULT_LABEL:-}
 
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-linux-runtimetests-$UITEST_RUNTIME_TEST_GROUP.txt
-export TEST_RESULTS_FILE=$BUILD_SOURCESDIRECTORY/build/skia-linux-runtime-tests-results.xml
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-linux${UNO_TEST_RESULT_LABEL}-runtimetests-$UITEST_RUNTIME_TEST_GROUP.txt
+export TEST_RESULTS_FILE=$BUILD_SOURCESDIRECTORY/build/skia-linux${UNO_TEST_RESULT_LABEL}-runtime-tests-results.xml
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -w 0`

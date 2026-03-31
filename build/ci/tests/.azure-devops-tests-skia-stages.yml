@@ -168,6 +168,7 @@ stages:
       runSnapshotTests: false
       jobPrefix: 'Skia_Linux_Framebuffer'
       testRunTitle: 'Linux Framebuffer Skia Runtime Tests'
+      testResultLabel: '-framebuffer'
 
 - stage: runtime_tests_skia_macos
   displayName: Tests - Desktop Skia macOS
