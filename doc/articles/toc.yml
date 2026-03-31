@@ -288,6 +288,8 @@
         items:
           - name: Migrating WPF Apps to Web
             href: wpf-migration.md
+          - name: WPF to WinUI XAML Equivalents
+            href: wpf-winui-equivalents.md
       - name: UWP-only code
         items:
           - name: Overview
