@@ -156,14 +156,14 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				}
 				catch (Exception e)
 				{
-					this.LogError()?.Error($"Failed to create an OpenGLES context with error '{e.Message}', falling back to software rendering");
+					this.LogError()?.Error("Failed to create an OpenGLES context, falling back to software rendering", e);
 					try
 					{
 						_renderer = new SoftwareRenderer(this, mouseIndicatorOptions);
 					}
 					catch (Exception e2)
 					{
-						this.LogError()?.Error($"Failed to create software renderer with error '{e2.Message}', falling back to headless rendering");
+						this.LogError()?.Error("Failed to create software renderer, falling back to headless rendering", e2);
 						_renderer = new HeadlessRenderer(this, 1920, 1080, mouseIndicatorOptions);
 					}
 				}
@@ -176,7 +176,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				}
 				catch (Exception e)
 				{
-					this.LogError()?.Error($"Failed to create software renderer with error '{e.Message}', falling back to headless rendering");
+					this.LogError()?.Error("Failed to create software renderer, falling back to headless rendering", e);
 					_renderer = new HeadlessRenderer(this, 1920, 1080, mouseIndicatorOptions);
 				}
 			}
