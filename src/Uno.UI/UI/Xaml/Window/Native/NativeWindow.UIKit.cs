@@ -270,6 +270,10 @@ public partial class Window : UIWindow
 		{
 			var scalableViews = this.FindSubviewsOfType<IFontScalable>(int.MaxValue);
 			scalableViews.ForEach(v => v.RefreshFont());
+
+			// Update text scale factor from OS
+			var uiSettings = new Windows.UI.ViewManagement.UISettings();
+			Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(uiSettings.TextScaleFactor);
 		}
 		catch (Exception ex)
 		{

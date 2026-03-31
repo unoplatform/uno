@@ -42,7 +42,35 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
+		internal static void OnTextScaleFactorChanged()
+		{
+			foreach (var instance in _instances)
+			{
+				var weakReference = instance.Key;
+				if (weakReference.TryGetTarget(out var uiSettings))
+				{
+					uiSettings.TextScaleFactorChanged?.Invoke(uiSettings, null);
+				}
+			}
+		}
+
 		public event TypedEventHandler<UISettings, object> ColorValuesChanged;
+
+		/// <summary>
+		/// Starts observing OS text scale factor changes.
+		/// On Skia desktop, subscribes to the <see cref="ITextScaleFactorExtension"/>.
+		/// No-op on other platforms (they use their own change notification mechanisms).
+		/// </summary>
+		internal static void ObserveTextScaleFactorChanges()
+		{
+			ObserveTextScaleFactorChangesPlatform();
+		}
+
+		static partial void ObserveTextScaleFactorChangesPlatform();
+
+#pragma warning disable 67 // Event is never used — used by platform-specific partials
+		internal static event global::System.EventHandler TextScaleFactorChangedInternal;
+#pragma warning restore 67
 
 #if !__ANDROID__
 		public bool AnimationsEnabled => true;
@@ -180,15 +208,11 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		[NotImplemented]
-		public double TextScaleFactor
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.UISettings", "TextScaleFactor");
-				return 1;
-			}
-		}
+		// TextScaleFactor: platform-specific implementations in UISettings.Android.cs,
+		// UISettings.UIKit.cs, UISettings.skia.cs. Fallback for WASM/reference/unit tests:
+#if !__ANDROID__ && !__APPLE_UIKIT__ && !__SKIA__
+		public double TextScaleFactor => 1.0;
+#endif
 
 		[NotImplemented]
 		public bool AdvancedEffectsEnabled
@@ -210,10 +234,9 @@ namespace Windows.UI.ViewManagement
 			return Colors.Black;
 		}
 
-#pragma warning disable 67
-		[global::Uno.NotImplemented]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, object> TextScaleFactorChanged;
+		public event TypedEventHandler<UISettings, object> TextScaleFactorChanged;
 
+#pragma warning disable 67
 		[global::Uno.NotImplemented]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, object> AdvancedEffectsEnabledChanged;
 #pragma warning restore 67
