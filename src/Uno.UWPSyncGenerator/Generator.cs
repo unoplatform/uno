@@ -28,6 +28,18 @@ namespace Uno.UWPSyncGenerator
 
 		private const string BaseXamlNamespace = "Microsoft.UI.Xaml";
 
+		/// <summary>
+		/// Types whose hand-written partial class inherits from DependencyObjectCollection&lt;T&gt;,
+		/// which already provides IList&lt;T&gt;/ICollection&lt;T&gt;/IEnumerable&lt;T&gt; implementations.
+		/// The generator must not emit NotImplemented stubs for these collection interfaces,
+		/// as they would hide the working base class methods.
+		/// </summary>
+		private static readonly HashSet<string> _skipCollectionInterfaceImplementationTypes = new()
+		{
+			BaseXamlNamespace + ".SetterBaseCollection",
+			BaseXamlNamespace + ".Media.Animation.DoubleKeyFrameCollection",
+		};
+
 		private static readonly string[] _skipBaseTypes = new[]
 		{
 			// skipped because of legacy mismatched hierarchy
@@ -751,6 +763,15 @@ namespace Uno.UWPSyncGenerator
 							continue;
 						}
 
+						// Skip generating collection interface implementations for types
+						// whose base class already provides working implementations.
+						if (_skipCollectionInterfaceImplementationTypes.Contains(type.ToString())
+							&& IsCollectionInterface(inner))
+						{
+							b.AppendLineInvariant($"// Processing: {inner}");
+							continue;
+						}
+
 						if (implementedInterfaces.Add(inner))
 						{
 							BuildInterfaceImplementation(b, type, inner, types, writtenMethods);
@@ -938,6 +959,16 @@ namespace Uno.UWPSyncGenerator
 			}
 
 			return typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+		}
+
+		private static bool IsCollectionInterface(INamedTypeSymbol iface)
+		{
+			var name = iface.OriginalDefinition.ToDisplayString();
+			return name is
+				"System.Collections.Generic.IList<T>" or
+				"System.Collections.Generic.ICollection<T>" or
+				"System.Collections.Generic.IEnumerable<T>" or
+				"System.Collections.IEnumerable";
 		}
 
 		private static bool ShouldSkipInterface(INamedTypeSymbol iface)
