@@ -133,17 +133,23 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			return surface.Canvas;
 		});
 
+		// Dispatch clip path update to the main thread — uno_window_clip_svg modifies
+		// AppKit view layers (view.layer.mask, subview frames) which must only be
+		// accessed from the main thread.
 		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
-		if (clip != _lastSvgClipPath)
+		if (clip != Volatile.Read(ref _lastSvgClipPath))
 		{
-			if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
+			NativeDispatcher.Main.Enqueue(() =>
 			{
-				_lastSvgClipPath = clip;
-			}
+				if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
+				{
+					Volatile.Write(ref _lastSvgClipPath, clip);
+				}
+			}, NativeDispatcherPriority.Normal);
 		}
 
-		// Note: _context.Flush() is called by the render loop after this method returns,
-		// before presenting the drawable. No need to flush here.
+		// Note: _context.Flush(submit: true) is called by the render loop after this
+		// method returns, before presenting the drawable. No need to flush here.
 		target?.Dispose();
 		surface?.Dispose();
 	}
@@ -402,6 +408,21 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 			var args = CreateArgs(key, mods, scanCode, unicode);
 			keyDown.Invoke(window!, args);
+
+			// When a text-input control (TextBox, PasswordBox) has focus and a printable
+			// character key is pressed, report as handled even if the XAML KeyDown event
+			// didn't set Handled=true (WinUI doesn't either). This prevents [super sendEvent:]
+			// from dispatching to the NSResponder chain, which would play the system alert
+			// sound because no native text input client is present.
+			if (!args.Handled && unicode != 0 && window is not null)
+			{
+				var focused = FocusManager.GetFocusedElement(window._xamlRoot);
+				if (focused is Microsoft.UI.Xaml.Controls.TextBox or Microsoft.UI.Xaml.Controls.PasswordBox)
+				{
+					return 1;
+				}
+			}
+
 			return args.Handled ? 1 : 0;
 		}
 		catch (Exception e)
@@ -763,8 +784,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 						// Draw the recorded SKPicture to the Metal texture
 						_drawFrame(width, height, texture);
 
-						// Flush Skia GPU commands
-						_context.Flush();
+						// Flush and submit Skia GPU commands before presenting.
+						// submit: true ensures the Metal command buffer is submitted
+						// to the GPU before we present the drawable. Matches iOS path.
+						_context.Flush(submit: true);
 
 						// Present drawable and commit command buffer (may block for VSync)
 						NativeUno.uno_window_present_frame(_windowHandle);

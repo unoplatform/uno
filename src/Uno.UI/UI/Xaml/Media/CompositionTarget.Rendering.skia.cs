@@ -28,6 +28,7 @@ public partial class CompositionTarget
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly Lock _frameGate = new();
 	private readonly Lock _xamlRootBoundsGate = new();
+	private static readonly SKPath _emptyPath = new();
 
 	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
 	private Size _lastCanvasSize = Size.Empty;
@@ -151,7 +152,7 @@ public partial class CompositionTarget
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
 		{
-			return new SKPath();
+			return _emptyPath;
 		}
 		else
 		{

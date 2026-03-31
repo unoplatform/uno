@@ -105,47 +105,65 @@
 @end
 
 // --- Render thread drawable lifecycle functions ---
+// These functions are called from the managed render thread (background thread).
+// They use CAMetalLayer directly instead of MTKView.currentDrawable because
+// MTKView.currentDrawable is only valid during drawInMTKView: callbacks on the
+// main thread. CAMetalLayer.nextDrawable is thread-safe and designed for this.
+// See: https://developer.apple.com/documentation/quartzcore/cametallayer
 
 bool uno_window_acquire_next_frame(NSWindow* window, void** texture, double* width, double* height)
 {
-    if (window == nil) return false;
+    @autoreleasepool {
+        if (window == nil) return false;
 
-    MTKView* view = (MTKView*)window.contentViewController.view;
-    if (view == nil || ![view isKindOfClass:[MTKView class]]) return false;
+        MTKView* view = (MTKView*)window.contentViewController.view;
+        if (view == nil || ![view isKindOfClass:[MTKView class]]) return false;
 
-    UNOWindow* unoWindow = (UNOWindow*)window;
-    UNOMetalViewDelegate* delegate = unoWindow.metalViewDelegate;
-    if (delegate == nil) return false;
+        UNOWindow* unoWindow = (UNOWindow*)window;
+        UNOMetalViewDelegate* delegate = unoWindow.metalViewDelegate;
+        if (delegate == nil) return false;
 
-    id<CAMetalDrawable> drawable = view.currentDrawable;
-    if (drawable == nil) return false;
+        // Access the underlying CAMetalLayer directly — nextDrawable is thread-safe
+        // unlike MTKView.currentDrawable which must be called during draw callbacks.
+        // nextDrawable blocks up to 1s (default timeout) if all drawables are in use.
+        // With maximumDrawableCount=2 (set in uno_window_create), this only happens
+        // when the window is occluded or minimized. Returning nil is handled below.
+        CAMetalLayer* metalLayer = (CAMetalLayer*)view.layer;
 
-    // Hold drawable until present
-    delegate.currentFrameDrawable = drawable;
+        id<CAMetalDrawable> drawable = [metalLayer nextDrawable];
+        if (drawable == nil) return false;
 
-    *texture = (__bridge void*)drawable.texture;
-    CGSize size = view.drawableSize;
-    *width = size.width;
-    *height = size.height;
-    return true;
+        // Hold drawable until present (strong property retains via ARC)
+        delegate.currentFrameDrawable = drawable;
+
+        *texture = (__bridge void*)drawable.texture;
+        // Use layer's drawableSize (thread-safe) rather than MTKView.drawableSize
+        CGSize size = metalLayer.drawableSize;
+        *width = size.width;
+        *height = size.height;
+        return true;
+    }
 }
 
 void uno_window_present_frame(NSWindow* window)
 {
-    if (window == nil) return;
+    @autoreleasepool {
+        if (window == nil) return;
 
-    UNOWindow* unoWindow = (UNOWindow*)window;
-    UNOMetalViewDelegate* delegate = unoWindow.metalViewDelegate;
-    if (delegate == nil) return;
+        UNOWindow* unoWindow = (UNOWindow*)window;
+        UNOMetalViewDelegate* delegate = unoWindow.metalViewDelegate;
+        if (delegate == nil) return;
 
-    id<CAMetalDrawable> drawable = delegate.currentFrameDrawable;
-    if (drawable == nil) return;
+        id<CAMetalDrawable> drawable = delegate.currentFrameDrawable;
+        if (drawable == nil) return;
 
-    id<MTLCommandBuffer> commandBuffer = [delegate.queue commandBuffer];
-    [commandBuffer presentDrawable:drawable];
-    [commandBuffer commit];
+        id<MTLCommandBuffer> commandBuffer = [delegate.queue commandBuffer];
+        [commandBuffer presentDrawable:drawable];
+        [commandBuffer commit];
 
-    // Release the drawable as soon as possible
-    // See: https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/Drawables.html
-    delegate.currentFrameDrawable = nil;
+        // Release the drawable as soon as possible after committing the command buffer.
+        // The command buffer retains the drawable internally for presentation.
+        // See: https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/Drawables.html
+        delegate.currentFrameDrawable = nil;
+    }
 }
