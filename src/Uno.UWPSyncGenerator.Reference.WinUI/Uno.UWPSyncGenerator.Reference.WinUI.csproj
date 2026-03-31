@@ -1,13 +1,21 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 		<RootNamespace>Uno.UWPSyncGenerator.Reference.WinUI</RootNamespace>
 		<UseWinUI>true</UseWinUI>
+		<!-- Ensure WebView2 CsWinRT projection is enabled so the assembly appears in ReferencePath.
+		     WebView2 uses lib_manual/ with conditional MSBuild targets that depend on this property.
+		     The WinUI sub-package normally sets this, but as a transitive dependency it may not
+		     always be imported reliably. -->
+		<WebView2EnableCsWinRTProjection>true</WebView2EnableCsWinRTProjection>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260101001" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260317003" />
+		<!-- Explicit reference needed: WebView2 uses lib_manual/ with conditional MSBuild targets
+		     that may not resolve reliably as a transitive dependency of WindowsAppSDK. -->
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3856.49" />
 	</ItemGroup>
 
 	<Target Name="ExportList" AfterTargets="ResolveAssemblyReferences">
@@ -18,7 +26,8 @@
 				'%(ReferencePath.NuGetPackageId)'=='Microsoft.WindowsAppSDK.Foundation' or
 				'%(ReferencePath.NuGetPackageId)'=='Microsoft.WindowsAppSDK.InteractiveExperiences' or
 				'%(ReferencePath.NuGetPackageId)'=='Microsoft.Windows.SDK.NET.Ref'" />
-			<!-- WebView2.Core.Projection doesn't have the expected NuGetPackageId, so match by filename -->
+			<!-- WebView2.Core.Projection is added via custom MSBuild targets (not standard NuGet lib/),
+			     so it doesn't carry NuGetPackageId metadata. Match by filename instead. -->
 			<ReferencesForSyncGen Include="@(ReferencePath)" Condition="$([System.String]::Copy('%(ReferencePath.Filename)').Contains('WebView2.Core.Projection'))" />
 		</ItemGroup>
 		<WriteLinesToFile File="$(MSBuildProjectDirectory)\references.txt" Lines="@(ReferencesForSyncGen)" Overwrite="true" Encoding="Unicode" />
