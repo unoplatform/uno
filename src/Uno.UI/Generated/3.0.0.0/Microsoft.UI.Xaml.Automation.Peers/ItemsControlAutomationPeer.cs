@@ -12,13 +12,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer.ItemsControlAutomationPeer(Microsoft.UI.Xaml.Controls.ItemsControl)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer.CreateItemAutomationPeer(object)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer.OnCreateItemAutomationPeer(object)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple FindItemByProperty(global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple startAfter, global::Microsoft.UI.Xaml.Automation.AutomationProperty automationProperty, object value)
-		{
-			throw new global::System.NotImplementedException("The member IRawElementProviderSimple ItemsControlAutomationPeer.FindItemByProperty(IRawElementProviderSimple startAfter, AutomationProperty automationProperty, object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRawElementProviderSimple%20ItemsControlAutomationPeer.FindItemByProperty%28IRawElementProviderSimple%20startAfter%2C%20AutomationProperty%20automationProperty%2C%20object%20value%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer.FindItemByProperty(Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple, Microsoft.UI.Xaml.Automation.AutomationProperty, object)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IItemContainerProvider
 	}
 }
