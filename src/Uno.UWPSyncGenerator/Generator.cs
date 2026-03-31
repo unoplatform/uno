@@ -101,6 +101,7 @@ namespace Uno.UWPSyncGenerator
 
 		private ISymbol _dependencyPropertySymbol;
 		protected ISymbol FlagsAttributeSymbol { get; private set; }
+		protected List<string> MissingEnumMembers { get; set; }
 		protected ISymbol UIElementSymbol { get; private set; }
 		private static string MSBuildBasePath;
 
@@ -998,6 +999,8 @@ namespace Uno.UWPSyncGenerator
 
 		protected void BuildFields(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types)
 		{
+			var missingEnumMembers = new List<string>();
+
 			foreach (var field in type.GetMembers().OfType<IFieldSymbol>())
 			{
 				if (field.DeclaredAccessibility == Accessibility.Private)
@@ -1035,6 +1038,12 @@ namespace Uno.UWPSyncGenerator
 						var constantValue = field.ConstantValue != null ? $" = {field.ConstantValue}" : string.Empty;
 
 						b.AppendLineInvariant($"{field.Name}{constantValue},");
+
+						// Track missing members for enums that are already implemented on some platforms
+						if (!allmembers.IsNotImplementedInAllPlatforms())
+						{
+							missingEnumMembers.Add(field.Name);
+						}
 					}
 					else
 					{
@@ -1050,6 +1059,11 @@ namespace Uno.UWPSyncGenerator
 				{
 					b.AppendLineInvariant($"// Skipping already declared field {field}");
 				}
+			}
+
+			if (type.TypeKind == TypeKind.Enum && missingEnumMembers.Count > 0)
+			{
+				MissingEnumMembers = missingEnumMembers;
 			}
 		}
 

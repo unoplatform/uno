@@ -238,6 +238,12 @@ namespace Uno.UWPSyncGenerator
 					{
 						b.AppendLineInvariant("#endif");
 					}
+
+					if (MissingEnumMembers is { Count: > 0 })
+					{
+						b.AppendLineInvariant($"#error The hand-written enum {type} is missing member(s): {string.Join(", ", MissingEnumMembers)}. Add them to the non-generated source file.");
+						MissingEnumMembers = null;
+					}
 				}
 			}
 		}
