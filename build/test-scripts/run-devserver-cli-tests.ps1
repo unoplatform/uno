@@ -590,16 +590,14 @@ Begin.
     $stdErrFile = [System.IO.Path]::GetTempFileName()
 
     Write-Log "Invoking Codex CLI to enumerate MCP tools."
-    $sandboxMode = if ($IsWindows) { 'danger-full-access' } else { 'workspace-write' }
     $codexArgs = @(
         '--ask-for-approval','never',
         'exec',
         '--skip-git-repo-check',
         '--output-last-message', $ToolsFile,
-        '--sandbox',$sandboxMode,
+        '--sandbox','danger-full-access',
         '-c','model_reasoning_effort="low"',
-        '-c','mcp_servers.unoapp.startup_timeout_sec=120',
-        '-c','sandbox_workspace_write.network_access=true'
+        '-c','mcp_servers.unoapp.startup_timeout_sec=120'
     )
 
     $codexInvocation = Get-CodexProcessInvocation
@@ -1438,16 +1436,14 @@ Begin now.
     $stdOutFile = [System.IO.Path]::GetTempFileName()
     $stdErrFile = [System.IO.Path]::GetTempFileName()
 
-    $sandboxMode = if ($IsWindows) { 'danger-full-access' } else { 'workspace-write' }
     $codexArgs = @(
         '--ask-for-approval','never',
         'exec',
         '--skip-git-repo-check',
         '--output-last-message', $resultFile,
-        '--sandbox',$sandboxMode,
+        '--sandbox','danger-full-access',
         '-c','model_reasoning_effort="medium"',
-        '-c','mcp_servers.unoapp.startup_timeout_sec=120',
-        '-c','sandbox_workspace_write.network_access=true'
+        '-c','mcp_servers.unoapp.startup_timeout_sec=120'
     )
 
     $codexInvocation = Get-CodexProcessInvocation
