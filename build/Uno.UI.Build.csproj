@@ -102,8 +102,9 @@
 		<!-- In addition, the reference project needs to be restored as well. -->
 		<Exec Command="dotnet restore filters\Uno.UI-top-projects-for-sync-gen.slnf -p:Configuration=Release -p:InformationalVersion=$(NBGV_AssemblyInformationalVersion) -p:CI_Build=true -p:_IsCIBuild=true -p:SyncGeneratorRunning=true" />
 
-		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Restore;Build" />
-		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator.Reference.WinUI\Uno.UWPSyncGenerator.Reference.WinUI.csproj" Targets="Restore;Build" />
+		<!-- Use dotnet build (not MSBuild task) to ensure NuGet contentFiles (BuildHost-netcore) are copied to output -->
+		<Exec Command="dotnet build ..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj -c Release" />
+		<Exec Command="dotnet build ..\src\Uno.UWPSyncGenerator.Reference.WinUI\Uno.UWPSyncGenerator.Reference.WinUI.csproj -c Release" />
 
 	</Target>
 
