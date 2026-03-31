@@ -381,10 +381,12 @@ namespace Uno.UWPSyncGenerator
 			{
 				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
 			}
-			// WinRT.Interop: Hand-written implementations exist in Uno.UI (they depend on
-			// Microsoft.UI.Xaml.Window). Route generated stubs there to avoid cross-assembly conflicts.
+			// WinRT.Interop.WindowNative / InitializeWithWindow: Hand-written implementations
+			// exist in Uno.UI (they depend on Microsoft.UI.Xaml.Window).
+			// Route generated stubs there to avoid cross-assembly conflicts.
 			// Tracked by https://github.com/unoplatform/uno/issues/22927
-			else if (@namespace.StartsWith("WinRT.Interop", StringComparison.Ordinal))
+			else if (@namespace == "WinRT.Interop"
+				&& type.Name is "WindowNative" or "InitializeWithWindow")
 			{
 				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
