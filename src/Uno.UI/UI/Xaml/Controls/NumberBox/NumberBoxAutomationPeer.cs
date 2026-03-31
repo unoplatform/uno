@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// <summary>
 /// Exposes NumberBox types to Microsoft UI Automation.
 /// </summary>
-public partial class NumberBoxAutomationPeer : AutomationPeer, IRangeValueProvider
+public partial class NumberBoxAutomationPeer : FrameworkElementAutomationPeer, IRangeValueProvider
 {
 	private readonly NumberBox _owner;
 
