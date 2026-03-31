@@ -8,27 +8,6 @@ namespace Microsoft.UI.Xaml.Shapes
 #endif
 	public partial class Shape : global::Microsoft.UI.Xaml.FrameworkElement
 	{
-		// Skipping already declared property StrokeThickness
-		// Skipping already declared property StrokeStartLineCap
-		// Skipping already declared property StrokeMiterLimit
-		// Skipping already declared property StrokeLineJoin
-		// Skipping already declared property StrokeEndLineCap
-		// Skipping already declared property StrokeDashOffset
-		// Skipping already declared property StrokeDashCap
-		// Skipping already declared property StrokeDashArray
-		// Skipping already declared property Stroke
-		// Skipping already declared property Stretch
-		// Skipping already declared property Fill
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.Transform GeometryTransform
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Transform Shape.GeometryTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Transform%20Shape.GeometryTransform");
-			}
-		}
-#endif
 		// Skipping already declared property FillProperty
 		// Skipping already declared property StretchProperty
 		// Skipping already declared property StrokeDashArrayProperty
@@ -54,90 +33,12 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Skipping already declared property Stretch
 		// Skipping already declared property Stroke
 		// Skipping already declared property StrokeDashArray
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.PenLineCap StrokeDashCap
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.PenLineCap)this.GetValue(StrokeDashCapProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeDashCapProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double StrokeDashOffset
-		{
-			get
-			{
-				return (double)this.GetValue(StrokeDashOffsetProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeDashOffsetProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.PenLineCap StrokeEndLineCap
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.PenLineCap)this.GetValue(StrokeEndLineCapProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeEndLineCapProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.PenLineJoin StrokeLineJoin
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.PenLineJoin)this.GetValue(StrokeLineJoinProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeLineJoinProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double StrokeMiterLimit
-		{
-			get
-			{
-				return (double)this.GetValue(StrokeMiterLimitProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeMiterLimitProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.PenLineCap StrokeStartLineCap
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.PenLineCap)this.GetValue(StrokeStartLineCapProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeStartLineCapProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property StrokeDashCap
+		// Skipping already declared property StrokeDashOffset
+		// Skipping already declared property StrokeEndLineCap
+		// Skipping already declared property StrokeLineJoin
+		// Skipping already declared property StrokeMiterLimit
+		// Skipping already declared property StrokeStartLineCap
 		// Skipping already declared property StrokeThickness
 		// Skipping already declared method Microsoft.UI.Xaml.Shapes.Shape.Shape()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Shape()

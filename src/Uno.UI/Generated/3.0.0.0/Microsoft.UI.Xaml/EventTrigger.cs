@@ -9,8 +9,8 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class EventTrigger : global::Microsoft.UI.Xaml.TriggerBase
 	{
-		// Skipping already declared property RoutedEvent
 		// Skipping already declared property Actions
+		// Skipping already declared property RoutedEvent
 		// Skipping already declared method Microsoft.UI.Xaml.EventTrigger.EventTrigger()
 		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.EventTrigger()
 		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.Actions.get

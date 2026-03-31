@@ -8,62 +8,6 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class FrameworkElement
 	{
-		// Skipping already declared property Width
-		// Skipping already declared property VerticalAlignment
-		// Skipping already declared property Tag
-		// Skipping already declared property Style
-		// Skipping already declared property Resources
-		// Skipping already declared property RequestedTheme
-		// Skipping already declared property Name
-		// Skipping already declared property MinWidth
-		// Skipping already declared property MinHeight
-		// Skipping already declared property MaxWidth
-		// Skipping already declared property MaxHeight
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public global::Microsoft.UI.Xaml.Thickness Margin
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Thickness)this.GetValue(MarginProperty);
-			}
-			set
-			{
-				this.SetValue(MarginProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Language
-		{
-			get
-			{
-				return (string)this.GetValue(LanguageProperty);
-			}
-			set
-			{
-				this.SetValue(LanguageProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property HorizontalAlignment
-		// Skipping already declared property Height
-		// Skipping already declared property FocusVisualSecondaryThickness
-		// Skipping already declared property FocusVisualSecondaryBrush
-		// Skipping already declared property FocusVisualPrimaryThickness
-		// Skipping already declared property FocusVisualPrimaryBrush
-		// Skipping already declared property FocusVisualMargin
-		// Skipping already declared property FlowDirection
-		// Skipping already declared property AllowFocusWhenDisabled
-		// Skipping already declared property AllowFocusOnInteraction
-		// Skipping already declared property ActualHeight
-		// Skipping already declared property ActualTheme
-		// Skipping already declared property ActualWidth
-		// Skipping already declared property BaseUri
-		// Skipping already declared property IsLoaded
-		// Skipping already declared property Parent
-		// Skipping already declared property Triggers
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActualHeightProperty { get; } =
@@ -184,16 +128,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Resources
 		// Skipping already declared property Style
 		// Skipping already declared property Tag
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TriggerCollection Triggers
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TriggerCollection FrameworkElement.Triggers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TriggerCollection%20FrameworkElement.Triggers");
-			}
-		}
-#endif
+		// Skipping already declared property Triggers
 		// Skipping already declared property VerticalAlignment
 		// Skipping already declared property Width
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement()

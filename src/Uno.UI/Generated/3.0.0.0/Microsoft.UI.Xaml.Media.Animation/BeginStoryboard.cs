@@ -9,8 +9,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class BeginStoryboard : global::Microsoft.UI.Xaml.TriggerAction
 	{
-		// Skipping already declared property Storyboard
 		// Skipping already declared property StoryboardProperty
+		// Skipping already declared property Storyboard
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.BeginStoryboard.BeginStoryboard()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BeginStoryboard.BeginStoryboard()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BeginStoryboard.StoryboardProperty.get

@@ -9,16 +9,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	public partial class SelectorAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.ISelectionProvider
 	{
 		// Skipping already declared property CanSelectMultiple
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSelectionRequired
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SelectorAutomationPeer.IsSelectionRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SelectorAutomationPeer.IsSelectionRequired");
-			}
-		}
-#endif
+		// Skipping already declared property IsSelectionRequired
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.SelectorAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.Selector)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.SelectorAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.Selector)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.GetSelection()

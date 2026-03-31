@@ -6,39 +6,30 @@ namespace Microsoft.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TriggerCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.TriggerBase>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.TriggerBase>
+	public partial class TriggerCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.TriggerBase>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.TriggerBase>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.TriggerBase>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared method Microsoft.UI.Xaml.TriggerCollection.TriggerCollection()
-		// Skipping already declared property Microsoft.UI.Xaml.TriggerCollection.Size
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.IndexOf(Microsoft.UI.Xaml.TriggerBase, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.SetAt(uint, Microsoft.UI.Xaml.TriggerBase)
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.InsertAt(uint, Microsoft.UI.Xaml.TriggerBase)
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.Append(Microsoft.UI.Xaml.TriggerBase)
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.GetMany(uint, Microsoft.UI.Xaml.TriggerBase[])
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.ReplaceAll(Microsoft.UI.Xaml.TriggerBase[])
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.First()
-		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.TriggerBase>
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.this[int].set
 		// Skipping already declared method Microsoft.UI.Xaml.TriggerCollection.IndexOf(Microsoft.UI.Xaml.TriggerBase)
 		// Skipping already declared method Microsoft.UI.Xaml.TriggerCollection.Insert(int, Microsoft.UI.Xaml.TriggerBase)
 		// Skipping already declared method Microsoft.UI.Xaml.TriggerCollection.RemoveAt(int)
-		// Skipping already declared indexer Microsoft.UI.Xaml.TriggerCollection.this[int]
-		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.TriggerBase>
 		// Skipping already declared method Microsoft.UI.Xaml.TriggerCollection.Add(Microsoft.UI.Xaml.TriggerBase)
 		// Skipping already declared method Microsoft.UI.Xaml.TriggerCollection.Clear()
 		// Skipping already declared method Microsoft.UI.Xaml.TriggerCollection.Contains(Microsoft.UI.Xaml.TriggerBase)
 		// Skipping already declared method Microsoft.UI.Xaml.TriggerCollection.CopyTo(Microsoft.UI.Xaml.TriggerBase[], int)
 		// Skipping already declared method Microsoft.UI.Xaml.TriggerCollection.Remove(Microsoft.UI.Xaml.TriggerBase)
-		// Skipping already declared property Microsoft.UI.Xaml.TriggerCollection.Count
-		// Skipping already declared property Microsoft.UI.Xaml.TriggerCollection.IsReadOnly
-		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.TriggerBase>
 		// Skipping already declared method Microsoft.UI.Xaml.TriggerCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.TriggerBase>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.TriggerBase>.set_Item(int, Microsoft.UI.Xaml.TriggerBase)
+		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.TriggerBase>
+		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.TriggerBase>
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.TriggerBase>
 		// Processing: System.Collections.IEnumerable
-		// Skipping already declared method Microsoft.UI.Xaml.TriggerCollection.System.Collections.IEnumerable.GetEnumerator()
 	}
 }
