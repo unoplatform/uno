@@ -5069,6 +5069,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			try
 			{
+				if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+				{
+					Assert.Inconclusive("Clipboard is not available on this platform.");
+				}
 				var SUT = new PasswordBox { Password = "secret pass", Width = 200 };
 				CopyPlaceholderTextToClipboard();
 				WindowHelper.WindowContent = SUT;

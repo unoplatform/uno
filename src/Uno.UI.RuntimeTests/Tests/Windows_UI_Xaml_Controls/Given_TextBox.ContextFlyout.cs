@@ -7,6 +7,8 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
+using Uno.ApplicationModel.DataTransfer;
+using Uno.Foundation.Extensibility;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -44,6 +46,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			try
 			{
 #if __SKIA__
+				if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+				{
+					Assert.Inconclusive("Clipboard is not available on this platform.");
+				}
 				using var _ = new TextBoxFeatureConfigDisposable();
 #endif
 				CopyPlaceholderTextToClipboard();
@@ -87,6 +93,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			try
 			{
 #if __SKIA__
+				if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+				{
+					Assert.Inconclusive("Clipboard is not available on this platform.");
+				}
 				using var _ = new TextBoxFeatureConfigDisposable();
 #endif
 				CopyPlaceholderTextToClipboard();
@@ -206,6 +216,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			try
 			{
 #if __SKIA__
+				if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+				{
+					Assert.Inconclusive("Clipboard is not available on this platform.");
+				}
 				using var _ = new TextBoxFeatureConfigDisposable();
 #endif
 				CopyPlaceholderTextToClipboard();
@@ -246,6 +260,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_CanPasteClipboardContent_WithText()
 		{
 #if __SKIA__
+			if (Clipboard.GetContent() is null)
+			{
+				Assert.Inconclusive("Clipboard is not available on this platform.");
+			}
 			using var _ = new TextBoxFeatureConfigDisposable();
 #endif
 
