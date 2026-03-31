@@ -548,7 +548,7 @@ namespace Uno.UWPSyncGenerator
 				return onlyGenerated;
 			}
 
-			private static bool IsGeneratedFile(string filePath)
+			internal static bool IsGeneratedFile(string filePath)
 			{
 				if (filePath.EndsWith(".g.cs", StringComparison.Ordinal))
 				{
@@ -997,9 +997,97 @@ namespace Uno.UWPSyncGenerator
 			}
 		}
 
+		/// <summary>
+		/// Returns true if any platform has the enum type hand-written (non-generated)
+		/// but is missing a field with the given name.
+		/// </summary>
+		private static bool IsEnumFieldMissingOnHandWrittenPlatform(PlatformSymbols<INamedTypeSymbol> typeSymbols, string fieldName)
+		{
+			return IsMissingOnPlatform(typeSymbols.AndroidSymbol)
+				|| IsMissingOnPlatform(typeSymbols.IOSSymbol)
+				|| IsMissingOnPlatform(typeSymbols.TvOSSymbol)
+				|| IsMissingOnPlatform(typeSymbols.UnitTestsymbol)
+				|| IsMissingOnPlatform(typeSymbols.WasmSymbol)
+				|| IsMissingOnPlatform(typeSymbols.SkiaSymbol)
+				|| IsMissingOnPlatform(typeSymbols.NetStdReferenceSymbol);
+
+			bool IsMissingOnPlatform(INamedTypeSymbol typeOnPlatform)
+			{
+				if (typeOnPlatform is null)
+				{
+					return false; // Type doesn't exist on this platform at all
+				}
+
+				// Check if the type is hand-written (non-generated)
+				var isHandWritten = !typeOnPlatform.DeclaringSyntaxReferences
+					.All(r => PlatformSymbols<ISymbol>.IsGeneratedFile(r.SyntaxTree.FilePath));
+
+				if (!isHandWritten)
+				{
+					return false; // Generated enum will include the field
+				}
+
+				// Check if the field exists by name
+				return !typeOnPlatform.GetMembers(fieldName).Any();
+			}
+		}
+
+		/// <summary>
+		/// Checks if any platform has a hand-written enum with a different underlying type than WinUI.
+		/// </summary>
+		private static string CheckEnumUnderlyingTypeMismatch(INamedTypeSymbol uapType, PlatformSymbols<INamedTypeSymbol> typeSymbols)
+		{
+			var expected = uapType.EnumUnderlyingType;
+			if (expected is null)
+			{
+				return null;
+			}
+
+			return CheckPlatform(typeSymbols.AndroidSymbol, "Android")
+				?? CheckPlatform(typeSymbols.IOSSymbol, "iOS")
+				?? CheckPlatform(typeSymbols.TvOSSymbol, "tvOS")
+				?? CheckPlatform(typeSymbols.UnitTestsymbol, "UnitTests")
+				?? CheckPlatform(typeSymbols.WasmSymbol, "WASM")
+				?? CheckPlatform(typeSymbols.SkiaSymbol, "Skia")
+				?? CheckPlatform(typeSymbols.NetStdReferenceSymbol, "NetStdReference");
+
+			string CheckPlatform(INamedTypeSymbol platformType, string platformName)
+			{
+				if (platformType is null)
+				{
+					return null;
+				}
+
+				var isHandWritten = !platformType.DeclaringSyntaxReferences
+					.All(r => PlatformSymbols<ISymbol>.IsGeneratedFile(r.SyntaxTree.FilePath));
+
+				if (!isHandWritten)
+				{
+					return null;
+				}
+
+				if (platformType.EnumUnderlyingType is not null
+					&& platformType.EnumUnderlyingType.SpecialType != expected.SpecialType)
+				{
+					return $"underlying type is {platformType.EnumUnderlyingType.ToDisplayString()} but WinUI defines it as {expected.ToDisplayString()}";
+				}
+
+				return null;
+			}
+		}
+
 		protected void BuildFields(INamedTypeSymbol type, IndentedStringBuilder b, PlatformSymbols<INamedTypeSymbol> types)
 		{
-			var missingEnumMembers = new List<string>();
+			var enumErrors = new List<string>();
+
+			if (type.TypeKind == TypeKind.Enum)
+			{
+				var underlyingTypeMismatch = CheckEnumUnderlyingTypeMismatch(type, types);
+				if (underlyingTypeMismatch != null)
+				{
+					enumErrors.Add(underlyingTypeMismatch);
+				}
+			}
 
 			foreach (var field in type.GetMembers().OfType<IFieldSymbol>())
 			{
@@ -1039,10 +1127,11 @@ namespace Uno.UWPSyncGenerator
 
 						b.AppendLineInvariant($"{field.Name}{constantValue},");
 
-						// Track missing members for enums that are already implemented on some platforms
-						if (!allmembers.IsNotImplementedInAllPlatforms())
+						// Check if any platform has the enum hand-written but is missing this field.
+						// Platforms using the generated enum will get the field from generated code.
+						if (IsEnumFieldMissingOnHandWrittenPlatform(types, field.Name))
 						{
-							missingEnumMembers.Add(field.Name);
+							enumErrors.Add($"missing member {field.Name} (= {field.ConstantValue})");
 						}
 					}
 					else
@@ -1058,12 +1147,27 @@ namespace Uno.UWPSyncGenerator
 				else
 				{
 					b.AppendLineInvariant($"// Skipping already declared field {field}");
+
+					// For already-declared enum fields, verify the value matches WinUI.
+					// Value mismatches are always an error regardless of how many platforms have hand-written code.
+					if (type.TypeKind == TypeKind.Enum && field.HasConstantValue)
+					{
+						var existingField = allmembers.AndroidSymbol ?? allmembers.IOSSymbol ?? allmembers.SkiaSymbol
+							?? allmembers.WasmSymbol ?? allmembers.UnitTestsymbol ?? allmembers.NetStdReferenceSymbol;
+
+						if (existingField is IFieldSymbol existingEnumField
+							&& existingEnumField.HasConstantValue
+							&& !Equals(field.ConstantValue, existingEnumField.ConstantValue))
+						{
+							enumErrors.Add($"{field.Name} has value {existingEnumField.ConstantValue} but WinUI defines it as {field.ConstantValue}");
+						}
+					}
 				}
 			}
 
-			if (type.TypeKind == TypeKind.Enum && missingEnumMembers.Count > 0)
+			if (type.TypeKind == TypeKind.Enum && enumErrors.Count > 0)
 			{
-				MissingEnumMembers = missingEnumMembers;
+				MissingEnumMembers = enumErrors;
 			}
 		}
 
