@@ -16,9 +16,7 @@ namespace Uno.UWPSyncGenerator
 	abstract class Generator
 	{
 		internal const string CSharpLangVersion = "12.0";
-#if HAS_UNO_WINUI
 		private static IEnumerable<PortableExecutableReference> _winuiReferences;
-#endif
 
 		protected const string UnitTestsDefine = "IS_UNIT_TESTS";
 		protected const string AndroidDefine = "__ANDROID__";
@@ -28,11 +26,7 @@ namespace Uno.UWPSyncGenerator
 		protected const string WasmDefine = "__WASM__";
 		protected const string SkiaDefine = "__SKIA__";
 
-#if HAS_UNO_WINUI
 		private const string BaseXamlNamespace = "Microsoft.UI.Xaml";
-#else
-		private const string BaseXamlNamespace = "Windows.UI.Xaml";
-#endif
 
 		private static readonly string[] _skipBaseTypes = new[]
 		{
@@ -117,9 +111,7 @@ namespace Uno.UWPSyncGenerator
 			"Windows.UI.Dispatching",
 			"Microsoft.UI.Xaml",
 			"Microsoft.Web",
-#if HAS_UNO_WINUI
 			"Microsoft.Foundation",
-			"Microsoft.UI.Xaml",
 			"Microsoft.UI.Composition",
 			"Microsoft.UI.Dispatching",
 			"Microsoft.UI.Text",
@@ -129,8 +121,6 @@ namespace Uno.UWPSyncGenerator
 			"Microsoft.System",
 			"Microsoft.Graphics",
 			"Microsoft.Windows.ApplicationModel.Resources",
-			"Microsoft.Web",
-#endif
 			};
 
 		static Generator()
@@ -140,21 +130,9 @@ namespace Uno.UWPSyncGenerator
 			InitializeRoslyn();
 		}
 
-		public virtual async Task Build(
-#if !HAS_UNO_WINUI
-			string baseName, string sourceAssembly
-#endif
-			)
+		public virtual async Task Build()
 		{
-#if !HAS_UNO_WINUI
-			Console.WriteLine($"Generating for {baseName} {sourceAssembly}");
-#endif
-			const string referencesPath =
-#if HAS_UNO_WINUI
-				@"..\..\..\Uno.UWPSyncGenerator.Reference.WinUI\references.txt";
-#else
-				@"..\..\..\Uno.UWPSyncGenerator.Reference\references.txt";
-#endif
+			const string referencesPath = @"..\..\..\Uno.UWPSyncGenerator.Reference.WinUI\references.txt";
 			s_referenceCompilation ??= await LoadUWPReferenceProject(referencesPath);
 
 			_dependencyPropertySymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
@@ -177,72 +155,6 @@ namespace Uno.UWPSyncGenerator
 			FlagsAttributeSymbol = s_referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
 			UIElementSymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
 
-#if !HAS_UNO_WINUI
-			var origins = from externalRedfs in s_referenceCompilation.ExternalReferences
-						  let fileNameWithoutExtension = Path.GetFileNameWithoutExtension(externalRedfs.Display)
-						  where fileNameWithoutExtension.StartsWith("Windows.Foundation", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.WinUI", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.UI", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.Foundation", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.ApplicationModel.Resources", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.Graphics", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.Phone.PhoneContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.Networking.Connectivity.WwanContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.Services.Store.StoreContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.UI.Xaml.Hosting.HostingContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.Web.WebView2.Core", StringComparison.Ordinal)
-						  let asm = s_referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
-						  where asm != null
-						  select asm;
-
-			var excludeNamespaces = new List<string>();
-			var includeNamespaces = new List<string>();
-
-			// For UWP compilation we need to ignore these namespaces when not explicitly generating
-			// for related projects.
-			if (baseName == "Uno.UI.Dispatching")
-			{
-				includeNamespaces.Add("Windows.UI.Dispatching");
-			}
-			else if (baseName == "Uno.UI.Composition")
-			{
-				includeNamespaces.Add("Windows.UI.Composition");
-			}
-			else
-			{
-				excludeNamespaces.Add("Windows.UI.Dispatching");
-				excludeNamespaces.Add("Windows.UI.Composition");
-			}
-
-			var q = from asm in origins
-					from targetType in GetNamespaceTypes(asm.Modules.First().GlobalNamespace)
-					where !SkipNamespace(targetType)
-					where targetType.DeclaredAccessibility == Accessibility.Public
-					where ((baseName == "Uno" || baseName == "Uno.Foundation") && !targetType.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml", StringComparison.Ordinal) && !targetType.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml", StringComparison.Ordinal))
-					|| (
-						(baseName == "Uno.UI" || baseName == "Uno.UI.Dispatching" || baseName == "Uno.UI.Composition")
-						&& _unoUINamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n, StringComparison.Ordinal))
-					)
-					where !excludeNamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n, StringComparison.Ordinal))
-					where (includeNamespaces.Count == 0) || includeNamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n, StringComparison.Ordinal))
-					group targetType by targetType.ContainingNamespace into namespaces
-					orderby namespaces.Key.MetadataName
-					select new
-					{
-						Namespace = namespaces.Key,
-						Types = namespaces
-							.Where(t => t.DeclaredAccessibility == Accessibility.Public)
-					};
-
-			foreach (var ns in q)
-			{
-				foreach (var type in ns.Types)
-				{
-					ProcessType(type, ns.Namespace);
-				}
-			}
-#else
 			var winuiReferenceDisplays = _winuiReferences.Select(r => r.Display).ToArray();
 			foreach (var reference in s_referenceCompilation.ExternalReferences)
 			{
@@ -259,12 +171,9 @@ namespace Uno.UWPSyncGenerator
 						}
 					}
 				}
-
 			}
-#endif
 		}
 
-#if HAS_UNO_WINUI
 		private static bool ShouldGenerateForAssembly(string assemblyName)
 		{
 			switch (assemblyName)
@@ -305,7 +214,6 @@ namespace Uno.UWPSyncGenerator
 					throw new InvalidOperationException($"Unexpected assembly name '{assemblyName}'");
 			}
 		}
-#endif
 
 		private static bool SkipNamespace(INamedTypeSymbol namedTypeSymbol)
 		{
@@ -319,7 +227,6 @@ namespace Uno.UWPSyncGenerator
 			{
 				return true;
 			}
-#if HAS_UNO_WINUI
 			else if (@namespace.StartsWith("Microsoft.Windows.", StringComparison.Ordinal)
 				&& !@namespace.StartsWith("Microsoft.Windows.ApplicationModel.Resources", StringComparison.Ordinal)
 				&& !@namespace.StartsWith("Microsoft.Windows.AppLifecycle", StringComparison.Ordinal))
@@ -331,7 +238,6 @@ namespace Uno.UWPSyncGenerator
 				// NOTE: Microsoft.Windows.ApplicationModel.Resources and Microsoft.Windows.AppLifecycle are explicitly allowed as they were previously generated.
 				return true;
 			}
-#endif
 			else if (@namespace == "WinRT")
 			{
 				return true;
@@ -401,29 +307,6 @@ namespace Uno.UWPSyncGenerator
 
 		protected string GetNamespaceBasePath(INamedTypeSymbol type)
 		{
-#if !HAS_UNO_WINUI
-			if (type.ContainingAssembly.Name == "Windows.Foundation.FoundationContract")
-			{
-				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
-			}
-
-			var containingNamespaceName = type.ContainingNamespace.ToString();
-			if (containingNamespaceName.StartsWith("Windows.UI.Composition", StringComparison.Ordinal))
-			{
-				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
-			}
-			else if (containingNamespaceName.StartsWith("Windows.UI.Xaml", StringComparison.Ordinal)
-				|| containingNamespaceName.StartsWith("Microsoft.UI.Xaml", StringComparison.Ordinal)
-				|| containingNamespaceName.StartsWith("Microsoft.Web", StringComparison.Ordinal)
-			)
-			{
-				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
-			}
-			else
-			{
-				return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
-			}
-#else
 			if (type.Name == "CreateFromStringAttribute")
 			{
 				return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
@@ -536,7 +419,6 @@ namespace Uno.UWPSyncGenerator
 				default:
 					throw new InvalidOperationException($"Unknown assembly '{type.ContainingAssembly.Name}'.");
 			}
-#endif
 		}
 
 		protected class PlatformSymbols<T> where T : ISymbol
@@ -810,7 +692,6 @@ namespace Uno.UWPSyncGenerator
 					// Skipped because the types are hidden from the projections in WinAppSDK
 					return true;
 
-#if HAS_UNO_WINUI
 				case "Windows.UI.Text.FontWeights":
 					// Skipped because the type not present WinAppSDK projection
 					return true;
@@ -827,14 +708,6 @@ namespace Uno.UWPSyncGenerator
 				case "Microsoft.UI.Xaml.DependencyObject":
 					// On WinUI, DependencyObject has more than we currently want.
 					return true;
-#else
-				case "Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer":
-				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource":
-				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource2":
-				case "Microsoft.UI.Xaml.Controls.IDynamicAnimatedVisualSource":
-					// Skipped because the implementation is currently incorrectly placed in WUX namespace
-					return true;
-#endif
 			}
 
 
@@ -1451,17 +1324,6 @@ namespace Uno.UWPSyncGenerator
 				}
 			}
 
-#if HAS_UNO_WINUI
-			if (method.ContainingType.Name == "SwapChainPanel")
-			{
-				switch (method.Name)
-				{
-					// This member uses the experimental input layer from UWP
-					case "CreateCoreIndependentInputSource":
-						return true;
-				}
-			}
-
 			if (method.ContainingType.Name == "SwapChainPanel")
 			{
 				switch (method.Name)
@@ -1507,7 +1369,6 @@ namespace Uno.UWPSyncGenerator
 			{
 				return true;
 			}
-#endif
 
 			if (method.ContainingType.Name == "GraphicsCaptureItem")
 			{
@@ -1760,22 +1621,6 @@ namespace Uno.UWPSyncGenerator
 					return "Windows.Foundation.Collections.IKeyValuePair";
 				case "System.Collections.Specialized.INotifyCollectionChanged":
 					return "Windows.UI.Xaml.Interop.INotifyCollectionChanged";
-#if !HAS_UNO_WINUI
-				case "System.Nullable":
-					return "Windows.Foundation.IReference";
-				case "System.Windows.Input.ICommand":
-					return BaseXamlNamespace + ".Input.ICommand";
-				case "System.DateTimeOffset":
-					return "Windows.Foundation.DateTime";
-				case "System.EventHandler":
-					return "Windows.Foundation.EventHandler";
-				case "System.TimeSpan":
-					return "Windows.Foundation.TimeSpan";
-				case "System.Type":
-					return BaseXamlNamespace + ".Interop.TypeName";
-				case "System.Uri":
-					return "Windows.Foundation.Uri";
-#endif
 			}
 
 			return null;
@@ -1939,7 +1784,6 @@ namespace Uno.UWPSyncGenerator
 
 		private bool SkipProperty(IPropertySymbol property)
 		{
-#if HAS_UNO_WINUI
 			if (property.Name.StartsWith("WinRT.IWinRTObject", StringComparison.Ordinal))
 			{
 				// These are implementations of IWinRTObject interface, which we want to ignore.
@@ -1951,7 +1795,6 @@ namespace Uno.UWPSyncGenerator
 				// For public types implementing a non-public interface explicitly, the explicit implementation should be skipped.
 				return true;
 			}
-#endif
 
 			if (property.ContainingType.Name == "WebView2")
 			{
@@ -2186,13 +2029,9 @@ namespace Uno.UWPSyncGenerator
 			var ws = new AdhocWorkspace();
 
 			var p = ws.AddProject("uwpref", LanguageNames.CSharp);
-#if HAS_UNO_WINUI
 			_winuiReferences = File.ReadAllLines(referencesFile).Select(reference => MetadataReference.CreateFromFile(reference));
-			// Add .NET 7 ref assemblies to make sure things like System.Object are properly resolved and are not error symbols.
+			// Add .NET ref assemblies to make sure things like System.Object are properly resolved and are not error symbols.
 			p = p.AddMetadataReferences(_winuiReferences.Concat(Basic.Reference.Assemblies.Net100.References.All));
-#else
-			p = p.AddMetadataReferences(File.ReadAllLines(referencesFile).Select(reference => MetadataReference.CreateFromFile(reference)));
-#endif
 			return await p.GetCompilationAsync();
 		}
 

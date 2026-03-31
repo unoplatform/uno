@@ -25,11 +25,7 @@ namespace Uno.UWPSyncGenerator
 		private IGrouping<INamespaceSymbol, PlatformSymbols<INamedTypeSymbol>>[] _viewsGrouped;
 		private HashSet<(string name, string namespaceString)> _kosherFrameworkViews;
 
-		public override async Task Build(
-#if !HAS_UNO_WINUI
-			string baseName, string sourceAssembly
-#endif
-			)
+		public override async Task Build()
 		{
 			_sb = new MarkdownStringBuilder();
 
@@ -40,11 +36,7 @@ namespace Uno.UWPSyncGenerator
 
 			try
 			{
-				await base.Build(
-#if !HAS_UNO_WINUI
-					baseName, sourceAssembly
-#endif
-				);
+				await base.Build();
 			}
 			catch (Exception e)
 			{
