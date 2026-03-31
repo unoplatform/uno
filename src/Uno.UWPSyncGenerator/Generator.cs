@@ -31,13 +31,25 @@ namespace Uno.UWPSyncGenerator
 		/// <summary>
 		/// Types whose hand-written partial class inherits from DependencyObjectCollection&lt;T&gt;,
 		/// which already provides IList&lt;T&gt;/ICollection&lt;T&gt;/IEnumerable&lt;T&gt; implementations.
-		/// The generator must not emit NotImplemented stubs for these collection interfaces,
-		/// as they would hide the working base class methods.
+		/// The generator must not emit NotImplemented stubs for these collection interfaces
+		/// or their member methods/properties, as they would hide the working base class methods.
+		/// The generator's FindMatchingMethod fails to match inherited generic methods
+		/// (e.g., Add(T) when T is substituted), so these types need explicit skipping.
 		/// </summary>
 		private static readonly HashSet<string> _skipCollectionInterfaceImplementationTypes = new()
 		{
 			BaseXamlNamespace + ".SetterBaseCollection",
+			BaseXamlNamespace + ".DependencyObjectCollection",
+			BaseXamlNamespace + ".Documents.BlockCollection",
+			BaseXamlNamespace + ".Input.KeyboardAcceleratorCollection",
+			BaseXamlNamespace + ".Media.Animation.ColorKeyFrameCollection",
 			BaseXamlNamespace + ".Media.Animation.DoubleKeyFrameCollection",
+			BaseXamlNamespace + ".Media.Animation.ObjectKeyFrameCollection",
+			BaseXamlNamespace + ".Media.Animation.TimelineCollection",
+			BaseXamlNamespace + ".Media.GeometryCollection",
+			BaseXamlNamespace + ".Media.GradientStopCollection",
+			BaseXamlNamespace + ".Media.PathFigureCollection",
+			BaseXamlNamespace + ".Media.PathSegmentCollection",
 		};
 
 		private static readonly string[] _skipBaseTypes = new[]
@@ -971,6 +983,39 @@ namespace Uno.UWPSyncGenerator
 				"System.Collections.IEnumerable";
 		}
 
+		/// <summary>
+		/// Checks if a member (method or property) is an implementation of a collection
+		/// interface member (IList&lt;T&gt;, ICollection&lt;T&gt;, IEnumerable&lt;T&gt;, IEnumerable).
+		/// Used to skip generating NotImplemented stubs for members that are already
+		/// provided by the DependencyObjectCollection&lt;T&gt; base class.
+		/// </summary>
+		private static bool IsCollectionInterfaceMember(ISymbol member, INamedTypeSymbol containingType)
+		{
+			foreach (var iface in containingType.AllInterfaces)
+			{
+				if (!IsCollectionInterface(iface))
+				{
+					continue;
+				}
+
+				foreach (var ifaceMember in iface.GetMembers())
+				{
+					if (ifaceMember.Kind != member.Kind)
+					{
+						continue;
+					}
+
+					var impl = containingType.FindImplementationForInterfaceMember(ifaceMember);
+					if (impl != null && SymbolEqualityComparer.Default.Equals(impl, member))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
 		private static bool ShouldSkipInterface(INamedTypeSymbol iface)
 		{
 			// Skip for now.
@@ -1382,6 +1427,17 @@ namespace Uno.UWPSyncGenerator
 				{
 					if (methods.HasUndefined)
 					{
+						// Skip generating stubs for collection methods on types whose
+						// base class (DependencyObjectCollection<T>) already provides
+						// working implementations. The generator's FindMatchingMethod
+						// fails to match inherited generic methods.
+						if (_skipCollectionInterfaceImplementationTypes.Contains(type.ToString())
+							&& IsCollectionInterfaceMember(method, type))
+						{
+							b.AppendLineInvariant($"// Skipping collection method provided by base class: {method}");
+							continue;
+						}
+
 						methods.AppendIf(b);
 						string genericParameters = string.Empty;
 						if (method.TypeParameters.Length > 0)
@@ -1804,6 +1860,15 @@ namespace Uno.UWPSyncGenerator
 
 				if (allMembers.HasUndefined)
 				{
+					// Skip generating stubs for collection properties (e.g., indexer)
+					// on types whose base class already provides them.
+					if (_skipCollectionInterfaceImplementationTypes.Contains(type.ToString())
+						&& IsCollectionInterfaceMember(property, type))
+					{
+						b.AppendLineInvariant($"// Skipping collection property provided by base class: {property.Name}");
+						continue;
+					}
+
 					allMembers.AppendIf(b);
 
 					if (type.TypeKind == TypeKind.Interface)
