@@ -1169,19 +1169,24 @@ namespace Uno.UWPSyncGenerator
 					{
 						methods.AppendIf(b);
 
+						// Find the best matching base constructor:
+						// 1. Prefer constructors whose parameters match (as a prefix) over parameterless fallback
+						// 2. Among matching constructors, prefer the one with the most parameters
 						var q = from ctor in type.BaseType?.GetMembers().OfType<IMethodSymbol>()
 								where ctor.MethodKind == MethodKind.Constructor
-								where ctor.Parameters.Length == 0 // If none, match it we don't care if it's actually called.
-								|| ctor
-									.Parameters
-									.Select(p => p.Type)
-									.SequenceEqual(
-										method
-											.Parameters
-											.Take(ctor.Parameters.Length)
-											.Select(p => p.Type)
-											, InheritanceTypeComparer.Instance
-									)
+								where ctor.Parameters.Length == 0 // Parameterless always qualifies as fallback.
+								|| (ctor.Parameters.Length <= method.Parameters.Length
+									&& ctor
+										.Parameters
+										.Select(p => p.Type)
+										.SequenceEqual(
+											method
+												.Parameters
+												.Take(ctor.Parameters.Length)
+												.Select(p => p.Type)
+												, InheritanceTypeComparer.Instance
+										))
+								orderby ctor.Parameters.Length descending
 								select ctor;
 
 						var baseParamString = string.Join(", ", q.FirstOrDefault()?.Parameters.Select(p => p.Name) ?? Array.Empty<string>());
