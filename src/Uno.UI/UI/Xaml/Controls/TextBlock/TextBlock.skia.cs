@@ -291,7 +291,8 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <returns>Computed line height</returns>
 		private FontDetails GetDefaultFontDetails()
 		{
-			var (details, task) = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
+			var scaledSize = Uno.UI.Xaml.Core.TextScaleHelper.GetScaledFontSize(FontSize, Uno.UI.Xaml.Core.CoreServices.Instance.FontScale, IsTextScaleFactorEnabled && !Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor);
+			var (details, task) = FontDetailsCache.GetFont(FontFamily?.Source, (float)scaledSize, FontWeight, FontStretch, FontStyle);
 			if (task.IsCompletedSuccessfully)
 			{
 				return task.Result;

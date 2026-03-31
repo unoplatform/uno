@@ -159,6 +159,30 @@ namespace Microsoft.UI.Xaml.Documents
 
 		#endregion
 
+		#region IsTextScaleFactorEnabled Dependency Property
+
+		public bool IsTextScaleFactorEnabled
+		{
+			get => (bool)GetValue(IsTextScaleFactorEnabledProperty);
+			set => SetValue(IsTextScaleFactorEnabledProperty, value);
+		}
+
+		public static DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsTextScaleFactorEnabled),
+				typeof(bool),
+				typeof(TextElement),
+				new FrameworkPropertyMetadata(
+					defaultValue: true,
+					options: FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) => ((TextElement)s).OnIsTextScaleFactorEnabledChanged()
+				)
+			);
+
+		protected virtual void OnIsTextScaleFactorEnabledChanged() { }
+
+		#endregion
+
 		#region Foreground Dependency Property
 
 		public Brush Foreground

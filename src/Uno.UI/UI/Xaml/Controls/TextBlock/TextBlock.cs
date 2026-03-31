@@ -399,6 +399,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		#region IsTextScaleFactorEnabled Dependency Property
+
+		public bool IsTextScaleFactorEnabled
+		{
+			get => (bool)GetValue(IsTextScaleFactorEnabledProperty);
+			set => SetValue(IsTextScaleFactorEnabledProperty, value);
+		}
+
+		public static DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsTextScaleFactorEnabled),
+				typeof(bool),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					defaultValue: true,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
+				)
+			);
+
+		#endregion
+
 		#region MaxLines Dependency Property
 
 		public int MaxLines
