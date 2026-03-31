@@ -33,5 +33,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame>
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame>
 		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame>
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame>
+		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame>
+		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.IEnumerable
 	}
 }
