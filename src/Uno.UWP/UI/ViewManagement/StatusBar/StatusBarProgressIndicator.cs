@@ -1,4 +1,4 @@
-using Windows.Foundation;
+﻿using Windows.Foundation;
 
 namespace Windows.UI.ViewManagement
 {

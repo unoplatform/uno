@@ -1,4 +1,4 @@
-#if !__ANDROID__ && !__IOS__
+﻿#if !__ANDROID__ && !__IOS__
 using Windows.Foundation;
 using Windows.UI;
 

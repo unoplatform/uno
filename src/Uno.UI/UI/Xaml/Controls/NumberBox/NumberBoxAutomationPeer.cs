@@ -19,7 +19,7 @@ public partial class NumberBoxAutomationPeer : FrameworkElementAutomationPeer, I
 {
 	private readonly NumberBox _owner;
 
-	public NumberBoxAutomationPeer(NumberBox owner)
+	public NumberBoxAutomationPeer(NumberBox owner) : base(owner)
 	{
 		_owner = owner;
 	}
