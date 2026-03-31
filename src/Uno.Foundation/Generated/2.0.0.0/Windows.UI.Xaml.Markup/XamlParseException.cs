@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Markup
 		// Forced skipping of method Windows.UI.Xaml.Markup.XamlParseException.XamlParseException()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public XamlParseException(string message) : base()
+		public XamlParseException(string message) : base(message)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Markup.XamlParseException", "XamlParseException.XamlParseException(string message)");
 		}
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Markup
 		// Forced skipping of method Windows.UI.Xaml.Markup.XamlParseException.XamlParseException(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public XamlParseException(string message, global::System.Exception innerException) : base()
+		public XamlParseException(string message, global::System.Exception innerException) : base(message, innerException)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Markup.XamlParseException", "XamlParseException.XamlParseException(string message, Exception innerException)");
 		}

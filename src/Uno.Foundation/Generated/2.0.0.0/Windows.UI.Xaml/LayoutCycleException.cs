@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.LayoutCycleException.LayoutCycleException()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public LayoutCycleException(string message) : base()
+		public LayoutCycleException(string message) : base(message)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.LayoutCycleException", "LayoutCycleException.LayoutCycleException(string message)");
 		}
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.LayoutCycleException.LayoutCycleException(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public LayoutCycleException(string message, global::System.Exception innerException) : base()
+		public LayoutCycleException(string message, global::System.Exception innerException) : base(message, innerException)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.LayoutCycleException", "LayoutCycleException.LayoutCycleException(string message, Exception innerException)");
 		}
