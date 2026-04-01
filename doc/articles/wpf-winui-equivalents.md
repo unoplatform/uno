@@ -65,7 +65,7 @@ Button, TextBox, TextBlock, CheckBox, RadioButton, ComboBox, ListBox, ListView, 
 | `GroupBox` | `Expander` or custom `HeaderedContentControl` | No GroupBox in WinUI |
 | `Label` | `TextBlock` | Use `TextBlock` + `AccessKey` property |
 | `MediaElement` | `MediaPlayerElement` | Different API surface |
-| `Window` (standalone) | `Page` (navigable) | Or `ContentDialog` for modal windows |
+| `Window` (standalone) | `Window` | Window host; content is typically a `Page`/root `UIElement`. Use `ContentDialog` for modal windows. |
 
 ### Useful NuGet Packages
 
