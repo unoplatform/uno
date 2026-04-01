@@ -1,108 +1,102 @@
-<Page
-	x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.Custom_Button_With_ContentTemplate_And_StackPanel" 
-	xmlns:controls="using:Uno.UI.Samples.Controls"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:not_win="http://uno.ui/not_win"
-	mc:Ignorable="d not_win"
-	d:DesignHeight="300"
-	d:DesignWidth="400">
+﻿<Page x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.Custom_Button_With_ContentTemplate_And_StackPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Uno.UI.Samples.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_win="http://uno.ui/not_win"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d not_win">
 
 	<UserControl.Resources>
 		<Style x:Key="LabelButtonStyle"
-			   TargetType="Button">
-			<Setter Property="Background"
-					Value="{ThemeResource ButtonBackgroundThemeBrush}" />
-			<Setter Property="Foreground"
-					Value="{ThemeResource ButtonForegroundThemeBrush}" />
-			<Setter Property="BorderBrush"
-					Value="{ThemeResource ButtonBorderThemeBrush}" />
-			<Setter Property="BorderThickness"
-					Value="{ThemeResource ButtonBorderThemeThickness}" />
-			<Setter Property="HorizontalAlignment"
-					Value="Left" />
-			<Setter Property="VerticalAlignment"
-					Value="Center" />
-			<Setter Property="FontFamily"
-					Value="{ThemeResource ContentControlThemeFontFamily}" />
-			<Setter Property="FontWeight"
-					Value="SemiBold" />
-			<Setter Property="FontSize"
-					Value="{ThemeResource ControlContentThemeFontSize}" />
+		    TargetType="Button">
+			<Setter Property="Background" Value="{ThemeResource ButtonBackgroundThemeBrush}" />
+			<Setter Property="Foreground" Value="{ThemeResource ButtonForegroundThemeBrush}" />
+			<Setter Property="BorderBrush" Value="{ThemeResource ButtonBorderThemeBrush}" />
+			<Setter Property="BorderThickness" Value="{ThemeResource ButtonBorderThemeThickness}" />
+			<Setter Property="HorizontalAlignment" Value="Left" />
+			<Setter Property="VerticalAlignment" Value="Center" />
+			<Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+			<Setter Property="FontWeight" Value="SemiBold" />
+			<Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="Button">
 						<Grid>
 							<Border x:Name="Border_"
-									BorderBrush="{TemplateBinding BorderBrush}"
-									BorderThickness="{TemplateBinding BorderThickness}"
-									Background="{TemplateBinding Background}"
-									Margin="0">
+							    Margin="0"
+							    Background="{TemplateBinding Background}"
+							    BorderBrush="{TemplateBinding BorderBrush}"
+							    BorderThickness="{TemplateBinding BorderThickness}">
 								<ContentPresenter x:Name="ContentPresenter"
-												  AutomationProperties.AccessibilityView="Raw"
-												  ContentTemplate="{TemplateBinding ContentTemplate}"
-												  ContentTransitions="{TemplateBinding ContentTransitions}"
-												  Content="{TemplateBinding Content}"
-												  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-												  Margin="{TemplateBinding Padding}"
-												  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+								    Margin="{TemplateBinding Padding}"
+								    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+								    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+								    AutomationProperties.AccessibilityView="Raw"
+								    Content="{TemplateBinding Content}"
+								    ContentTemplate="{TemplateBinding ContentTemplate}"
+								    ContentTransitions="{TemplateBinding ContentTransitions}" />
 							</Border>
-							<!--Suppress: NVX004-->
+							<!--  Suppress: NVX004  -->
 							<Rectangle x:Name="FocusVisualWhite_"
-									   IsHitTestVisible="False"
-									   Opacity="0"
-									   Margin="-3"
-									   StrokeDashOffset="1.5"
-									   StrokeEndLineCap="Square"
-									   Stroke="{ThemeResource FocusVisualWhiteStrokeThemeBrush}"
-									   StrokeDashArray="1,1" />
-							<!--Suppress: NVX004-->
+							    Margin="-3"
+							    IsHitTestVisible="False"
+							    Opacity="0"
+							    Stroke="{ThemeResource FocusVisualWhiteStrokeThemeBrush}"
+							    StrokeDashArray="1,1"
+							    StrokeDashOffset="1.5"
+							    StrokeEndLineCap="Square" />
+							<!--  Suppress: NVX004  -->
 							<Rectangle x:Name="FocusVisualBlack_"
-									   IsHitTestVisible="False"
-									   Opacity="0"
-									   Margin="-3"
-									   StrokeDashOffset="0.5"
-									   StrokeEndLineCap="Square"
-									   Stroke="{ThemeResource FocusVisualBlackStrokeThemeBrush}"
-									   StrokeDashArray="1,1" />
+							    Margin="-3"
+							    IsHitTestVisible="False"
+							    Opacity="0"
+							    Stroke="{ThemeResource FocusVisualBlackStrokeThemeBrush}"
+							    StrokeDashArray="1,1"
+							    StrokeDashOffset="0.5"
+							    StrokeEndLineCap="Square" />
 						</Grid>
 					</ControlTemplate>
 				</Setter.Value>
 			</Setter>
 		</Style>
 	</UserControl.Resources>
-	
+
 	<controls:SampleControl SampleDescription="Custom_Button_With_ContentTemplate_And_StackPanel">
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
 				<StackPanel>
-					<Button Content="StackPanelButton" Command="{Binding [SampleCommand]}" >
+					<Button Command="{Binding [SampleCommand]}"
+					    Content="StackPanelButton">
 						<Button.ContentTemplate>
 							<DataTemplate>
 								<StackPanel>
-									<TextBlock Text="{Binding}" Foreground="Blue" />
+									<TextBlock Foreground="Blue"
+									    Text="{Binding}" />
 								</StackPanel>
 							</DataTemplate>
 						</Button.ContentTemplate>
 					</Button>
-					
+
 					<TextBlock Text="Button with button inside it" />
-					<Button Content="{Binding}"
-							Command="{Binding [SampleCommand]}"
-							Style="{StaticResource LabelButtonStyle}">
+					<Button Command="{Binding [SampleCommand]}"
+					    Content="{Binding}"
+					    Style="{StaticResource LabelButtonStyle}">
 						<Button.ContentTemplate>
 							<DataTemplate>
 								<StackPanel Padding="10"
-											Background="Green">
-									<TextBlock Text="Button1" Foreground="Blue" />
+								    Background="Green">
+									<TextBlock Foreground="Blue"
+									    Text="Button1" />
 									<Button Command="{Binding [SampleCommand2]}"
-											Style="{StaticResource LabelButtonStyle}">
+									    Style="{StaticResource LabelButtonStyle}">
 										<Button.ContentTemplate>
 											<DataTemplate>
 												<StackPanel Background="Yellow">
-													<TextBlock Text="Button2" Foreground="Red" />
+													<TextBlock Foreground="Red"
+													    Text="Button2" />
 												</StackPanel>
 											</DataTemplate>
 										</Button.ContentTemplate>
@@ -111,11 +105,11 @@
 							</DataTemplate>
 						</Button.ContentTemplate>
 					</Button>
-				
-				<TextBox Width="200"
-								 Height="100"/>
+
+					<TextBox Width="200"
+					    Height="100" />
 				</StackPanel>
-				
+
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
 	</controls:SampleControl>

@@ -1,43 +1,42 @@
-﻿<UserControl
-    x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_HorizontalAlignment"
+﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_HorizontalAlignment"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignWidth="400"
+    mc:Ignorable="d">
 
-    <StackPanel>
+	<StackPanel>
 
-        <TextBlock Text="Typing in Source should expand other TextBoxes" />
+		<TextBlock Text="Typing in Source should expand other TextBoxes" />
 
-        <TextBox x:Name="Source"
-                 Header="Source"
-                 Text="Text"
-                 Margin="0,0,0,50"/>
+		<TextBox x:Name="Source"
+		    Margin="0,0,0,50"
+		    Header="Source"
+		    Text="Text" />
 
-        <TextBox Header="Stretch"
-                 Text="{Binding Text, ElementName=Source}"
-                 HorizontalAlignment="Stretch" />
+		<TextBox HorizontalAlignment="Stretch"
+		    Header="Stretch"
+		    Text="{Binding Text, ElementName=Source}" />
 
-        <TextBox Header="Left"
-                 Text="{Binding Text, ElementName=Source}"
-                 HorizontalAlignment="Left" />
+		<TextBox HorizontalAlignment="Left"
+		    Header="Left"
+		    Text="{Binding Text, ElementName=Source}" />
 
-        <TextBox Header="Center"
-                 Text="{Binding Text, ElementName=Source}"
-                 HorizontalAlignment="Center" />
+		<TextBox HorizontalAlignment="Center"
+		    Header="Center"
+		    Text="{Binding Text, ElementName=Source}" />
 
-        <TextBox Header="Right"
-                 Text="{Binding Text, ElementName=Source}"
-                 HorizontalAlignment="Right" />
+		<TextBox HorizontalAlignment="Right"
+		    Header="Right"
+		    Text="{Binding Text, ElementName=Source}" />
 
-        <TextBox Header="Center Multiline"
-                 Text="{Binding Text, ElementName=Source}"
-                 HorizontalAlignment="Center"
-                 AcceptsReturn="True" />
+		<TextBox HorizontalAlignment="Center"
+		    AcceptsReturn="True"
+		    Header="Center Multiline"
+		    Text="{Binding Text, ElementName=Source}" />
 
-    </StackPanel>
+	</StackPanel>
 
 </UserControl>

@@ -1,20 +1,18 @@
-﻿<Page
-    x:Class="UITests.Windows_UI_Xaml_Controls.ListView.ListView_DuplicateItem"
+﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.ListView.ListView_DuplicateItem"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.ListView"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.ListView"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
 	<ListView x:Name="listView">
 		<ListView.ItemTemplate>
 			<DataTemplate>
-				<TextBlock
-                    HorizontalAlignment="Stretch"
-                    Text="{Binding}"
-                    TextWrapping="Wrap" />
+				<TextBlock HorizontalAlignment="Stretch"
+				    Text="{Binding}"
+				    TextWrapping="Wrap" />
 			</DataTemplate>
 		</ListView.ItemTemplate>
 	</ListView>

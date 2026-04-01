@@ -1,40 +1,40 @@
 ﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_Extensions"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:not_win="http://uno.ui/not_win"
-			 xmlns:ios="http://nventive.com/ios"
-			 xmlns:android="http://nventive.com/android"
-			 xmlns:local="using:Uno.UI.Samples.Content.UITests.CommandBar"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:uno="using:Uno.UI.Controls"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:toolkit="using:Uno.UI.Toolkit"
-			 mc:Ignorable="d not_win ios android"
-			 d:DesignHeight="300"
-			 d:DesignWidth="400">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:android="http://nventive.com/android"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ios="http://nventive.com/ios"
+    xmlns:local="using:Uno.UI.Samples.Content.UITests.CommandBar"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_win="http://uno.ui/not_win"
+    xmlns:toolkit="using:Uno.UI.Toolkit"
+    xmlns:uno="using:Uno.UI.Controls"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d not_win ios android">
 
 	<ScrollViewer>
 		<StackPanel>
 
 			<AppBarButton Command="{Binding Command}"
-						  Label="Label"
-						  Foreground="White">
+			    Foreground="White"
+			    Label="Label">
 				<AppBarButton.Icon>
 					<BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
 				</AppBarButton.Icon>
 			</AppBarButton>
 
 			<android:Grid>
-				<CommandBar Content="Title"
-							  toolkit:CommandBarExtensions.Subtitle="Subtitle" />
+				<CommandBar toolkit:CommandBarExtensions.Subtitle="Subtitle"
+				    Content="Title" />
 			</android:Grid>
 
 			<not_win:Grid>
 				<CommandBar Content="Title">
 					<toolkit:CommandBarExtensions.NavigationCommand>
 						<AppBarButton Command="{Binding Command}"
-									  Label="Label">
+						    Label="Label">
 							<AppBarButton.Icon>
 								<BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
 							</AppBarButton.Icon>
@@ -44,13 +44,13 @@
 			</not_win:Grid>
 
 			<not_win:Grid>
-				<CommandBar Content="Title"
-							  Background="Tomato"
-							  Foreground="White">
+				<CommandBar Background="Tomato"
+				    Content="Title"
+				    Foreground="White">
 					<toolkit:CommandBarExtensions.NavigationCommand>
 						<AppBarButton Command="{Binding Command}"
-									  Label="Label"
-									  Foreground="White">
+						    Foreground="White"
+						    Label="Label">
 							<AppBarButton.Icon>
 								<BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
 							</AppBarButton.Icon>
@@ -60,11 +60,11 @@
 			</not_win:Grid>
 
 			<ios:Grid>
-				<CommandBar Content="Title"
-							  toolkit:CommandBarExtensions.BackButtonForeground="Red">
+				<CommandBar toolkit:CommandBarExtensions.BackButtonForeground="Red"
+				    Content="Title">
 					<toolkit:CommandBarExtensions.NavigationCommand>
 						<AppBarButton Command="{Binding Command}"
-									  Label="Label">
+						    Label="Label">
 							<AppBarButton.Icon>
 								<BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
 							</AppBarButton.Icon>

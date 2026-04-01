@@ -1,24 +1,25 @@
 ﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.SplitView.BindableDrawerLayout_ChangePane"
-	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	  xmlns:local="using:UITests.Windows_UI_Xaml_Controls.SplitView"
-	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  xmlns:android="http://uno.ui/android#using:Uno.UI.Controls"
-	  mc:Ignorable="d android"
-	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:android="http://uno.ui/android#using:Uno.UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.SplitView"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d android">
 
 	<Grid>
-		<SplitView x:Name="RootSplitView" OpenPaneLength="312">
-			<!-- mimic LeftDrawerSplitViewStyle -->
+		<SplitView x:Name="RootSplitView"
+		    OpenPaneLength="312">
+			<!--  mimic LeftDrawerSplitViewStyle  -->
 			<android:SplitView.Template>
 				<ControlTemplate TargetType="SplitView">
-					<android:BindableDrawerLayout LeftPaneOpenLength="{TemplateBinding OpenPaneLength}"
-										  LeftPane="{TemplateBinding Pane}"
-										  LeftPaneBackground="{TemplateBinding PaneBackground}"
-										  IsLeftPaneOpen="{TemplateBinding IsPaneOpen, Mode=TwoWay}"
-										  IsLeftPaneEnabled="{Binding (toolkit:SplitViewExtensions.IsPaneEnabled), RelativeSource={RelativeSource TemplatedParent}}"
-										  Content="{TemplateBinding Content}" />
+					<android:BindableDrawerLayout Content="{TemplateBinding Content}"
+					    IsLeftPaneEnabled="{Binding (toolkit:SplitViewExtensions.IsPaneEnabled), RelativeSource={RelativeSource TemplatedParent}}"
+					    IsLeftPaneOpen="{TemplateBinding IsPaneOpen, Mode=TwoWay}"
+					    LeftPane="{TemplateBinding Pane}"
+					    LeftPaneBackground="{TemplateBinding PaneBackground}"
+					    LeftPaneOpenLength="{TemplateBinding OpenPaneLength}" />
 				</ControlTemplate>
 			</android:SplitView.Template>
 
@@ -30,19 +31,32 @@
 				</Grid>
 			</SplitView.Content>
 			<SplitView.Pane>
-				<Grid AutomationProperties.AutomationId="DrawerContent"
-					  Background="Pink"
-					  VerticalAlignment="Stretch"
-					  HorizontalAlignment="Stretch" />
+				<Grid HorizontalAlignment="Stretch"
+				    VerticalAlignment="Stretch"
+				    AutomationProperties.AutomationId="DrawerContent"
+				    Background="Pink" />
 			</SplitView.Pane>
 		</SplitView>
 
-		<StackPanel VerticalAlignment="Bottom" Spacing="5">
-			<Button x:Name="ManualOpenPaneButton" Content="ManualOpenPane" Click="ManualOpenPane" />
-			<Button x:Name="ManualClosePaneButton" Content="ManualClosePane" Click="ManualClosePane" />
-			<Button x:Name="SetPaneToNullButton" Content="SetPaneToNull" Click="SetPaneTo" />
-			<Button x:Name="SetPaneToSkyBlueGridButton" Content="SetPaneToSkyBlueGrid" Click="SetPaneTo" Tag="SkyBlue" />
-			<Button x:Name="SetPaneToPinkGridButton" Content="SetPaneToPinkGrid" Click="SetPaneTo" Tag="Pink" />
+		<StackPanel VerticalAlignment="Bottom"
+		    Spacing="5">
+			<Button x:Name="ManualOpenPaneButton"
+			    Click="ManualOpenPane"
+			    Content="ManualOpenPane" />
+			<Button x:Name="ManualClosePaneButton"
+			    Click="ManualClosePane"
+			    Content="ManualClosePane" />
+			<Button x:Name="SetPaneToNullButton"
+			    Click="SetPaneTo"
+			    Content="SetPaneToNull" />
+			<Button x:Name="SetPaneToSkyBlueGridButton"
+			    Click="SetPaneTo"
+			    Content="SetPaneToSkyBlueGrid"
+			    Tag="SkyBlue" />
+			<Button x:Name="SetPaneToPinkGridButton"
+			    Click="SetPaneTo"
+			    Content="SetPaneToPinkGrid"
+			    Tag="Pink" />
 		</StackPanel>
 	</Grid>
 </Page>

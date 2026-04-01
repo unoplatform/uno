@@ -1,5 +1,4 @@
-﻿<Page
-    x:Class="UITests.Windows_System.UserProfile.UserProfilePersonalizationSettingsTests"
+﻿<Page x:Class="UITests.Windows_System.UserProfile.UserProfilePersonalizationSettingsTests"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,16 +7,15 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <StackPanel Padding="12">
-        <CheckBox
-            Content="Is supported?"
-            IsChecked="{x:Bind Model.IsSupported}"
-            IsEnabled="False" />
-        <ContentControl IsEnabled="{x:Bind Model.IsSupported}">
-            <StackPanel>
-                <Button Command="{x:Bind Model.SetWallpaperCommand}">Set wallpaper</Button>
-                <Button Command="{x:Bind Model.SetLockScreenCommand}">Set lock screen</Button>
-            </StackPanel>
-        </ContentControl>
-    </StackPanel>
+	<StackPanel Padding="12">
+		<CheckBox Content="Is supported?"
+		    IsChecked="{x:Bind Model.IsSupported}"
+		    IsEnabled="False" />
+		<ContentControl IsEnabled="{x:Bind Model.IsSupported}">
+			<StackPanel>
+				<Button Command="{x:Bind Model.SetWallpaperCommand}">Set wallpaper</Button>
+				<Button Command="{x:Bind Model.SetLockScreenCommand}">Set lock screen</Button>
+			</StackPanel>
+		</ContentControl>
+	</StackPanel>
 </Page>

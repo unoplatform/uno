@@ -1,11 +1,10 @@
-﻿<Page
-    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ContentControlNoTemplateNoContent"
+﻿<Page x:Class="SamplesApp.Windows_UI_Xaml_Controls.ContentControlNoTemplateNoContent"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
 	<Page.Resources>
 		<DataTemplate x:Key="ContentControlTemplate">
@@ -16,7 +15,11 @@
 	</Page.Resources>
 
 	<StackPanel>
-		<ContentControl x:Name="CContentControl" ContentTemplate="{StaticResource ContentControlTemplate}" Content="I'm a content"/>
-		<Button x:Name="bntContentClear" Content="Clear ContentControl" Click="bntContentClear_click" />
+		<ContentControl x:Name="CContentControl"
+		    Content="I'm a content"
+		    ContentTemplate="{StaticResource ContentControlTemplate}" />
+		<Button x:Name="bntContentClear"
+		    Click="bntContentClear_click"
+		    Content="Clear ContentControl" />
 	</StackPanel>
 </Page>

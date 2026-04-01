@@ -1,103 +1,188 @@
-﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<local:TestPage
-    x:Class="MUXControlsTestApp.NavigationViewTopNavStorePage"
+﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
+<local:TestPage x:Class="MUXControlsTestApp.NavigationViewTopNavStorePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:MUXControlsTestApp"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:MUXControlsTestApp"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid>
-        <controls:NavigationView x:Name="NavView"
-            AutomationProperties.Name="NavView"
-            AutomationProperties.AutomationId="NavView"
-            CompactModeThresholdWidth="480"
-            IsSettingsVisible="False"
-            IsPaneToggleButtonVisible="False"
-            AlwaysShowHeader="False"
-            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-            IsBackButtonVisible="Visible"
-            PaneDisplayMode="Top"
-            ShoulderNavigationEnabled="WhenSelectionFollowsFocus"
-            ItemInvoked="OnNavItemInvoked">
+	<Grid>
+		<controls:NavigationView x:Name="NavView"
+		    AlwaysShowHeader="False"
+		    AutomationProperties.AutomationId="NavView"
+		    AutomationProperties.Name="NavView"
+		    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+		    CompactModeThresholdWidth="480"
+		    IsBackButtonVisible="Visible"
+		    IsPaneToggleButtonVisible="False"
+		    IsSettingsVisible="False"
+		    ItemInvoked="OnNavItemInvoked"
+		    PaneDisplayMode="Top"
+		    ShoulderNavigationEnabled="WhenSelectionFollowsFocus">
 
-            <controls:NavigationView.PaneHeader>
-                <CommandBar>
-                    <AppBarToggleButton Icon="Shuffle" Label="Shuffle" Click="AppBarButton_Click" />
-                    <CommandBar.SecondaryCommands>
-                        <AppBarButton Label="Like" Click="AppBarButton_Click"/>
-                    </CommandBar.SecondaryCommands>
-                </CommandBar>
-            </controls:NavigationView.PaneHeader>
+			<controls:NavigationView.PaneHeader>
+				<CommandBar>
+					<AppBarToggleButton Click="AppBarButton_Click"
+					    Icon="Shuffle"
+					    Label="Shuffle" />
+					<CommandBar.SecondaryCommands>
+						<AppBarButton Click="AppBarButton_Click"
+						    Label="Like" />
+					</CommandBar.SecondaryCommands>
+				</CommandBar>
+			</controls:NavigationView.PaneHeader>
 
-            <controls:NavigationView.PaneCustomContent>
-                <CommandBar>
-                    <AppBarToggleButton Icon="Like" Label="Like" Click="AppBarButton_Click" />
-                </CommandBar>
-            </controls:NavigationView.PaneCustomContent>
+			<controls:NavigationView.PaneCustomContent>
+				<CommandBar>
+					<AppBarToggleButton Click="AppBarButton_Click"
+					    Icon="Like"
+					    Label="Like" />
+				</CommandBar>
+			</controls:NavigationView.PaneCustomContent>
 
-            <controls:NavigationView.PaneFooter>
-                <CommandBar>
-                    <AppBarToggleButton Icon="Shuffle" Label="Shuffle" Click="AppBarButton_Click" />
-                    <AppBarToggleButton Icon="RepeatAll" Label="Repeat" Click="AppBarButton_Click"/>
-                    <AppBarSeparator/>
-                    <AppBarButton Icon="Play" Label="Play" Click="AppBarButton_Click"/>
+			<controls:NavigationView.PaneFooter>
+				<CommandBar>
+					<AppBarToggleButton Click="AppBarButton_Click"
+					    Icon="Shuffle"
+					    Label="Shuffle" />
+					<AppBarToggleButton Click="AppBarButton_Click"
+					    Icon="RepeatAll"
+					    Label="Repeat" />
+					<AppBarSeparator />
+					<AppBarButton Click="AppBarButton_Click"
+					    Icon="Play"
+					    Label="Play" />
 
-                    <CommandBar.SecondaryCommands>
-                        <AppBarButton Label="Like" Click="AppBarButton_Click"/>
-                        <AppBarButton Label="Dislike" Click="AppBarButton_Click"/>
-                    </CommandBar.SecondaryCommands>
-                </CommandBar>
-            </controls:NavigationView.PaneFooter>
+					<CommandBar.SecondaryCommands>
+						<AppBarButton Click="AppBarButton_Click"
+						    Label="Like" />
+						<AppBarButton Click="AppBarButton_Click"
+						    Label="Dislike" />
+					</CommandBar.SecondaryCommands>
+				</CommandBar>
+			</controls:NavigationView.PaneFooter>
 
-            <controls:NavigationView.AutoSuggestBox>
-                <AutoSuggestBox QueryIcon="Find" AutomationProperties.Name="PaneAutoSuggestBox"/>
-            </controls:NavigationView.AutoSuggestBox>
+			<controls:NavigationView.AutoSuggestBox>
+				<AutoSuggestBox AutomationProperties.Name="PaneAutoSuggestBox"
+				    QueryIcon="Find" />
+			</controls:NavigationView.AutoSuggestBox>
 
-            <StackPanel Background="BurlyWood">
-                <ScrollViewer x:Name="ContentScrollViewer" VerticalAlignment="Top">
-                    <StackPanel x:Name="ContentStackPanel" Orientation="Vertical">
-                        <StackPanel Orientation="Horizontal">
-                            <Button x:Name="MoveContentUnderTopnav" AutomationProperties.Name="MoveContentUnderTopnavButton" Margin="1" Content="Move/Remove content under Top nav + Scrollviewer checkup" Click="MoveContentUnderTopnav_Click"/>
-                            <Button x:Name="MoveContentUnderTopnavTitleBar" AutomationProperties.Name="MoveContentUnderTopnavTitleBarButton" Margin="1" Content="Move/Remove content under Top nav + Scrollviewer checkup + Titlebar take over" Click="MoveContentUnderTopnavTitleBar_Click"/>
-                            <Button x:Name="GetTopPaddingHeightButton" AutomationProperties.Name="GetTopPaddingHeightButton" Margin="1" Content="Get top padding height" Click="GetTopPaddingHeightButton_Click"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Button x:Name="AddItemButton" AutomationProperties.Name="AddItemButton" Margin="1" Content="Add Item" Click="AddButton_Click"/>
-                            <Button x:Name="AddItemSuppressSelectionButton" AutomationProperties.Name="AddItemSuppressSelectionButton" Margin="1" Content="Add Item with SupppressSelection" Click="AddButtonSuppressSelection_Click"/>
-                            <Button x:Name="RemoveItemButton" AutomationProperties.Name="RemoveItemButton" Margin="1" Content="Remove Item" Click="RemoveButton_Click"/>
-                            <Button x:Name="ChangeToIEnumerableButton" AutomationProperties.Name="ChangeToIEnumerableButton" Margin="1" Content="Make it IEnumerable" Click="ChangeToIEnumerableButton_Clicks"/>
-                            <Button x:Name="FlipIsTitleBarAutoPaddingEnabledButton" AutomationProperties.Name="FlipIsTitleBarAutoPaddingEnabledButton" Margin="1" Content="Flip IsTitleBarAutoPaddingEnabled" Click="FlipIsTitleBarAutoPaddingEnabledButton_Click"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Button x:Name="FlipOrientation" AutomationProperties.Name="FlipOrientationButton" Margin="1" Content="Flip Orientation" Click="FlipOrientation_Click"/>
-                            <Button x:Name="AddRemoveContentOverlay" AutomationProperties.Name="AddRemoveContentOverlayButton" Margin="1" Content="Add/Remove Content Overlay (top nav)" Click="AddRemoveContentOverlay_Click"/>
-                            <Button x:Name="ChangeContentOverlayVisibility" AutomationProperties.Name="ChangeContentOverlayVisibilityButton" Margin="1" Content="Change Content Overlay Visibility (top nav)" Click="ChangeContentOverlayVisibility_Click"/>
-                            <Button x:Name="ChangeTopNavVisibility" AutomationProperties.Name="ChangeTopNavVisibilityButton" Margin="1" Content="Change Top Nav Visibility" Click="ChangeTopNavVisibility_Click"/>
-                            <Button x:Name="ChangeSelectionInCode" AutomationProperties.Name="ChangeSelectionInCodeButton" Margin="1" Content="Change Selection In Code" Click="ChangeSelectionInCode_Click"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Button x:Name="EnableSelectionFollowsFocusButton" AutomationProperties.Name="EnableSelectionFollowsFocusButton" Margin="1" Content="Enable Selection Follows Focus" Click="EnableSelectionFollowsFocus_Click"/>
-                            <Button x:Name="GetActiveVisualState" AutomationProperties.Name="GetActiveVisualState" Margin="1" Content="Get Active VisualState" Click="GetActiveVisualState_Click" />
-                            <Button x:Name="GetNavItemActiveVisualState" AutomationProperties.Name="GetNavItemActiveVisualState" Margin="1" Content="Get Selected NavItem Active VisualState" Click="GetNavItemActiveNavItemVisualState_Click" />
-                            <Button x:Name="ClearItemInvokedTextButton" AutomationProperties.Name="ClearItemInvokedTextButton" Margin="1" Content="Clear Item Invoked Text" Click="ClearItemInvokedTextButton_Click" />
-                        </StackPanel>
-                    </StackPanel>
-                </ScrollViewer>
-                <TextBlock Text="Active NavigationItem Visual States: "/>
-                <TextBlock x:Name="ActiveVisualStates" AutomationProperties.Name="ActiveVisualStates"/>
-                <TextBlock x:Name="NavItemActiveVisualStates" AutomationProperties.Name="NavItemActiveVisualStates"/>
-                <TextBlock Text="NavView.IsTitleBarAutoPaddingEnabled: "/>
-                <TextBlock x:Name="NavViewIsTitleBarAutoPaddingEnabled"/>
-                <TextBlock Text="Top padding Height: "/>
-                <TextBlock x:Name="TopPaddingRenderedValue"/>
-                <TextBlock Text="TitleBar.IsVisible: "/>
-                <TextBlock x:Name="TitleBarIsVisible"/>
-                <TextBlock Text="Item invoked: "/>
-                <TextBlock x:Name="ItemInvokedText"/>
-            </StackPanel>
-        </controls:NavigationView>
-    </Grid>
+			<StackPanel Background="BurlyWood">
+				<ScrollViewer x:Name="ContentScrollViewer"
+				    VerticalAlignment="Top">
+					<StackPanel x:Name="ContentStackPanel"
+					    Orientation="Vertical">
+						<StackPanel Orientation="Horizontal">
+							<Button x:Name="MoveContentUnderTopnav"
+							    Margin="1"
+							    AutomationProperties.Name="MoveContentUnderTopnavButton"
+							    Click="MoveContentUnderTopnav_Click"
+							    Content="Move/Remove content under Top nav + Scrollviewer checkup" />
+							<Button x:Name="MoveContentUnderTopnavTitleBar"
+							    Margin="1"
+							    AutomationProperties.Name="MoveContentUnderTopnavTitleBarButton"
+							    Click="MoveContentUnderTopnavTitleBar_Click"
+							    Content="Move/Remove content under Top nav + Scrollviewer checkup + Titlebar take over" />
+							<Button x:Name="GetTopPaddingHeightButton"
+							    Margin="1"
+							    AutomationProperties.Name="GetTopPaddingHeightButton"
+							    Click="GetTopPaddingHeightButton_Click"
+							    Content="Get top padding height" />
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<Button x:Name="AddItemButton"
+							    Margin="1"
+							    AutomationProperties.Name="AddItemButton"
+							    Click="AddButton_Click"
+							    Content="Add Item" />
+							<Button x:Name="AddItemSuppressSelectionButton"
+							    Margin="1"
+							    AutomationProperties.Name="AddItemSuppressSelectionButton"
+							    Click="AddButtonSuppressSelection_Click"
+							    Content="Add Item with SupppressSelection" />
+							<Button x:Name="RemoveItemButton"
+							    Margin="1"
+							    AutomationProperties.Name="RemoveItemButton"
+							    Click="RemoveButton_Click"
+							    Content="Remove Item" />
+							<Button x:Name="ChangeToIEnumerableButton"
+							    Margin="1"
+							    AutomationProperties.Name="ChangeToIEnumerableButton"
+							    Click="ChangeToIEnumerableButton_Clicks"
+							    Content="Make it IEnumerable" />
+							<Button x:Name="FlipIsTitleBarAutoPaddingEnabledButton"
+							    Margin="1"
+							    AutomationProperties.Name="FlipIsTitleBarAutoPaddingEnabledButton"
+							    Click="FlipIsTitleBarAutoPaddingEnabledButton_Click"
+							    Content="Flip IsTitleBarAutoPaddingEnabled" />
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<Button x:Name="FlipOrientation"
+							    Margin="1"
+							    AutomationProperties.Name="FlipOrientationButton"
+							    Click="FlipOrientation_Click"
+							    Content="Flip Orientation" />
+							<Button x:Name="AddRemoveContentOverlay"
+							    Margin="1"
+							    AutomationProperties.Name="AddRemoveContentOverlayButton"
+							    Click="AddRemoveContentOverlay_Click"
+							    Content="Add/Remove Content Overlay (top nav)" />
+							<Button x:Name="ChangeContentOverlayVisibility"
+							    Margin="1"
+							    AutomationProperties.Name="ChangeContentOverlayVisibilityButton"
+							    Click="ChangeContentOverlayVisibility_Click"
+							    Content="Change Content Overlay Visibility (top nav)" />
+							<Button x:Name="ChangeTopNavVisibility"
+							    Margin="1"
+							    AutomationProperties.Name="ChangeTopNavVisibilityButton"
+							    Click="ChangeTopNavVisibility_Click"
+							    Content="Change Top Nav Visibility" />
+							<Button x:Name="ChangeSelectionInCode"
+							    Margin="1"
+							    AutomationProperties.Name="ChangeSelectionInCodeButton"
+							    Click="ChangeSelectionInCode_Click"
+							    Content="Change Selection In Code" />
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<Button x:Name="EnableSelectionFollowsFocusButton"
+							    Margin="1"
+							    AutomationProperties.Name="EnableSelectionFollowsFocusButton"
+							    Click="EnableSelectionFollowsFocus_Click"
+							    Content="Enable Selection Follows Focus" />
+							<Button x:Name="GetActiveVisualState"
+							    Margin="1"
+							    AutomationProperties.Name="GetActiveVisualState"
+							    Click="GetActiveVisualState_Click"
+							    Content="Get Active VisualState" />
+							<Button x:Name="GetNavItemActiveVisualState"
+							    Margin="1"
+							    AutomationProperties.Name="GetNavItemActiveVisualState"
+							    Click="GetNavItemActiveNavItemVisualState_Click"
+							    Content="Get Selected NavItem Active VisualState" />
+							<Button x:Name="ClearItemInvokedTextButton"
+							    Margin="1"
+							    AutomationProperties.Name="ClearItemInvokedTextButton"
+							    Click="ClearItemInvokedTextButton_Click"
+							    Content="Clear Item Invoked Text" />
+						</StackPanel>
+					</StackPanel>
+				</ScrollViewer>
+				<TextBlock Text="Active NavigationItem Visual States: " />
+				<TextBlock x:Name="ActiveVisualStates"
+				    AutomationProperties.Name="ActiveVisualStates" />
+				<TextBlock x:Name="NavItemActiveVisualStates"
+				    AutomationProperties.Name="NavItemActiveVisualStates" />
+				<TextBlock Text="NavView.IsTitleBarAutoPaddingEnabled: " />
+				<TextBlock x:Name="NavViewIsTitleBarAutoPaddingEnabled" />
+				<TextBlock Text="Top padding Height: " />
+				<TextBlock x:Name="TopPaddingRenderedValue" />
+				<TextBlock Text="TitleBar.IsVisible: " />
+				<TextBlock x:Name="TitleBarIsVisible" />
+				<TextBlock Text="Item invoked: " />
+				<TextBlock x:Name="ItemInvokedText" />
+			</StackPanel>
+		</controls:NavigationView>
+	</Grid>
 </local:TestPage>

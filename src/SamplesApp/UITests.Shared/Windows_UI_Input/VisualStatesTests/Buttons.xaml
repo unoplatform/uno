@@ -1,19 +1,27 @@
-﻿<Page
-	x:Class="UITests.Shared.Windows_UI_Input.VisualStatesTests.Buttons"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:local="using:UITests.Shared.Windows_UI_Input.VisualStatesTests"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	FontSize="12"
-	mc:Ignorable="d"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page x:Class="UITests.Shared.Windows_UI_Input.VisualStatesTests.Buttons"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Shared.Windows_UI_Input.VisualStatesTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    FontSize="12"
+    mc:Ignorable="d">
 
 	<Page.Resources>
-		<SolidColorBrush x:Key="ButtonsBackground" Color="#33000000" />
+		<SolidColorBrush x:Key="ButtonsBackground"
+		    Color="#33000000" />
 
-		<ControlTemplate x:Key="ButtonTemplate" TargetType="Button">
-			<StackPanel Margin="10,5" Padding="5" BorderBrush="Black" BorderThickness="1" Background="{StaticResource ButtonsBackground}">
+		<ControlTemplate x:Key="ButtonTemplate"
+		    TargetType="Button">
+			<StackPanel Margin="10,5"
+			    Padding="5"
+			    Background="{StaticResource ButtonsBackground}"
+			    BorderBrush="Black"
+			    BorderThickness="1">
+				<ContentPresenter />
+				<TextBlock x:Name="State"
+				    Text="__state__" />
 				<VisualStateManager.VisualStateGroups>
 					<VisualStateGroup x:Name="CommonStates">
 						<VisualState x:Name="Normal">
@@ -38,14 +46,19 @@
 						</VisualState>
 					</VisualStateGroup>
 				</VisualStateManager.VisualStateGroups>
-
-				<ContentPresenter />
-				<TextBlock x:Name="State" Text="__state__" />
 			</StackPanel>
 		</ControlTemplate>
 
-		<ControlTemplate x:Key="ToggleButtonTemplate" TargetType="ToggleButton">
-			<StackPanel Margin="10,5" Padding="5" BorderBrush="Black" BorderThickness="1" Background="{StaticResource ButtonsBackground}">
+		<ControlTemplate x:Key="ToggleButtonTemplate"
+		    TargetType="ToggleButton">
+			<StackPanel Margin="10,5"
+			    Padding="5"
+			    Background="{StaticResource ButtonsBackground}"
+			    BorderBrush="Black"
+			    BorderThickness="1">
+				<ContentPresenter />
+				<TextBlock x:Name="State"
+				    Text="__state__" />
 				<VisualStateManager.VisualStateGroups>
 					<VisualStateGroup x:Name="CommonStates">
 						<VisualState x:Name="Normal">
@@ -112,14 +125,19 @@
 					</VisualStateGroup>
 
 				</VisualStateManager.VisualStateGroups>
-
-				<ContentPresenter />
-				<TextBlock x:Name="State" Text="__state__" />
 			</StackPanel>
 		</ControlTemplate>
 
-		<ControlTemplate x:Key="RadioButtonTemplate" TargetType="RadioButton">
-			<StackPanel Margin="10,5" Padding="5" BorderBrush="Black" BorderThickness="1" Background="{StaticResource ButtonsBackground}">
+		<ControlTemplate x:Key="RadioButtonTemplate"
+		    TargetType="RadioButton">
+			<StackPanel Margin="10,5"
+			    Padding="5"
+			    Background="{StaticResource ButtonsBackground}"
+			    BorderBrush="Black"
+			    BorderThickness="1">
+				<ContentPresenter />
+				<TextBlock x:Name="State"
+				    Text="__state__" />
 				<VisualStateManager.VisualStateGroups>
 					<VisualStateGroup x:Name="CommonStates">
 						<VisualState x:Name="Normal">
@@ -145,14 +163,19 @@
 					</VisualStateGroup>
 
 				</VisualStateManager.VisualStateGroups>
-
-				<ContentPresenter />
-				<TextBlock x:Name="State" Text="__state__" />
 			</StackPanel>
 		</ControlTemplate>
 
-		<ControlTemplate x:Key="HyperlinkButtonTemplate" TargetType="HyperlinkButton">
-			<StackPanel Margin="10,5" Padding="5" BorderBrush="Black" BorderThickness="1" Background="{StaticResource ButtonsBackground}">
+		<ControlTemplate x:Key="HyperlinkButtonTemplate"
+		    TargetType="HyperlinkButton">
+			<StackPanel Margin="10,5"
+			    Padding="5"
+			    Background="{StaticResource ButtonsBackground}"
+			    BorderBrush="Black"
+			    BorderThickness="1">
+				<ContentPresenter />
+				<TextBlock x:Name="State"
+				    Text="__state__" />
 				<VisualStateManager.VisualStateGroups>
 					<VisualStateGroup x:Name="CommonStates">
 						<VisualState x:Name="Normal">
@@ -178,14 +201,19 @@
 					</VisualStateGroup>
 
 				</VisualStateManager.VisualStateGroups>
-
-				<ContentPresenter />
-				<TextBlock x:Name="State" Text="__state__" />
 			</StackPanel>
 		</ControlTemplate>
 
-		<ControlTemplate x:Key="CheckBoxTemplate" TargetType="CheckBox">
-			<StackPanel Margin="10,5" Padding="5" BorderBrush="Black" BorderThickness="1" Background="{StaticResource ButtonsBackground}">
+		<ControlTemplate x:Key="CheckBoxTemplate"
+		    TargetType="CheckBox">
+			<StackPanel Margin="10,5"
+			    Padding="5"
+			    Background="{StaticResource ButtonsBackground}"
+			    BorderBrush="Black"
+			    BorderThickness="1">
+				<ContentPresenter />
+				<TextBlock x:Name="State"
+				    Text="__state__" />
 				<VisualStateManager.VisualStateGroups>
 					<VisualStateGroup x:Name="CombinedStates">
 						<VisualState x:Name="UncheckedNormal">
@@ -250,9 +278,6 @@
 						</VisualState>
 					</VisualStateGroup>
 				</VisualStateManager.VisualStateGroups>
-
-				<ContentPresenter />
-				<TextBlock x:Name="State" Text="__state__" />
 			</StackPanel>
 		</ControlTemplate>
 	</Page.Resources>
@@ -265,89 +290,86 @@
 			</Grid.ColumnDefinitions>
 
 			<StackPanel>
-				<TextBlock Text="Button (CommonStates: Normal | PointerOver | Pressed | Disabled)" TextWrapping="Wrap" />
-				<Button
-					x:Name="MyButton"
-					Content="Button"
-					FontSize="12"
-					Template="{StaticResource ButtonTemplate}"
-					Loaded="ListenVisualStates" />
+				<TextBlock Text="Button (CommonStates: Normal | PointerOver | Pressed | Disabled)"
+				    TextWrapping="Wrap" />
+				<Button x:Name="MyButton"
+				    Content="Button"
+				    FontSize="12"
+				    Loaded="ListenVisualStates"
+				    Template="{StaticResource ButtonTemplate}" />
 
-				<TextBlock Text="ToggleButton (CommonStates: Normal | UncheckedPointerOver | UncheckedPressed | UncheckedDisabled | Checked | CheckedPointerOver | CheckedPressed | CheckedDisabled | Indeterminate | IndeterminatePointerOver | IndeterminatePressed | IndeterminateDisabled)" TextWrapping="Wrap" />
-				<ToggleButton
-					x:Name="MyIndeterminateToggleButton"
-					Content="Indeterminate Toggle button"
-					IsThreeState="True"
-					IsChecked="{x:Null}"
-					FontSize="12"
-					Template="{StaticResource ToggleButtonTemplate}"
-					Loaded="ListenVisualStates" />
-				<ToggleButton
-					x:Name="MyCheckedToggleButton"
-					Content="Checked toggle button"
-					IsChecked="True"
-					FontSize="12"
-					Template="{StaticResource ToggleButtonTemplate}"
-					Loaded="ListenVisualStates" />
-				<ToggleButton
-					x:Name="MyUncheckedToggleButton"
-					Content="Unchecked toggle button"
-					IsChecked="False"
-					FontSize="12"
-					Template="{StaticResource ToggleButtonTemplate}"
-					Loaded="ListenVisualStates" />
+				<TextBlock Text="ToggleButton (CommonStates: Normal | UncheckedPointerOver | UncheckedPressed | UncheckedDisabled | Checked | CheckedPointerOver | CheckedPressed | CheckedDisabled | Indeterminate | IndeterminatePointerOver | IndeterminatePressed | IndeterminateDisabled)"
+				    TextWrapping="Wrap" />
+				<ToggleButton x:Name="MyIndeterminateToggleButton"
+				    Content="Indeterminate Toggle button"
+				    FontSize="12"
+				    IsChecked="{x:Null}"
+				    IsThreeState="True"
+				    Loaded="ListenVisualStates"
+				    Template="{StaticResource ToggleButtonTemplate}" />
+				<ToggleButton x:Name="MyCheckedToggleButton"
+				    Content="Checked toggle button"
+				    FontSize="12"
+				    IsChecked="True"
+				    Loaded="ListenVisualStates"
+				    Template="{StaticResource ToggleButtonTemplate}" />
+				<ToggleButton x:Name="MyUncheckedToggleButton"
+				    Content="Unchecked toggle button"
+				    FontSize="12"
+				    IsChecked="False"
+				    Loaded="ListenVisualStates"
+				    Template="{StaticResource ToggleButtonTemplate}" />
 
-				<TextBlock Text="RadioButton (CommonStates: Normal | PointerOver | Pressed | Disabled)" TextWrapping="Wrap" />
-				<RadioButton
-					x:Name="MyRadioButton"
-					Content="Radio button"
-					FontSize="12"
-					Template="{StaticResource RadioButtonTemplate}"
-					Loaded="ListenVisualStates" />
+				<TextBlock Text="RadioButton (CommonStates: Normal | PointerOver | Pressed | Disabled)"
+				    TextWrapping="Wrap" />
+				<RadioButton x:Name="MyRadioButton"
+				    Content="Radio button"
+				    FontSize="12"
+				    Loaded="ListenVisualStates"
+				    Template="{StaticResource RadioButtonTemplate}" />
 
-				<TextBlock Text="HyperlinkButton (CommonStates: Normal | PointerOver | Pressed | Disabled)" TextWrapping="Wrap" />
-				<HyperlinkButton
-					x:Name="MyHyperlinkButton"
-					Content="Hyperlink button"
-					FontSize="12"
-					Template="{StaticResource HyperlinkButtonTemplate}"
-					Loaded="ListenVisualStates" />
+				<TextBlock Text="HyperlinkButton (CommonStates: Normal | PointerOver | Pressed | Disabled)"
+				    TextWrapping="Wrap" />
+				<HyperlinkButton x:Name="MyHyperlinkButton"
+				    Content="Hyperlink button"
+				    FontSize="12"
+				    Loaded="ListenVisualStates"
+				    Template="{StaticResource HyperlinkButtonTemplate}" />
 
-				<TextBlock Text="CheckBox (**Combined**States: UncheckedNormal | UncheckedPointerOver | UncheckedPressed | UncheckedDisabled | CheckedNormal | CheckedPointerOver | CheckedPressed | CheckedDisabled | IndeterminateNormal | IndeterminatePointerOver | IndeterminatePressed | IndeterminateDisabled)" TextWrapping="Wrap" />
-				<CheckBox
-					x:Name="MyIndeterminateCheckbox"
-					Content="Indeterminate checkbox"
-					IsThreeState="True"
-					IsChecked="{x:Null}"
-					FontSize="12"
-					Template="{StaticResource CheckBoxTemplate}"
-					Loaded="ListenVisualStates" />
-				<CheckBox
-					x:Name="MyCheckedCheckbox"
-					Content="Checked checkbox"
-					IsChecked="True"
-					FontSize="12"
-					Template="{StaticResource CheckBoxTemplate}"
-					Loaded="ListenVisualStates" />
-				<CheckBox
-					x:Name="MyUncheckedCheckbox"
-					Content="Unchecked checkbox"
-					IsChecked="False"
-					FontSize="12"
-					Template="{StaticResource CheckBoxTemplate}"
-					Loaded="ListenVisualStates" />
+				<TextBlock Text="CheckBox (**Combined**States: UncheckedNormal | UncheckedPointerOver | UncheckedPressed | UncheckedDisabled | CheckedNormal | CheckedPointerOver | CheckedPressed | CheckedDisabled | IndeterminateNormal | IndeterminatePointerOver | IndeterminatePressed | IndeterminateDisabled)"
+				    TextWrapping="Wrap" />
+				<CheckBox x:Name="MyIndeterminateCheckbox"
+				    Content="Indeterminate checkbox"
+				    FontSize="12"
+				    IsChecked="{x:Null}"
+				    IsThreeState="True"
+				    Loaded="ListenVisualStates"
+				    Template="{StaticResource CheckBoxTemplate}" />
+				<CheckBox x:Name="MyCheckedCheckbox"
+				    Content="Checked checkbox"
+				    FontSize="12"
+				    IsChecked="True"
+				    Loaded="ListenVisualStates"
+				    Template="{StaticResource CheckBoxTemplate}" />
+				<CheckBox x:Name="MyUncheckedCheckbox"
+				    Content="Unchecked checkbox"
+				    FontSize="12"
+				    IsChecked="False"
+				    Loaded="ListenVisualStates"
+				    Template="{StaticResource CheckBoxTemplate}" />
 
-				<TextBlock Text="Hyperlink (Hardcoded Pressed state)" TextWrapping="Wrap" />
-				<TextBlock x:Name="MyHyperlink" Margin="10,5">
+				<TextBlock Text="Hyperlink (Hardcoded Pressed state)"
+				    TextWrapping="Wrap" />
+				<TextBlock x:Name="MyHyperlink"
+				    Margin="10,5">
 					<Hyperlink>This is an hyperlink</Hyperlink>
 				</TextBlock>
 
 			</StackPanel>
 
-			<TextBlock
-				x:Name="VisualStatesLog"
-				TextWrapping="Wrap"
-				Grid.Column="1" />
+			<TextBlock x:Name="VisualStatesLog"
+			    Grid.Column="1"
+			    TextWrapping="Wrap" />
 		</Grid>
 	</ScrollViewer>
 </Page>

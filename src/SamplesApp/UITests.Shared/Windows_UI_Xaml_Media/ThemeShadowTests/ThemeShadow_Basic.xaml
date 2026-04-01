@@ -1,5 +1,4 @@
-﻿<Page
-    x:Class="UITests.Windows_UI_Xaml_Media.ThemeShadowTests.ThemeShadow_Basic"
+﻿<Page x:Class="UITests.Windows_UI_Xaml_Media.ThemeShadowTests.ThemeShadow_Basic"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Windows10version1903="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 8)"
@@ -27,63 +26,57 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 
-		<Grid
-            x:Name="BackgroundGrid"
-            Grid.RowSpan="3"
-            Grid.ColumnSpan="3"
-            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
+		<Grid x:Name="BackgroundGrid"
+		    Grid.RowSpan="3"
+		    Grid.ColumnSpan="3"
+		    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
 
-		<Rectangle
-            Margin="40"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            Fill="Turquoise"
-            Shadow="{StaticResource SharedShadow}"
-            Translation="0,0,0" />
+		<Rectangle Margin="40"
+		    HorizontalAlignment="Stretch"
+		    VerticalAlignment="Stretch"
+		    Fill="Turquoise"
+		    Shadow="{StaticResource SharedShadow}"
+		    Translation="0,0,0" />
 
 		<TextBlock Text="Rectangle, Z=0" />
 
-		<Rectangle
-            Grid.Column="1"
-            Margin="40"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            Fill="Turquoise"
-            Shadow="{StaticResource SharedShadow}"
-            Translation="0,0,8" />
+		<Rectangle Grid.Column="1"
+		    Margin="40"
+		    HorizontalAlignment="Stretch"
+		    VerticalAlignment="Stretch"
+		    Fill="Turquoise"
+		    Shadow="{StaticResource SharedShadow}"
+		    Translation="0,0,8" />
 
-		<TextBlock Grid.Column="1" Text="Rectangle, Z=8" />
+		<TextBlock Grid.Column="1"
+		    Text="Rectangle, Z=8" />
 
 
-		<Border
-            Grid.Row="1"
-            Grid.Column="0"
-            Margin="40"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            Background="Turquoise"
-            Shadow="{StaticResource SharedShadow}"
-            Translation="0,0,16" />
+		<Border Grid.Row="1"
+		    Grid.Column="0"
+		    Margin="40"
+		    HorizontalAlignment="Stretch"
+		    VerticalAlignment="Stretch"
+		    Background="Turquoise"
+		    Shadow="{StaticResource SharedShadow}"
+		    Translation="0,0,16" />
 
-		<TextBlock
-            Grid.Row="1"
-            Grid.Column="0"
-            Text="Border, Z=16" />
+		<TextBlock Grid.Row="1"
+		    Grid.Column="0"
+		    Text="Border, Z=16" />
 
-		<Border
-            Grid.Row="1"
-            Grid.Column="1"
-            Margin="40"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            Background="Turquoise"
-            Shadow="{StaticResource SharedShadow}"
-            Translation="0,0,32" />
+		<Border Grid.Row="1"
+		    Grid.Column="1"
+		    Margin="40"
+		    HorizontalAlignment="Stretch"
+		    VerticalAlignment="Stretch"
+		    Background="Turquoise"
+		    Shadow="{StaticResource SharedShadow}"
+		    Translation="0,0,32" />
 
-		<TextBlock
-            Grid.Row="1"
-            Grid.Column="1"
-            Text="Border, Z=32" />
+		<TextBlock Grid.Row="1"
+		    Grid.Column="1"
+		    Text="Border, Z=32" />
 
 	</Grid>
 </Page>

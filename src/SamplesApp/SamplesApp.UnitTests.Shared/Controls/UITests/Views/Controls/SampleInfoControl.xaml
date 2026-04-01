@@ -1,15 +1,15 @@
-﻿<UserControl
-    x:Class="Uno.UI.Samples.Controls.SampleInfoControl"
+﻿<UserControl x:Class="Uno.UI.Samples.Controls.SampleInfoControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Uno.UI.Samples.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Uno.UI.Samples.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignWidth="400"
+    mc:Ignorable="d">
 
-	<StackPanel Orientation="Vertical" MaxWidth="320">
+	<StackPanel MaxWidth="320"
+	    Orientation="Vertical">
 		<StackPanel.Resources>
 			<Style TargetType="TextBlock">
 				<Setter Property="TextWrapping" Value="Wrap" />
@@ -18,45 +18,65 @@
 			</Style>
 		</StackPanel.Resources>
 		<TextBlock>
-			<Run FontWeight="Bold" Text="Name: " />
+			<Run FontWeight="Bold"
+			    Text="Name: " />
 			<Run Text="{Binding ControlName}" />
 		</TextBlock>
 		<TextBlock>
-			<Run FontWeight="Bold" Text="Categories: " />
+			<Run FontWeight="Bold"
+			    Text="Categories: " />
 			<Run Text="{Binding CategoriesString}" />
 		</TextBlock>
 		<TextBlock>
-			<Run FontWeight="Bold" Text="Description: " />
+			<Run FontWeight="Bold"
+			    Text="Description: " />
 			<LineBreak /><Run Text="{Binding Description}" />
 		</TextBlock>
-		<TextBlock FontWeight="Bold" Text="Control type:" Margin="0" />
+		<TextBlock Margin="0"
+		    FontWeight="Bold"
+		    Text="Control type:" />
 		<Grid ColumnSpacing="8">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
-			<Button Click="CopyContentClick" CommandParameter="{Binding ControlType.FullName}">
+			<Button Click="CopyContentClick"
+			    CommandParameter="{Binding ControlType.FullName}">
 				<SymbolIcon Symbol="Copy" />
 			</Button>
-			<TextBlock Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding ControlType.FullName}" />
+			<TextBlock Grid.Column="1"
+			    VerticalAlignment="Center"
+			    Text="{Binding ControlType.FullName}"
+			    TextWrapping="Wrap" />
 		</Grid>
 
-		<TextBlock FontWeight="Bold" Text="Query string:" Margin="0" />
+		<TextBlock Margin="0"
+		    FontWeight="Bold"
+		    Text="Query string:" />
 		<Grid ColumnSpacing="8">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
-			<Button Click="CopyContentClick" CommandParameter="{Binding QueryString}">
+			<Button Click="CopyContentClick"
+			    CommandParameter="{Binding QueryString}">
 				<SymbolIcon Symbol="Copy" />
 			</Button>
-			<TextBlock Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding QueryString}" />
+			<TextBlock Grid.Column="1"
+			    VerticalAlignment="Center"
+			    Text="{Binding QueryString}"
+			    TextWrapping="Wrap" />
 		</Grid>
 
-		<HyperlinkButton x:Name="GitHubLinkButton" Click="OpenGitHubClick" Margin="0,8,0,0">
-			<StackPanel Orientation="Horizontal" Spacing="8">
-				<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE774;" />
-				<TextBlock Text="View source on GitHub" IsTextSelectionEnabled="False" />
+		<HyperlinkButton x:Name="GitHubLinkButton"
+		    Margin="0,8,0,0"
+		    Click="OpenGitHubClick">
+			<StackPanel Orientation="Horizontal"
+			    Spacing="8">
+				<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}"
+				    Glyph="&#xE774;" />
+				<TextBlock IsTextSelectionEnabled="False"
+				    Text="View source on GitHub" />
 			</StackPanel>
 		</HyperlinkButton>
 	</StackPanel>

@@ -1,10 +1,10 @@
 ﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement.MediaPlayerElement_Full"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:not_win="http://uno.ui/not_win"
-			 mc:Ignorable="d not_win">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_win="http://uno.ui/not_win"
+    mc:Ignorable="d not_win">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="7*" />
@@ -12,168 +12,167 @@
 		</Grid.RowDefinitions>
 
 		<MediaPlayerElement x:Name="Mpe"
-							Source="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4"
-							PosterSource="https://bitmovin-a.akamaihd.net/content/sintel/poster.png"
-							AreTransportControlsEnabled="{Binding IsChecked, ElementName=AreTransportControlsEnabled}"
-							AutoPlay="{Binding IsChecked, ElementName=AutoPlay}">
+		    AreTransportControlsEnabled="{Binding IsChecked, ElementName=AreTransportControlsEnabled}"
+		    AutoPlay="{Binding IsChecked, ElementName=AutoPlay}"
+		    PosterSource="https://bitmovin-a.akamaihd.net/content/sintel/poster.png"
+		    Source="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4">
 			<MediaPlayerElement.TransportControls>
-				<MediaTransportControls IsCompact="{Binding IsChecked, ElementName=IsCompact}"
-										ShowAndHideAutomatically="{Binding IsChecked, ElementName=ShowAndHideAutomatically}"
-										IsFastForwardButtonVisible="{Binding IsChecked, ElementName=IsFastForwardButtonVisible}"
-										IsFastForwardEnabled="{Binding IsChecked, ElementName=IsFastForwardEnabled}"
-										IsFastRewindButtonVisible="{Binding IsChecked, ElementName=IsFastRewindButtonVisible}"
-										IsFastRewindEnabled="{Binding IsChecked, ElementName=IsFastRewindEnabled}"
-										not_win:IsFullWindowButtonVisible="{Binding IsChecked, ElementName=IsFullWindowButtonVisible}"
-										not_win:IsFullWindowEnabled="{Binding IsChecked, ElementName=IsFullWindowEnabled}"
-										IsNextTrackButtonVisible="{Binding IsChecked, ElementName=IsNextTrackButtonVisible}"
-										IsPlaybackRateButtonVisible="{Binding IsChecked, ElementName=IsPlaybackRateButtonVisible}"
-										IsPlaybackRateEnabled="{Binding IsChecked, ElementName=IsPlaybackRateEnabled}"
-										IsPreviousTrackButtonVisible="{Binding IsChecked, ElementName=IsPreviousTrackButtonVisible}"
-										IsRepeatButtonVisible="{Binding IsChecked, ElementName=IsRepeatButtonVisible}"
-										IsRepeatEnabled="{Binding IsChecked, ElementName=IsRepeatEnabled}"
-										IsSeekBarVisible="{Binding IsChecked, ElementName=IsSeekBarVisible}"
-										IsSeekEnabled="{Binding IsChecked, ElementName=IsSeekEnabled}"
-										IsSkipBackwardButtonVisible="{Binding IsChecked, ElementName=IsSkipBackwardButtonVisible}"
-										IsSkipBackwardEnabled="{Binding IsChecked, ElementName=IsSkipBackwardEnabled}"
-										IsSkipForwardButtonVisible="{Binding IsChecked, ElementName=IsSkipForwardButtonVisible}"
-										IsSkipForwardEnabled="{Binding IsChecked, ElementName=IsSkipForwardEnabled}"
-										IsStopButtonVisible="{Binding IsChecked, ElementName=IsStopButtonVisible}"
-										IsStopEnabled="{Binding IsChecked, ElementName=IsStopEnabled}"
-										IsVolumeButtonVisible="{Binding IsChecked, ElementName=IsVolumeButtonVisible}"
-										IsVolumeEnabled="{Binding IsChecked, ElementName=IsVolumeEnabled}"
-										IsZoomButtonVisible="{Binding IsChecked, ElementName=IsZoomButtonVisible}"
-										IsZoomEnabled="{Binding IsChecked, ElementName=IsZoomEnabled}"
-										not_win:IsCompactOverlayButtonVisible="{Binding IsChecked, ElementName=IsCompactOverlayButtonVisible}"
-										not_win:IsCompactOverlayEnabled="{Binding IsChecked, ElementName=IsCompactOverlayEnabled}"
-										/>
+				<MediaTransportControls not_win:IsCompactOverlayButtonVisible="{Binding IsChecked, ElementName=IsCompactOverlayButtonVisible}"
+				    not_win:IsCompactOverlayEnabled="{Binding IsChecked, ElementName=IsCompactOverlayEnabled}"
+				    not_win:IsFullWindowButtonVisible="{Binding IsChecked, ElementName=IsFullWindowButtonVisible}"
+				    not_win:IsFullWindowEnabled="{Binding IsChecked, ElementName=IsFullWindowEnabled}"
+				    IsCompact="{Binding IsChecked, ElementName=IsCompact}"
+				    IsFastForwardButtonVisible="{Binding IsChecked, ElementName=IsFastForwardButtonVisible}"
+				    IsFastForwardEnabled="{Binding IsChecked, ElementName=IsFastForwardEnabled}"
+				    IsFastRewindButtonVisible="{Binding IsChecked, ElementName=IsFastRewindButtonVisible}"
+				    IsFastRewindEnabled="{Binding IsChecked, ElementName=IsFastRewindEnabled}"
+				    IsNextTrackButtonVisible="{Binding IsChecked, ElementName=IsNextTrackButtonVisible}"
+				    IsPlaybackRateButtonVisible="{Binding IsChecked, ElementName=IsPlaybackRateButtonVisible}"
+				    IsPlaybackRateEnabled="{Binding IsChecked, ElementName=IsPlaybackRateEnabled}"
+				    IsPreviousTrackButtonVisible="{Binding IsChecked, ElementName=IsPreviousTrackButtonVisible}"
+				    IsRepeatButtonVisible="{Binding IsChecked, ElementName=IsRepeatButtonVisible}"
+				    IsRepeatEnabled="{Binding IsChecked, ElementName=IsRepeatEnabled}"
+				    IsSeekBarVisible="{Binding IsChecked, ElementName=IsSeekBarVisible}"
+				    IsSeekEnabled="{Binding IsChecked, ElementName=IsSeekEnabled}"
+				    IsSkipBackwardButtonVisible="{Binding IsChecked, ElementName=IsSkipBackwardButtonVisible}"
+				    IsSkipBackwardEnabled="{Binding IsChecked, ElementName=IsSkipBackwardEnabled}"
+				    IsSkipForwardButtonVisible="{Binding IsChecked, ElementName=IsSkipForwardButtonVisible}"
+				    IsSkipForwardEnabled="{Binding IsChecked, ElementName=IsSkipForwardEnabled}"
+				    IsStopButtonVisible="{Binding IsChecked, ElementName=IsStopButtonVisible}"
+				    IsStopEnabled="{Binding IsChecked, ElementName=IsStopEnabled}"
+				    IsVolumeButtonVisible="{Binding IsChecked, ElementName=IsVolumeButtonVisible}"
+				    IsVolumeEnabled="{Binding IsChecked, ElementName=IsVolumeEnabled}"
+				    IsZoomButtonVisible="{Binding IsChecked, ElementName=IsZoomButtonVisible}"
+				    IsZoomEnabled="{Binding IsChecked, ElementName=IsZoomEnabled}"
+				    ShowAndHideAutomatically="{Binding IsChecked, ElementName=ShowAndHideAutomatically}" />
 			</MediaPlayerElement.TransportControls>
 		</MediaPlayerElement>
 
 		<ScrollViewer Grid.Row="1"
-					  Margin="10,20">
+		    Margin="10,20">
 			<StackPanel>
 				<CheckBox x:Name="AreTransportControlsEnabled"
-						  IsChecked="True"
-						  Content="AreTransportControlsEnabled" />
+				    Content="AreTransportControlsEnabled"
+				    IsChecked="True" />
 
 				<CheckBox x:Name="AutoPlay"
-						  IsChecked="True"
-						  Content="AutoPlay" />
-				
+				    Content="AutoPlay"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsCompact"
-						  IsChecked="False"
-						  Content="IsCompact" />
+				    Content="IsCompact"
+				    IsChecked="False" />
 
 				<CheckBox x:Name="IsCompactOverlayButtonVisible"
-						  IsChecked="True"
-						  Content="IsCompactOverlayButtonVisible" />
+				    Content="IsCompactOverlayButtonVisible"
+				    IsChecked="True" />
 
 				<CheckBox x:Name="IsCompactOverlayEnabled"
-						  IsChecked="True"
-						  Content="IsCompactOverlayEnabled" />
-				
+				    Content="IsCompactOverlayEnabled"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="ShowAndHideAutomatically"
-						  IsChecked="True"
-						  Content="ShowAndHideAutomatically" />
-				
+				    Content="ShowAndHideAutomatically"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsFastForwardButtonVisible"
-						  IsChecked="False"
-						  Content="IsFastForwardButtonVisible" />
-				
+				    Content="IsFastForwardButtonVisible"
+				    IsChecked="False" />
+
 				<CheckBox x:Name="IsFastForwardEnabled"
-						  IsChecked="False"
-						  Content="IsFastForwardEnabled" />
-				
+				    Content="IsFastForwardEnabled"
+				    IsChecked="False" />
+
 				<CheckBox x:Name="IsFastRewindButtonVisible"
-						  IsChecked="False"
-						  Content="IsFastRewindButtonVisible" />
-				
+				    Content="IsFastRewindButtonVisible"
+				    IsChecked="False" />
+
 				<CheckBox x:Name="IsFastRewindEnabled"
-						  IsChecked="False"
-						  Content="IsFastRewindEnabled" />
-				
+				    Content="IsFastRewindEnabled"
+				    IsChecked="False" />
+
 				<CheckBox x:Name="IsFullWindowButtonVisible"
-						  IsChecked="True"
-						  Content="IsFullWindowButtonVisible" />
-				
+				    Content="IsFullWindowButtonVisible"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsFullWindowEnabled"
-						  IsChecked="True"
-						  Content="IsFullWindowEnabled" />
-				
+				    Content="IsFullWindowEnabled"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsNextTrackButtonVisible"
-						  IsChecked="False"
-						  Content="IsNextTrackButtonVisible" />
+				    Content="IsNextTrackButtonVisible"
+				    IsChecked="False" />
 
 				<CheckBox x:Name="IsPlaybackRateButtonVisible"
-						  IsChecked="False"
-						  Content="IsPlaybackRateButtonVisible" />
+				    Content="IsPlaybackRateButtonVisible"
+				    IsChecked="False" />
 
 				<CheckBox x:Name="IsPlaybackRateEnabled"
-						  IsChecked="False"
-						  Content="IsPlaybackRateEnabled" />
+				    Content="IsPlaybackRateEnabled"
+				    IsChecked="False" />
 
 				<CheckBox x:Name="IsPreviousTrackButtonVisible"
-						  IsChecked="False"
-						  Content="IsPreviousTrackButtonVisible" />
-				
+				    Content="IsPreviousTrackButtonVisible"
+				    IsChecked="False" />
+
 				<CheckBox x:Name="IsRepeatButtonVisible"
-						  IsChecked="False"
-						  Content="IsRepeatButtonVisible" />
-				
+				    Content="IsRepeatButtonVisible"
+				    IsChecked="False" />
+
 				<CheckBox x:Name="IsRepeatEnabled"
-						  IsChecked="False"
-						  Content="IsRepeatEnabled" />
-				
+				    Content="IsRepeatEnabled"
+				    IsChecked="False" />
+
 				<CheckBox x:Name="IsSeekBarVisible"
-						  IsChecked="True"
-						  Content="IsSeekBarVisible" />
-				
+				    Content="IsSeekBarVisible"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsSeekEnabled"
-						  IsChecked="True"
-						  Content="IsSeekEnabled" />
-				
+				    Content="IsSeekEnabled"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsSkipBackwardButtonVisible"
-						  IsChecked="True"
-						  Content="IsSkipBackwardButtonVisible" />
-				
+				    Content="IsSkipBackwardButtonVisible"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsSkipBackwardEnabled"
-						  IsChecked="True"
-						  Content="IsSkipBackwardEnabled" />
-				
+				    Content="IsSkipBackwardEnabled"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsSkipForwardButtonVisible"
-						  IsChecked="True"
-						  Content="IsSkipForwardButtonVisible" />
-				
+				    Content="IsSkipForwardButtonVisible"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsSkipForwardEnabled"
-						  IsChecked="True"
-						  Content="IsSkipForwardEnabled" />
-				
+				    Content="IsSkipForwardEnabled"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsStopButtonVisible"
-						  IsChecked="True"
-						  Content="IsStopButtonVisible" />
-				
+				    Content="IsStopButtonVisible"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsStopEnabled"
-						  IsChecked="True"
-						  Content="IsStopEnabled" />
-				
+				    Content="IsStopEnabled"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsVolumeButtonVisible"
-						  IsChecked="True"
-						  Content="IsVolumeButtonVisible" />
-				
+				    Content="IsVolumeButtonVisible"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsVolumeEnabled"
-						  IsChecked="True"
-						  Content="IsVolumeEnabled" />
-				
+				    Content="IsVolumeEnabled"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsZoomButtonVisible"
-						  IsChecked="True"
-						  Content="IsZoomButtonVisible" />
-				
+				    Content="IsZoomButtonVisible"
+				    IsChecked="True" />
+
 				<CheckBox x:Name="IsZoomEnabled"
-						  IsChecked="True"
-						  Content="IsZoomEnabled" />
+				    Content="IsZoomEnabled"
+				    IsChecked="True" />
 
 			</StackPanel>
 		</ScrollViewer>
-		
-    </Grid>
+
+	</Grid>
 </UserControl>

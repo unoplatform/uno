@@ -1,16 +1,15 @@
-﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX Reference controls\dev\CommandBarFlyout\TestUI\ExtraCommandBarFlyoutPage.xaml, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b -->
-<local:TestPage
-    x:Class="MUXControlsTestApp.ExtraCommandBarFlyoutPage"
+﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
+<!--  MUX Reference controls\dev\CommandBarFlyout\TestUI\ExtraCommandBarFlyoutPage.xaml, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b  -->
+<local:TestPage x:Class="MUXControlsTestApp.ExtraCommandBarFlyoutPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:MUXControlsTestApp"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:muxcp="using:Microsoft.UI.Xaml.Controls.Primitives"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
 	<Page.Resources>
 		<muxc:TextCommandBarFlyout x:Name="TextCommandBarContextFlyout" />
@@ -18,54 +17,103 @@
 	</Page.Resources>
 
 	<StackPanel Margin="12">
-		<TextBlock Text="Demo controls" Style="{ThemeResource StandardGroupHeader}"/>
+		<TextBlock Style="{ThemeResource StandardGroupHeader}"
+		    Text="Demo controls" />
 		<StackPanel Orientation="Horizontal">
-			<TextBox x:Name="TextBox1" AutomationProperties.AutomationId="TextBox" ContextFlyout="{x:Bind TextCommandBarContextFlyout}"
-                     MinWidth="200" />
-			<RichTextBlock x:Name="RichTextBlock1" AutomationProperties.AutomationId="RichTextBlock" Margin="10" OverflowContentTarget="{x:Bind RichTextBlockOverflow1}" ContextFlyout="{x:Bind TextCommandBarContextFlyout}" Width="100" Height="50" HorizontalAlignment="Center">
+			<TextBox x:Name="TextBox1"
+			    MinWidth="200"
+			    AutomationProperties.AutomationId="TextBox"
+			    ContextFlyout="{x:Bind TextCommandBarContextFlyout}" />
+			<RichTextBlock x:Name="RichTextBlock1"
+			    Width="100"
+			    Height="50"
+			    Margin="10"
+			    HorizontalAlignment="Center"
+			    AutomationProperties.AutomationId="RichTextBlock"
+			    ContextFlyout="{x:Bind TextCommandBarContextFlyout}"
+			    OverflowContentTarget="{x:Bind RichTextBlockOverflow1}">
 				<RichTextBlock.Blocks>
 					<Paragraph>
 						<Run>This is a very, very long string that cannot possibly fit within the RichTextBlock's bounds, so it overflows.</Run>
 					</Paragraph>
 				</RichTextBlock.Blocks>
 			</RichTextBlock>
-			<RichTextBlockOverflow x:Name="RichTextBlockOverflow1" AutomationProperties.AutomationId="RichTextBlockOverflow" Margin="10" HorizontalAlignment="Center" />
+			<RichTextBlockOverflow x:Name="RichTextBlockOverflow1"
+			    Margin="10"
+			    HorizontalAlignment="Center"
+			    AutomationProperties.AutomationId="RichTextBlockOverflow" />
 			<Button Content="Click for a CommandBarFlyout with many items">
 				<Button.Flyout>
 					<muxc:CommandBarFlyout>
-						<AppBarButton Label="Item 1" Icon="Favorite" />
-						<AppBarButton Label="Item 2" Icon="Favorite" />
-						<AppBarButton Label="Item 3" Icon="Favorite" />
-						<AppBarButton Label="Item 4" Icon="Favorite" />
-						<AppBarButton Label="Item 5" Icon="Favorite" />
-						<AppBarButton Label="Item 6" Icon="Favorite" />
-						<AppBarButton Label="Item 7" Icon="Favorite" />
-						<AppBarButton Label="Item 8" Icon="Favorite" />
-						<AppBarButton Label="Item 9" Icon="Favorite" />
-						<AppBarButton Label="Item 10" Icon="Favorite" />
-						<AppBarButton Label="Item 11" Icon="Favorite" />
-						<AppBarButton Label="Item 12" Icon="Favorite" />
-						<AppBarButton Label="Item 13" Icon="Favorite" />
-						<AppBarButton Label="Item 14" Icon="Favorite" />
-						<AppBarButton Label="Item 15" Icon="Favorite" />
-						<AppBarButton Label="Item 16" Icon="Favorite" />
-						<AppBarButton Label="Item 17" Icon="Favorite" />
-						<AppBarButton Label="Item 18" Icon="Favorite" />
-						<AppBarButton Label="Item 19" Icon="Favorite" />
-						<AppBarButton Label="Item 20" Icon="Favorite" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 1" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 2" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 3" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 4" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 5" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 6" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 7" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 8" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 9" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 10" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 11" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 12" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 13" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 14" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 15" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 16" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 17" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 18" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 19" />
+						<AppBarButton Icon="Favorite"
+						    Label="Item 20" />
 					</muxc:CommandBarFlyout>
 				</Button.Flyout>
 			</Button>
 		</StackPanel>
-		<TextBlock Text="Actions" Style="{ThemeResource StandardGroupHeader}" Margin="0,24,0,8"/>
-		<Button AutomationProperties.AutomationId="ClearClipboardContentsButton" Content="Clear clipboard" Click="OnClearClipboardContentsClicked" />
-		<TextBox x:Name="tb" Loaded="tbloaded" Unloaded="tbunloaded" AutomationProperties.Name="TextBoxWithAdditionalItems"/>
+		<TextBlock Margin="0,24,0,8"
+		    Style="{ThemeResource StandardGroupHeader}"
+		    Text="Actions" />
+		<Button AutomationProperties.AutomationId="ClearClipboardContentsButton"
+		    Click="OnClearClipboardContentsClicked"
+		    Content="Clear clipboard" />
+		<TextBox x:Name="tb"
+		    AutomationProperties.Name="TextBoxWithAdditionalItems"
+		    Loaded="tbloaded"
+		    Unloaded="tbunloaded" />
 
-		<TextBlock Text="Status" Style="{ThemeResource StandardGroupHeader}" Margin="0,24,0,8"/>
+		<TextBlock Margin="0,24,0,8"
+		    Style="{ThemeResource StandardGroupHeader}"
+		    Text="Status" />
 		<StackPanel Orientation="Horizontal">
-			<Button AutomationProperties.AutomationId="CountPopupsButton" Content="Count popups" Click="OnCountPopupsClicked" Margin="0,0,8,0"/>
-			<TextBox x:Name="PopupCountTextBox" AutomationProperties.AutomationId="PopupCountTextBox" IsReadOnly="True" />
-			<TextBox x:Name="CustomButtonsOpenCount" AutomationProperties.AutomationId="CustomButtonsOpenCount" IsReadOnly="True" />
+			<Button Margin="0,0,8,0"
+			    AutomationProperties.AutomationId="CountPopupsButton"
+			    Click="OnCountPopupsClicked"
+			    Content="Count popups" />
+			<TextBox x:Name="PopupCountTextBox"
+			    AutomationProperties.AutomationId="PopupCountTextBox"
+			    IsReadOnly="True" />
+			<TextBox x:Name="CustomButtonsOpenCount"
+			    AutomationProperties.AutomationId="CustomButtonsOpenCount"
+			    IsReadOnly="True" />
 		</StackPanel>
 	</StackPanel>
 </local:TestPage>

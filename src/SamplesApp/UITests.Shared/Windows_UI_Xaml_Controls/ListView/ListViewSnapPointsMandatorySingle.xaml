@@ -1,52 +1,39 @@
-<UserControl
-	x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewSnapPointsMandatorySingle"
-	xmlns:controls="using:Uno.UI.Samples.Controls"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:u="using:Uno.UI.Samples.Controls"
-	xmlns:ios="http://uno.ui/ios"
-	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:android="http://uno.ui/android"
-	xmlns:not_win="http://uno.ui/not_win"
-	mc:Ignorable="d ios android not_win"
-	d:DesignHeight="2000"
-	d:DesignWidth="400">
+﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewSnapPointsMandatorySingle"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:android="http://uno.ui/android"
+    xmlns:controls="using:Uno.UI.Samples.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ios="http://uno.ui/ios"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_win="http://uno.ui/not_win"
+    xmlns:u="using:Uno.UI.Samples.Controls"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    d:DesignHeight="2000"
+    d:DesignWidth="400"
+    mc:Ignorable="d ios android not_win">
 
 	<UserControl.Resources>
 		<ResourceDictionary>
 			<Style x:Key="NoPaddingListViewItemStyle"
-						 TargetType="ListViewItem">
-				<Setter Property="Padding"
-								Value="0" />
+			    TargetType="ListViewItem">
+				<Setter Property="Padding" Value="0" />
 			</Style>
 			<Style x:Key="MandatorySingleCenterListViewStyle"
-						 TargetType="ListView">
-				<Setter Property="IsTabStop"
-								Value="False" />
-				<Setter Property="TabNavigation"
-								Value="Once" />
-				<Setter Property="IsSwipeEnabled"
-								Value="True" />
-				<Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-								Value="Auto" />
-				<Setter Property="ScrollViewer.VerticalScrollBarVisibility"
-								Value="Disabled" />
-				<Setter Property="ScrollViewer.HorizontalScrollMode"
-								Value="Auto" />
-				<Setter Property="ScrollViewer.IsHorizontalRailEnabled"
-								Value="False" />
-				<Setter Property="ScrollViewer.VerticalScrollMode"
-								Value="Auto" />
-				<Setter Property="ScrollViewer.IsVerticalRailEnabled"
-								Value="True" />
-				<!--ZoomMode attached property is currently not supported-->
+			    TargetType="ListView">
+				<Setter Property="IsTabStop" Value="False" />
+				<Setter Property="TabNavigation" Value="Once" />
+				<Setter Property="IsSwipeEnabled" Value="True" />
+				<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+				<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+				<Setter Property="ScrollViewer.HorizontalScrollMode" Value="Auto" />
+				<Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
+				<Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
+				<Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="True" />
+				<!--  ZoomMode attached property is currently not supported  -->
 				<!--<Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />-->
-				<Setter Property="ScrollViewer.IsDeferredScrollingEnabled"
-								Value="False" />
-				<Setter Property="ScrollViewer.BringIntoViewOnFocusChange"
-								Value="True" />
+				<Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
+				<Setter Property="ScrollViewer.BringIntoViewOnFocusChange" Value="True" />
 				<Setter Property="ItemContainerTransitions">
 					<Setter.Value>
 						<TransitionCollection>
@@ -67,33 +54,33 @@
 				<Setter Property="Template">
 					<Setter.Value>
 						<ControlTemplate TargetType="ListView">
-							<Border BorderBrush="{TemplateBinding BorderBrush}"
-											Background="{TemplateBinding Background}"
-											BorderThickness="{TemplateBinding BorderThickness}">
+							<Border Background="{TemplateBinding Background}"
+							    BorderBrush="{TemplateBinding BorderBrush}"
+							    BorderThickness="{TemplateBinding BorderThickness}">
 								<ScrollViewer x:Name="ScrollViewer"
-															not_win:Style="{StaticResource ListViewBaseScrollViewerStyle}"
-															TabNavigation="{TemplateBinding TabNavigation}"
-															HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-															HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-															IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
-															VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-															VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-															IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
-															IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
-															IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-															ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
-															IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-															BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
-															AutomationProperties.AccessibilityView="Raw"
-															HorizontalSnapPointsType="MandatorySingle"
-															HorizontalSnapPointsAlignment="Center">
-									<ItemsPresenter Header="{TemplateBinding Header}"
-																	HeaderTemplate="{TemplateBinding HeaderTemplate}"
-																	HeaderTransitions="{TemplateBinding HeaderTransitions}"
-																	Footer="{TemplateBinding Footer}"
-																	FooterTemplate="{TemplateBinding FooterTemplate}"
-																	FooterTransitions="{TemplateBinding FooterTransitions}"
-																	Padding="{TemplateBinding Padding}" />
+								    not_win:Style="{StaticResource ListViewBaseScrollViewerStyle}"
+								    AutomationProperties.AccessibilityView="Raw"
+								    BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
+								    HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+								    HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+								    HorizontalSnapPointsAlignment="Center"
+								    HorizontalSnapPointsType="MandatorySingle"
+								    IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+								    IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+								    IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
+								    IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+								    IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
+								    TabNavigation="{TemplateBinding TabNavigation}"
+								    VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+								    VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+								    ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}">
+									<ItemsPresenter Padding="{TemplateBinding Padding}"
+									    Footer="{TemplateBinding Footer}"
+									    FooterTemplate="{TemplateBinding FooterTemplate}"
+									    FooterTransitions="{TemplateBinding FooterTransitions}"
+									    Header="{TemplateBinding Header}"
+									    HeaderTemplate="{TemplateBinding HeaderTemplate}"
+									    HeaderTransitions="{TemplateBinding HeaderTransitions}" />
 								</ScrollViewer>
 							</Border>
 						</ControlTemplate>
@@ -101,31 +88,20 @@
 				</Setter>
 			</Style>
 			<Style x:Key="MandatorySingleNearListViewStyle"
-						 TargetType="ListView">
-				<Setter Property="IsTabStop"
-								Value="False" />
-				<Setter Property="TabNavigation"
-								Value="Once" />
-				<Setter Property="IsSwipeEnabled"
-								Value="True" />
-				<Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-								Value="Auto" />
-				<Setter Property="ScrollViewer.VerticalScrollBarVisibility"
-								Value="Disabled" />
-				<Setter Property="ScrollViewer.HorizontalScrollMode"
-								Value="Auto" />
-				<Setter Property="ScrollViewer.IsHorizontalRailEnabled"
-								Value="False" />
-				<Setter Property="ScrollViewer.VerticalScrollMode"
-								Value="Auto" />
-				<Setter Property="ScrollViewer.IsVerticalRailEnabled"
-								Value="True" />
-				<!--ZoomMode attached property is currently not supported-->
+			    TargetType="ListView">
+				<Setter Property="IsTabStop" Value="False" />
+				<Setter Property="TabNavigation" Value="Once" />
+				<Setter Property="IsSwipeEnabled" Value="True" />
+				<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+				<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+				<Setter Property="ScrollViewer.HorizontalScrollMode" Value="Auto" />
+				<Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
+				<Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
+				<Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="True" />
+				<!--  ZoomMode attached property is currently not supported  -->
 				<!--<Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />-->
-				<Setter Property="ScrollViewer.IsDeferredScrollingEnabled"
-								Value="False" />
-				<Setter Property="ScrollViewer.BringIntoViewOnFocusChange"
-								Value="True" />
+				<Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
+				<Setter Property="ScrollViewer.BringIntoViewOnFocusChange" Value="True" />
 				<Setter Property="ItemContainerTransitions">
 					<Setter.Value>
 						<TransitionCollection>
@@ -146,33 +122,33 @@
 				<Setter Property="Template">
 					<Setter.Value>
 						<ControlTemplate TargetType="ListView">
-							<Border BorderBrush="{TemplateBinding BorderBrush}"
-											Background="{TemplateBinding Background}"
-											BorderThickness="{TemplateBinding BorderThickness}">
+							<Border Background="{TemplateBinding Background}"
+							    BorderBrush="{TemplateBinding BorderBrush}"
+							    BorderThickness="{TemplateBinding BorderThickness}">
 								<ScrollViewer x:Name="ScrollViewer"
-															not_win:Style="{StaticResource ListViewBaseScrollViewerStyle}"
-															TabNavigation="{TemplateBinding TabNavigation}"
-															HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-															HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-															IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
-															VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-															VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-															IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
-															IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
-															IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-															ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
-															IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-															BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
-															AutomationProperties.AccessibilityView="Raw"
-															HorizontalSnapPointsType="MandatorySingle"
-															HorizontalSnapPointsAlignment="Near">
-									<ItemsPresenter Header="{TemplateBinding Header}"
-																	HeaderTemplate="{TemplateBinding HeaderTemplate}"
-																	HeaderTransitions="{TemplateBinding HeaderTransitions}"
-																	Footer="{TemplateBinding Footer}"
-																	FooterTemplate="{TemplateBinding FooterTemplate}"
-																	FooterTransitions="{TemplateBinding FooterTransitions}"
-																	Padding="{TemplateBinding Padding}" />
+								    not_win:Style="{StaticResource ListViewBaseScrollViewerStyle}"
+								    AutomationProperties.AccessibilityView="Raw"
+								    BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
+								    HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+								    HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+								    HorizontalSnapPointsAlignment="Near"
+								    HorizontalSnapPointsType="MandatorySingle"
+								    IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+								    IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+								    IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
+								    IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+								    IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
+								    TabNavigation="{TemplateBinding TabNavigation}"
+								    VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+								    VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+								    ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}">
+									<ItemsPresenter Padding="{TemplateBinding Padding}"
+									    Footer="{TemplateBinding Footer}"
+									    FooterTemplate="{TemplateBinding FooterTemplate}"
+									    FooterTransitions="{TemplateBinding FooterTransitions}"
+									    Header="{TemplateBinding Header}"
+									    HeaderTemplate="{TemplateBinding HeaderTemplate}"
+									    HeaderTransitions="{TemplateBinding HeaderTransitions}" />
 								</ScrollViewer>
 							</Border>
 						</ControlTemplate>
@@ -180,31 +156,20 @@
 				</Setter>
 			</Style>
 			<Style x:Key="MandatorySingleFarListViewStyle"
-						 TargetType="ListView">
-				<Setter Property="IsTabStop"
-								Value="False" />
-				<Setter Property="TabNavigation"
-								Value="Once" />
-				<Setter Property="IsSwipeEnabled"
-								Value="True" />
-				<Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-								Value="Auto" />
-				<Setter Property="ScrollViewer.VerticalScrollBarVisibility"
-								Value="Disabled" />
-				<Setter Property="ScrollViewer.HorizontalScrollMode"
-								Value="Auto" />
-				<Setter Property="ScrollViewer.IsHorizontalRailEnabled"
-								Value="False" />
-				<Setter Property="ScrollViewer.VerticalScrollMode"
-								Value="Auto" />
-				<Setter Property="ScrollViewer.IsVerticalRailEnabled"
-								Value="True" />
-				<!--ZoomMode attached property is currently not supported-->
+			    TargetType="ListView">
+				<Setter Property="IsTabStop" Value="False" />
+				<Setter Property="TabNavigation" Value="Once" />
+				<Setter Property="IsSwipeEnabled" Value="True" />
+				<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+				<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+				<Setter Property="ScrollViewer.HorizontalScrollMode" Value="Auto" />
+				<Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
+				<Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
+				<Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="True" />
+				<!--  ZoomMode attached property is currently not supported  -->
 				<!--<Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />-->
-				<Setter Property="ScrollViewer.IsDeferredScrollingEnabled"
-								Value="False" />
-				<Setter Property="ScrollViewer.BringIntoViewOnFocusChange"
-								Value="True" />
+				<Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
+				<Setter Property="ScrollViewer.BringIntoViewOnFocusChange" Value="True" />
 				<Setter Property="ItemContainerTransitions">
 					<Setter.Value>
 						<TransitionCollection>
@@ -225,33 +190,33 @@
 				<Setter Property="Template">
 					<Setter.Value>
 						<ControlTemplate TargetType="ListView">
-							<Border BorderBrush="{TemplateBinding BorderBrush}"
-											Background="{TemplateBinding Background}"
-											BorderThickness="{TemplateBinding BorderThickness}">
+							<Border Background="{TemplateBinding Background}"
+							    BorderBrush="{TemplateBinding BorderBrush}"
+							    BorderThickness="{TemplateBinding BorderThickness}">
 								<ScrollViewer x:Name="ScrollViewer"
-															not_win:Style="{StaticResource ListViewBaseScrollViewerStyle}"
-															TabNavigation="{TemplateBinding TabNavigation}"
-															HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-															HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-															IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
-															VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-															VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-															IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
-															IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
-															IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-															ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
-															IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-															BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
-															AutomationProperties.AccessibilityView="Raw"
-															HorizontalSnapPointsType="MandatorySingle"
-															HorizontalSnapPointsAlignment="Far">
-									<ItemsPresenter Header="{TemplateBinding Header}"
-																	HeaderTemplate="{TemplateBinding HeaderTemplate}"
-																	HeaderTransitions="{TemplateBinding HeaderTransitions}"
-																	Footer="{TemplateBinding Footer}"
-																	FooterTemplate="{TemplateBinding FooterTemplate}"
-																	FooterTransitions="{TemplateBinding FooterTransitions}"
-																	Padding="{TemplateBinding Padding}" />
+								    not_win:Style="{StaticResource ListViewBaseScrollViewerStyle}"
+								    AutomationProperties.AccessibilityView="Raw"
+								    BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
+								    HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+								    HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+								    HorizontalSnapPointsAlignment="Far"
+								    HorizontalSnapPointsType="MandatorySingle"
+								    IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+								    IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+								    IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
+								    IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+								    IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
+								    TabNavigation="{TemplateBinding TabNavigation}"
+								    VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+								    VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+								    ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}">
+									<ItemsPresenter Padding="{TemplateBinding Padding}"
+									    Footer="{TemplateBinding Footer}"
+									    FooterTemplate="{TemplateBinding FooterTemplate}"
+									    FooterTransitions="{TemplateBinding FooterTransitions}"
+									    Header="{TemplateBinding Header}"
+									    HeaderTemplate="{TemplateBinding HeaderTemplate}"
+									    HeaderTransitions="{TemplateBinding HeaderTransitions}" />
 								</ScrollViewer>
 							</Border>
 						</ControlTemplate>
@@ -265,106 +230,106 @@
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
 				<StackPanel>
-					<Border BorderBrush="Blue"
-									BorderThickness="2"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Top">
-						<ListView Width="200"
-											Height="150"
-											ItemsSource="123456789ABCDEFGHIJKLMNOPQRS"
-											Style="{StaticResource MandatorySingleNearListViewStyle}"
-											ItemContainerStyle="{StaticResource NoPaddingListViewItemStyle}"
-											x:Uid="snap_list_near">
+					<Border HorizontalAlignment="Center"
+					    VerticalAlignment="Top"
+					    BorderBrush="Blue"
+					    BorderThickness="2">
+						<ListView x:Uid="snap_list_near"
+						    Width="200"
+						    Height="150"
+						    ItemContainerStyle="{StaticResource NoPaddingListViewItemStyle}"
+						    ItemsSource="123456789ABCDEFGHIJKLMNOPQRS"
+						    Style="{StaticResource MandatorySingleNearListViewStyle}">
 							<ListView.HeaderTemplate>
 								<DataTemplate>
 									<Border Width="63"
-													BorderBrush="Blue"
-													BorderThickness="2">
+									    BorderBrush="Blue"
+									    BorderThickness="2">
 										<TextBlock Margin="10"
-															 Text="Near"
-															 Foreground="Blue" />
+										    Foreground="Blue"
+										    Text="Near" />
 									</Border>
 								</DataTemplate>
 							</ListView.HeaderTemplate>
 							<ListView.ItemTemplate>
 								<DataTemplate>
-									<Border Width="150"
-													BorderBrush="Red"
-													BorderThickness="2"
-													x:Uid="snap_list_near_item">
+									<Border x:Uid="snap_list_near_item"
+									    Width="150"
+									    BorderBrush="Red"
+									    BorderThickness="2">
 										<TextBlock Margin="10"
-															 Text="{Binding}"
-															 Foreground="Red" />
+										    Foreground="Red"
+										    Text="{Binding}" />
 									</Border>
 								</DataTemplate>
 							</ListView.ItemTemplate>
 						</ListView>
 					</Border>
-					<Border BorderBrush="Yellow"
-									BorderThickness="2"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Top">
-						<ListView Width="200"
-											Height="150"
-											ItemsSource="123456789ABCDEFGHIJKLMNOPQRS"
-											Style="{StaticResource MandatorySingleCenterListViewStyle}"
-											ItemContainerStyle="{StaticResource NoPaddingListViewItemStyle}"
-											x:Uid="snap_list_center">
+					<Border HorizontalAlignment="Center"
+					    VerticalAlignment="Top"
+					    BorderBrush="Yellow"
+					    BorderThickness="2">
+						<ListView x:Uid="snap_list_center"
+						    Width="200"
+						    Height="150"
+						    ItemContainerStyle="{StaticResource NoPaddingListViewItemStyle}"
+						    ItemsSource="123456789ABCDEFGHIJKLMNOPQRS"
+						    Style="{StaticResource MandatorySingleCenterListViewStyle}">
 							<ListView.HeaderTemplate>
 								<DataTemplate>
 									<Border Width="63"
-													BorderBrush="Blue"
-													BorderThickness="2">
+									    BorderBrush="Blue"
+									    BorderThickness="2">
 										<TextBlock Margin="10"
-															 Text="Center"
-															 Foreground="Blue" />
+										    Foreground="Blue"
+										    Text="Center" />
 									</Border>
 								</DataTemplate>
 							</ListView.HeaderTemplate>
 							<ListView.ItemTemplate>
 								<DataTemplate>
-									<Border Width="150"
-													BorderBrush="Red"
-													BorderThickness="2"
-													x:Uid="snap_list_center_item">
+									<Border x:Uid="snap_list_center_item"
+									    Width="150"
+									    BorderBrush="Red"
+									    BorderThickness="2">
 										<TextBlock Margin="10"
-															 Text="{Binding}"
-															 Foreground="Red" />
+										    Foreground="Red"
+										    Text="{Binding}" />
 									</Border>
 								</DataTemplate>
 							</ListView.ItemTemplate>
 						</ListView>
 					</Border>
-					<Border BorderBrush="Blue"
-									BorderThickness="2"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Top">
-						<ListView Width="200"
-											Height="150"
-											ItemsSource="123456789ABCDEFGHIJKLMNOPQRS"
-											Style="{StaticResource MandatorySingleFarListViewStyle}"
-											ItemContainerStyle="{StaticResource NoPaddingListViewItemStyle}"
-											x:Uid="snap_list_far">
+					<Border HorizontalAlignment="Center"
+					    VerticalAlignment="Top"
+					    BorderBrush="Blue"
+					    BorderThickness="2">
+						<ListView x:Uid="snap_list_far"
+						    Width="200"
+						    Height="150"
+						    ItemContainerStyle="{StaticResource NoPaddingListViewItemStyle}"
+						    ItemsSource="123456789ABCDEFGHIJKLMNOPQRS"
+						    Style="{StaticResource MandatorySingleFarListViewStyle}">
 							<ListView.HeaderTemplate>
 								<DataTemplate>
 									<Border Width="63"
-													BorderBrush="Blue"
-													BorderThickness="2">
+									    BorderBrush="Blue"
+									    BorderThickness="2">
 										<TextBlock Margin="10"
-															 Text="Far"
-															 Foreground="Blue" />
+										    Foreground="Blue"
+										    Text="Far" />
 									</Border>
 								</DataTemplate>
 							</ListView.HeaderTemplate>
 							<ListView.ItemTemplate>
 								<DataTemplate>
-									<Border Width="150"
-													BorderBrush="Red"
-													BorderThickness="2"
-													x:Uid="snap_list_far_item">
+									<Border x:Uid="snap_list_far_item"
+									    Width="150"
+									    BorderBrush="Red"
+									    BorderThickness="2">
 										<TextBlock Margin="10"
-															 Text="{Binding}"
-															 Foreground="Red" />
+										    Foreground="Red"
+										    Text="{Binding}" />
 									</Border>
 								</DataTemplate>
 							</ListView.ItemTemplate>

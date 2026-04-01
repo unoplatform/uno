@@ -1,14 +1,14 @@
-﻿<Page
-    x:Class="UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_ClipboardMethods"
+﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_ClipboardMethods"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.TextBox"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.TextBox"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<StackPanel Padding="12" Spacing="8">
+	<StackPanel Padding="12"
+	    Spacing="8">
 		<TextBox x:Name="InputBox" />
 		<Button Click="{x:Bind PasteFromClipboard}">Paste from clipboard</Button>
 		<Button Click="{x:Bind CopySelectionToClipboard}">Copy selection from TextBox</Button>

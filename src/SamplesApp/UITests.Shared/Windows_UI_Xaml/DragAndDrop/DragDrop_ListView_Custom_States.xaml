@@ -1,30 +1,56 @@
 ﻿<UserControl x:Class="UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_ListView_Custom_States"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:local="using:UITests.Windows_UI_Xaml.DragAndDrop"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:toolkit="using:Uno.UI.Toolkit"
-			 mc:Ignorable="d"
-			 d:DesignHeight="300"
-			 d:DesignWidth="400">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml.DragAndDrop"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="using:Uno.UI.Toolkit"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
 	<UserControl.Resources>
-		<Style TargetType="ListViewItem"
-			   x:Key="ListViewItemCustomDrag">
+		<Style x:Key="ListViewItemCustomDrag"
+		    TargetType="ListViewItem">
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="ListViewItem">
 						<Grid x:Name="ContentBorder"
-							  Control.IsTemplateFocusTarget="True"
-							  FocusVisualMargin="{TemplateBinding FocusVisualMargin}"
-							  Background="{TemplateBinding Background}"
-							  BorderBrush="{TemplateBinding BorderBrush}"
-							  BorderThickness="{TemplateBinding BorderThickness}"
-							  CornerRadius="{TemplateBinding CornerRadius}"
-							  RenderTransformOrigin="0.5,0.5">
+						    Background="{TemplateBinding Background}"
+						    BorderBrush="{TemplateBinding BorderBrush}"
+						    BorderThickness="{TemplateBinding BorderThickness}"
+						    Control.IsTemplateFocusTarget="True"
+						    CornerRadius="{TemplateBinding CornerRadius}"
+						    FocusVisualMargin="{TemplateBinding FocusVisualMargin}"
+						    RenderTransformOrigin="0.5,0.5">
 							<Grid.RenderTransform>
 								<ScaleTransform x:Name="ContentBorderScale" />
 							</Grid.RenderTransform>
+							<Rectangle x:Name="BorderBackground"
+							    Control.IsTemplateFocusTarget="True"
+							    Fill="{ThemeResource SystemControlHighlightListAccentLowBrush}"
+							    IsHitTestVisible="False"
+							    Opacity="0" />
+							<Grid x:Name="ContentPresenterGrid"
+							    Margin="0,0,0,0"
+							    Background="Beige">
+								<Grid.RenderTransform>
+									<TranslateTransform x:Name="ContentPresenterTranslateTransform" />
+								</Grid.RenderTransform>
+								<!--  Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl  -->
+								<toolkit:ElevatedView x:Name="ElevatedView"
+								    Margin="3"
+								    Background="Beige"
+								    ShadowColor="DimGray">
+									<ContentPresenter x:Name="ContentPresenter"
+									    Margin="{TemplateBinding Padding}"
+									    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+									    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+									    Content="{TemplateBinding Content}"
+									    ContentTemplate="{TemplateBinding ContentTemplate}"
+									    ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+									    ContentTransitions="{TemplateBinding ContentTransitions}" />
+								</toolkit:ElevatedView>
+							</Grid>
 							<VisualStateManager.VisualStateGroups>
 								<VisualStateGroup x:Name="CommonStates">
 									<VisualState x:Name="Normal">
@@ -34,95 +60,95 @@
 									</VisualState>
 									<VisualState x:Name="PointerOver">
 										<Storyboard>
-											<DoubleAnimation Storyboard.TargetName="BorderBackground"
-															 Storyboard.TargetProperty="Opacity"
-															 Duration="0"
-															 To="1" />
+											<DoubleAnimation Duration="0"
+											    To="1"
+											    Storyboard.TargetName="BorderBackground"
+											    Storyboard.TargetProperty="Opacity" />
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderBackground"
-																		   Storyboard.TargetProperty="Fill">
+											    Storyboard.TargetProperty="Fill">
 												<DiscreteObjectKeyFrame KeyTime="0"
-																		Value="{ThemeResource SystemControlHighlightListLowBrush}" />
+												    Value="{ThemeResource SystemControlHighlightListLowBrush}" />
 											</ObjectAnimationUsingKeyFrames>
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-																		   Storyboard.TargetProperty="Foreground">
+											    Storyboard.TargetProperty="Foreground">
 												<DiscreteObjectKeyFrame KeyTime="0"
-																		Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+												    Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
 											</ObjectAnimationUsingKeyFrames>
 											<PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
 										</Storyboard>
 									</VisualState>
 									<VisualState x:Name="Pressed">
 										<Storyboard>
-											<DoubleAnimation Storyboard.TargetName="BorderBackground"
-															 Storyboard.TargetProperty="Opacity"
-															 Duration="0"
-															 To="1" />
+											<DoubleAnimation Duration="0"
+											    To="1"
+											    Storyboard.TargetName="BorderBackground"
+											    Storyboard.TargetProperty="Opacity" />
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderBackground"
-																		   Storyboard.TargetProperty="Fill">
+											    Storyboard.TargetProperty="Fill">
 												<DiscreteObjectKeyFrame KeyTime="0"
-																		Value="{ThemeResource SystemControlHighlightListMediumBrush}" />
+												    Value="{ThemeResource SystemControlHighlightListMediumBrush}" />
 											</ObjectAnimationUsingKeyFrames>
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-																		   Storyboard.TargetProperty="Foreground">
+											    Storyboard.TargetProperty="Foreground">
 												<DiscreteObjectKeyFrame KeyTime="0"
-																		Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+												    Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
 											</ObjectAnimationUsingKeyFrames>
 											<PointerDownThemeAnimation TargetName="ContentPresenter" />
 										</Storyboard>
 									</VisualState>
 									<VisualState x:Name="Selected">
 										<Storyboard>
-											<DoubleAnimation Storyboard.TargetName="BorderBackground"
-															 Storyboard.TargetProperty="Opacity"
-															 Duration="0"
-															 To="1" />
+											<DoubleAnimation Duration="0"
+											    To="1"
+											    Storyboard.TargetName="BorderBackground"
+											    Storyboard.TargetProperty="Opacity" />
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderBackground"
-																		   Storyboard.TargetProperty="Fill">
+											    Storyboard.TargetProperty="Fill">
 												<DiscreteObjectKeyFrame KeyTime="0"
-																		Value="{ThemeResource SystemControlHighlightListAccentLowBrush}" />
+												    Value="{ThemeResource SystemControlHighlightListAccentLowBrush}" />
 											</ObjectAnimationUsingKeyFrames>
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-																		   Storyboard.TargetProperty="Foreground">
+											    Storyboard.TargetProperty="Foreground">
 												<DiscreteObjectKeyFrame KeyTime="0"
-																		Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+												    Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
 											</ObjectAnimationUsingKeyFrames>
 											<PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
 										</Storyboard>
 									</VisualState>
 									<VisualState x:Name="PointerOverSelected">
 										<Storyboard>
-											<DoubleAnimation Storyboard.TargetName="BorderBackground"
-															 Storyboard.TargetProperty="Opacity"
-															 Duration="0"
-															 To="1" />
+											<DoubleAnimation Duration="0"
+											    To="1"
+											    Storyboard.TargetName="BorderBackground"
+											    Storyboard.TargetProperty="Opacity" />
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderBackground"
-																		   Storyboard.TargetProperty="Fill">
+											    Storyboard.TargetProperty="Fill">
 												<DiscreteObjectKeyFrame KeyTime="0"
-																		Value="{ThemeResource SystemControlHighlightListAccentMediumBrush}" />
+												    Value="{ThemeResource SystemControlHighlightListAccentMediumBrush}" />
 											</ObjectAnimationUsingKeyFrames>
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-																		   Storyboard.TargetProperty="Foreground">
+											    Storyboard.TargetProperty="Foreground">
 												<DiscreteObjectKeyFrame KeyTime="0"
-																		Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+												    Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
 											</ObjectAnimationUsingKeyFrames>
 											<PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
 										</Storyboard>
 									</VisualState>
 									<VisualState x:Name="PressedSelected">
 										<Storyboard>
-											<DoubleAnimation Storyboard.TargetName="BorderBackground"
-															 Storyboard.TargetProperty="Opacity"
-															 Duration="0"
-															 To="1" />
+											<DoubleAnimation Duration="0"
+											    To="1"
+											    Storyboard.TargetName="BorderBackground"
+											    Storyboard.TargetProperty="Opacity" />
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderBackground"
-																		   Storyboard.TargetProperty="Fill">
+											    Storyboard.TargetProperty="Fill">
 												<DiscreteObjectKeyFrame KeyTime="0"
-																		Value="{ThemeResource SystemControlHighlightListAccentHighBrush}" />
+												    Value="{ThemeResource SystemControlHighlightListAccentHighBrush}" />
 											</ObjectAnimationUsingKeyFrames>
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
-																		   Storyboard.TargetProperty="Foreground">
+											    Storyboard.TargetProperty="Foreground">
 												<DiscreteObjectKeyFrame KeyTime="0"
-																		Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+												    Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
 											</ObjectAnimationUsingKeyFrames>
 											<PointerDownThemeAnimation TargetName="ContentPresenter" />
 										</Storyboard>
@@ -132,10 +158,10 @@
 									<VisualState x:Name="Enabled" />
 									<VisualState x:Name="Disabled">
 										<Storyboard>
-											<DoubleAnimation Storyboard.TargetName="ContentBorder"
-															 Storyboard.TargetProperty="Opacity"
-															 Duration="0"
-															 To="{ThemeResource ListViewItemDisabledThemeOpacity}" />
+											<DoubleAnimation Duration="0"
+											    To="{ThemeResource ListViewItemDisabledThemeOpacity}"
+											    Storyboard.TargetName="ContentBorder"
+											    Storyboard.TargetProperty="Opacity" />
 										</Storyboard>
 									</VisualState>
 								</VisualStateGroup>
@@ -143,15 +169,12 @@
 									<VisualState x:Name="NotDragging" />
 									<VisualState x:Name="DraggedPlaceholder" />
 									<VisualState x:Name="Reordering">
-										<Storyboard>
-										</Storyboard>
+										<Storyboard />
 										<VisualState.Setters>
-											<Setter Target="ElevatedView.Elevation"
-													Value="3" />
+											<Setter Target="ElevatedView.Elevation" Value="3" />
 										</VisualState.Setters>
 									</VisualState>
-									<VisualState x:Name="ReorderingTarget">
-									</VisualState>
+									<VisualState x:Name="ReorderingTarget" />
 									<VisualState x:Name="ReorderedPlaceholder">
 										<Storyboard>
 											<FadeOutThemeAnimation TargetName="ContentBorder" />
@@ -163,37 +186,11 @@
 										</Storyboard>
 									</VisualState>
 									<VisualStateGroup.Transitions>
-										<VisualTransition To="NotDragging"
-														  GeneratedDuration="0:0:0.2" />
+										<VisualTransition GeneratedDuration="0:0:0.2"
+										    To="NotDragging" />
 									</VisualStateGroup.Transitions>
 								</VisualStateGroup>
 							</VisualStateManager.VisualStateGroups>
-							<Rectangle x:Name="BorderBackground"
-									   IsHitTestVisible="False"
-									   Fill="{ThemeResource SystemControlHighlightListAccentLowBrush}"
-									   Opacity="0"
-									   Control.IsTemplateFocusTarget="True" />
-							<Grid x:Name="ContentPresenterGrid"
-								  Background="Beige"
-								  Margin="0,0,0,0">
-								<Grid.RenderTransform>
-									<TranslateTransform x:Name="ContentPresenterTranslateTransform" />
-								</Grid.RenderTransform>
-								<!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
-								<toolkit:ElevatedView x:Name="ElevatedView"
-													  Background="Beige"
-													  ShadowColor="DimGray"
-													  Margin="3">
-									<ContentPresenter x:Name="ContentPresenter"
-													  ContentTransitions="{TemplateBinding ContentTransitions}"
-													  ContentTemplate="{TemplateBinding ContentTemplate}"
-													  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-													  Content="{TemplateBinding Content}"
-													  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-													  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-													  Margin="{TemplateBinding Padding}" />
-								</toolkit:ElevatedView>
-							</Grid>
 						</Grid>
 					</ControlTemplate>
 				</Setter.Value>
@@ -202,16 +199,15 @@
 	</UserControl.Resources>
 
 	<Grid>
-		<ListView CanDragItems="True"
-				  CanReorderItems="True"
-				  AllowDrop="True"
-				  Height="420"
-				  MaxWidth="250"
-				  Background="Beige"
-				  Margin="15"
-				  ItemContainerStyle="{StaticResource ListViewItemCustomDrag}"
-				  x:Name="SUT">
-		</ListView>
+		<ListView x:Name="SUT"
+		    Height="420"
+		    MaxWidth="250"
+		    Margin="15"
+		    AllowDrop="True"
+		    Background="Beige"
+		    CanDragItems="True"
+		    CanReorderItems="True"
+		    ItemContainerStyle="{StaticResource ListViewItemCustomDrag}" />
 
 	</Grid>
 </UserControl>

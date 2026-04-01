@@ -1,35 +1,36 @@
-﻿<UserControl
-    x:Class="UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_WithPadding_Focus"
+﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_WithPadding_Focus"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.TextBox"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.TextBox"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignWidth="400"
+    mc:Ignorable="d">
 
 	<StackPanel Spacing="8">
-		<TextBox x:Name="textBox1" Padding="24" />
-		<TextBox x:Name="textBox2" Padding="24">
+		<TextBox x:Name="textBox1"
+		    Padding="24" />
+		<TextBox x:Name="textBox2"
+		    Padding="24">
 			<TextBox.Template>
 				<ControlTemplate>
-					<Grid Background="{TemplateBinding Background}"
-						  Padding="{TemplateBinding Padding}"
-						  BorderBrush="{TemplateBinding BorderBrush}"
-						  BorderThickness="{TemplateBinding BorderThickness}">
+					<Grid Padding="{TemplateBinding Padding}"
+					    Background="{TemplateBinding Background}"
+					    BorderBrush="{TemplateBinding BorderBrush}"
+					    BorderThickness="{TemplateBinding BorderThickness}">
 						<ScrollViewer x:Name="ContentElement"
-										HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-										HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-										IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-										IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
-										IsTabStop="False"
-										IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-										VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-										VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-										VerticalAlignment="Bottom"
-										ZoomMode="Disabled"
-										AutomationProperties.AccessibilityView="Raw">
+						    VerticalAlignment="Bottom"
+						    AutomationProperties.AccessibilityView="Raw"
+						    HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+						    HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+						    IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+						    IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+						    IsTabStop="False"
+						    IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+						    VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+						    VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+						    ZoomMode="Disabled">
 							<ScrollViewer.RenderTransform>
 								<CompositeTransform x:Name="ContentElement_CompositeTransform" />
 							</ScrollViewer.RenderTransform>

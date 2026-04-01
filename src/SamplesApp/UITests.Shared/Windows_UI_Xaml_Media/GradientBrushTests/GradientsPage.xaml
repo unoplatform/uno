@@ -1,19 +1,20 @@
-﻿<Page
-	x:Class="UITests.Windows_UI_Xaml_Media.GradientBrushTests.GradientsPage"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:media="using:Microsoft.UI.Xaml.Media"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:not_win="http://uno.ui/not_win"
-	mc:Ignorable="d not_win"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page x:Class="UITests.Windows_UI_Xaml_Media.GradientBrushTests.GradientsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    xmlns:not_win="http://uno.ui/not_win"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d not_win">
 
 	<ScrollViewer>
 		<StackPanel Spacing="10">
 			<TextBlock FontSize="15">Radial Gradient as background on a Rectangle / Rectangle / Border / Ellipse / Ellipse</TextBlock>
-			<StackPanel Orientation="Horizontal" Spacing="10">
-				<Rectangle Width="100" Height="100">
+			<StackPanel Orientation="Horizontal"
+			    Spacing="10">
+				<Rectangle Width="100"
+				    Height="100">
 					<Rectangle.Fill>
 						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
@@ -26,9 +27,12 @@
 					</Rectangle.Fill>
 				</Rectangle>
 
-				<Rectangle Width="100" Height="100">
+				<Rectangle Width="100"
+				    Height="100">
 					<Rectangle.Fill>
-						<media:RadialGradientBrush FallbackColor="Red" RadiusX="0.5" RadiusY="0.5">
+						<media:RadialGradientBrush FallbackColor="Red"
+						    RadiusX="0.5"
+						    RadiusY="0.5">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -39,7 +43,8 @@
 					</Rectangle.Fill>
 				</Rectangle>
 
-				<Border Width="100" Height="100">
+				<Border Width="100"
+				    Height="100">
 					<Border.Background>
 						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
@@ -51,7 +56,8 @@
 						</media:RadialGradientBrush>
 					</Border.Background>
 				</Border>
-				<Ellipse Width="100" Height="100">
+				<Ellipse Width="100"
+				    Height="100">
 					<Ellipse.Fill>
 						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
@@ -63,7 +69,8 @@
 						</media:RadialGradientBrush>
 					</Ellipse.Fill>
 				</Ellipse>
-				<Ellipse Width="150" Height="100">
+				<Ellipse Width="150"
+				    Height="100">
 					<Ellipse.Fill>
 						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
@@ -76,9 +83,13 @@
 					</Ellipse.Fill>
 				</Ellipse>
 			</StackPanel>
-			<TextBlock FontSize="15">Radial Gradient as border/stroke on a Rectangle/ Border / Border with corner radius / Ellipse </TextBlock>
-			<StackPanel Orientation="Horizontal" Spacing="10">
-				<Rectangle Width="100" Height="100" StrokeThickness="40" Fill="DarkGray">
+			<TextBlock FontSize="15">Radial Gradient as border/stroke on a Rectangle/ Border / Border with corner radius / Ellipse</TextBlock>
+			<StackPanel Orientation="Horizontal"
+			    Spacing="10">
+				<Rectangle Width="100"
+				    Height="100"
+				    Fill="DarkGray"
+				    StrokeThickness="40">
 					<Rectangle.Stroke>
 						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
@@ -91,7 +102,10 @@
 					</Rectangle.Stroke>
 				</Rectangle>
 
-				<Border Width="100" Height="100" BorderThickness="40" Background="DarkGray">
+				<Border Width="100"
+				    Height="100"
+				    Background="DarkGray"
+				    BorderThickness="40">
 					<Border.BorderBrush>
 						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
@@ -104,7 +118,11 @@
 					</Border.BorderBrush>
 				</Border>
 
-				<Border Width="100" Height="100" CornerRadius="8" BorderThickness="40" Background="DarkGray">
+				<Border Width="100"
+				    Height="100"
+				    Background="DarkGray"
+				    BorderThickness="40"
+				    CornerRadius="8">
 					<Border.BorderBrush>
 						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
@@ -117,7 +135,10 @@
 					</Border.BorderBrush>
 				</Border>
 
-				<Ellipse Width="100" Height="100" StrokeThickness="40" Fill="DarkGray">
+				<Ellipse Width="100"
+				    Height="100"
+				    Fill="DarkGray"
+				    StrokeThickness="40">
 					<Ellipse.Stroke>
 						<media:RadialGradientBrush FallbackColor="Red">
 							<media:RadialGradientBrush.GradientStops>
@@ -131,7 +152,10 @@
 						</media:RadialGradientBrush>
 					</Ellipse.Stroke>
 				</Ellipse>
-				<Ellipse Width="150" Height="100" StrokeThickness="40" Fill="DarkGray">
+				<Ellipse Width="150"
+				    Height="100"
+				    Fill="DarkGray"
+				    StrokeThickness="40">
 					<Ellipse.Stroke>
 						<media:RadialGradientBrush FallbackColor="Red">
 							<media:RadialGradientBrush.GradientStops>
@@ -147,8 +171,10 @@
 				</Ellipse>
 			</StackPanel>
 			<TextBlock FontSize="15">Linear Gradient as background on a Rectangle + Border (relative + absolute)</TextBlock>
-			<StackPanel Orientation="Horizontal" Spacing="10">
-				<Rectangle Width="100" Height="100">
+			<StackPanel Orientation="Horizontal"
+			    Spacing="10">
+				<Rectangle Width="100"
+				    Height="100">
 					<Rectangle.Fill>
 						<LinearGradientBrush not_win:FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
@@ -160,7 +186,8 @@
 						</LinearGradientBrush>
 					</Rectangle.Fill>
 				</Rectangle>
-				<Border Width="100" Height="100">
+				<Border Width="100"
+				    Height="100">
 					<Border.Background>
 						<LinearGradientBrush not_win:FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
@@ -172,9 +199,10 @@
 						</LinearGradientBrush>
 					</Border.Background>
 				</Border>
-				<Rectangle Width="100" Height="100">
+				<Rectangle Width="100"
+				    Height="100">
 					<Rectangle.Fill>
-						<LinearGradientBrush MappingMode="Absolute" EndPoint="100,100" not_win:FallbackColor="Red">
+						<LinearGradientBrush not_win:FallbackColor="Red" EndPoint="100,100" MappingMode="Absolute">
 							<GradientStopCollection>
 								<GradientStop Color="Blue" Offset="0.0" />
 								<GradientStop Color="Yellow" Offset="0.2" />
@@ -186,9 +214,10 @@
 						</LinearGradientBrush>
 					</Rectangle.Fill>
 				</Rectangle>
-				<Border Width="100" Height="100">
+				<Border Width="100"
+				    Height="100">
 					<Border.Background>
-						<LinearGradientBrush MappingMode="Absolute" EndPoint="100,100" not_win:FallbackColor="Red">
+						<LinearGradientBrush not_win:FallbackColor="Red" EndPoint="100,100" MappingMode="Absolute">
 							<LinearGradientBrush.GradientStops>
 								<GradientStop Color="Blue" Offset="0.0" />
 								<GradientStop Color="Yellow" Offset="0.2" />
@@ -202,8 +231,11 @@
 				</Border>
 			</StackPanel>
 			<TextBlock FontSize="15">Linear Gradient as border/stroke on a Rectangle + Border (relative + absolute)</TextBlock>
-			<StackPanel Orientation="Horizontal" Spacing="10">
-				<Rectangle Width="100" Height="100" StrokeThickness="40">
+			<StackPanel Orientation="Horizontal"
+			    Spacing="10">
+				<Rectangle Width="100"
+				    Height="100"
+				    StrokeThickness="40">
 					<Rectangle.Stroke>
 						<LinearGradientBrush not_win:FallbackColor="Red">
 							<LinearGradientBrush.GradientStops>
@@ -219,7 +251,9 @@
 						</LinearGradientBrush>
 					</Rectangle.Stroke>
 				</Rectangle>
-				<Border Width="100" Height="100" BorderThickness="40">
+				<Border Width="100"
+				    Height="100"
+				    BorderThickness="40">
 					<Border.BorderBrush>
 						<LinearGradientBrush not_win:FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
@@ -231,7 +265,10 @@
 						</LinearGradientBrush>
 					</Border.BorderBrush>
 				</Border>
-				<Border Width="100" Height="100" CornerRadius="8" BorderThickness="40">
+				<Border Width="100"
+				    Height="100"
+				    BorderThickness="40"
+				    CornerRadius="8">
 					<Border.BorderBrush>
 						<LinearGradientBrush not_win:FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
@@ -243,9 +280,11 @@
 						</LinearGradientBrush>
 					</Border.BorderBrush>
 				</Border>
-				<Rectangle Width="100" Height="100" StrokeThickness="40">
+				<Rectangle Width="100"
+				    Height="100"
+				    StrokeThickness="40">
 					<Rectangle.Stroke>
-						<LinearGradientBrush MappingMode="Absolute" EndPoint="100,100" not_win:FallbackColor="Red">
+						<LinearGradientBrush not_win:FallbackColor="Red" EndPoint="100,100" MappingMode="Absolute">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -255,9 +294,11 @@
 						</LinearGradientBrush>
 					</Rectangle.Stroke>
 				</Rectangle>
-				<Border Width="100" Height="100" BorderThickness="40">
+				<Border Width="100"
+				    Height="100"
+				    BorderThickness="40">
 					<Border.BorderBrush>
-						<LinearGradientBrush MappingMode="Absolute" EndPoint="100,100" not_win:FallbackColor="Red">
+						<LinearGradientBrush not_win:FallbackColor="Red" EndPoint="100,100" MappingMode="Absolute">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -268,9 +309,12 @@
 					</Border.BorderBrush>
 				</Border>
 
-				<Border Width="100" Height="100" CornerRadius="8" BorderThickness="40">
+				<Border Width="100"
+				    Height="100"
+				    BorderThickness="40"
+				    CornerRadius="8">
 					<Border.BorderBrush>
-						<LinearGradientBrush MappingMode="Absolute" EndPoint="100,100" not_win:FallbackColor="Red">
+						<LinearGradientBrush not_win:FallbackColor="Red" EndPoint="100,100" MappingMode="Absolute">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -282,12 +326,16 @@
 				</Border>
 			</StackPanel>
 			<TextBlock FontSize="15">Linear Gradient as border/stroke with relative transform / with single stop</TextBlock>
-			<StackPanel Orientation="Horizontal" Spacing="10">
-				<Border Width="100" Height="100" BorderThickness="40" CornerRadius="8">
+			<StackPanel Orientation="Horizontal"
+			    Spacing="10">
+				<Border Width="100"
+				    Height="100"
+				    BorderThickness="40"
+				    CornerRadius="8">
 					<Border.BorderBrush>
-						<LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,40">
+						<LinearGradientBrush EndPoint="0,40" MappingMode="Absolute" StartPoint="0,0">
 							<LinearGradientBrush.RelativeTransform>
-								<ScaleTransform ScaleY="-1" CenterY="0.5"/>
+								<ScaleTransform CenterY="0.5" ScaleY="-1" />
 							</LinearGradientBrush.RelativeTransform>
 							<LinearGradientBrush.GradientStops>
 								<GradientStop Color="Blue" Offset="1" />
@@ -296,11 +344,15 @@
 						</LinearGradientBrush>
 					</Border.BorderBrush>
 				</Border>
-				<Rectangle Width="100" Height="100" StrokeThickness="40" RadiusX="8" RadiusY="8">
+				<Rectangle Width="100"
+				    Height="100"
+				    RadiusX="8"
+				    RadiusY="8"
+				    StrokeThickness="40">
 					<Rectangle.Stroke>
-						<LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,40">
+						<LinearGradientBrush EndPoint="0,40" MappingMode="Absolute" StartPoint="0,0">
 							<LinearGradientBrush.RelativeTransform>
-								<ScaleTransform ScaleY="-1" CenterY="0.5"/>
+								<ScaleTransform CenterY="0.5" ScaleY="-1" />
 							</LinearGradientBrush.RelativeTransform>
 							<LinearGradientBrush.GradientStops>
 								<GradientStop Color="Blue" Offset="1" />
@@ -309,18 +361,25 @@
 						</LinearGradientBrush>
 					</Rectangle.Stroke>
 				</Rectangle>
-				<Border Width="100" Height="100" BorderThickness="40" CornerRadius="8">
+				<Border Width="100"
+				    Height="100"
+				    BorderThickness="40"
+				    CornerRadius="8">
 					<Border.BorderBrush>
-						<LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,40">
+						<LinearGradientBrush EndPoint="0,40" MappingMode="Absolute" StartPoint="0,0">
 							<LinearGradientBrush.GradientStops>
 								<GradientStop Color="Red" Offset="0.5" />
 							</LinearGradientBrush.GradientStops>
 						</LinearGradientBrush>
 					</Border.BorderBrush>
 				</Border>
-				<Rectangle Width="100" Height="100" StrokeThickness="40" RadiusX="8" RadiusY="8">
+				<Rectangle Width="100"
+				    Height="100"
+				    RadiusX="8"
+				    RadiusY="8"
+				    StrokeThickness="40">
 					<Rectangle.Stroke>
-						<LinearGradientBrush MappingMode="Absolute" StartPoint="0,0" EndPoint="0,40">
+						<LinearGradientBrush EndPoint="0,40" MappingMode="Absolute" StartPoint="0,0">
 							<LinearGradientBrush.GradientStops>
 								<GradientStop Color="Red" Offset="0.5" />
 							</LinearGradientBrush.GradientStops>
@@ -329,8 +388,11 @@
 				</Rectangle>
 			</StackPanel>
 			<TextBlock FontSize="15">Text with Radial/Linear gradient as foreground brush (fallback=red)</TextBlock>
-			<StackPanel Orientation="Horizontal" Spacing="10">
-				<TextBlock Text="UNO" FontSize="110" FontWeight="Bold">
+			<StackPanel Orientation="Horizontal"
+			    Spacing="10">
+				<TextBlock FontSize="110"
+				    FontWeight="Bold"
+				    Text="UNO">
 					<TextBlock.Foreground>
 						<media:RadialGradientBrush not_win:FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
@@ -342,7 +404,9 @@
 						</media:RadialGradientBrush>
 					</TextBlock.Foreground>
 				</TextBlock>
-				<TextBlock Text="UNO" FontSize="110" FontWeight="Bold">
+				<TextBlock FontSize="110"
+				    FontWeight="Bold"
+				    Text="UNO">
 					<TextBlock.Foreground>
 						<LinearGradientBrush not_win:FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />

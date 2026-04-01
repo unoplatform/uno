@@ -1,33 +1,37 @@
-﻿<Page
-	x:Class="UITests.Microsoft_UI_Xaml_Controls.ProgressRing.WinUIProgressRingPage"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:winui="using:Microsoft.UI.Xaml.Controls"
-	mc:Ignorable="d"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.ProgressRing.WinUIProgressRingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<StackPanel Margin="10" Spacing="10" HorizontalAlignment="Left">
+	<StackPanel Margin="10"
+	    HorizontalAlignment="Left"
+	    Spacing="10">
 		<TextBlock FontSize="15">Switch to indeterminate to determinate ProgressRing:</TextBlock>
-		<winui:ProgressRing IsIndeterminate ="{Binding IsChecked, ElementName=isIndeterminate}" Value="50" />
+		<winui:ProgressRing IsIndeterminate="{Binding IsChecked, ElementName=isIndeterminate}"
+		    Value="50" />
 		<ToggleButton x:Name="isIndeterminate">IsIndeterminate</ToggleButton>
 		<TextBlock FontSize="15">Inactive ProgressRing:</TextBlock>
 		<winui:ProgressRing IsActive="False" />
 		<TextBlock FontSize="15">Active ProgressRing:</TextBlock>
 		<winui:ProgressRing IsActive="True" />
 		<TextBlock FontSize="15">Interactive ProgressRing:</TextBlock>
-		<winui:ProgressRing IsActive="{Binding IsChecked, ElementName=isActive}" Width="64" />
+		<winui:ProgressRing Width="64"
+		    IsActive="{Binding IsChecked, ElementName=isActive}" />
 		<ToggleButton x:Name="isActive">IsActive</ToggleButton>
 		<ToggleButton Click="LoadUnload">LOAD/UNLOAD</ToggleButton>
-		<Border x:Name="container"></Border>
+		<Border x:Name="container" />
 		<TextBlock FontSize="15">Custom Colors:</TextBlock>
-		<StackPanel Orientation="Horizontal" Spacing="8">
-			<winui:ProgressRing
-				Width="40"
-				Foreground="{Binding SelectedValue.Content, ElementName=foreground}"
-				Background="{Binding SelectedValue.Content, ElementName=background}"/>
-			<ComboBox x:Name="foreground" Header="Fg:">
+		<StackPanel Orientation="Horizontal"
+		    Spacing="8">
+			<winui:ProgressRing Width="40"
+			    Background="{Binding SelectedValue.Content, ElementName=background}"
+			    Foreground="{Binding SelectedValue.Content, ElementName=foreground}" />
+			<ComboBox x:Name="foreground"
+			    Header="Fg:">
 				<ComboBox.Items>
 					<ComboBoxItem>Blue</ComboBoxItem>
 					<ComboBoxItem>Red</ComboBoxItem>
@@ -37,7 +41,8 @@
 					<ComboBoxItem>Violet</ComboBoxItem>
 				</ComboBox.Items>
 			</ComboBox>
-			<ComboBox x:Name="background" Header="Bg:">
+			<ComboBox x:Name="background"
+			    Header="Bg:">
 				<ComboBox.Items>
 					<ComboBoxItem>Blue</ComboBoxItem>
 					<ComboBoxItem IsSelected="True">Red</ComboBoxItem>
@@ -49,7 +54,7 @@
 			</ComboBox>
 
 		</StackPanel>
-		
+
 
 	</StackPanel>
 </Page>

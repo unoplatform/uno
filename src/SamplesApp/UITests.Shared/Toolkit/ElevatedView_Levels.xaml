@@ -1,84 +1,105 @@
-﻿<Page
-    x:Class="UITests.Toolkit.ElevatedView_Levels"
+﻿<Page x:Class="UITests.Toolkit.ElevatedView_Levels"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:toolkit="using:Uno.UI.Toolkit"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns:toolkit="using:Uno.UI.Toolkit"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 	<Page.Resources>
-		<Style x:Key="DescriptionTextStyle" TargetType="TextBlock">
+		<Style x:Key="DescriptionTextStyle"
+		    TargetType="TextBlock">
 			<Setter Property="Margin" Value="8" />
 			<Setter Property="Opacity" Value="0.75" />
 			<Setter Property="VerticalAlignment" Value="Bottom" />
 		</Style>
-		<SolidColorBrush x:Key="SurfaceBrush" Color="White" />
+		<SolidColorBrush x:Key="SurfaceBrush"
+		    Color="White" />
 	</Page.Resources>
 
 	<ScrollViewer>
-		<Grid RowSpacing="8" Padding="20,40" Background="#001d3619">
+		<Grid Padding="20,40"
+		    Background="#001d3619"
+		    RowSpacing="8">
 			<StackPanel Spacing="0">
 				<Grid Padding="20">
-					<toolkit:ElevatedView Elevation="1" Background="{StaticResource SurfaceBrush}">
+					<toolkit:ElevatedView Background="{StaticResource SurfaceBrush}"
+					    Elevation="1">
 						<Grid Height="50">
-							<TextBlock Text="01 dp" Style="{StaticResource DescriptionTextStyle}" />
+							<TextBlock Style="{StaticResource DescriptionTextStyle}"
+							    Text="01 dp" />
 						</Grid>
 					</toolkit:ElevatedView>
 				</Grid>
 				<Grid Padding="20">
-					<toolkit:ElevatedView Elevation="2" Background="{StaticResource SurfaceBrush}">
+					<toolkit:ElevatedView Background="{StaticResource SurfaceBrush}"
+					    Elevation="2">
 						<Grid Height="50">
-							<TextBlock Text="02 dp" Style="{StaticResource DescriptionTextStyle}" />
+							<TextBlock Style="{StaticResource DescriptionTextStyle}"
+							    Text="02 dp" />
 						</Grid>
 					</toolkit:ElevatedView>
 				</Grid>
 				<Grid Padding="20">
-					<toolkit:ElevatedView Elevation="3" Background="{StaticResource SurfaceBrush}">
+					<toolkit:ElevatedView Background="{StaticResource SurfaceBrush}"
+					    Elevation="3">
 						<Grid Height="50">
-							<TextBlock Text="03 dp" Style="{StaticResource DescriptionTextStyle}" />
+							<TextBlock Style="{StaticResource DescriptionTextStyle}"
+							    Text="03 dp" />
 						</Grid>
 					</toolkit:ElevatedView>
 				</Grid>
 				<Grid Padding="20">
-					<toolkit:ElevatedView Elevation="4" Background="{StaticResource SurfaceBrush}">
+					<toolkit:ElevatedView Background="{StaticResource SurfaceBrush}"
+					    Elevation="4">
 						<Grid Height="50">
-							<TextBlock Text="04 dp" Style="{StaticResource DescriptionTextStyle}" />
+							<TextBlock Style="{StaticResource DescriptionTextStyle}"
+							    Text="04 dp" />
 						</Grid>
 					</toolkit:ElevatedView>
 				</Grid>
 				<Grid Padding="20">
-					<toolkit:ElevatedView Elevation="6" Background="{StaticResource SurfaceBrush}">
+					<toolkit:ElevatedView Background="{StaticResource SurfaceBrush}"
+					    Elevation="6">
 						<Grid Height="50">
-							<TextBlock Text="06 dp" Style="{StaticResource DescriptionTextStyle}" />
+							<TextBlock Style="{StaticResource DescriptionTextStyle}"
+							    Text="06 dp" />
 						</Grid>
 					</toolkit:ElevatedView>
 				</Grid>
 				<Grid Padding="20">
-					<toolkit:ElevatedView Elevation="8" Background="{StaticResource SurfaceBrush}">
+					<toolkit:ElevatedView Background="{StaticResource SurfaceBrush}"
+					    Elevation="8">
 						<Grid Height="50">
-							<TextBlock Text="08 dp" Style="{StaticResource DescriptionTextStyle}" />
+							<TextBlock Style="{StaticResource DescriptionTextStyle}"
+							    Text="08 dp" />
 						</Grid>
 					</toolkit:ElevatedView>
 				</Grid>
 				<Grid Padding="20">
-					<toolkit:ElevatedView Elevation="9" Background="{StaticResource SurfaceBrush}">
+					<toolkit:ElevatedView Background="{StaticResource SurfaceBrush}"
+					    Elevation="9">
 						<Grid Height="50">
-							<TextBlock Text="09 dp" Style="{StaticResource DescriptionTextStyle}" />
+							<TextBlock Style="{StaticResource DescriptionTextStyle}"
+							    Text="09 dp" />
 						</Grid>
 					</toolkit:ElevatedView>
 				</Grid>
 				<Grid Padding="20">
-					<toolkit:ElevatedView Elevation="12" Background="{StaticResource SurfaceBrush}">
+					<toolkit:ElevatedView Background="{StaticResource SurfaceBrush}"
+					    Elevation="12">
 						<Grid Height="50">
-							<TextBlock Text="12 dp" Style="{StaticResource DescriptionTextStyle}" />
+							<TextBlock Style="{StaticResource DescriptionTextStyle}"
+							    Text="12 dp" />
 						</Grid>
 					</toolkit:ElevatedView>
 				</Grid>
 				<Grid Padding="20">
-					<toolkit:ElevatedView Elevation="16" Background="{StaticResource SurfaceBrush}">
+					<toolkit:ElevatedView Background="{StaticResource SurfaceBrush}"
+					    Elevation="16">
 						<Grid Height="50">
-							<TextBlock Text="16 dp" Style="{StaticResource DescriptionTextStyle}" />
+							<TextBlock Style="{StaticResource DescriptionTextStyle}"
+							    Text="16 dp" />
 						</Grid>
 					</toolkit:ElevatedView>
 				</Grid>

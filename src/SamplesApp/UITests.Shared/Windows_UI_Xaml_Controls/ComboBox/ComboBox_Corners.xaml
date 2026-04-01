@@ -1,49 +1,48 @@
-﻿<UserControl
-	x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Corners"
-	xmlns:controls="using:Uno.UI.Samples.Controls"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:not_win="http://uno.ui/not_win"
-	mc:Ignorable="d not_win"
-	d:DesignHeight="300"
-	d:DesignWidth="400">
+﻿<UserControl x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Corners"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Uno.UI.Samples.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_win="http://uno.ui/not_win"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d not_win">
 
 	<controls:SampleControl SampleDescription="ComboBoxes located at the corners of the screen. The drop down should remain inside the window.">
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
 
 				<Grid HorizontalAlignment="Stretch"
-					VerticalAlignment="Stretch">
+				    VerticalAlignment="Stretch">
 
-					<TextBlock Text="{Binding}"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center" />
+					<TextBlock HorizontalAlignment="Center"
+					    VerticalAlignment="Center"
+					    Text="{Binding}" />
 
-					<ComboBox ItemsSource="{Binding VariableLengthItems}"
-						VerticalAlignment="Top"
-						HorizontalAlignment="Left" />
+					<ComboBox HorizontalAlignment="Left"
+					    VerticalAlignment="Top"
+					    ItemsSource="{Binding VariableLengthItems}" />
 
-					<ComboBox ItemsSource="{Binding VariableLengthItems}"
-						VerticalAlignment="Top"
-						HorizontalAlignment="Right" />
+					<ComboBox HorizontalAlignment="Right"
+					    VerticalAlignment="Top"
+					    ItemsSource="{Binding VariableLengthItems}" />
 
-					<ComboBox ItemsSource="{Binding VariableLengthItems}"
-						VerticalAlignment="Bottom"
-						HorizontalAlignment="Left" />
+					<ComboBox HorizontalAlignment="Left"
+					    VerticalAlignment="Bottom"
+					    ItemsSource="{Binding VariableLengthItems}" />
 
-					<ComboBox ItemsSource="{Binding VariableLengthItems}"
-						VerticalAlignment="Bottom"
-						HorizontalAlignment="Right"  />
+					<ComboBox HorizontalAlignment="Right"
+					    VerticalAlignment="Bottom"
+					    ItemsSource="{Binding VariableLengthItems}" />
 
-					<ComboBox ItemsSource="{Binding VariableLengthItems}"
-						VerticalAlignment="Center"
-						HorizontalAlignment="Left" />
+					<ComboBox HorizontalAlignment="Left"
+					    VerticalAlignment="Center"
+					    ItemsSource="{Binding VariableLengthItems}" />
 
-					<ComboBox ItemsSource="{Binding VariableLengthItems}"
-						VerticalAlignment="Center"
-						HorizontalAlignment="Right" />
+					<ComboBox HorizontalAlignment="Right"
+					    VerticalAlignment="Center"
+					    ItemsSource="{Binding VariableLengthItems}" />
 
 				</Grid>
 

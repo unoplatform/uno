@@ -1,20 +1,24 @@
-﻿<Page
-	x:Class="UITests.Shared.Windows_UI_Input.VisualStatesTests.ListViewItem"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:local="using:UITests.Shared.Windows_UI_Input.VisualStatesTests"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page x:Class="UITests.Shared.Windows_UI_Input.VisualStatesTests.ListViewItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Shared.Windows_UI_Input.VisualStatesTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-    <Page.Resources>
-		<Style TargetType="SelectorItem" x:Key="ItemStyle">
+	<Page.Resources>
+		<Style x:Key="ItemStyle"
+		    TargetType="SelectorItem">
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="SelectorItem">
 						<StackPanel Width="150">
-							 <VisualStateManager.VisualStateGroups>
+							<ContentPresenter />
+
+							<TextBlock x:Name="State"
+							    Text="__state__" />
+							<VisualStateManager.VisualStateGroups>
 								<VisualStateGroup x:Name="CommonStates">
 									<VisualState x:Name="Normal">
 										<VisualState.Setters>
@@ -59,10 +63,6 @@
 									</VisualState>
 								</VisualStateGroup>
 							</VisualStateManager.VisualStateGroups>
-
-							<ContentPresenter />
-
-							<TextBlock x:Name="State" Text="__state__" />
 						</StackPanel>
 					</ControlTemplate>
 				</Setter.Value>
@@ -71,12 +71,15 @@
 	</Page.Resources>
 
 	<Grid>
-		<ListView ItemContainerStyle="{StaticResource ItemStyle}" Width="300" Background="Purple" x:Name="MyListView">
+		<ListView x:Name="MyListView"
+		    Width="300"
+		    Background="Purple"
+		    ItemContainerStyle="{StaticResource ItemStyle}">
 			<ListView.Items>
 				<TextBlock Text="Item 1" />
 				<TextBlock Text="Item 2" />
 				<TextBlock Text="Item 3" />
 			</ListView.Items>
 		</ListView>
-    </Grid>
+	</Grid>
 </Page>

@@ -1,21 +1,20 @@
-﻿<Page
-    x:Class="UITests.Microsoft_UI_Xaml_Controls.ProgressRing.WinUIDeterminateProgressRing"
+﻿<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.ProgressRing.WinUIDeterminateProgressRing"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.ProgressRing"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.ProgressRing"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:winui="using:Microsoft.UI.Xaml.Controls"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
 	<StackPanel HorizontalAlignment="Center"
-                VerticalAlignment="Center">
+	    VerticalAlignment="Center">
 		<ComboBox x:Name="ProgressValue"
-				  SelectionChanged="ProgressValue_SelectionChanged"
-				  SelectedIndex="0"
-				  AutomationProperties.Name="ProgressValue"
-				  Header="Value:">
+		    AutomationProperties.Name="ProgressValue"
+		    Header="Value:"
+		    SelectedIndex="0"
+		    SelectionChanged="ProgressValue_SelectionChanged">
 			<ComboBox.Items>
 				<x:String>0</x:String>
 				<x:String>25</x:String>
@@ -25,50 +24,50 @@
 			</ComboBox.Items>
 		</ComboBox>
 		<Grid Width="100"
-              Height="100">
-			<winui:ProgressRing IsIndeterminate="False"
-                                Height="100"
-                                Width="100"
-                                Value="{Binding SelectedValue.Content, ElementName=ProgressValue}"
-                                Foreground="Green"
-                                Background="Red"
-                                x:Name="ProgressRing"/>
-			<TextBlock Text="{Binding SelectedValue.Content, ElementName=ProgressValue}"
-                       HorizontalAlignment="Center" 
-                       VerticalAlignment="Center" 
-                       FontSize="30"/>
-			<Border BorderBrush="Blue"
-                        x:Name="TopLeftTarget"
-                        Margin="20"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        BorderThickness="1"
-                        Height="10"
-                        Width="10"/>
-			<Border BorderBrush="Blue" 
-                        x:Name="TopRightTarget"
-                        Margin="20"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        BorderThickness="1"
-                        Height="10"
-                        Width="10"/>
-			<Border BorderBrush="Blue"
-                        x:Name="BottomLeftTarget"
-                        Margin="20"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Bottom"
-                        BorderThickness="1"
-                        Height="10"
-                        Width="10"/>
-			<Border BorderBrush="Blue" 
-                        x:Name="BottomRightTarget"
-                        Margin="20"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Bottom"
-                        BorderThickness="1"
-                        Height="10"
-                        Width="10"/>
+		    Height="100">
+			<winui:ProgressRing x:Name="ProgressRing"
+			    Width="100"
+			    Height="100"
+			    Background="Red"
+			    Foreground="Green"
+			    IsIndeterminate="False"
+			    Value="{Binding SelectedValue.Content, ElementName=ProgressValue}" />
+			<TextBlock HorizontalAlignment="Center"
+			    VerticalAlignment="Center"
+			    FontSize="30"
+			    Text="{Binding SelectedValue.Content, ElementName=ProgressValue}" />
+			<Border x:Name="TopLeftTarget"
+			    Width="10"
+			    Height="10"
+			    Margin="20"
+			    HorizontalAlignment="Left"
+			    VerticalAlignment="Top"
+			    BorderBrush="Blue"
+			    BorderThickness="1" />
+			<Border x:Name="TopRightTarget"
+			    Width="10"
+			    Height="10"
+			    Margin="20"
+			    HorizontalAlignment="Right"
+			    VerticalAlignment="Top"
+			    BorderBrush="Blue"
+			    BorderThickness="1" />
+			<Border x:Name="BottomLeftTarget"
+			    Width="10"
+			    Height="10"
+			    Margin="20"
+			    HorizontalAlignment="Left"
+			    VerticalAlignment="Bottom"
+			    BorderBrush="Blue"
+			    BorderThickness="1" />
+			<Border x:Name="BottomRightTarget"
+			    Width="10"
+			    Height="10"
+			    Margin="20"
+			    HorizontalAlignment="Right"
+			    VerticalAlignment="Bottom"
+			    BorderBrush="Blue"
+			    BorderThickness="1" />
 		</Grid>
 	</StackPanel>
 </Page>

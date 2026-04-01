@@ -1,29 +1,47 @@
-﻿<Page
-    x:Class="UITests.Microsoft_UI_Xaml_Controls.TabViewTests.TabViewSizingPage"
+﻿<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.TabViewTests.TabViewSizingPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.TabViewTests"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:controls="using:Microsoft.UI.Xaml.Controls"
-	mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.TabViewTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<Grid x:Name="LayoutRoot" >
+	<Grid x:Name="LayoutRoot">
 
-		<StackPanel Margin="50" Background="{ThemeResource SystemListMediumColor}">
+		<StackPanel Margin="50"
+		    Background="{ThemeResource SystemListMediumColor}">
 			<StackPanel Orientation="Horizontal">
 				<StackPanel Margin="0,0,0,16">
-					<TextBlock Text="Options" Style="{ThemeResource StandardGroupHeader}"/>
-					<Button x:Name="SetSmallWidth" AutomationProperties.Name="SetSmallWidth" Width="100"
-                            Content="Small Width" Click="SetSmallWidth_Click" Margin="0,0,12,4"/>
-					<Button x:Name="SetLargeWidth" AutomationProperties.Name="SetLargeWidth" Width="100"
-                            Content="Large Width" Click="SetLargeWidth_Click" Margin="0,0,12,0"/>
+					<TextBlock Style="{ThemeResource StandardGroupHeader}"
+					    Text="Options" />
+					<Button x:Name="SetSmallWidth"
+					    Width="100"
+					    Margin="0,0,12,4"
+					    AutomationProperties.Name="SetSmallWidth"
+					    Click="SetSmallWidth_Click"
+					    Content="Small Width" />
+					<Button x:Name="SetLargeWidth"
+					    Width="100"
+					    Margin="0,0,12,0"
+					    AutomationProperties.Name="SetLargeWidth"
+					    Click="SetLargeWidth_Click"
+					    Content="Large Width" />
 				</StackPanel>
 				<StackPanel>
-					<TextBlock Text="Reporting" Style="{ThemeResource StandardGroupHeader}"/>
-					<Button x:Name="GetWidthsButton" AutomationProperties.Name="GetWidthsButton" Content="Get Widths" Click="GetWidthsButton_Click" Margin="0,0,12,0"/>
-					<TextBlock x:Name="WidthEqualText" AutomationProperties.Name="WidthEqualText" Margin="0,0,12,0"/>
-					<TextBlock x:Name="WidthSizeToContentText" AutomationProperties.Name="WidthSizeToContentText"/>
+					<TextBlock Style="{ThemeResource StandardGroupHeader}"
+					    Text="Reporting" />
+					<Button x:Name="GetWidthsButton"
+					    Margin="0,0,12,0"
+					    AutomationProperties.Name="GetWidthsButton"
+					    Click="GetWidthsButton_Click"
+					    Content="Get Widths" />
+					<TextBlock x:Name="WidthEqualText"
+					    Margin="0,0,12,0"
+					    AutomationProperties.Name="WidthEqualText" />
+					<TextBlock x:Name="WidthSizeToContentText"
+					    AutomationProperties.Name="WidthSizeToContentText" />
 				</StackPanel>
 			</StackPanel>
 
@@ -33,7 +51,9 @@
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
-				<controls:TabView TabWidthMode="SizeToContent" TabCloseRequested="Tabs_TabCloseRequested" AddTabButtonClick="Tabview_AddTabButtonClick" >
+				<controls:TabView AddTabButtonClick="Tabview_AddTabButtonClick"
+				    TabCloseRequested="Tabs_TabCloseRequested"
+				    TabWidthMode="SizeToContent">
 					<controls:TabView.TabItems>
 						<controls:TabViewItem Header="Tab A">
 							<TextBlock>TabA</TextBlock>
@@ -45,16 +65,25 @@
 					<controls:TabView.TabStripFooter>
 						<Grid>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
-							<TextBlock Grid.Column="0" Text="Middle" Margin="6,3,6,0" VerticalAlignment="Center"/>
-							<TextBlock Grid.Column="2" Text="Right" Margin="6,3,6,0" VerticalAlignment="Center"/>
+							<TextBlock Grid.Column="0"
+							    Margin="6,3,6,0"
+							    VerticalAlignment="Center"
+							    Text="Middle" />
+							<TextBlock Grid.Column="2"
+							    Margin="6,3,6,0"
+							    VerticalAlignment="Center"
+							    Text="Right" />
 						</Grid>
 					</controls:TabView.TabStripFooter>
 				</controls:TabView>
-				<Border Grid.Column="1" Background="Yellow" BorderBrush="Green" BorderThickness="5" />
+				<Border Grid.Column="1"
+				    Background="Yellow"
+				    BorderBrush="Green"
+				    BorderThickness="5" />
 			</Grid>
 
 			<TextBlock Text="Equal, Auto Column Width" />
@@ -63,7 +92,9 @@
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
-				<controls:TabView TabWidthMode="Equal" TabCloseRequested="Tabs_TabCloseRequested" AddTabButtonClick="Tabview_AddTabButtonClick" >
+				<controls:TabView AddTabButtonClick="Tabview_AddTabButtonClick"
+				    TabCloseRequested="Tabs_TabCloseRequested"
+				    TabWidthMode="Equal">
 					<controls:TabView.TabItems>
 						<controls:TabViewItem Header="Tab A">
 							<TextBlock>TabA</TextBlock>
@@ -75,16 +106,25 @@
 					<controls:TabView.TabStripFooter>
 						<Grid>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
-							<TextBlock Grid.Column="0" Text="Middle" Margin="6,3,6,0" VerticalAlignment="Center"/>
-							<TextBlock Grid.Column="2" Text="Right" Margin="6,3,6,0" VerticalAlignment="Center"/>
+							<TextBlock Grid.Column="0"
+							    Margin="6,3,6,0"
+							    VerticalAlignment="Center"
+							    Text="Middle" />
+							<TextBlock Grid.Column="2"
+							    Margin="6,3,6,0"
+							    VerticalAlignment="Center"
+							    Text="Right" />
 						</Grid>
 					</controls:TabView.TabStripFooter>
 				</controls:TabView>
-				<Border Grid.Column="1" Background="Yellow" BorderBrush="Green" BorderThickness="5" />
+				<Border Grid.Column="1"
+				    Background="Yellow"
+				    BorderBrush="Green"
+				    BorderThickness="5" />
 			</Grid>
 
 			<TextBlock Text="SizeToContent, * Column Width" />
@@ -92,7 +132,9 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
-				<controls:TabView TabWidthMode="SizeToContent" TabCloseRequested="Tabs_TabCloseRequested" AddTabButtonClick="Tabview_AddTabButtonClick" >
+				<controls:TabView AddTabButtonClick="Tabview_AddTabButtonClick"
+				    TabCloseRequested="Tabs_TabCloseRequested"
+				    TabWidthMode="SizeToContent">
 					<controls:TabView.TabItems>
 						<controls:TabViewItem Header="Tab A">
 							<TextBlock>TabA</TextBlock>
@@ -104,12 +146,18 @@
 					<controls:TabView.TabStripFooter>
 						<Grid>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
-							<TextBlock Grid.Column="0" Text="Middle" Margin="6,3,6,0" VerticalAlignment="Center"/>
-							<TextBlock Grid.Column="2" Text="Right" Margin="6,3,6,0" VerticalAlignment="Center"/>
+							<TextBlock Grid.Column="0"
+							    Margin="6,3,6,0"
+							    VerticalAlignment="Center"
+							    Text="Middle" />
+							<TextBlock Grid.Column="2"
+							    Margin="6,3,6,0"
+							    VerticalAlignment="Center"
+							    Text="Right" />
 						</Grid>
 					</controls:TabView.TabStripFooter>
 				</controls:TabView>
@@ -120,7 +168,9 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
-				<controls:TabView TabWidthMode="Equal" TabCloseRequested="Tabs_TabCloseRequested" AddTabButtonClick="Tabview_AddTabButtonClick" >
+				<controls:TabView AddTabButtonClick="Tabview_AddTabButtonClick"
+				    TabCloseRequested="Tabs_TabCloseRequested"
+				    TabWidthMode="Equal">
 					<controls:TabView.TabItems>
 						<controls:TabViewItem Header="Tab A">
 							<TextBlock>TabA</TextBlock>
@@ -132,12 +182,18 @@
 					<controls:TabView.TabStripFooter>
 						<Grid>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
-							<TextBlock Grid.Column="0" Text="Middle" Margin="6,3,6,0" VerticalAlignment="Center"/>
-							<TextBlock Grid.Column="2" Text="Right" Margin="6,3,6,0" VerticalAlignment="Center"/>
+							<TextBlock Grid.Column="0"
+							    Margin="6,3,6,0"
+							    VerticalAlignment="Center"
+							    Text="Middle" />
+							<TextBlock Grid.Column="2"
+							    Margin="6,3,6,0"
+							    VerticalAlignment="Center"
+							    Text="Right" />
 						</Grid>
 					</controls:TabView.TabStripFooter>
 				</controls:TabView>
@@ -148,7 +204,12 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
-				<controls:TabView x:Name="TabViewEqual" AutomationProperties.Name="TabViewEqual" HorizontalAlignment="Left" TabWidthMode="Equal" TabCloseRequested="Tabs_TabCloseRequested" AddTabButtonClick="Tabview_AddTabButtonClick" >
+				<controls:TabView x:Name="TabViewEqual"
+				    HorizontalAlignment="Left"
+				    AddTabButtonClick="Tabview_AddTabButtonClick"
+				    AutomationProperties.Name="TabViewEqual"
+				    TabCloseRequested="Tabs_TabCloseRequested"
+				    TabWidthMode="Equal">
 					<controls:TabView.TabItems>
 						<controls:TabViewItem Header="Tab A">
 							<TextBlock>TabA</TextBlock>
@@ -166,12 +227,18 @@
 					<controls:TabView.TabStripFooter>
 						<Grid>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
-							<TextBlock Grid.Column="0" Text="Middle" Margin="6,3,6,0" VerticalAlignment="Center"/>
-							<TextBlock Grid.Column="2" Text="Right" Margin="6,3,6,0" VerticalAlignment="Center"/>
+							<TextBlock Grid.Column="0"
+							    Margin="6,3,6,0"
+							    VerticalAlignment="Center"
+							    Text="Middle" />
+							<TextBlock Grid.Column="2"
+							    Margin="6,3,6,0"
+							    VerticalAlignment="Center"
+							    Text="Right" />
 						</Grid>
 					</controls:TabView.TabStripFooter>
 				</controls:TabView>
@@ -182,7 +249,12 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
-				<controls:TabView x:Name="TabViewSizeToContent" AutomationProperties.Name="TabViewSizeToContent" HorizontalAlignment="Left" TabWidthMode="SizeToContent" TabCloseRequested="Tabs_TabCloseRequested" AddTabButtonClick="Tabview_AddTabButtonClick" >
+				<controls:TabView x:Name="TabViewSizeToContent"
+				    HorizontalAlignment="Left"
+				    AddTabButtonClick="Tabview_AddTabButtonClick"
+				    AutomationProperties.Name="TabViewSizeToContent"
+				    TabCloseRequested="Tabs_TabCloseRequested"
+				    TabWidthMode="SizeToContent">
 					<controls:TabView.TabItems>
 						<controls:TabViewItem Header="Tab A Long Name">
 							<TextBlock>TabA</TextBlock>
@@ -200,12 +272,18 @@
 					<controls:TabView.TabStripFooter>
 						<Grid>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
-							<TextBlock Grid.Column="0" Text="Middle" Margin="6,3,6,0" VerticalAlignment="Center"/>
-							<TextBlock Grid.Column="2" Text="Right" Margin="6,3,6,0" VerticalAlignment="Center"/>
+							<TextBlock Grid.Column="0"
+							    Margin="6,3,6,0"
+							    VerticalAlignment="Center"
+							    Text="Middle" />
+							<TextBlock Grid.Column="2"
+							    Margin="6,3,6,0"
+							    VerticalAlignment="Center"
+							    Text="Right" />
 						</Grid>
 					</controls:TabView.TabStripFooter>
 				</controls:TabView>

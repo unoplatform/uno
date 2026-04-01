@@ -1,14 +1,17 @@
 ﻿<UserControl x:Class="UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_Wasm_Selection"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
 	<StackPanel Spacing="16">
-		<TextBlock Text="selectable text: // 1. select from HERE" IsTextSelectionEnabled="True" />
+		<TextBlock IsTextSelectionEnabled="True"
+		    Text="selectable text: // 1. select from HERE" />
 
-		<!-- some controls that typically use drag gestures -->
+		<!--  some controls that typically use drag gestures  -->
 		<Slider />
-		<ScrollBar Orientation="Horizontal" IndicatorMode="MouseIndicator" />
+		<ScrollBar IndicatorMode="MouseIndicator"
+		    Orientation="Horizontal" />
 
-		<TextBlock Text="selectable text: // 2. to THERE" IsTextSelectionEnabled="True" />
+		<TextBlock IsTextSelectionEnabled="True"
+		    Text="selectable text: // 2. to THERE" />
 	</StackPanel>
 </UserControl>

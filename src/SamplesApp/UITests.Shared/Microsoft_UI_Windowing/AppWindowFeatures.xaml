@@ -1,5 +1,4 @@
-﻿<Page
-    x:Class="UITests.Microsoft_UI_Windowing.AppWindowFeatures"
+﻿<Page x:Class="UITests.Microsoft_UI_Windowing.AppWindowFeatures"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,7 +8,8 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <StackPanel Spacing="4">
-        <Button Click="{x:Bind ViewModel.SetIcon}" Content="Set icon" />
-    </StackPanel>
+	<StackPanel Spacing="4">
+		<Button Click="{x:Bind ViewModel.SetIcon}"
+		    Content="Set icon" />
+	</StackPanel>
 </Page>

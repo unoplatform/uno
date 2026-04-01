@@ -1,14 +1,13 @@
-﻿<Page
-    x:Class="UnoIslands.MainPage"
+﻿<Page x:Class="UnoIslands.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UnoIslands"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UnoIslands"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-    <Grid Padding="20">
+	<Grid Padding="20">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
@@ -18,19 +17,25 @@
 			<ColumnDefinition />
 			<ColumnDefinition Width="128" />
 		</Grid.ColumnDefinitions>
-		<TextBlock Text="{Binding Name}" Style="{ThemeResource HeaderTextBlockStyle}" />
-		<Image Grid.Column="1" Source="{Binding ImageUrl}" />
+		<TextBlock Style="{ThemeResource HeaderTextBlockStyle}"
+		    Text="{Binding Name}" />
+		<Image Grid.Column="1"
+		    Source="{Binding ImageUrl}" />
 		<StackPanel Grid.Row="1">
 			<TextBlock Text="{Binding Address}" />
-			<HyperlinkButton Content="{Binding Email}" NavigateUri="{Binding EmailUrl}" Grid.Row="1" />	
+			<HyperlinkButton Grid.Row="1"
+			    Content="{Binding Email}"
+			    NavigateUri="{Binding EmailUrl}" />
 			<TextBlock Text="{Binding Phone}" />
-			<TextBox Text="{Binding Note, Mode=TwoWay}" PlaceholderText="Enter a note..." />
+			<TextBox PlaceholderText="Enter a note..."
+			    Text="{Binding Note, Mode=TwoWay}" />
 			<SymbolIcon Symbol="Home" />
 		</StackPanel>
-		<Button Grid.Row="2" Click="Button_Click">
+		<Button Grid.Row="2"
+		    Click="Button_Click">
 			<ToolTipService.ToolTip>
 				<StackPanel Orientation="Vertical">
-					<TextBlock Text="Test"/>
+					<TextBlock Text="Test" />
 				</StackPanel>
 			</ToolTipService.ToolTip>
 			<TextBlock Text="Test dialog" />

@@ -1,14 +1,13 @@
-<Page
-    x:Class="UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage.CommandBar_Page1"
+﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage.CommandBar_Page1"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:not_win="http://uno.ui/not_win"
-    mc:Ignorable="d not_win"
     d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignWidth="400"
+    mc:Ignorable="d not_win">
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -16,21 +15,21 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-	<CommandBar Content="Page1"
-				x:Name="Page1ommandBar" />
+		<CommandBar x:Name="Page1ommandBar"
+		    Content="Page1" />
 
 		<StackPanel Grid.Row="1"
-					Spacing="10"
-					VerticalAlignment="Center">
+		    VerticalAlignment="Center"
+		    Spacing="10">
 
-			<TextBlock Text="Main Page"
-			           HorizontalAlignment="Center" />
+			<TextBlock HorizontalAlignment="Center"
+			    Text="Main Page" />
 
 			<Button x:Name="NavigateToPage2Button"
-			        Content="Navigate to Page 2"
-			        Grid.Row="1"
-			        Click="OnButtonClicked"
-			        HorizontalAlignment="Center"/>
+			    Grid.Row="1"
+			    HorizontalAlignment="Center"
+			    Click="OnButtonClicked"
+			    Content="Navigate to Page 2" />
 		</StackPanel>
 	</Grid>
 </Page>

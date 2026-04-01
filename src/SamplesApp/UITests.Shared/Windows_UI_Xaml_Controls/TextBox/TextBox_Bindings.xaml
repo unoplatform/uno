@@ -1,20 +1,25 @@
-﻿<Page
-	x:Class="UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Bindings"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Bindings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<StackPanel Spacing="10" MaxWidth="275" Margin="20">
+	<StackPanel MaxWidth="275"
+	    Margin="20"
+	    Spacing="10">
 		<TextBlock FontSize="18">TextBox bound with TwoWay mode</TextBlock>
-		<TextBox Text="{Binding Text, Mode=TwoWay}" x:Name="textboxTwoWay" />
+		<TextBox x:Name="textboxTwoWay"
+		    Text="{Binding Text, Mode=TwoWay}" />
 		<TextBlock FontSize="18">TextBox bound with OneWay mode</TextBlock>
-		<TextBox Text="{Binding Text, Mode=OneWay}" x:Name="textboxOneWay" />
+		<TextBox x:Name="textboxOneWay"
+		    Text="{Binding Text, Mode=OneWay}" />
 		<TextBlock FontSize="18">TextBox bound with default mode (OneWay)</TextBlock>
-		<TextBox Text="{Binding Text}" x:Name="textboxDefault" />
+		<TextBox x:Name="textboxDefault"
+		    Text="{Binding Text}" />
 		<TextBlock FontSize="18">TextBlock bound on same content</TextBlock>
-		<TextBlock Text="{Binding Text}" x:Name="textblock" />
+		<TextBlock x:Name="textblock"
+		    Text="{Binding Text}" />
 	</StackPanel>
 </Page>

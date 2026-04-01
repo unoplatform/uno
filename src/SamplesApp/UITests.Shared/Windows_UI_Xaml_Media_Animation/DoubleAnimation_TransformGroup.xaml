@@ -1,15 +1,15 @@
-﻿<Page
-	x:Class="UITests.Windows_UI_Xaml_Media_Animation.DoubleAnimation_TransformGroup"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:local="using:UITests.Windows_UI_Xaml_Media_Animation"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page x:Class="UITests.Windows_UI_Xaml_Media_Animation.DoubleAnimation_TransformGroup"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Media_Animation"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-   <Page.Resources>
-		<Style TargetType="Border" x:Key="Marker">
+	<Page.Resources>
+		<Style x:Key="Marker"
+		    TargetType="Border">
 			<Setter Property="Width" Value="50" />
 			<Setter Property="Height" Value="50" />
 			<Setter Property="Background" Value="#D3D3D3" />
@@ -32,53 +32,58 @@
 			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
 
-		<StackPanel
-			Grid.Row="0"
-			Grid.ColumnSpan="3"
-			Orientation="Horizontal">
-			<Button
-				x:Name="StartButton"
-				Content="Start animations"
-				Click="StartAnimations"/>
-			<CheckBox
-				x:Name="AutoPause"
-				Content="Pause animation at half duration"
-				IsChecked="True"
-				IsThreeState="False" />
-			<Button
-				x:Name="ResumeButton"
-				Content="Resume animations"
-				Click="ResumeAnimations"
-				Visibility="{Binding ElementName=AutoPause, Path=IsChecked}"/>
-			<TextBlock
-				x:Name="Status"
-				Margin="20,0"
-				VerticalAlignment="Center"
-				FontSize="16"
-				Text="Waiting" />
+		<StackPanel Grid.Row="0"
+		    Grid.ColumnSpan="3"
+		    Orientation="Horizontal">
+			<Button x:Name="StartButton"
+			    Click="StartAnimations"
+			    Content="Start animations" />
+			<CheckBox x:Name="AutoPause"
+			    Content="Pause animation at half duration"
+			    IsChecked="True"
+			    IsThreeState="False" />
+			<Button x:Name="ResumeButton"
+			    Click="ResumeAnimations"
+			    Content="Resume animations"
+			    Visibility="{Binding ElementName=AutoPause, Path=IsChecked}" />
+			<TextBlock x:Name="Status"
+			    Margin="20,0"
+			    VerticalAlignment="Center"
+			    FontSize="16"
+			    Text="Waiting" />
 		</StackPanel>
 
-		<Border Style="{StaticResource Marker}" Grid.Row="2" Grid.Column="0" />
-		<Border Style="{StaticResource Marker}" Grid.Row="2" Grid.Column="1" />
-		<Border Style="{StaticResource Marker}" Grid.Row="2" Grid.Column="2" />
-		<Border Style="{StaticResource Marker}" Grid.Row="4" Grid.Column="0" />
-		<Border Style="{StaticResource Marker}" Grid.Row="4" Grid.Column="1" />
-		<Border Style="{StaticResource Marker}" Grid.Row="4" Grid.Column="2" />
+		<Border Grid.Row="2"
+		    Grid.Column="0"
+		    Style="{StaticResource Marker}" />
+		<Border Grid.Row="2"
+		    Grid.Column="1"
+		    Style="{StaticResource Marker}" />
+		<Border Grid.Row="2"
+		    Grid.Column="2"
+		    Style="{StaticResource Marker}" />
+		<Border Grid.Row="4"
+		    Grid.Column="0"
+		    Style="{StaticResource Marker}" />
+		<Border Grid.Row="4"
+		    Grid.Column="1"
+		    Style="{StaticResource Marker}" />
+		<Border Grid.Row="4"
+		    Grid.Column="2"
+		    Style="{StaticResource Marker}" />
 
-		<TextBlock
-			Grid.Row="1"
-			Grid.Column="0"
-			HorizontalAlignment="Center"
-			Text="Translate" />
-		<Border
-			x:Name="TranslateHost"
-			Grid.Row="2"
-			Grid.Column="0"
-			Background="#FF0000"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Top"
-			Width="50"
-			Height="50">
+		<TextBlock Grid.Row="1"
+		    Grid.Column="0"
+		    HorizontalAlignment="Center"
+		    Text="Translate" />
+		<Border x:Name="TranslateHost"
+		    Grid.Row="2"
+		    Grid.Column="0"
+		    Width="50"
+		    Height="50"
+		    HorizontalAlignment="Center"
+		    VerticalAlignment="Top"
+		    Background="#FF0000">
 			<Border.RenderTransform>
 				<TransformGroup>
 					<TranslateTransform />
@@ -86,20 +91,18 @@
 			</Border.RenderTransform>
 		</Border>
 
-		<TextBlock
-			Grid.Row="1"
-			Grid.Column="1"
-			HorizontalAlignment="Center"
-			Text="Scale" />
-		<Border
-			x:Name="ScaleHost"
-			Grid.Row="2"
-			Grid.Column="1"
-			Background="#FF8000"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Top"
-			Width="50"
-			Height="50">
+		<TextBlock Grid.Row="1"
+		    Grid.Column="1"
+		    HorizontalAlignment="Center"
+		    Text="Scale" />
+		<Border x:Name="ScaleHost"
+		    Grid.Row="2"
+		    Grid.Column="1"
+		    Width="50"
+		    Height="50"
+		    HorizontalAlignment="Center"
+		    VerticalAlignment="Top"
+		    Background="#FF8000">
 			<Border.RenderTransform>
 				<TransformGroup>
 					<ScaleTransform />
@@ -107,21 +110,19 @@
 			</Border.RenderTransform>
 		</Border>
 
-		<TextBlock
-			Grid.Row="1"
-			Grid.Column="2"
-			HorizontalAlignment="Center"
-			Text="Rotate" />
-		<Border
-			x:Name="RotateHost"
-			Grid.Row="2"
-			Grid.Column="2"
-			Background="#FFFF00"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Top"
-			Width="50"
-			Height="50"
-			RenderTransformOrigin="0,1">
+		<TextBlock Grid.Row="1"
+		    Grid.Column="2"
+		    HorizontalAlignment="Center"
+		    Text="Rotate" />
+		<Border x:Name="RotateHost"
+		    Grid.Row="2"
+		    Grid.Column="2"
+		    Width="50"
+		    Height="50"
+		    HorizontalAlignment="Center"
+		    VerticalAlignment="Top"
+		    Background="#FFFF00"
+		    RenderTransformOrigin="0,1">
 			<Border.RenderTransform>
 				<TransformGroup>
 					<RotateTransform />
@@ -129,20 +130,18 @@
 			</Border.RenderTransform>
 		</Border>
 
-		<TextBlock
-			Grid.Row="3"
-			Grid.Column="0"
-			HorizontalAlignment="Center"
-			Text="Skew" />
-		<Border
-			x:Name="SkewHost"
-			Grid.Row="4"
-			Grid.Column="0"
-			Background="#008000"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Top"
-			Width="50"
-			Height="50">
+		<TextBlock Grid.Row="3"
+		    Grid.Column="0"
+		    HorizontalAlignment="Center"
+		    Text="Skew" />
+		<Border x:Name="SkewHost"
+		    Grid.Row="4"
+		    Grid.Column="0"
+		    Width="50"
+		    Height="50"
+		    HorizontalAlignment="Center"
+		    VerticalAlignment="Top"
+		    Background="#008000">
 			<Border.RenderTransform>
 				<TransformGroup>
 					<SkewTransform />
@@ -150,20 +149,18 @@
 			</Border.RenderTransform>
 		</Border>
 
-		<TextBlock
-			Grid.Row="3"
-			Grid.Column="1"
-			HorizontalAlignment="Center"
-			Text="Composite" />
-		<Border
-			x:Name="CompositeHost"
-			Grid.Row="4"
-			Grid.Column="1"
-			Background="#0000FF"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Top"
-			Width="50"
-			Height="50">
+		<TextBlock Grid.Row="3"
+		    Grid.Column="1"
+		    HorizontalAlignment="Center"
+		    Text="Composite" />
+		<Border x:Name="CompositeHost"
+		    Grid.Row="4"
+		    Grid.Column="1"
+		    Width="50"
+		    Height="50"
+		    HorizontalAlignment="Center"
+		    VerticalAlignment="Top"
+		    Background="#0000FF">
 			<Border.RenderTransform>
 				<TransformGroup>
 					<CompositeTransform />
@@ -171,21 +168,19 @@
 			</Border.RenderTransform>
 		</Border>
 
-		<TextBlock
-			Grid.Row="3"
-			Grid.Column="2"
-			HorizontalAlignment="Center"
-			Text="CRAZY !!!" />
-		<Border
-			x:Name="CrazyHost"
-			Grid.Row="4"
-			Grid.Column="2"
-			Background="#A000C0"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Top"
-			Width="50"
-			Height="50"
-			RenderTransformOrigin="0,1">
+		<TextBlock Grid.Row="3"
+		    Grid.Column="2"
+		    HorizontalAlignment="Center"
+		    Text="CRAZY !!!" />
+		<Border x:Name="CrazyHost"
+		    Grid.Row="4"
+		    Grid.Column="2"
+		    Width="50"
+		    Height="50"
+		    HorizontalAlignment="Center"
+		    VerticalAlignment="Top"
+		    Background="#A000C0"
+		    RenderTransformOrigin="0,1">
 			<Border.RenderTransform>
 				<TransformGroup>
 					<TranslateTransform />

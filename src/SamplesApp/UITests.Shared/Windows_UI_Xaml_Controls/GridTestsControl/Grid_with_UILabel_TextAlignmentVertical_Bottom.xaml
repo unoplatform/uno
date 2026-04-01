@@ -1,15 +1,14 @@
-<UserControl
-	x:Class="Uno.UI.Samples.Content.UITests.GridTestsControl.Grid_with_UILabel_TextAlignmentVertical_Bottom"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:ios="http://uno.ui/ios"
-	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:android="http://uno.ui/android"
-	mc:Ignorable="d ios android"
-	d:DesignHeight="3000"
-	d:DesignWidth="400">
+﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.GridTestsControl.Grid_with_UILabel_TextAlignmentVertical_Bottom"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:android="http://uno.ui/android"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ios="http://uno.ui/ios"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    d:DesignHeight="3000"
+    d:DesignWidth="400"
+    mc:Ignorable="d ios android">
 
 	<Grid Background="#FFFF0000">
 		<Grid.ColumnDefinitions>
@@ -17,9 +16,36 @@
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<TextBlock Margin="10" Text="pAqqj|" VerticalAlignment="Bottom" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis" FontSize="15" FontFamily="Helvetica" ios:TextAlignment="Center" Grid.Column="0" Grid.Row="0"  />
-		<TextBlock Margin="10" Text="pAqqj|" VerticalAlignment="Bottom" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" FontSize="15" FontFamily="Helvetica" ios:TextAlignment="Center" Grid.Column="1" Grid.Row="0"  />
-		<TextBlock Margin="10" Text="pAqqj|" VerticalAlignment="Bottom" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis" FontSize="15" FontFamily="Helvetica" ios:TextAlignment="Center" Grid.Column="2" Grid.Row="0" />
+		<TextBlock Grid.Row="0"
+		    Grid.Column="0"
+		    Margin="10"
+		    HorizontalAlignment="Left"
+		    VerticalAlignment="Bottom"
+		    ios:TextAlignment="Center"
+		    FontFamily="Helvetica"
+		    FontSize="15"
+		    Text="pAqqj|"
+		    TextTrimming="CharacterEllipsis" />
+		<TextBlock Grid.Row="0"
+		    Grid.Column="1"
+		    Margin="10"
+		    HorizontalAlignment="Center"
+		    VerticalAlignment="Bottom"
+		    ios:TextAlignment="Center"
+		    FontFamily="Helvetica"
+		    FontSize="15"
+		    Text="pAqqj|"
+		    TextTrimming="CharacterEllipsis" />
+		<TextBlock Grid.Row="0"
+		    Grid.Column="2"
+		    Margin="10"
+		    HorizontalAlignment="Right"
+		    VerticalAlignment="Bottom"
+		    ios:TextAlignment="Center"
+		    FontFamily="Helvetica"
+		    FontSize="15"
+		    Text="pAqqj|"
+		    TextTrimming="CharacterEllipsis" />
 	</Grid>
 
 </UserControl>

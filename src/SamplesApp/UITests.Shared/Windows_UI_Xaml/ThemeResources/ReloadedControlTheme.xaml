@@ -1,6 +1,6 @@
 ﻿<UserControl x:Class="UITests.Windows_UI_Xaml.ThemeResources.ReloadedControlTheme"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<UserControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.ThemeDictionaries>
@@ -12,14 +12,17 @@
 				</ResourceDictionary>
 			</ResourceDictionary.ThemeDictionaries>
 
-			<SolidColorBrush x:Key="ReloadedControlTheme_Brush" Color="{ThemeResource ReloadedControlTheme_Color}" />
+			<SolidColorBrush x:Key="ReloadedControlTheme_Brush"
+			    Color="{ThemeResource ReloadedControlTheme_Color}" />
 		</ResourceDictionary>
 	</UserControl.Resources>
 
 	<StackPanel Spacing="16">
 		<Border x:Name="TestControlContainer" />
 
-		<ToggleSwitch x:Name="DarkModeToggle" Header="Dark Mode" />
-		<ToggleSwitch x:Name="LoadControlToggle" Header="Un/Load Control" />
+		<ToggleSwitch x:Name="DarkModeToggle"
+		    Header="Dark Mode" />
+		<ToggleSwitch x:Name="LoadControlToggle"
+		    Header="Un/Load Control" />
 	</StackPanel>
 </UserControl>

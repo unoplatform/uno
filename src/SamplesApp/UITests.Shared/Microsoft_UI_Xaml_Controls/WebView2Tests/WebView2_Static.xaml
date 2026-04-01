@@ -1,16 +1,15 @@
-﻿<UserControl
-	x:Class="SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_Static"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:local="using:SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:u="using:Uno.UI.Samples.Controls"
-	xmlns:not_win="http://uno.ui/not_win"
-	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
-	mc:Ignorable="d not_win"
-	d:DesignHeight="300"
-	d:DesignWidth="400">
+﻿<UserControl x:Class="SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_Static"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+    xmlns:not_win="http://uno.ui/not_win"
+    xmlns:u="using:Uno.UI.Samples.Controls"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d not_win">
 
 	<not_win:Grid>
 		<Grid.RowDefinitions>
@@ -18,11 +17,11 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<mux:WebView2 Source="{Binding [WebSource]}"
-					local:WebView2ObserverBehavior.IsAttached="True" />
+		<mux:WebView2 local:WebView2ObserverBehavior.IsAttached="True"
+		    Source="{Binding [WebSource]}" />
 
 		<Button Grid.Row="1"
-						Content="Next URL"
-						Command="{Binding [GoToNextWebSource]}" />
+		    Command="{Binding [GoToNextWebSource]}"
+		    Content="Next URL" />
 	</not_win:Grid>
 </UserControl>

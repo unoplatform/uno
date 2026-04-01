@@ -1,11 +1,10 @@
-﻿<Page
-	x:Class="UITests.Windows_UI_Xaml_Media_Animation.FadeInOutThemeAnimationPage"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page x:Class="UITests.Windows_UI_Xaml_Media_Animation.FadeInOutThemeAnimationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
 	<Page.Resources>
 		<Storyboard x:Name="fadein">
@@ -17,8 +16,13 @@
 	</Page.Resources>
 
 	<StackPanel Spacing="10">
-		<Border Background="Red" x:Name="border">
-			<TextBlock Margin="10" Foreground="White" FontWeight="Bold">BORDER</TextBlock>
+		<Border x:Name="border"
+		    Background="Red">
+			<TextBlock Margin="10"
+			    FontWeight="Bold"
+			    Foreground="White">
+				BORDER
+			</TextBlock>
 		</Border>
 		<Button Click="Fadeout">FADE OUT BORDER</Button>
 		<Button Click="Fadein">FADE IN BORDER</Button>

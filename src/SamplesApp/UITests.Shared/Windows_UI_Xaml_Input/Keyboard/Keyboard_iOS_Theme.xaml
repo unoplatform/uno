@@ -1,12 +1,12 @@
 ﻿<Page x:Class="UITests.Windows_UI_Xaml_Input.Keyboard.Keyboard_iOS_Theme"
-	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	  xmlns:local="using:UITests.Windows_UI_Xaml_Input.Keyboard"
-	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  xmlns:ios="http://uno.ui/ios"
-	  mc:Ignorable="d ios"
-	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ios="http://uno.ui/ios"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Input.Keyboard"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d ios">
 
 	<ScrollViewer>
 		<StackPanel>
@@ -18,9 +18,18 @@
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 
-				<RadioButton Grid.Column="0" Content="Default" Click="UpdateTheme" HorizontalAlignment="Stretch" />
-				<RadioButton Grid.Column="1" Content="Light" Click="UpdateTheme" HorizontalAlignment="Stretch" />
-				<RadioButton Grid.Column="2" Content="Dark" Click="UpdateTheme" HorizontalAlignment="Stretch" />
+				<RadioButton Grid.Column="0"
+				    HorizontalAlignment="Stretch"
+				    Click="UpdateTheme"
+				    Content="Default" />
+				<RadioButton Grid.Column="1"
+				    HorizontalAlignment="Stretch"
+				    Click="UpdateTheme"
+				    Content="Light" />
+				<RadioButton Grid.Column="2"
+				    HorizontalAlignment="Stretch"
+				    Click="UpdateTheme"
+				    Content="Dark" />
 			</Grid>
 
 			<TextBlock Text="KB Appearance: for 'custom' text/password-box" />
@@ -31,24 +40,39 @@
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 
-				<RadioButton Grid.Column="0" Content="Default" Click="UpdateKeyboardAppearance" HorizontalAlignment="Stretch" />
-				<RadioButton Grid.Column="1" Content="Light" Click="UpdateKeyboardAppearance" HorizontalAlignment="Stretch" />
-				<RadioButton Grid.Column="2" Content="Dark" Click="UpdateKeyboardAppearance" HorizontalAlignment="Stretch" />
+				<RadioButton Grid.Column="0"
+				    HorizontalAlignment="Stretch"
+				    Click="UpdateKeyboardAppearance"
+				    Content="Default" />
+				<RadioButton Grid.Column="1"
+				    HorizontalAlignment="Stretch"
+				    Click="UpdateKeyboardAppearance"
+				    Content="Light" />
+				<RadioButton Grid.Column="2"
+				    HorizontalAlignment="Stretch"
+				    Click="UpdateKeyboardAppearance"
+				    Content="Dark" />
 			</Grid>
 			<TextBlock Text="note: Dark will be displayed as Alert because it shared the same value."
-					   TextWrapping="WrapWholeWords" />
+			    TextWrapping="WrapWholeWords" />
 
 			<StackPanel x:Name="TestPanel">
-				<TextBlock Text="TextBox" Margin="0,20,0,0" />
+				<TextBlock Margin="0,20,0,0"
+				    Text="TextBox" />
 				<TextBox PlaceholderText="default" />
-				<TextBox PlaceholderText="light" ios:KeyboardAppearance="Light" />
-				<TextBox PlaceholderText="dark" ios:KeyboardAppearance="Dark" />
+				<TextBox ios:KeyboardAppearance="Light"
+				    PlaceholderText="light" />
+				<TextBox ios:KeyboardAppearance="Dark"
+				    PlaceholderText="dark" />
 				<TextBox PlaceholderText="custom:" />
 
-				<TextBlock Text="PasswordBox" Margin="0,20,0,0" />
+				<TextBlock Margin="0,20,0,0"
+				    Text="PasswordBox" />
 				<PasswordBox PlaceholderText="default" />
-				<PasswordBox PlaceholderText="light" ios:KeyboardAppearance="Light" />
-				<PasswordBox PlaceholderText="dark" ios:KeyboardAppearance="Dark" />
+				<PasswordBox ios:KeyboardAppearance="Light"
+				    PlaceholderText="light" />
+				<PasswordBox ios:KeyboardAppearance="Dark"
+				    PlaceholderText="dark" />
 				<PasswordBox PlaceholderText="custom:" />
 			</StackPanel>
 

@@ -1,9 +1,9 @@
-﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:SampleControl.Views.Styles.Application">
-    
-	<!-- OPACITY REFERENCE TABLE
+
+	<!--
+		OPACITY REFERENCE TABLE
 		100% — FF
 		95% — F2
 		90% — E6
@@ -27,12 +27,12 @@
 		0% — 00
 	-->
 
-	<!-- App Colors Resources -->
+	<!--  App Colors Resources  -->
 
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Key="Default">
 
-			<!-- Style Guide -->
+			<!--  Style Guide  -->
 			<Color x:Key="Color01">#FFFFFFFF</Color>
 			<Color x:Key="Color02">#FF000000</Color>
 			<Color x:Key="Color03">#FF2E2E2E</Color>
@@ -45,7 +45,7 @@
 		</ResourceDictionary>
 		<ResourceDictionary x:Key="HighContrast">
 
-			<!-- Style Guide -->
+			<!--  Style Guide  -->
 			<Color x:Key="Color01">#FFFFFFFF</Color>
 			<Color x:Key="Color02">#FF000000</Color>
 			<Color x:Key="Color03">#FF2E2E2E</Color>
@@ -57,26 +57,26 @@
 
 		</ResourceDictionary>
 	</ResourceDictionary.ThemeDictionaries>
-	
-	<!-- App Colors Brushes -->
+
+	<!--  App Colors Brushes  -->
 
 	<SolidColorBrush x:Key="TransparentColorBrush"
-					 Color="Transparent" />
+	    Color="Transparent" />
 	<SolidColorBrush x:Key="Color01Brush"
-					 Color="{StaticResource Color01}" />
+	    Color="{StaticResource Color01}" />
 	<SolidColorBrush x:Key="Color02Brush"
-					 Color="{StaticResource Color02}" />
+	    Color="{StaticResource Color02}" />
 	<SolidColorBrush x:Key="Color03Brush"
-					 Color="{StaticResource Color03}" />
+	    Color="{StaticResource Color03}" />
 	<SolidColorBrush x:Key="Color04Brush"
-					 Color="{StaticResource Color04}" />
+	    Color="{StaticResource Color04}" />
 	<SolidColorBrush x:Key="Color05Brush"
-					 Color="{StaticResource Color05}" />
+	    Color="{StaticResource Color05}" />
 	<SolidColorBrush x:Key="Color06Brush"
-					 Color="{StaticResource Color06}" />
+	    Color="{StaticResource Color06}" />
 	<SolidColorBrush x:Key="Color07Brush"
-					 Color="{StaticResource Color07}" />
+	    Color="{StaticResource Color07}" />
 	<SolidColorBrush x:Key="Color08Brush"
-					 Color="{StaticResource Color08}" />
+	    Color="{StaticResource Color08}" />
 
 </ResourceDictionary>

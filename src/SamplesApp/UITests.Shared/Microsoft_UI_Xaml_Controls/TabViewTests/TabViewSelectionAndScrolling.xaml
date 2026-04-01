@@ -1,12 +1,12 @@
 ﻿<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.TabViewTests.TabViewSelectionAndScrolling"
-	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	  xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.TabViewTests"
-	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  xmlns:controls="using:Microsoft.UI.Xaml.Controls"
-	  mc:Ignorable="d"
-	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.TabViewTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 	<Page.Resources>
 		<Style TargetType="controls:TabViewItem">
 			<Setter Property="HeaderTemplate">
@@ -18,47 +18,73 @@
 			</Setter>
 		</Style>
 	</Page.Resources>
-	
-	<Grid BorderBrush="Red"
-		  BorderThickness="2"
-		  MaxWidth="400">
+
+	<Grid MaxWidth="400"
+	    BorderBrush="Red"
+	    BorderThickness="2">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<TextBlock Grid.Row="0" Text="{Binding SelectedTab.Header}" />
+		<TextBlock Grid.Row="0"
+		    Text="{Binding SelectedTab.Header}" />
 		<StackPanel Grid.Row="1">
-			<Button Content="DebugVT" Click="DebugVT" />
+			<Button Click="DebugVT"
+			    Content="DebugVT" />
 
 			<StackPanel Orientation="Horizontal">
 				<TextBlock>SelectItem:</TextBlock>
-				<Button Content="First" Tag="0" Click="SelectItem" />
-				<Button Content="25" Tag="25" Click="SelectItem" />
-				<Button Content="75" Tag="75" Click="SelectItem" />
-				<Button Content="Last" Tag="99" Click="SelectItem" />
+				<Button Click="SelectItem"
+				    Content="First"
+				    Tag="0" />
+				<Button Click="SelectItem"
+				    Content="25"
+				    Tag="25" />
+				<Button Click="SelectItem"
+				    Content="75"
+				    Tag="75" />
+				<Button Click="SelectItem"
+				    Content="Last"
+				    Tag="99" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal">
 				<TextBlock>ScrollTo:</TextBlock>
-				<Button Content="First" Tag="0" Click="ScrollTo" />
-				<Button Content="25" Tag="25" Click="ScrollTo" />
-				<Button Content="75" Tag="75" Click="ScrollTo" />
-				<Button Content="Last" Tag="99" Click="ScrollTo" />
+				<Button Click="ScrollTo"
+				    Content="First"
+				    Tag="0" />
+				<Button Click="ScrollTo"
+				    Content="25"
+				    Tag="25" />
+				<Button Click="ScrollTo"
+				    Content="75"
+				    Tag="75" />
+				<Button Click="ScrollTo"
+				    Content="Last"
+				    Tag="99" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal">
 				<TextBlock>ScrollToLeading:</TextBlock>
-				<Button Content="First" Tag="0" Click="ScrollToLeading" />
-				<Button Content="25" Tag="25" Click="ScrollToLeading" />
-				<Button Content="75" Tag="75" Click="ScrollToLeading" />
-				<Button Content="Last" Tag="99" Click="ScrollToLeading" />
+				<Button Click="ScrollToLeading"
+				    Content="First"
+				    Tag="0" />
+				<Button Click="ScrollToLeading"
+				    Content="25"
+				    Tag="25" />
+				<Button Click="ScrollToLeading"
+				    Content="75"
+				    Tag="75" />
+				<Button Click="ScrollToLeading"
+				    Content="Last"
+				    Tag="99" />
 			</StackPanel>
 		</StackPanel>
 
-		<controls:TabView Grid.Row="2" 
-						  x:Name="SUT"
-						  TabItemsSource="{Binding Tabs}"
-						  SelectedItem="{Binding SelectedTab, Mode=TwoWay}"
-						  TabCloseRequested="TabView_TabCloseRequested" />
+		<controls:TabView x:Name="SUT"
+		    Grid.Row="2"
+		    SelectedItem="{Binding SelectedTab, Mode=TwoWay}"
+		    TabCloseRequested="TabView_TabCloseRequested"
+		    TabItemsSource="{Binding Tabs}" />
 	</Grid>
 </Page>

@@ -1,16 +1,19 @@
-﻿<Page
-    x:Class="SamplesApp.Samples.UnitTests.HttpUnitTests"
+﻿<Page x:Class="SamplesApp.Samples.UnitTests.HttpUnitTests"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uno="using:Uno.UI.Samples.Controls"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
 	<uno:StarStackPanel Sizes="Auto,Auto,*">
-		<TextBox x:Name="address" Text="https://api.nuget.org/v3/index.json" />
-		<Button HorizontalAlignment="Stretch" Click="Go">-GO- (make sure your url supports CORS!)</Button>
+		<TextBox x:Name="address"
+		    Text="https://api.nuget.org/v3/index.json" />
+		<Button HorizontalAlignment="Stretch"
+		    Click="Go">
+			-GO- (make sure your url supports CORS!)
+		</Button>
 		<ScrollViewer>
 			<TextBlock x:Name="log" />
 		</ScrollViewer>

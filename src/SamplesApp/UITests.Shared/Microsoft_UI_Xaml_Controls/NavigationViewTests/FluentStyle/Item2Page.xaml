@@ -1,17 +1,22 @@
-﻿<Page
-    x:Class="SamplesApp.Samples.Microsoft_UI_Xaml_Controls.NavigationViewTests.FluentStyle.Item2Page"
+﻿<Page x:Class="SamplesApp.Samples.Microsoft_UI_Xaml_Controls.NavigationViewTests.FluentStyle.Item2Page"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:SamplesApp.Shared.Samples.NavigationViewSample"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SamplesApp.Shared.Samples.NavigationViewSample"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-    <Grid>
-		<StackPanel Margin="20" VerticalAlignment="Top" Orientation="Horizontal">
-			<SymbolIcon Symbol="Save" Margin="20" />
-			<TextBlock x:Name="Page2NavViewContent" Text="Page 2" FontSize="30" VerticalAlignment="Center" />
+	<Grid>
+		<StackPanel Margin="20"
+		    VerticalAlignment="Top"
+		    Orientation="Horizontal">
+			<SymbolIcon Margin="20"
+			    Symbol="Save" />
+			<TextBlock x:Name="Page2NavViewContent"
+			    VerticalAlignment="Center"
+			    FontSize="30"
+			    Text="Page 2" />
 		</StackPanel>
-    </Grid>
+	</Grid>
 </Page>

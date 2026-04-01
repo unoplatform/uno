@@ -1,5 +1,4 @@
-﻿<Page
-    x:Class="UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests.TeachingTipBasicPage"
+﻿<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests.TeachingTipBasicPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,58 +9,66 @@
     mc:Ignorable="d">
 
 	<Grid>
-		<StackPanel Spacing="8" Margin="20">
-			<Button
-            x:Name="SaveButton"
-            Click="ShowTip"
-            Content="Save">
+		<StackPanel Margin="20"
+		    Spacing="8">
+			<Button x:Name="SaveButton"
+			    Click="ShowTip"
+			    Content="Save">
 				<Button.Resources>
-					<muxc:TeachingTip
-                    x:Name="AutoSaveTip"
-                    Title="Save automatically"
-                    Subtitle="When you save your file to OneDrive, we save your changes as you go - so you never have to."
-                    Target="{x:Bind SaveButton}" />
+					<muxc:TeachingTip x:Name="AutoSaveTip"
+					    Title="Save automatically"
+					    Subtitle="When you save your file to OneDrive, we save your changes as you go - so you never have to."
+					    Target="{x:Bind SaveButton}" />
 				</Button.Resources>
 			</Button>
 
-			<Button x:Name="ThemeButton" Content="Show TeachingTip" Click="TestButtonClick1" />
+			<Button x:Name="ThemeButton"
+			    Click="TestButtonClick1"
+			    Content="Show TeachingTip" />
 
-			<Button Content="Show TeachingTip" Click="TestButtonClick2" />
+			<Button Click="TestButtonClick2"
+			    Content="Show TeachingTip" />
 
-			<Button Content="Show TeachingTip" Click="TestButtonClick3" />
+			<Button Click="TestButtonClick3"
+			    Content="Show TeachingTip" />
 		</StackPanel>
 
 
 		<muxc:TeachingTip x:Name="ToggleThemeTeachingTip1"
-			Target="{x:Bind ThemeButton}"
-			Title="Change themes without hassle"
-			Subtitle="It's easier than ever to see control samples in both light and dark theme!">
+		    Title="Change themes without hassle"
+		    Subtitle="It's easier than ever to see control samples in both light and dark theme!"
+		    Target="{x:Bind ThemeButton}">
 			<muxc:TeachingTip.IconSource>
 				<muxc:SymbolIconSource Symbol="Refresh" />
 			</muxc:TeachingTip.IconSource>
 		</muxc:TeachingTip>
 
 		<muxc:TeachingTip x:Name="ToggleThemeTeachingTip2"
-			Title="Change themes without hassle"
-			Subtitle="It's easier than ever to see control samples in both light and dark theme!"
-			PreferredPlacement="Auto"
-			PlacementMargin="20"
-			IsLightDismissEnabled="True"
-			ActionButtonContent="Toggle theme now"
-			CloseButtonContent="Got it!">
-		</muxc:TeachingTip>
+		    Title="Change themes without hassle"
+		    ActionButtonContent="Toggle theme now"
+		    CloseButtonContent="Got it!"
+		    IsLightDismissEnabled="True"
+		    PlacementMargin="20"
+		    PreferredPlacement="Auto"
+		    Subtitle="It's easier than ever to see control samples in both light and dark theme!" />
 
 		<muxc:TeachingTip x:Name="ToggleThemeTeachingTip3"
-			Target="{x:Bind ThemeButton}"
-			Title="Change themes without hassle"
-			Subtitle="It's easier than ever to see control samples in both light and dark theme!"
-			PreferredPlacement="Bottom">
+		    Title="Change themes without hassle"
+		    PreferredPlacement="Bottom"
+		    Subtitle="It's easier than ever to see control samples in both light and dark theme!"
+		    Target="{x:Bind ThemeButton}">
 			<muxc:TeachingTip.HeroContent>
-				<Border Background="Red" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+				<Border Height="100"
+				    HorizontalAlignment="Stretch"
+				    VerticalAlignment="Stretch"
+				    Background="Red" />
 				<!--<Image Source="ms-appx:///Assets/Formats/uno-overalls.png" Stretch="UniformToFill" AutomationProperties.Name="Sunset" />-->
 			</muxc:TeachingTip.HeroContent>
 			<muxc:TeachingTip.Content>
-				<TextBlock TextWrapping="WrapWholeWords" Margin="0,16,0,0">To change your desktop theme visit the <Hyperlink NavigateUri="ms-settings:colors">Settings app</Hyperlink>.</TextBlock>
+				<TextBlock Margin="0,16,0,0"
+				    TextWrapping="WrapWholeWords">
+					To change your desktop theme visit the<Hyperlink NavigateUri="ms-settings:colors">Settings app</Hyperlink>
+					.</TextBlock>
 			</muxc:TeachingTip.Content>
 		</muxc:TeachingTip>
 	</Grid>

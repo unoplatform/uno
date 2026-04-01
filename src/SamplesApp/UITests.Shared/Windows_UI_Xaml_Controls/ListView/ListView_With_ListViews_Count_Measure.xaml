@@ -1,12 +1,12 @@
 ﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_With_ListViews_Count_Measure"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ListView"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 mc:Ignorable="d"
-			 d:DesignHeight="300"
-			 d:DesignWidth="400">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ListView"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
 	<UserControl.Resources>
 		<local:StringToHeightConverter x:Key="StringToHeightConverter" />
 	</UserControl.Resources>
@@ -21,24 +21,24 @@
 		<TextBlock Text="Header" />
 		<local:MeasureDetectorControl Grid.Row="1">
 			<ListView x:Name="OuterListView"
-					  Background="Red"
-					  ItemsSource="01234567"
-					  Height="200">
+			    Height="200"
+			    Background="Red"
+			    ItemsSource="01234567">
 				<ListView.ItemTemplate>
 					<DataTemplate>
 						<StackPanel Padding="5"
-									Background="LightBlue">
-							<TextBlock Text="{Binding}"
-									   FontSize="20" />
+						    Background="LightBlue">
+							<TextBlock FontSize="20"
+							    Text="{Binding}" />
 							<ListView ItemsSource="ABC">
 								<ListView.ItemTemplate>
 									<DataTemplate>
 										<StackPanel>
 											<TextBlock Text="{Binding}" />
-											<Border Margin="2"
-													Background="Pink"
-													Width="200"
-													Height="{Binding Converter={StaticResource StringToHeightConverter}}" />
+											<Border Width="200"
+											    Height="{Binding Converter={StaticResource StringToHeightConverter}}"
+											    Margin="2"
+											    Background="Pink" />
 										</StackPanel>
 									</DataTemplate>
 								</ListView.ItemTemplate>
@@ -49,11 +49,11 @@
 			</ListView>
 		</local:MeasureDetectorControl>
 		<TextBlock x:Name="ResultTextBlock"
-				   Grid.Row="2"
-				   Text="Not scrolled" />
-		<Button Grid.Row="3"
-				x:Name="ChangeViewButton"
-				Content="Scroll list"
-				Click="ChangeViewButton_Clicked" />
+		    Grid.Row="2"
+		    Text="Not scrolled" />
+		<Button x:Name="ChangeViewButton"
+		    Grid.Row="3"
+		    Click="ChangeViewButton_Clicked"
+		    Content="Scroll list" />
 	</Grid>
 </UserControl>

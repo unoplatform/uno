@@ -1,31 +1,39 @@
-﻿<Page
-	x:Class="UITests.Windows_UI_Xaml_Controls.RadioButtonTests.RadioButton2450"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.RadioButtonTests.RadioButton2450"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<StackPanel Spacing="10" Margin="10">
+	<StackPanel Margin="10"
+	    Spacing="10">
 		<TextBlock FontSize="15">
-			This is an illustration of Github bug
-			<Hyperlink NavigateUri="https://github.com/unoplatform/uno/issues/2450">#2450</Hyperlink>
+			This is an illustration of Github bug<Hyperlink NavigateUri="https://github.com/unoplatform/uno/issues/2450">#2450</Hyperlink>
 		</TextBlock>
 
-		<TextBlock Foreground="BlueViolet" FontSize="14">
-			--> Following 2 lines should be identical:
-			<LineBreak/>same sizes, same colors, no yellow should be visible.
-		</TextBlock>
+		<TextBlock FontSize="14"
+		    Foreground="BlueViolet">
+			--> Following 2 lines should be identical:<LineBreak />
+			same sizes, same colors, no yellow should be visible.</TextBlock>
 
-		<StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-			<Rectangle Fill="Red" Width="10" Height="45" VerticalAlignment="Top" />
+		<StackPanel VerticalAlignment="Center"
+		    Orientation="Horizontal"
+		    Spacing="10">
+			<Rectangle Width="10"
+			    Height="45"
+			    VerticalAlignment="Top"
+			    Fill="Red" />
 
-			<Border Background="Yellow" VerticalAlignment="Top">
-				<RadioButton Height="40" MinHeight="45" Width="200" MinWidth="210">
+			<Border VerticalAlignment="Top"
+			    Background="Yellow">
+				<RadioButton Width="200"
+				    Height="40"
+				    MinWidth="210"
+				    MinHeight="45">
 					<RadioButton.Template>
 						<ControlTemplate TargetType="RadioButton">
-							<!-- Only this green should be visible, no yellow -->
+							<!--  Only this green should be visible, no yellow  -->
 							<Grid Background="Green" />
 						</ControlTemplate>
 					</RadioButton.Template>
@@ -33,14 +41,16 @@
 			</Border>
 		</StackPanel>
 
-		<Grid ColumnSpacing="10" Height="45">
+		<Grid Height="45"
+		    ColumnSpacing="10">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="10" />
 				<ColumnDefinition Width="210" />
 			</Grid.ColumnDefinitions>
 
 			<Rectangle Fill="Red" />
-			<Rectangle Fill="Green" Grid.Column="1" />
+			<Rectangle Grid.Column="1"
+			    Fill="Green" />
 		</Grid>
 
 	</StackPanel>

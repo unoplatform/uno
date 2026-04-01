@@ -1,44 +1,62 @@
 ﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_DynamicContent"
-	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	  xmlns:local="using:UITests.Windows_UI_Xaml_Controls.ToolTip"
-	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  mc:Ignorable="d"
-	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.ToolTip"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
 	<Grid Padding="16"
-		  RowSpacing="16">
+	    RowSpacing="16">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<Border Grid.Row="0" x:Name="TooltipTarget" Background="SkyBlue"
-				Padding="16"
-				ToolTipService.ToolTip="default tooltip">
+		<Border x:Name="TooltipTarget"
+		    Grid.Row="0"
+		    Padding="16"
+		    Background="SkyBlue"
+		    ToolTipService.ToolTip="default tooltip">
 			<TextBlock Text="mouse over the blue area to reveal the tooltip"
-					   TextWrapping="Wrap" />
+			    TextWrapping="Wrap" />
 		</Border>
 
 		<StackPanel Grid.Row="1"
-					Spacing="4"
-					HorizontalAlignment="Stretch">
+		    HorizontalAlignment="Stretch"
+		    Spacing="4">
 			<StackPanel.Resources>
 				<Style TargetType="Button">
 					<Setter Property="HorizontalAlignment" Value="Stretch" />
 				</Style>
 			</StackPanel.Resources>
-			
-			<Button x:Name="SetTooltipToNullButton" Content="SetTooltipToNull" Click="SetTooltip" Tag="{x:Null}" />
-			<Button x:Name="SetTooltipToText1Button" Content="SetTooltipToText1" Click="SetTooltip" Tag="Text 1" />
-			<Button x:Name="SetTooltipToText2Button" Content="SetTooltipToText2" Click="SetTooltip" Tag="Text 2" />
-			<Button x:Name="SetTooltipToEmptyStringButton" Content="SetTooltipToEmptyString" Click="SetTooltip" Tag="" />
-			<Button x:Name="SetTooltipToToolTipControlButton" Content="SetTooltipToToolTipControl" Click="SetTooltip">
+
+			<Button x:Name="SetTooltipToNullButton"
+			    Click="SetTooltip"
+			    Content="SetTooltipToNull"
+			    Tag="{x:Null}" />
+			<Button x:Name="SetTooltipToText1Button"
+			    Click="SetTooltip"
+			    Content="SetTooltipToText1"
+			    Tag="Text 1" />
+			<Button x:Name="SetTooltipToText2Button"
+			    Click="SetTooltip"
+			    Content="SetTooltipToText2"
+			    Tag="Text 2" />
+			<Button x:Name="SetTooltipToEmptyStringButton"
+			    Click="SetTooltip"
+			    Content="SetTooltipToEmptyString"
+			    Tag="" />
+			<Button x:Name="SetTooltipToToolTipControlButton"
+			    Click="SetTooltip"
+			    Content="SetTooltipToToolTipControl">
 				<Button.Tag>
 					<ToolTip>
 						<StackPanel>
-							<Rectangle Fill="Pink" Height="16" Width="16" />
+							<Rectangle Width="16"
+							    Height="16"
+							    Fill="Pink" />
 							<TextBlock Text="Custom Tooltip Control" />
 						</StackPanel>
 					</ToolTip>

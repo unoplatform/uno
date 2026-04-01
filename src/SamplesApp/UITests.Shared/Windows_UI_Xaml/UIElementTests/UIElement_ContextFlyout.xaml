@@ -1,15 +1,16 @@
-﻿<Page
-    x:Class="UITests.Windows_UI_Xaml.UIElementTests.UIElement_ContextFlyout"
+﻿<Page x:Class="UITests.Windows_UI_Xaml.UIElementTests.UIElement_ContextFlyout"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Windows_UI_Xaml.UIElementTests"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml.UIElementTests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-    <StackPanel Spacing="8" Padding="20">
-		<TextBox Width="300" PlaceholderText="TextBox">
+	<StackPanel Padding="20"
+	    Spacing="8">
+		<TextBox Width="300"
+		    PlaceholderText="TextBox">
 			<TextBox.ContextFlyout>
 				<Flyout>
 					<TextBlock Text="Hello!" />
@@ -23,7 +24,8 @@
 				</Flyout>
 			</Button.ContextFlyout>
 		</Button>
-		<RadioButton Width="300" Content="RadioButton">
+		<RadioButton Width="300"
+		    Content="RadioButton">
 			<RadioButton.ContextFlyout>
 				<Flyout>
 					<TextBlock Text="Hello!" />
@@ -37,5 +39,5 @@
 				</Flyout>
 			</Slider.ContextFlyout>
 		</Slider>
-    </StackPanel>
+	</StackPanel>
 </Page>
