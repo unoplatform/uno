@@ -1,0 +1,25 @@
+name: XAML Style Check
+
+on:
+  pull_request:
+    paths:
+      - 'src/SamplesApp/**/*.xaml'
+      - 'src/SamplesApp/Settings.XamlStyler'
+      - '.config/dotnet-tools.json'
+
+jobs:
+  xaml-style:
+    if: github.repository == 'unoplatform/uno'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore dotnet tools
+        run: dotnet tool restore
+
+      - name: Check XAML formatting
+        run: dotnet xstyler -d src/SamplesApp -r -p
