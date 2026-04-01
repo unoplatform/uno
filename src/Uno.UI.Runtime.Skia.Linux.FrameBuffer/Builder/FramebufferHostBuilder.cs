@@ -75,7 +75,7 @@ public class FramebufferHostBuilder : IPlatformHostBuilder
 	}
 
 	/// <summary>
-	/// Disables the usage of KMS/DRM for hardware acceleration and forces software rendering. 
+	/// Disables the usage of KMS/DRM for hardware acceleration and forces software rendering.
 	/// </summary>
 	public FramebufferHostBuilder DisableKMSDRM()
 	{

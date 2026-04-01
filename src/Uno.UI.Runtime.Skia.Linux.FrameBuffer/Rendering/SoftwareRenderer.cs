@@ -20,6 +20,11 @@ namespace Uno.UI.Runtime.Skia
 			_fbDev.Init();
 			FrameBufferWindowWrapper.Instance.SetSize(new Size(_fbDev.ScreenSize.Width, _fbDev.ScreenSize.Height));
 
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().Info($"Software renderer initialized: {_fbDev.ScreenSize.Width}x{_fbDev.ScreenSize.Height}, {_fbDev.PixelFormat}");
+			}
+
 			new Thread(_ =>
 			{
 				while (true)
