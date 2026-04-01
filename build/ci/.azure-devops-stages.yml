@@ -19,6 +19,7 @@ stages:
         README/**
         build/**
 
+    - template: templates/host-cleanup-linux.yml
     - template: templates/gitversion-run.yml
     - template: setup/.azure-devops-setup-commitsar.yml
     - template: setup/.azure-devops-setup-doc-validations.yml
@@ -35,6 +36,7 @@ stages:
       clean: false
       fetchDepth: 0
 
+    - template: templates/host-cleanup-linux.yml
     - task: PowerShell@2
       name: SetScope
       displayName: Evaluate native-impacting changes
