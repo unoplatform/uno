@@ -80,7 +80,7 @@ Button, TextBox, TextBlock, CheckBox, RadioButton, ComboBox, ListBox, ListView, 
 
 | WPF Property / Value | WinUI Equivalent | Context |
 |---|---|---|
-| `Visibility.Hidden` | Not available | Use `Opacity="0"` for invisible-but-layout-occupying |
+| `Visibility.Hidden` | Not available | Use `Opacity="0"` together with `IsHitTestVisible="False"` (and, for focusable controls, `IsTabStop="False"`) to be invisible, non-interactive, but still layout-occupying. |
 | `TextWrapping.WrapWithOverflow` | `TextWrapping.Wrap` | WinUI does not distinguish |
 | `Focusable="True"` | `IsTabStop="True"` | Different property name, same behavior |
 
