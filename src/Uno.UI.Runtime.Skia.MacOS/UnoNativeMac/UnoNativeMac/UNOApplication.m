@@ -22,14 +22,20 @@ void uno_set_system_theme_change_callback(system_theme_change_fn_ptr p)
 void uno_set_accent_color_change_callback(accent_color_change_fn_ptr p)
 {
     accent_color_change = p;
-    // observe NSColor.controlAccentColor changes via system notification
-    [[NSDistributedNotificationCenter defaultCenter]
-        addObserverForName:@"AppleColorPreferencesChangedNotification"
+    // observe NSColor.controlAccentColor changes via the official AppKit notification.
+    // NSSystemColorsDidChangeNotification is posted AFTER AppKit has updated its
+    // color values, so controlAccentColor returns the new value when the callback fires.
+    [[NSNotificationCenter defaultCenter]
+        addObserverForName:NSSystemColorsDidChangeNotification
                     object:nil
                      queue:[NSOperationQueue mainQueue]
                 usingBlock:^(NSNotification * _Nonnull note) {
         if (accent_color_change) {
-            accent_color_change();
+            // Defer to next run loop iteration so NSColor.controlAccentColor
+            // returns the updated value (same pattern as theme change callback).
+            dispatch_async(dispatch_get_main_queue(), ^{
+                accent_color_change();
+            });
         }
     }];
 }
