@@ -285,7 +285,17 @@ namespace SamplesApp.UITests
 				{
 					lastError = ex;
 					Console.WriteLine($"Cold start attempt {attempt}/{maxAttempts} failed: {ex.Message}");
-					ResetSimulator();
+
+					// ResetSimulator internally calls ColdStartApp after erasing the sim.
+					// Wrap in try/catch so a failure inside reset doesn't abort the retry loop.
+					try
+					{
+						ResetSimulator();
+					}
+					catch (Exception resetEx)
+					{
+						Console.WriteLine($"Simulator reset failed: {resetEx.Message}");
+					}
 
 					if (attempt < maxAttempts)
 					{
