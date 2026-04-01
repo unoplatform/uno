@@ -125,8 +125,8 @@ public partial class TextBox
 
 	public bool CanUndo => (bool)GetValue(CanUndoProperty);
 
-	private static object GetCanUndo(DependencyObject @do, bool isGet, object valueToSet)
-		=> Uno.UI.Helpers.Boxes.Box(((TextBox)@do)._historyIndex > 0);
+	private static object GetCanUndo(DependencyObject instance, bool isGet, object valueToSet)
+		=> Uno.UI.Helpers.Boxes.Box(((TextBox)instance)._historyIndex > 0);
 
 	public static DependencyProperty CanRedoProperty { get; } = DependencyProperty.Register(
 		nameof(CanRedo),
@@ -139,10 +139,10 @@ public partial class TextBox
 
 	public bool CanRedo => (bool)GetValue(CanRedoProperty);
 
-	private static object GetCanRedo(DependencyObject @do, bool isGet, object valueToSet)
+	private static object GetCanRedo(DependencyObject instance, bool isGet, object valueToSet)
 	{
-		var @this = (TextBox)@do;
-		return Uno.UI.Helpers.Boxes.Box(@this._historyIndex < @this._history.Count - 1);
+		var textBox = (TextBox)instance;
+		return Uno.UI.Helpers.Boxes.Box(textBox._historyIndex < textBox._history.Count - 1);
 	}
 
 	[GeneratedDependencyProperty(DefaultValue = false)]

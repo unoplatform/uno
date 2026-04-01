@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml
 	/// In Uno, we are not yet doing it this way, and the return value is currently ignored when setting the value.
 	/// </remarks>
 #nullable enable
-	internal delegate object? PropMethodCall(DependencyObject @do, bool isGet, object? valueToSet);
+	internal delegate object? PropMethodCall(DependencyObject instance, bool isGet, object? valueToSet);
 #nullable restore
 
 	/// <summary>

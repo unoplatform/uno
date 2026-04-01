@@ -263,19 +263,19 @@ public class Given_DependencyProperty_PropMethodCall
 			}
 		);
 
-		private static object TestBoolMethod(DependencyObject @do, bool isGet, object valueToSet)
+		private static object TestBoolMethod(DependencyObject instance, bool isGet, object valueToSet)
 		{
-			var @this = (PropMethodCallTestControl)@do;
+			var control = (PropMethodCallTestControl)instance;
 			if (isGet)
 			{
-				return Boxes.Box(@this._testBool);
+				return Boxes.Box(control._testBool);
 			}
 			else
 			{
 				var newValue = (bool)valueToSet;
-				if (newValue != @this._testBool)
+				if (newValue != control._testBool)
 				{
-					@this._testBool = newValue;
+					control._testBool = newValue;
 					return true;
 				}
 
@@ -283,19 +283,19 @@ public class Given_DependencyProperty_PropMethodCall
 			}
 		}
 
-		private static object TestIntMethod(DependencyObject @do, bool isGet, object valueToSet)
+		private static object TestIntMethod(DependencyObject instance, bool isGet, object valueToSet)
 		{
-			var @this = (PropMethodCallTestControl)@do;
+			var control = (PropMethodCallTestControl)instance;
 			if (isGet)
 			{
-				return @this._testInt;
+				return control._testInt;
 			}
 			else
 			{
 				var newValue = (int)valueToSet;
-				if (newValue != @this._testInt)
+				if (newValue != control._testInt)
 				{
-					@this._testInt = newValue;
+					control._testInt = newValue;
 					return true;
 				}
 
@@ -303,19 +303,19 @@ public class Given_DependencyProperty_PropMethodCall
 			}
 		}
 
-		private static object TestCoercedMethod(DependencyObject @do, bool isGet, object valueToSet)
+		private static object TestCoercedMethod(DependencyObject instance, bool isGet, object valueToSet)
 		{
-			var @this = (PropMethodCallTestControl)@do;
+			var control = (PropMethodCallTestControl)instance;
 			if (isGet)
 			{
-				return @this._testCoerced;
+				return control._testCoerced;
 			}
 			else
 			{
 				var newValue = (int)valueToSet;
-				if (newValue != @this._testCoerced)
+				if (newValue != control._testCoerced)
 				{
-					@this._testCoerced = newValue;
+					control._testCoerced = newValue;
 					return true;
 				}
 
