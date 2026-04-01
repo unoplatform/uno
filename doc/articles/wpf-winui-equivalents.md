@@ -119,7 +119,7 @@ Button, TextBox, TextBlock, CheckBox, RadioButton, ComboBox, ListBox, ListView, 
 |---|---|---|
 | `{StaticResource Key}` | `{StaticResource Key}` | Identical - resolved once at load |
 | `{DynamicResource Key}` | `{ThemeResource Key}` | Re-evaluated on theme changes (Light/Dark) |
-| `{x:Static ns:Type.Member}` | `{x:Bind ns:Type.Member}` | Static member references |
+| `{x:Static ns:Type.Member}` | `{x:Bind ns:Type.Member}` | Common option for static member references; enums/values can often use direct `ns:Type.Member` or literals |
 | `{Binding Path=X}` | `{x:Bind ViewModel.X, Mode=OneWay}` | See [binding comparison](#binding-technology-comparison) below |
 
 ### Binding Technology Comparison
