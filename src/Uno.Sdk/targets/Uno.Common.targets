@@ -136,10 +136,6 @@
 		<UnoDspImportColors Include="Styles\*.zip" Generator="CSharp" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
 	</ItemGroup>
 
-	<PropertyGroup>
-		<_UnoBeforeCopyLocalDefined>true</_UnoBeforeCopyLocalDefined>
-	</PropertyGroup>
-
 	<!-- Copy Content files to the output folder like APPX packaging does, for Skia executable heads only. -->
 	<Target Name="_UnoBeforeCopyLocal"
 			BeforeTargets="CopyFilesToOutputDirectory;_CopyFilesMarkedCopyLocal"
