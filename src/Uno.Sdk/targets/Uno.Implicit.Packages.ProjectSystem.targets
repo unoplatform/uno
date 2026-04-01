@@ -102,7 +102,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';skiarenderer;')) OR $(IsDesktop) == 'true'">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';spellchecking;')) AND ($(UnoFeatures.Contains(';skiarenderer;')) OR $(IsDesktop) == 'true')">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.SpellChecking" ProjectSystem="true" />
 	</ItemGroup>
 
