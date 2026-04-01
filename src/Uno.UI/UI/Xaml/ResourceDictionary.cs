@@ -160,6 +160,9 @@ namespace Microsoft.UI.Xaml
 		public bool Remove(object key)
 		{
 			var keyToRemove = new ResourceKey(key);
+
+			// MUX: CResourceDictionary::RemoveKey invalidates the theme walk cache for this key.
+			ThemeWalkResourceCache.Instance.RemoveCacheEntry(keyToRemove);
 #if __SKIA__ || __WASM__ || __ANDROID__
 			if (_values.TryGetValue(keyToRemove, out var value))
 			{
@@ -402,6 +405,10 @@ namespace Microsoft.UI.Xaml
 			{
 				throw new ArgumentException("An entry with the same key already exists.");
 			}
+
+			// MUX: CResourceDictionary::AddKey invalidates the theme walk cache for this key
+			// because a new resource can shadow entries from other dictionaries in the lookup chain.
+			ThemeWalkResourceCache.Instance.RemoveCacheEntry(resourceKey);
 
 			if (value is WeakResourceInitializer lazyResourceInitializer)
 			{

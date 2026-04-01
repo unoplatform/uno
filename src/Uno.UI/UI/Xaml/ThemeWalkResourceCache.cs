@@ -59,7 +59,7 @@ internal sealed class ThemeWalkResourceCache
 			return new CacheSession(this);
 		}
 
-		return default; // no-op: _cache field is null
+		return default; // re-entrant call: returns a CacheSession with null owner, so Dispose() is a no-op
 	}
 
 	/// <summary>
@@ -138,17 +138,40 @@ internal sealed class ThemeWalkResourceCache
 	}
 
 	/// <summary>
-	/// Removes cached entries for a given dictionary and key across all themes.
-	/// Called when a resource is added/removed from a dictionary
-	/// during the theme walk (e.g., when UpdateLayout calls out to app code that modifies dictionaries).
+	/// Removes all cached entries for a given resource key across all dictionaries and themes.
+	/// Called when a resource is added/removed from a dictionary during the theme walk
+	/// (e.g., when UpdateLayout calls out to app code that modifies dictionaries).
 	/// </summary>
 	/// <remarks>
 	/// MUX Reference: ThemeWalkResourceCache::RemoveThemeResourceCacheEntry()
+	/// WinUI removes by key only (not dictionary), because a new/removed resource can
+	/// shadow/unshadow entries from other dictionaries in the lookup chain.
 	/// </remarks>
-	public void RemoveCacheEntry(ResourceDictionary dictionary, SpecializedResourceDictionary.ResourceKey key)
+	public void RemoveCacheEntry(SpecializedResourceDictionary.ResourceKey key)
 	{
-		// Remove entries for all themes since the resource itself changed
-		_cache.Remove((dictionary, key, ResourceDictionary.GetActiveTheme()));
+		if (!_isCachingThemeResources || _cache.Count == 0)
+		{
+			return;
+		}
+
+		// Remove entries for all dictionaries and themes since the resource itself changed.
+		List<(ResourceDictionary Dict, SpecializedResourceDictionary.ResourceKey Key, SpecializedResourceDictionary.ResourceKey ActiveTheme)>? keysToRemove = null;
+		foreach (var entry in _cache.Keys)
+		{
+			if (entry.Key.Equals(key))
+			{
+				keysToRemove ??= new();
+				keysToRemove.Add(entry);
+			}
+		}
+
+		if (keysToRemove is not null)
+		{
+			foreach (var cacheKey in keysToRemove)
+			{
+				_cache.Remove(cacheKey);
+			}
+		}
 	}
 
 	/// <summary>

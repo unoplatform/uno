@@ -68,6 +68,7 @@ internal sealed class ThemeResourceReference
 		SpecializedResourceDictionary.ResourceKey resourceKey,
 		ResourceDictionary? targetDictionary,
 		object? initialValue,
+		bool isResolved,
 		object? parseContext,
 		ResourceUpdateReason updateReason,
 		DependencyPropertyValuePrecedences precedence,
@@ -78,7 +79,7 @@ internal sealed class ThemeResourceReference
 			? new WeakReference<ResourceDictionary>(targetDictionary)
 			: null;
 		LastResolvedValue = initialValue;
-		IsResolved = initialValue is not null;
+		IsResolved = isResolved;
 		ParseContext = parseContext;
 		UpdateReason = updateReason;
 		Precedence = precedence;
@@ -210,6 +211,7 @@ internal sealed class ThemeResourceReference
 			ResourceKey,
 			targetDictionary: null, // will be set below
 			LastResolvedValue,
+			IsResolved,
 			ParseContext,
 			UpdateReason,
 			precedence,
@@ -217,7 +219,6 @@ internal sealed class ThemeResourceReference
 
 		// Share the same pinned dictionary
 		clone._targetDictionary = _targetDictionary;
-		clone.IsResolved = IsResolved;
 		return clone;
 	}
 

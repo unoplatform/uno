@@ -2916,8 +2916,8 @@ public class Given_ElementTheme
 	{
 		// Repro: mirrors ElementLevelTheme.xaml — a page (default/Light theme)
 		// containing both Light and Dark themed borders with checked CheckBoxes.
-		// The Dark CheckBox's NormalRectangle.Fill must match the Light one
-		// (both should be the accent color, not transparent/wrong).
+		// The Dark CheckBox's NormalRectangle.Fill should also be accent-colored,
+		// matching the Light one in intent (accent), but using its theme-specific shade.
 		var root = (Grid)XamlReader.Load("""
 			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

@@ -323,7 +323,7 @@ namespace Uno.UI
 					// _resourceBindings resolution at load time (via the re-pin logic
 					// in InnerUpdateResourceBindingsUnsafe).
 					var themeRef = new ThemeResourceReference(
-						specializedKey, null, value, context,
+						specializedKey, null, value, isResolved: true, context,
 						updateReason, effectivePrecedence);
 					(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, themeRef);
 
@@ -349,7 +349,7 @@ namespace Uno.UI
 				// Couldn't resolve yet (deferred until loading). Create a ThemeResourceReference
 				// without a pinned dictionary -- it will be resolved via tree-walk at load time.
 				var themeRef = new ThemeResourceReference(
-					specializedKey, null, null, context,
+					specializedKey, null, null, isResolved: false, context,
 					updateReason, effectivePrecedence);
 				(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, themeRef);
 			}
@@ -407,7 +407,7 @@ namespace Uno.UI
 					{
 						// Use pinned-dictionary path for theme resources
 						var themeRef = new ThemeResourceReference(
-							resourceKey, providingDictionary, value, context,
+							resourceKey, providingDictionary, value, isResolved: true, context,
 							updateReason, precedence, bindingPath);
 						provider.Store.SetThemeResourceBinding(property, themeRef);
 					}

@@ -333,7 +333,22 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
-			var themeKey = Theming.GetBaseValue(effectiveTheme) == Theme.Light ? "Light" : "Dark";
+			var baseTheme = Theming.GetBaseValue(effectiveTheme);
+			if (baseTheme == Theme.None)
+			{
+				// No base Light/Dark theme (e.g. HighContrast): resolve without overriding the active theme.
+				foreach (var keyFrame in KeyFrames)
+				{
+					if (keyFrame is IDependencyObjectStoreProvider provider)
+					{
+						provider.Store.UpdateAllThemeReferences(null);
+					}
+				}
+
+				return;
+			}
+
+			var themeKey = baseTheme == Theme.Light ? "Light" : "Dark";
 			ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
 			try
 			{
