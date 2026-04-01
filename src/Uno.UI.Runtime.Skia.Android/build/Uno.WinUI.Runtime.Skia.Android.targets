@@ -4,4 +4,15 @@
 		<IsUnoHead Condition="'$(OutputType)'=='Exe' OR '$(OutputType)'=='WinExe'">true</IsUnoHead>
 	</PropertyGroup>
 
+	<!-- Fallback for non-Uno.Sdk projects: Uno.Common.targets provides this for Sdk projects -->
+	<Target Name="_UnoBeforeCopyLocal_SkiaAndroid"
+			BeforeTargets="CopyFilesToOutputDirectory;_CopyFilesMarkedCopyLocal"
+			Condition="'$(_UnoBeforeCopyLocalDefined)' != 'true'">
+		<ItemGroup>
+			<ContentWithTargetPath
+				Update="@(ContentWithTargetPath)"
+				CopyToOutputDirectory="Always" />
+		</ItemGroup>
+	</Target>
+
 </Project>
