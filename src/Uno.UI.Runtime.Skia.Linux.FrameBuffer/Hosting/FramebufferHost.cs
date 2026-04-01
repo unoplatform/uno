@@ -140,6 +140,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
+			FrameBufferPointerInputSource.Instance.IsMouseWheelReversed = _hostBuilder.IsMouseWheelReversed;
 			FrameBufferInputProvider.Instance.Initialize();
 
 			var drmInitOptions = new DRMRenderer.DRMInitOptions(_hostBuilder.DRMCardPath, _hostBuilder.DRMConnectorChooser, _hostBuilder.GBMSurfaceColorFormat);
