@@ -587,7 +587,16 @@
       - name: Features
         items:
         - name: Accessibility
-          href: features/working-with-accessibility.md
+          href: features/accessibility/index.md
+          items:
+          - name: AutomationProperties
+            href: features/accessibility/automation-properties.md
+          - name: Custom automation peers
+            href: features/accessibility/automation-peers.md
+          - name: Role override
+            href: features/accessibility/role-override.md
+          - name: Testing with screen readers
+            href: features/accessibility/testing-with-screen-readers.md
         - name: Animations
           href: features/working-with-animations.md
         - name: Assets and image display
