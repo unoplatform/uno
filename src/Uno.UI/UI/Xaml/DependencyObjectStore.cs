@@ -369,12 +369,6 @@ namespace Microsoft.UI.Xaml
 					return GetDefaultValue(property);
 				}
 
-				// For PropMethodCall, the authoritative base value is always the backing field.
-				if (property.IsPropMethodCall)
-				{
-					return GetValueFromMethodCall(property);
-				}
-
 				return modifiedValue.GetBaseValue();
 			}
 
@@ -415,7 +409,7 @@ namespace Microsoft.UI.Xaml
 			Debug.Assert(property.Metadata is FrameworkPropertyMetadata);
 			var propMethodCall = Unsafe.As<FrameworkPropertyMetadata>(property.Metadata).PropMethodCall;
 			Debug.Assert(propMethodCall is not null);
-			return propMethodCall(ActualInstance, isGet: true, valueToSet: null);
+			return propMethodCall(ActualInstance!, isGet: true, valueToSet: null);
 		}
 
 		private void SetValueViaMethodCall(DependencyProperty property, object? value)
@@ -424,7 +418,7 @@ namespace Microsoft.UI.Xaml
 			Debug.Assert(property.Metadata is FrameworkPropertyMetadata);
 			var propMethodCall = Unsafe.As<FrameworkPropertyMetadata>(property.Metadata).PropMethodCall;
 			Debug.Assert(propMethodCall is not null);
-			_ = propMethodCall(ActualInstance, isGet: false, valueToSet: value);
+			_ = propMethodCall(ActualInstance!, isGet: false, valueToSet: value);
 		}
 
 		/// <summary>
@@ -1229,7 +1223,9 @@ namespace Microsoft.UI.Xaml
 
 			// For PropMethodCall DPs, the authoritative value is on the backing field,
 			// not in DependencyPropertyDetails._value. Read it from the method delegate.
-			if (property.IsPropMethodCall)
+			// When ModifiedValue exists (animation/coercion), the base value is preserved there
+			// via InitializeModifiedValue, so fall through to details.GetBaseValue().
+			if (property.IsPropMethodCall && details.GetModifiedValue() is null)
 			{
 				return (GetValueFromMethodCall(property), baseValueSource);
 			}
@@ -2080,12 +2076,16 @@ namespace Microsoft.UI.Xaml
 			// When local value or style value are cleared, we want to re-evaluate base value and set the value with the right precedence.
 			// The new base value will either be Style (explicit or implicit) or DefaultStyle (aka built-in style)
 			var actualInstance = ActualInstance;
-			if (actualInstance is FrameworkElement fe && fe.TryGetValueFromStyle(propertyDetails.Property, out var valueFromStyle) && valueFromStyle != DependencyProperty.UnsetValue)
+			if (actualInstance is FrameworkElement fe &&
+				fe.TryGetValueFromStyle(propertyDetails.Property, out var valueFromStyle) &&
+				valueFromStyle != DependencyProperty.UnsetValue)
 			{
 				// NOTE: ExplicitStyle here actually means ExplicitOrImplicitStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
 				SetValueInternal(valueFromStyle, DependencyPropertyValuePrecedences.ExplicitStyle, propertyDetails);
 			}
-			else if (actualInstance is Control control && control.TryGetValueFromBuiltInStyle(propertyDetails.Property, out var valueFromBuiltInStyle) && valueFromBuiltInStyle != DependencyProperty.UnsetValue)
+			else if (actualInstance is Control control &&
+				control.TryGetValueFromBuiltInStyle(propertyDetails.Property, out var valueFromBuiltInStyle) &&
+				valueFromBuiltInStyle != DependencyProperty.UnsetValue)
 			{
 				// NOTE: ImplicitStyle here actually means DefaultStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
 				SetValueInternal(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.ImplicitStyle, propertyDetails);

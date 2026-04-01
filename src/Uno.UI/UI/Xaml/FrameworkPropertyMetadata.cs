@@ -9,9 +9,11 @@ namespace Microsoft.UI.Xaml
 	/// <remarks>
 	/// <paramref name="valueToSet"/> should be null when isGet is true.
 	/// In WinUI, when setting the value, the return value represents whether the property has changed its value.
-	/// In Uno, we are not yet doing it this way, and the return will be always null when setting the value.
+	/// In Uno, we are not yet doing it this way, and the return value is currently ignored when setting the value.
 	/// </remarks>
-	internal delegate object PropMethodCall(DependencyObject @do, bool isGet, object valueToSet);
+#nullable enable
+	internal delegate object? PropMethodCall(DependencyObject @do, bool isGet, object? valueToSet);
+#nullable restore
 
 	/// <summary>
 	/// Defines the metadata to use for a dependency property for framework elements
@@ -203,7 +205,10 @@ namespace Microsoft.UI.Xaml
 
 		internal override PropertyMetadata CloneWithOverwrittenDefaultValue(object newDefaultValue)
 		{
-			return new FrameworkPropertyMetadata(newDefaultValue, Options, PropertyChangedCallback, CoerceValueCallback, BackingFieldUpdateCallback, CreateDefaultValueCallback);
+			return new FrameworkPropertyMetadata(newDefaultValue, Options, PropertyChangedCallback, CoerceValueCallback, BackingFieldUpdateCallback, CreateDefaultValueCallback)
+			{
+				PropMethodCall = PropMethodCall,
+			};
 		}
 	}
 }
