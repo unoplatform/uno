@@ -420,19 +420,25 @@ public partial class FrameworkElement
 
 		if (freeze)
 		{
-			// MUX Reference framework.cpp line 3415-3451:
-			// EnsureTextFormatting, SetRequestedThemeForSubTree, LookupThemeResource,
-			// SetForeground, SetFreezeForeground(true), MarkInheritedPropertyDirty
-			//
-			// WinUI skips the freeze when Foreground is set by style/local
-			// (framework.cpp line 3410) because children pull the parent's
-			// current Foreground via PullInheritedTextFormatting. Uno does
-			// not have that pull model — children inherit via _themeForeground.
-			// We always resolve the default theme brush so _themeForeground is
-			// populated for child inheritance. Setting the DP at Inheritance
-			// precedence is a no-op when a higher-precedence value (style/local)
-			// already exists.
 			DependencyProperty foregroundProperty = GetForegroundProperty();
+
+			// MUX Reference framework.cpp line 3423-3429:
+			// WinUI skips the entire freeze when Foreground is set locally or by style,
+			// relying on PullInheritedTextFormatting to propagate the styled value.
+			// In Uno, Foreground is an inherited DP, so children auto-cascade from
+			// the parent. We still need _themeForeground for children that don't
+			// inherit via DP (e.g., popup/template content), but we skip the SetValue
+			// to avoid overriding the styled value on THIS element.
+			bool skipSetValue = false;
+			if (foregroundProperty is not null)
+			{
+				var precedence = this.GetCurrentHighestValuePrecedence(foregroundProperty);
+				if (precedence != DependencyPropertyValuePrecedences.DefaultValue
+					&& precedence != DependencyPropertyValuePrecedences.Inheritance)
+				{
+					skipSetValue = true;
+				}
+			}
 
 			// Resolve the theme's default text foreground brush
 			var themeKey = Theming.GetBaseValue(theme) == Theme.Light ? "Light" : "Dark";
@@ -443,13 +449,14 @@ public partial class FrameworkElement
 					"DefaultTextForegroundThemeBrush", null);
 				if (brush is not null)
 				{
-					// Store frozen state (matches WinUI TextFormatting fields)
+					// Always store for child inheritance (popup content, template children)
 					_themeForeground = brush;
 					_isForegroundFrozen = true;
 
-					// Apply to the DP at Inheritance precedence so it's visible
-					// to the rendering system while being overridable by Local/Style.
-					if (foregroundProperty is not null)
+					// Only set the DP when Foreground isn't already set by a higher
+					// precedence (local/style). This matches WinUI's skip behavior
+					// while preserving _themeForeground for child propagation.
+					if (foregroundProperty is not null && !skipSetValue)
 					{
 						this.SetValue(
 							foregroundProperty, brush,

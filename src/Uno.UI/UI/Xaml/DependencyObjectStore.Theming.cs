@@ -239,6 +239,11 @@ public partial class DependencyObjectStore
 	/// - CommandBar_PrimaryCommands, CommandBar_SecondaryCommands (contain AppBarButtons
 	///   not yet in the visual tree — saves many unnecessary resource lookups)
 	/// - Properties that are back-references (IsDependencyPropertyBackReference)
+	///
+	/// Note: WinUI also has a generic IsDependencyPropertyBackReference(propertyIndex) check
+	/// (Theming.cpp:75) that filters ALL back-reference properties. Uno doesn't have a
+	/// centralized back-reference concept in its DP system, so we enumerate the known cases
+	/// explicitly. If new back-reference properties are added, they should be listed here.
 	/// </remarks>
 	private static bool ShouldNotifyPropertyOfThemeChange(DependencyProperty property)
 	{
@@ -476,6 +481,12 @@ public partial class DependencyObjectStore
 			// If the reason for the update doesn't match the reason(s) that the binding was created for, don't update it
 			return;
 		}
+
+		// Note: we intentionally do NOT skip theme resource bindings here even though
+		// Phase 1 (UpdateAllThemeReferences) may have already resolved them. The Phase 2
+		// tree walk serves as a fallback when Phase 1 can't resolve (e.g., element not yet
+		// loaded, pinned dictionary missing). Skipping here could cause stale values for
+		// elements like ToolTip content that enter the tree outside a theme walk.
 
 		if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
 		{

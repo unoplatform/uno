@@ -1208,7 +1208,7 @@ namespace Microsoft.UI.Xaml
 			// to ALL descendants. This breaks element-level theming because a parent's theme change
 			// cascades Foreground through theme boundaries (elements with explicit RequestedTheme).
 			// Block the cascade at theme boundaries, matching WinUI's TextFormatting freeze behavior.
-			if (parentProperty.Name == "Foreground"
+			if (IsForegroundDependencyProperty(parentProperty)
 				&& ActualInstance is FrameworkElement { IsForegroundInheritanceBlocked: true })
 			{
 				return;
@@ -1396,6 +1396,21 @@ namespace Microsoft.UI.Xaml
 
 			return (null, null);
 		}
+
+		/// <summary>
+		/// Returns true if the given DependencyProperty is one of the known Foreground properties
+		/// that participate in theme-boundary inheritance blocking.
+		/// </summary>
+		/// <remarks>
+		/// MUX Reference: WinUI uses KnownPropertyIndex and InheritedProperties::GetCorrespondingInheritedProperty
+		/// to identify Foreground properties. We use DP identity checks to avoid fragile string comparison.
+		/// </remarks>
+		private static bool IsForegroundDependencyProperty(DependencyProperty property) =>
+			property == Controls.Control.ForegroundProperty
+			|| property == Controls.TextBlock.ForegroundProperty
+			|| property == Controls.IconElement.ForegroundProperty
+			|| property == Controls.ContentPresenter.ForegroundProperty
+			|| property == Controls.RichTextBlock.ForegroundProperty;
 
 		/// <summary>
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.

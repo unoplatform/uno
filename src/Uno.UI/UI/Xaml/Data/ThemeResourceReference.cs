@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml.Data;
@@ -118,6 +119,15 @@ internal sealed class ThemeResourceReference
 				cache?.CacheValue(dict, ResourceKey, value);
 				SetResolvedValue(value);
 				return value;
+			}
+
+			// MUX Reference: ThemeResource.cpp:96-123 — WinUI raises AG_E_PARSER_FAILED_RESOURCE_FIND
+			// when the pinned dictionary is alive but doesn't contain the key. We log a warning
+			// instead of throwing, since Uno has additional fallback paths.
+			if (typeof(ThemeResourceReference).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(ThemeResourceReference).Log().Debug(
+					$"Theme resource '{ResourceKey.Key}' not found in pinned dictionary, falling back.");
 			}
 		}
 
