@@ -97,6 +97,34 @@ public class Given_McpEndToEndProcess
 	}
 
 	[TestMethod]
+	[Description("A single immediate uno_health call after explicit selection retains the selected solution metadata even before the upstream host is fully ready.")]
+	public async Task WhenSolutionIsSelected_ImmediateUnoHealthRetainsExplicitSelectionAsync()
+	{
+		using var workspace = TemporaryUnoWorkspaceBuilder.CreateNestedWorkspace();
+		await using var harness = McpProcessHarness.Start(GetBuiltCliCommand(), workspace.RepositoryRoot, forceRootsFallback: true);
+		var client = new McpJsonRpcClient(harness);
+		using var cts = CreateTimeoutSource();
+
+		await client.InitializeAsync(cts.Token);
+
+		using var selectionResponse = await client.CallToolAsync(
+			"uno_app_select_solution",
+			new { solutionPath = workspace.PrimarySolutionPath },
+			cts.Token);
+
+		var selection = ReadSelectionResult(selectionResponse.RootElement);
+		selection.Status.Should().BeOneOf("started", "already_selected");
+		selection.SelectedSolutionPath.Should().Be(workspace.PrimarySolutionPath);
+
+		var after = await client.ReadHealthAsync(cts.Token);
+
+		after.Status.Should().NotBe("Healthy");
+		after.SelectedSolutionPath.Should().Be(workspace.PrimarySolutionPath);
+		after.EffectiveWorkspaceDirectory.Should().Be(workspace.PrimaryWorkspaceDirectory);
+		after.SelectionSource.Should().Be("UserSelected");
+	}
+
+	[TestMethod]
 	[Description("A repository with multiple Uno solutions can still be resolved deterministically through explicit solution selection.")]
 	public async Task WhenMultipleUnoSolutionsExist_ExplicitSelectionAttachesToTheRequestedSolutionAsync()
 	{
