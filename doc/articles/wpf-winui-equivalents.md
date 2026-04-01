@@ -1,5 +1,5 @@
 ---
-uid: Uno.Development.WpfWinUiEquivalents
+uid: Uno.Development.WPFWinUIEquivalents
 ---
 
 # WPF to WinUI XAML Equivalents Reference
