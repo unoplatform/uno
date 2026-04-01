@@ -9,8 +9,8 @@ namespace Microsoft.UI.Xaml
 	public partial class UIElement : global::Microsoft.UI.Composition.IAnimationObject, global::Microsoft.UI.Composition.IVisualElement, global::Microsoft.UI.Composition.IVisualElement2
 	{
 		// Skipping already declared property KeyboardAcceleratorPlacementMode
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.ScalarTransition RotationTransition
 		{
 			get
@@ -165,8 +165,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.ScalarTransition OpacityTransition
 		{
 			get
@@ -275,8 +275,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property XYFocusRightNavigationStrategy
 		// Skipping already declared property XYFocusRight
 		// Skipping already declared property XYFocusLeftNavigationStrategy
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector3 CenterPoint
 		{
 			get
@@ -307,8 +307,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Vector3Transition TranslationTransition
 		{
 			get
@@ -336,8 +336,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public float Rotation
 		{
 			get
@@ -380,8 +380,8 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property Shadow
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Vector3Transition ScaleTransition
 		{
 			get
@@ -394,8 +394,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector3 Scale
 		{
 			get
@@ -409,8 +409,8 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property TabIndex
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector3 RotationAxis
 		{
 			get

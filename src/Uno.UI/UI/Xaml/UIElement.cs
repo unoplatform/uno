@@ -60,6 +60,10 @@ namespace Microsoft.UI.Xaml
 		private string _uid;
 
 		private Vector3 _translation = Vector3.Zero;
+		private Vector3 _scale = new Vector3(1, 1, 1);
+		private float _rotation;
+		private Vector3 _centerPoint;
+		private Vector3 _rotationAxis = new Vector3(0, 0, 1);
 
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
@@ -312,6 +316,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (_translation != value)
 				{
+					var oldValue = _translation;
 					_translation = value;
 
 #if !__SKIA__
@@ -327,10 +332,109 @@ namespace Microsoft.UI.Xaml
 #endif
 
 					UpdateShadow();
+					OnTranslationChanged(oldValue, value);
 					InvalidateArrange();
 				}
 			}
 		}
+
+		partial void OnTranslationChanged(Vector3 oldValue, Vector3 newValue);
+
+#if !__NETSTD_REFERENCE__
+		/// <summary>
+		/// Gets or sets the scale of the element.
+		/// </summary>
+		public Vector3 Scale
+		{
+			get => _scale;
+			set
+			{
+				if (_scale != value)
+				{
+					var oldValue = _scale;
+					_scale = value;
+					OnScaleChanged(oldValue, value);
+				}
+			}
+		}
+
+		partial void OnScaleChanged(Vector3 oldValue, Vector3 newValue);
+
+		/// <summary>
+		/// Gets or sets the angle of clockwise rotation, in degrees.
+		/// </summary>
+		public float Rotation
+		{
+			get => _rotation;
+			set
+			{
+				if (_rotation != value)
+				{
+					var oldValue = _rotation;
+					_rotation = value;
+					OnRotationChanged(oldValue, value);
+				}
+			}
+		}
+
+		partial void OnRotationChanged(float oldValue, float newValue);
+
+		/// <summary>
+		/// Gets or sets the center point for rotation and scale.
+		/// </summary>
+		public Vector3 CenterPoint
+		{
+			get => _centerPoint;
+			set
+			{
+				if (_centerPoint != value)
+				{
+					_centerPoint = value;
+					OnCenterPointChangedPartial();
+				}
+			}
+		}
+
+		partial void OnCenterPointChangedPartial();
+
+		/// <summary>
+		/// Gets or sets the axis of rotation.
+		/// </summary>
+		public Vector3 RotationAxis
+		{
+			get => _rotationAxis;
+			set
+			{
+				if (_rotationAxis != value)
+				{
+					_rotationAxis = value;
+					OnRotationAxisChangedPartial();
+				}
+			}
+		}
+
+		partial void OnRotationAxisChangedPartial();
+
+		/// <summary>
+		/// Gets or sets the ScalarTransition that animates changes to the Opacity property.
+		/// </summary>
+		public ScalarTransition OpacityTransition { get; set; }
+
+		/// <summary>
+		/// Gets or sets the ScalarTransition that animates changes to the Rotation property.
+		/// </summary>
+		public ScalarTransition RotationTransition { get; set; }
+
+		/// <summary>
+		/// Gets or sets the Vector3Transition that animates changes to the Scale property.
+		/// </summary>
+		public Vector3Transition ScaleTransition { get; set; }
+
+		/// <summary>
+		/// Gets or sets the Vector3Transition that animates changes to the Translation property.
+		/// </summary>
+		public Vector3Transition TranslationTransition { get; set; }
+#endif
 
 		public Shadow Shadow
 		{

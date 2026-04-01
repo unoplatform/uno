@@ -3,6 +3,7 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls;
+using Windows.UI;
 
 namespace Microsoft.UI.Xaml;
 
@@ -54,36 +55,41 @@ internal static class BorderHelper
 			return;
 		}
 
-		// Begin Uno Specific
 		if (isAnimation)
 		{
 			// When an animation sets the background, it skips the transition logic and is applied immediately.
-			// However, it "deactivates" the currently active transition if one exists. Once the animation is done,
-			// the deactivated transition is reactivated and continues as if it was running (i.e. it's not paused,
-			// but takes into account the duration during which it was deactivated).
-			visual.Compositor.DeactivateBackgroundTransition(visual);
+			// Stop any running brush transition animation.
+			if (visual.BackgroundBrush is CompositionColorBrush animatingBrush)
+			{
+				animatingBrush.StopAnimation("Color");
+			}
+
 			return;
 		}
-		// End Uno Specific
 
 		var oldBrush = fromBrush as SolidColorBrush;
 		var newBrush = toBrush as SolidColorBrush;
 
 		var oldBrushIsNullOrSolidColorBrush = oldBrush is not null || fromBrush is null;
-		//var oldBrushIsNullOrStatic = oldBrush == null || !oldBrush->IsEffectiveValueInSparseStorage(KnownPropertyIndex::SolidColorBrush_ColorAnimation);
 
-		if (// The new brush must exist and must be different from the old brush. The old brush can be either a SolidColorBrush
-			// or null (in which case it will fade in from transparent). The old brush can't be a non-null brush of some other type.
-			// TODO: If we want to allow null new brushes (fade to transparent), that's some unloading storage level of work.
-			newBrush is not null
+		if (newBrush is not null
 			&& oldBrushIsNullOrSolidColorBrush
-			&& oldBrush != newBrush
-			// SolidColorBrush animations work only on static brushes. Neither brush can be animating.
-			//&& oldBrushIsNullOrStatic
-			//&& !newBrush->IsEffectiveValueInSparseStorage(KnownPropertyIndex::SolidColorBrush_ColorAnimation)
-			)
+			&& oldBrush != newBrush)
 		{
-			visual.Compositor.RegisterBackgroundTransition(visual, oldBrush?.Color ?? Colors.Transparent, newBrush.Color, transition.Duration);
+			// Get the from-color. For hand-off scenarios (brush changing mid-transition),
+			// the old CompositionColorBrush's Color holds the current animated value.
+			var fromColor = (oldBrush?.GetOrCreateCompositionBrush(visual.Compositor) as CompositionColorBrush)?.Color
+				?? Colors.Transparent;
+
+			var toColor = newBrush.Color;
+
+			// The new CompositionColorBrush was already set on the visual by UpdateBackground().
+			// Start a ColorKeyFrameAnimation on it to animate from fromColor to toColor.
+			if (visual.BackgroundBrush is CompositionColorBrush colorBrush)
+			{
+				var animation = transition.CreateAnimation(visual.Compositor, fromColor, toColor);
+				colorBrush.StartAnimation("Color", animation);
+			}
 		}
 	}
 }

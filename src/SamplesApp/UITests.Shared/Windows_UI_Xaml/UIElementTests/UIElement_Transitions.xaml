@@ -1,0 +1,183 @@
+<Page x:Class="UITests.Windows_UI_Xaml.UIElementTests.UIElement_Transitions"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  mc:Ignorable="d"
+	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="24">
+
+			<TextBlock Text="UIElement Property Transitions"
+					   Style="{StaticResource TitleTextBlockStyle}" />
+			<TextBlock Text="Each card below has a transition set. Click the buttons to change properties and watch them animate smoothly."
+					   Style="{StaticResource BodyTextBlockStyle}"
+					   TextWrapping="Wrap"
+					   Opacity="0.7" />
+
+			<!-- Opacity Transition -->
+			<Border CornerRadius="12" Padding="20"
+					Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1">
+				<StackPanel Spacing="12">
+					<TextBlock Text="OpacityTransition" Style="{StaticResource SubtitleTextBlockStyle}" />
+					<Border x:Name="OpacityTarget"
+							Height="80" Width="200" CornerRadius="8"
+							Background="#FF6B35"
+							HorizontalAlignment="Left">
+						<Border.OpacityTransition>
+							<ScalarTransition />
+						</Border.OpacityTransition>
+						<TextBlock Text="Opacity" VerticalAlignment="Center" HorizontalAlignment="Center"
+								   Foreground="White" FontWeight="SemiBold" />
+					</Border>
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button Content="Opacity = 0.2" Click="OpacityLow_Click" />
+						<Button Content="Opacity = 0.6" Click="OpacityMid_Click" />
+						<Button Content="Opacity = 1.0" Click="OpacityFull_Click" />
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- Scale Transition -->
+			<Border CornerRadius="12" Padding="20"
+					Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1">
+				<StackPanel Spacing="12">
+					<TextBlock Text="ScaleTransition" Style="{StaticResource SubtitleTextBlockStyle}" />
+					<Border x:Name="ScaleTarget"
+							Height="80" Width="120" CornerRadius="8"
+							Background="#2EC4B6"
+							HorizontalAlignment="Left" Margin="60,0,0,0">
+						<Border.ScaleTransition>
+							<Vector3Transition />
+						</Border.ScaleTransition>
+						<TextBlock Text="Scale" VerticalAlignment="Center" HorizontalAlignment="Center"
+								   Foreground="White" FontWeight="SemiBold" />
+					</Border>
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button Content="Shrink (0.5x)" Click="ScaleSmall_Click" />
+						<Button Content="Normal (1x)" Click="ScaleNormal_Click" />
+						<Button Content="Grow (1.5x)" Click="ScaleLarge_Click" />
+						<Button Content="Wide (2x, 1x)" Click="ScaleWide_Click" />
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- Rotation Transition -->
+			<Border CornerRadius="12" Padding="20"
+					Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1">
+				<StackPanel Spacing="12">
+					<TextBlock Text="RotationTransition" Style="{StaticResource SubtitleTextBlockStyle}" />
+					<Border x:Name="RotationTarget"
+							Height="80" Width="80" CornerRadius="8"
+							Background="#E71D36"
+							HorizontalAlignment="Left" Margin="60,20,0,20">
+						<Border.RotationTransition>
+							<ScalarTransition />
+						</Border.RotationTransition>
+						<TextBlock Text="R" VerticalAlignment="Center" HorizontalAlignment="Center"
+								   Foreground="White" FontWeight="Bold" FontSize="24" />
+					</Border>
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button Content="0 deg" Click="Rotate0_Click" />
+						<Button Content="45 deg" Click="Rotate45_Click" />
+						<Button Content="90 deg" Click="Rotate90_Click" />
+						<Button Content="180 deg" Click="Rotate180_Click" />
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- Translation Transition -->
+			<Border CornerRadius="12" Padding="20"
+					Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1">
+				<StackPanel Spacing="12">
+					<TextBlock Text="TranslationTransition" Style="{StaticResource SubtitleTextBlockStyle}" />
+					<Border x:Name="TranslationTarget"
+							Height="60" Width="60" CornerRadius="30"
+							Background="#7209B7"
+							HorizontalAlignment="Left" Margin="0,10,0,10">
+						<Border.TranslationTransition>
+							<Vector3Transition />
+						</Border.TranslationTransition>
+						<TextBlock Text="T" VerticalAlignment="Center" HorizontalAlignment="Center"
+								   Foreground="White" FontWeight="Bold" FontSize="20" />
+					</Border>
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button Content="Origin" Click="TranslateOrigin_Click" />
+						<Button Content="Right +100" Click="TranslateRight_Click" />
+						<Button Content="Right +200" Click="TranslateFar_Click" />
+						<Button Content="Down +50" Click="TranslateDown_Click" />
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- Background Transition (BrushTransition) -->
+			<Border CornerRadius="12" Padding="20"
+					Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1">
+				<StackPanel Spacing="12">
+					<TextBlock Text="BackgroundTransition (BrushTransition)" Style="{StaticResource SubtitleTextBlockStyle}" />
+					<Border x:Name="BackgroundTarget"
+							Height="80" Width="300" CornerRadius="8"
+							HorizontalAlignment="Left">
+						<Border.Background>
+							<SolidColorBrush Color="#3A86FF" />
+						</Border.Background>
+						<Border.BackgroundTransition>
+							<BrushTransition Duration="0:0:0.5" />
+						</Border.BackgroundTransition>
+						<TextBlock Text="Background Color" VerticalAlignment="Center" HorizontalAlignment="Center"
+								   Foreground="White" FontWeight="SemiBold" />
+					</Border>
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button Content="Blue" Click="BgBlue_Click" />
+						<Button Content="Green" Click="BgGreen_Click" />
+						<Button Content="Pink" Click="BgPink_Click" />
+						<Button Content="Orange" Click="BgOrange_Click" />
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- Combined Transitions -->
+			<Border CornerRadius="12" Padding="20"
+					Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1">
+				<StackPanel Spacing="12">
+					<TextBlock Text="Combined Transitions" Style="{StaticResource SubtitleTextBlockStyle}" />
+					<TextBlock Text="Multiple transitions on a single element" Opacity="0.7" />
+					<Border x:Name="CombinedTarget"
+							Height="100" Width="100" CornerRadius="12"
+							Background="#FF006E"
+							HorizontalAlignment="Left" Margin="80,20,0,20">
+						<Border.OpacityTransition>
+							<ScalarTransition />
+						</Border.OpacityTransition>
+						<Border.ScaleTransition>
+							<Vector3Transition />
+						</Border.ScaleTransition>
+						<Border.RotationTransition>
+							<ScalarTransition />
+						</Border.RotationTransition>
+						<TextBlock Text="All" VerticalAlignment="Center" HorizontalAlignment="Center"
+								   Foreground="White" FontWeight="Bold" FontSize="18" />
+					</Border>
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button Content="Animate All" Click="CombinedAnimate_Click" />
+						<Button Content="Reset" Click="CombinedReset_Click" />
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+</Page>

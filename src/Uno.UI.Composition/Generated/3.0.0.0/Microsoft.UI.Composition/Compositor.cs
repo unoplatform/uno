@@ -67,13 +67,7 @@ namespace Microsoft.UI.Composition
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateGeometricClip()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.ColorKeyFrameAnimation CreateColorKeyFrameAnimation()
-		{
-			throw new global::System.NotImplementedException("The member ColorKeyFrameAnimation Compositor.CreateColorKeyFrameAnimation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ColorKeyFrameAnimation%20Compositor.CreateColorKeyFrameAnimation%28%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateColorKeyFrameAnimation()
 		// Forced skipping of method Microsoft.UI.Composition.Compositor.Comment.set
 		// Forced skipping of method Microsoft.UI.Composition.Compositor.GlobalPlaybackRate.get
 		// Forced skipping of method Microsoft.UI.Composition.Compositor.GlobalPlaybackRate.set

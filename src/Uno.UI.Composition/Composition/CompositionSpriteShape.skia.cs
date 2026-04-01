@@ -16,7 +16,6 @@ namespace Microsoft.UI.Composition
 		private static readonly SKPoint[] _spareMiterPoints = new SKPoint[4];
 		// We don't call SKPaint.Reset() after usage, so make sure
 		// that only SKPaint.Color is being set
-		private static readonly SKPaint _spareColorPaint = new();
 
 		private CompositionGeometry? _fillGeometry;
 
@@ -64,15 +63,7 @@ namespace Microsoft.UI.Composition
 
 					session.Canvas.Save();
 					session.Canvas.ClipPath(fillPath, antialias: true);
-					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
-					{
-						_spareColorPaint.Color = colorFromTransition.ToSKColor(session.Opacity);
-						session.Canvas.DrawRect(fillPath.Bounds, _spareColorPaint);
-					}
-					else
-					{
-						fill.Paint(session.Canvas, session.Opacity, finalFillGeometryWithTransformations.Bounds);
-					}
+					fill.Paint(session.Canvas, session.Opacity, finalFillGeometryWithTransformations.Bounds);
 					session.Canvas.Restore();
 				}
 

@@ -63,7 +63,19 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
+			var oldOpacity = (float)(double)args.OldValue;
 			UpdateOpacity();
+
+			if (OpacityTransition is { } transition && Visibility == Visibility.Visible)
+			{
+				var newOpacity = (float)(double)args.NewValue;
+				if (oldOpacity != newOpacity)
+				{
+					var animation = transition.CreateAnimation(Visual.Compositor, oldOpacity, newOpacity);
+					Visual.StartAnimation(nameof(Visual.Opacity), animation);
+				}
+			}
+
 			ContentPresenter.UpdateNativeHostContentPresentersOpacities();
 		}
 
@@ -75,6 +87,59 @@ namespace Microsoft.UI.Xaml
 		private void UpdateOpacity()
 		{
 			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
+		}
+
+		partial void OnScaleChanged(Vector3 oldValue, Vector3 newValue)
+		{
+			Visual.Scale = newValue;
+
+			if (ScaleTransition is { } transition)
+			{
+				if (transition.CreateAnimation(Visual.Compositor, oldValue, newValue) is { } animation)
+				{
+					Visual.StartAnimation(nameof(Visual.Scale), animation);
+				}
+			}
+		}
+
+		partial void OnRotationChanged(float oldValue, float newValue)
+		{
+			Visual.RotationAngleInDegrees = newValue;
+
+			if (RotationTransition is { } transition)
+			{
+				var animation = transition.CreateAnimation(Visual.Compositor, oldValue, newValue);
+				Visual.StartAnimation(nameof(Visual.RotationAngleInDegrees), animation);
+			}
+		}
+
+		partial void OnCenterPointChangedPartial()
+		{
+			Visual.CenterPoint = _centerPoint;
+		}
+
+		partial void OnRotationAxisChangedPartial()
+		{
+			Visual.RotationAxis = _rotationAxis;
+		}
+
+		partial void OnTranslationChanged(Vector3 oldValue, Vector3 newValue)
+		{
+			if (!Visual.IsTranslationEnabled)
+			{
+				ElementCompositionPreview.SetIsTranslationEnabled(this, true);
+			}
+
+			Visual.Properties.InsertVector3("Translation", newValue);
+			Visual.Compositor.InvalidateRender(Visual);
+
+			if (TranslationTransition is { } transition)
+			{
+				if (transition.CreateAnimation(Visual.Compositor, oldValue, newValue) is { } animation)
+				{
+					Visual.StartAnimation("Translation", animation);
+				}
+			}
 		}
 
 		internal ContainerVisual Visual
@@ -330,7 +395,20 @@ namespace Microsoft.UI.Xaml
 		{
 			// Note: rect has already been rounded, if needed, during arrange.
 			var visual = Visual;
-			visual.ArrangeOffset = new Vector3((float)rect.X, (float)rect.Y, 0) + _translation;
+			// Translation is applied via Visual.Properties["Translation"] (when IsTranslationEnabled)
+			// and picked up by Visual.GetTotalOffset(). This keeps it separate and animatable for TranslationTransition.
+			visual.ArrangeOffset = new Vector3((float)rect.X, (float)rect.Y, 0);
+
+			// Ensure translation is in the property bag for initial arrange
+			if (_translation != Vector3.Zero)
+			{
+				if (!visual.IsTranslationEnabled)
+				{
+					ElementCompositionPreview.SetIsTranslationEnabled(this, true);
+				}
+
+				visual.Properties.InsertVector3("Translation", _translation);
+			}
 			visual.Size = new Vector2((float)rect.Width, (float)rect.Height);
 
 			var hasProjection = _projection is not null;
