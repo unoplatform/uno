@@ -41,10 +41,15 @@ This reference provides a comprehensive mapping of WPF namespaces, controls, XAM
 
 ### Controls That Transfer Directly
 
-These controls require only a namespace change:
+These controls exist in both WPF and WinUI and typically require only a namespace change:
 
-Button, TextBox, TextBlock, CheckBox, RadioButton, ComboBox, ListBox, ListView, GridView, Grid, StackPanel, Border, ScrollViewer, Canvas, Image, Slider, ProgressBar, ProgressRing, ToggleSwitch, HyperlinkButton, ToolTip/ToolTipService, NavigationView, NumberBox, InfoBar, Expander, TreeView.
+Button, TextBox, TextBlock, CheckBox, RadioButton, ComboBox, ListBox, ListView, Grid, StackPanel, Border, ScrollViewer, Canvas, Image, Slider, ProgressBar, ToolTip/ToolTipService, Expander, TreeView.
 
+### WinUI-Only Additions You May Want to Adopt
+
+The following controls do not have direct equivalents in WPF but are often valuable to introduce when modernizing your UI with WinUI / Uno Platform:
+
+NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton, GridView.
 ### Controls Requiring Replacement
 
 | WPF Control | WinUI / Uno Replacement | Notes |
