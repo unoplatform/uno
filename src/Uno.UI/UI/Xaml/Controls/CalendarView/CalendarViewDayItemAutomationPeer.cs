@@ -16,7 +16,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewDayItem
 	{
-		internal partial class CalendarViewDayItemAutomationPeer : CalendarViewBaseItemAutomationPeer
+		internal partial class CalendarViewDayItemAutomationPeer : CalendarViewBaseItemAutomationPeer,
+			ITableItemProvider, ISelectionItemProvider
 		{
 			public CalendarViewDayItemAutomationPeer(CalendarViewDayItem owner) : base(owner)
 			{
@@ -73,11 +74,9 @@ namespace Microsoft.UI.Xaml.Controls
 				return pReturnValue;
 			}
 
-#if false
-			private void GetColumnHeaderItemsImpl(out uint pReturnValueCount, out IRawElementProviderSimple[] ppReturnValue)
+			// ITableItemProvider
+			public IRawElementProviderSimple[] GetColumnHeaderItems()
 			{
-				pReturnValueCount = 0;
-				ppReturnValue = default;
 				UIElement spOwner;
 				spOwner = Owner;
 
@@ -86,45 +85,37 @@ namespace Microsoft.UI.Xaml.Controls
 
 				CalendarView pParent = (spOwner as CalendarViewDayItem).GetParentCalendarView();
 
-				uint nCount = 0;
 				Grid spWeekDayNames;
 
-				// Gets the 'WeekDayNames' part of the container template and find weekindex position as elment
+				// Gets the 'WeekDayNames' part of the container template and find weekindex position as element
 				spWeekDayNames = pParent.GetTemplateChild("WeekDayNames") as Grid;
 				if (spWeekDayNames is { })
 				{
 					IList<UIElement> spChildren;
 					spChildren = (spWeekDayNames as Grid).Children;
-					nCount = (uint)spChildren.Count;
 
 					int weekindex = 0;
-					weekindex = ColumnImpl;
+					weekindex = Column;
 
-					AutomationPeer spItemPeerAsAP;
-					IRawElementProviderSimple spProvider;
 					UIElement spChild;
 					spChild = spChildren.ElementAtOrDefault(weekindex);
 					if (spChild is { })
 					{
+						AutomationPeer spItemPeerAsAP;
 						spItemPeerAsAP = (spChild as FrameworkElement).GetAutomationPeer();
 						if (spItemPeerAsAP is { })
 						{
-							//uint allocSize = sizeof(IRawElementProviderSimple);
-							//ppReturnValue = (IRawElementProviderSimple)(CoTaskMemAlloc(allocSize));
-							//ZeroMemory(ppReturnValue, allocSize);
-							ppReturnValue = new IRawElementProviderSimple[1];
-
+							IRawElementProviderSimple spProvider;
 							spProvider = ProviderFromPeer(spItemPeerAsAP);
-							(ppReturnValue)[0] = spProvider;
-							pReturnValueCount = 1;
+							return new IRawElementProviderSimple[] { spProvider };
 						}
 					}
 				}
 
-				return;
+				return Array.Empty<IRawElementProviderSimple>();
 			}
 
-			private void GetRowHeaderItemsImpl(out uint pReturnValueCount, out IRawElementProviderSimple[] ppReturnValue)
+			public IRawElementProviderSimple[] GetRowHeaderItems()
 			{
 				UIElement spOwner;
 				spOwner = Owner;
@@ -135,17 +126,18 @@ namespace Microsoft.UI.Xaml.Controls
 				DateTime itemDate;
 				itemDate = item.Date;
 
-				pParent.GetRowHeaderForItemAutomationPeer(itemDate, CalendarViewDisplayMode.Month, out pReturnValueCount, out ppReturnValue);
+				pParent.GetRowHeaderForItemAutomationPeer(itemDate, CalendarViewDisplayMode.Month, out _, out var result);
 
-				return;
+				return result ?? Array.Empty<IRawElementProviderSimple>();
 			}
 
-			private void SelectionContainerImpl(out IRawElementProviderSimple ppValue)
+			// ISelectionItemProvider
+			public IRawElementProviderSimple SelectionContainer
 			{
-				ppValue = ContainingGridImpl();
+				get => ContainingGrid;
 			}
 
-			private void AddToSelectionImpl()
+			public void AddToSelection()
 			{
 				UIElement spOwner;
 				spOwner = Owner;
@@ -161,11 +153,9 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					pParent.OnSelectDayItem(spOwner as CalendarViewDayItem);
 				}
-
-				return;
 			}
 
-			private void RemoveFromSelectionImpl()
+			public void RemoveFromSelection()
 			{
 				UIElement spOwner;
 				spOwner = Owner;
@@ -181,35 +171,25 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					pParent.OnSelectDayItem(spOwner as CalendarViewDayItem);
 				}
-
-				return;
 			}
 
-			private bool IsSelectedImpl
+			public bool IsSelected
 			{
 				get
 				{
-					var pValue = false;
-
 					UIElement spOwner;
 					spOwner = Owner;
 
 					DateTime date;
 					date = (spOwner as CalendarViewDayItem).Date;
-					bool isSelected = false;
 					CalendarView pParent = (spOwner as CalendarViewDayItem).GetParentCalendarView();
 
-					pParent.IsSelected(date, out isSelected);
-					if (isSelected)
-					{
-						pValue = true;
-					}
-
-					return pValue;
+					pParent.IsSelected(date, out var isSelected);
+					return isSelected;
 				}
 			}
 
-			private void SelectImpl()
+			public void Select()
 			{
 				UIElement spOwner;
 				spOwner = Owner;
@@ -219,17 +199,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 				CalendarView pParent = (spOwner as CalendarViewDayItem).GetParentCalendarView();
 
-				IList<DateTime> spSelectedItems;
-				spSelectedItems = pParent.SelectedDates;
-				spSelectedItems.Clear();
+				pParent.SelectedDates.Clear();
 
 				pParent.OnSelectDayItem(spOwner as CalendarViewDayItem);
-
-				return;
 			}
 
-			// calculate visible column from index of the item
-			private int ColumnImpl
+			// IGridItemProvider overrides (calculate visible column/row from index)
+			public override int Column
 			{
 				get
 				{
@@ -259,7 +235,7 @@ namespace Microsoft.UI.Xaml.Controls
 						int firstVisibleIndex = 0;
 						firstVisibleIndex = pCalendarPanel.FirstVisibleIndex;
 
-						// Calculate the relative positon w.r.to the visible elements from item index
+						// Calculate the relative position w.r.to the visible elements from item index
 						int relativePos = (itemIndex - firstVisibleIndex);
 						if (firstVisibleIndex < cols)
 						{
@@ -279,7 +255,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			private int RowImpl
+			public override int Row
 			{
 				get
 				{
@@ -307,9 +283,6 @@ namespace Microsoft.UI.Xaml.Controls
 						int firstVisibleIndex = 0;
 						firstVisibleIndex = pCalendarPanel.FirstVisibleIndex;
 
-						DayOfWeek firstDayOfWeek = DayOfWeek.Sunday;
-						firstDayOfWeek = pParent.FirstDayOfWeek;
-
 						// Find the relative row position w.r.to visible rows
 						int relativePos = (itemIndex - firstVisibleIndex);
 						if (firstVisibleIndex < cols)
@@ -330,7 +303,6 @@ namespace Microsoft.UI.Xaml.Controls
 					return pValue;
 				}
 			}
-#endif
 		}
 	}
 }

@@ -297,8 +297,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// We are not grouping, easy.
 			else
 			{
-				// TODO: verify startAt
 				int maxLineLength = DetermineMaxStackingLine();
+				global::System.Diagnostics.Debug.Assert(maxLineLength > 0, "maxLineLength must be positive for cross-axis navigation");
 				int nextIndex = elementIndex + step * maxLineLength;
 				if (0 <= nextIndex && nextIndex < totalItems)
 				{

@@ -10,7 +10,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
-		internal class CalendarViewBaseItemAutomationPeer : FrameworkElementAutomationPeer
+		internal class CalendarViewBaseItemAutomationPeer : FrameworkElementAutomationPeer,
+			IGridItemProvider, IScrollItemProvider
 		{
 			internal CalendarViewBaseItemAutomationPeer(object owner) : base(owner)
 			{
@@ -53,39 +54,33 @@ namespace Microsoft.UI.Xaml.Controls
 				return returnValue;
 			}
 
-#if false
-			private int ColumnSpanImpl()
+			// IGridItemProvider
+			public int ColumnSpan => 1;
+
+			public IRawElementProviderSimple ContainingGrid
 			{
-				var pValue = 1;
-				return pValue;
-			}
-#endif
+				get
+				{
+					UIElement spOwner;
+					spOwner = Owner;
 
-			protected IRawElementProviderSimple ContainingGridImpl()
-			{
-				IRawElementProviderSimple ppValue = default;
+					AutomationPeer spAutomationPeer;
+					CalendarView pParent = (spOwner as CalendarViewBaseItem).GetParentCalendarView();
 
-				UIElement spOwner;
-				spOwner = Owner;
-
-				AutomationPeer spAutomationPeer;
-				CalendarView pParent = (spOwner as CalendarViewBaseItem).GetParentCalendarView();
-
-				spAutomationPeer = pParent.GetAutomationPeer();
-				ppValue = ProviderFromPeer(spAutomationPeer);
-				return ppValue;
+					spAutomationPeer = pParent.GetAutomationPeer();
+					return ProviderFromPeer(spAutomationPeer);
+				}
 			}
 
-#if false
-			private int RowSpanImpl()
-			{
-				var pValue = 1;
-				return pValue;
-			}
+			public int RowSpan => 1;
 
-			// Methods.
+			// Column and Row are virtual-like - overridden in derived classes
+			public virtual int Column => 0;
 
-			private void ScrollIntoViewImpl()
+			public virtual int Row => 0;
+
+			// IScrollItemProvider
+			public void ScrollIntoView()
 			{
 				UIElement spOwner;
 				spOwner = Owner;
@@ -96,10 +91,7 @@ namespace Microsoft.UI.Xaml.Controls
 				CalendarView pParent = (spOwner as CalendarViewBaseItem).GetParentCalendarView();
 
 				pParent.SetDisplayDate(date);
-
-				return;
 			}
-#endif
 
 			private bool IsItemVisible()
 			{

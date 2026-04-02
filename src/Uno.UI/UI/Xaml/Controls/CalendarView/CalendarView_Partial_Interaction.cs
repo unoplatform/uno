@@ -14,7 +14,8 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 
 		// Handles when a key is pressed down on the CalendarView.
-		protected override void OnKeyDown( // TODO UNO: Does this should really override the method from Control, or just list for event on ScrollViewers ?
+		// This override matches WinUI behavior: CalendarView overrides Control.OnKeyDown to handle navigation keys.
+		protected override void OnKeyDown(
 			KeyRoutedEventArgs pArgs)
 		{
 			bool isHandled = false;

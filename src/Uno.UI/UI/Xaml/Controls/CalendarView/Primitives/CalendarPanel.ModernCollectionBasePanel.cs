@@ -33,6 +33,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private class ContainersCache : IItemContainerMapping, IEnumerable<CacheEntry>
 		{
 			private readonly List<CacheEntry> _entries = new List<CacheEntry>(31 + 7 * 2); // A month + one week before and after
+			private readonly List<CacheEntry> _recyclingPool = new List<CacheEntry>(14); // Pool for reusing containers
 			private CalendarViewGeneratorHost? _host;
 
 			private int _generationStartIndex = -1;
@@ -75,6 +76,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			internal void Clear()
 			{
 				_entries.Clear();
+				_recyclingPool.Clear();
 				FirstIndex = -1;
 				LastIndex = int.MinValue;
 				_generationRecyclableBefore = default;
@@ -135,7 +137,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					if (_generationRecyclableAfter.count > 0)
 					{
 						_entries.CopyTo(_generationRecyclableAfter.at, removedEntries, removed, _generationRecyclableAfter.count);
-						_entries.RemoveRange(_generationRecyclableAfter.at, _generationRecyclableAfter.count); //TODO: Move to a second recycling stage instead of throwing them away.
+						_entries.RemoveRange(_generationRecyclableAfter.at, _generationRecyclableAfter.count);
 
 						removed += _generationRecyclableAfter.count;
 					}
@@ -143,7 +145,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					if (_generationUnusedInRange.count > 0)
 					{
 						_entries.CopyTo(_generationUnusedInRange.at, removedEntries, removed, _generationUnusedInRange.count);
-						_entries.RemoveRange(_generationUnusedInRange.at, _generationUnusedInRange.count); //TODO: Move to a second recycling stage instead of throwing them away.
+						_entries.RemoveRange(_generationUnusedInRange.at, _generationUnusedInRange.count);
 
 						removed += _generationUnusedInRange.count;
 					}
@@ -151,9 +153,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					if (_generationRecyclableBefore.count > 0)
 					{
 						_entries.CopyTo(_generationRecyclableBefore.at, removedEntries, removed, _generationRecyclableBefore.count);
-						_entries.RemoveRange(_generationRecyclableBefore.at, _generationRecyclableBefore.count); //TODO: Move to a second recycling stage instead of throwing them away.
+						_entries.RemoveRange(_generationRecyclableBefore.at, _generationRecyclableBefore.count);
 
 						removed += _generationRecyclableBefore.count;
+					}
+
+					// Move unused entries to the recycling pool for reuse
+					for (int i = 0; i < removed; i++)
+					{
+						_recyclingPool.Add(removedEntries[i]);
 					}
 
 					global::System.Diagnostics.Debug.Assert(removed == unusedEntriesCount);
@@ -255,6 +263,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 								_generationRecyclableAfter.count--;
 
 								global::System.Diagnostics.Debug.Assert(entry.Index > index || _generationUnusedInRange.count == 0);
+							}
+							else if (_recyclingPool.Count > 0)
+							{
+								// Reuse a container from the recycling pool
+								entry = _recyclingPool[_recyclingPool.Count - 1];
+								_recyclingPool.RemoveAt(_recyclingPool.Count - 1);
+								kind = CacheEntryKind.Recycled;
+
+								_entries.Add(entry);
 							}
 							else
 							{

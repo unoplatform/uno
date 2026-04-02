@@ -11,7 +11,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewItem
 	{
-		internal partial class CalendarViewItemAutomationPeer : CalendarViewBaseItemAutomationPeer
+		internal partial class CalendarViewItemAutomationPeer : CalendarViewBaseItemAutomationPeer,
+			IInvokeProvider, ITableItemProvider
 		{
 			internal CalendarViewItemAutomationPeer(CalendarViewItem owner) : base(owner)
 			{
@@ -46,8 +47,8 @@ namespace Microsoft.UI.Xaml.Controls
 				return pReturnValue;
 			}
 
-#if false
-			private void InvokeImpl()
+			// IInvokeProvider
+			public void Invoke()
 			{
 				UIElement spOwner;
 				spOwner = Owner;
@@ -56,88 +57,94 @@ namespace Microsoft.UI.Xaml.Controls
 				pParent.OnSelectMonthYearItem(spOwner as CalendarViewItem, FocusState.Keyboard);
 			}
 
-			private int ColumnImpl()
+			// IGridItemProvider overrides
+			public override int Column
 			{
-				var pValue = 0;
-
-				UIElement spOwner;
-				spOwner = Owner;
-
-				DateTime date;
-				date = (spOwner as CalendarViewItem).DateBase;
-
-				CalendarView pParent = (spOwner as CalendarViewItem).GetParentCalendarView();
-
-				CalendarViewGeneratorHost spHost;
-				pParent.GetActiveGeneratorHost(out spHost);
-
-				CalendarPanel pCalendarPanel = spHost.Panel;
-				if (pCalendarPanel is { })
+				get
 				{
-					int itemIndex = 0;
-					itemIndex = spHost.CalculateOffsetFromMinDate(date);
+					var pValue = 0;
 
-					int cols = 1;
-					cols = pCalendarPanel.Cols;
-					int firstVisibleIndex = 0;
-					firstVisibleIndex = pCalendarPanel.FirstVisibleIndex;
+					UIElement spOwner;
+					spOwner = Owner;
 
-					pValue = (itemIndex - firstVisibleIndex) % cols;
-					if (pValue < 0)
+					DateTime date;
+					date = (spOwner as CalendarViewItem).DateBase;
+
+					CalendarView pParent = (spOwner as CalendarViewItem).GetParentCalendarView();
+
+					CalendarViewGeneratorHost spHost;
+					pParent.GetActiveGeneratorHost(out spHost);
+
+					CalendarPanel pCalendarPanel = spHost.Panel;
+					if (pCalendarPanel is { })
 					{
-						pValue += cols;
-					}
-				}
+						int itemIndex = 0;
+						itemIndex = spHost.CalculateOffsetFromMinDate(date);
 
-				return pValue;
+						int cols = 1;
+						cols = pCalendarPanel.Cols;
+						int firstVisibleIndex = 0;
+						firstVisibleIndex = pCalendarPanel.FirstVisibleIndex;
+
+						pValue = (itemIndex - firstVisibleIndex) % cols;
+						if (pValue < 0)
+						{
+							pValue += cols;
+						}
+					}
+
+					return pValue;
+				}
 			}
 
-			private int RowImpl()
+			public override int Row
 			{
-				var pValue = 0;
-
-				UIElement spOwner;
-				spOwner = Owner;
-
-				DateTime date;
-				date = (spOwner as CalendarViewItem).DateBase;
-
-				CalendarView pParent = (spOwner as CalendarViewItem).GetParentCalendarView();
-
-				CalendarViewGeneratorHost spHost;
-				pParent.GetActiveGeneratorHost(out spHost);
-
-				CalendarPanel pCalendarPanel = spHost.Panel;
-				if (pCalendarPanel is { })
+				get
 				{
-					int itemIndex = 0;
-					itemIndex = spHost.CalculateOffsetFromMinDate(date);
+					var pValue = 0;
 
-					int cols = 1;
-					cols = pCalendarPanel.Cols;
-					int firstVisibleIndex = 0;
-					firstVisibleIndex = pCalendarPanel.FirstVisibleIndex;
+					UIElement spOwner;
+					spOwner = Owner;
 
-					// Find the relative row position w.r.to visible rows
-					pValue = (itemIndex - firstVisibleIndex) / cols;
-					// the element is not visible and we can't define row
-					if (pValue < 0)
+					DateTime date;
+					date = (spOwner as CalendarViewItem).DateBase;
+
+					CalendarView pParent = (spOwner as CalendarViewItem).GetParentCalendarView();
+
+					CalendarViewGeneratorHost spHost;
+					pParent.GetActiveGeneratorHost(out spHost);
+
+					CalendarPanel pCalendarPanel = spHost.Panel;
+					if (pCalendarPanel is { })
 					{
-						throw new NotSupportedException();
+						int itemIndex = 0;
+						itemIndex = spHost.CalculateOffsetFromMinDate(date);
+
+						int cols = 1;
+						cols = pCalendarPanel.Cols;
+						int firstVisibleIndex = 0;
+						firstVisibleIndex = pCalendarPanel.FirstVisibleIndex;
+
+						// Find the relative row position w.r.to visible rows
+						pValue = (itemIndex - firstVisibleIndex) / cols;
+						// the element is not visible and we can't define row
+						if (pValue < 0)
+						{
+							throw new NotSupportedException();
+						}
 					}
+
+					return pValue;
 				}
-
-				return pValue;
 			}
 
-			private void GetColumnHeaderItemsImpl(out uint pReturnValueCount, out IRawElementProviderSimple[] ppReturnValue)
+			// ITableItemProvider
+			public IRawElementProviderSimple[] GetColumnHeaderItems()
 			{
-				pReturnValueCount = 0;
-				ppReturnValue = default;
-				return;
+				return Array.Empty<IRawElementProviderSimple>();
 			}
 
-			private void GetRowHeaderItemsImpl(out uint pReturnValueCount, out IRawElementProviderSimple[] ppReturnValue)
+			public IRawElementProviderSimple[] GetRowHeaderItems()
 			{
 				UIElement spOwner;
 				spOwner = Owner;
@@ -149,11 +156,10 @@ namespace Microsoft.UI.Xaml.Controls
 				itemDate = item.DateBase;
 
 				// Currently we only want this row header read in year mode, not in decade mode.
-				pParent.GetRowHeaderForItemAutomationPeer(itemDate, CalendarViewDisplayMode.Year, out pReturnValueCount, out ppReturnValue);
+				pParent.GetRowHeaderForItemAutomationPeer(itemDate, CalendarViewDisplayMode.Year, out _, out var result);
 
-				return;
+				return result ?? Array.Empty<IRawElementProviderSimple>();
 			}
-#endif
 		}
 	}
 }

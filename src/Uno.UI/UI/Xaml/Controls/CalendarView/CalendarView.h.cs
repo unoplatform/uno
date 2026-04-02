@@ -72,6 +72,8 @@ namespace Microsoft.UI.Xaml.Controls
 		internal CornerRadius m_dayItemCornerRadius => DayItemCornerRadius;
 
 
+		internal Brush m_pBlackoutStrikethroughBrush => BlackoutStrikethroughBrush;
+
 		// Below brushes are hardcoded and internal, we can make them public when needed.
 		internal Brush m_pDisabledForeground;
 		internal Brush m_pTodaySelectedInnerBorderBrush;

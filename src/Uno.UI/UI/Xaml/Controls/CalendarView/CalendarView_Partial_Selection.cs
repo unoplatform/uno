@@ -124,9 +124,7 @@ namespace Microsoft.UI.Xaml.Controls
 			date = pItem.DateBase;
 
 			// after display mode changed, we'll focus a new item, we want that item to be focused by the specified state.
-#if false // Fix for Uno - not supported feature
 			m_focusItemAfterDisplayModeChanged = true;
-#endif
 			m_focusStateAfterDisplayModeChanged = focusState;
 
 			if (displayMode == CalendarViewDisplayMode.Year && m_tpMonthViewItemHost.Panel is { })
@@ -325,22 +323,21 @@ namespace Microsoft.UI.Xaml.Controls
 
 
 				bool bAutomationListener = false;
-				// TODO UNO
-				//bAutomationListener = AutomationPeer.ListenerExistsHelper(AutomationEvents.SelectionPatternOnInvalidated);
-				//if (!bAutomationListener)
-				//{
-				//	bAutomationListener = AutomationPeer.ListenerExistsHelper(AutomationEvents.SelectionItemPatternOnElementSelected);
-				//}
+				bAutomationListener = AutomationPeer.ListenerExists(AutomationEvents.SelectionPatternOnInvalidated);
+				if (!bAutomationListener)
+				{
+					bAutomationListener = AutomationPeer.ListenerExists(AutomationEvents.SelectionItemPatternOnElementSelected);
+				}
 
-				//if (!bAutomationListener)
-				//{
-				//	bAutomationListener = AutomationPeer.ListenerExistsHelper(AutomationEvents.SelectionItemPatternOnElementAddedToSelection);
-				//}
+				if (!bAutomationListener)
+				{
+					bAutomationListener = AutomationPeer.ListenerExists(AutomationEvents.SelectionItemPatternOnElementAddedToSelection);
+				}
 
-				//if (!bAutomationListener)
-				//{
-				//	bAutomationListener = AutomationPeer.ListenerExistsHelper(AutomationEvents.SelectionItemPatternOnElementRemovedFromSelection);
-				//}
+				if (!bAutomationListener)
+				{
+					bAutomationListener = AutomationPeer.ListenerExists(AutomationEvents.SelectionItemPatternOnElementRemovedFromSelection);
+				}
 
 				if (bAutomationListener)
 				{

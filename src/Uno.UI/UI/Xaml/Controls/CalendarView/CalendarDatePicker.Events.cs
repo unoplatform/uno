@@ -11,6 +11,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public event TypedEventHandler<CalendarDatePicker, CalendarDatePickerDateChangedEventArgs> DateChanged;
 
+		public event CalendarViewDayItemChangingEventHandler CalendarViewDayItemChanging;
+
 		private protected override void OnUnloaded()
 		{
 			// Ensure flyout is closed when the control is unloaded

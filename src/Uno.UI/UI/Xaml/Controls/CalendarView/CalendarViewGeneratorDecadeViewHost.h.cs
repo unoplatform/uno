@@ -39,8 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal override void UpdateLabel(CalendarViewBaseItem pItem, bool isLabelVisible)
 		{
-			// DecadeView doesn't have a Label
-			throw new NotImplementedException();
+			// DecadeView doesn't have labels - this is intentionally a no-op.
 		}
 
 		//private void CompareDate( DateTime lhs,  DateTime rhs, out int pResult) override;

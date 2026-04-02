@@ -15,6 +15,7 @@ using Windows.UI.Text;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using DirectUI;
 using CCalendarViewBaseItemChrome = Microsoft.UI.Xaml.Controls.CalendarViewBaseItem;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
@@ -25,12 +26,16 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
-		//private const float InScopeDensityBarOpacity = 0.35f;
-		//private const float OutOfScopeDensityBarOpacity = 0.10f;
-		//private const float MaxDensityBarHeight = 5.0f;
+		private const float InScopeDensityBarOpacity = 0.35f;
+		private const float OutOfScopeDensityBarOpacity = 0.10f;
+		private const float MaxDensityBarHeight = 5.0f;
 		private const float TodayBlackouTopacity = 0.40f;
 		//private const float FocusBorderThickness = 2.0f;
-		//private const float TodaySelectedInnerBorderThickness = 2.0f;
+		private const float StrikethroughThickness = 1.0f;
+		private const float StrikethroughFontSizeMultiplier = 1.25f;
+		private static readonly Thickness s_innerBorderThickness = new Thickness(1.0);
+
+		private static bool? s_isRoundedCalendarViewBaseItemChromeEnabled;
 
 		private interface IContentRenderer
 		{
@@ -55,6 +60,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private TextBlock m_pMainTextBlock;
 		private TextBlock m_pLabelTextBlock;
+		private Border m_outerBorder;
+		private Border m_innerBorder;
+		private Line m_strikethroughLine;
+		private Shapes.Rectangle[] m_densityBarRects;
 
 		private WeakReference<CalendarView> m_wrOwner;
 
@@ -120,10 +129,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// We overrode HasTemplateChild and AddTemplateChild to make sure
 			// the template child (if exists) will be always at index 0.
-			// So here if the first child is our internal textblocks, it means
+			// So here if the first child is our internal elements, it means
 			// we don't have a template child.
 			if (spFirstChild != m_pMainTextBlock &&
-				spFirstChild != m_pLabelTextBlock)
+				spFirstChild != m_pLabelTextBlock &&
+				spFirstChild != m_outerBorder &&
+				spFirstChild != m_innerBorder &&
+				spFirstChild != m_strikethroughLine &&
+				!IsDensityBarRect(spFirstChild))
 			{
 				// keep added, it's the caller's responsibility to release ref.
 				return spFirstChild;
@@ -241,24 +254,23 @@ namespace Microsoft.UI.Xaml.Controls
 			// Uno workaround
 			Uno_MeasureChrome(availableSize);
 
-			// TODO UNO
-			//if (IsRoundedCalendarViewBaseItemChromeEnabled())
-			//{
-			//	if (m_outerBorder)
-			//	{
-			//		IFC_RETURN(m_outerBorder->Measure(availableSize));
-			//	}
+			if (IsRoundedCalendarViewBaseItemChromeEnabled())
+			{
+				if (m_outerBorder != null)
+				{
+					m_outerBorder.Measure(availableSize);
+				}
 
-			//	if (m_innerBorder)
-			//	{
-			//		IFC_RETURN(m_innerBorder->Measure(availableSize));
-			//	}
+				if (m_innerBorder != null)
+				{
+					m_innerBorder.Measure(availableSize);
+				}
 
-			//	if (m_strikethroughLine)
-			//	{
-			//		IFC_RETURN(m_strikethroughLine->Measure(availableSize));
-			//	}
-			//}
+				if (m_strikethroughLine != null)
+				{
+					m_strikethroughLine.Measure(availableSize);
+				}
+			}
 
 			if (m_pMainTextBlock is { })
 			{
@@ -295,27 +307,21 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			Rect finalBounds = new Rect(0.0f, 0.0f, finalSize.Width, finalSize.Height);
 
-			// TODO UNO
-			//if (m_outerBorder)
-			//{
-			//	ASSERT(IsRoundedCalendarViewBaseItemChromeEnabled());
+			if (m_outerBorder != null)
+			{
+				m_outerBorder.Arrange(finalBounds);
+			}
 
-			//	IFC_RETURN(m_outerBorder->Arrange(finalBounds));
-			//}
+			if (m_innerBorder != null)
+			{
+				m_innerBorder.Arrange(finalBounds);
+			}
 
-			//if (m_innerBorder)
-			//{
-			//	ASSERT(IsRoundedCalendarViewBaseItemChromeEnabled());
-
-			//	IFC_RETURN(m_innerBorder->Arrange(finalBounds));
-			//}
-
-			//if (m_strikethroughLine)
-			//{
-			//	ASSERT(IsRoundedCalendarViewBaseItemChromeEnabled());
-
-			//	IFC_RETURN(m_strikethroughLine->Arrange(finalBounds));
-			//}
+			if (m_strikethroughLine != null)
+			{
+				m_strikethroughLine.Arrange(finalBounds);
+				SetBlackoutStrikethroughSize();
+			}
 
 			Thickness borderThickness = GetItemBorderThickness();
 			Thickness padding = Padding;
@@ -355,6 +361,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				pChildNoRef.Arrange(finalBounds);
 			}
+
+			ArrangeDensityBars(new Rect(0.0f, 0.0f, finalSize.Width, finalSize.Height));
 
 			return finalSize;
 		}
@@ -402,6 +410,24 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateTextBlockFontProperties(spTextBlock);
 				UpdateTextBlockAlignments(spTextBlock);
 			}
+		}
+
+		private bool IsDensityBarRect(UIElement element)
+		{
+			if (m_densityBarRects == null)
+			{
+				return false;
+			}
+
+			for (int i = 0; i < m_densityBarRects.Length; i++)
+			{
+				if (m_densityBarRects[i] == element)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		private bool IsLabel(TextBlock pTextBlock)
@@ -703,6 +729,240 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
+		private bool IsRoundedCalendarViewBaseItemChromeEnabled()
+		{
+			if (!s_isRoundedCalendarViewBaseItemChromeEnabled.HasValue)
+			{
+				var owner = GetOwner();
+				if (owner != null)
+				{
+					var value = owner.Resources["CalendarViewBaseItemRoundedChromeEnabled"];
+					s_isRoundedCalendarViewBaseItemChromeEnabled = value is bool b && b;
+				}
+				else
+				{
+					s_isRoundedCalendarViewBaseItemChromeEnabled = false;
+				}
+			}
+
+			return s_isRoundedCalendarViewBaseItemChromeEnabled.Value;
+		}
+
+		private void EnsureOuterBorder()
+		{
+			if (m_outerBorder == null)
+			{
+				m_outerBorder = new Border();
+				m_outerBorder.IsHitTestVisible = false;
+
+				// Insert after template child (if any) so it renders underneath content
+				AddChild(m_outerBorder);
+
+				SetOuterBorderBrush();
+				SetOuterBorderThickness();
+				SetOuterBorderBackground();
+				SetOuterBorderCornerRadius();
+			}
+		}
+
+		private void EnsureInnerBorder()
+		{
+			if (m_innerBorder == null)
+			{
+				m_innerBorder = new Border();
+				m_innerBorder.IsHitTestVisible = false;
+
+				AddChild(m_innerBorder);
+
+				SetInnerBorderBackground();
+				SetInnerBorderCornerRadius();
+				SetInnerBorderBrush();
+				SetInnerBorderThickness();
+			}
+		}
+
+		private void EnsureStrikethroughLine()
+		{
+			if (m_strikethroughLine == null)
+			{
+				m_strikethroughLine = new Line();
+				m_strikethroughLine.IsHitTestVisible = false;
+				m_strikethroughLine.StrokeThickness = StrikethroughThickness;
+
+				AddChild(m_strikethroughLine);
+
+				SetBlackoutStrikethroughBrush();
+				SetBlackoutStrikethroughSize();
+			}
+		}
+
+		private void SetOuterBorderBrush()
+		{
+			Brush borderBrush = GetItemBorderBrush(false);
+
+			if (m_outerBorder == null && borderBrush != null && !IsClear(borderBrush))
+			{
+				EnsureOuterBorder();
+			}
+			else if (m_outerBorder != null)
+			{
+				m_outerBorder.BorderBrush = borderBrush;
+			}
+		}
+
+		private void SetOuterBorderThickness()
+		{
+			Thickness outerBorderThickness = default;
+			Brush borderBrush = GetItemBorderBrush(false);
+
+			if (borderBrush != null)
+			{
+				outerBorderThickness = GetItemBorderThickness();
+
+				if (m_outerBorder == null &&
+					(outerBorderThickness.Left != 0 || outerBorderThickness.Right != 0 || outerBorderThickness.Top != 0 || outerBorderThickness.Bottom != 0))
+				{
+					EnsureOuterBorder();
+					return;
+				}
+			}
+
+			if (m_outerBorder != null)
+			{
+				m_outerBorder.BorderThickness = outerBorderThickness;
+			}
+		}
+
+		private void SetOuterBorderBackground()
+		{
+			Brush brush = GetItemBackgroundBrush();
+
+			if (m_outerBorder == null && brush != null && !IsClear(brush))
+			{
+				EnsureOuterBorder();
+			}
+			else if (m_outerBorder != null)
+			{
+				m_outerBorder.Background = brush;
+			}
+		}
+
+		private void SetOuterBorderCornerRadius()
+		{
+			if (m_outerBorder == null)
+			{
+				return;
+			}
+
+			CornerRadius newCornerRadius = GetItemCornerRadius();
+			m_outerBorder.CornerRadius = newCornerRadius;
+		}
+
+		private void SetInnerBorderBrush()
+		{
+			Brush innerBorderBrush = m_isToday && m_isSelected ? GetItemInnerBorderBrush() : null;
+
+			if (m_innerBorder == null && innerBorderBrush != null && !IsClear(innerBorderBrush))
+			{
+				EnsureInnerBorder();
+			}
+			else if (m_innerBorder != null)
+			{
+				m_innerBorder.BorderBrush = innerBorderBrush;
+			}
+		}
+
+		private void SetInnerBorderBackground()
+		{
+			var backgroundBrush = Background;
+
+			if (m_innerBorder == null && backgroundBrush != null && !IsClear(backgroundBrush))
+			{
+				EnsureInnerBorder();
+			}
+			else if (m_innerBorder != null)
+			{
+				m_innerBorder.Background = backgroundBrush;
+			}
+		}
+
+		private void SetInnerBorderCornerRadius()
+		{
+			if (m_innerBorder == null)
+			{
+				return;
+			}
+
+			CornerRadius newCornerRadius = GetItemCornerRadius();
+			m_innerBorder.CornerRadius = newCornerRadius;
+			m_innerBorder.Margin = s_innerBorderThickness;
+		}
+
+		private void SetInnerBorderThickness()
+		{
+			if (m_innerBorder != null)
+			{
+				m_innerBorder.BorderThickness = s_innerBorderThickness;
+			}
+		}
+
+		private void SetBlackoutStrikethroughBrush()
+		{
+			Brush brush = null;
+
+			if (m_isBlackout)
+			{
+				var owner = GetOwner();
+				if (owner != null)
+				{
+					if (!IsEnabled)
+					{
+						brush = m_isToday ? owner.m_pTodayForeground : owner.m_pDisabledForeground;
+					}
+					else if (m_isToday)
+					{
+						brush = owner.m_pTodayForeground;
+					}
+					else
+					{
+						brush = owner.m_pBlackoutStrikethroughBrush;
+					}
+				}
+			}
+
+			if (m_strikethroughLine == null && brush != null && !IsClear(brush))
+			{
+				EnsureStrikethroughLine();
+			}
+			else if (m_strikethroughLine != null)
+			{
+				m_strikethroughLine.Stroke = brush;
+			}
+		}
+
+		private void SetBlackoutStrikethroughSize()
+		{
+			if (m_strikethroughLine != null)
+			{
+				if (GetTextBlockFontProperties(false, out var properties))
+				{
+					float width = (float)ActualWidth;
+					float height = (float)ActualHeight;
+
+					float x1 = Math.Max(0, (float)Math.Floor((width - (StrikethroughFontSizeMultiplier * properties.fontSize)) / 2.0f));
+					float x2 = width - x1;
+
+					float y1 = Math.Max(0, (float)Math.Floor((height - (StrikethroughFontSizeMultiplier * properties.fontSize)) / 2.0f));
+					float y2 = height - y1;
+
+					m_strikethroughLine.X1 = x1;
+					m_strikethroughLine.Y1 = y1;
+					m_strikethroughLine.X2 = x2;
+					m_strikethroughLine.Y2 = y2;
+				}
+			}
+		}
+
 		private void SetOwner(CalendarView pOwner)
 		{
 			global::System.Diagnostics.Debug.Assert(!(m_wrOwner?.TryGetTarget(out _) ?? false));
@@ -742,8 +1002,74 @@ namespace Microsoft.UI.Xaml.Controls
 				m_numberOfDensityBar = 0;
 			}
 
+			UpdateDensityBars();
 			InvalidateRender();
+		}
 
+		private void UpdateDensityBars()
+		{
+			// Remove old density bar rectangles
+			if (m_densityBarRects != null)
+			{
+				for (int i = 0; i < m_densityBarRects.Length; i++)
+				{
+					if (m_densityBarRects[i] != null)
+					{
+						RemoveChild(m_densityBarRects[i]);
+						m_densityBarRects[i] = null;
+					}
+				}
+
+				m_densityBarRects = null;
+			}
+
+			if (m_numberOfDensityBar > 0)
+			{
+				m_densityBarRects = new Shapes.Rectangle[m_numberOfDensityBar];
+				float opacity = m_isOutOfScope ? OutOfScopeDensityBarOpacity : InScopeDensityBarOpacity;
+
+				for (uint i = 0; i < m_numberOfDensityBar; i++)
+				{
+					var rect = new Shapes.Rectangle();
+					rect.IsHitTestVisible = false;
+					rect.Fill = new SolidColorBrush(m_densityBarColors[i]);
+					rect.Opacity = opacity;
+					rect.VerticalAlignment = VerticalAlignment.Bottom;
+					rect.HorizontalAlignment = HorizontalAlignment.Center;
+
+					AddChild(rect);
+					m_densityBarRects[i] = rect;
+				}
+			}
+		}
+
+		private void ArrangeDensityBars(Rect bounds)
+		{
+			if (m_densityBarRects == null || m_numberOfDensityBar == 0)
+			{
+				return;
+			}
+
+			// density bar bounds:
+			//   Height: itemHeight / 10 - 1, max 5px
+			//   Width: itemWidth - 2, centered
+			// 1 px between bars.
+			double barHeight = Math.Min(bounds.Height / s_maxNumberOfDensityBars - 1, MaxDensityBarHeight);
+			double barWidth = bounds.Width - 2;
+
+			double y = bounds.Height - barHeight;
+
+			for (uint i = 0; i < m_numberOfDensityBar; i++)
+			{
+				var rect = m_densityBarRects[i];
+				if (rect != null)
+				{
+					rect.Width = barWidth;
+					rect.Height = barHeight;
+					rect.Arrange(new Rect(1, y, barWidth, barHeight));
+					y -= barHeight + 1;
+				}
+			}
 		}
 
 		// Today state affects text foreground, opacity, borderbrush and FontWeight
@@ -756,6 +1082,16 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateTextBlocksForeground();
 				UpdateTextBlocksForegroundOpacity();
 				UpdateTextBlocksFontProperties();
+
+				if (IsRoundedCalendarViewBaseItemChromeEnabled())
+				{
+					SetOuterBorderBrush();
+					SetOuterBorderThickness();
+					SetOuterBorderBackground();
+					SetInnerBorderBrush();
+					SetBlackoutStrikethroughBrush();
+					SetInnerBorderCornerRadius();
+				}
 
 				InvalidateRender();
 			}
@@ -782,6 +1118,15 @@ namespace Microsoft.UI.Xaml.Controls
 				m_isSelected = state;
 				UpdateTextBlocksForeground();
 				UpdateTextBlocksForegroundOpacity();
+
+				if (IsRoundedCalendarViewBaseItemChromeEnabled())
+				{
+					SetOuterBorderBrush();
+					SetOuterBorderThickness();
+					SetInnerBorderBrush();
+					SetInnerBorderCornerRadius();
+				}
+
 				InvalidateRender();
 			}
 
@@ -795,6 +1140,16 @@ namespace Microsoft.UI.Xaml.Controls
 				m_isBlackout = state;
 				UpdateTextBlocksForeground();
 				UpdateTextBlocksForegroundOpacity();
+
+				if (IsRoundedCalendarViewBaseItemChromeEnabled())
+				{
+					SetOuterBorderBrush();
+					SetOuterBorderThickness();
+					SetOuterBorderBackground();
+					SetInnerBorderBrush();
+					SetBlackoutStrikethroughBrush();
+				}
+
 				InvalidateRender();
 			}
 
@@ -803,15 +1158,21 @@ namespace Microsoft.UI.Xaml.Controls
 		// Hover state affects border brush and background.
 		private void SetIsHovered(bool state)
 		{
-
 			if (m_isHovered != state)
 			{
 				m_isHovered = state;
 
+				if (IsRoundedCalendarViewBaseItemChromeEnabled())
+				{
+					UpdateTextBlocksForeground();
+
+					SetOuterBorderBrush();
+					SetOuterBorderThickness();
+					SetOuterBorderBackground();
+				}
+
 				InvalidateRender();
 			}
-
-			return;
 		}
 
 		// Pressed state affects background, forground and border Brush.
@@ -821,6 +1182,15 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_isPressed = state;
 				UpdateTextBlocksForeground();
+
+				if (IsRoundedCalendarViewBaseItemChromeEnabled())
+				{
+					SetOuterBorderBrush();
+					SetOuterBorderThickness();
+					SetOuterBorderBackground();
+					SetInnerBorderBrush();
+					SetInnerBorderCornerRadius();
+				}
 
 				InvalidateRender();
 			}
@@ -834,6 +1204,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_isOutOfScope = state;
 				UpdateTextBlocksForeground();
+
+				if (IsRoundedCalendarViewBaseItemChromeEnabled())
+				{
+					SetOuterBorderBackground();
+				}
 
 				InvalidateRender();
 			}

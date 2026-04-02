@@ -153,9 +153,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get
 			{
 				var pOwner = Owner;
-				//var pReturnValue = pOwner.IsCollapsed || !pOwner.AreAllAncestorsVisible;
-				var pReturnValue = false; // TODO UNO
-				return pReturnValue;
+				return pOwner.Visibility == Visibility.Collapsed || !pOwner.IsLoaded;
 			}
 		}
 

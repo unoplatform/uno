@@ -167,7 +167,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PlaceholderTextProperty { get; } = DependencyProperty.Register(
-			"PlaceholderText", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata("select a date")); // TODO: Localize?
+			"PlaceholderText", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(string)));
 
 		public string PlaceholderText
 		{

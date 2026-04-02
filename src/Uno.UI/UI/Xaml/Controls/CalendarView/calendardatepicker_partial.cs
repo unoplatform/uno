@@ -289,7 +289,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			void OnCalendarViewDayChanging(CalendarView sender, CalendarViewDayItemChangingEventArgs args)
 			{
-				// UNO-TODO
+				CalendarViewDayItemChanging?.Invoke(m_tpCalendarView, args);
 			}
 
 			void OnCalendarViewDatesChanged(CalendarView sender, CalendarViewSelectedDatesChangedEventArgs args)

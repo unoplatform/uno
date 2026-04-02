@@ -14,7 +14,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarView
 	{
-		internal class CalendarViewAutomationPeer : CalendarViewBaseItem.CalendarViewBaseItemAutomationPeer
+		internal class CalendarViewAutomationPeer : CalendarViewBaseItem.CalendarViewBaseItemAutomationPeer,
+			ISelectionProvider, IValueProvider, ITableProvider, IGridProvider
 		{
 			private const uint BulkChildrenLimit = 20;
 
@@ -110,9 +111,8 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if false
-			// Properties.
-			private bool CanSelectMultipleImpl
+			// ISelectionProvider
+			public bool CanSelectMultiple
 			{
 				get
 				{
@@ -121,7 +121,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 					UIElement spOwner;
 					spOwner = Owner;
-
 
 					CalendarViewSelectionMode selectionMode = CalendarViewSelectionMode.None;
 					selectionMode = (spOwner as CalendarView).SelectionMode;
@@ -135,28 +134,31 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			private bool IsSelectionRequiredImpl
+			public bool IsSelectionRequired
 			{
 				get
 				{
-					bool pValue;
-					pValue = false;
-					return pValue;
+					return false;
 				}
 			}
 
-			private bool IsReadOnlyImpl
+			public IRawElementProviderSimple[] GetSelection()
+			{
+				GetSelectionImpl(out _, out var result);
+				return result ?? Array.Empty<IRawElementProviderSimple>();
+			}
+
+			// IValueProvider
+			public bool IsReadOnly
 			{
 				get
 				{
-					bool pValue;
-					pValue = true;
-					return pValue;
+					return true;
 				}
 			}
 
 			// This will be date string if single date is selected otherwise the name of header of view
-			private string ValueImpl
+			public string Value
 			{
 				get
 				{
@@ -189,17 +191,33 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			private RowOrColumnMajor RowOrColumnMajorImpl
+			public void SetValue(string value)
+			{
+				throw new InvalidOperationException("CalendarView value is read-only.");
+			}
+
+			// ITableProvider
+			public Automation.RowOrColumnMajor RowOrColumnMajor
 			{
 				get
 				{
-					RowOrColumnMajor pValue;
-					pValue = RowOrColumnMajor.RowMajor;
-					return pValue;
+					return Automation.RowOrColumnMajor.RowMajor;
 				}
 			}
 
-			private int ColumnCountImpl
+			public IRawElementProviderSimple[] GetColumnHeaders()
+			{
+				GetColumnHeadersImpl(out _, out var result);
+				return result ?? Array.Empty<IRawElementProviderSimple>();
+			}
+
+			public IRawElementProviderSimple[] GetRowHeaders()
+			{
+				return Array.Empty<IRawElementProviderSimple>();
+			}
+
+			// IGridProvider
+			public int ColumnCount
 			{
 				get
 				{
@@ -221,7 +239,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			private int RowCountImpl
+			public int RowCount
 			{
 				get
 				{
@@ -243,7 +261,13 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			// This will be visible rows in the view, real number of rows will not provide any value
+			public IRawElementProviderSimple GetItem(int row, int column)
+			{
+				GetItemImpl(row, column, out var result);
+				return result;
+			}
+
+			// Internal implementation methods
 			private void GetSelectionImpl(out uint pReturnValueCount, out IRawElementProviderSimple[] ppReturnValue)
 			{
 				UIElement spOwner;
@@ -293,10 +317,6 @@ namespace Microsoft.UI.Xaml.Controls
 							realizedCount = (uint)spAPChildren.Count;
 							if (realizedCount > 0)
 							{
-								//uint allocSize = sizeof(IIRawElementProviderSimple) * realizedCount;
-								//ppReturnValue = (IIRawElementProviderSimple*)(CoTaskMemAlloc(allocSize));
-								//IFCOOMFAILFAST(ppReturnValue);
-								//ZeroMemory(ppReturnValue, allocSize);
 								ppReturnValue = new IRawElementProviderSimple[realizedCount];
 
 								for (uint index = 0; index < realizedCount; index++)
@@ -315,12 +335,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			private void SetValueImpl(string value)
-			{
-				throw new NotImplementedException();
-			}
-
-			// This will returns the header text labels on the top only in the case of monthView
 			private void GetColumnHeadersImpl(out uint pReturnValueCount, out IRawElementProviderSimple[] ppReturnValue)
 			{
 				pReturnValueCount = 0;
@@ -341,10 +355,6 @@ namespace Microsoft.UI.Xaml.Controls
 						spChildren = (spWeekDayNames as Grid).Children;
 						nCount = (uint)spChildren.Count;
 
-						//uint allocSize = sizeof(IIRawElementProviderSimple) * nCount;
-						//ppReturnValue = (IIRawElementProviderSimple*)(CoTaskMemAlloc(allocSize));
-						//IFCOOMFAILFAST(ppReturnValue);
-						//ZeroMemory(ppReturnValue, allocSize);
 						ppReturnValue = new IRawElementProviderSimple[nCount];
 						for (uint i = 0; i < nCount; i++)
 						{
@@ -363,14 +373,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			private void GetRowHeadersImpl(out uint pReturnValueCount, out IRawElementProviderSimple[] ppReturnValue)
-			{
-				pReturnValueCount = 0;
-				ppReturnValue = default;
-				return;
-			}
-
-
 			private void GetItemImpl(int row, int column, out IRawElementProviderSimple ppReturnValue)
 			{
 				ppReturnValue = null;
@@ -381,13 +383,8 @@ namespace Microsoft.UI.Xaml.Controls
 				CalendarViewGeneratorHost spHost;
 				(spOwner as CalendarView).GetActiveGeneratorHost(out spHost);
 
-				DependencyObject spItemAsI;
-				CalendarViewBaseItem spItem;
-				AutomationPeer spItemPeerAsAP;
-				IRawElementProviderSimple spProvider;
-
 				int colCount = 0;
-				colCount = ColumnCountImpl;
+				colCount = ColumnCount;
 
 				int firstVisibleIndex = 0;
 				CalendarPanel pCalendarPanel = spHost.Panel;
@@ -406,14 +403,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 					if (itemIndex >= 0)
 					{
+						DependencyObject spItemAsI;
 						spItemAsI = pCalendarPanel.ContainerFromIndex(itemIndex);
 						// This can be a virtualized item or item does not exist, check for null
 						if (spItemAsI is { })
 						{
-							spItem = (CalendarViewBaseItem)spItemAsI;
-
-							spItemPeerAsAP = spItem.GetAutomationPeer();
-							spProvider = ProviderFromPeer(spItemPeerAsAP);
+							CalendarViewBaseItem spItem = (CalendarViewBaseItem)spItemAsI;
+							AutomationPeer spItemPeerAsAP = spItem.GetAutomationPeer();
+							IRawElementProviderSimple spProvider = ProviderFromPeer(spItemPeerAsAP);
 							ppReturnValue = spProvider;
 						}
 					}
@@ -421,7 +418,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				return;
 			}
-#endif
 
 			internal void RaiseSelectionEvents(CalendarViewSelectedDatesChangedEventArgs pSelectionChangedEventArgs)
 			{

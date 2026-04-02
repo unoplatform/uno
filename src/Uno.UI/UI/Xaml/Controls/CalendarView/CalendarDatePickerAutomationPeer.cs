@@ -82,8 +82,9 @@ partial class CalendarDatePickerAutomationPeer : FrameworkElementAutomationPeer
 
 	/// <summary>
 	/// Sets the value of a control, as an implementation of the IValueProvider pattern.
+	/// CalendarDatePicker is read-only - this always throws.
 	/// </summary>
 	/// <param name="value"></param>
-	/// <exception cref="NotImplementedException"></exception>
-	public void SetValue(string value) => throw new NotImplementedException();
+	/// <exception cref="InvalidOperationException"></exception>
+	public void SetValue(string value) => throw new InvalidOperationException("CalendarDatePicker value is read-only.");
 }
