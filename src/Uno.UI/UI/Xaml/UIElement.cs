@@ -842,9 +842,9 @@ namespace Microsoft.UI.Xaml
 			// system implements EnterEffectiveValue/LeaveEffectiveValue for IsVisualTreeProperty properties.
 			if (IsActiveInVisualTree)
 			{
-				var visualTree = this.GetVisualTree();
-				oldValue?.Leave(null, new LeaveParams { IsForKeyboardAccelerator = true, VisualTree = visualTree });
-				newValue?.Enter(null, new EnterParams { IsForKeyboardAccelerator = true, VisualTree = visualTree });
+				// WinUI nulls out the VisualTree pointer for shared FlyoutBase (Bug 19548424).
+				oldValue?.Leave(null, new LeaveParams { IsForKeyboardAccelerator = true, VisualTree = null });
+				newValue?.Enter(null, new EnterParams { IsForKeyboardAccelerator = true, VisualTree = null });
 			}
 #endif
 
