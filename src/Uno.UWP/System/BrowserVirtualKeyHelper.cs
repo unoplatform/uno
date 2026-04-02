@@ -332,6 +332,8 @@ namespace Windows.System
 					return VirtualKey.Number8;
 				case "Numpad9":
 					return VirtualKey.Number9;
+				case "NumpadEnter":
+					return VirtualKey.Enter;
 			}
 
 			// A lot of keys and codes are similar.

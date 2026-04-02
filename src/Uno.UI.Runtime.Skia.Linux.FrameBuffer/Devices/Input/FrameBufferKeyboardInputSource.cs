@@ -315,7 +315,7 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 			KEY_KATAKANAHIRAGANA => VirtualKey.None,
 			KEY_MUHENKAN => VirtualKey.None,
 			KEY_KPJPCOMMA => VirtualKey.None,
-			KEY_KPENTER => VirtualKey.None,
+			KEY_KPENTER => VirtualKey.Enter,
 			KEY_RIGHTCTRL => VirtualKey.RightControl,
 			KEY_KPSLASH => VirtualKey.None,
 			KEY_SYSRQ => VirtualKey.None,
