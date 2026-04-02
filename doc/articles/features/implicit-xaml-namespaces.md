@@ -131,7 +131,15 @@ If two globally registered namespaces contain types with the same name, use an e
 
 ## WinAppSDK Compatibility
 
-This feature works on both Uno Platform targets and WinUI/WinAppSDK targets. On WinAppSDK builds, an MSBuild pre-processing step injects the xmlns declarations into XAML files before the WinUI XAML compiler processes them. This is handled automatically by the Uno.Sdk.
+The implicit default `xmlns` and `xmlns:x` declarations work on both Uno Platform targets and WinUI/WinAppSDK targets. On WinAppSDK builds, an MSBuild pre-processing step injects these two namespace declarations into XAML files before the WinUI XAML compiler processes them. This is handled automatically by the Uno.Sdk.
+
+> [!IMPORTANT]
+> The following features are **Uno Platform targets only** and are not supported on WinAppSDK builds:
+>
+> - **Custom `XmlnsDefinition` registrations** (registering CLR namespaces to the global namespace URI for unprefixed type resolution)
+> - **Implicit `XmlnsPrefix`-based prefixes** (using prefixed elements like `<adv:MyControl />` without an explicit `xmlns:adv` declaration)
+>
+> These features require assembly metadata discovery at compilation time, which is only available through the Uno Platform source generator. The WinAppSDK XAML compiler does not support this. XAML files that use these features must include explicit `xmlns` declarations for the affected namespaces when targeting WinAppSDK.
 
 ## Configuration
 
@@ -169,3 +177,4 @@ The default global namespace URI is `http://schemas.microsoft.com/winfx/2006/xam
 - Implicit namespaces are a compile-time feature. IDE XAML designers may not fully support the reduced syntax until they are updated.
 - Hot Reload correctly handles XAML without explicit xmlns declarations.
 - The feature requires Uno.Sdk. Projects not using Uno.Sdk need to manually set `UnoEnableImplicitXamlNamespaces` to `true` in their project file.
+- On WinAppSDK targets, only the default `xmlns` and `xmlns:x` are implicitly injected. Custom global namespace registrations (`XmlnsDefinition`) and implicit prefixes (`XmlnsPrefix`) are not supported on WinAppSDK — add explicit `xmlns` declarations for those namespaces in XAML files that must compile on WinAppSDK.

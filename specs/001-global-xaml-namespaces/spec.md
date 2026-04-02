@@ -113,8 +113,11 @@ As a developer targeting WinUI/WinAppSDK (native Windows), I want global XAML na
 
 **Acceptance Scenarios**:
 
-1. **Given** an Uno Platform project targeting Windows via WinAppSDK, **When** global namespaces are enabled and XAML omits default `xmlns` declarations, **Then** the project compiles and runs correctly on Windows.
-2. **Given** the same XAML file targeting both Uno (Skia/Wasm/Mobile) and WinAppSDK, **When** built for each target, **Then** the XAML compiles identically on all targets without modification.
+1. **Given** an Uno Platform project targeting Windows via WinAppSDK, **When** global namespaces are enabled and XAML omits default `xmlns` and `xmlns:x` declarations, **Then** the project compiles and runs correctly on Windows.
+2. **Given** the same XAML file targeting both Uno (Skia/Wasm/Mobile) and WinAppSDK, **When** built for each target, **Then** the XAML compiles identically on all targets without modification (for XAML that only relies on implicit `xmlns` and `xmlns:x`).
+
+> [!NOTE]
+> WinAppSDK compatibility is limited to implicit `xmlns` and `xmlns:x` injection. Custom `XmlnsDefinition` registrations (global namespace URI for unprefixed type resolution) and `XmlnsPrefix`-based implicit prefixes require the Uno Platform source generator and are not available on WinAppSDK targets. XAML files that use these advanced features must include explicit `xmlns` declarations for WinAppSDK builds.
 
 ---
 
@@ -142,7 +145,7 @@ As a developer targeting WinUI/WinAppSDK (native Windows), I want global XAML na
 - **FR-009**: Explicit per-file `xmlns` declarations MUST take precedence over implicit global registrations.
 - **FR-010**: The system MUST support the `XmlnsPrefix` attribute to allow developers to define default prefixes for namespaces, enabling prefix usage without per-file declaration.
 - **FR-011**: XAML Hot Reload MUST continue to function correctly for XAML files that use implicit namespaces.
-- **FR-012**: The feature MUST work for WinUI/WinAppSDK targets when built through the Uno.Sdk via an MSBuild pre-processing step that injects implicit `xmlns` declarations into temporary XAML copies before the WinUI XAML compiler processes them, coordinated with the Uno source generator on non-Windows targets to ensure identical behavior.
+- **FR-012**: The feature MUST work for WinUI/WinAppSDK targets when built through the Uno.Sdk via an MSBuild pre-processing step that injects the default `xmlns` and `xmlns:x` declarations into temporary XAML copies before the WinUI XAML compiler processes them. Note: custom `XmlnsDefinition` registrations (global namespace URI) and `XmlnsPrefix`-based implicit prefixes are Uno Platform source generator features only and are not available on WinAppSDK targets, as they require assembly metadata discovery at compilation time which the WinAppSDK XAML compiler does not support.
 
 ### Key Entities
 
@@ -158,7 +161,7 @@ As a developer targeting WinUI/WinAppSDK (native Windows), I want global XAML na
 - **SC-001**: A new Uno Platform project with the feature enabled compiles and renders a multi-page XAML application on all supported targets without any `xmlns` declarations in XAML files.
 - **SC-002**: Developers can register custom CLR namespaces and use their types unprefixed in XAML, with no more than one line of attribute code per CLR namespace.
 - **SC-003**: Existing projects upgrading to the new Uno.Sdk version continue to compile and run correctly - the feature is additive (implicit namespaces supplement, never override, explicit declarations). Projects can opt out if needed.
-- **SC-004**: The same XAML source files compile identically on Uno Platform targets and WinUI/WinAppSDK targets (via Uno.Sdk).
+- **SC-004**: The same XAML source files (using only implicit `xmlns` and `xmlns:x`) compile identically on Uno Platform targets and WinUI/WinAppSDK targets (via Uno.Sdk). Advanced features (custom `XmlnsDefinition`, `XmlnsPrefix`) are Uno Platform targets only.
 - **SC-005**: XAML Hot Reload continues to work correctly for files using implicit namespaces.
 - **SC-006**: Type name collision errors provide clear diagnostic messages identifying the conflicting namespaces, enabling developers to resolve ambiguities within minutes.
 
@@ -175,6 +178,6 @@ As a developer targeting WinUI/WinAppSDK (native Windows), I want global XAML na
 - The global namespace URI will follow a pattern consistent with existing WinUI XML namespace conventions.
 - The `XmlnsDefinition` and `XmlnsPrefix` attributes already exist in the Uno Platform codebase and can be reused without creating new attribute types.
 - The Uno Platform XAML source generator is the primary compilation path for XAML on all non-Windows targets, and modifications to it will cover those targets.
-- For WinUI/WinAppSDK targets, the Uno.Sdk's MSBuild integration can inject the necessary configuration to make the WinUI XAML compiler behave consistently with Uno's source generator.
+- For WinUI/WinAppSDK targets, the Uno.Sdk's MSBuild integration injects the default `xmlns` and `xmlns:x` declarations before the WinUI XAML compiler runs. Advanced features (custom `XmlnsDefinition` and `XmlnsPrefix` support) require the Uno source generator and are not available on WinAppSDK targets.
 - IDE tooling (Visual Studio, VS Code) may initially show warnings or red squiggles for XAML without explicit namespaces; this is acceptable as long as compilation succeeds. Tooling improvements can be addressed separately.
 - The MAUI implementation provides a proven technical approach that can be adapted for Uno Platform's source generator pipeline.
