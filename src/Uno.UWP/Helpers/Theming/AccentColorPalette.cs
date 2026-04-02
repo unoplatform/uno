@@ -48,9 +48,16 @@ internal readonly struct AccentColorPalette
 	/// <remarks>
 	/// Light shades are blended toward white, dark shades toward black.
 	/// Factors were reverse-engineered from Windows default blue (#0078D7) and its palette.
+	/// For the default blue accent, the exact hardcoded palette is returned since the
+	/// Lerp approximation produces slightly different values than the actual Windows palette.
 	/// </remarks>
 	public static AccentColorPalette FromAccentColor(Color accent)
 	{
+		if (accent == Default.Accent)
+		{
+			return Default;
+		}
+
 		return new AccentColorPalette(
 			accent: accent,
 			light1: Lerp(accent, Colors.White, 0.26),
