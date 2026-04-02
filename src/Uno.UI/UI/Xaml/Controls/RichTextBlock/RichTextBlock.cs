@@ -6,15 +6,13 @@ using Microsoft.UI.Xaml.Markup;
 namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Blocks))]
-	[global::Uno.NotImplemented]
 	public partial class RichTextBlock : global::Microsoft.UI.Xaml.FrameworkElement
 	{
-		[global::Uno.NotImplemented]
 		public RichTextBlock() : base()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlock", "RichTextBlock.RichTextBlock()");
-
 			Blocks = new Documents.BlockCollection();
+			Blocks.SetParent(this);
+			Blocks.VectorChanged += (_, _) => InvalidateForContentChange();
 		}
 
 		public BlockCollection Blocks { get; }
@@ -22,5 +20,10 @@ namespace Microsoft.UI.Xaml.Controls
 		internal override bool CanHaveChildren() => true;
 
 		public new bool Focus(FocusState value) => base.Focus(value);
+
+		internal void InvalidateForContentChange()
+		{
+			InvalidateMeasure();
+		}
 	}
 }

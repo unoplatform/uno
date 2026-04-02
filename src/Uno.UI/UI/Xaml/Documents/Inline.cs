@@ -19,6 +19,9 @@ namespace Microsoft.UI.Xaml.Documents
 				case TextBlock textBlock:
 					textBlock.InvalidateInlines(updateText);
 					break;
+				case Paragraph paragraph:
+					paragraph.InvalidateInlines(updateText);
+					break;
 				default:
 					break;
 			}

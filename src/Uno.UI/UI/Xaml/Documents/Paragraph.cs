@@ -1,10 +1,24 @@
-﻿using Microsoft.UI.Xaml.Markup;
+﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml.Documents;
 
 [ContentProperty(Name = nameof(Inlines))]
 public partial class Paragraph : Block
 {
+	internal void InvalidateInlines(bool updateText)
+	{
+		if (updateText)
+		{
+			Inlines.InvalidateTraversedTree();
+		}
+
+		if (this.GetParent() is RichTextBlock richTextBlock)
+		{
+			richTextBlock.InvalidateMeasure();
+		}
+	}
+
 	public double TextIndent
 	{
 		get => (double)GetValue(TextIndentProperty);
