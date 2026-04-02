@@ -1,5 +1,6 @@
 <UserControl
 	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ImplicitXamlNamespaces_Disambiguation"
+	Width="200" Height="200"
 	xmlns:ambA="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.AmbiguousA"
 	xmlns:ambB="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.AmbiguousB">
 

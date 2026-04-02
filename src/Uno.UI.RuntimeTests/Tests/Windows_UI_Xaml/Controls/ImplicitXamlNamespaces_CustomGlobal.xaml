@@ -1,5 +1,6 @@
 <UserControl
-	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ImplicitXamlNamespaces_CustomGlobal">
+	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ImplicitXamlNamespaces_CustomGlobal"
+	Width="200" Height="200">
 
 	<StackPanel>
 		<CustomGlobalControl x:Name="MyCustomControl"
