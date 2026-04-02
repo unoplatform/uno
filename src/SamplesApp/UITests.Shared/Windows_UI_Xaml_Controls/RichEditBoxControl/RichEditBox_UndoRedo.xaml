@@ -1,0 +1,143 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.RichEditBoxControl.RichEditBox_UndoRedo"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="1000"
+	d:DesignWidth="500">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="16">
+			<TextBlock Text="RichEditBox - Undo / Redo" FontSize="20" FontWeight="Bold" />
+			<TextBlock Text="Demonstrates undo/redo functionality, undo groups, and clearing undo history."
+					   TextWrapping="Wrap"
+					   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+			<!-- Main editor -->
+			<RichEditBox x:Name="UndoRichEditBox"
+						 Header="Editor (edit text, then use undo/redo controls)"
+						 PlaceholderText="Type some text, make changes, and use undo/redo..."
+						 MinHeight="150"
+						 AcceptsReturn="True" />
+
+			<!-- Undo/Redo status -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Undo / Redo Status" FontWeight="SemiBold" FontSize="16" />
+					<Button Content="Refresh Status" Click="RefreshStatusButton_Click" />
+					<TextBlock x:Name="UndoRedoStatusTextBlock"
+							   Text="(click Refresh Status)"
+							   TextWrapping="Wrap"
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+				</StackPanel>
+			</Border>
+
+			<!-- Manual undo/redo buttons -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Manual Undo / Redo" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Use these buttons or Ctrl+Z / Ctrl+Y keyboard shortcuts."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button x:Name="UndoButton" Content="Undo" Click="UndoButton_Click" />
+						<Button x:Name="RedoButton" Content="Redo" Click="RedoButton_Click" />
+					</StackPanel>
+					<TextBlock x:Name="UndoRedoResultTextBlock"
+							   Text=""
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+				</StackPanel>
+			</Border>
+
+			<!-- Clear undo history -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Clear Undo/Redo History" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Clears both the undo and redo stacks entirely."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<Button Content="Clear History" Click="ClearHistoryButton_Click" />
+				</StackPanel>
+			</Border>
+
+			<!-- Undo limit -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Undo Limit" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Get or set the maximum number of undo actions stored."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+						<NumberBox x:Name="UndoLimitInput" Header="Undo Limit" Value="100"
+								   Minimum="0" Maximum="1000"
+								   SpinButtonPlacementMode="Compact" Grid.Column="0" />
+						<Button Content="Set Limit" Click="SetUndoLimitButton_Click"
+								VerticalAlignment="Bottom" Grid.Column="1" />
+					</Grid>
+					<TextBlock x:Name="UndoLimitStatusTextBlock"
+							   Text=""
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+				</StackPanel>
+			</Border>
+
+			<!-- Undo groups -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Undo Groups" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Group multiple operations into a single undo step. All changes between BeginUndoGroup and EndUndoGroup are undone together."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<Button Content="Run Grouped Operations Demo" Click="UndoGroupDemoButton_Click" />
+					<TextBlock x:Name="UndoGroupResultTextBlock"
+							   Text=""
+							   TextWrapping="Wrap"
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+				</StackPanel>
+			</Border>
+
+			<!-- Batch display updates -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Batch Display Updates" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="BatchDisplayUpdates suppresses rendering updates until ApplyDisplayUpdates is called. Useful for multiple sequential edits."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<Button Content="Run Batch Updates Demo" Click="BatchUpdatesDemoButton_Click" />
+					<TextBlock x:Name="BatchUpdatesResultTextBlock"
+							   Text=""
+							   TextWrapping="Wrap"
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+				</StackPanel>
+			</Border>
+
+			<!-- Interactive multi-step scenario -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Interactive Undo Scenario" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Step through changes and observe undo/redo behavior."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<StackPanel Orientation="Horizontal" Spacing="4">
+						<Button Content="Step 1: Set initial" Click="Step1Button_Click" />
+						<Button Content="Step 2: Append" Click="Step2Button_Click" />
+						<Button Content="Step 3: Replace" Click="Step3Button_Click" />
+					</StackPanel>
+					<TextBlock Text="Now try pressing Undo multiple times to step back through changes."
+							   FontSize="12"
+							   Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+							   TextWrapping="Wrap" />
+				</StackPanel>
+			</Border>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

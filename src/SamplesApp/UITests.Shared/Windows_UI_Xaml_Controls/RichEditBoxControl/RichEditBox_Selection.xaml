@@ -1,0 +1,188 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.RichEditBoxControl.RichEditBox_Selection"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="1200"
+	d:DesignWidth="500">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="16">
+			<TextBlock Text="RichEditBox - Selection" FontSize="20" FontWeight="Bold" />
+			<TextBlock Text="Demonstrates selection manipulation: SetRange, StartPosition/EndPosition, Expand, Collapse, TypeText, and more."
+					   TextWrapping="Wrap"
+					   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+			<!-- Main editor -->
+			<RichEditBox x:Name="SelectionRichEditBox"
+						 Header="Editor (interact with selection below)"
+						 PlaceholderText="Type text here to test selection features..."
+						 MinHeight="120"
+						 AcceptsReturn="True"
+						 SelectionChanged="SelectionRichEditBox_SelectionChanged" />
+
+			<!-- Live selection info -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="4">
+					<TextBlock Text="Live Selection Info (updates on SelectionChanged)" FontWeight="SemiBold" />
+					<TextBlock x:Name="SelectionInfoTextBlock"
+							   Text="Start: 0, End: 0, Length: 0, Type: InsertionPoint"
+							   TextWrapping="Wrap"
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+					<TextBlock x:Name="SelectedTextBlock"
+							   Text="Selected text: (none)"
+							   TextWrapping="Wrap"
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+				</StackPanel>
+			</Border>
+
+			<!-- SetRange -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Selection.SetRange" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Programmatically set the selection to a specific range."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<Grid ColumnDefinitions="*,*,Auto" ColumnSpacing="8">
+						<NumberBox x:Name="SetRangeStart" Header="Start" Value="0" Minimum="0"
+								   SpinButtonPlacementMode="Compact" Grid.Column="0" />
+						<NumberBox x:Name="SetRangeEnd" Header="End" Value="10" Minimum="0"
+								   SpinButtonPlacementMode="Compact" Grid.Column="1" />
+						<Button Content="Set Range" Click="SetRangeButton_Click"
+								VerticalAlignment="Bottom" Grid.Column="2" />
+					</Grid>
+				</StackPanel>
+			</Border>
+
+			<!-- StartPosition / EndPosition -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Selection.StartPosition / EndPosition" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Set start or end position independently."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<Grid ColumnDefinitions="*,Auto,16,*,Auto" ColumnSpacing="4">
+						<NumberBox x:Name="StartPositionInput" Header="Start" Value="0" Minimum="0"
+								   SpinButtonPlacementMode="Compact" Grid.Column="0" />
+						<Button Content="Set" Click="SetStartPositionButton_Click"
+								VerticalAlignment="Bottom" Grid.Column="1" />
+						<NumberBox x:Name="EndPositionInput" Header="End" Value="5" Minimum="0"
+								   SpinButtonPlacementMode="Compact" Grid.Column="3" />
+						<Button Content="Set" Click="SetEndPositionButton_Click"
+								VerticalAlignment="Bottom" Grid.Column="4" />
+					</Grid>
+				</StackPanel>
+			</Border>
+
+			<!-- Expand -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Selection.Expand" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Expand the selection to encompass a word, paragraph, or entire story."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button Content="Expand to Word" Click="ExpandWordButton_Click" />
+						<Button Content="Expand to Paragraph" Click="ExpandParagraphButton_Click" />
+						<Button Content="Expand to Story" Click="ExpandStoryButton_Click" />
+					</StackPanel>
+					<TextBlock x:Name="ExpandResultTextBlock"
+							   Text=""
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+				</StackPanel>
+			</Border>
+
+			<!-- Collapse -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Selection.Collapse" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Collapse the selection to the start (false) or end (true)."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button Content="Collapse to Start" Click="CollapseStartButton_Click" />
+						<Button Content="Collapse to End" Click="CollapseEndButton_Click" />
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- TypeText -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Selection.TypeText" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Insert text at the current selection (replaces selected text if any)."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+						<TextBox x:Name="TypeTextInput"
+								 PlaceholderText="Text to type at selection..."
+								 Grid.Column="0" />
+						<Button Content="TypeText" Click="TypeTextButton_Click"
+								VerticalAlignment="Bottom" Grid.Column="1" />
+					</Grid>
+				</StackPanel>
+			</Border>
+
+			<!-- Move selection -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Selection Movement" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Move the selection left/right by character or word."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<StackPanel Orientation="Horizontal" Spacing="4">
+						<Button Content="Left (Char)" Click="MoveLeftCharButton_Click" />
+						<Button Content="Right (Char)" Click="MoveRightCharButton_Click" />
+						<Button Content="Left (Word)" Click="MoveLeftWordButton_Click" />
+						<Button Content="Right (Word)" Click="MoveRightWordButton_Click" />
+					</StackPanel>
+
+					<TextBlock Text="Move with extend (selects text while moving):" Margin="0,4,0,0" />
+					<StackPanel Orientation="Horizontal" Spacing="4">
+						<Button Content="Extend Left" Click="ExtendLeftButton_Click" />
+						<Button Content="Extend Right" Click="ExtendRightButton_Click" />
+					</StackPanel>
+
+					<TextBlock Text="Home / End key:" Margin="0,4,0,0" />
+					<StackPanel Orientation="Horizontal" Spacing="4">
+						<Button Content="Home (Line)" Click="HomeLineButton_Click" />
+						<Button Content="End (Line)" Click="EndLineButton_Click" />
+						<Button Content="Home (Story)" Click="HomeStoryButton_Click" />
+						<Button Content="End (Story)" Click="EndStoryButton_Click" />
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- GetText / SetText on selection -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Selection.GetText / SetText" FontWeight="SemiBold" FontSize="16" />
+					<Button Content="GetText from Selection" Click="GetSelectionTextButton_Click" />
+					<TextBlock x:Name="SelectionGetTextOutput"
+							   Text=""
+							   TextWrapping="Wrap"
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+					<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+						<TextBox x:Name="SelectionSetTextInput"
+								 PlaceholderText="Replacement text for selection..."
+								 Grid.Column="0" />
+						<Button Content="SetText" Click="SetSelectionTextButton_Click"
+								VerticalAlignment="Bottom" Grid.Column="1" />
+					</Grid>
+				</StackPanel>
+			</Border>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

@@ -1,0 +1,192 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.RichEditBoxControl.RichEditBox_Properties"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="1400"
+	d:DesignWidth="500">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="16">
+			<TextBlock Text="RichEditBox - Properties" FontSize="20" FontWeight="Bold" />
+			<TextBlock Text="Demonstrates IsReadOnly, MaxLength, AcceptsReturn, TextWrapping, TextAlignment, and CharacterCasing."
+					   TextWrapping="Wrap"
+					   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+			<!-- IsReadOnly -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="IsReadOnly" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="When true, the user cannot edit the content."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<RichEditBox x:Name="ReadOnlyRichEditBox"
+								 MinHeight="80" />
+					<ToggleSwitch x:Name="IsReadOnlyToggle"
+								  Header="IsReadOnly"
+								  IsOn="False"
+								  Toggled="IsReadOnlyToggle_Toggled" />
+				</StackPanel>
+			</Border>
+
+			<!-- MaxLength -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="MaxLength" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Limits the maximum number of characters. 0 = unlimited."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<RichEditBox x:Name="MaxLengthRichEditBox"
+								 PlaceholderText="Try typing beyond the max length..."
+								 MinHeight="60" />
+					<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+						<NumberBox x:Name="MaxLengthInput" Header="MaxLength" Value="20"
+								   Minimum="0" Maximum="1000"
+								   SpinButtonPlacementMode="Compact" Grid.Column="0" />
+						<Button Content="Apply" Click="ApplyMaxLengthButton_Click"
+								VerticalAlignment="Bottom" Grid.Column="1" />
+					</Grid>
+					<TextBlock x:Name="MaxLengthStatusTextBlock"
+							   Text="Current MaxLength: 0 (unlimited)"
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+				</StackPanel>
+			</Border>
+
+			<!-- AcceptsReturn -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="AcceptsReturn" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="When true (default), pressing Enter inserts a new line. When false, Enter is ignored."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<RichEditBox x:Name="AcceptsReturnRichEditBox"
+								 PlaceholderText="Try pressing Enter..."
+								 MinHeight="80" />
+					<ToggleSwitch x:Name="AcceptsReturnToggle"
+								  Header="AcceptsReturn"
+								  IsOn="True"
+								  Toggled="AcceptsReturnToggle_Toggled" />
+				</StackPanel>
+			</Border>
+
+			<!-- TextWrapping -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="TextWrapping" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Controls whether long lines wrap to the next visual line."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<RichEditBox x:Name="TextWrappingRichEditBox"
+								 MinHeight="80" />
+					<ComboBox x:Name="TextWrappingComboBox"
+							  Header="TextWrapping"
+							  SelectedIndex="0"
+							  SelectionChanged="TextWrappingComboBox_SelectionChanged">
+						<ComboBoxItem Content="Wrap" Tag="Wrap" />
+						<ComboBoxItem Content="NoWrap" Tag="NoWrap" />
+						<ComboBoxItem Content="WrapWholeWords" Tag="WrapWholeWords" />
+					</ComboBox>
+				</StackPanel>
+			</Border>
+
+			<!-- TextAlignment -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="TextAlignment" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Controls horizontal text alignment within the control."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<RichEditBox x:Name="TextAlignmentRichEditBox"
+								 MinHeight="80" />
+					<ComboBox x:Name="TextAlignmentComboBox"
+							  Header="TextAlignment"
+							  SelectedIndex="0"
+							  SelectionChanged="TextAlignmentComboBox_SelectionChanged">
+						<ComboBoxItem Content="Left" Tag="Left" />
+						<ComboBoxItem Content="Center" Tag="Center" />
+						<ComboBoxItem Content="Right" Tag="Right" />
+						<ComboBoxItem Content="Justify" Tag="Justify" />
+					</ComboBox>
+				</StackPanel>
+			</Border>
+
+			<!-- CharacterCasing -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="CharacterCasing" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Forces input text to upper or lower case."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<RichEditBox x:Name="CharacterCasingRichEditBox"
+								 PlaceholderText="Type text to observe casing behavior..."
+								 MinHeight="60" />
+					<ComboBox x:Name="CharacterCasingComboBox"
+							  Header="CharacterCasing"
+							  SelectedIndex="0"
+							  SelectionChanged="CharacterCasingComboBox_SelectionChanged">
+						<ComboBoxItem Content="Normal" Tag="Normal" />
+						<ComboBoxItem Content="Upper" Tag="Upper" />
+						<ComboBoxItem Content="Lower" Tag="Lower" />
+					</ComboBox>
+				</StackPanel>
+			</Border>
+
+			<!-- All properties at once -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Combined Properties Demo" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="A RichEditBox with multiple properties set simultaneously via XAML."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<RichEditBox x:Name="CombinedRichEditBox"
+								 Header="Notes (max 100 chars, no wrapping)"
+								 PlaceholderText="Short single-line note..."
+								 MaxLength="100"
+								 AcceptsReturn="False"
+								 TextWrapping="NoWrap"
+								 TextAlignment="Left"
+								 MinHeight="50" />
+					<Button Content="Get Properties" Click="GetPropertiesButton_Click" />
+					<TextBlock x:Name="CombinedPropertiesTextBlock"
+							   Text=""
+							   TextWrapping="Wrap"
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+				</StackPanel>
+			</Border>
+
+			<!-- Side-by-side alignment comparison -->
+			<TextBlock Text="TextAlignment Comparison" FontWeight="SemiBold" FontSize="16" Margin="0,8,0,0" />
+			<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+				<TextBlock Text="Left Aligned" Grid.Column="0" Grid.Row="0" />
+				<TextBlock Text="Center Aligned" Grid.Column="1" Grid.Row="0" />
+				<RichEditBox x:Name="LeftAlignedBox"
+							 TextAlignment="Left"
+							 MinHeight="60"
+							 Grid.Column="0" Grid.Row="1" />
+				<RichEditBox x:Name="CenterAlignedBox"
+							 TextAlignment="Center"
+							 MinHeight="60"
+							 Grid.Column="1" Grid.Row="1" />
+				<TextBlock Text="Right Aligned" Grid.Column="0" Grid.Row="2" />
+				<TextBlock Text="Justify" Grid.Column="1" Grid.Row="2" />
+				<RichEditBox x:Name="RightAlignedBox"
+							 TextAlignment="Right"
+							 MinHeight="60"
+							 Grid.Column="0" Grid.Row="3" />
+				<RichEditBox x:Name="JustifyAlignedBox"
+							 TextAlignment="Justify"
+							 MinHeight="60"
+							 Grid.Column="1" Grid.Row="3" />
+			</Grid>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

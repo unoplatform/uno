@@ -1,0 +1,83 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.RichEditBoxControl.RichEditBox_BasicUsage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="800"
+	d:DesignWidth="500">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="16">
+			<TextBlock Text="RichEditBox - Basic Usage" FontSize="20" FontWeight="Bold" />
+
+			<!-- Basic RichEditBox with PlaceholderText -->
+			<TextBlock Text="1. RichEditBox with PlaceholderText" FontWeight="SemiBold" />
+			<RichEditBox x:Name="PlaceholderRichEditBox"
+						 PlaceholderText="Type something here..."
+						 MinHeight="80" />
+
+			<!-- RichEditBox with Header -->
+			<TextBlock Text="2. RichEditBox with Header" FontWeight="SemiBold" />
+			<RichEditBox x:Name="HeaderRichEditBox"
+						 Header="Enter your notes"
+						 PlaceholderText="Start typing..."
+						 MinHeight="80" />
+
+			<!-- RichEditBox with Description -->
+			<TextBlock Text="3. RichEditBox with Description" FontWeight="SemiBold" />
+			<RichEditBox x:Name="DescriptionRichEditBox"
+						 Header="Comments"
+						 PlaceholderText="Add a comment..."
+						 Description="Your comment will be visible to all team members."
+						 MinHeight="80" />
+
+			<!-- Pre-populated RichEditBox -->
+			<TextBlock Text="4. Pre-populated with text (set via code-behind)" FontWeight="SemiBold" />
+			<RichEditBox x:Name="PrePopulatedRichEditBox"
+						 MinHeight="100" />
+
+			<!-- RichEditBox with custom Header template -->
+			<TextBlock Text="5. RichEditBox with custom HeaderTemplate" FontWeight="SemiBold" />
+			<RichEditBox x:Name="CustomHeaderRichEditBox"
+						 PlaceholderText="Custom header above..."
+						 MinHeight="80">
+				<RichEditBox.HeaderTemplate>
+					<DataTemplate>
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<FontIcon Glyph="&#xE70F;" FontSize="14" VerticalAlignment="Center" />
+							<TextBlock Text="Rich Editor" FontWeight="SemiBold" VerticalAlignment="Center" />
+						</StackPanel>
+					</DataTemplate>
+				</RichEditBox.HeaderTemplate>
+			</RichEditBox>
+
+			<!-- Display current content -->
+			<TextBlock Text="6. Get current text content" FontWeight="SemiBold" />
+			<RichEditBox x:Name="ContentReadRichEditBox"
+						 PlaceholderText="Type here, then press the button below..."
+						 MinHeight="80" />
+			<Button x:Name="GetContentButton" Content="Get Text Content" Click="GetContentButton_Click" />
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="8">
+				<TextBlock x:Name="ContentOutputTextBlock"
+						   Text="(content will appear here)"
+						   TextWrapping="Wrap"
+						   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+			</Border>
+
+			<!-- Multiple RichEditBoxes side by side -->
+			<TextBlock Text="7. Multiple RichEditBoxes" FontWeight="SemiBold" />
+			<Grid ColumnDefinitions="*,16,*">
+				<RichEditBox PlaceholderText="Left editor..."
+							 MinHeight="100"
+							 Grid.Column="0" />
+				<RichEditBox PlaceholderText="Right editor..."
+							 MinHeight="100"
+							 Grid.Column="2" />
+			</Grid>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

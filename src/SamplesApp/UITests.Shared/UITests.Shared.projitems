@@ -2024,6 +2024,34 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichEditBoxControl\RichEditBox_BasicUsage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichEditBoxControl\RichEditBox_TextFormatting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichEditBoxControl\RichEditBox_Document_API.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichEditBoxControl\RichEditBox_Selection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichEditBoxControl\RichEditBox_UndoRedo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichEditBoxControl\RichEditBox_Properties.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichEditBoxControl\RichEditBox_Events.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_ImplicitParentTextBlockStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -7217,6 +7245,27 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_TextHighlighters.xaml.cs">
       <DependentUpon>RichTextBlock_TextHighlighters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichEditBoxControl\RichEditBox_BasicUsage.xaml.cs">
+      <DependentUpon>RichEditBox_BasicUsage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichEditBoxControl\RichEditBox_TextFormatting.xaml.cs">
+      <DependentUpon>RichEditBox_TextFormatting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichEditBoxControl\RichEditBox_Document_API.xaml.cs">
+      <DependentUpon>RichEditBox_Document_API.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichEditBoxControl\RichEditBox_Selection.xaml.cs">
+      <DependentUpon>RichEditBox_Selection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichEditBoxControl\RichEditBox_UndoRedo.xaml.cs">
+      <DependentUpon>RichEditBox_UndoRedo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichEditBoxControl\RichEditBox_Properties.xaml.cs">
+      <DependentUpon>RichEditBox_Properties.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichEditBoxControl\RichEditBox_Events.xaml.cs">
+      <DependentUpon>RichEditBox_Events.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_VerticalAlignment.xaml.cs">
       <DependentUpon>TextBox_VerticalAlignment.xaml</DependentUpon>
