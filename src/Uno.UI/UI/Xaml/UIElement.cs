@@ -837,6 +837,17 @@ namespace Microsoft.UI.Xaml
 
 		private protected virtual void OnContextFlyoutChanged(FlyoutBase oldValue, FlyoutBase newValue)
 		{
+#if HAS_UNO // TODO: Uno specific - WinUI handles this in EnterEffectiveValue/LeaveEffectiveValue
+			// because ContextFlyout is marked IsVisualTreeProperty. Remove this block when Uno's DP
+			// system implements EnterEffectiveValue/LeaveEffectiveValue for IsVisualTreeProperty properties.
+			if (IsActiveInVisualTree)
+			{
+				var visualTree = this.GetVisualTree();
+				oldValue?.Leave(null, new LeaveParams { IsForKeyboardAccelerator = true, VisualTree = visualTree });
+				newValue?.Enter(null, new EnterParams { IsForKeyboardAccelerator = true, VisualTree = visualTree });
+			}
+#endif
+
 			if (newValue != null)
 			{
 				// Enable gesture recognition for context menu (RightTap for mouse/pen, Hold for touch).
