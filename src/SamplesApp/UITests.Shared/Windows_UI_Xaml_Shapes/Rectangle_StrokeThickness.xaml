@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Shapes.Rectangle_StrokeThickness"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Shapes.Rectangle_StrokeThickness"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,75 +8,88 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel Spacing="10">
-		<TextBlock FontSize="22">Those 7 rectangles should be identical (last is a Border):</TextBlock>
-		<Grid>
-			<StackPanel VerticalAlignment="Top"
-			    Orientation="Horizontal"
-			    Spacing="5">
-				<Grid>
-					<Rectangle Width="100"
-					    Height="100"
-					    Fill="Red" />
-					<Rectangle Width="50"
-					    Height="50"
-					    Fill="Yellow" />
-				</Grid>
-				<Grid>
-					<Rectangle Width="100"
-					    Height="100"
-					    Fill="Red"
-					    StrokeThickness="45" />
-					<Rectangle Width="50"
-					    Height="50"
-					    Fill="Yellow"
-					    StrokeThickness="15" />
-				</Grid>
-				<Grid>
-					<Rectangle Width="100"
-					    Height="100"
-					    Fill="Yellow" />
-					<Rectangle Width="100"
-					    Height="100"
-					    Stroke="Red"
-					    StrokeThickness="25" />
-				</Grid>
-				<Rectangle Width="100"
-				    Height="100"
-				    Fill="Yellow"
-				    Stroke="Red"
-				    StrokeThickness="25" />
-				<Rectangle Width="100"
-				    Fill="Yellow"
-				    Stroke="Red"
-				    StrokeThickness="25" />
-				<Border Width="100">
-					<Rectangle Fill="Yellow"
-					    Stroke="Red"
-					    StrokeThickness="25" />
-				</Border>
-				<Border Width="100"
-				    Height="100"
-				    Background="Yellow"
-				    BorderBrush="Red"
-				    BorderThickness="25" />
-			</StackPanel>
-			<Line VerticalAlignment="Top"
-			    Stroke="Black"
-			    StrokeDashArray="5 4"
-			    StrokeThickness="1"
-			    X1="0"
-			    X2="730"
-			    Y1="25"
-			    Y2="25" />
-			<Line VerticalAlignment="Top"
-			    Stroke="Black"
-			    StrokeDashArray="5 4"
-			    StrokeThickness="1"
-			    X1="0"
-			    X2="730"
-			    Y1="75"
-			    Y2="75" />
-		</Grid>
-	</StackPanel>
+    <StackPanel Spacing="10">
+        <TextBlock FontSize="22">Those 7 rectangles should be identical (last is a Border):</TextBlock>
+        <Grid>
+            <StackPanel
+                VerticalAlignment="Top"
+                Orientation="Horizontal"
+                Spacing="5">
+                <Grid>
+                    <Rectangle
+                        Width="100"
+                        Height="100"
+                        Fill="Red" />
+                    <Rectangle
+                        Width="50"
+                        Height="50"
+                        Fill="Yellow" />
+                </Grid>
+                <Grid>
+                    <Rectangle
+                        Width="100"
+                        Height="100"
+                        Fill="Red"
+                        StrokeThickness="45" />
+                    <Rectangle
+                        Width="50"
+                        Height="50"
+                        Fill="Yellow"
+                        StrokeThickness="15" />
+                </Grid>
+                <Grid>
+                    <Rectangle
+                        Width="100"
+                        Height="100"
+                        Fill="Yellow" />
+                    <Rectangle
+                        Width="100"
+                        Height="100"
+                        Stroke="Red"
+                        StrokeThickness="25" />
+                </Grid>
+                <Rectangle
+                    Width="100"
+                    Height="100"
+                    Fill="Yellow"
+                    Stroke="Red"
+                    StrokeThickness="25" />
+                <Rectangle
+                    Width="100"
+                    Fill="Yellow"
+                    Stroke="Red"
+                    StrokeThickness="25" />
+                <Border Width="100">
+                    <Rectangle
+                        Fill="Yellow"
+                        Stroke="Red"
+                        StrokeThickness="25" />
+                </Border>
+                <Border
+                    Width="100"
+                    Height="100"
+                    Background="Yellow"
+                    BorderBrush="Red"
+                    BorderThickness="25" />
+            </StackPanel>
+            <Line
+                VerticalAlignment="Top"
+                Stroke="Black"
+                StrokeDashArray="5 4"
+                StrokeThickness="1"
+                X1="0"
+                X2="730"
+                Y1="25"
+                Y2="25" />
+            <Line
+                VerticalAlignment="Top"
+                Stroke="Black"
+                StrokeDashArray="5 4"
+                StrokeThickness="1"
+                X1="0"
+                X2="730"
+                Y1="75"
+                Y2="75" />
+        </Grid>
+    </StackPanel>
 </Page>

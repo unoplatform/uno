@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.Repeater.ItemsRepeater_Basics"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.Repeater.ItemsRepeater_Basics"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,11 +8,12 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid>
-		<ScrollViewer x:Name="TheSV" />
-		<Button HorizontalAlignment="Center"
-		    VerticalAlignment="Center"
-		    Click="SetSource"
-		    Content="Set source" />
-	</Grid>
+    <Grid>
+        <ScrollViewer x:Name="TheSV" />
+        <Button
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Click="SetSource"
+            Content="Set source" />
+    </Grid>
 </Page>

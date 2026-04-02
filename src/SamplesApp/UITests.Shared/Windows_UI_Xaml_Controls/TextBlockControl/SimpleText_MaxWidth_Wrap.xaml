@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Controls.SimpleText_MaxWidth_Wrap"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Controls.SimpleText_MaxWidth_Wrap"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -11,57 +12,65 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<StackPanel>
-		<TextBlock Name="MaxWidth_InnerTextBlock"
-		    MaxWidth="50"
-		    Text="This is my Text that should wrap"
-		    TextTrimming="WordEllipsis"
-		    TextWrapping="Wrap" />
+    <StackPanel>
+        <TextBlock
+            Name="MaxWidth_InnerTextBlock"
+            MaxWidth="50"
+            Text="This is my Text that should wrap"
+            TextTrimming="WordEllipsis"
+            TextWrapping="Wrap" />
 
-		<Grid>
-			<Border Background="Red">
-				<TextBlock MaxWidth="50"
-				    Text="This is my Text that should wrap"
-				    TextAlignment="Center"
-				    TextWrapping="Wrap" />
-			</Border>
-			<Border Width="50"
-			    BorderBrush="Blue"
-			    BorderThickness="1" />
-		</Grid>
-		<Grid>
-			<Border Background="Red">
-				<TextBlock MaxWidth="50"
-				    Text="This is my Text that should wrap"
-				    TextAlignment="Left"
-				    TextWrapping="Wrap" />
-			</Border>
-			<Border Width="50"
-			    BorderBrush="Blue"
-			    BorderThickness="1" />
-		</Grid>
-		<Grid>
-			<Border Background="Red">
-				<TextBlock MaxWidth="50"
-				    Text="This is my Text that should wrap"
-				    TextAlignment="Right"
-				    TextWrapping="Wrap" />
-			</Border>
-			<Border Width="50"
-			    BorderBrush="Blue"
-			    BorderThickness="1" />
-		</Grid>
-		<Grid Name="MaxWidth_InnerGrid">
-			<Border Name="MaxWidth_InnerBorder"
-			    Background="Red">
-				<TextBlock MaxWidth="50"
-				    Text="This is my Text that should wrap"
-				    TextWrapping="Wrap" />
-			</Border>
-			<Border Width="50"
-			    BorderBrush="Blue"
-			    BorderThickness="1" />
-		</Grid>
-	</StackPanel>
+        <Grid>
+            <Border Background="Red">
+                <TextBlock
+                    MaxWidth="50"
+                    Text="This is my Text that should wrap"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap" />
+            </Border>
+            <Border
+                Width="50"
+                BorderBrush="Blue"
+                BorderThickness="1" />
+        </Grid>
+        <Grid>
+            <Border Background="Red">
+                <TextBlock
+                    MaxWidth="50"
+                    Text="This is my Text that should wrap"
+                    TextAlignment="Left"
+                    TextWrapping="Wrap" />
+            </Border>
+            <Border
+                Width="50"
+                BorderBrush="Blue"
+                BorderThickness="1" />
+        </Grid>
+        <Grid>
+            <Border Background="Red">
+                <TextBlock
+                    MaxWidth="50"
+                    Text="This is my Text that should wrap"
+                    TextAlignment="Right"
+                    TextWrapping="Wrap" />
+            </Border>
+            <Border
+                Width="50"
+                BorderBrush="Blue"
+                BorderThickness="1" />
+        </Grid>
+        <Grid Name="MaxWidth_InnerGrid">
+            <Border Name="MaxWidth_InnerBorder" Background="Red">
+                <TextBlock
+                    MaxWidth="50"
+                    Text="This is my Text that should wrap"
+                    TextWrapping="Wrap" />
+            </Border>
+            <Border
+                Width="50"
+                BorderBrush="Blue"
+                BorderThickness="1" />
+        </Grid>
+    </StackPanel>
 
 </UserControl>

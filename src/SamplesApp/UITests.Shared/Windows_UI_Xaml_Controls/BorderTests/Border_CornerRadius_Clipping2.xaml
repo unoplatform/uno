@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.BorderTests.Border_CornerRadius_Clipping2"
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Controls.BorderTests.Border_CornerRadius_Clipping2"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,90 +9,102 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<TextBlock Text="non-zero border thickness" />
-		<Border Width="100"
-		    Height="100"
-		    Background="Blue"
-		    BorderBrush="Red"
-		    BorderThickness="5">
-			<Border Width="120"
-			    Height="120"
-			    Background="Orange">
-				<Border.RenderTransform>
-					<TranslateTransform X="30" />
-				</Border.RenderTransform>
-			</Border>
-		</Border>
-		<Border Width="100"
-		    Height="100"
-		    Background="Blue"
-		    BorderBrush="Red"
-		    BorderThickness="5"
-		    CornerRadius="1">
-			<Border Width="120"
-			    Height="120"
-			    Background="Orange">
-				<Border.RenderTransform>
-					<TranslateTransform X="30" />
-				</Border.RenderTransform>
-			</Border>
-		</Border>
-		<TextBlock Text="zero border thickness" />
-		<Border Width="100"
-		    Height="100"
-		    Background="Blue"
-		    BorderBrush="Red"
-		    BorderThickness="0">
-			<Border Width="120"
-			    Height="120"
-			    Background="Orange">
-				<Border.RenderTransform>
-					<TranslateTransform X="30" />
-				</Border.RenderTransform>
-			</Border>
-		</Border>
-		<Border Width="100"
-		    Height="100"
-		    Background="Blue"
-		    BorderBrush="Red"
-		    BorderThickness="0"
-		    CornerRadius="1">
-			<Border Width="120"
-			    Height="120"
-			    Background="Orange">
-				<Border.RenderTransform>
-					<TranslateTransform X="30" />
-				</Border.RenderTransform>
-			</Border>
-		</Border>
-		<TextBlock Text="null border brush" />
-		<Border Width="100"
-		    Height="100"
-		    Background="Blue"
-		    BorderBrush="{x:Null}"
-		    BorderThickness="0">
-			<Border Width="120"
-			    Height="120"
-			    Background="Orange">
-				<Border.RenderTransform>
-					<TranslateTransform X="30" />
-				</Border.RenderTransform>
-			</Border>
-		</Border>
-		<Border Width="100"
-		    Height="100"
-		    Background="Blue"
-		    BorderBrush="{x:Null}"
-		    BorderThickness="0"
-		    CornerRadius="1">
-			<Border Width="120"
-			    Height="120"
-			    Background="Orange">
-				<Border.RenderTransform>
-					<TranslateTransform X="30" />
-				</Border.RenderTransform>
-			</Border>
-		</Border>
-	</StackPanel>
+    <StackPanel>
+        <TextBlock Text="non-zero border thickness" />
+        <Border
+            Width="100"
+            Height="100"
+            Background="Blue"
+            BorderBrush="Red"
+            BorderThickness="5">
+            <Border
+                Width="120"
+                Height="120"
+                Background="Orange">
+                <Border.RenderTransform>
+                    <TranslateTransform X="30" />
+                </Border.RenderTransform>
+            </Border>
+        </Border>
+        <Border
+            Width="100"
+            Height="100"
+            Background="Blue"
+            BorderBrush="Red"
+            BorderThickness="5"
+            CornerRadius="1">
+            <Border
+                Width="120"
+                Height="120"
+                Background="Orange">
+                <Border.RenderTransform>
+                    <TranslateTransform X="30" />
+                </Border.RenderTransform>
+            </Border>
+        </Border>
+        <TextBlock Text="zero border thickness" />
+        <Border
+            Width="100"
+            Height="100"
+            Background="Blue"
+            BorderBrush="Red"
+            BorderThickness="0">
+            <Border
+                Width="120"
+                Height="120"
+                Background="Orange">
+                <Border.RenderTransform>
+                    <TranslateTransform X="30" />
+                </Border.RenderTransform>
+            </Border>
+        </Border>
+        <Border
+            Width="100"
+            Height="100"
+            Background="Blue"
+            BorderBrush="Red"
+            BorderThickness="0"
+            CornerRadius="1">
+            <Border
+                Width="120"
+                Height="120"
+                Background="Orange">
+                <Border.RenderTransform>
+                    <TranslateTransform X="30" />
+                </Border.RenderTransform>
+            </Border>
+        </Border>
+        <TextBlock Text="null border brush" />
+        <Border
+            Width="100"
+            Height="100"
+            Background="Blue"
+            BorderBrush="{x:Null}"
+            BorderThickness="0">
+            <Border
+                Width="120"
+                Height="120"
+                Background="Orange">
+                <Border.RenderTransform>
+                    <TranslateTransform X="30" />
+                </Border.RenderTransform>
+            </Border>
+        </Border>
+        <Border
+            Width="100"
+            Height="100"
+            Background="Blue"
+            BorderBrush="{x:Null}"
+            BorderThickness="0"
+            CornerRadius="1">
+            <Border
+                Width="120"
+                Height="120"
+                Background="Orange">
+                <Border.RenderTransform>
+                    <TranslateTransform X="30" />
+                </Border.RenderTransform>
+            </Border>
+        </Border>
+    </StackPanel>
 </UserControl>

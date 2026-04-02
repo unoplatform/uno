@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewHeaderFooter_ImplicitlyBinded"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewHeaderFooter_ImplicitlyBinded"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive.com/android"
@@ -13,39 +14,33 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<controls:SampleControl SampleDescription="ListView where the Header and Footer are implicitly binded to the ListView DataContext">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ListView ItemsSource="{Binding [SampleItems]}">
-					<ListView.HeaderTemplate>
-						<DataTemplate>
-							<Border Height="60"
-							    Background="Green">
-								<TextBlock Foreground="Red"
-								    Text="{Binding [Header]}" />
-							</Border>
-						</DataTemplate>
-					</ListView.HeaderTemplate>
-					<ListView.ItemTemplate>
-						<DataTemplate>
-							<Border Height="20"
-							    Background="Orange">
-								<TextBlock Foreground="Blue"
-								    Text="{Binding}" />
-							</Border>
-						</DataTemplate>
-					</ListView.ItemTemplate>
-					<ListView.FooterTemplate>
-						<DataTemplate>
-							<Border Height="150"
-							    Background="DeepSkyBlue">
-								<TextBlock Foreground="Orchid"
-								    Text="{Binding [Footer]}" />
-							</Border>
-						</DataTemplate>
-					</ListView.FooterTemplate>
-				</ListView>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="ListView where the Header and Footer are implicitly binded to the ListView DataContext">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <ListView ItemsSource="{Binding [SampleItems]}">
+                    <ListView.HeaderTemplate>
+                        <DataTemplate>
+                            <Border Height="60" Background="Green">
+                                <TextBlock Foreground="Red" Text="{Binding [Header]}" />
+                            </Border>
+                        </DataTemplate>
+                    </ListView.HeaderTemplate>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Height="20" Background="Orange">
+                                <TextBlock Foreground="Blue" Text="{Binding}" />
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.FooterTemplate>
+                        <DataTemplate>
+                            <Border Height="150" Background="DeepSkyBlue">
+                                <TextBlock Foreground="Orchid" Text="{Binding [Footer]}" />
+                            </Border>
+                        </DataTemplate>
+                    </ListView.FooterTemplate>
+                </ListView>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

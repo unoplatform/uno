@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_PlaceholderText"
+﻿<UserControl
+    x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_PlaceholderText"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -10,29 +11,33 @@
     d:DesignWidth="400"
     mc:Ignorable="d not_win">
 
-	<StackPanel>
-		<ComboBox x:Name="TestBox"
-		    ItemsSource="{Binding [SampleItems]}"
-		    PlaceholderText="PlaceholderText" />
-		<ComboBox x:Name="TestBox2"
-		    ItemsSource="{Binding [SampleItems]}"
-		    PlaceholderText="PlaceholderText + ItemTemplate">
-			<ComboBox.ItemTemplate>
-				<DataTemplate>
-					<StackPanel Orientation="Horizontal">
-						<Rectangle Width="12"
-						    Height="12"
-						    Fill="Pink" />
-						<TextBlock Text="Item:" />
-						<TextBlock Text="{Binding}" />
-					</StackPanel>
-				</DataTemplate>
-			</ComboBox.ItemTemplate>
-		</ComboBox>
+    <StackPanel>
+        <ComboBox
+            x:Name="TestBox"
+            ItemsSource="{Binding [SampleItems]}"
+            PlaceholderText="PlaceholderText" />
+        <ComboBox
+            x:Name="TestBox2"
+            ItemsSource="{Binding [SampleItems]}"
+            PlaceholderText="PlaceholderText + ItemTemplate">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle
+                            Width="12"
+                            Height="12"
+                            Fill="Pink" />
+                        <TextBlock Text="Item:" />
+                        <TextBlock Text="{Binding}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
 
-		<Button x:Name="ResetButton"
-		    Click="ResetSelection"
-		    Content="Reset Selection" />
-	</StackPanel>
+        <Button
+            x:Name="ResetButton"
+            Click="ResetSelection"
+            Content="Reset Selection" />
+    </StackPanel>
 
 </UserControl>

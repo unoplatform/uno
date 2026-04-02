@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_Fast_Scrolling"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_Fast_Scrolling"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,22 +8,23 @@
     d:DesignHeight="400"
     d:DesignWidth="400"
     mc:Ignorable="d">
-	<Grid Width="{Binding ElementName=ListWidthSlider, Path=Value}">
-		<ListView HorizontalAlignment="Left"
-		    VerticalAlignment="Stretch"
-		    ItemsSource="{Binding VariableLengthItemsLong}">
-			<ListView.ItemsPanel>
-				<ItemsPanelTemplate>
-					<ItemsStackPanel CacheLength="0" />
-				</ItemsPanelTemplate>
-			</ListView.ItemsPanel>
-			<ListView.ItemTemplate>
-				<DataTemplate>
-					<StackPanel>
-						<TextBlock Text="{Binding}" />
-					</StackPanel>
-				</DataTemplate>
-			</ListView.ItemTemplate>
-		</ListView>
-	</Grid>
+    <Grid Width="{Binding ElementName=ListWidthSlider, Path=Value}">
+        <ListView
+            HorizontalAlignment="Left"
+            VerticalAlignment="Stretch"
+            ItemsSource="{Binding VariableLengthItemsLong}">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsStackPanel CacheLength="0" />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
 </UserControl>

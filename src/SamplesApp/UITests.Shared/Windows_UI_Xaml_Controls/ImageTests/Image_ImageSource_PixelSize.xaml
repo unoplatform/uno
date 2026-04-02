@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_ImageSource_PixelSize"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_ImageSource_PixelSize"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,22 +9,25 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<Grid>
-		<StackPanel>
-			<Button x:Uid="image01Button"
-			    Click="OnImage01"
-			    Content="Image 1" />
-			<Image x:Name="resultImage"
-			    Height="100" />
-			<TextBlock x:Name="bitmapWidth"
-			    x:Uid="bitmapWidth"
-			    Text="{Binding Source.PixelWidth, ElementName=resultImage}" />
-			<TextBlock x:Name="bitmapHeight"
-			    x:Uid="bitmapHeight"
-			    Text="{Binding Source.PixelHeight, ElementName=resultImage}" />
-			<TextBlock x:Name="loadState"
-			    x:Uid="loadState"
-			    Text="none" />
-		</StackPanel>
-	</Grid>
+    <Grid>
+        <StackPanel>
+            <Button
+                x:Uid="image01Button"
+                Click="OnImage01"
+                Content="Image 1" />
+            <Image x:Name="resultImage" Height="100" />
+            <TextBlock
+                x:Name="bitmapWidth"
+                x:Uid="bitmapWidth"
+                Text="{Binding Source.PixelWidth, ElementName=resultImage}" />
+            <TextBlock
+                x:Name="bitmapHeight"
+                x:Uid="bitmapHeight"
+                Text="{Binding Source.PixelHeight, ElementName=resultImage}" />
+            <TextBlock
+                x:Name="loadState"
+                x:Uid="loadState"
+                Text="none" />
+        </StackPanel>
+    </Grid>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_ApplicationModel.Calls.PhoneCallManagerTests"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_ApplicationModel.Calls.PhoneCallManagerTests"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,20 +9,24 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<CheckBox x:Name="IsCallActiveCheckBox"
-		    Content="IsCallActive"
-		    IsHitTestVisible="False" />
-		<CheckBox x:Name="IsCallIncomingCheckBox"
-		    Content="IsCallIncoming"
-		    IsHitTestVisible="False" />
-		<Button Click="ShowPhoneSettings_Click">Show Phone settings</Button>
-		<TextBox x:Name="PhoneNumberTextBox"
-		    Margin="0,20,0,0"
-		    PlaceholderText="Enter a number..." />
-		<Button Click="Dial_Click">Dial</Button>
-		<TextBlock x:Name="ErrorMessage"
-		    Margin="0,20,0,0"
-		    Foreground="Red" />
-	</StackPanel>
+    <StackPanel>
+        <CheckBox
+            x:Name="IsCallActiveCheckBox"
+            Content="IsCallActive"
+            IsHitTestVisible="False" />
+        <CheckBox
+            x:Name="IsCallIncomingCheckBox"
+            Content="IsCallIncoming"
+            IsHitTestVisible="False" />
+        <Button Click="ShowPhoneSettings_Click">Show Phone settings</Button>
+        <TextBox
+            x:Name="PhoneNumberTextBox"
+            Margin="0,20,0,0"
+            PlaceholderText="Enter a number..." />
+        <Button Click="Dial_Click">Dial</Button>
+        <TextBlock
+            x:Name="ErrorMessage"
+            Margin="0,20,0,0"
+            Foreground="Red" />
+    </StackPanel>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<Page x:Class="Uno.UI.Samples.Content.UITests.FontIconTests.FontIconControlTest"
+﻿<Page
+    x:Class="Uno.UI.Samples.Content.UITests.FontIconTests.FontIconControlTest"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -6,100 +7,95 @@
     xmlns:local="using:Uno.UI.Samples.Content.UITests.FontIconTests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-	<controls:SampleControl SampleDescription="FontIcon_Tests">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ScrollViewer>
-					<StackPanel>
-						<Grid Height="40"
-						    BorderBrush="Red"
-						    BorderThickness="1">
+    <controls:SampleControl SampleDescription="FontIcon_Tests">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <ScrollViewer>
+                    <StackPanel>
+                        <Grid
+                            Height="40"
+                            BorderBrush="Red"
+                            BorderThickness="1">
 
-							<FontIcon Glyph="" />
-						</Grid>
+                            <FontIcon Glyph="" />
+                        </Grid>
 
-						<!--  Glyph  -->
-						<TextBlock Text="Glyph Star" />
-						<FontIcon Glyph="&#xE082;" />
+                        <!--  Glyph  -->
+                        <TextBlock Text="Glyph Star" />
+                        <FontIcon Glyph="&#xE082;" />
 
-						<TextBlock Text="Button with Symbols" />
-						<Button HorizontalAlignment="Center"
-						    Content="&#xE082;"
-						    FontFamily="Symbols" />
+                        <TextBlock Text="Button with Symbols" />
+                        <Button
+                            HorizontalAlignment="Center"
+                            Content="&#xE082;"
+                            FontFamily="Symbols" />
 
-						<TextBlock Text="Button with ms-appx: font-family" />
-						<Button HorizontalAlignment="Center"
-						    Content="&#xE082;"
-						    FontFamily="ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf#Symbols" />
+                        <TextBlock Text="Button with ms-appx: font-family" />
+                        <Button
+                            HorizontalAlignment="Center"
+                            Content="&#xE082;"
+                            FontFamily="ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf#Symbols" />
 
-						<TextBlock Text="Button IconFont with ms-appx: font-family" />
-						<Button HorizontalAlignment="Center">
-							<FontIcon FontFamily="ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf#Symbols"
-							    Glyph="&#xE082;" />
-						</Button>
+                        <TextBlock Text="Button IconFont with ms-appx: font-family" />
+                        <Button HorizontalAlignment="Center">
+                            <FontIcon FontFamily="ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf#Symbols" Glyph="&#xE082;" />
+                        </Button>
 
-						<TextBlock Text="Glyph World" />
-						<FontIcon Glyph="&#xE909;" />
-						<TextBlock Text="Glyph Settings" />
-						<FontIcon Glyph="&#xE713;" />
-						<TextBlock Text="Glyph Mail" />
-						<FontIcon Glyph="&#xE715;" />
-						<TextBlock Text="Glyph Alphabet" />
-						<FontIcon Glyph="ABCDEFGHIJKLMNOPQRSTUVWXYZ" />
-						<TextBlock Text="Glyph Numbers" />
-						<FontIcon Glyph="0123456789" />
+                        <TextBlock Text="Glyph World" />
+                        <FontIcon Glyph="&#xE909;" />
+                        <TextBlock Text="Glyph Settings" />
+                        <FontIcon Glyph="&#xE713;" />
+                        <TextBlock Text="Glyph Mail" />
+                        <FontIcon Glyph="&#xE715;" />
+                        <TextBlock Text="Glyph Alphabet" />
+                        <FontIcon Glyph="ABCDEFGHIJKLMNOPQRSTUVWXYZ" />
+                        <TextBlock Text="Glyph Numbers" />
+                        <FontIcon Glyph="0123456789" />
 
-						<!--  FontFamily  -->
-						<TextBlock Text="FontFamily Symbol" />
-						<FontIcon FontFamily="Symbol"
-						    Glyph="ABCDEFGHIJKLMNOPQRSTUVWXYZ" />
-						<TextBlock Text="FontFamily Arial" />
-						<FontIcon FontFamily="Arial"
-						    Glyph="ABCDEFGHIJKLMNOPQRSTUVWXYZ" />
+                        <!--  FontFamily  -->
+                        <TextBlock Text="FontFamily Symbol" />
+                        <FontIcon FontFamily="Symbol" Glyph="ABCDEFGHIJKLMNOPQRSTUVWXYZ" />
+                        <TextBlock Text="FontFamily Arial" />
+                        <FontIcon FontFamily="Arial" Glyph="ABCDEFGHIJKLMNOPQRSTUVWXYZ" />
 
-						<!--  Foreground  -->
-						<TextBlock Text="Foreground Red" />
-						<FontIcon Foreground="Red"
-						    Glyph="&#xE715;" />
-						<TextBlock Text="Foreground Transparent" />
-						<FontIcon Foreground="Transparent"
-						    Glyph="&#xE715;" />
+                        <!--  Foreground  -->
+                        <TextBlock Text="Foreground Red" />
+                        <FontIcon Foreground="Red" Glyph="&#xE715;" />
+                        <TextBlock Text="Foreground Transparent" />
+                        <FontIcon Foreground="Transparent" Glyph="&#xE715;" />
 
-						<!--  FontSize  -->
-						<TextBlock Text="FontSize 10" />
-						<FontIcon FontSize="10"
-						    Glyph="&#xE715;" />
-						<TextBlock Text="FontSize 30" />
-						<FontIcon FontSize="30"
-						    Glyph="&#xE715;" />
+                        <!--  FontSize  -->
+                        <TextBlock Text="FontSize 10" />
+                        <FontIcon FontSize="10" Glyph="&#xE715;" />
+                        <TextBlock Text="FontSize 30" />
+                        <FontIcon FontSize="30" Glyph="&#xE715;" />
 
-						<!--  FontStyle  -->
-						<TextBlock Text="FontStyle Italic" />
-						<FontIcon FontStyle="Italic"
-						    Glyph="&#xE715;" />
-						<TextBlock Text="FontStyle Oblique" />
-						<FontIcon FontStyle="Oblique"
-						    Glyph="&#xE715;" />
+                        <!--  FontStyle  -->
+                        <TextBlock Text="FontStyle Italic" />
+                        <FontIcon FontStyle="Italic" Glyph="&#xE715;" />
+                        <TextBlock Text="FontStyle Oblique" />
+                        <FontIcon FontStyle="Oblique" Glyph="&#xE715;" />
 
-						<!--  Other  -->
-						<TextBlock Text="MSDN sample" />
-						<FontIcon FontFamily="Candara"
-						    Glyph="&#x03A3;" />
-						<TextBlock Text="ComboBox dropdown" />
-						<FontIcon x:Name="DropDownGlyph"
-						    FontFamily="{ThemeResource SymbolThemeFontFamily}"
-						    FontSize="12"
-						    Foreground="Black"
-						    Glyph="&#xE0E5;" />
-						<TextBlock Text="Checkbox checkmark" />
-						<FontIcon x:Name="CheckGlyph"
-						    FontFamily="{ThemeResource SymbolThemeFontFamily}"
-						    FontSize="20"
-						    Foreground="Black"
-						    Glyph="&#xE001;" />
-					</StackPanel>
-				</ScrollViewer>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+                        <!--  Other  -->
+                        <TextBlock Text="MSDN sample" />
+                        <FontIcon FontFamily="Candara" Glyph="&#x03A3;" />
+                        <TextBlock Text="ComboBox dropdown" />
+                        <FontIcon
+                            x:Name="DropDownGlyph"
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            FontSize="12"
+                            Foreground="Black"
+                            Glyph="&#xE0E5;" />
+                        <TextBlock Text="Checkbox checkmark" />
+                        <FontIcon
+                            x:Name="CheckGlyph"
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            FontSize="20"
+                            Foreground="Black"
+                            Glyph="&#xE001;" />
+                    </StackPanel>
+                </ScrollViewer>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </Page>

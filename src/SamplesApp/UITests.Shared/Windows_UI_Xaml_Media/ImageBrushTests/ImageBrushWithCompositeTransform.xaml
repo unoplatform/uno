@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.UITests.ImageBrushTestControl.ImageBrushWithCompositeTransform"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.UITests.ImageBrushTestControl.ImageBrushWithCompositeTransform"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive.com/android"
@@ -14,25 +15,24 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<controls:SampleControl SampleDescription="ImageBrush with CompositeTransform: 1.25 scale and -30 deg rotation">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<Border Width="150"
-				    Height="200">
-					<Border.Background>
-						<ImageBrush ImageSource="/Assets/test_image_200_200.png"
-						    Stretch="UniformToFill">
-							<ImageBrush.RelativeTransform>
-								<CompositeTransform CenterX=".5"
-								    CenterY=".5"
-								    Rotation="-30"
-								    ScaleX="1.25"
-								    ScaleY="1.25" />
-							</ImageBrush.RelativeTransform>
-						</ImageBrush>
-					</Border.Background>
-				</Border>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="ImageBrush with CompositeTransform: 1.25 scale and -30 deg rotation">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <Border Width="150" Height="200">
+                    <Border.Background>
+                        <ImageBrush ImageSource="/Assets/test_image_200_200.png" Stretch="UniformToFill">
+                            <ImageBrush.RelativeTransform>
+                                <CompositeTransform
+                                    CenterX=".5"
+                                    CenterY=".5"
+                                    Rotation="-30"
+                                    ScaleX="1.25"
+                                    ScaleY="1.25" />
+                            </ImageBrush.RelativeTransform>
+                        </ImageBrush>
+                    </Border.Background>
+                </Border>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

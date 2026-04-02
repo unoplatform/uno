@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.Animations.VisualTransition_Execution_Order"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.Animations.VisualTransition_Execution_Order"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -13,507 +14,539 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<UserControl.Resources>
-		<ResourceDictionary>
-			<Style x:Key="ButtonVisualTransitionStyle"
-			    TargetType="Button">
-				<Setter Property="Template">
-					<Setter.Value>
-						<ControlTemplate TargetType="Button">
-							<Grid BorderBrush="Black"
-							    BorderThickness="2">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style x:Key="ButtonVisualTransitionStyle" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid BorderBrush="Black" BorderThickness="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-								<Border x:Name="GreenView"
-								    Grid.Column="0"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Green" />
-								<Border x:Name="RedView"
-								    Grid.Column="1"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Red" />
-								<Border x:Name="BlueView"
-								    Grid.Column="2"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Blue"
-								    Opacity="0" />
+                                <Border
+                                    x:Name="GreenView"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Green" />
+                                <Border
+                                    x:Name="RedView"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Red" />
+                                <Border
+                                    x:Name="BlueView"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Blue"
+                                    Opacity="0" />
 
-								<VisualStateManager.VisualStateGroups>
-									<VisualStateGroup x:Name="CommonStates">
-										<VisualState x:Name="Normal" />
-										<VisualState x:Name="Pressed">
-											<Storyboard>
-												<DoubleAnimation Duration="0:0:1"
-												    To="0"
-												    Storyboard.TargetName="GreenView"
-												    Storyboard.TargetProperty="Opacity" />
-											</Storyboard>
-											<VisualState.Setters>
-												<Setter Target="BlueView.Opacity" Value="1" />
-											</VisualState.Setters>
-										</VisualState>
-										<VisualState x:Name="PointerOver" />
-										<VisualStateGroup.Transitions>
-											<VisualTransition To="Pressed">
-												<Storyboard>
-													<DoubleAnimation Duration="0:0:1"
-													    To="0"
-													    Storyboard.TargetName="RedView"
-													    Storyboard.TargetProperty="Opacity" />
-												</Storyboard>
-											</VisualTransition>
-										</VisualStateGroup.Transitions>
-									</VisualStateGroup>
-								</VisualStateManager.VisualStateGroups>
-							</Grid>
-						</ControlTemplate>
-					</Setter.Value>
-				</Setter>
-			</Style>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="Pressed">
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="GreenView"
+                                                    Storyboard.TargetProperty="Opacity"
+                                                    To="0"
+                                                    Duration="0:0:1" />
+                                            </Storyboard>
+                                            <VisualState.Setters>
+                                                <Setter Target="BlueView.Opacity" Value="1" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver" />
+                                        <VisualStateGroup.Transitions>
+                                            <VisualTransition To="Pressed">
+                                                <Storyboard>
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="RedView"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        To="0"
+                                                        Duration="0:0:1" />
+                                                </Storyboard>
+                                            </VisualTransition>
+                                        </VisualStateGroup.Transitions>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-			<Style x:Key="ButtonVisualTransitionStyle2"
-			    TargetType="Button">
-				<Setter Property="Template">
-					<Setter.Value>
-						<ControlTemplate TargetType="Button">
-							<Grid BorderBrush="Black"
-							    BorderThickness="2">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
+            <Style x:Key="ButtonVisualTransitionStyle2" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid BorderBrush="Black" BorderThickness="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-								<Border x:Name="GreenView"
-								    Grid.Column="0"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Green" />
-								<Border x:Name="RedView"
-								    Grid.Column="1"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Red" />
-								<Border x:Name="BlueView"
-								    Grid.Column="2"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Blue"
-								    Opacity="0" />
+                                <Border
+                                    x:Name="GreenView"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Green" />
+                                <Border
+                                    x:Name="RedView"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Red" />
+                                <Border
+                                    x:Name="BlueView"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Blue"
+                                    Opacity="0" />
 
-								<VisualStateManager.VisualStateGroups>
-									<VisualStateGroup x:Name="CommonStates">
-										<VisualState x:Name="Normal" />
-										<VisualState x:Name="Pressed">
-											<Storyboard>
-												<DoubleAnimation Duration="0:0:1"
-												    To=".7"
-												    Storyboard.TargetName="RedView"
-												    Storyboard.TargetProperty="Opacity" />
-											</Storyboard>
-											<VisualState.Setters>
-												<Setter Target="BlueView.Opacity" Value="1" />
-											</VisualState.Setters>
-										</VisualState>
-										<VisualState x:Name="PointerOver" />
-										<VisualStateGroup.Transitions>
-											<VisualTransition To="Pressed">
-												<Storyboard>
-													<DoubleAnimation Duration="0:0:1"
-													    To="0"
-													    Storyboard.TargetName="RedView"
-													    Storyboard.TargetProperty="Opacity" />
-												</Storyboard>
-											</VisualTransition>
-										</VisualStateGroup.Transitions>
-									</VisualStateGroup>
-								</VisualStateManager.VisualStateGroups>
-							</Grid>
-						</ControlTemplate>
-					</Setter.Value>
-				</Setter>
-			</Style>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="Pressed">
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="RedView"
+                                                    Storyboard.TargetProperty="Opacity"
+                                                    To=".7"
+                                                    Duration="0:0:1" />
+                                            </Storyboard>
+                                            <VisualState.Setters>
+                                                <Setter Target="BlueView.Opacity" Value="1" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver" />
+                                        <VisualStateGroup.Transitions>
+                                            <VisualTransition To="Pressed">
+                                                <Storyboard>
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="RedView"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        To="0"
+                                                        Duration="0:0:1" />
+                                                </Storyboard>
+                                            </VisualTransition>
+                                        </VisualStateGroup.Transitions>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-			<Style x:Key="ButtonVisualTransitionStyle3"
-			    TargetType="Button">
-				<Setter Property="Template">
-					<Setter.Value>
-						<ControlTemplate TargetType="Button">
-							<Grid BorderBrush="Black"
-							    BorderThickness="2">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
+            <Style x:Key="ButtonVisualTransitionStyle3" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid BorderBrush="Black" BorderThickness="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-								<Border x:Name="GreenView"
-								    Grid.Column="0"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Green" />
-								<Border x:Name="RedView"
-								    Grid.Column="1"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Red" />
-								<Border x:Name="BlueView"
-								    Grid.Column="2"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Blue"
-								    Opacity="0" />
+                                <Border
+                                    x:Name="GreenView"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Green" />
+                                <Border
+                                    x:Name="RedView"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Red" />
+                                <Border
+                                    x:Name="BlueView"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Blue"
+                                    Opacity="0" />
 
-								<VisualStateManager.VisualStateGroups>
-									<VisualStateGroup x:Name="CommonStates">
-										<VisualState x:Name="Normal" />
-										<VisualState x:Name="Pressed">
-											<VisualState.Setters>
-												<Setter Target="RedView.Opacity" Value=".1" />
-											</VisualState.Setters>
-										</VisualState>
-										<VisualState x:Name="PointerOver" />
-										<VisualStateGroup.Transitions>
-											<VisualTransition To="Pressed">
-												<Storyboard>
-													<DoubleAnimation Duration="0:0:1"
-													    To="0"
-													    Storyboard.TargetName="RedView"
-													    Storyboard.TargetProperty="Opacity" />
-												</Storyboard>
-											</VisualTransition>
-										</VisualStateGroup.Transitions>
-									</VisualStateGroup>
-								</VisualStateManager.VisualStateGroups>
-							</Grid>
-						</ControlTemplate>
-					</Setter.Value>
-				</Setter>
-			</Style>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="RedView.Opacity" Value=".1" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver" />
+                                        <VisualStateGroup.Transitions>
+                                            <VisualTransition To="Pressed">
+                                                <Storyboard>
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="RedView"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        To="0"
+                                                        Duration="0:0:1" />
+                                                </Storyboard>
+                                            </VisualTransition>
+                                        </VisualStateGroup.Transitions>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-			<Style x:Key="ButtonVisualTransitionStyle4"
-			    TargetType="Button">
-				<Setter Property="Template">
-					<Setter.Value>
-						<ControlTemplate TargetType="Button">
-							<Grid BorderBrush="Black"
-							    BorderThickness="2">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
+            <Style x:Key="ButtonVisualTransitionStyle4" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid BorderBrush="Black" BorderThickness="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-								<Border x:Name="GreenView"
-								    Grid.Column="0"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Green" />
-								<Border x:Name="RedView"
-								    Grid.Column="1"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Red" />
-								<Border x:Name="BlueView"
-								    Grid.Column="2"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Blue"
-								    Opacity="0" />
+                                <Border
+                                    x:Name="GreenView"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Green" />
+                                <Border
+                                    x:Name="RedView"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Red" />
+                                <Border
+                                    x:Name="BlueView"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Blue"
+                                    Opacity="0" />
 
-								<VisualStateManager.VisualStateGroups>
-									<VisualStateGroup x:Name="CommonStates">
-										<VisualState x:Name="Normal" />
-										<VisualState x:Name="Pressed">
-											<Storyboard>
-												<DoubleAnimation Duration="0:0:1"
-												    To="0"
-												    Storyboard.TargetName="GreenView"
-												    Storyboard.TargetProperty="Opacity" />
-											</Storyboard>
-											<VisualState.Setters>
-												<Setter Target="RedView.Opacity" Value="0" />
-												<Setter Target="BlueView.Opacity" Value="1" />
-											</VisualState.Setters>
-										</VisualState>
-										<VisualState x:Name="PointerOver" />
-										<VisualStateGroup.Transitions>
-											<VisualTransition GeneratedDuration="0:0:1"
-											    To="Pressed" />
-										</VisualStateGroup.Transitions>
-									</VisualStateGroup>
-								</VisualStateManager.VisualStateGroups>
-							</Grid>
-						</ControlTemplate>
-					</Setter.Value>
-				</Setter>
-			</Style>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="Pressed">
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="GreenView"
+                                                    Storyboard.TargetProperty="Opacity"
+                                                    To="0"
+                                                    Duration="0:0:1" />
+                                            </Storyboard>
+                                            <VisualState.Setters>
+                                                <Setter Target="RedView.Opacity" Value="0" />
+                                                <Setter Target="BlueView.Opacity" Value="1" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver" />
+                                        <VisualStateGroup.Transitions>
+                                            <VisualTransition GeneratedDuration="0:0:1" To="Pressed" />
+                                        </VisualStateGroup.Transitions>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-			<Style x:Key="ButtonVisualTransitionStyle5"
-			    TargetType="Button">
-				<Setter Property="Template">
-					<Setter.Value>
-						<ControlTemplate TargetType="Button">
-							<Grid BorderBrush="Black"
-							    BorderThickness="2">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
+            <Style x:Key="ButtonVisualTransitionStyle5" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid BorderBrush="Black" BorderThickness="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-								<Border x:Name="GreenView"
-								    Grid.Column="0"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Green" />
-								<Border x:Name="RedView"
-								    Grid.Column="1"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Red" />
-								<Border x:Name="BlueView"
-								    Grid.Column="2"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Blue"
-								    Opacity="0" />
+                                <Border
+                                    x:Name="GreenView"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Green" />
+                                <Border
+                                    x:Name="RedView"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Red" />
+                                <Border
+                                    x:Name="BlueView"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Blue"
+                                    Opacity="0" />
 
-								<VisualStateManager.VisualStateGroups>
-									<VisualStateGroup x:Name="CommonStates">
-										<VisualState x:Name="Normal" />
-										<VisualState x:Name="Pressed">
-											<VisualState.Setters>
-												<Setter Target="GreenView.Visibility" Value="Collapsed" />
-												<Setter Target="RedView.Visibility" Value="Collapsed" />
-											</VisualState.Setters>
-										</VisualState>
-										<VisualState x:Name="PointerOver" />
-										<VisualStateGroup.Transitions>
-											<VisualTransition To="Pressed">
-												<Storyboard>
-													<DoubleAnimation Duration="0:0:1"
-													    To=".3"
-													    Storyboard.TargetName="RedView"
-													    Storyboard.TargetProperty="Opacity" />
-												</Storyboard>
-											</VisualTransition>
-										</VisualStateGroup.Transitions>
-									</VisualStateGroup>
-								</VisualStateManager.VisualStateGroups>
-							</Grid>
-						</ControlTemplate>
-					</Setter.Value>
-				</Setter>
-			</Style>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="GreenView.Visibility" Value="Collapsed" />
+                                                <Setter Target="RedView.Visibility" Value="Collapsed" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver" />
+                                        <VisualStateGroup.Transitions>
+                                            <VisualTransition To="Pressed">
+                                                <Storyboard>
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="RedView"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        To=".3"
+                                                        Duration="0:0:1" />
+                                                </Storyboard>
+                                            </VisualTransition>
+                                        </VisualStateGroup.Transitions>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-			<Style x:Key="ButtonVisualTransitionStyle6"
-			    TargetType="Button">
-				<Setter Property="Template">
-					<Setter.Value>
-						<ControlTemplate TargetType="Button">
-							<Grid BorderBrush="Black"
-							    BorderThickness="2">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
+            <Style x:Key="ButtonVisualTransitionStyle6" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid BorderBrush="Black" BorderThickness="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-								<Border x:Name="GreenView"
-								    Grid.Column="0"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Green" />
-								<Border x:Name="RedView"
-								    Grid.Column="1"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Red" />
-								<Border x:Name="BlueView"
-								    Grid.Column="2"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Blue"
-								    Opacity="0" />
+                                <Border
+                                    x:Name="GreenView"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Green" />
+                                <Border
+                                    x:Name="RedView"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Red" />
+                                <Border
+                                    x:Name="BlueView"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Blue"
+                                    Opacity="0" />
 
-								<VisualStateManager.VisualStateGroups>
-									<VisualStateGroup x:Name="CommonStates">
-										<VisualState x:Name="Normal" />
-										<VisualState x:Name="Pressed">
-											<VisualState.Setters>
-												<Setter Target="RedView.Width" Value="30" />
-												<Setter Target="GreenView.Width" Value="30" />
-												<Setter Target="GreenView.Opacity" Value=".3" />
-											</VisualState.Setters>
-										</VisualState>
-										<VisualState x:Name="PointerOver" />
-										<VisualStateGroup.Transitions>
-											<VisualTransition To="Pressed">
-												<Storyboard>
-													<DoubleAnimation Duration="0:0:1"
-													    To=".3"
-													    Storyboard.TargetName="RedView"
-													    Storyboard.TargetProperty="Opacity" />
-												</Storyboard>
-											</VisualTransition>
-										</VisualStateGroup.Transitions>
-									</VisualStateGroup>
-								</VisualStateManager.VisualStateGroups>
-							</Grid>
-						</ControlTemplate>
-					</Setter.Value>
-				</Setter>
-			</Style>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Target="RedView.Width" Value="30" />
+                                                <Setter Target="GreenView.Width" Value="30" />
+                                                <Setter Target="GreenView.Opacity" Value=".3" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver" />
+                                        <VisualStateGroup.Transitions>
+                                            <VisualTransition To="Pressed">
+                                                <Storyboard>
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="RedView"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        To=".3"
+                                                        Duration="0:0:1" />
+                                                </Storyboard>
+                                            </VisualTransition>
+                                        </VisualStateGroup.Transitions>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-			<Style x:Key="ButtonVisualTransitionStyle7"
-			    TargetType="Button">
-				<Setter Property="Template">
-					<Setter.Value>
-						<ControlTemplate TargetType="Button">
-							<Grid BorderBrush="Black"
-							    BorderThickness="2">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
+            <Style x:Key="ButtonVisualTransitionStyle7" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid BorderBrush="Black" BorderThickness="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-								<Border x:Name="GreenView"
-								    Grid.Column="0"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Green"
-								    RenderTransformOrigin="0.5,0">
-									<Border.RenderTransform>
-										<ScaleTransform x:Name="GreenViewScale" ScaleX="1" ScaleY="1" />
-									</Border.RenderTransform>
-								</Border>
-								<Border x:Name="RedView"
-								    Grid.Column="1"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Red" />
-								<Border x:Name="BlueView"
-								    Grid.Column="2"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Stretch"
-								    Background="Blue"
-								    Opacity="0" />
+                                <Border
+                                    x:Name="GreenView"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Green"
+                                    RenderTransformOrigin="0.5,0">
+                                    <Border.RenderTransform>
+                                        <ScaleTransform x:Name="GreenViewScale" ScaleX="1" ScaleY="1" />
+                                    </Border.RenderTransform>
+                                </Border>
+                                <Border
+                                    x:Name="RedView"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Red" />
+                                <Border
+                                    x:Name="BlueView"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Blue"
+                                    Opacity="0" />
 
-								<VisualStateManager.VisualStateGroups>
-									<VisualStateGroup x:Name="CommonStates">
-										<VisualState x:Name="Normal" />
-										<VisualState x:Name="Pressed">
-											<Storyboard>
-												<DoubleAnimation Duration="0:0:1"
-												    To="0.4"
-												    Storyboard.TargetName="GreenViewScale"
-												    Storyboard.TargetProperty="ScaleX" />
-												<DoubleAnimation Duration="0:0:1"
-												    EnableDependentAnimation="True"
-												    From="50"
-												    To="20"
-												    Storyboard.TargetName="RedView"
-												    Storyboard.TargetProperty="Width" />
-											</Storyboard>
-										</VisualState>
-										<VisualState x:Name="PointerOver" />
-										<VisualStateGroup.Transitions>
-											<VisualTransition To="Pressed">
-												<Storyboard>
-													<DoubleAnimation Duration="0:0:1"
-													    To=".3"
-													    Storyboard.TargetName="GreenView"
-													    Storyboard.TargetProperty="Opacity" />
-													<DoubleAnimation Duration="0:0:1"
-													    To=".3"
-													    Storyboard.TargetName="RedView"
-													    Storyboard.TargetProperty="Opacity" />
-												</Storyboard>
-											</VisualTransition>
-										</VisualStateGroup.Transitions>
-									</VisualStateGroup>
-								</VisualStateManager.VisualStateGroups>
-							</Grid>
-						</ControlTemplate>
-					</Setter.Value>
-				</Setter>
-			</Style>
-		</ResourceDictionary>
-	</UserControl.Resources>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="Pressed">
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="GreenViewScale"
+                                                    Storyboard.TargetProperty="ScaleX"
+                                                    To="0.4"
+                                                    Duration="0:0:1" />
+                                                <DoubleAnimation
+                                                    EnableDependentAnimation="True"
+                                                    Storyboard.TargetName="RedView"
+                                                    Storyboard.TargetProperty="Width"
+                                                    From="50"
+                                                    To="20"
+                                                    Duration="0:0:1" />
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver" />
+                                        <VisualStateGroup.Transitions>
+                                            <VisualTransition To="Pressed">
+                                                <Storyboard>
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="GreenView"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        To=".3"
+                                                        Duration="0:0:1" />
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="RedView"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        To=".3"
+                                                        Duration="0:0:1" />
+                                                </Storyboard>
+                                            </VisualTransition>
+                                        </VisualStateGroup.Transitions>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
-	<ScrollViewer>
-		<StackPanel Padding="10,20,10,20">
-			<TextBlock Margin="5,5,5,1"
-			    FontSize="9"
-			    Text="1. Green: Opacity animation in Pressed state. Red: Opacity animation in transition. Blue: Opacity Setter in Pressed state. All execute simultaneously, Blue Setter is converted into animation."
-			    TextWrapping="Wrap" />
-			<Button Width="150"
-			    Height="50"
-			    Margin="7,0,7,7"
-			    Style="{StaticResource ButtonVisualTransitionStyle}" />
+    <ScrollViewer>
+        <StackPanel Padding="10,20,10,20">
+            <TextBlock
+                Margin="5,5,5,1"
+                FontSize="9"
+                Text="1. Green: Opacity animation in Pressed state. Red: Opacity animation in transition. Blue: Opacity Setter in Pressed state. All execute simultaneously, Blue Setter is converted into animation."
+                TextWrapping="Wrap" />
+            <Button
+                Width="150"
+                Height="50"
+                Margin="7,0,7,7"
+                Style="{StaticResource ButtonVisualTransitionStyle}" />
 
-			<TextBlock Margin="5,5,5,1"
-			    FontSize="9"
-			    Text="2. Red: Animation -&gt; Opacity=0 in Transition, Animation -&gt; Opacity=0.7 in Pressed state. Blue: Opacity Setter in Pressed State. Animations on red border are executed serially (transition, then state)."
-			    TextWrapping="Wrap" />
-			<Button Width="150"
-			    Height="50"
-			    Margin="7,0,7,7"
-			    Style="{StaticResource ButtonVisualTransitionStyle2}" />
+            <TextBlock
+                Margin="5,5,5,1"
+                FontSize="9"
+                Text="2. Red: Animation -&gt; Opacity=0 in Transition, Animation -&gt; Opacity=0.7 in Pressed state. Blue: Opacity Setter in Pressed State. Animations on red border are executed serially (transition, then state)."
+                TextWrapping="Wrap" />
+            <Button
+                Width="150"
+                Height="50"
+                Margin="7,0,7,7"
+                Style="{StaticResource ButtonVisualTransitionStyle2}" />
 
-			<TextBlock Margin="5,5,5,1"
-			    FontSize="9"
-			    Text="3. Red: Animation -&gt; Opacity=0 in Transition, Setter Opacity=0.1 in Pressed state. Blue: Opacity Setter in Pressed State. Transition animation on red border opacity executes, then opacity setter is applied (instantly)."
-			    TextWrapping="Wrap" />
-			<Button Width="150"
-			    Height="50"
-			    Margin="7,0,7,7"
-			    Style="{StaticResource ButtonVisualTransitionStyle3}" />
+            <TextBlock
+                Margin="5,5,5,1"
+                FontSize="9"
+                Text="3. Red: Animation -&gt; Opacity=0 in Transition, Setter Opacity=0.1 in Pressed state. Blue: Opacity Setter in Pressed State. Transition animation on red border opacity executes, then opacity setter is applied (instantly)."
+                TextWrapping="Wrap" />
+            <Button
+                Width="150"
+                Height="50"
+                Margin="7,0,7,7"
+                Style="{StaticResource ButtonVisualTransitionStyle3}" />
 
-			<TextBlock Margin="5,5,5,1"
-			    FontSize="9"
-			    Text="4. Green: Opacity animation in Pressed state. Red: Setter Opacity=0 in Pressed state. Blue: Setter Opacity=1 in Pressed state. Transition: GeneratedDuration = 0:0:1. All executed simultaneously; Setters are converted into animations."
-			    TextWrapping="Wrap" />
-			<Button Width="150"
-			    Height="50"
-			    Margin="7,0,7,7"
-			    Style="{StaticResource ButtonVisualTransitionStyle4}" />
+            <TextBlock
+                Margin="5,5,5,1"
+                FontSize="9"
+                Text="4. Green: Opacity animation in Pressed state. Red: Setter Opacity=0 in Pressed state. Blue: Setter Opacity=1 in Pressed state. Transition: GeneratedDuration = 0:0:1. All executed simultaneously; Setters are converted into animations."
+                TextWrapping="Wrap" />
+            <Button
+                Width="150"
+                Height="50"
+                Margin="7,0,7,7"
+                Style="{StaticResource ButtonVisualTransitionStyle4}" />
 
-			<TextBlock Margin="5,5,5,1"
-			    FontSize="9"
-			    Text="5. Green: Setter Visibility=Collapsed in Pressed state. Red: Animation -&gt; Opacity=0.3 in Transition, Setter Visibility=Collapsed in Pressed state. Both Setters are applied after Transition animation has completed."
-			    TextWrapping="Wrap" />
-			<Button Width="150"
-			    Height="50"
-			    Margin="7,0,7,7"
-			    Style="{StaticResource ButtonVisualTransitionStyle5}" />
+            <TextBlock
+                Margin="5,5,5,1"
+                FontSize="9"
+                Text="5. Green: Setter Visibility=Collapsed in Pressed state. Red: Animation -&gt; Opacity=0.3 in Transition, Setter Visibility=Collapsed in Pressed state. Both Setters are applied after Transition animation has completed."
+                TextWrapping="Wrap" />
+            <Button
+                Width="150"
+                Height="50"
+                Margin="7,0,7,7"
+                Style="{StaticResource ButtonVisualTransitionStyle5}" />
 
-			<TextBlock Margin="5,5,5,1"
-			    FontSize="9"
-			    Text="6. Green: Setter Opacity=0.3 in Pressed state. Setter Width=30 in Pressed state. Red: Animation -&gt; Opacity=0.3 in Transition. Setter Width=30 in Pressed state. The Red and Green opacity changes are animated simultaneously, then the Width setters are applied instantly."
-			    TextWrapping="Wrap" />
-			<Button Width="150"
-			    Height="50"
-			    Margin="7,0,7,7"
-			    Style="{StaticResource ButtonVisualTransitionStyle6}" />
+            <TextBlock
+                Margin="5,5,5,1"
+                FontSize="9"
+                Text="6. Green: Setter Opacity=0.3 in Pressed state. Setter Width=30 in Pressed state. Red: Animation -&gt; Opacity=0.3 in Transition. Setter Width=30 in Pressed state. The Red and Green opacity changes are animated simultaneously, then the Width setters are applied instantly."
+                TextWrapping="Wrap" />
+            <Button
+                Width="150"
+                Height="50"
+                Margin="7,0,7,7"
+                Style="{StaticResource ButtonVisualTransitionStyle6}" />
 
-			<TextBlock Margin="5,5,5,1"
-			    FontSize="9"
-			    Text="7. Green: Animation Opacity-&gt;0.3 in Transition, Animation -&gt; ScaleTransform.ScaleX -&gt; 0.4 in Pressed state. Red: Animation Opacity-&gt;0.3 in Transition, Animation -&gt; Width 50-&gt;20 in Pressed state. For green border, both animations are simultaneous. For red border, opacity animation executes (simultaneously with green animations), then Width animation executes."
-			    TextWrapping="Wrap" />
-			<Button Width="150"
-			    Height="50"
-			    Margin="7,0,7,7"
-			    Style="{StaticResource ButtonVisualTransitionStyle7}" />
-		</StackPanel>
-	</ScrollViewer>
+            <TextBlock
+                Margin="5,5,5,1"
+                FontSize="9"
+                Text="7. Green: Animation Opacity-&gt;0.3 in Transition, Animation -&gt; ScaleTransform.ScaleX -&gt; 0.4 in Pressed state. Red: Animation Opacity-&gt;0.3 in Transition, Animation -&gt; Width 50-&gt;20 in Pressed state. For green border, both animations are simultaneous. For red border, opacity animation executes (simultaneously with green animations), then Width animation executes."
+                TextWrapping="Wrap" />
+            <Button
+                Width="150"
+                Height="50"
+                Margin="7,0,7,7"
+                Style="{StaticResource ButtonVisualTransitionStyle7}" />
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

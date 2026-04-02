@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.Animations.VisualState_AdaptiveTrigger_UsingOneStateOnly"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.Animations.VisualState_AdaptiveTrigger_UsingOneStateOnly"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -8,29 +9,25 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<StackPanel x:Name="myPanel"
-		    Orientation="Vertical">
-			<TextBlock Style="{ThemeResource BodyTextBlockStyle}"
-			    Text="This is a block of text. It is text block 1. " />
-			<TextBlock Style="{ThemeResource BodyTextBlockStyle}"
-			    Text="This is a block of text. It is text block 2. " />
-			<TextBlock Style="{ThemeResource BodyTextBlockStyle}"
-			    Text="This is a block of text. It is text block 3. " />
-		</StackPanel>
-		<VisualStateManager.VisualStateGroups>
-			<VisualStateGroup>
-				<VisualState>
-					<VisualState.StateTriggers>
-						<!--  VisualState to be triggered when window width is >=720 effective pixels.  -->
-						<AdaptiveTrigger MinWindowWidth="720" />
-					</VisualState.StateTriggers>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel x:Name="myPanel" Orientation="Vertical">
+            <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="This is a block of text. It is text block 1. " />
+            <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="This is a block of text. It is text block 2. " />
+            <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="This is a block of text. It is text block 3. " />
+        </StackPanel>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <!--  VisualState to be triggered when window width is >=720 effective pixels.  -->
+                        <AdaptiveTrigger MinWindowWidth="720" />
+                    </VisualState.StateTriggers>
 
-					<VisualState.Setters>
-						<Setter Target="myPanel.Orientation" Value="Horizontal" />
-					</VisualState.Setters>
-				</VisualState>
-			</VisualStateGroup>
-		</VisualStateManager.VisualStateGroups>
-	</Grid>
+                    <VisualState.Setters>
+                        <Setter Target="myPanel.Orientation" Value="Horizontal" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
 </UserControl>

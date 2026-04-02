@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Toolkit.ElevatedView_Tester"
+﻿<Page
+    x:Class="UITests.Toolkit.ElevatedView_Tester"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,47 +8,51 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid Padding="20"
-	    RowSpacing="8">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
+    <Grid Padding="20" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-		<TextBlock Margin="4"
-		    HorizontalAlignment="Right"
-		    Text="{Binding ElementName=ElevationSlider, Path=Value}" />
-		<Slider x:Name="ElevationSlider"
-		    Header="Elevation"
-		    Maximum="128"
-		    Minimum="0"
-		    Value="{x:Bind Elevation, Mode=TwoWay}" />
+        <TextBlock
+            Margin="4"
+            HorizontalAlignment="Right"
+            Text="{Binding ElementName=ElevationSlider, Path=Value}" />
+        <Slider
+            x:Name="ElevationSlider"
+            Header="Elevation"
+            Maximum="128"
+            Minimum="0"
+            Value="{x:Bind Elevation, Mode=TwoWay}" />
 
-		<TextBlock Grid.Row="1"
-		    Margin="4"
-		    HorizontalAlignment="Right"
-		    Text="{Binding ElementName=CornerRadiusSlider, Path=Value}" />
-		<Slider x:Name="CornerRadiusSlider"
-		    Grid.Row="1"
-		    Header="Corner radius"
-		    Maximum="40"
-		    Minimum="0"
-		    Value="{x:Bind Radius, Mode=TwoWay}" />
+        <TextBlock
+            Grid.Row="1"
+            Margin="4"
+            HorizontalAlignment="Right"
+            Text="{Binding ElementName=CornerRadiusSlider, Path=Value}" />
+        <Slider
+            x:Name="CornerRadiusSlider"
+            Grid.Row="1"
+            Header="Corner radius"
+            Maximum="40"
+            Minimum="0"
+            Value="{x:Bind Radius, Mode=TwoWay}" />
 
-		<TextBox Grid.Row="2"
-		    Header="Color"
-		    Text="{x:Bind ColorString, Mode=TwoWay}" />
+        <TextBox
+            Grid.Row="2"
+            Header="Color"
+            Text="{x:Bind ColorString, Mode=TwoWay}" />
 
-		<Grid Grid.Row="3">
-			<toolkit:ElevatedView x:Name="ElevatedElement"
-			    HorizontalAlignment="Center"
-			    VerticalAlignment="Center"
-			    Background="Blue">
-				<Grid Width="100"
-				    Height="100" />
-			</toolkit:ElevatedView>
-		</Grid>
-	</Grid>
+        <Grid Grid.Row="3">
+            <toolkit:ElevatedView
+                x:Name="ElevatedElement"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="Blue">
+                <Grid Width="100" Height="100" />
+            </toolkit:ElevatedView>
+        </Grid>
+    </Grid>
 </Page>

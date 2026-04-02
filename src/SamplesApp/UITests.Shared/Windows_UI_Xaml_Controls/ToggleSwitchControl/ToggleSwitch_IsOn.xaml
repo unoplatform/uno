@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.ToggleSwitch_IsOn"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.ToggleSwitch_IsOn"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -13,14 +14,15 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android not_win">
 
-	<controls:SampleControl SampleDescription="ToggleSwitch On">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ToggleSwitch Header="Test ToggleSwitch"
-				    IsOn="False"
-				    OffContent="Off"
-				    OnContent="On" />
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="ToggleSwitch On">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <ToggleSwitch
+                    Header="Test ToggleSwitch"
+                    IsOn="False"
+                    OffContent="Off"
+                    OnContent="On" />
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_ButtonInContent"
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_ButtonInContent"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,43 +7,42 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid>
-		<TextBlock x:Name="output" />
-		<Border HorizontalAlignment="Right"
-		    Background="Orange">
-			<Button x:Name="FlyoutButton"
-			    Width="48"
-			    Height="48"
-			    Margin="0,0,10,0">
+    <Grid>
+        <TextBlock x:Name="output" />
+        <Border HorizontalAlignment="Right" Background="Orange">
+            <Button
+                x:Name="FlyoutButton"
+                Width="48"
+                Height="48"
+                Margin="0,0,10,0">
 
-				<TextBlock>Here</TextBlock>
+                <TextBlock>Here</TextBlock>
 
-				<Button.Flyout>
-					<Flyout Placement="Right">
-						<StackPanel Background="Aquamarine"
-						    BorderBrush="DarkBlue"
-						    BorderThickness="1">
+                <Button.Flyout>
+                    <Flyout Placement="Right">
+                        <StackPanel
+                            Background="Aquamarine"
+                            BorderBrush="DarkBlue"
+                            BorderThickness="1">
 
-							<Button Click="Button_Click"
-							    Content="Button" />
+                            <Button Click="Button_Click" Content="Button" />
 
-							<Rectangle Height="4"
-							    Fill="Black" />
+                            <Rectangle Height="4" Fill="Black" />
 
-							<ToggleButton Content="Toggle Here" />
-							<TextBlock>
-								Clicking here should
-								not close the flyout
-							</TextBlock>
-							<Button x:Name="DataBoundButton"
-							    Command="{Binding ChangeTextCommand}"
-							    Content="Click to change the text below" />
-							<TextBlock x:Name="DataBoundText"
-							    Text="{Binding DataBoundText}" />
-						</StackPanel>
-					</Flyout>
-				</Button.Flyout>
-			</Button>
-		</Border>
-	</Grid>
+                            <ToggleButton Content="Toggle Here" />
+                            <TextBlock>
+                                Clicking here should
+                                not close the flyout
+                            </TextBlock>
+                            <Button
+                                x:Name="DataBoundButton"
+                                Command="{Binding ChangeTextCommand}"
+                                Content="Click to change the text below" />
+                            <TextBlock x:Name="DataBoundText" Text="{Binding DataBoundText}" />
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+        </Border>
+    </Grid>
 </Page>

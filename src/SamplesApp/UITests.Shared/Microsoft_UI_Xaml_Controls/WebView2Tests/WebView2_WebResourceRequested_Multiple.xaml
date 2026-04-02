@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.WebViewTests.WebView2_WebResourceRequested_Multiple"
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.WebViewTests.WebView2_WebResourceRequested_Multiple"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
@@ -8,38 +9,38 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid Padding="12">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
+    <Grid Padding="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-		<StackPanel Orientation="Horizontal"
-		    Spacing="8">
-			<Button x:Name="AddFilterButton"
-			    Content="Add wildcard filter (*)" />
-			<Button x:Name="NavigateButton"
-			    Content="Navigate test page" />
-			<Button x:Name="ClearButton"
-			    Content="Clear log" />
-			<TextBlock x:Name="CountText"
-			    Margin="8,0,0,0"
-			    VerticalAlignment="Center" />
-		</StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button x:Name="AddFilterButton" Content="Add wildcard filter (*)" />
+            <Button x:Name="NavigateButton" Content="Navigate test page" />
+            <Button x:Name="ClearButton" Content="Clear log" />
+            <TextBlock
+                x:Name="CountText"
+                Margin="8,0,0,0"
+                VerticalAlignment="Center" />
+        </StackPanel>
 
-		<ScrollViewer Grid.Row="1"
-		    MaxHeight="200"
-		    Margin="0,8,0,0">
-			<TextBlock x:Name="LogText"
-			    FontFamily="Consolas"
-			    FontSize="11"
-			    TextWrapping="Wrap" />
-		</ScrollViewer>
+        <ScrollViewer
+            Grid.Row="1"
+            MaxHeight="200"
+            Margin="0,8,0,0">
+            <TextBlock
+                x:Name="LogText"
+                FontFamily="Consolas"
+                FontSize="11"
+                TextWrapping="Wrap" />
+        </ScrollViewer>
 
-		<controls:WebView2 x:Name="WebView"
-		    Grid.Row="2"
-		    Margin="0,8,0,0" />
-	</Grid>
+        <controls:WebView2
+            x:Name="WebView"
+            Grid.Row="2"
+            Margin="0,8,0,0" />
+    </Grid>
 
 </Page>

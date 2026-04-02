@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.HorizontalListView_Padding"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.HorizontalListView_Padding"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android#using:Uno.UI.Controls.Legacy"
@@ -12,28 +13,30 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<controls:SampleControl SampleDescription="Sample control for demonstrating Padding on HorizontalListView">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<Border Background="Red">
-					<ios:TextBlock Text="HorizontalListView is only used on Android." />
-					<win:TextBlock Text="HorizontalListView is only used on Android." />
-					<android:HorizontalListView Width="250"
-					    Height="50"
-					    Padding="100,0,100,0"
-					    Background="Green"
-					    ItemsSource="{Binding [SampleItems]}"
-					    SelectionMode="None">
-						<android:HorizontalListView.ItemTemplate>
-							<DataTemplate>
-								<Image Width="100"
-								    Height="50"
-								    Source="{Binding Uri}" />
-							</DataTemplate>
-						</android:HorizontalListView.ItemTemplate>
-					</android:HorizontalListView>
-				</Border>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="Sample control for demonstrating Padding on HorizontalListView">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <Border Background="Red">
+                    <ios:TextBlock Text="HorizontalListView is only used on Android." />
+                    <win:TextBlock Text="HorizontalListView is only used on Android." />
+                    <android:HorizontalListView
+                        Width="250"
+                        Height="50"
+                        Padding="100,0,100,0"
+                        Background="Green"
+                        ItemsSource="{Binding [SampleItems]}"
+                        SelectionMode="None">
+                        <android:HorizontalListView.ItemTemplate>
+                            <DataTemplate>
+                                <Image
+                                    Width="100"
+                                    Height="50"
+                                    Source="{Binding Uri}" />
+                            </DataTemplate>
+                        </android:HorizontalListView.ItemTemplate>
+                    </android:HorizontalListView>
+                </Border>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

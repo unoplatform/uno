@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.ImageSourceWriteableBitmapInvalidate_Stretch"
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.ImageSourceWriteableBitmapInvalidate_Stretch"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,20 +8,20 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<Button x:Name="_update"
-		    Click="UpdateSource"
-		    Content="Update writeable image source" />
+    <StackPanel>
+        <Button
+            x:Name="_update"
+            Click="UpdateSource"
+            Content="Update writeable image source" />
 
-		<TextBlock Text="When you click on the button, the writable bitmap will update. While updating, the image should not flicker in size nor to the background color (because of the uniform stretching)."
-		    TextWrapping="Wrap" />
+        <TextBlock Text="When you click on the button, the writable bitmap will update. While updating, the image should not flicker in size nor to the background color (because of the uniform stretching)." TextWrapping="Wrap" />
 
-		<Border Width="206"
-		    Height="206"
-		    BorderBrush="Orange"
-		    BorderThickness="3">
-			<Image x:Name="_image"
-			    Stretch="Uniform" />
-		</Border>
-	</StackPanel>
+        <Border
+            Width="206"
+            Height="206"
+            BorderBrush="Orange"
+            BorderThickness="3">
+            <Image x:Name="_image" Stretch="Uniform" />
+        </Border>
+    </StackPanel>
 </Page>

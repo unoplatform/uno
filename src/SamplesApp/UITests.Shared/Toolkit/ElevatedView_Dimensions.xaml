@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Toolkit.ElevatedView_Dimensions"
+﻿<Page
+    x:Class="UITests.Toolkit.ElevatedView_Dimensions"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,23 +8,26 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid x:Name="parentView"
-	    Padding="32,32"
-	    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid
+        x:Name="parentView"
+        Padding="32,32"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-		<toolkit:ElevatedView x:Name="elevatedView"
-		    Width="200"
-		    Height="160"
-		    HorizontalAlignment="Left"
-		    VerticalAlignment="Top"
-		    Background="Gray"
-		    Elevation="8"
-		    ShadowColor="Black">
+        <toolkit:ElevatedView
+            x:Name="elevatedView"
+            Width="200"
+            Height="160"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Background="Gray"
+            Elevation="8"
+            ShadowColor="Black">
 
-			<TextBlock x:Name="elevatedViewText"
-			    Margin="20"
-			    FontSize="30"
-			    Text="Hello, world!" />
-		</toolkit:ElevatedView>
-	</Grid>
+            <TextBlock
+                x:Name="elevatedViewText"
+                Margin="20"
+                FontSize="30"
+                Text="Hello, world!" />
+        </toolkit:ElevatedView>
+    </Grid>
 </Page>

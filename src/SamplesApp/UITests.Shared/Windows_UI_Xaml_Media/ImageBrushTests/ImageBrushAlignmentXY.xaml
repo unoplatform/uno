@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.UITests.ImageBrushTestControl.ImageBrushAlignmentXY"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.UITests.ImageBrushTestControl.ImageBrushAlignmentXY"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive.com/android"
@@ -15,63 +16,71 @@
     d:DesignHeight="600"
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
-	<controls:SampleControl SampleDescription="Effect of ImageBrush.Stretch on the visual result">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel>
-					<TextBlock Text="[AlignmentX=Left, Stretch=Uniform] This should display an image with a green border." />
-					<Border Width="200"
-					    Height="70"
-					    BorderBrush="Green"
-					    BorderThickness="5"
-					    CornerRadius="10">
-						<Border.Background>
-							<ImageBrush AlignmentX="Left"
-							    ImageSource="http://i.imgur.com/tpFJ94J.jpg"
-							    Stretch="Uniform" />
-						</Border.Background>
-					</Border>
+    <controls:SampleControl SampleDescription="Effect of ImageBrush.Stretch on the visual result">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <StackPanel>
+                    <TextBlock Text="[AlignmentX=Left, Stretch=Uniform] This should display an image with a green border." />
+                    <Border
+                        Width="200"
+                        Height="70"
+                        BorderBrush="Green"
+                        BorderThickness="5"
+                        CornerRadius="10">
+                        <Border.Background>
+                            <ImageBrush
+                                AlignmentX="Left"
+                                ImageSource="http://i.imgur.com/tpFJ94J.jpg"
+                                Stretch="Uniform" />
+                        </Border.Background>
+                    </Border>
 
-					<TextBlock Text="[AlignmentX=Right, Stretch=Uniform] This should display an image with a green border." />
-					<Border Width="200"
-					    Height="70"
-					    BorderBrush="Green"
-					    BorderThickness="5"
-					    CornerRadius="10">
-						<Border.Background>
-							<ImageBrush AlignmentX="Right"
-							    ImageSource="http://i.imgur.com/tpFJ94J.jpg"
-							    Stretch="Uniform" />
-						</Border.Background>
-					</Border>
+                    <TextBlock Text="[AlignmentX=Right, Stretch=Uniform] This should display an image with a green border." />
+                    <Border
+                        Width="200"
+                        Height="70"
+                        BorderBrush="Green"
+                        BorderThickness="5"
+                        CornerRadius="10">
+                        <Border.Background>
+                            <ImageBrush
+                                AlignmentX="Right"
+                                ImageSource="http://i.imgur.com/tpFJ94J.jpg"
+                                Stretch="Uniform" />
+                        </Border.Background>
+                    </Border>
 
-					<TextBlock Text="[AlignmentY=Top, Stretch=UniformToFill] This should display an image with a green border." />
-					<Border Width="200"
-					    Height="70"
-					    BorderBrush="Green"
-					    BorderThickness="5"
-					    CornerRadius="10">
-						<Border.Background>
-							<ImageBrush AlignmentY="Top"
-							    ImageSource="http://i.imgur.com/tpFJ94J.jpg"
-							    Stretch="UniformToFill" />
-						</Border.Background>
-					</Border>
+                    <TextBlock Text="[AlignmentY=Top, Stretch=UniformToFill] This should display an image with a green border." />
+                    <Border
+                        Width="200"
+                        Height="70"
+                        BorderBrush="Green"
+                        BorderThickness="5"
+                        CornerRadius="10">
+                        <Border.Background>
+                            <ImageBrush
+                                AlignmentY="Top"
+                                ImageSource="http://i.imgur.com/tpFJ94J.jpg"
+                                Stretch="UniformToFill" />
+                        </Border.Background>
+                    </Border>
 
-					<TextBlock Text="[AlignmentY=Bottom, Stretch=UniformToFill] This should display an image with a green border." />
-					<Border Width="200"
-					    Height="70"
-					    BorderBrush="Green"
-					    BorderThickness="5"
-					    CornerRadius="10">
-						<Border.Background>
-							<ImageBrush AlignmentY="Bottom"
-							    ImageSource="http://i.imgur.com/tpFJ94J.jpg"
-							    Stretch="UniformToFill" />
-						</Border.Background>
-					</Border>
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+                    <TextBlock Text="[AlignmentY=Bottom, Stretch=UniformToFill] This should display an image with a green border." />
+                    <Border
+                        Width="200"
+                        Height="70"
+                        BorderBrush="Green"
+                        BorderThickness="5"
+                        CornerRadius="10">
+                        <Border.Background>
+                            <ImageBrush
+                                AlignmentY="Bottom"
+                                ImageSource="http://i.imgur.com/tpFJ94J.jpg"
+                                Stretch="UniformToFill" />
+                        </Border.Background>
+                    </Border>
+                </StackPanel>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

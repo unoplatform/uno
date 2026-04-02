@@ -1,36 +1,40 @@
-﻿<Page x:Class="UITests.Shared.Windows_UI_Xaml.EventTrigger_Loaded"
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml.EventTrigger_Loaded"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Page.Resources>
-		<Storyboard x:Name="FadeInStoryboard">
-			<DoubleAnimation Duration="0:0:1"
-			    From="0"
-			    To="1"
-			    Storyboard.TargetName="TargetBorder"
-			    Storyboard.TargetProperty="Opacity" />
-		</Storyboard>
-	</Page.Resources>
+    <Page.Resources>
+        <Storyboard x:Name="FadeInStoryboard">
+            <DoubleAnimation
+                Storyboard.TargetName="TargetBorder"
+                Storyboard.TargetProperty="Opacity"
+                From="0"
+                To="1"
+                Duration="0:0:1" />
+        </Storyboard>
+    </Page.Resources>
 
-	<Grid>
-		<Border x:Name="TargetBorder"
-		    Width="200"
-		    Height="200"
-		    HorizontalAlignment="Center"
-		    VerticalAlignment="Center"
-		    Background="{ThemeResource SystemAccentColorBrush}"
-		    Opacity="0">
-			<TextBlock HorizontalAlignment="Center"
-			    VerticalAlignment="Center"
-			    Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-			    Text="Fading In..." />
+    <Grid>
+        <Border
+            x:Name="TargetBorder"
+            Width="200"
+            Height="200"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="{ThemeResource SystemAccentColorBrush}"
+            Opacity="0">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                Text="Fading In..." />
 
-			<Border.Triggers>
-				<EventTrigger>
-					<BeginStoryboard Storyboard="{StaticResource FadeInStoryboard}" />
-				</EventTrigger>
-			</Border.Triggers>
-		</Border>
-	</Grid>
+            <Border.Triggers>
+                <EventTrigger>
+                    <BeginStoryboard Storyboard="{StaticResource FadeInStoryboard}" />
+                </EventTrigger>
+            </Border.Triggers>
+        </Border>
+    </Grid>
 </Page>

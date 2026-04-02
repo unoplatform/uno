@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Media_Imaging.RenderTargetBitmaps"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Media_Imaging.RenderTargetBitmaps"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,21 +8,23 @@
     x:Name="_renderTargetTestRoot"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
-	<Grid Background="White">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<Border x:Name="border"
-		    Width="100"
-		    Height="100"
-		    Background="Blue"
-		    BorderBrush="Red"
-		    BorderThickness="2,20,2,2" />
-		<Button Grid.Row="1"
-		    Click="SaveAs"
-		    Content="Save As" />
-	</Grid>
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Border
+            x:Name="border"
+            Width="100"
+            Height="100"
+            Background="Blue"
+            BorderBrush="Red"
+            BorderThickness="2,20,2,2" />
+        <Button
+            Grid.Row="1"
+            Click="SaveAs"
+            Content="Save As" />
+    </Grid>
 
 </Page>

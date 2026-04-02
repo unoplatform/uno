@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.UITests.ImageBrushTestControl.EllipsemaskingEllipseGrid"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.UITests.ImageBrushTestControl.EllipsemaskingEllipseGrid"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -16,34 +17,31 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<StackPanel>
-		<Border>
-			<controls:SampleControl SampleDescription="EllipsemaskingEllipseGrid">
-				<controls:SampleControl.SampleContent>
-					<DataTemplate>
-						<Grid Width="240"
-						    Height="240">
-							<Ellipse Width="200"
-							    Height="200">
-								<Ellipse.Fill>
-									<ImageBrush ImageSource="/Assets/test_image_200_200.png"
-									    Stretch="Fill" />
-								</Ellipse.Fill>
-							</Ellipse>
-							<Ellipse Width="120"
-							    Height="120"
-							    HorizontalAlignment="Right"
-							    VerticalAlignment="Bottom">
-								<Ellipse.Fill>
-									<ImageBrush ImageSource="/Assets/Diagnostics/exclamation.png"
-									    Stretch="Fill" />
-								</Ellipse.Fill>
-							</Ellipse>
-						</Grid>
-					</DataTemplate>
-				</controls:SampleControl.SampleContent>
-			</controls:SampleControl>
-		</Border>
+    <StackPanel>
+        <Border>
+            <controls:SampleControl SampleDescription="EllipsemaskingEllipseGrid">
+                <controls:SampleControl.SampleContent>
+                    <DataTemplate>
+                        <Grid Width="240" Height="240">
+                            <Ellipse Width="200" Height="200">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="/Assets/test_image_200_200.png" Stretch="Fill" />
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <Ellipse
+                                Width="120"
+                                Height="120"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="/Assets/Diagnostics/exclamation.png" Stretch="Fill" />
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Grid>
+                    </DataTemplate>
+                </controls:SampleControl.SampleContent>
+            </controls:SampleControl>
+        </Border>
 
-	</StackPanel>
+    </StackPanel>
 </UserControl>

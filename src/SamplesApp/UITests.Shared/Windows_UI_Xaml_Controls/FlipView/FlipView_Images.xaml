@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.FlipView.FlipView_Images"
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Controls.FlipView.FlipView_Images"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,21 +9,17 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel Orientation="Vertical">
-		<FlipView x:Name="SUT"
-		    Width="100"
-		    Height="100">
-			<Image AutomationProperties.Name="Ingredient1"
-			    Source="ms-appx:///Assets/ingredient1.png" />
-			<Image AutomationProperties.Name="Ingredient2"
-			    Source="ms-appx:///Assets/ingredient2.png" />
-			<Image AutomationProperties.Name="Ingredient3"
-			    Source="ms-appx:///Assets/ingredient3.png" />
-			<Image AutomationProperties.Name="Ingredient4"
-			    Source="ms-appx:///Assets/ingredient4.png" />
-			<Image AutomationProperties.Name="Ingredient5"
-			    Source="ms-appx:///Assets/ingredient5.png" />
-		</FlipView>
-	</StackPanel>
+    <StackPanel Orientation="Vertical">
+        <FlipView
+            x:Name="SUT"
+            Width="100"
+            Height="100">
+            <Image AutomationProperties.Name="Ingredient1" Source="ms-appx:///Assets/ingredient1.png" />
+            <Image AutomationProperties.Name="Ingredient2" Source="ms-appx:///Assets/ingredient2.png" />
+            <Image AutomationProperties.Name="Ingredient3" Source="ms-appx:///Assets/ingredient3.png" />
+            <Image AutomationProperties.Name="Ingredient4" Source="ms-appx:///Assets/ingredient4.png" />
+            <Image AutomationProperties.Name="Ingredient5" Source="ms-appx:///Assets/ingredient5.png" />
+        </FlipView>
+    </StackPanel>
 
 </UserControl>

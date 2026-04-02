@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Button.Button_UseUWPDefaultStyles"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Button.Button_UseUWPDefaultStyles"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,8 +9,7 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel x:Name="RootPanel">
-		<TextBlock x:Name="ResultsTextBlock"
-		    Text="No result" />
-	</StackPanel>
+    <StackPanel x:Name="RootPanel">
+        <TextBlock x:Name="ResultsTextBlock" Text="No result" />
+    </StackPanel>
 </UserControl>

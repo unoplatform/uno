@@ -1,5 +1,6 @@
 ﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
-<Page x:Class="MUXControlsTestApp.RadialGradientBrushPage"
+<Page
+    x:Class="MUXControlsTestApp.RadialGradientBrushPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,324 +10,344 @@
     x:Name="RadialGradientBrushTestPage"
     mc:Ignorable="d not_win">
 
-	<Grid x:Name="RootGrid"
-	    Margin="12"
-	    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<Grid.Resources>
-			<!--<Style TargetType="Border">
+    <Grid
+        x:Name="RootGrid"
+        Margin="12"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.Resources>
+            <!--<Style TargetType="Border">
 				<Setter Property="BorderThickness" Value="1" />
 				<Setter Property="BorderBrush" Value="Black" />
 			</Style>
 			<Style TargetType="StackPanel">
 				<Setter Property="HorizontalAlignment" Value="Left" />
 			</Style>-->
-		</Grid.Resources>
-		<ScrollViewer HorizontalScrollBarVisibility="Auto"
-		    HorizontalScrollMode="Auto"
-		    VerticalScrollBarVisibility="Auto"
-		    VerticalScrollMode="Auto">
-			<StackPanel>
-				<Border>
-					<Grid>
-						<Grid.RowDefinitions>
-							<RowDefinition />
-							<RowDefinition />
-							<RowDefinition />
-							<RowDefinition />
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition />
-							<ColumnDefinition />
-						</Grid.ColumnDefinitions>
+        </Grid.Resources>
+        <ScrollViewer
+            HorizontalScrollBarVisibility="Auto"
+            HorizontalScrollMode="Auto"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Auto">
+            <StackPanel>
+                <Border>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
 
-						<TextBlock Grid.Row="0"
-						    Grid.Column="0"
-						    Text="Locally set brush:" />
-						<Rectangle x:Name="GradientRectangle"
-						    Grid.Row="1"
-						    Grid.Column="0"
-						    Width="100"
-						    Height="100"
-						    AutomationProperties.Name="GradientRectangle">
-							<Rectangle.Fill>
-								<media:RadialGradientBrush FallbackColor="Red">
-									<GradientStop Color="Orange" Offset="0.5" />
-									<GradientStop Color="Green" Offset="1" />
-								</media:RadialGradientBrush>
-							</Rectangle.Fill>
-						</Rectangle>
-						<Ellipse Grid.Row="2"
-						    Grid.RowSpan="2"
-						    Grid.Column="0"
-						    Width="200"
-						    Height="100">
-							<Ellipse.Fill>
-								<media:RadialGradientBrush>
-									<GradientStop Color="Yellow" Offset="0" />
-									<GradientStop Color="MediumPurple" Offset="1" />
-								</media:RadialGradientBrush>
-							</Ellipse.Fill>
-						</Ellipse>
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Text="Locally set brush:" />
+                        <Rectangle
+                            x:Name="GradientRectangle"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Width="100"
+                            Height="100"
+                            AutomationProperties.Name="GradientRectangle">
+                            <Rectangle.Fill>
+                                <media:RadialGradientBrush FallbackColor="Red">
+                                    <GradientStop Offset="0.5" Color="Orange" />
+                                    <GradientStop Offset="1" Color="Green" />
+                                </media:RadialGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <Ellipse
+                            Grid.Row="2"
+                            Grid.RowSpan="2"
+                            Grid.Column="0"
+                            Width="200"
+                            Height="100">
+                            <Ellipse.Fill>
+                                <media:RadialGradientBrush>
+                                    <GradientStop Offset="0" Color="Yellow" />
+                                    <GradientStop Offset="1" Color="MediumPurple" />
+                                </media:RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
 
-						<Button x:Name="GenerateRenderTargetBitmapButton"
-						    Grid.Row="0"
-						    Grid.Column="1"
-						    AutomationProperties.Name="GenerateRenderTargetBitmapButton"
-						    Click="GenerateRenderTargetBitmapButton_Click"
-						    Content="RenderTargetBitmap on rectangle" />
-						<Rectangle x:Name="RenderTargetBitmapResultRectangle"
-						    Grid.Row="1"
-						    Grid.Column="1"
-						    Width="100"
-						    Height="100"
-						    Fill="LightGray" />
-						<TextBlock Grid.Row="2"
-						    Grid.Column="1"
-						    Text="Color match test:" />
-						<TextBox x:Name="ColorMatchTestResult"
-						    Grid.Row="3"
-						    Grid.Column="1"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Top"
-						    AutomationProperties.Name="ColorMatchTestResult"
-						    IsReadOnly="True" />
-					</Grid>
-				</Border>
+                        <Button
+                            x:Name="GenerateRenderTargetBitmapButton"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            AutomationProperties.Name="GenerateRenderTargetBitmapButton"
+                            Click="GenerateRenderTargetBitmapButton_Click"
+                            Content="RenderTargetBitmap on rectangle" />
+                        <Rectangle
+                            x:Name="RenderTargetBitmapResultRectangle"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Width="100"
+                            Height="100"
+                            Fill="LightGray" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Text="Color match test:" />
+                        <TextBox
+                            x:Name="ColorMatchTestResult"
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            AutomationProperties.Name="ColorMatchTestResult"
+                            IsReadOnly="True" />
+                    </Grid>
+                </Border>
 
-				<Border>
-					<StackPanel>
-						<TextBlock Text="Shared resource brush:" />
-						<Rectangle Width="100"
-						    Height="100">
-							<Rectangle.Fill>
-								<media:RadialGradientBrush FallbackColor="Orange">
-									<GradientStop Color="Red" Offset="0" />
-									<GradientStop Color="Green" Offset="0.5" />
-									<GradientStop Color="Blue" Offset="1" />
-								</media:RadialGradientBrush>
-							</Rectangle.Fill>
-						</Rectangle>
-						<TextBlock FontSize="20"
-						    Text="Text with gradient foreground">
-							<TextBlock.Foreground>
-								<media:RadialGradientBrush FallbackColor="Orange">
-									<GradientStop Color="Red" Offset="0" />
-									<GradientStop Color="Green" Offset="0.5" />
-									<GradientStop Color="Blue" Offset="1" />
-								</media:RadialGradientBrush>
-							</TextBlock.Foreground>
-						</TextBlock>
-						<Button Content="Button with gradient background">
-							<Button.Background>
-								<media:RadialGradientBrush FallbackColor="Orange">
-									<GradientStop Color="Red" Offset="0" />
-									<GradientStop Color="Green" Offset="0.5" />
-									<GradientStop Color="Blue" Offset="1" />
-								</media:RadialGradientBrush>
-							</Button.Background>
-						</Button>
-					</StackPanel>
-				</Border>
+                <Border>
+                    <StackPanel>
+                        <TextBlock Text="Shared resource brush:" />
+                        <Rectangle Width="100" Height="100">
+                            <Rectangle.Fill>
+                                <media:RadialGradientBrush FallbackColor="Orange">
+                                    <GradientStop Offset="0" Color="Red" />
+                                    <GradientStop Offset="0.5" Color="Green" />
+                                    <GradientStop Offset="1" Color="Blue" />
+                                </media:RadialGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <TextBlock FontSize="20" Text="Text with gradient foreground">
+                            <TextBlock.Foreground>
+                                <media:RadialGradientBrush FallbackColor="Orange">
+                                    <GradientStop Offset="0" Color="Red" />
+                                    <GradientStop Offset="0.5" Color="Green" />
+                                    <GradientStop Offset="1" Color="Blue" />
+                                </media:RadialGradientBrush>
+                            </TextBlock.Foreground>
+                        </TextBlock>
+                        <Button Content="Button with gradient background">
+                            <Button.Background>
+                                <media:RadialGradientBrush FallbackColor="Orange">
+                                    <GradientStop Offset="0" Color="Red" />
+                                    <GradientStop Offset="0.5" Color="Green" />
+                                    <GradientStop Offset="1" Color="Blue" />
+                                </media:RadialGradientBrush>
+                            </Button.Background>
+                        </Button>
+                    </StackPanel>
+                </Border>
 
-				<Border>
-					<StackPanel x:DefaultBindMode="OneWay">
-						<!--<StackPanel.Resources>
+                <Border>
+                    <StackPanel x:DefaultBindMode="OneWay">
+                        <!--<StackPanel.Resources>
 							<Style TargetType="Button">
 								<Setter Property="Margin" Value="0,0,5,0" />
 							</Style>
 						</StackPanel.Resources>-->
-						<TextBlock Text="Dynamically created brush:" />
+                        <TextBlock Text="Dynamically created brush:" />
 
-						<StackPanel Orientation="Horizontal">
-							<Button x:Name="ReplaceGradientButton"
-							    AutomationProperties.Name="ReplaceGradientButton"
-							    Click="ReplaceGradientButton_Click"
-							    Content="Create new gradient" />
-							<Button x:Name="AddGradientStopButton"
-							    AutomationProperties.Name="AddGradientStopButton"
-							    Click="AddGradientStopButton_Click"
-							    Content="Add random gradient stop" />
-							<Button x:Name="RemoveGradientStopButton"
-							    AutomationProperties.Name="RemoveGradientStopButton"
-							    Click="RemoveGradientStopButton_Click"
-							    Content="Remove random gradient stop" />
-						</StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button
+                                x:Name="ReplaceGradientButton"
+                                AutomationProperties.Name="ReplaceGradientButton"
+                                Click="ReplaceGradientButton_Click"
+                                Content="Create new gradient" />
+                            <Button
+                                x:Name="AddGradientStopButton"
+                                AutomationProperties.Name="AddGradientStopButton"
+                                Click="AddGradientStopButton_Click"
+                                Content="Add random gradient stop" />
+                            <Button
+                                x:Name="RemoveGradientStopButton"
+                                AutomationProperties.Name="RemoveGradientStopButton"
+                                Click="RemoveGradientStopButton_Click"
+                                Content="Remove random gradient stop" />
+                        </StackPanel>
 
-						<StackPanel Orientation="Horizontal">
-							<Button x:Name="RandomizeGradientOriginButton"
-							    AutomationProperties.Name="RandomizeGradientOriginButton"
-							    Click="RandomizeGradientOriginButton_Click"
-							    Content="Randomize origin" />
-							<Button x:Name="RandomizeCenterButton"
-							    AutomationProperties.Name="RandomizeCenterButton"
-							    Click="RandomizeCenterButton_Click"
-							    Content="Randomize center" />
-							<Button x:Name="RandomizeRadiusButton"
-							    AutomationProperties.Name="RandomizeRadiusButton"
-							    Click="RandomizeRadiusButton_Click"
-							    Content="Randomize radius" />
-							<Button x:Name="ToggleMappingModeButton"
-							    AutomationProperties.Name="ToggleMappingModeButton"
-							    Click="ToggleMappingModeButton_Click"
-							    Content="Toggle mapping mode" />
-						</StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button
+                                x:Name="RandomizeGradientOriginButton"
+                                AutomationProperties.Name="RandomizeGradientOriginButton"
+                                Click="RandomizeGradientOriginButton_Click"
+                                Content="Randomize origin" />
+                            <Button
+                                x:Name="RandomizeCenterButton"
+                                AutomationProperties.Name="RandomizeCenterButton"
+                                Click="RandomizeCenterButton_Click"
+                                Content="Randomize center" />
+                            <Button
+                                x:Name="RandomizeRadiusButton"
+                                AutomationProperties.Name="RandomizeRadiusButton"
+                                Click="RandomizeRadiusButton_Click"
+                                Content="Randomize radius" />
+                            <Button
+                                x:Name="ToggleMappingModeButton"
+                                AutomationProperties.Name="ToggleMappingModeButton"
+                                Click="ToggleMappingModeButton_Click"
+                                Content="Toggle mapping mode" />
+                        </StackPanel>
 
-						<ComboBox x:Name="InterpolationColorSpaceComboBox"
-						    AutomationProperties.Name="InterpolationColorSpaceComboBox"
-						    Header="Space: ({Auto, Rgb, RgbLinear} only)"
-						    ItemsSource="{x:Bind GetColorSpaceValueNames(), Mode=OneTime}"
-						    SelectedItem="{x:Bind DynamicGradientBrushInterpolationSpace, Mode=TwoWay}" />
+                        <ComboBox
+                            x:Name="InterpolationColorSpaceComboBox"
+                            AutomationProperties.Name="InterpolationColorSpaceComboBox"
+                            Header="Space: ({Auto, Rgb, RgbLinear} only)"
+                            ItemsSource="{x:Bind GetColorSpaceValueNames(), Mode=OneTime}"
+                            SelectedItem="{x:Bind DynamicGradientBrushInterpolationSpace, Mode=TwoWay}" />
 
-						<ComboBox x:Name="SpreadMethodComboBox"
-						    AutomationProperties.Name="SpreadMethodComboBox"
-						    Header="SpreadMethod:"
-						    ItemsSource="{x:Bind GetSpreadMethodValueNames(), Mode=OneTime}"
-						    SelectedItem="{x:Bind DynamicGradientBrushSpreadMethod, Mode=TwoWay}" />
+                        <ComboBox
+                            x:Name="SpreadMethodComboBox"
+                            AutomationProperties.Name="SpreadMethodComboBox"
+                            Header="SpreadMethod:"
+                            ItemsSource="{x:Bind GetSpreadMethodValueNames(), Mode=OneTime}"
+                            SelectedItem="{x:Bind DynamicGradientBrushSpreadMethod, Mode=TwoWay}" />
 
-						<Rectangle x:Name="RectangleWithDynamicGradient"
-						    Width="200"
-						    Height="200"
-						    Fill="Gray" />
-						<TextBlock x:Name="TextBlockWithDynamicGradient"
-						    FontSize="20"
-						    Foreground="Gray"
-						    Text="Text with random gradient foreground" />
+                        <Rectangle
+                            x:Name="RectangleWithDynamicGradient"
+                            Width="200"
+                            Height="200"
+                            Fill="Gray" />
+                        <TextBlock
+                            x:Name="TextBlockWithDynamicGradient"
+                            FontSize="20"
+                            Foreground="Gray"
+                            Text="Text with random gradient foreground" />
 
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-							</Grid.RowDefinitions>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<TextBlock Grid.Row="0"
-							    Text="MappingMode: " />
-							<TextBlock Grid.Row="0"
-							    Grid.Column="1"
-							    Text="{x:Bind DynamicGradientBrush.MappingMode}" />
-							<TextBlock Grid.Row="1"
-							    Text="GradientStops.Count: " />
-							<TextBlock x:Name="GradientStopCountText"
-							    Grid.Row="1"
-							    Grid.Column="1"
-							    AutomationProperties.Name="GradientStopCountText"
-							    Text="{x:Bind DynamicGradientBrush.GradientStops.Count}" />
-							<TextBlock Grid.Row="2"
-							    Text="GradientOrigin: " />
-							<TextBlock Grid.Row="2"
-							    Grid.Column="1"
-							    Text="{x:Bind DynamicGradientBrush.GradientOrigin}" />
-							<TextBlock Grid.Row="3"
-							    Text="Center: " />
-							<TextBlock Grid.Row="3"
-							    Grid.Column="1"
-							    Text="{x:Bind DynamicGradientBrush.Center}" />
-							<TextBlock Grid.Row="4"
-							    Text="Radius: " />
-							<TextBlock Grid.Row="4"
-							    Grid.Column="1"
-							    Text="{x:Bind DynamicGradientBrush.RadiusX}" />
-							<TextBlock Grid.Row="5"
-							    Grid.Column="1"
-							    Text="{x:Bind DynamicGradientBrush.RadiusY}" />
-						</Grid>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Row="0" Text="MappingMode: " />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Text="{x:Bind DynamicGradientBrush.MappingMode}" />
+                            <TextBlock Grid.Row="1" Text="GradientStops.Count: " />
+                            <TextBlock
+                                x:Name="GradientStopCountText"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                AutomationProperties.Name="GradientStopCountText"
+                                Text="{x:Bind DynamicGradientBrush.GradientStops.Count}" />
+                            <TextBlock Grid.Row="2" Text="GradientOrigin: " />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Text="{x:Bind DynamicGradientBrush.GradientOrigin}" />
+                            <TextBlock Grid.Row="3" Text="Center: " />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Text="{x:Bind DynamicGradientBrush.Center}" />
+                            <TextBlock Grid.Row="4" Text="Radius: " />
+                            <TextBlock
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                Text="{x:Bind DynamicGradientBrush.RadiusX}" />
+                            <TextBlock
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                Text="{x:Bind DynamicGradientBrush.RadiusY}" />
+                        </Grid>
 
-						<!--  Samples described in spec document  -->
+                        <!--  Samples described in spec document  -->
 
-						<!--  Example 1 : Default property values  -->
-						<Rectangle Width="200"
-						    Height="200"
-						    HorizontalAlignment="Left">
-							<Rectangle.Fill>
-								<media:RadialGradientBrush>
-									<GradientStop Color="Blue" Offset="0.0" />
-									<GradientStop Color="Yellow" Offset="0.2" />
-									<GradientStop Color="LimeGreen" Offset="0.4" />
-									<GradientStop Color="LightBlue" Offset="0.6" />
-									<GradientStop Color="Blue" Offset="0.8" />
-									<GradientStop Color="LightGray" Offset="1" />
-								</media:RadialGradientBrush>
-							</Rectangle.Fill>
-						</Rectangle>
+                        <!--  Example 1 : Default property values  -->
+                        <Rectangle
+                            Width="200"
+                            Height="200"
+                            HorizontalAlignment="Left">
+                            <Rectangle.Fill>
+                                <media:RadialGradientBrush>
+                                    <GradientStop Offset="0.0" Color="Blue" />
+                                    <GradientStop Offset="0.2" Color="Yellow" />
+                                    <GradientStop Offset="0.4" Color="LimeGreen" />
+                                    <GradientStop Offset="0.6" Color="LightBlue" />
+                                    <GradientStop Offset="0.8" Color="Blue" />
+                                    <GradientStop Offset="1" Color="LightGray" />
+                                </media:RadialGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
 
-						<StackPanel Orientation="Horizontal">
-							<!--  Example 1 : RelativeToBoundingBox  -->
-							<Rectangle Width="200"
-							    Height="200">
-								<Rectangle.Fill>
-									<media:RadialGradientBrush Center="0.5,0.5"
-									    GradientOrigin="0.5,0.5"
-									    MappingMode="RelativeToBoundingBox"
-									    RadiusX="0.5"
-									    RadiusY="0.5">
-										<GradientStop Color="Blue" Offset="0.0" />
-										<GradientStop Color="Yellow" Offset="0.2" />
-										<GradientStop Color="LimeGreen" Offset="0.4" />
-										<GradientStop Color="LightBlue" Offset="0.6" />
-										<GradientStop Color="Blue" Offset="0.8" />
-										<GradientStop Color="LightGray" Offset="1" />
-									</media:RadialGradientBrush>
-								</Rectangle.Fill>
-							</Rectangle>
-							<!--  Example 1 : Absolute  -->
-							<Rectangle Width="200"
-							    Height="200">
-								<Rectangle.Fill>
-									<media:RadialGradientBrush Center="100,100"
-									    GradientOrigin="100,100"
-									    MappingMode="Absolute"
-									    RadiusX="100"
-									    RadiusY="100">
-										<GradientStop Color="Blue" Offset="0.0" />
-										<GradientStop Color="Yellow" Offset="0.2" />
-										<GradientStop Color="LimeGreen" Offset="0.4" />
-										<GradientStop Color="LightBlue" Offset="0.6" />
-										<GradientStop Color="Blue" Offset="0.8" />
-										<GradientStop Color="LightGray" Offset="1" />
-									</media:RadialGradientBrush>
-								</Rectangle.Fill>
-							</Rectangle>
-						</StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <!--  Example 1 : RelativeToBoundingBox  -->
+                            <Rectangle Width="200" Height="200">
+                                <Rectangle.Fill>
+                                    <media:RadialGradientBrush
+                                        Center="0.5,0.5"
+                                        GradientOrigin="0.5,0.5"
+                                        MappingMode="RelativeToBoundingBox"
+                                        RadiusX="0.5"
+                                        RadiusY="0.5">
+                                        <GradientStop Offset="0.0" Color="Blue" />
+                                        <GradientStop Offset="0.2" Color="Yellow" />
+                                        <GradientStop Offset="0.4" Color="LimeGreen" />
+                                        <GradientStop Offset="0.6" Color="LightBlue" />
+                                        <GradientStop Offset="0.8" Color="Blue" />
+                                        <GradientStop Offset="1" Color="LightGray" />
+                                    </media:RadialGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <!--  Example 1 : Absolute  -->
+                            <Rectangle Width="200" Height="200">
+                                <Rectangle.Fill>
+                                    <media:RadialGradientBrush
+                                        Center="100,100"
+                                        GradientOrigin="100,100"
+                                        MappingMode="Absolute"
+                                        RadiusX="100"
+                                        RadiusY="100">
+                                        <GradientStop Offset="0.0" Color="Blue" />
+                                        <GradientStop Offset="0.2" Color="Yellow" />
+                                        <GradientStop Offset="0.4" Color="LimeGreen" />
+                                        <GradientStop Offset="0.6" Color="LightBlue" />
+                                        <GradientStop Offset="0.8" Color="Blue" />
+                                        <GradientStop Offset="1" Color="LightGray" />
+                                    </media:RadialGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </StackPanel>
 
-						<!--  Example 2 : RelativeToBoundingBox  -->
-						<StackPanel Orientation="Horizontal">
-							<Rectangle Width="200"
-							    Height="200">
-								<Rectangle.Fill>
-									<media:RadialGradientBrush Center="0.25,0.25"
-									    GradientOrigin="0.5,.25"
-									    MappingMode="RelativeToBoundingBox"
-									    RadiusX=".5"
-									    RadiusY=".5">
-										<GradientStop Color="Yellow" Offset="0.0" />
-										<GradientStop Color="Blue" Offset="1" />
-									</media:RadialGradientBrush>
-								</Rectangle.Fill>
-							</Rectangle>
-							<!--  Example 2 : Absolute  -->
-							<Rectangle Width="200"
-							    Height="200">
-								<Rectangle.Fill>
-									<media:RadialGradientBrush Center="50,50"
-									    GradientOrigin="100,50"
-									    MappingMode="Absolute"
-									    RadiusX="100"
-									    RadiusY="100">
-										<GradientStop Color="Yellow" Offset="0.0" />
-										<GradientStop Color="Blue" Offset="1" />
-									</media:RadialGradientBrush>
-								</Rectangle.Fill>
-							</Rectangle>
-						</StackPanel>
-					</StackPanel>
-				</Border>
-			</StackPanel>
-		</ScrollViewer>
-	</Grid>
+                        <!--  Example 2 : RelativeToBoundingBox  -->
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="200" Height="200">
+                                <Rectangle.Fill>
+                                    <media:RadialGradientBrush
+                                        Center="0.25,0.25"
+                                        GradientOrigin="0.5,.25"
+                                        MappingMode="RelativeToBoundingBox"
+                                        RadiusX=".5"
+                                        RadiusY=".5">
+                                        <GradientStop Offset="0.0" Color="Yellow" />
+                                        <GradientStop Offset="1" Color="Blue" />
+                                    </media:RadialGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <!--  Example 2 : Absolute  -->
+                            <Rectangle Width="200" Height="200">
+                                <Rectangle.Fill>
+                                    <media:RadialGradientBrush
+                                        Center="50,50"
+                                        GradientOrigin="100,50"
+                                        MappingMode="Absolute"
+                                        RadiusX="100"
+                                        RadiusY="100">
+                                        <GradientStop Offset="0.0" Color="Yellow" />
+                                        <GradientStop Offset="1" Color="Blue" />
+                                    </media:RadialGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </Page>

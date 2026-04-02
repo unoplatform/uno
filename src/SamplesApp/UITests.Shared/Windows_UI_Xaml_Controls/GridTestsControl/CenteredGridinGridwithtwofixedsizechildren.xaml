@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.GridTestsControl.CenteredGridinGridwithtwofixedsizechildren"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.GridTestsControl.CenteredGridinGridwithtwofixedsizechildren"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -10,22 +11,23 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<Grid Background="Cyan">
-		<Grid HorizontalAlignment="Center"
-		    VerticalAlignment="Center">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="auto" />
-				<ColumnDefinition Width="auto" />
-			</Grid.ColumnDefinitions>
-			<Border Grid.Column="0"
-			    Width="50"
-			    Height="50"
-			    Background="Red" />
-			<Border Grid.Column="1"
-			    Width="50"
-			    Height="50"
-			    Background="Blue" />
-		</Grid>
-	</Grid>
+    <Grid Background="Cyan">
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Border
+                Grid.Column="0"
+                Width="50"
+                Height="50"
+                Background="Red" />
+            <Border
+                Grid.Column="1"
+                Width="50"
+                Height="50"
+                Background="Blue" />
+        </Grid>
+    </Grid>
 
 </UserControl>

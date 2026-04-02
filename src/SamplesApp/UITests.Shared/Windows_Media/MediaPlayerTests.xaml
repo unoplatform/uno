@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_Media.MediaPlayerTests"
+﻿<Page
+    x:Class="UITests.Windows_Media.MediaPlayerTests"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,31 +8,31 @@
     xmlns:valueConverters="using:UITests.ValueConverters"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
-	<ScrollViewer>
-		<StackPanel>
+    <ScrollViewer>
+        <StackPanel>
 
-			<MediaPlayerElement x:Name="MediaPlayerElementSample1"
-			    MaxWidth="720"
-			    AreTransportControlsEnabled="True"
-			    AutoPlay="False"
-			    Source="https://uno-assets.platform.uno/tests/videos/Mobile_Development_in_VS_Code_with_Uno_Platform_orDotNetMAUI.mp4">
-				<MediaPlayerElement.TransportControls>
-					<MediaTransportControls IsCompact="False"
-					    ShowAndHideAutomatically="False" />
-				</MediaPlayerElement.TransportControls>
-			</MediaPlayerElement>
+            <MediaPlayerElement
+                x:Name="MediaPlayerElementSample1"
+                MaxWidth="720"
+                AreTransportControlsEnabled="True"
+                AutoPlay="False"
+                Source="https://uno-assets.platform.uno/tests/videos/Mobile_Development_in_VS_Code_with_Uno_Platform_orDotNetMAUI.mp4">
+                <MediaPlayerElement.TransportControls>
+                    <MediaTransportControls IsCompact="False" ShowAndHideAutomatically="False" />
+                </MediaPlayerElement.TransportControls>
+            </MediaPlayerElement>
 
-			<MediaPlayerElement x:Name="MediaPlayerElementSample2"
-			    MaxWidth="720"
-			    AreTransportControlsEnabled="True"
-			    AutoPlay="False"
-			    Source="https://uno-assets.platform.uno/tests/videos/Mobile_Development_in_VS_Code_with_Uno_Platform_orDotNetMAUI.mp4">
-				<MediaPlayerElement.TransportControls>
-					<MediaTransportControls IsCompact="True"
-					    ShowAndHideAutomatically="False" />
-				</MediaPlayerElement.TransportControls>
-			</MediaPlayerElement>
+            <MediaPlayerElement
+                x:Name="MediaPlayerElementSample2"
+                MaxWidth="720"
+                AreTransportControlsEnabled="True"
+                AutoPlay="False"
+                Source="https://uno-assets.platform.uno/tests/videos/Mobile_Development_in_VS_Code_with_Uno_Platform_orDotNetMAUI.mp4">
+                <MediaPlayerElement.TransportControls>
+                    <MediaTransportControls IsCompact="True" ShowAndHideAutomatically="False" />
+                </MediaPlayerElement.TransportControls>
+            </MediaPlayerElement>
 
-		</StackPanel>
-	</ScrollViewer>
+        </StackPanel>
+    </ScrollViewer>
 </Page>

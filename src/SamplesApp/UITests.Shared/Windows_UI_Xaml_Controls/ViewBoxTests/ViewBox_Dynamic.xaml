@@ -1,94 +1,105 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.ViewBoxTests.ViewBox_Dynamic"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.ViewBoxTests.ViewBox_Dynamic"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-	<StackPanel>
-		<controls:SampleControl>
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="auto" />
-				</Grid.ColumnDefinitions>
+    <StackPanel>
+        <controls:SampleControl>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
 
-				<Viewbox x:Name="viewBox1"
-				    Width="{x:Bind SizeSlider.Value, Mode=OneWay}"
-				    Height="{x:Bind SizeSlider.Value, Mode=OneWay}"
-				    HorizontalAlignment="Left"
-				    VerticalAlignment="Top"
-				    StretchDirection="Both">
-					<Border x:Name="innerBorder"
-					    BorderBrush="Gray"
-					    BorderThickness="15">
-						<StackPanel Background="DarkGray">
-							<StackPanel Orientation="Horizontal">
-								<Rectangle Width="40"
-								    Height="10"
-								    Fill="Blue" />
-								<Rectangle Width="40"
-								    Height="10"
-								    Fill="Green" />
-								<Rectangle Width="40"
-								    Height="10"
-								    Fill="Red" />
-								<Rectangle Width="40"
-								    Height="10"
-								    Fill="Yellow" />
-							</StackPanel>
-							<Image Source="ms-appx:///Assets/Slices.png" />
-							<TextBlock HorizontalAlignment="Center"
-							    Text="This is text." />
-						</StackPanel>
-					</Border>
-				</Viewbox>
+                <Viewbox
+                    x:Name="viewBox1"
+                    Width="{x:Bind SizeSlider.Value, Mode=OneWay}"
+                    Height="{x:Bind SizeSlider.Value, Mode=OneWay}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    StretchDirection="Both">
+                    <Border
+                        x:Name="innerBorder"
+                        BorderBrush="Gray"
+                        BorderThickness="15">
+                        <StackPanel Background="DarkGray">
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle
+                                    Width="40"
+                                    Height="10"
+                                    Fill="Blue" />
+                                <Rectangle
+                                    Width="40"
+                                    Height="10"
+                                    Fill="Green" />
+                                <Rectangle
+                                    Width="40"
+                                    Height="10"
+                                    Fill="Red" />
+                                <Rectangle
+                                    Width="40"
+                                    Height="10"
+                                    Fill="Yellow" />
+                            </StackPanel>
+                            <Image Source="ms-appx:///Assets/Slices.png" />
+                            <TextBlock HorizontalAlignment="Center" Text="This is text." />
+                        </StackPanel>
+                    </Border>
+                </Viewbox>
 
-				<StackPanel Grid.Column="1"
-				    Width="200">
-					<Slider x:Name="SizeSlider"
-					    Header="Width/Height"
-					    Maximum="300"
-					    Minimum="20"
-					    Value="200" />
+                <StackPanel Grid.Column="1" Width="200">
+                    <Slider
+                        x:Name="SizeSlider"
+                        Header="Width/Height"
+                        Maximum="300"
+                        Minimum="20"
+                        Value="200" />
 
-					<TextBlock Margin="0,0,0,8"
-					    Text="Stretch" />
-					<RadioButton Checked="StretchButton_Checked"
-					    Content="None"
-					    GroupName="Stretch"
-					    Tag="None" />
-					<RadioButton Checked="StretchButton_Checked"
-					    Content="Fill"
-					    GroupName="Stretch"
-					    Tag="Fill" />
-					<RadioButton Checked="StretchButton_Checked"
-					    Content="Uniform"
-					    GroupName="Stretch"
-					    IsChecked="True"
-					    Tag="Uniform" />
-					<RadioButton Checked="StretchButton_Checked"
-					    Content="UniformToFill"
-					    GroupName="Stretch"
-					    Tag="UniformToFill" />
+                    <TextBlock Margin="0,0,0,8" Text="Stretch" />
+                    <RadioButton
+                        Checked="StretchButton_Checked"
+                        Content="None"
+                        GroupName="Stretch"
+                        Tag="None" />
+                    <RadioButton
+                        Checked="StretchButton_Checked"
+                        Content="Fill"
+                        GroupName="Stretch"
+                        Tag="Fill" />
+                    <RadioButton
+                        Checked="StretchButton_Checked"
+                        Content="Uniform"
+                        GroupName="Stretch"
+                        IsChecked="True"
+                        Tag="Uniform" />
+                    <RadioButton
+                        Checked="StretchButton_Checked"
+                        Content="UniformToFill"
+                        GroupName="Stretch"
+                        Tag="UniformToFill" />
 
-					<TextBlock Margin="0,16,0,8"
-					    Text="StretchDirection" />
-					<RadioButton Checked="StretchDirectionButton_Checked"
-					    Content="UpOnly"
-					    GroupName="StretchDirection"
-					    Tag="UpOnly" />
-					<RadioButton Checked="StretchDirectionButton_Checked"
-					    Content="DownOnly"
-					    GroupName="StretchDirection"
-					    Tag="DownOnly" />
-					<RadioButton Checked="StretchDirectionButton_Checked"
-					    Content="Both"
-					    GroupName="StretchDirection"
-					    IsChecked="True"
-					    Tag="Both" />
-				</StackPanel>
-			</Grid>
-		</controls:SampleControl>
-	</StackPanel>
+                    <TextBlock Margin="0,16,0,8" Text="StretchDirection" />
+                    <RadioButton
+                        Checked="StretchDirectionButton_Checked"
+                        Content="UpOnly"
+                        GroupName="StretchDirection"
+                        Tag="UpOnly" />
+                    <RadioButton
+                        Checked="StretchDirectionButton_Checked"
+                        Content="DownOnly"
+                        GroupName="StretchDirection"
+                        Tag="DownOnly" />
+                    <RadioButton
+                        Checked="StretchDirectionButton_Checked"
+                        Content="Both"
+                        GroupName="StretchDirection"
+                        IsChecked="True"
+                        Tag="Both" />
+                </StackPanel>
+            </Grid>
+        </controls:SampleControl>
+    </StackPanel>
 </UserControl>

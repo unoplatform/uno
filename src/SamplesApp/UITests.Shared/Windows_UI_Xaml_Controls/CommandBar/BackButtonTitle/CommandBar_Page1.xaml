@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonTitle.CommandBar_Page1"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonTitle.CommandBar_Page1"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,24 +10,25 @@
     d:DesignWidth="400"
     mc:Ignorable="d not_win">
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-		<StackPanel Grid.Row="1"
-		    VerticalAlignment="Center"
-		    Spacing="10">
+        <StackPanel
+            Grid.Row="1"
+            VerticalAlignment="Center"
+            Spacing="10">
 
-			<TextBlock HorizontalAlignment="Center"
-			    Text="Main Page" />
+            <TextBlock HorizontalAlignment="Center" Text="Main Page" />
 
-			<Button x:Name="NavigateToPage2Button"
-			    Grid.Row="1"
-			    HorizontalAlignment="Center"
-			    Click="OnButtonClicked"
-			    Content="Navigate to Page 2" />
-		</StackPanel>
-	</Grid>
+            <Button
+                x:Name="NavigateToPage2Button"
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                Click="OnButtonClicked"
+                Content="Navigate to Page 2" />
+        </StackPanel>
+    </Grid>
 </Page>

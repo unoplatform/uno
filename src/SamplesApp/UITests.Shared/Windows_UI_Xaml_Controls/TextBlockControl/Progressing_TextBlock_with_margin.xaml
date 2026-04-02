@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.Progressing_TextBlock_with_margin"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.Progressing_TextBlock_with_margin"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -13,40 +14,48 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android not_win">
 
-	<StackPanel>
-		<TextBlock Text="The quick brown fox jumps over the lazy dog" />
-		<TextBlock Width="10"
-		    Margin="5"
-		    FontSize="7"
-		    Text="The quick brown fox jumps over the lazy dog" />
-		<TextBlock Width="20"
-		    Margin="5"
-		    FontSize="7"
-		    Text="The quick brown fox jumps over the lazy dog" />
-		<TextBlock Width="30"
-		    Margin="5"
-		    FontSize="7"
-		    Text="The quick brown fox jumps over the lazy dog" />
-		<TextBlock Width="40"
-		    Margin="5"
-		    FontSize="7"
-		    Text="The quick brown fox jumps over the lazy dog" />
-		<TextBlock Width="50"
-		    Margin="5"
-		    FontSize="7"
-		    Text="The quick brown fox jumps over the lazy dog" />
-		<TextBlock Width="60"
-		    Margin="5"
-		    FontSize="7"
-		    Text="The quick brown fox jumps over the lazy dog" />
-		<TextBlock Width="70"
-		    Margin="5"
-		    FontSize="7"
-		    Text="The quick brown fox jumps over the lazy dog" />
-		<TextBlock Width="80"
-		    Margin="5"
-		    FontSize="7"
-		    Text="The quick brown fox jumps over the lazy dog" />
-	</StackPanel>
+    <StackPanel>
+        <TextBlock Text="The quick brown fox jumps over the lazy dog" />
+        <TextBlock
+            Width="10"
+            Margin="5"
+            FontSize="7"
+            Text="The quick brown fox jumps over the lazy dog" />
+        <TextBlock
+            Width="20"
+            Margin="5"
+            FontSize="7"
+            Text="The quick brown fox jumps over the lazy dog" />
+        <TextBlock
+            Width="30"
+            Margin="5"
+            FontSize="7"
+            Text="The quick brown fox jumps over the lazy dog" />
+        <TextBlock
+            Width="40"
+            Margin="5"
+            FontSize="7"
+            Text="The quick brown fox jumps over the lazy dog" />
+        <TextBlock
+            Width="50"
+            Margin="5"
+            FontSize="7"
+            Text="The quick brown fox jumps over the lazy dog" />
+        <TextBlock
+            Width="60"
+            Margin="5"
+            FontSize="7"
+            Text="The quick brown fox jumps over the lazy dog" />
+        <TextBlock
+            Width="70"
+            Margin="5"
+            FontSize="7"
+            Text="The quick brown fox jumps over the lazy dog" />
+        <TextBlock
+            Width="80"
+            Margin="5"
+            FontSize="7"
+            Text="The quick brown fox jumps over the lazy dog" />
+    </StackPanel>
 
 </UserControl>

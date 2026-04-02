@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewGroupedChanging"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewGroupedChanging"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive.com/android"
@@ -11,77 +12,75 @@
     xmlns:uBehaviors="using:Uno.UI.Samples.Behaviors"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     mc:Ignorable="d android not_win">
-	<UserControl.Resources>
+    <UserControl.Resources>
 
-		<Style x:Key="GroupHeaderContainerStyle"
-		    TargetType="ListViewHeaderItem">
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate>
-						<Border BorderBrush="Orange"
-						    BorderThickness="10">
-							<ContentPresenter not_win:Content="{TemplateBinding Content}"
-							    not_win:ContentTemplate="{TemplateBinding ContentTemplate}"
-							    not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
-						</Border>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+        <Style x:Key="GroupHeaderContainerStyle" TargetType="ListViewHeaderItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border BorderBrush="Orange" BorderThickness="10">
+                            <ContentPresenter
+                                not_win:Content="{TemplateBinding Content}"
+                                not_win:ContentTemplate="{TemplateBinding ContentTemplate}"
+                                not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-	</UserControl.Resources>
+    </UserControl.Resources>
 
-	<controls:SampleControl SampleDescription="Description for sample of ListViewGroupedChanging">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<Border Background="Red">
-					<ListView Footer="Footer"
-					    Header="Header"
-					    ItemsSource="{Binding [ChangingGroupedSampleItemsAsSource]}">
-						<ListView.HeaderTemplate>
-							<DataTemplate>
-								<Border HorizontalAlignment="Stretch"
-								    Background="Green">
-									<TextBlock Margin="20"
-									    Text="{Binding}" />
-								</Border>
-							</DataTemplate>
-						</ListView.HeaderTemplate>
-						<ListView.FooterTemplate>
-							<DataTemplate>
-								<Border Background="Purple">
-									<TextBlock Margin="20"
-									    Text="{Binding}" />
-								</Border>
-							</DataTemplate>
-						</ListView.FooterTemplate>
-						<ListView.GroupStyle>
-							<GroupStyle HeaderContainerStyle="{StaticResource GroupHeaderContainerStyle}"
-							    HidesIfEmpty="True">
-								<GroupStyle.HeaderTemplate>
-									<DataTemplate>
-										<Border Background="Blue">
-											<TextBlock Height="40"
-											    FontSize="32"
-											    Foreground="Red"
-											    Text="{Binding Key}" />
-										</Border>
-									</DataTemplate>
-								</GroupStyle.HeaderTemplate>
-							</GroupStyle>
-						</ListView.GroupStyle>
-						<ListView.ItemTemplate>
-							<DataTemplate>
-								<Border Background="White">
-									<TextBlock Height="16"
-									    Foreground="Blue"
-									    Text="{Binding}" />
-								</Border>
-							</DataTemplate>
-						</ListView.ItemTemplate>
-					</ListView>
-				</Border>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="Description for sample of ListViewGroupedChanging">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <Border Background="Red">
+                    <ListView
+                        Footer="Footer"
+                        Header="Header"
+                        ItemsSource="{Binding [ChangingGroupedSampleItemsAsSource]}">
+                        <ListView.HeaderTemplate>
+                            <DataTemplate>
+                                <Border HorizontalAlignment="Stretch" Background="Green">
+                                    <TextBlock Margin="20" Text="{Binding}" />
+                                </Border>
+                            </DataTemplate>
+                        </ListView.HeaderTemplate>
+                        <ListView.FooterTemplate>
+                            <DataTemplate>
+                                <Border Background="Purple">
+                                    <TextBlock Margin="20" Text="{Binding}" />
+                                </Border>
+                            </DataTemplate>
+                        </ListView.FooterTemplate>
+                        <ListView.GroupStyle>
+                            <GroupStyle HeaderContainerStyle="{StaticResource GroupHeaderContainerStyle}" HidesIfEmpty="True">
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Border Background="Blue">
+                                            <TextBlock
+                                                Height="40"
+                                                FontSize="32"
+                                                Foreground="Red"
+                                                Text="{Binding Key}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                            </GroupStyle>
+                        </ListView.GroupStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="White">
+                                    <TextBlock
+                                        Height="16"
+                                        Foreground="Blue"
+                                        Text="{Binding}" />
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Border>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

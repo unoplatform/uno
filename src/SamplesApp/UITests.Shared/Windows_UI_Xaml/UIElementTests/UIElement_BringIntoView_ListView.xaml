@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml.UIElementTests.UIElement_BringIntoView_ListView"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.UIElementTests.UIElement_BringIntoView_ListView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,33 +8,33 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid Padding="12"
-	    RowSpacing="8">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<Button Click="BringRandomItemIntoView_Click"
-		    Content="Bring random item into view" />
-		<TextBlock x:Name="StatusTextBlock"
-		    Grid.Row="1"
-		    Text="" />
-		<ListView x:Name="List"
-		    Grid.Row="2"
-		    Height="60"
-		    BorderBrush="Black"
-		    BorderThickness="1">
-			<ListViewItem>Item 1</ListViewItem>
-			<ListViewItem>Item 2</ListViewItem>
-			<ListViewItem>Item 3</ListViewItem>
-			<ListViewItem>Item 4</ListViewItem>
-			<ListViewItem>Item 5</ListViewItem>
-			<ListViewItem>Item 6</ListViewItem>
-			<ListViewItem>Item 7</ListViewItem>
-			<ListViewItem>Item 8</ListViewItem>
-			<ListViewItem>Item 9</ListViewItem>
-			<ListViewItem>Item 10</ListViewItem>
-		</ListView>
-	</Grid>
+    <Grid Padding="12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Button Click="BringRandomItemIntoView_Click" Content="Bring random item into view" />
+        <TextBlock
+            x:Name="StatusTextBlock"
+            Grid.Row="1"
+            Text="" />
+        <ListView
+            x:Name="List"
+            Grid.Row="2"
+            Height="60"
+            BorderBrush="Black"
+            BorderThickness="1">
+            <ListViewItem>Item 1</ListViewItem>
+            <ListViewItem>Item 2</ListViewItem>
+            <ListViewItem>Item 3</ListViewItem>
+            <ListViewItem>Item 4</ListViewItem>
+            <ListViewItem>Item 5</ListViewItem>
+            <ListViewItem>Item 6</ListViewItem>
+            <ListViewItem>Item 7</ListViewItem>
+            <ListViewItem>Item 8</ListViewItem>
+            <ListViewItem>Item 9</ListViewItem>
+            <ListViewItem>Item 10</ListViewItem>
+        </ListView>
+    </Grid>
 </Page>

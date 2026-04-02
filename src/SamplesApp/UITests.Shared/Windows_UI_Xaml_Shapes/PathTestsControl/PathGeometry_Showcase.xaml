@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl.PathGeometry_Showcase"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl.PathGeometry_Showcase"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,194 +7,193 @@
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
-	<Grid Padding="20"
-	    ColumnSpacing="20"
-	    RowSpacing="20">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
+    <Grid
+        Padding="20"
+        ColumnSpacing="20"
+        RowSpacing="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-		<!--  Header  -->
-		<TextBlock Grid.Row="0"
-		    Grid.ColumnSpan="4"
-		    FontSize="28"
-		    FontWeight="SemiBold"
-		    Text="WinUI PathGeometry Segment Showcase" />
+        <!--  Header  -->
+        <TextBlock
+            Grid.Row="0"
+            Grid.ColumnSpan="4"
+            FontSize="28"
+            FontWeight="SemiBold"
+            Text="WinUI PathGeometry Segment Showcase" />
 
-		<!--  LineSegment  -->
-		<StackPanel Grid.Row="1"
-		    Grid.Column="0"
-		    Spacing="6">
-			<TextBlock FontWeight="Bold"
-			    Text="LineSegment" />
-			<Path Stroke="DarkBlue"
-			    StrokeThickness="2">
-				<Path.Data>
-					<PathGeometry>
-						<PathFigure StartPoint="20,60">
-							<LineSegment Point="230,60" />
-						</PathFigure>
-					</PathGeometry>
-				</Path.Data>
-			</Path>
-		</StackPanel>
+        <!--  LineSegment  -->
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="0"
+            Spacing="6">
+            <TextBlock FontWeight="Bold" Text="LineSegment" />
+            <Path Stroke="DarkBlue" StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="20,60">
+                            <LineSegment Point="230,60" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </StackPanel>
 
-		<!--  PolyLineSegment  -->
-		<StackPanel Grid.Row="1"
-		    Grid.Column="1"
-		    Spacing="6">
-			<TextBlock FontWeight="Bold"
-			    Text="PolyLineSegment" />
-			<Path Stroke="DarkGreen"
-			    StrokeThickness="2">
-				<Path.Data>
-					<PathGeometry>
-						<PathFigure StartPoint="20,100">
-							<PolyLineSegment Points="60,20 120,100 180,40 230,100" />
-						</PathFigure>
-					</PathGeometry>
-				</Path.Data>
-			</Path>
-		</StackPanel>
+        <!--  PolyLineSegment  -->
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="1"
+            Spacing="6">
+            <TextBlock FontWeight="Bold" Text="PolyLineSegment" />
+            <Path Stroke="DarkGreen" StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="20,100">
+                            <PolyLineSegment Points="60,20 120,100 180,40 230,100" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </StackPanel>
 
-		<!--  BezierSegment (cubic)  -->
-		<StackPanel Grid.Row="1"
-		    Grid.Column="2"
-		    Spacing="6">
-			<TextBlock FontWeight="Bold"
-			    Text="BezierSegment (Cubic)" />
-			<Path Stroke="Crimson"
-			    StrokeThickness="2">
-				<Path.Data>
-					<PathGeometry>
-						<PathFigure StartPoint="20,100">
-							<BezierSegment Point1="80,20"
-							    Point2="170,20"
-							    Point3="230,100" />
-						</PathFigure>
-					</PathGeometry>
-				</Path.Data>
-			</Path>
-		</StackPanel>
+        <!--  BezierSegment (cubic)  -->
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="2"
+            Spacing="6">
+            <TextBlock FontWeight="Bold" Text="BezierSegment (Cubic)" />
+            <Path Stroke="Crimson" StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="20,100">
+                            <BezierSegment
+                                Point1="80,20"
+                                Point2="170,20"
+                                Point3="230,100" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </StackPanel>
 
-		<!--  PolyBezierSegment  -->
-		<StackPanel Grid.Row="1"
-		    Grid.Column="3"
-		    Spacing="6">
-			<TextBlock FontWeight="Bold"
-			    Text="PolyBezierSegment" />
-			<Path Stroke="Purple"
-			    StrokeThickness="2">
-				<Path.Data>
-					<PathGeometry>
-						<PathFigure StartPoint="20,120">
-							<!--  Each group of 3 points defines one cubic Bezier  -->
-							<PolyBezierSegment Points="                                 60,20 120,20 160,120                                 180,220 220,20 230,120" />
-						</PathFigure>
-					</PathGeometry>
-				</Path.Data>
-			</Path>
-		</StackPanel>
+        <!--  PolyBezierSegment  -->
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="3"
+            Spacing="6">
+            <TextBlock FontWeight="Bold" Text="PolyBezierSegment" />
+            <Path Stroke="Purple" StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="20,120">
+                            <!--  Each group of 3 points defines one cubic Bezier  -->
+                            <PolyBezierSegment Points="                                 60,20 120,20 160,120                                 180,220 220,20 230,120" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </StackPanel>
 
-		<!--  QuadraticBezierSegment  -->
-		<StackPanel Grid.Row="2"
-		    Grid.Column="0"
-		    Spacing="6">
-			<TextBlock FontWeight="Bold"
-			    Text="QuadraticBezierSegment" />
-			<Path Stroke="DarkOrange"
-			    StrokeThickness="2">
-				<Path.Data>
-					<PathGeometry>
-						<PathFigure StartPoint="20,100">
-							<QuadraticBezierSegment Point1="125,20"
-							    Point2="230,100" />
-						</PathFigure>
-					</PathGeometry>
-				</Path.Data>
-			</Path>
-		</StackPanel>
+        <!--  QuadraticBezierSegment  -->
+        <StackPanel
+            Grid.Row="2"
+            Grid.Column="0"
+            Spacing="6">
+            <TextBlock FontWeight="Bold" Text="QuadraticBezierSegment" />
+            <Path Stroke="DarkOrange" StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="20,100">
+                            <QuadraticBezierSegment Point1="125,20" Point2="230,100" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </StackPanel>
 
-		<!--  PolyQuadraticBezierSegment  -->
-		<StackPanel Grid.Row="2"
-		    Grid.Column="1"
-		    Spacing="6">
-			<TextBlock FontWeight="Bold"
-			    Text="PolyQuadraticBezierSegment" />
-			<Path Stroke="Teal"
-			    StrokeThickness="2">
-				<Path.Data>
-					<PathGeometry>
-						<PathFigure StartPoint="20,120">
-							<!--  Each pair of points defines one quadratic Bezier  -->
-							<PolyQuadraticBezierSegment Points="                                 100,20 160,120                                 200,220 230,120" />
-						</PathFigure>
-					</PathGeometry>
-				</Path.Data>
-			</Path>
-		</StackPanel>
+        <!--  PolyQuadraticBezierSegment  -->
+        <StackPanel
+            Grid.Row="2"
+            Grid.Column="1"
+            Spacing="6">
+            <TextBlock FontWeight="Bold" Text="PolyQuadraticBezierSegment" />
+            <Path Stroke="Teal" StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="20,120">
+                            <!--  Each pair of points defines one quadratic Bezier  -->
+                            <PolyQuadraticBezierSegment Points="                                 100,20 160,120                                 200,220 230,120" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </StackPanel>
 
-		<!--  ArcSegment  -->
-		<StackPanel Grid.Row="2"
-		    Grid.Column="2"
-		    Spacing="6">
-			<TextBlock FontWeight="Bold"
-			    Text="ArcSegment" />
-			<Path Fill="Transparent"
-			    Stroke="Brown"
-			    StrokeThickness="2">
-				<Path.Data>
-					<PathGeometry>
-						<PathFigure StartPoint="20,120">
-							<ArcSegment IsLargeArc="False"
-							    Point="230,120"
-							    RotationAngle="0"
-							    Size="100,60"
-							    SweepDirection="Clockwise" />
-						</PathFigure>
-					</PathGeometry>
-				</Path.Data>
-			</Path>
-		</StackPanel>
+        <!--  ArcSegment  -->
+        <StackPanel
+            Grid.Row="2"
+            Grid.Column="2"
+            Spacing="6">
+            <TextBlock FontWeight="Bold" Text="ArcSegment" />
+            <Path
+                Fill="Transparent"
+                Stroke="Brown"
+                StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="20,120">
+                            <ArcSegment
+                                IsLargeArc="False"
+                                Point="230,120"
+                                RotationAngle="0"
+                                Size="100,60"
+                                SweepDirection="Clockwise" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </StackPanel>
 
-		<!--  Mixed Segments  -->
-		<StackPanel Grid.Row="2"
-		    Grid.Column="3"
-		    Spacing="6">
-			<TextBlock FontWeight="Bold"
-			    Text="Mixed Segments" />
-			<Path Fill="#40ADD8E6"
-			    Stroke="Black"
-			    StrokeThickness="2">
-				<Path.Data>
-					<PathGeometry>
-						<PathFigure IsClosed="True"
-						    StartPoint="40,140">
-							<LineSegment Point="100,40" />
-							<QuadraticBezierSegment Point1="160,0"
-							    Point2="200,60" />
-							<BezierSegment Point1="220,100"
-							    Point2="240,160"
-							    Point3="200,180" />
-							<ArcSegment IsLargeArc="False"
-							    Point="40,140"
-							    RotationAngle="0"
-							    Size="100,70"
-							    SweepDirection="Counterclockwise" />
-						</PathFigure>
-					</PathGeometry>
-				</Path.Data>
-			</Path>
-		</StackPanel>
-	</Grid>
+        <!--  Mixed Segments  -->
+        <StackPanel
+            Grid.Row="2"
+            Grid.Column="3"
+            Spacing="6">
+            <TextBlock FontWeight="Bold" Text="Mixed Segments" />
+            <Path
+                Fill="#40ADD8E6"
+                Stroke="Black"
+                StrokeThickness="2">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure IsClosed="True" StartPoint="40,140">
+                            <LineSegment Point="100,40" />
+                            <QuadraticBezierSegment Point1="160,0" Point2="200,60" />
+                            <BezierSegment
+                                Point1="220,100"
+                                Point2="240,160"
+                                Point3="200,180" />
+                            <ArcSegment
+                                IsLargeArc="False"
+                                Point="40,140"
+                                RotationAngle="0"
+                                Size="100,70"
+                                SweepDirection="Counterclockwise" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </StackPanel>
+    </Grid>
 </UserControl>
 

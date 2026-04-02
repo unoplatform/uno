@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_Layout"
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_Layout"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,53 +7,49 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="120" />
-			<ColumnDefinition Width="120" />
-			<ColumnDefinition Width="120" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<Grid.Resources>
-			<DataTemplate x:Key="TextItemTemplate">
-				<Border BorderBrush="Black"
-				    BorderThickness="1">
-					<TextBlock Foreground="DarkBlue"
-					    Text="{Binding}"
-					    TextWrapping="Wrap" />
-				</Border>
-			</DataTemplate>
-		</Grid.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.Resources>
+            <DataTemplate x:Key="TextItemTemplate">
+                <Border BorderBrush="Black" BorderThickness="1">
+                    <TextBlock
+                        Foreground="DarkBlue"
+                        Text="{Binding}"
+                        TextWrapping="Wrap" />
+                </Border>
+            </DataTemplate>
+        </Grid.Resources>
 
-		<TextBlock Grid.ColumnSpan="4">
-			Those 3 columns should be identical...
-		</TextBlock>
+        <TextBlock Grid.ColumnSpan="4">
+            Those 3 columns should be identical...
+        </TextBlock>
 
-		<ScrollViewer Grid.Row="1"
-		    Grid.Column="0">
-			<Grid Margin="16">
-				<ItemsControl ItemTemplate="{StaticResource TextItemTemplate}"
-				    ItemsSource="{Binding VariableLengthItems}" />
-			</Grid>
-		</ScrollViewer>
-		<ScrollViewer Grid.Row="1"
-		    Grid.Column="1">
-			<Border Padding="16">
-				<Grid>
-					<ItemsControl ItemTemplate="{StaticResource TextItemTemplate}"
-					    ItemsSource="{Binding VariableLengthItems}" />
-				</Grid>
-			</Border>
-		</ScrollViewer>
-		<ScrollViewer Grid.Row="1"
-		    Grid.Column="2">
-			<ItemsControl Margin="16"
-			    ItemTemplate="{StaticResource TextItemTemplate}"
-			    ItemsSource="{Binding VariableLengthItems}" />
-		</ScrollViewer>
-	</Grid>
+        <ScrollViewer Grid.Row="1" Grid.Column="0">
+            <Grid Margin="16">
+                <ItemsControl ItemTemplate="{StaticResource TextItemTemplate}" ItemsSource="{Binding VariableLengthItems}" />
+            </Grid>
+        </ScrollViewer>
+        <ScrollViewer Grid.Row="1" Grid.Column="1">
+            <Border Padding="16">
+                <Grid>
+                    <ItemsControl ItemTemplate="{StaticResource TextItemTemplate}" ItemsSource="{Binding VariableLengthItems}" />
+                </Grid>
+            </Border>
+        </ScrollViewer>
+        <ScrollViewer Grid.Row="1" Grid.Column="2">
+            <ItemsControl
+                Margin="16"
+                ItemTemplate="{StaticResource TextItemTemplate}"
+                ItemsSource="{Binding VariableLengthItems}" />
+        </ScrollViewer>
+    </Grid>
 </Page>

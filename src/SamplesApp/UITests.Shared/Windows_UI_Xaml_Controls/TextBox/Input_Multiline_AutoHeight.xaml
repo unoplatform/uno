@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Multiline_AutoHeight"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Multiline_AutoHeight"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive/android"
@@ -12,36 +13,33 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android not_win">
 
-	<controls:SampleControl SampleDescription="The blue grid only provides a non infinite height for the TextBox. The TextBox shouldn't match the blue grid's size if there's no text in it.">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel>
-					<Grid Height="150"
-					    Background="CornflowerBlue">
-						<TextBox x:Name="Test"
-						    VerticalAlignment="Top"
-						    not_win:EnterCommand="{Binding [MyInputEnterCommand]}"
-						    AcceptsReturn="True"
-						    Header="Enter data:"
-						    Text="{Binding [MyInput]}" />
-					</Grid>
-					<StackPanel Orientation="Horizontal"
-					    Spacing="8">
-						<Button x:Name="btnSingle"
-						    Click="BtnSingle_OnClick">
-							Set Single Line
-						</Button>
-						<Button x:Name="btnDouble"
-						    Click="BtnDouble_OnClick">
-							Set Double Line
-						</Button>
-					</StackPanel>
-					<TextBlock Text="Result :" />
-					<TextBlock Text="{Binding [Result]}" />
-					<TextBlock Text="Command Result :" />
-					<TextBlock Text="{Binding [CommandResult]}" />
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="The blue grid only provides a non infinite height for the TextBox. The TextBox shouldn't match the blue grid's size if there's no text in it.">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <StackPanel>
+                    <Grid Height="150" Background="CornflowerBlue">
+                        <TextBox
+                            x:Name="Test"
+                            VerticalAlignment="Top"
+                            not_win:EnterCommand="{Binding [MyInputEnterCommand]}"
+                            AcceptsReturn="True"
+                            Header="Enter data:"
+                            Text="{Binding [MyInput]}" />
+                    </Grid>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button x:Name="btnSingle" Click="BtnSingle_OnClick">
+                            Set Single Line
+                        </Button>
+                        <Button x:Name="btnDouble" Click="BtnDouble_OnClick">
+                            Set Double Line
+                        </Button>
+                    </StackPanel>
+                    <TextBlock Text="Result :" />
+                    <TextBlock Text="{Binding [Result]}" />
+                    <TextBlock Text="Command Result :" />
+                    <TextBlock Text="{Binding [CommandResult]}" />
+                </StackPanel>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

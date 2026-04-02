@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePickerFlyout_MinYear"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePickerFlyout_MinYear"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,21 +9,21 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<!--  DatePicker is broken: https://github.com/unoplatform/uno/issues/188  -->
-		<!--  Using a Button with DatePickerFlyout to simulate a DatePicker  -->
-		<TextBlock FontSize="16">
-			You should not be able to pick a year before 2020. The default date should be feb 2th (groundhog day!), 2020.
-		</TextBlock>
-		<Button x:Name="TestDatePickerFlyoutButton"
-		    Content="Open DatePickerFlyout">
-			<Button.Flyout>
-				<DatePickerFlyout x:Name="TestDatePickerFlyout"
-				    Date="{Binding Date, Mode=TwoWay}"
-				    MinYear="{Binding Date}" />
-			</Button.Flyout>
-		</Button>
-		<TextBlock>
-			Picked Date:<Run Text="{Binding Date}" /></TextBlock>
-	</StackPanel>
+    <StackPanel>
+        <!--  DatePicker is broken: https://github.com/unoplatform/uno/issues/188  -->
+        <!--  Using a Button with DatePickerFlyout to simulate a DatePicker  -->
+        <TextBlock FontSize="16">
+            You should not be able to pick a year before 2020. The default date should be feb 2th (groundhog day!), 2020.
+        </TextBlock>
+        <Button x:Name="TestDatePickerFlyoutButton" Content="Open DatePickerFlyout">
+            <Button.Flyout>
+                <DatePickerFlyout
+                    x:Name="TestDatePickerFlyout"
+                    Date="{Binding Date, Mode=TwoWay}"
+                    MinYear="{Binding Date}" />
+            </Button.Flyout>
+        </Button>
+        <TextBlock>
+            Picked Date:<Run Text="{Binding Date}" /></TextBlock>
+    </StackPanel>
 </UserControl>

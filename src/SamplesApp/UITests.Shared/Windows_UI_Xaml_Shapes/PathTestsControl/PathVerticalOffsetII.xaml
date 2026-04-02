@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl.PathVerticalOffsetII"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl.PathVerticalOffsetII"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -12,20 +13,19 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<controls:SampleControl SampleDescription="Path below element with x.5 height, should not see gap">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel Width="400"
-				    Background="Thistle">
-					<Rectangle Height="50.5"
-					    Fill="Black" />
-					<Path HorizontalAlignment="Stretch"
-					    VerticalAlignment="Top"
-					    Data="m 0,51.649 c 40.059,0 83.304,-4.796 83.306,-4.796 l 0,-46.853 -166.353,0 0,46.853 c 0.003,0 42.988,4.796 83.047,4.796"
-					    Fill="Green"
-					    Stretch="Fill" />
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="Path below element with x.5 height, should not see gap">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <StackPanel Width="400" Background="Thistle">
+                    <Rectangle Height="50.5" Fill="Black" />
+                    <Path
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        Data="m 0,51.649 c 40.059,0 83.304,-4.796 83.306,-4.796 l 0,-46.853 -166.353,0 0,46.853 c 0.003,0 42.988,4.796 83.047,4.796"
+                        Fill="Green"
+                        Stretch="Fill" />
+                </StackPanel>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

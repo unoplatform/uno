@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Controls.SimpleText_MaxWidth_NaN"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Controls.SimpleText_MaxWidth_NaN"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -12,16 +13,18 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<UserControl.Resources>
-		<converters:FromNullableBoolToDefaultValueConverter x:Key="DummyConverter"
-		    NullOrFalseValue="NaN"
-		    TrueValue="NaN" />
-	</UserControl.Resources>
+    <UserControl.Resources>
+        <converters:FromNullableBoolToDefaultValueConverter
+            x:Key="DummyConverter"
+            NullOrFalseValue="NaN"
+            TrueValue="NaN" />
+    </UserControl.Resources>
 
-	<StackPanel>
-		<TextBlock MaxWidth="{Binding Converter={StaticResource DummyConverter}}"
-		    HorizontalAlignment="Left"
-		    Text="This is my Text that should not wrap" />
-	</StackPanel>
+    <StackPanel>
+        <TextBlock
+            MaxWidth="{Binding Converter={StaticResource DummyConverter}}"
+            HorizontalAlignment="Left"
+            Text="This is my Text that should not wrap" />
+    </StackPanel>
 
 </UserControl>

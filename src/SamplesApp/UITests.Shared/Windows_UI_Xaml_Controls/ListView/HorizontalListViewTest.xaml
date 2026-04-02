@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.HorizontalListViewTest"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.HorizontalListViewTest"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:TODO="http://uno.ui/TODO"
@@ -13,26 +14,26 @@
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     mc:Ignorable="d ios android wasm TODO">
 
-	<controls:SampleControl SampleDescription="HorizontalListViewTest">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ios:TextBlock Text="HorizontalListView is only used on Android." />
-				<win:TextBlock Text="HorizontalListView is only used on Android." />
-				<wasm:TextBlock Text="HorizontalListView is only used on Android." />
-				<android:HorizontalListView Height="50"
-				    uBehaviors:ListViewBaseCommand.Command="{Binding [DoSomething]}"
-				    IsItemClickEnabled="true"
-				    ItemsSource="{Binding [SampleItems]}"
-				    SelectedItem="{Binding [SelectedItem]}"
-				    SelectionMode="Single">
-					<android:HorizontalListView.ItemTemplate>
-						<DataTemplate>
-							<TextBlock Height="20"
-							    Text="{Binding}" />
-						</DataTemplate>
-					</android:HorizontalListView.ItemTemplate>
-				</android:HorizontalListView>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="HorizontalListViewTest">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <ios:TextBlock Text="HorizontalListView is only used on Android." />
+                <win:TextBlock Text="HorizontalListView is only used on Android." />
+                <wasm:TextBlock Text="HorizontalListView is only used on Android." />
+                <android:HorizontalListView
+                    Height="50"
+                    uBehaviors:ListViewBaseCommand.Command="{Binding [DoSomething]}"
+                    IsItemClickEnabled="true"
+                    ItemsSource="{Binding [SampleItems]}"
+                    SelectedItem="{Binding [SelectedItem]}"
+                    SelectionMode="Single">
+                    <android:HorizontalListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Height="20" Text="{Binding}" />
+                        </DataTemplate>
+                    </android:HorizontalListView.ItemTemplate>
+                </android:HorizontalListView>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

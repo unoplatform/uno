@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_Nested"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_Nested"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,61 +8,66 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid x:Name="_theRoot">
+    <Grid x:Name="_theRoot">
 
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition />
-			<ColumnDefinition />
-		</Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition />
-			<RowDefinition Height="Auto" />
-			<RowDefinition />
-			<RowDefinition Height="20" />
-		</Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
 
-		<TextBlock Grid.Row="0"
-		    Grid.Column="0"
-		    Text="Drag sources" />
-		<Border x:Name="ParentDragSource"
-		    Grid.Row="1"
-		    Grid.Column="0"
-		    Padding="15"
-		    Background="DeepPink"
-		    CanDrag="True">
-			<Border x:Name="NestedDragSource"
-			    Width="100"
-			    Height="100"
-			    Background="LightPink"
-			    CanDrag="True" />
-		</Border>
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="0"
+            Text="Drag sources" />
+        <Border
+            x:Name="ParentDragSource"
+            Grid.Row="1"
+            Grid.Column="0"
+            Padding="15"
+            Background="DeepPink"
+            CanDrag="True">
+            <Border
+                x:Name="NestedDragSource"
+                Width="100"
+                Height="100"
+                Background="LightPink"
+                CanDrag="True" />
+        </Border>
 
-		<TextBlock Grid.Row="2"
-		    Grid.Column="0"
-		    Text="Drop target" />
-		<Border x:Name="ParentDropTarget"
-		    Grid.Row="3"
-		    Grid.Column="0"
-		    AllowDrop="True"
-		    Background="DeepSkyBlue">
-			<Border x:Name="NestedDropTarget"
-			    Width="100"
-			    Height="100"
-			    AllowDrop="True"
-			    Background="DarkBlue" />
-		</Border>
+        <TextBlock
+            Grid.Row="2"
+            Grid.Column="0"
+            Text="Drop target" />
+        <Border
+            x:Name="ParentDropTarget"
+            Grid.Row="3"
+            Grid.Column="0"
+            AllowDrop="True"
+            Background="DeepSkyBlue">
+            <Border
+                x:Name="NestedDropTarget"
+                Width="100"
+                Height="100"
+                AllowDrop="True"
+                Background="DarkBlue" />
+        </Border>
 
-		<ScrollViewer Grid.RowSpan="5"
-		    Grid.Column="1">
-			<TextBlock x:Name="Output"
-			    TextWrapping="Wrap" />
-		</ScrollViewer>
+        <ScrollViewer Grid.RowSpan="5" Grid.Column="1">
+            <TextBlock x:Name="Output" TextWrapping="Wrap" />
+        </ScrollViewer>
 
-		<CheckBox x:Name="Automated"
-		    HorizontalAlignment="Right"
-		    Content="Automated"
-		    IsChecked="False" />
-	</Grid>
+        <CheckBox
+            x:Name="Automated"
+            HorizontalAlignment="Right"
+            Content="Automated"
+            IsChecked="False" />
+    </Grid>
 </Page>

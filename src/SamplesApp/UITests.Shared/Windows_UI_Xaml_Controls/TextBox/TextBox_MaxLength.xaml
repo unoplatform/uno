@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_MaxLength"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_MaxLength"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,11 +8,12 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<TextBox x:Name="MaxLengthTextBox"
-		    Margin="5"
-		    IsSpellCheckEnabled="False"
-		    MaxLength="5"
-		    PlaceholderText="This TextBox can't contain more than 5 characters" />
-	</StackPanel>
+    <StackPanel>
+        <TextBox
+            x:Name="MaxLengthTextBox"
+            Margin="5"
+            IsSpellCheckEnabled="False"
+            MaxLength="5"
+            PlaceholderText="This TextBox can't contain more than 5 characters" />
+    </StackPanel>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_Unloaded"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_Unloaded"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,23 +9,23 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<Grid>
-		<StackPanel x:Name="outerPanel"
-		    VerticalAlignment="Center">
-			<Button x:Name="outerButton"
-			    Content="Open flyout">
-				<Button.Flyout>
-					<Flyout x:Name="MyFlyout">
-						<Border Width="100"
-						    Height="100"
-						    Background="Red">
-							<Button x:Name="innerButton"
-							    Click="OnUnloadParent"
-							    Content="Unload parent" />
-						</Border>
-					</Flyout>
-				</Button.Flyout>
-			</Button>
-		</StackPanel>
-	</Grid>
+    <Grid>
+        <StackPanel x:Name="outerPanel" VerticalAlignment="Center">
+            <Button x:Name="outerButton" Content="Open flyout">
+                <Button.Flyout>
+                    <Flyout x:Name="MyFlyout">
+                        <Border
+                            Width="100"
+                            Height="100"
+                            Background="Red">
+                            <Button
+                                x:Name="innerButton"
+                                Click="OnUnloadParent"
+                                Content="Unload parent" />
+                        </Border>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+        </StackPanel>
+    </Grid>
 </UserControl>

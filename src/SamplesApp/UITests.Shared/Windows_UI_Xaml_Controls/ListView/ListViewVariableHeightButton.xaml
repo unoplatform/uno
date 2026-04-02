@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewVariableHeightButton"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewVariableHeightButton"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -13,31 +14,34 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<controls:SampleControl SampleDescription="ListView with variable-height items containing buttons, buttons should be tappable.">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<Border Width="300"
-				    Height="400"
-				    BorderBrush="Blue"
-				    BorderThickness="2">
-					<ListView ItemsSource="{Binding VariableLengthItems}">
-						<ListView.ItemTemplate>
-							<DataTemplate>
-								<StackPanel>
-									<Border Width="125"
-									    BorderBrush="Red"
-									    BorderThickness="2">
-										<TextBlock Foreground="Red"
-										    Text="{Binding}"
-										    TextWrapping="Wrap" />
-									</Border>
-									<local:SubButtonsControl />
-								</StackPanel>
-							</DataTemplate>
-						</ListView.ItemTemplate>
-					</ListView>
-				</Border>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="ListView with variable-height items containing buttons, buttons should be tappable.">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <Border
+                    Width="300"
+                    Height="400"
+                    BorderBrush="Blue"
+                    BorderThickness="2">
+                    <ListView ItemsSource="{Binding VariableLengthItems}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <Border
+                                        Width="125"
+                                        BorderBrush="Red"
+                                        BorderThickness="2">
+                                        <TextBlock
+                                            Foreground="Red"
+                                            Text="{Binding}"
+                                            TextWrapping="Wrap" />
+                                    </Border>
+                                    <local:SubButtonsControl />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Border>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

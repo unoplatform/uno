@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_TextBox"
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_TextBox"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://platform.uno/android"
@@ -9,24 +10,26 @@
     d:DesignWidth="400"
     mc:Ignorable="d android">
 
-	<StackPanel Padding="20">
-		<TextBlock>
-			<Run>
-				Manual test description:
-				1. Press the button to show the dialog.
-				2. Once the dialog is open, press inside the text box so that the software keyboard appears. The dialog should adjust in size so that the buttons are still visible above the keyboard.
-				This test only needs to be run on platforms with touch input.
-			</Run>
-			<Run Text=" On Android, the test should be done twice, once with native popups enabled and once with managed popups instead." />
-		</TextBlock>
-		<android:CheckBox x:Name="EnableNativeCheckBox"
-		    Margin="5"
-		    Checked="OnEnableNativeCheckedChanged"
-		    Content="Enable native popups?"
-		    Unchecked="OnEnableNativeCheckedChanged" />
-		<Button Margin="5"
-		    Click="ShowContentDialog"
-		    Content="Show content dialog"
-		    FontSize="18" />
-	</StackPanel>
+    <StackPanel Padding="20">
+        <TextBlock>
+            <Run>
+                Manual test description:
+                1. Press the button to show the dialog.
+                2. Once the dialog is open, press inside the text box so that the software keyboard appears. The dialog should adjust in size so that the buttons are still visible above the keyboard.
+                This test only needs to be run on platforms with touch input.
+            </Run>
+            <Run Text=" On Android, the test should be done twice, once with native popups enabled and once with managed popups instead." />
+        </TextBlock>
+        <android:CheckBox
+            x:Name="EnableNativeCheckBox"
+            Margin="5"
+            Checked="OnEnableNativeCheckedChanged"
+            Content="Enable native popups?"
+            Unchecked="OnEnableNativeCheckedChanged" />
+        <Button
+            Margin="5"
+            Click="ShowContentDialog"
+            Content="Show content dialog"
+            FontSize="18" />
+    </StackPanel>
 </UserControl>

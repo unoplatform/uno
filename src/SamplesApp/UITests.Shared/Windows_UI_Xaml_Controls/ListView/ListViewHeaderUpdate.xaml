@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewHeaderUpdate"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewHeaderUpdate"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -12,17 +13,20 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<StackPanel>
-		<ToggleButton x:Name="ToggleButton"
-		    Content="Header"
-		    IsChecked="False" />
-		<Border HorizontalAlignment="Center"
-		    VerticalAlignment="Top"
-		    BorderBrush="Black"
-		    BorderThickness="3">
-			<ListView Width="100"
-			    Height="400"
-			    Header="{Binding ElementName=ToggleButton, Path=IsChecked}" />
-		</Border>
-	</StackPanel>
+    <StackPanel>
+        <ToggleButton
+            x:Name="ToggleButton"
+            Content="Header"
+            IsChecked="False" />
+        <Border
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            BorderBrush="Black"
+            BorderThickness="3">
+            <ListView
+                Width="100"
+                Height="400"
+                Header="{Binding ElementName=ToggleButton, Path=IsChecked}" />
+        </Border>
+    </StackPanel>
 </UserControl>

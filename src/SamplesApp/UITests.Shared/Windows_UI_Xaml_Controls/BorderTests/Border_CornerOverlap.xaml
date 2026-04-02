@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.BorderTests.Border_CornerOverlap"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.BorderTests.Border_CornerOverlap"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,65 +9,68 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
+    <StackPanel>
 
-		<TextBlock FontSize="22">These squares:</TextBlock>
-		<StackPanel Orientation="Horizontal"
-		    Spacing="30">
-			<Border Width="100"
-			    Height="100"
-			    HorizontalAlignment="Center"
-			    VerticalAlignment="Center"
-			    Background="Red"
-			    BorderBrush="#88000000"
-			    BorderThickness="10,20,30,40" />
-			<Border Width="100"
-			    Height="100"
-			    HorizontalAlignment="Center"
-			    VerticalAlignment="Center"
-			    Background="Red"
-			    BorderBrush="#88000000"
-			    BorderThickness="10,0,0,40" />
-			<Border Width="100"
-			    Height="100"
-			    HorizontalAlignment="Center"
-			    VerticalAlignment="Center"
-			    Background="Red"
-			    BorderBrush="#88000000"
-			    BorderThickness="10,0,0,40"
-			    CornerRadius="0,12,0,0" />
-		</StackPanel>
+        <TextBlock FontSize="22">These squares:</TextBlock>
+        <StackPanel Orientation="Horizontal" Spacing="30">
+            <Border
+                Width="100"
+                Height="100"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="Red"
+                BorderBrush="#88000000"
+                BorderThickness="10,20,30,40" />
+            <Border
+                Width="100"
+                Height="100"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="Red"
+                BorderBrush="#88000000"
+                BorderThickness="10,0,0,40" />
+            <Border
+                Width="100"
+                Height="100"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="Red"
+                BorderBrush="#88000000"
+                BorderThickness="10,0,0,40"
+                CornerRadius="0,12,0,0" />
+        </StackPanel>
 
-		<TextBlock FontSize="22">Should be identical to those: (red center, gray border)</TextBlock>
-		<StackPanel Orientation="Horizontal"
-		    Spacing="30">
-			<Border Width="100"
-			    Height="100"
-			    Padding="10,20,30,40"
-			    HorizontalAlignment="Center"
-			    VerticalAlignment="Center"
-			    Background="#88000000"
-			    BorderBrush="#88000000">
-				<Rectangle Fill="Red" />
-			</Border>
-			<Border Width="100"
-			    Height="100"
-			    Padding="10,0,0,40"
-			    HorizontalAlignment="Center"
-			    VerticalAlignment="Center"
-			    Background="#88000000">
-				<Rectangle Fill="Red" />
-			</Border>
-			<Border Width="100"
-			    Height="100"
-			    Padding="10,0,0,40"
-			    HorizontalAlignment="Center"
-			    VerticalAlignment="Center"
-			    Background="#88000000"
-			    CornerRadius="0,12,0,0">
-				<Border Background="Red"
-				    CornerRadius="0,12,0,0" />
-			</Border>
-		</StackPanel>
-	</StackPanel>
+        <TextBlock FontSize="22">Should be identical to those: (red center, gray border)</TextBlock>
+        <StackPanel Orientation="Horizontal" Spacing="30">
+            <Border
+                Width="100"
+                Height="100"
+                Padding="10,20,30,40"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="#88000000"
+                BorderBrush="#88000000">
+                <Rectangle Fill="Red" />
+            </Border>
+            <Border
+                Width="100"
+                Height="100"
+                Padding="10,0,0,40"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="#88000000">
+                <Rectangle Fill="Red" />
+            </Border>
+            <Border
+                Width="100"
+                Height="100"
+                Padding="10,0,0,40"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="#88000000"
+                CornerRadius="0,12,0,0">
+                <Border Background="Red" CornerRadius="0,12,0,0" />
+            </Border>
+        </StackPanel>
+    </StackPanel>
 </UserControl>

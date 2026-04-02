@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Composition.CompositionPathTests"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Composition.CompositionPathTests"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,49 +9,58 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<GridView HorizontalAlignment="Left"
-	    VerticalAlignment="Top"
-	    SelectionMode="None">
-		<!--  We need to set a background in order for ToolTip to work  -->
-		<ContentPresenter x:Name="compPresenter1"
-		    Width="200"
-		    Height="200"
-		    Background="Transparent"
-		    ToolTipService.ToolTip="Basic Shape Visual" />
-		<ContentPresenter x:Name="compPresenter2"
-		    Width="200"
-		    Height="200"
-		    Background="Transparent"
-		    ToolTipService.ToolTip="Complex-Shape Shape Visual" />
-		<ContentPresenter x:Name="compPresenter3"
-		    Width="200"
-		    Height="200"
-		    Background="Transparent"
-		    ToolTipService.ToolTip="Multi-Shape Shape Visual" />
-		<ContentPresenter x:Name="compPresenter4"
-		    Width="200"
-		    Height="200"
-		    Background="Transparent"
-		    ToolTipService.ToolTip="Circle Path Geometry" />
-		<ContentPresenter x:Name="compPresenter5"
-		    Width="200"
-		    Height="200"
-		    Background="Transparent"
-		    ToolTipService.ToolTip="Rounded Rectangle Path Geometry" />
-		<ContentPresenter x:Name="compPresenter6"
-		    Width="200"
-		    Height="200"
-		    Background="Transparent"
-		    ToolTipService.ToolTip="Polygon Path Geometry" />
-		<ContentPresenter x:Name="compPresenter7"
-		    Width="200"
-		    Height="200"
-		    Background="Transparent"
-		    ToolTipService.ToolTip="Path Geometry Clipping" />
-		<ContentPresenter x:Name="compPresenter8"
-		    Width="200"
-		    Height="200"
-		    Background="Transparent"
-		    ToolTipService.ToolTip="Geometry Trimming Animation" />
-	</GridView>
+    <GridView
+        HorizontalAlignment="Left"
+        VerticalAlignment="Top"
+        SelectionMode="None">
+        <!--  We need to set a background in order for ToolTip to work  -->
+        <ContentPresenter
+            x:Name="compPresenter1"
+            Width="200"
+            Height="200"
+            Background="Transparent"
+            ToolTipService.ToolTip="Basic Shape Visual" />
+        <ContentPresenter
+            x:Name="compPresenter2"
+            Width="200"
+            Height="200"
+            Background="Transparent"
+            ToolTipService.ToolTip="Complex-Shape Shape Visual" />
+        <ContentPresenter
+            x:Name="compPresenter3"
+            Width="200"
+            Height="200"
+            Background="Transparent"
+            ToolTipService.ToolTip="Multi-Shape Shape Visual" />
+        <ContentPresenter
+            x:Name="compPresenter4"
+            Width="200"
+            Height="200"
+            Background="Transparent"
+            ToolTipService.ToolTip="Circle Path Geometry" />
+        <ContentPresenter
+            x:Name="compPresenter5"
+            Width="200"
+            Height="200"
+            Background="Transparent"
+            ToolTipService.ToolTip="Rounded Rectangle Path Geometry" />
+        <ContentPresenter
+            x:Name="compPresenter6"
+            Width="200"
+            Height="200"
+            Background="Transparent"
+            ToolTipService.ToolTip="Polygon Path Geometry" />
+        <ContentPresenter
+            x:Name="compPresenter7"
+            Width="200"
+            Height="200"
+            Background="Transparent"
+            ToolTipService.ToolTip="Path Geometry Clipping" />
+        <ContentPresenter
+            x:Name="compPresenter8"
+            Width="200"
+            Height="200"
+            Background="Transparent"
+            ToolTipService.ToolTip="Geometry Trimming Animation" />
+    </GridView>
 </UserControl>

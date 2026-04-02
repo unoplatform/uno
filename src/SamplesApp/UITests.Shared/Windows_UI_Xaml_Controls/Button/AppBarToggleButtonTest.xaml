@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBarToggleButtonTest"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBarToggleButtonTest"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -11,25 +12,26 @@
     d:DesignWidth="400"
     mc:Ignorable="d android">
 
-	<controls:SampleControl SampleDescription="AppBarToggleButton">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel>
-					<TextBlock Text="AppBarToggleButton with Text Content" />
-					<AppBarToggleButton Command="{Binding [SampleCommand]}"
-					    Content="Content - Text"
-					    Label="AppBarToggleButton - Label" />
-					<TextBlock Text="AppBarToggleButton with Rectangle Content (Green Rectangle)" />
-					<AppBarToggleButton Command="{Binding [SampleCommand]}"
-					    Label="AppBarToggleButton - Label">
-						<AppBarToggleButton.Content>
-							<Rectangle Width="25"
-							    Height="15"
-							    Fill="Green" />
-						</AppBarToggleButton.Content>
-					</AppBarToggleButton>
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="AppBarToggleButton">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <StackPanel>
+                    <TextBlock Text="AppBarToggleButton with Text Content" />
+                    <AppBarToggleButton
+                        Command="{Binding [SampleCommand]}"
+                        Content="Content - Text"
+                        Label="AppBarToggleButton - Label" />
+                    <TextBlock Text="AppBarToggleButton with Rectangle Content (Green Rectangle)" />
+                    <AppBarToggleButton Command="{Binding [SampleCommand]}" Label="AppBarToggleButton - Label">
+                        <AppBarToggleButton.Content>
+                            <Rectangle
+                                Width="25"
+                                Height="15"
+                                Fill="Green" />
+                        </AppBarToggleButton.Content>
+                    </AppBarToggleButton>
+                </StackPanel>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

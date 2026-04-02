@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.TabViewTests.TabViewBasicPage"
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.TabViewTests.TabViewBasicPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
@@ -8,40 +9,35 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid>
-		<controls:TabView HorizontalAlignment="Stretch"
-		    VerticalAlignment="Stretch">
-			<controls:TabViewItem Header="Home"
-			    IsClosable="False">
-				<controls:TabViewItem.IconSource>
-					<controls:SymbolIconSource Symbol="Home" />
-				</controls:TabViewItem.IconSource>
-			</controls:TabViewItem>
-			<controls:TabViewItem Header="Document 1">
-				<controls:TabViewItem.IconSource>
-					<controls:BitmapIconSource ShowAsMonochrome="False"
-					    UriSource="/Assets/ingredient1.png" />
-				</controls:TabViewItem.IconSource>
-			</controls:TabViewItem>
-			<controls:TabViewItem Header="Document 2">
-				<controls:TabViewItem.IconSource>
-					<controls:SymbolIconSource Symbol="Document" />
-				</controls:TabViewItem.IconSource>
-			</controls:TabViewItem>
-			<controls:TabViewItem Header="Document 3">
-				<controls:TabViewItem.IconSource>
-					<controls:SymbolIconSource Symbol="Document" />
-				</controls:TabViewItem.IconSource>
-			</controls:TabViewItem>
+    <Grid>
+        <controls:TabView HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <controls:TabViewItem Header="Home" IsClosable="False">
+                <controls:TabViewItem.IconSource>
+                    <controls:SymbolIconSource Symbol="Home" />
+                </controls:TabViewItem.IconSource>
+            </controls:TabViewItem>
+            <controls:TabViewItem Header="Document 1">
+                <controls:TabViewItem.IconSource>
+                    <controls:BitmapIconSource ShowAsMonochrome="False" UriSource="/Assets/ingredient1.png" />
+                </controls:TabViewItem.IconSource>
+            </controls:TabViewItem>
+            <controls:TabViewItem Header="Document 2">
+                <controls:TabViewItem.IconSource>
+                    <controls:SymbolIconSource Symbol="Document" />
+                </controls:TabViewItem.IconSource>
+            </controls:TabViewItem>
+            <controls:TabViewItem Header="Document 3">
+                <controls:TabViewItem.IconSource>
+                    <controls:SymbolIconSource Symbol="Document" />
+                </controls:TabViewItem.IconSource>
+            </controls:TabViewItem>
 
-			<controls:TabView.TabStripHeader>
-				<Grid x:Name="ShellTitlebarInset"
-				    Background="Transparent" />
-			</controls:TabView.TabStripHeader>
-			<controls:TabView.TabStripFooter>
-				<Grid x:Name="CustomDragRegion"
-				    Background="Transparent" />
-			</controls:TabView.TabStripFooter>
-		</controls:TabView>
-	</Grid>
+            <controls:TabView.TabStripHeader>
+                <Grid x:Name="ShellTitlebarInset" Background="Transparent" />
+            </controls:TabView.TabStripHeader>
+            <controls:TabView.TabStripFooter>
+                <Grid x:Name="CustomDragRegion" Background="Transparent" />
+            </controls:TabView.TabStripFooter>
+        </controls:TabView>
+    </Grid>
 </Page>

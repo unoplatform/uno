@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.GridTestsControl.Grid_ColSpan_Bottom"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.GridTestsControl.Grid_ColSpan_Bottom"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -10,26 +11,28 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<Grid Height="100"
-	    Background="#FF0000FF">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Grid Grid.Row="0"
-		    Grid.Column="0"
-		    Background="#FF00FF00" />
-		<Grid Grid.Row="0"
-		    Grid.Column="1"
-		    Background="#FFFF0000" />
-		<Grid Grid.Row="1"
-		    Grid.Column="0"
-		    Grid.ColumnSpan="2"
-		    Background="#FF7FFF00" />
-	</Grid>
+    <Grid Height="100" Background="#FF0000FF">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid
+            Grid.Row="0"
+            Grid.Column="0"
+            Background="#FF00FF00" />
+        <Grid
+            Grid.Row="0"
+            Grid.Column="1"
+            Background="#FFFF0000" />
+        <Grid
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Background="#FF7FFF00" />
+    </Grid>
 
 </UserControl>

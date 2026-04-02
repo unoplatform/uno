@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -11,49 +12,49 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<UserControl.Resources>
-		<uConverters:FromNullableBoolToVisibilityConverter x:Key="boolToVisibility" />
-	</UserControl.Resources>
+    <UserControl.Resources>
+        <uConverters:FromNullableBoolToVisibilityConverter x:Key="boolToVisibility" />
+    </UserControl.Resources>
 
-	<StackPanel Orientation="Horizontal">
-		<ListView Width="120"
-		    ItemsSource="12345">
-			<ListView.ItemTemplate>
-				<DataTemplate>
-					<StackPanel>
-						<Border Width="90"
-						    Height="210"
-						    Background="Red"
-						    Visibility="{Binding IsChecked, ElementName=CheckBox, Converter={StaticResource boolToVisibility}, FallbackValue=Collapsed}" />
-						<CheckBox x:Name="CheckBox"
-						    Content="IsExpanded" />
-					</StackPanel>
-				</DataTemplate>
-			</ListView.ItemTemplate>
-		</ListView>
-		<Border VerticalAlignment="Top"
-		    BorderBrush="Blue"
-		    BorderThickness="2">
-			<ListView Width="120"
-			    Height="390">
-				<ListView.HeaderTemplate>
-					<DataTemplate>
-						<StackPanel>
-							<CheckBox x:Name="CheckBoxHeader"
-							    Content="IsExpanded - Header" />
-							<Border Width="140"
-							    Height="230"
-							    Margin="5"
-							    Background="Green" />
-							<Border Width="90"
-							    Height="270"
-							    Margin="5"
-							    Background="Blue"
-							    Visibility="{Binding IsChecked, ElementName=CheckBoxHeader, Converter={StaticResource boolToVisibility}, FallbackValue=Collapsed}" />
-						</StackPanel>
-					</DataTemplate>
-				</ListView.HeaderTemplate>
-			</ListView>
-		</Border>
-	</StackPanel>
+    <StackPanel Orientation="Horizontal">
+        <ListView Width="120" ItemsSource="12345">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <Border
+                            Width="90"
+                            Height="210"
+                            Background="Red"
+                            Visibility="{Binding IsChecked, ElementName=CheckBox, Converter={StaticResource boolToVisibility}, FallbackValue=Collapsed}" />
+                        <CheckBox x:Name="CheckBox" Content="IsExpanded" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Border
+            VerticalAlignment="Top"
+            BorderBrush="Blue"
+            BorderThickness="2">
+            <ListView Width="120" Height="390">
+                <ListView.HeaderTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <CheckBox x:Name="CheckBoxHeader" Content="IsExpanded - Header" />
+                            <Border
+                                Width="140"
+                                Height="230"
+                                Margin="5"
+                                Background="Green" />
+                            <Border
+                                Width="90"
+                                Height="270"
+                                Margin="5"
+                                Background="Blue"
+                                Visibility="{Binding IsChecked, ElementName=CheckBoxHeader, Converter={StaticResource boolToVisibility}, FallbackValue=Collapsed}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.HeaderTemplate>
+            </ListView>
+        </Border>
+    </StackPanel>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests.MenuFlyout_DroidAltTab"
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests.MenuFlyout_DroidAltTab"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -8,20 +9,19 @@
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d android">
-	<Grid>
-		<CommandBar Content="asd"
-		    Style="{StaticResource NativeDefaultCommandBar}">
-			<CommandBar.PrimaryCommands>
-				<AppBarButton Content="Here">
-					<AppBarButton.Flyout>
-						<MenuFlyout android:UseNativePopup="True">
-							<MenuFlyoutItem Text="asd1" />
-							<MenuFlyoutItem Text="asd2" />
-							<MenuFlyoutItem Text="asd3" />
-						</MenuFlyout>
-					</AppBarButton.Flyout>
-				</AppBarButton>
-			</CommandBar.PrimaryCommands>
-		</CommandBar>
-	</Grid>
+    <Grid>
+        <CommandBar Content="asd" Style="{StaticResource NativeDefaultCommandBar}">
+            <CommandBar.PrimaryCommands>
+                <AppBarButton Content="Here">
+                    <AppBarButton.Flyout>
+                        <MenuFlyout android:UseNativePopup="True">
+                            <MenuFlyoutItem Text="asd1" />
+                            <MenuFlyoutItem Text="asd2" />
+                            <MenuFlyoutItem Text="asd3" />
+                        </MenuFlyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+            </CommandBar.PrimaryCommands>
+        </CommandBar>
+    </Grid>
 </UserControl>

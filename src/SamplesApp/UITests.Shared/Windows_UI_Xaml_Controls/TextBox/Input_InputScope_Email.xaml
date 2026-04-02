@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.Input_InputScope_Email"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.Input_InputScope_Email"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -11,14 +12,16 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<StackPanel>
-		<TextBox Header="Enter Email:"
-		    InputScope="EmailSmtpAddress"
-		    IsSpellCheckEnabled="True"
-		    PlaceholderText="IsSpellCheckEnabled=True" />
-		<TextBox Header="Enter Email:"
-		    InputScope="EmailSmtpAddress"
-		    IsSpellCheckEnabled="False"
-		    PlaceholderText="IsSpellCheckEnabled=False" />
-	</StackPanel>
+    <StackPanel>
+        <TextBox
+            Header="Enter Email:"
+            InputScope="EmailSmtpAddress"
+            IsSpellCheckEnabled="True"
+            PlaceholderText="IsSpellCheckEnabled=True" />
+        <TextBox
+            Header="Enter Email:"
+            InputScope="EmailSmtpAddress"
+            IsSpellCheckEnabled="False"
+            PlaceholderText="IsSpellCheckEnabled=False" />
+    </StackPanel>
 </UserControl>

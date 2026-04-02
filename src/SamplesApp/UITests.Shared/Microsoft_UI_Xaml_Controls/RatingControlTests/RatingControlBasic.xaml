@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.RatingControlTests.RatingControlBasic"
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.RatingControlTests.RatingControlBasic"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,9 +9,10 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid>
-		<muxcontrols:RatingControl HorizontalAlignment="Center"
-		    VerticalAlignment="Center"
-		    PlaceholderValue="2.5" />
-	</Grid>
+    <Grid>
+        <muxcontrols:RatingControl
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            PlaceholderValue="2.5" />
+    </Grid>
 </Page>

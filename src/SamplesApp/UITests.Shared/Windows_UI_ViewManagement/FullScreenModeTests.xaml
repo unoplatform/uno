@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_ViewManagement.FullScreenModeTests"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_ViewManagement.FullScreenModeTests"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,10 +9,8 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<Button Click="EnterFullScreen_Click"
-		    Content="Enter full screen" />
-		<Button Click="ExitFullScreen_Click"
-		    Content="Exit full screen" />
-	</StackPanel>
+    <StackPanel>
+        <Button Click="EnterFullScreen_Click" Content="Enter full screen" />
+        <Button Click="ExitFullScreen_Click" Content="Exit full screen" />
+    </StackPanel>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Media.Transform.Transformed_Ancestor_And_UI_Blocked"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Media.Transform.Transformed_Ancestor_And_UI_Blocked"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,30 +9,32 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<Button x:Name="ToggleBusyButton"
-		    Click="ToggleBusyButton_Click"
-		    Content="Disable heavy UI load" />
-		<StackPanel Width="150"
-		    Height="150"
-		    Background="LightBlue">
-			<Border HorizontalAlignment="Center"
-			    VerticalAlignment="Top">
-				<Rectangle Width="50"
-				    Height="50"
-				    Fill="Red"
-				    Opacity="0.2" />
-			</Border>
-			<Border HorizontalAlignment="Center"
-			    VerticalAlignment="Top">
-				<Border.RenderTransform>
-					<TranslateTransform X="25" />
-				</Border.RenderTransform>
-				<ProgressRing Width="50"
-				    Height="50"
-				    Foreground="Red"
-				    IsActive="True" />
-			</Border>
-		</StackPanel>
-	</StackPanel>
+    <StackPanel>
+        <Button
+            x:Name="ToggleBusyButton"
+            Click="ToggleBusyButton_Click"
+            Content="Disable heavy UI load" />
+        <StackPanel
+            Width="150"
+            Height="150"
+            Background="LightBlue">
+            <Border HorizontalAlignment="Center" VerticalAlignment="Top">
+                <Rectangle
+                    Width="50"
+                    Height="50"
+                    Fill="Red"
+                    Opacity="0.2" />
+            </Border>
+            <Border HorizontalAlignment="Center" VerticalAlignment="Top">
+                <Border.RenderTransform>
+                    <TranslateTransform X="25" />
+                </Border.RenderTransform>
+                <ProgressRing
+                    Width="50"
+                    Height="50"
+                    Foreground="Red"
+                    IsActive="True" />
+            </Border>
+        </StackPanel>
+    </StackPanel>
 </UserControl>

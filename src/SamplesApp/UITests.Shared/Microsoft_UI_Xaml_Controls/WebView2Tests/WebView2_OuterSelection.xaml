@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Shared.Windows_UI_Xaml.WebView2_OuterSelection"
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml.WebView2_OuterSelection"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,23 +9,24 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel HorizontalAlignment="Center"
-	    VerticalAlignment="Center">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 
-		<mux:WebView2 Width="640"
-		    Height="480"
-		    Source="https://platform.uno" />
+        <mux:WebView2
+            Width="640"
+            Height="480"
+            Source="https://platform.uno" />
 
-		<Slider Width="140"
-		    AllowDrop="False"
-		    CanDrag="False"
-		    IsThumbToolTipEnabled="False"
-		    IsTrackerEnabled="False"
-		    ManipulationMode="None"
-		    Maximum="140"
-		    Minimum="10"
-		    Orientation="Horizontal"
-		    StepFrequency="10" />
+        <Slider
+            Width="140"
+            AllowDrop="False"
+            CanDrag="False"
+            IsThumbToolTipEnabled="False"
+            IsTrackerEnabled="False"
+            ManipulationMode="None"
+            Maximum="140"
+            Minimum="10"
+            Orientation="Horizontal"
+            StepFrequency="10" />
 
-	</StackPanel>
+    </StackPanel>
 </Page>

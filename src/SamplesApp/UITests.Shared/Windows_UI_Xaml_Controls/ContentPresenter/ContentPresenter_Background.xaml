@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.ContentPresenter.ContentPresenter_Background"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.ContentPresenter.ContentPresenter_Background"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -9,22 +10,21 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<controls:SampleControl SampleDescription="Demonstrates Background, BorderThickness, BorderBrush and CornerRadius on ContentPresenter">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<Border Background="White">
-					<ContentPresenter Background="Blue"
-					    BorderBrush="Yellow"
-					    BorderThickness="5"
-					    CornerRadius="20">
-						<Border Margin="20"
-						    Background="Red">
-							<TextBlock Margin="10"
-							    Text="Just some text!" />
-						</Border>
-					</ContentPresenter>
-				</Border>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="Demonstrates Background, BorderThickness, BorderBrush and CornerRadius on ContentPresenter">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <Border Background="White">
+                    <ContentPresenter
+                        Background="Blue"
+                        BorderBrush="Yellow"
+                        BorderThickness="5"
+                        CornerRadius="20">
+                        <Border Margin="20" Background="Red">
+                            <TextBlock Margin="10" Text="Just some text!" />
+                        </Border>
+                    </ContentPresenter>
+                </Border>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.CommandBar.Background.CommandBar_Background_Frame"
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Controls.CommandBar.Background.CommandBar_Background_Frame"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,17 +10,17 @@
     d:DesignWidth="400"
     mc:Ignorable="d not_win">
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<Frame x:Name="HostFrame"
-		    not_win:Style="{StaticResource NativeDefaultFrame}" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Frame x:Name="HostFrame" not_win:Style="{StaticResource NativeDefaultFrame}" />
 
-		<Button x:Name="NavigateInitialButton"
-		    Grid.Row="1"
-		    Click="Navigate_Initial"
-		    Content="Navigate to first page" />
-	</Grid>
+        <Button
+            x:Name="NavigateInitialButton"
+            Grid.Row="1"
+            Click="Navigate_Initial"
+            Content="Navigate to first page" />
+    </Grid>
 </UserControl>

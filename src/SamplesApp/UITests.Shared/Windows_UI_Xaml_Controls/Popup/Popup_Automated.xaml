@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.Popup.Popup_Automated"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.Popup.Popup_Automated"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive.com/android"
@@ -11,142 +12,162 @@
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     mc:Ignorable="ios android">
 
-	<Grid>
-		<StackPanel Margin="0,200,0,0"
-		    HorizontalAlignment="Center"
-		    VerticalAlignment="Center">
+    <Grid>
+        <StackPanel
+            Margin="0,200,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
 
-			<!--  Label  -->
-			<TextBlock Margin="50,0,50,0"
-			    FontSize="16"
-			    Text="Dismissable Popup"
-			    TextAlignment="Center" />
+            <!--  Label  -->
+            <TextBlock
+                Margin="50,0,50,0"
+                FontSize="16"
+                Text="Dismissable Popup"
+                TextAlignment="Center" />
 
-			<!--  Dismissable Popup Button  -->
-			<StackPanel Margin="0,8,0,0"
-			    HorizontalAlignment="Center"
-			    Orientation="Horizontal">
+            <!--  Dismissable Popup Button  -->
+            <StackPanel
+                Margin="0,8,0,0"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
 
-				<!--  Open  -->
-				<Button x:Name="OpenDismissablePopupButton"
-				    Click="OpenDismissablePopup"
-				    Content="Open" />
+                <!--  Open  -->
+                <Button
+                    x:Name="OpenDismissablePopupButton"
+                    Click="OpenDismissablePopup"
+                    Content="Open" />
 
-				<!--  Close  -->
-				<Button x:Name="CloseDismissablePopupButton"
-				    Click="CloseDismissablePopup"
-				    Content="Close" />
-			</StackPanel>
+                <!--  Close  -->
+                <Button
+                    x:Name="CloseDismissablePopupButton"
+                    Click="CloseDismissablePopup"
+                    Content="Close" />
+            </StackPanel>
 
-			<!--  Dismissable Popup  -->
-			<Popup x:Name="DismissablePopup"
-			    IsLightDismissEnabled="True"
-			    VerticalOffset="-300">
-				<Popup.Child>
+            <!--  Dismissable Popup  -->
+            <Popup
+                x:Name="DismissablePopup"
+                IsLightDismissEnabled="True"
+                VerticalOffset="-300">
+                <Popup.Child>
 
-					<!--  Popup Container  -->
-					<Border Width="250"
-					    Height="200"
-					    Background="ForestGreen">
+                    <!--  Popup Container  -->
+                    <Border
+                        Width="250"
+                        Height="200"
+                        Background="ForestGreen">
 
-						<!--  Title  -->
-						<TextBlock x:Name="DismissablePopupText"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Center"
-						    FontSize="18"
-						    Foreground="White"
-						    Text="Test" />
-					</Border>
-				</Popup.Child>
-			</Popup>
+                        <!--  Title  -->
+                        <TextBlock
+                            x:Name="DismissablePopupText"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="18"
+                            Foreground="White"
+                            Text="Test" />
+                    </Border>
+                </Popup.Child>
+            </Popup>
 
-			<!--  Label  -->
-			<TextBlock Margin="50,25,50,0"
-			    FontSize="16"
-			    Text="NON-Dismissable Popup"
-			    TextAlignment="Center" />
+            <!--  Label  -->
+            <TextBlock
+                Margin="50,25,50,0"
+                FontSize="16"
+                Text="NON-Dismissable Popup"
+                TextAlignment="Center" />
 
-			<!--  NON-Dismissable Popup Button  -->
-			<StackPanel Margin="0,8,0,0"
-			    HorizontalAlignment="Center"
-			    Orientation="Horizontal">
+            <!--  NON-Dismissable Popup Button  -->
+            <StackPanel
+                Margin="0,8,0,0"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
 
-				<!--  Open  -->
-				<Button x:Name="OpenNonDismissablePopupButton"
-				    Click="OpenNonDismissablePopup"
-				    Content="Open" />
+                <!--  Open  -->
+                <Button
+                    x:Name="OpenNonDismissablePopupButton"
+                    Click="OpenNonDismissablePopup"
+                    Content="Open" />
 
-				<!--  Close  -->
-				<Button x:Name="CloseNonDismissablePopupButton"
-				    Click="CloseNonDismissablePopup"
-				    Content="Close" />
-			</StackPanel>
+                <!--  Close  -->
+                <Button
+                    x:Name="CloseNonDismissablePopupButton"
+                    Click="CloseNonDismissablePopup"
+                    Content="Close" />
+            </StackPanel>
 
-			<!--  Fixed Height Popup  -->
-			<Popup x:Name="NonDismissablePopup"
-			    IsLightDismissEnabled="False"
-			    VerticalOffset="-300">
-				<Popup.Child>
+            <!--  Fixed Height Popup  -->
+            <Popup
+                x:Name="NonDismissablePopup"
+                IsLightDismissEnabled="False"
+                VerticalOffset="-300">
+                <Popup.Child>
 
-					<!--  Popup Container  -->
-					<Border Width="250"
-					    Height="200"
-					    Background="Orange">
+                    <!--  Popup Container  -->
+                    <Border
+                        Width="250"
+                        Height="200"
+                        Background="Orange">
 
-						<!--  Title  -->
-						<TextBlock x:Name="NonDismissablePopupText"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Center"
-						    FontSize="18"
-						    Foreground="White"
-						    Text="Test" />
-					</Border>
-				</Popup.Child>
-			</Popup>
+                        <!--  Title  -->
+                        <TextBlock
+                            x:Name="NonDismissablePopupText"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="18"
+                            Foreground="White"
+                            Text="Test" />
+                    </Border>
+                </Popup.Child>
+            </Popup>
 
-			<!--  Label  -->
-			<TextBlock Margin="50,25,50,0"
-			    FontSize="16"
-			    Text="Popup without fixed height"
-			    TextAlignment="Center" />
+            <!--  Label  -->
+            <TextBlock
+                Margin="50,25,50,0"
+                FontSize="16"
+                Text="Popup without fixed height"
+                TextAlignment="Center" />
 
-			<!--  Fixed Height Popup Button  -->
-			<StackPanel Margin="0,8,0,0"
-			    HorizontalAlignment="Center"
-			    Orientation="Horizontal">
+            <!--  Fixed Height Popup Button  -->
+            <StackPanel
+                Margin="0,8,0,0"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
 
-				<!--  Open  -->
-				<Button x:Name="OpenNoFixedHeightPopupButton"
-				    Click="OpenNoFixedHeightPopup"
-				    Content="Open" />
+                <!--  Open  -->
+                <Button
+                    x:Name="OpenNoFixedHeightPopupButton"
+                    Click="OpenNoFixedHeightPopup"
+                    Content="Open" />
 
-				<!--  Close  -->
-				<Button x:Name="CloseNoFixedHeightPopupButton"
-				    Click="CloseNoFixedHeightPopup"
-				    Content="Close" />
-			</StackPanel>
+                <!--  Close  -->
+                <Button
+                    x:Name="CloseNoFixedHeightPopupButton"
+                    Click="CloseNoFixedHeightPopup"
+                    Content="Close" />
+            </StackPanel>
 
-			<!--  No Fixed Height Popup  -->
-			<Popup x:Name="NoFixedHeightPopup"
-			    IsLightDismissEnabled="True"
-			    VerticalOffset="-300">
-				<Popup.Child>
+            <!--  No Fixed Height Popup  -->
+            <Popup
+                x:Name="NoFixedHeightPopup"
+                IsLightDismissEnabled="True"
+                VerticalOffset="-300">
+                <Popup.Child>
 
-					<!--  Popup Container  -->
-					<Border Width="150"
-					    Background="DodgerBlue">
+                    <!--  Popup Container  -->
+                    <Border Width="150" Background="DodgerBlue">
 
-						<!--  Title  -->
-						<TextBlock x:Name="NoFixedHeightPopupText"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Center"
-						    FontSize="18"
-						    Foreground="White"
-						    Text="Test" />
-					</Border>
-				</Popup.Child>
-			</Popup>
+                        <!--  Title  -->
+                        <TextBlock
+                            x:Name="NoFixedHeightPopupText"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="18"
+                            Foreground="White"
+                            Text="Test" />
+                    </Border>
+                </Popup.Child>
+            </Popup>
 
-		</StackPanel>
-	</Grid>
+        </StackPanel>
+    </Grid>
 </UserControl>

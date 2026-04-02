@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.TabViewTests.TabViewSelectionAndScrolling"
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.TabViewTests.TabViewSelectionAndScrolling"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
@@ -7,84 +8,96 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
-	<Page.Resources>
-		<Style TargetType="controls:TabViewItem">
-			<Setter Property="HeaderTemplate">
-				<Setter.Value>
-					<DataTemplate>
-						<TextBlock Text="{Binding}" />
-					</DataTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-	</Page.Resources>
+    <Page.Resources>
+        <Style TargetType="controls:TabViewItem">
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" />
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
 
-	<Grid MaxWidth="400"
-	    BorderBrush="Red"
-	    BorderThickness="2">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
+    <Grid
+        MaxWidth="400"
+        BorderBrush="Red"
+        BorderThickness="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-		<TextBlock Grid.Row="0"
-		    Text="{Binding SelectedTab.Header}" />
-		<StackPanel Grid.Row="1">
-			<Button Click="DebugVT"
-			    Content="DebugVT" />
+        <TextBlock Grid.Row="0" Text="{Binding SelectedTab.Header}" />
+        <StackPanel Grid.Row="1">
+            <Button Click="DebugVT" Content="DebugVT" />
 
-			<StackPanel Orientation="Horizontal">
-				<TextBlock>SelectItem:</TextBlock>
-				<Button Click="SelectItem"
-				    Content="First"
-				    Tag="0" />
-				<Button Click="SelectItem"
-				    Content="25"
-				    Tag="25" />
-				<Button Click="SelectItem"
-				    Content="75"
-				    Tag="75" />
-				<Button Click="SelectItem"
-				    Content="Last"
-				    Tag="99" />
-			</StackPanel>
-			<StackPanel Orientation="Horizontal">
-				<TextBlock>ScrollTo:</TextBlock>
-				<Button Click="ScrollTo"
-				    Content="First"
-				    Tag="0" />
-				<Button Click="ScrollTo"
-				    Content="25"
-				    Tag="25" />
-				<Button Click="ScrollTo"
-				    Content="75"
-				    Tag="75" />
-				<Button Click="ScrollTo"
-				    Content="Last"
-				    Tag="99" />
-			</StackPanel>
-			<StackPanel Orientation="Horizontal">
-				<TextBlock>ScrollToLeading:</TextBlock>
-				<Button Click="ScrollToLeading"
-				    Content="First"
-				    Tag="0" />
-				<Button Click="ScrollToLeading"
-				    Content="25"
-				    Tag="25" />
-				<Button Click="ScrollToLeading"
-				    Content="75"
-				    Tag="75" />
-				<Button Click="ScrollToLeading"
-				    Content="Last"
-				    Tag="99" />
-			</StackPanel>
-		</StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock>SelectItem:</TextBlock>
+                <Button
+                    Click="SelectItem"
+                    Content="First"
+                    Tag="0" />
+                <Button
+                    Click="SelectItem"
+                    Content="25"
+                    Tag="25" />
+                <Button
+                    Click="SelectItem"
+                    Content="75"
+                    Tag="75" />
+                <Button
+                    Click="SelectItem"
+                    Content="Last"
+                    Tag="99" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock>ScrollTo:</TextBlock>
+                <Button
+                    Click="ScrollTo"
+                    Content="First"
+                    Tag="0" />
+                <Button
+                    Click="ScrollTo"
+                    Content="25"
+                    Tag="25" />
+                <Button
+                    Click="ScrollTo"
+                    Content="75"
+                    Tag="75" />
+                <Button
+                    Click="ScrollTo"
+                    Content="Last"
+                    Tag="99" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock>ScrollToLeading:</TextBlock>
+                <Button
+                    Click="ScrollToLeading"
+                    Content="First"
+                    Tag="0" />
+                <Button
+                    Click="ScrollToLeading"
+                    Content="25"
+                    Tag="25" />
+                <Button
+                    Click="ScrollToLeading"
+                    Content="75"
+                    Tag="75" />
+                <Button
+                    Click="ScrollToLeading"
+                    Content="Last"
+                    Tag="99" />
+            </StackPanel>
+        </StackPanel>
 
-		<controls:TabView x:Name="SUT"
-		    Grid.Row="2"
-		    SelectedItem="{Binding SelectedTab, Mode=TwoWay}"
-		    TabCloseRequested="TabView_TabCloseRequested"
-		    TabItemsSource="{Binding Tabs}" />
-	</Grid>
+        <controls:TabView
+            x:Name="SUT"
+            Grid.Row="2"
+            SelectedItem="{Binding SelectedTab, Mode=TwoWay}"
+            TabCloseRequested="TabView_TabCloseRequested"
+            TabItemsSource="{Binding Tabs}" />
+    </Grid>
 </Page>

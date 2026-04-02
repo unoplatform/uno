@@ -1,4 +1,5 @@
-﻿<ContentDialog x:Class="UITests.Windows_UI_Xaml_Controls.ContentDialogTests.Dialogs.ContentDialog_SignIn"
+﻿<ContentDialog
+    x:Class="UITests.Windows_UI_Xaml_Controls.ContentDialogTests.Dialogs.ContentDialog_SignIn"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -11,20 +12,19 @@
     PrimaryButtonText="Sign In"
     mc:Ignorable="d">
 
-	<StackPanel HorizontalAlignment="Stretch"
-	    VerticalAlignment="Stretch">
-		<TextBox Name="userNameTextBox"
-		    Header="User name" />
-		<PasswordBox Name="passwordTextBox"
-		    Header="Password"
-		    IsPasswordRevealButtonEnabled="True" />
-		<CheckBox Name="saveUserNameCheckBox"
-		    Content="Save user name" />
+    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <TextBox Name="userNameTextBox" Header="User name" />
+        <PasswordBox
+            Name="passwordTextBox"
+            Header="Password"
+            IsPasswordRevealButtonEnabled="True" />
+        <CheckBox Name="saveUserNameCheckBox" Content="Save user name" />
 
-		<TextBlock Name="body"
-		    Text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
-		    TextWrapping="Wrap" />
-	</StackPanel>
+        <TextBlock
+            Name="body"
+            Text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
+            TextWrapping="Wrap" />
+    </StackPanel>
 
 
 </ContentDialog>

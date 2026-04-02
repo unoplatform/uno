@@ -1,19 +1,23 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_Nested"
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_Nested"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<Border Margin="50"
-	    Background="SkyBlue"
-	    ToolTipService.ToolTip="QweQweQweQweQweQwe">
-		<Border Margin="50"
-		    Background="Pink"
-		    ToolTipService.ToolTip="AsdAsdAsd">
-			<Border Width="50"
-			    Height="50"
-			    Margin="50"
-			    Background="SkyBlue"
-			    ToolTipService.ToolTip="Zxc" />
-		</Border>
-	</Border>
+    <Border
+        Margin="50"
+        Background="SkyBlue"
+        ToolTipService.ToolTip="QweQweQweQweQweQwe">
+        <Border
+            Margin="50"
+            Background="Pink"
+            ToolTipService.ToolTip="AsdAsdAsd">
+            <Border
+                Width="50"
+                Height="50"
+                Margin="50"
+                Background="SkyBlue"
+                ToolTipService.ToolTip="Zxc" />
+        </Border>
+    </Border>
 
 </UserControl>

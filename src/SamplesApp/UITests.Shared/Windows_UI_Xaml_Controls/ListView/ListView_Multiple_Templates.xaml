@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_Multiple_Templates"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_Multiple_Templates"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,218 +9,238 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<UserControl.Resources>
+    <UserControl.Resources>
 
-		<!--  Template 1: Sub-header / category label (gray small text)  -->
-		<DataTemplate x:Key="SubHeaderTemplate">
-			<TextBlock Margin="16,12,16,4"
-			    FontSize="12"
-			    Foreground="#888888"
-			    Text="{Binding Label}" />
-		</DataTemplate>
+        <!--  Template 1: Sub-header / category label (gray small text)  -->
+        <DataTemplate x:Key="SubHeaderTemplate">
+            <TextBlock
+                Margin="16,12,16,4"
+                FontSize="12"
+                Foreground="#888888"
+                Text="{Binding Label}" />
+        </DataTemplate>
 
-		<!--  Template 2: High-priority item – yellow/gold left accent border  -->
-		<DataTemplate x:Key="HighPriorityTemplate">
-			<Grid Margin="12,4,12,4">
-				<Border Padding="0"
-				    Background="White"
-				    CornerRadius="8">
-					<Border.Shadow>
-						<ThemeShadow />
-					</Border.Shadow>
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="4" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-						<Rectangle Grid.Column="0"
-						    Fill="#E6A817"
-						    RadiusX="8"
-						    RadiusY="8" />
-						<TextBlock Grid.Column="1"
-						    Margin="14,14,14,14"
-						    FontSize="15"
-						    Foreground="#1A1A2E"
-						    Text="{Binding Label}" />
-					</Grid>
-				</Border>
-			</Grid>
-		</DataTemplate>
+        <!--  Template 2: High-priority item – yellow/gold left accent border  -->
+        <DataTemplate x:Key="HighPriorityTemplate">
+            <Grid Margin="12,4,12,4">
+                <Border
+                    Padding="0"
+                    Background="White"
+                    CornerRadius="8">
+                    <Border.Shadow>
+                        <ThemeShadow />
+                    </Border.Shadow>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Rectangle
+                            Grid.Column="0"
+                            Fill="#E6A817"
+                            RadiusX="8"
+                            RadiusY="8" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="14,14,14,14"
+                            FontSize="15"
+                            Foreground="#1A1A2E"
+                            Text="{Binding Label}" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </DataTemplate>
 
-		<!--  Template 3: Adaptive item – teal left accent border  -->
-		<DataTemplate x:Key="AdaptiveTemplate">
-			<Grid Margin="12,4,12,4">
-				<Border Padding="0"
-				    Background="White"
-				    CornerRadius="8">
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="4" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-						<Rectangle Grid.Column="0"
-						    Fill="#2EC4B6"
-						    RadiusX="8"
-						    RadiusY="8" />
-						<TextBlock Grid.Column="1"
-						    Margin="14,14,14,14"
-						    FontSize="15"
-						    Foreground="#1A1A2E"
-						    Text="{Binding Label}" />
-					</Grid>
-				</Border>
-			</Grid>
-		</DataTemplate>
+        <!--  Template 3: Adaptive item – teal left accent border  -->
+        <DataTemplate x:Key="AdaptiveTemplate">
+            <Grid Margin="12,4,12,4">
+                <Border
+                    Padding="0"
+                    Background="White"
+                    CornerRadius="8">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Rectangle
+                            Grid.Column="0"
+                            Fill="#2EC4B6"
+                            RadiusX="8"
+                            RadiusY="8" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="14,14,14,14"
+                            FontSize="15"
+                            Foreground="#1A1A2E"
+                            Text="{Binding Label}" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </DataTemplate>
 
-		<!--  Template 4: Badge item – shows a count badge on the right  -->
-		<DataTemplate x:Key="BadgeTemplate">
-			<Grid Margin="12,4,12,4">
-				<Border Padding="0"
-				    Background="White"
-				    CornerRadius="8">
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="4" />
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
-						<Rectangle Grid.Column="0"
-						    Fill="#7B5EA7"
-						    RadiusX="8"
-						    RadiusY="8" />
-						<TextBlock Grid.Column="1"
-						    Margin="14,14,8,14"
-						    FontSize="15"
-						    Foreground="#1A1A2E"
-						    Text="{Binding Label}" />
-						<Border Grid.Column="2"
-						    Margin="0,10,12,10"
-						    Padding="8,2"
-						    Background="#7B5EA7"
-						    CornerRadius="12">
-							<TextBlock FontSize="12"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="{Binding Badge}" />
-						</Border>
-					</Grid>
-				</Border>
-			</Grid>
-		</DataTemplate>
+        <!--  Template 4: Badge item – shows a count badge on the right  -->
+        <DataTemplate x:Key="BadgeTemplate">
+            <Grid Margin="12,4,12,4">
+                <Border
+                    Padding="0"
+                    Background="White"
+                    CornerRadius="8">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Rectangle
+                            Grid.Column="0"
+                            Fill="#7B5EA7"
+                            RadiusX="8"
+                            RadiusY="8" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="14,14,8,14"
+                            FontSize="15"
+                            Foreground="#1A1A2E"
+                            Text="{Binding Label}" />
+                        <Border
+                            Grid.Column="2"
+                            Margin="0,10,12,10"
+                            Padding="8,2"
+                            Background="#7B5EA7"
+                            CornerRadius="12">
+                            <TextBlock
+                                FontSize="12"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="{Binding Badge}" />
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </DataTemplate>
 
-		<!--  Template 5: Maintenance / plain item – blue-grey left accent  -->
-		<DataTemplate x:Key="MaintenanceTemplate">
-			<Grid Margin="12,4,12,4">
-				<Border Padding="0"
-				    Background="White"
-				    CornerRadius="8">
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="4" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-						<Rectangle Grid.Column="0"
-						    Fill="#4A90D9"
-						    RadiusX="8"
-						    RadiusY="8" />
-						<StackPanel Grid.Column="1"
-						    Margin="14,10,14,10">
-							<TextBlock FontSize="15"
-							    Foreground="#1A1A2E"
-							    Text="{Binding Label}" />
-							<TextBlock FontSize="11"
-							    Foreground="#777"
-							    Text="{Binding SubText}"
-							    Visibility="{Binding HasSubText}" />
-						</StackPanel>
-					</Grid>
-				</Border>
-			</Grid>
-		</DataTemplate>
+        <!--  Template 5: Maintenance / plain item – blue-grey left accent  -->
+        <DataTemplate x:Key="MaintenanceTemplate">
+            <Grid Margin="12,4,12,4">
+                <Border
+                    Padding="0"
+                    Background="White"
+                    CornerRadius="8">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Rectangle
+                            Grid.Column="0"
+                            Fill="#4A90D9"
+                            RadiusX="8"
+                            RadiusY="8" />
+                        <StackPanel Grid.Column="1" Margin="14,10,14,10">
+                            <TextBlock
+                                FontSize="15"
+                                Foreground="#1A1A2E"
+                                Text="{Binding Label}" />
+                            <TextBlock
+                                FontSize="11"
+                                Foreground="#777"
+                                Text="{Binding SubText}"
+                                Visibility="{Binding HasSubText}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </DataTemplate>
 
-		<!--  Template Selector  -->
-		<local:SessionItemTemplateSelector x:Key="TemplateSelector"
-		    AdaptiveTemplate="{StaticResource AdaptiveTemplate}"
-		    BadgeTemplate="{StaticResource BadgeTemplate}"
-		    HighPriorityTemplate="{StaticResource HighPriorityTemplate}"
-		    MaintenanceTemplate="{StaticResource MaintenanceTemplate}"
-		    SubHeaderTemplate="{StaticResource SubHeaderTemplate}" />
+        <!--  Template Selector  -->
+        <local:SessionItemTemplateSelector
+            x:Key="TemplateSelector"
+            AdaptiveTemplate="{StaticResource AdaptiveTemplate}"
+            BadgeTemplate="{StaticResource BadgeTemplate}"
+            HighPriorityTemplate="{StaticResource HighPriorityTemplate}"
+            MaintenanceTemplate="{StaticResource MaintenanceTemplate}"
+            SubHeaderTemplate="{StaticResource SubHeaderTemplate}" />
 
-		<!--  Group header style  -->
-		<Style x:Key="GroupHeaderStyle"
-		    TargetType="ListViewHeaderItem">
-			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-			<Setter Property="Padding" Value="0" />
-		</Style>
+        <!--  Group header style  -->
+        <Style x:Key="GroupHeaderStyle" TargetType="ListViewHeaderItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
 
-		<!--  ListViewItem strip chrome  -->
-		<Style x:Key="SessionListViewItemStyle"
-		    TargetType="ListViewItem">
-			<Setter Property="Padding" Value="0" />
-			<Setter Property="Margin" Value="0" />
-			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-			<Setter Property="MinHeight" Value="0" />
-		</Style>
+        <!--  ListViewItem strip chrome  -->
+        <Style x:Key="SessionListViewItemStyle" TargetType="ListViewItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="MinHeight" Value="0" />
+        </Style>
 
-		<CollectionViewSource x:Key="GroupedSource"
-		    x:Name="GroupedSource"
-		    IsSourceGrouped="True" />
+        <CollectionViewSource
+            x:Key="GroupedSource"
+            x:Name="GroupedSource"
+            IsSourceGrouped="True" />
 
-	</UserControl.Resources>
+    </UserControl.Resources>
 
-	<Grid Background="#F0F0F7">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
+    <Grid Background="#F0F0F7">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-		<!--  Title bar  -->
-		<Border Grid.Row="0"
-		    Padding="16,20,16,20"
-		    Background="#3A3A8C">
-			<TextBlock HorizontalAlignment="Center"
-			    FontSize="20"
-			    FontWeight="Bold"
-			    Foreground="White"
-			    Text="Session Details" />
-		</Border>
+        <!--  Title bar  -->
+        <Border
+            Grid.Row="0"
+            Padding="16,20,16,20"
+            Background="#3A3A8C">
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="20"
+                FontWeight="Bold"
+                Foreground="White"
+                Text="Session Details" />
+        </Border>
 
-		<!--  Grouped ListView  -->
-		<ListView x:Name="SessionListView"
-		    Grid.Row="1"
-		    IsItemClickEnabled="True"
-		    ItemContainerStyle="{StaticResource SessionListViewItemStyle}"
-		    ItemTemplateSelector="{StaticResource TemplateSelector}"
-		    ItemsSource="{Binding Source={StaticResource GroupedSource}}"
-		    SelectionMode="None">
+        <!--  Grouped ListView  -->
+        <ListView
+            x:Name="SessionListView"
+            Grid.Row="1"
+            IsItemClickEnabled="True"
+            ItemContainerStyle="{StaticResource SessionListViewItemStyle}"
+            ItemTemplateSelector="{StaticResource TemplateSelector}"
+            ItemsSource="{Binding Source={StaticResource GroupedSource}}"
+            SelectionMode="None">
 
-			<ListView.ItemsPanel>
-				<ItemsPanelTemplate>
-					<ItemsStackPanel GroupHeaderPlacement="Top" />
-				</ItemsPanelTemplate>
-			</ListView.ItemsPanel>
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsStackPanel GroupHeaderPlacement="Top" />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
 
-			<ListView.GroupStyle>
-				<GroupStyle HeaderContainerStyle="{StaticResource GroupHeaderStyle}">
-					<GroupStyle.HeaderTemplate>
-						<DataTemplate>
-							<StackPanel Margin="12,18,12,4">
-								<TextBlock CharacterSpacing="100"
-								    FontSize="13"
-								    FontWeight="Bold"
-								    Foreground="#1A1A2E"
-								    Text="{Binding Key}" />
-								<TextBlock Margin="0,1,0,0"
-								    FontSize="11"
-								    Foreground="#999999"
-								    Text="{Binding SubTitle}" />
-							</StackPanel>
-						</DataTemplate>
-					</GroupStyle.HeaderTemplate>
-				</GroupStyle>
-			</ListView.GroupStyle>
-		</ListView>
+            <ListView.GroupStyle>
+                <GroupStyle HeaderContainerStyle="{StaticResource GroupHeaderStyle}">
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="12,18,12,4">
+                                <TextBlock
+                                    CharacterSpacing="100"
+                                    FontSize="13"
+                                    FontWeight="Bold"
+                                    Foreground="#1A1A2E"
+                                    Text="{Binding Key}" />
+                                <TextBlock
+                                    Margin="0,1,0,0"
+                                    FontSize="11"
+                                    Foreground="#999999"
+                                    Text="{Binding SubTitle}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListView.GroupStyle>
+        </ListView>
 
-	</Grid>
+    </Grid>
 
 </UserControl>

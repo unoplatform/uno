@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.DeferLoadStrategy.SimpleDeferLoadStrategy"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.DeferLoadStrategy.SimpleDeferLoadStrategy"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -14,15 +15,15 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<StackPanel>
-		<TextBlock Text="Immediate content" />
-		<Border x:Name="LazyLoadedBorder"
-		    x:DeferLoadStrategy="Lazy"
-		    Loaded="OnBorderLoaded"
-		    Visibility="{Binding [LateVisibility], TargetNullValue=Collapsed, FallbackValue=Collapsed}">
-			<TextBlock Text="Content created when it becomes visible" />
-		</Border>
-		<TextBlock x:Name="loadedResult"
-		    Text="Should say loaded after 3s" />
-	</StackPanel>
+    <StackPanel>
+        <TextBlock Text="Immediate content" />
+        <Border
+            x:Name="LazyLoadedBorder"
+            x:DeferLoadStrategy="Lazy"
+            Loaded="OnBorderLoaded"
+            Visibility="{Binding [LateVisibility], TargetNullValue=Collapsed, FallbackValue=Collapsed}">
+            <TextBlock Text="Content created when it becomes visible" />
+        </Border>
+        <TextBlock x:Name="loadedResult" Text="Should say loaded after 3s" />
+    </StackPanel>
 </UserControl>

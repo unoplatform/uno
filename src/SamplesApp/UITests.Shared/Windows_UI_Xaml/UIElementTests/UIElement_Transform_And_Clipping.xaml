@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml.UIElementTests.UIElement_Transform_And_Clipping"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.UIElementTests.UIElement_Transform_And_Clipping"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,29 +8,32 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid HorizontalAlignment="Center"
-	    VerticalAlignment="Center"
-	    Background="Gray">
-		<Border Width="200"
-		    Height="200"
-		    Background="Blue">
-			<Border.Clip>
-				<RectangleGeometry Rect="25 25 150 150" />
-			</Border.Clip>
-			<Border.RenderTransform>
-				<TranslateTransform X="120" />
-			</Border.RenderTransform>
-		</Border>
-		<Border Width="200"
-		    Height="200"
-		    Background="Red"
-		    Opacity="0.5">
-			<Border.Clip>
-				<RectangleGeometry Rect="25 25 150 150" />
-			</Border.Clip>
-			<Border.RenderTransform>
-				<ScaleTransform CenterX="100" CenterY="100" ScaleX="2" ScaleY="2" />
-			</Border.RenderTransform>
-		</Border>
-	</Grid>
+    <Grid
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Background="Gray">
+        <Border
+            Width="200"
+            Height="200"
+            Background="Blue">
+            <Border.Clip>
+                <RectangleGeometry Rect="25 25 150 150" />
+            </Border.Clip>
+            <Border.RenderTransform>
+                <TranslateTransform X="120" />
+            </Border.RenderTransform>
+        </Border>
+        <Border
+            Width="200"
+            Height="200"
+            Background="Red"
+            Opacity="0.5">
+            <Border.Clip>
+                <RectangleGeometry Rect="25 25 150 150" />
+            </Border.Clip>
+            <Border.RenderTransform>
+                <ScaleTransform CenterX="100" CenterY="100" ScaleX="2" ScaleY="2" />
+            </Border.RenderTransform>
+        </Border>
+    </Grid>
 </Page>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.UIElementTests.TransformToVisual_Transform"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml.UIElementTests.TransformToVisual_Transform"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -9,85 +10,95 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<controls:SampleControl>
-		<controls:SampleControl.Template>
-			<ControlTemplate TargetType="controls:SampleControl">
-				<Border HorizontalAlignment="Stretch"
-				    VerticalAlignment="Stretch"
-				    Background="{TemplateBinding Background}">
-					<ContentControl HorizontalAlignment="Stretch"
-					    VerticalAlignment="Stretch"
-					    HorizontalContentAlignment="Stretch"
-					    VerticalContentAlignment="Stretch"
-					    Content="{TemplateBinding Content}"
-					    ContentTemplate="{TemplateBinding SampleContent}" />
-				</Border>
-			</ControlTemplate>
-		</controls:SampleControl.Template>
+    <controls:SampleControl>
+        <controls:SampleControl.Template>
+            <ControlTemplate TargetType="controls:SampleControl">
+                <Border
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="{TemplateBinding Background}">
+                    <ContentControl
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding SampleContent}" />
+                </Border>
+            </ControlTemplate>
+        </controls:SampleControl.Template>
 
-		<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-			<StackPanel x:Name="Outputs" />
+        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <StackPanel x:Name="Outputs" />
 
-			<Border x:Name="Border1"
-			    Width="50"
-			    Height="50"
-			    HorizontalAlignment="Right"
-			    VerticalAlignment="Bottom"
-			    Background="Red" />
+            <Border
+                x:Name="Border1"
+                Width="50"
+                Height="50"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Background="Red" />
 
-			<Border x:Name="Border2"
-			    Width="50"
-			    Height="50"
-			    HorizontalAlignment="Right"
-			    VerticalAlignment="Bottom"
-			    Background="Orange">
-				<Border.RenderTransform>
-					<TranslateTransform X="-50" Y="-50" />
-				</Border.RenderTransform>
-				<Border x:Name="Border2Child"
-				    Width="20"
-				    Height="20"
-				    Margin="0,30,0,0"
-				    HorizontalAlignment="Left"
-				    VerticalAlignment="Top"
-				    Background="#FFFF00">
-					<Border x:Name="Border2SubChild"
-					    Width="10"
-					    Height="10"
-					    HorizontalAlignment="Left"
-					    VerticalAlignment="Top"
-					    Background="#008000" />
-				</Border>
-			</Border>
+            <Border
+                x:Name="Border2"
+                Width="50"
+                Height="50"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Background="Orange">
+                <Border.RenderTransform>
+                    <TranslateTransform X="-50" Y="-50" />
+                </Border.RenderTransform>
+                <Border
+                    x:Name="Border2Child"
+                    Width="20"
+                    Height="20"
+                    Margin="0,30,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Background="#FFFF00">
+                    <Border
+                        x:Name="Border2SubChild"
+                        Width="10"
+                        Height="10"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Background="#008000" />
+                </Border>
+            </Border>
 
-			<Border x:Name="Border3Parent"
-			    Width="50"
-			    Height="50"
-			    HorizontalAlignment="Right"
-			    VerticalAlignment="Bottom">
-				<Border x:Name="Border3"
-				    Width="50"
-				    Height="50"
-				    HorizontalAlignment="Left"
-				    VerticalAlignment="Top"
-				    Background="#0000FF">
-					<Border.RenderTransform>
-						<CompositeTransform Rotation="45"
-						    ScaleX="2"
-						    ScaleY="2"
-						    TranslateX="-100"
-						    TranslateY="-100" />
-					</Border.RenderTransform>
-					<Border x:Name="Border3Child"
-					    Width="20"
-					    Height="20"
-					    Margin="0,30,0,0"
-					    HorizontalAlignment="Left"
-					    VerticalAlignment="Top"
-					    Background="#A000C0" />
-				</Border>
-			</Border>
+            <Border
+                x:Name="Border3Parent"
+                Width="50"
+                Height="50"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom">
+                <Border
+                    x:Name="Border3"
+                    Width="50"
+                    Height="50"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Background="#0000FF">
+                    <Border.RenderTransform>
+                        <CompositeTransform
+                            Rotation="45"
+                            ScaleX="2"
+                            ScaleY="2"
+                            TranslateX="-100"
+                            TranslateY="-100" />
+                    </Border.RenderTransform>
+                    <Border
+                        x:Name="Border3Child"
+                        Width="20"
+                        Height="20"
+                        Margin="0,30,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Background="#A000C0" />
+                </Border>
+            </Border>
 
-		</Grid>
-	</controls:SampleControl>
+        </Grid>
+    </controls:SampleControl>
 </UserControl>

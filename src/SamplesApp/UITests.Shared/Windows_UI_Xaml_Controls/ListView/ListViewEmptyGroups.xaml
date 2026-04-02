@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewEmptyGroups"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewEmptyGroups"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -12,28 +13,29 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<controls:SampleControl SampleDescription="ListView with grouped source of all empty groups">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ListView Width="200"
-				    Height="450"
-				    ItemsSource="{Binding [EmptyGroupsAsSource]}">
-					<ListView.GroupStyle>
-						<GroupStyle HidesIfEmpty="False">
-							<GroupStyle.HeaderTemplate>
-								<DataTemplate>
-									<Border BorderBrush="Gray"
-									    BorderThickness="2">
-										<TextBlock FontSize="32"
-										    Foreground="Blue"
-										    Text="{Binding Key}" />
-									</Border>
-								</DataTemplate>
-							</GroupStyle.HeaderTemplate>
-						</GroupStyle>
-					</ListView.GroupStyle>
-				</ListView>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="ListView with grouped source of all empty groups">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <ListView
+                    Width="200"
+                    Height="450"
+                    ItemsSource="{Binding [EmptyGroupsAsSource]}">
+                    <ListView.GroupStyle>
+                        <GroupStyle HidesIfEmpty="False">
+                            <GroupStyle.HeaderTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="Gray" BorderThickness="2">
+                                        <TextBlock
+                                            FontSize="32"
+                                            Foreground="Blue"
+                                            Text="{Binding Key}" />
+                                    </Border>
+                                </DataTemplate>
+                            </GroupStyle.HeaderTemplate>
+                        </GroupStyle>
+                    </ListView.GroupStyle>
+                </ListView>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

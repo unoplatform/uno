@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_MouseEvents"
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_MouseEvents"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
@@ -8,13 +9,15 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid>
-		<Button x:Name="LocalButton"
-		    Width="200"
-		    Click="OnButton_Clicked"
-		    Content="1" />
-		<controls:WebView2 x:Name="Inline"
-		    Width="500"
-		    Height="500" />
-	</Grid>
+    <Grid>
+        <Button
+            x:Name="LocalButton"
+            Width="200"
+            Click="OnButton_Clicked"
+            Content="1" />
+        <controls:WebView2
+            x:Name="Inline"
+            Width="500"
+            Height="500" />
+    </Grid>
 </Page>

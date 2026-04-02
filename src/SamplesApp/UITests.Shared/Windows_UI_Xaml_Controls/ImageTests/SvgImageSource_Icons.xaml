@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.SvgImageSource_Icons"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.SvgImageSource_Icons"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,28 +9,28 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid Padding="20">
-		<StackPanel Width="200"
-		    Spacing="8">
-			<Image x:Name="image1"
-			    Width="40"
-			    Height="40"
-			    Source="ms-appx:///Assets/Formats/couch.svg"
-			    Stretch="UniformToFill" />
-			<Button x:Name="MenuButton"
-			    HorizontalAlignment="Center"
-			    Click="OnClick">
-				Click me
-			</Button>
-			<Button x:Name="MenuDelayedButton"
-			    HorizontalAlignment="Center"
-			    Click="OnDelayedClick">
-				Click me (delayed)
-			</Button>
-			<mux:ImageIcon x:Name="imageIcon1"
-			    Source="ms-appx:///Assets/Formats/heliocentric.svg" />
-			<BitmapIcon x:Name="bitmapIcon1"
-			    UriSource="ms-appx:///Assets/Formats/bookstack.svg" />
-		</StackPanel>
-	</Grid>
+    <Grid Padding="20">
+        <StackPanel Width="200" Spacing="8">
+            <Image
+                x:Name="image1"
+                Width="40"
+                Height="40"
+                Source="ms-appx:///Assets/Formats/couch.svg"
+                Stretch="UniformToFill" />
+            <Button
+                x:Name="MenuButton"
+                HorizontalAlignment="Center"
+                Click="OnClick">
+                Click me
+            </Button>
+            <Button
+                x:Name="MenuDelayedButton"
+                HorizontalAlignment="Center"
+                Click="OnDelayedClick">
+                Click me (delayed)
+            </Button>
+            <mux:ImageIcon x:Name="imageIcon1" Source="ms-appx:///Assets/Formats/heliocentric.svg" />
+            <BitmapIcon x:Name="bitmapIcon1" UriSource="ms-appx:///Assets/Formats/bookstack.svg" />
+        </StackPanel>
+    </Grid>
 </Page>

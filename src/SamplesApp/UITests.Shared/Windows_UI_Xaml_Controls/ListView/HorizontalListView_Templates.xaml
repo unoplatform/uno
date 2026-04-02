@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.HorizontalListView_Templates"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.HorizontalListView_Templates"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android#using:Uno.UI.Controls.Legacy"
@@ -14,61 +15,57 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<UserControl.Resources>
-		<uConverters:FromNullableBoolToVisibilityConverter x:Key="boolToVisibility" />
-	</UserControl.Resources>
+    <UserControl.Resources>
+        <uConverters:FromNullableBoolToVisibilityConverter x:Key="boolToVisibility" />
+    </UserControl.Resources>
 
-	<controls:SampleControl SampleDescription="Sample to test the refresh of templates with binded values">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel>
-					<ios:TextBlock Text="HorizontalListView is only used on Android." />
-					<win:TextBlock Text="HorizontalListView is only used on Android." />
+    <controls:SampleControl SampleDescription="Sample to test the refresh of templates with binded values">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <StackPanel>
+                    <ios:TextBlock Text="HorizontalListView is only used on Android." />
+                    <win:TextBlock Text="HorizontalListView is only used on Android." />
 
-					<android:TextBlock Text="Horizontal List View" />
-					<android:HorizontalListView Height="200"
-					    behaviors:ListViewBaseCommand.Command="{Binding [DoSomething]}"
-					    IsItemClickEnabled="true"
-					    ItemsSource="{Binding [SampleItems]}"
-					    SelectedItem="{Binding [SelectedItem]}"
-					    SelectionMode="Single">
-						<android:HorizontalListView.ItemTemplate>
-							<DataTemplate>
-								<StackPanel>
-									<TextBlock Height="20"
-									    Text="{Binding [Item]}" />
-									<Button Command="{Binding [MakeVisible]}"
-									    Content="Toggle" />
-									<Button Content="Hidden"
-									    Visibility="{Binding [IsVisible], Converter={StaticResource boolToVisibility}}" />
-								</StackPanel>
-							</DataTemplate>
-						</android:HorizontalListView.ItemTemplate>
-					</android:HorizontalListView>
+                    <android:TextBlock Text="Horizontal List View" />
+                    <android:HorizontalListView
+                        Height="200"
+                        behaviors:ListViewBaseCommand.Command="{Binding [DoSomething]}"
+                        IsItemClickEnabled="true"
+                        ItemsSource="{Binding [SampleItems]}"
+                        SelectedItem="{Binding [SelectedItem]}"
+                        SelectionMode="Single">
+                        <android:HorizontalListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Height="20" Text="{Binding [Item]}" />
+                                    <Button Command="{Binding [MakeVisible]}" Content="Toggle" />
+                                    <Button Content="Hidden" Visibility="{Binding [IsVisible], Converter={StaticResource boolToVisibility}}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </android:HorizontalListView.ItemTemplate>
+                    </android:HorizontalListView>
 
-					<android:TextBlock Text="List View" />
-					<android:ListView Height="200"
-					    u:ListViewBaseCommand.Command="{Binding [DoSomething]}"
-					    IsItemClickEnabled="true"
-					    ItemsSource="{Binding [SampleItems]}"
-					    SelectedItem="{Binding [SelectedItem]}"
-					    SelectionMode="Single">
-						<ListView.ItemTemplate>
-							<DataTemplate>
-								<StackPanel>
-									<TextBlock Height="20"
-									    Text="{Binding [Item]}" />
-									<Button Command="{Binding [MakeVisible]}"
-									    Content="Toggle" />
-									<Button Content="Hidden"
-									    Visibility="{Binding [IsVisible], Converter={StaticResource boolToVisibility}}" />
-								</StackPanel>
-							</DataTemplate>
-						</ListView.ItemTemplate>
-					</android:ListView>
+                    <android:TextBlock Text="List View" />
+                    <android:ListView
+                        Height="200"
+                        u:ListViewBaseCommand.Command="{Binding [DoSomething]}"
+                        IsItemClickEnabled="true"
+                        ItemsSource="{Binding [SampleItems]}"
+                        SelectedItem="{Binding [SelectedItem]}"
+                        SelectionMode="Single">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Height="20" Text="{Binding [Item]}" />
+                                    <Button Command="{Binding [MakeVisible]}" Content="Toggle" />
+                                    <Button Content="Hidden" Visibility="{Binding [IsVisible], Converter={StaticResource boolToVisibility}}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </android:ListView>
 
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+                </StackPanel>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_With_ListViews_Count_Measure"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_With_ListViews_Count_Measure"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,53 +8,55 @@
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
-	<UserControl.Resources>
-		<local:StringToHeightConverter x:Key="StringToHeightConverter" />
-	</UserControl.Resources>
+    <UserControl.Resources>
+        <local:StringToHeightConverter x:Key="StringToHeightConverter" />
+    </UserControl.Resources>
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<TextBlock Text="Header" />
-		<local:MeasureDetectorControl Grid.Row="1">
-			<ListView x:Name="OuterListView"
-			    Height="200"
-			    Background="Red"
-			    ItemsSource="01234567">
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<StackPanel Padding="5"
-						    Background="LightBlue">
-							<TextBlock FontSize="20"
-							    Text="{Binding}" />
-							<ListView ItemsSource="ABC">
-								<ListView.ItemTemplate>
-									<DataTemplate>
-										<StackPanel>
-											<TextBlock Text="{Binding}" />
-											<Border Width="200"
-											    Height="{Binding Converter={StaticResource StringToHeightConverter}}"
-											    Margin="2"
-											    Background="Pink" />
-										</StackPanel>
-									</DataTemplate>
-								</ListView.ItemTemplate>
-							</ListView>
-						</StackPanel>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
-		</local:MeasureDetectorControl>
-		<TextBlock x:Name="ResultTextBlock"
-		    Grid.Row="2"
-		    Text="Not scrolled" />
-		<Button x:Name="ChangeViewButton"
-		    Grid.Row="3"
-		    Click="ChangeViewButton_Clicked"
-		    Content="Scroll list" />
-	</Grid>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Text="Header" />
+        <local:MeasureDetectorControl Grid.Row="1">
+            <ListView
+                x:Name="OuterListView"
+                Height="200"
+                Background="Red"
+                ItemsSource="01234567">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Padding="5" Background="LightBlue">
+                            <TextBlock FontSize="20" Text="{Binding}" />
+                            <ListView ItemsSource="ABC">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding}" />
+                                            <Border
+                                                Width="200"
+                                                Height="{Binding Converter={StaticResource StringToHeightConverter}}"
+                                                Margin="2"
+                                                Background="Pink" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </local:MeasureDetectorControl>
+        <TextBlock
+            x:Name="ResultTextBlock"
+            Grid.Row="2"
+            Text="Not scrolled" />
+        <Button
+            x:Name="ChangeViewButton"
+            Grid.Row="3"
+            Click="ChangeViewButton_Clicked"
+            Content="Scroll list" />
+    </Grid>
 </UserControl>

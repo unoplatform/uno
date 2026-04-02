@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_SelectedItem"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_SelectedItem"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,44 +9,41 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<TextBlock x:Name="_SelectedItem"
-		    Text="{Binding [SelectedItem]}" />
+    <StackPanel>
+        <TextBlock x:Name="_SelectedItem" Text="{Binding [SelectedItem]}" />
 
-		<TextBlock Text="ItemsStackPanel" />
-		<TextBlock x:Name="itemsStackPanelListSelectedItem"
-		    Text="{x:Bind itemsStackPanelList.SelectedItem, Mode=OneWay}" />
-		<ListView x:Name="itemsStackPanelList"
-		    Height="200"
-		    ItemsSource="{Binding [SampleItems]}"
-		    SelectedItem="{Binding [SelectedItem]}">
-			<ListView.ItemTemplate>
-				<DataTemplate>
-					<TextBlock AutomationProperties.AutomationId="{Binding}"
-					    Text="{Binding}" />
-				</DataTemplate>
-			</ListView.ItemTemplate>
-		</ListView>
+        <TextBlock Text="ItemsStackPanel" />
+        <TextBlock x:Name="itemsStackPanelListSelectedItem" Text="{x:Bind itemsStackPanelList.SelectedItem, Mode=OneWay}" />
+        <ListView
+            x:Name="itemsStackPanelList"
+            Height="200"
+            ItemsSource="{Binding [SampleItems]}"
+            SelectedItem="{Binding [SelectedItem]}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock AutomationProperties.AutomationId="{Binding}" Text="{Binding}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
-		<TextBlock Text="StackPanel" />
-		<TextBlock x:Name="stackPanelListSelectedItem"
-		    Text="{x:Bind stackPanelList.SelectedItem, Mode=OneWay}" />
-		<ListView x:Name="stackPanelList"
-		    Height="200"
-		    ItemsSource="{Binding [SampleItems]}"
-		    SelectedItem="{Binding [SelectedItem]}">
-			<ListView.ItemTemplate>
-				<DataTemplate>
-					<TextBlock AutomationProperties.AutomationId="{Binding}"
-					    Text="{Binding}" />
-				</DataTemplate>
-			</ListView.ItemTemplate>
-			<ListView.ItemsPanel>
-				<ItemsPanelTemplate>
-					<StackPanel />
-				</ItemsPanelTemplate>
-			</ListView.ItemsPanel>
-		</ListView>
+        <TextBlock Text="StackPanel" />
+        <TextBlock x:Name="stackPanelListSelectedItem" Text="{x:Bind stackPanelList.SelectedItem, Mode=OneWay}" />
+        <ListView
+            x:Name="stackPanelList"
+            Height="200"
+            ItemsSource="{Binding [SampleItems]}"
+            SelectedItem="{Binding [SelectedItem]}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock AutomationProperties.AutomationId="{Binding}" Text="{Binding}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+        </ListView>
 
-	</StackPanel>
+    </StackPanel>
 </UserControl>

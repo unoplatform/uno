@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_NavigateToString2"
+﻿<UserControl
+    x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_NavigateToString2"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive.com/android"
@@ -15,25 +16,25 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android not_win">
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-		<StackPanel Background="Honeydew">
-			<TextBox x:Name="WebView2_NavigateToStringSize"
-			    Header="Size of (big) string, in thousands of lines"
-			    InputScope="Number"
-			    Text="1000" />
-			<Button x:Name="startButton"
-			    Click="generateLong_Click"
-			    Content="generate long string" />
-			<TextBlock x:Name="WebView2_NavigateToStringResult"
-			    Text="waiting for NavigationCompleted" />
-		</StackPanel>
+        <StackPanel Background="Honeydew">
+            <TextBox
+                x:Name="WebView2_NavigateToStringSize"
+                Header="Size of (big) string, in thousands of lines"
+                InputScope="Number"
+                Text="1000" />
+            <Button
+                x:Name="startButton"
+                Click="generateLong_Click"
+                Content="generate long string" />
+            <TextBlock x:Name="WebView2_NavigateToStringResult" Text="waiting for NavigationCompleted" />
+        </StackPanel>
 
-		<mux:WebView2 x:Name="webViewControl"
-		    Grid.Row="1" />
-	</Grid>
+        <mux:WebView2 x:Name="webViewControl" Grid.Row="1" />
+    </Grid>
 </UserControl>

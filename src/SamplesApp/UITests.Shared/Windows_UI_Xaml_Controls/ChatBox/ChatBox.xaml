@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ChatBox.ChatBox"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ChatBox.ChatBox"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -9,37 +10,41 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<controls:SampleControl SampleDescription="Translate the content above the keyboard after opening it (like a chat app). ">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<Grid extensions:InputPanelExtensions.IsPanIntoView="True">
-					<StackPanel VerticalAlignment="Bottom">
-						<TextBlock Margin="20"
-						    HorizontalAlignment="Center"
-						    Text="Known issue : On iOS only - When focusing the TextBox, the keyboard appears and our animation is played to translate upwards the content (the whole grid). But when clicking on a button (i.e : send  a message), the focus is lost, the keyboard hidden, and the tap is triggered. The tap should be triggered before the animation hide the keyboard."
-						    TextWrapping="Wrap" />
+    <controls:SampleControl SampleDescription="Translate the content above the keyboard after opening it (like a chat app). ">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <Grid extensions:InputPanelExtensions.IsPanIntoView="True">
+                    <StackPanel VerticalAlignment="Bottom">
+                        <TextBlock
+                            Margin="20"
+                            HorizontalAlignment="Center"
+                            Text="Known issue : On iOS only - When focusing the TextBox, the keyboard appears and our animation is played to translate upwards the content (the whole grid). But when clicking on a button (i.e : send  a message), the focus is lost, the keyboard hidden, and the tap is triggered. The tap should be triggered before the animation hide the keyboard."
+                            TextWrapping="Wrap" />
 
-						<TextBlock HorizontalAlignment="Center">
-							<Run Text="You clicked" />
-							<Run Text="{Binding ClickCount}" />
-							<Run Text=" times" />
-						</TextBlock>
+                        <TextBlock HorizontalAlignment="Center">
+                            <Run Text="You clicked" />
+                            <Run Text="{Binding ClickCount}" />
+                            <Run Text=" times" />
+                        </TextBlock>
 
-						<StackPanel HorizontalAlignment="Center"
-						    VerticalAlignment="Bottom"
-						    Background="Aquamarine"
-						    Orientation="Horizontal">
-							<TextBox Margin="20"
-							    AcceptsReturn="True"
-							    Text="TextBox" />
+                        <StackPanel
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Background="Aquamarine"
+                            Orientation="Horizontal">
+                            <TextBox
+                                Margin="20"
+                                AcceptsReturn="True"
+                                Text="TextBox" />
 
-							<Button Margin="20"
-							    Command="{Binding [ToggleHeader]}"
-							    Content="Click on me" />
-						</StackPanel>
-					</StackPanel>
-				</Grid>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+                            <Button
+                                Margin="20"
+                                Command="{Binding [ToggleHeader]}"
+                                Content="Click on me" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

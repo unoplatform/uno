@@ -1,21 +1,24 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Input.RoutedEvents.RoutedEvent_FocusControl"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Input.RoutedEvents.RoutedEvent_FocusControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<Grid Background="Moccasin">
-		<TextBlock>
-			Children:<LineBreak />
-			<Run x:Name="txtChildren" />
-		</TextBlock>
-		<Button x:Name="btnIn1"
-		    HorizontalAlignment="Left"
-		    VerticalAlignment="Bottom">
-			(btnIn1) Focus this
-		</Button>
-		<Button x:Name="btnIn2"
-		    HorizontalAlignment="Right"
-		    VerticalAlignment="Bottom">
-			(btnIn2) Focus this
-		</Button>
-	</Grid>
+    <Grid Background="Moccasin">
+        <TextBlock>
+            Children:<LineBreak />
+            <Run x:Name="txtChildren" />
+        </TextBlock>
+        <Button
+            x:Name="btnIn1"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom">
+            (btnIn1) Focus this
+        </Button>
+        <Button
+            x:Name="btnIn2"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom">
+            (btnIn2) Focus this
+        </Button>
+    </Grid>
 </UserControl>

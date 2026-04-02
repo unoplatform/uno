@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="GenericApp.Views.Samples.Shared.Content.UITests.GridViewUngrouped"
+﻿<UserControl
+    x:Class="GenericApp.Views.Samples.Shared.Content.UITests.GridViewUngrouped"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:TODO="http://uno.ui/TODO"
@@ -15,30 +16,32 @@
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     mc:Ignorable="d ios android TODO">
 
-	<controls:SampleControl SampleDescription="GridViewUngrouped">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<Border Background="Red">
-					<GridView win:ScrollViewer.HorizontalScrollBarVisibility="Auto"
-					    win:ScrollViewer.HorizontalScrollMode="Auto"
-					    ItemsSource="{Binding [UngroupedSampleItems]}">
-						<GridView.ItemsPanel>
-							<ItemsPanelTemplate>
-								<ItemsWrapGrid MaximumRowsOrColumns="1" />
-							</ItemsPanelTemplate>
-						</GridView.ItemsPanel>
-						<GridView.ItemTemplate>
-							<DataTemplate>
-								<Border Background="White">
-									<TextBlock Width="100"
-									    Foreground="Blue"
-									    Text="{Binding}" />
-								</Border>
-							</DataTemplate>
-						</GridView.ItemTemplate>
-					</GridView>
-				</Border>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="GridViewUngrouped">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <Border Background="Red">
+                    <GridView
+                        win:ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                        win:ScrollViewer.HorizontalScrollMode="Auto"
+                        ItemsSource="{Binding [UngroupedSampleItems]}">
+                        <GridView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <ItemsWrapGrid MaximumRowsOrColumns="1" />
+                            </ItemsPanelTemplate>
+                        </GridView.ItemsPanel>
+                        <GridView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="White">
+                                    <TextBlock
+                                        Width="100"
+                                        Foreground="Blue"
+                                        Text="{Binding}" />
+                                </Border>
+                            </DataTemplate>
+                        </GridView.ItemTemplate>
+                    </GridView>
+                </Border>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

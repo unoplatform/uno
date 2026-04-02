@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.Popup.Popup_Simple"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.Popup.Popup_Simple"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive.com/android"
@@ -12,66 +13,71 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<Grid x:Name="sampleContent">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
+    <Grid x:Name="sampleContent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-		<StackPanel>
-			<!--  Insert your code sample here  -->
-			<TextBlock Text="This Toggle Button should open a Dismissible Popup" />
-			<ToggleButton x:Name="TogglePopup">TOGGLE OPEN/CLOSE</ToggleButton>
-			<Popup x:Name="popup"
-			    HorizontalOffset="40"
-			    IsLightDismissEnabled="True"
-			    IsOpen="{Binding IsChecked, ElementName=TogglePopup, Mode=TwoWay}"
-			    VerticalOffset="100">
-				<Popup.Child>
-					<Border x:Name="popupContent"
-					    Width="350"
-					    Height="230"
-					    Background="Red">
-						<TextBlock>Clicking here shouldn't close the popup.</TextBlock>
-					</Border>
-				</Popup.Child>
-			</Popup>
-			<TextBlock Text="This Toggle Button should open a NON-Dismissible Popup" />
-			<ToggleButton x:Name="TogglePopup2">TOGGLE OPEN/CLOSE</ToggleButton>
-			<Popup HorizontalOffset="300"
-			    IsLightDismissEnabled="False"
-			    IsOpen="{Binding IsChecked, ElementName=TogglePopup2, Mode=TwoWay}"
-			    VerticalOffset="100">
-				<Popup.Child>
-					<StackPanel x:Name="popupContent2"
-					    Width="150"
-					    Height="100"
-					    Background="Orange">
-						<TextBlock Text="Test" />
-						<ToggleButton IsChecked="{Binding IsChecked, ElementName=TogglePopup2, Mode=TwoWay}">X</ToggleButton>
-					</StackPanel>
-				</Popup.Child>
-			</Popup>
-			<TextBlock Text="This Toggle Button should open a dismissible Popup without fixed height" />
-			<ToggleButton x:Name="TogglePopup3">TOGGLE OPEN/CLOSE</ToggleButton>
-			<Popup HorizontalOffset="200"
-			    IsLightDismissEnabled="True"
-			    IsOpen="{Binding IsChecked, ElementName=TogglePopup3, Mode=TwoWay}"
-			    VerticalOffset="-50">
-				<Popup.Child>
-					<Border x:Name="popupContent3"
-					    Width="150"
-					    Background="Blue">
-						<TextBlock Foreground="White"
-						    Text="Test" />
-					</Border>
-				</Popup.Child>
-			</Popup>
-		</StackPanel>
+        <StackPanel>
+            <!--  Insert your code sample here  -->
+            <TextBlock Text="This Toggle Button should open a Dismissible Popup" />
+            <ToggleButton x:Name="TogglePopup">TOGGLE OPEN/CLOSE</ToggleButton>
+            <Popup
+                x:Name="popup"
+                HorizontalOffset="40"
+                IsLightDismissEnabled="True"
+                IsOpen="{Binding IsChecked, ElementName=TogglePopup, Mode=TwoWay}"
+                VerticalOffset="100">
+                <Popup.Child>
+                    <Border
+                        x:Name="popupContent"
+                        Width="350"
+                        Height="230"
+                        Background="Red">
+                        <TextBlock>Clicking here shouldn't close the popup.</TextBlock>
+                    </Border>
+                </Popup.Child>
+            </Popup>
+            <TextBlock Text="This Toggle Button should open a NON-Dismissible Popup" />
+            <ToggleButton x:Name="TogglePopup2">TOGGLE OPEN/CLOSE</ToggleButton>
+            <Popup
+                HorizontalOffset="300"
+                IsLightDismissEnabled="False"
+                IsOpen="{Binding IsChecked, ElementName=TogglePopup2, Mode=TwoWay}"
+                VerticalOffset="100">
+                <Popup.Child>
+                    <StackPanel
+                        x:Name="popupContent2"
+                        Width="150"
+                        Height="100"
+                        Background="Orange">
+                        <TextBlock Text="Test" />
+                        <ToggleButton IsChecked="{Binding IsChecked, ElementName=TogglePopup2, Mode=TwoWay}">X</ToggleButton>
+                    </StackPanel>
+                </Popup.Child>
+            </Popup>
+            <TextBlock Text="This Toggle Button should open a dismissible Popup without fixed height" />
+            <ToggleButton x:Name="TogglePopup3">TOGGLE OPEN/CLOSE</ToggleButton>
+            <Popup
+                HorizontalOffset="200"
+                IsLightDismissEnabled="True"
+                IsOpen="{Binding IsChecked, ElementName=TogglePopup3, Mode=TwoWay}"
+                VerticalOffset="-50">
+                <Popup.Child>
+                    <Border
+                        x:Name="popupContent3"
+                        Width="150"
+                        Background="Blue">
+                        <TextBlock Foreground="White" Text="Test" />
+                    </Border>
+                </Popup.Child>
+            </Popup>
+        </StackPanel>
 
-		<ScrollViewer Grid.Row="1">
-			<TextBlock x:Name="output" />
-		</ScrollViewer>
-	</Grid>
+        <ScrollViewer Grid.Row="1">
+            <TextBlock x:Name="output" />
+        </ScrollViewer>
+    </Grid>
 
 </UserControl>

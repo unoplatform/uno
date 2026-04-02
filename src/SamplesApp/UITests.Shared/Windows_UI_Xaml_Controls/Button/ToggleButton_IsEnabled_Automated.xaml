@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.ToggleButton_IsEnabled_Automated"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.ToggleButton_IsEnabled_Automated"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -6,34 +7,36 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="android">
 
-	<StackPanel Width="310"
-	    HorizontalAlignment="Center"
-	    VerticalAlignment="Center">
+    <StackPanel
+        Width="310"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
 
-		<!--  ToggleButton State  -->
-		<StackPanel HorizontalAlignment="Left"
-		    Orientation="Horizontal">
+        <!--  ToggleButton State  -->
+        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 
-			<!--  Label  -->
-			<TextBlock FontSize="20"
-			    Text="MyToggleButton.IsChecked =" />
+            <!--  Label  -->
+            <TextBlock FontSize="20" Text="MyToggleButton.IsChecked =" />
 
-			<!--  Value  -->
-			<TextBlock x:Name="ToggleButtonIsCheckedState"
-			    Margin="4,0,0,0"
-			    FontSize="20" />
-		</StackPanel>
+            <!--  Value  -->
+            <TextBlock
+                x:Name="ToggleButtonIsCheckedState"
+                Margin="4,0,0,0"
+                FontSize="20" />
+        </StackPanel>
 
-		<!--  My ToggleButton  -->
-		<ToggleButton x:Name="MyToggleButton"
-		    Margin="0,24,0,8"
-		    Click="MyToggleButton_Click"
-		    Content="My ToggleButton" />
+        <!--  My ToggleButton  -->
+        <ToggleButton
+            x:Name="MyToggleButton"
+            Margin="0,24,0,8"
+            Click="MyToggleButton_Click"
+            Content="My ToggleButton" />
 
-		<!--  My ToggleButton Disabler  -->
-		<ToggleButton x:Name="MyToggleButtonDisabler"
-		    Click="MyToggleButtonDisabler_Click"
-		    Content="Disable My ToggleButton" />
+        <!--  My ToggleButton Disabler  -->
+        <ToggleButton
+            x:Name="MyToggleButtonDisabler"
+            Click="MyToggleButtonDisabler_Click"
+            Content="Disable My ToggleButton" />
 
-	</StackPanel>
+    </StackPanel>
 </UserControl>

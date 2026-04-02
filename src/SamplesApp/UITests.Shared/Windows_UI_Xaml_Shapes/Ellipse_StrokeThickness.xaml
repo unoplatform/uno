@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Shapes.Ellipse_StrokeThickness"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Shapes.Ellipse_StrokeThickness"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,76 +7,89 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel Spacing="10">
-		<TextBlock FontSize="22">Those 7 ellipses should be identical (last is a Border with CornerRadius):</TextBlock>
-		<Grid>
-			<StackPanel VerticalAlignment="Top"
-			    Orientation="Horizontal"
-			    Spacing="5">
-				<Grid>
-					<Ellipse Width="100"
-					    Height="100"
-					    Fill="Red" />
-					<Ellipse Width="50"
-					    Height="50"
-					    Fill="Yellow" />
-				</Grid>
-				<Grid>
-					<Ellipse Width="100"
-					    Height="100"
-					    Fill="Red"
-					    StrokeThickness="45" />
-					<Ellipse Width="50"
-					    Height="50"
-					    Fill="Yellow"
-					    StrokeThickness="15" />
-				</Grid>
-				<Grid>
-					<Ellipse Width="100"
-					    Height="100"
-					    Fill="Yellow" />
-					<Ellipse Width="100"
-					    Height="100"
-					    Stroke="Red"
-					    StrokeThickness="25" />
-				</Grid>
-				<Ellipse Width="100"
-				    Height="100"
-				    Fill="Yellow"
-				    Stroke="Red"
-				    StrokeThickness="25" />
-				<Ellipse Width="100"
-				    Fill="Yellow"
-				    Stroke="Red"
-				    StrokeThickness="25" />
-				<Border Width="100">
-					<Ellipse Fill="Yellow"
-					    Stroke="Red"
-					    StrokeThickness="25" />
-				</Border>
-				<Border Width="100"
-				    Height="100"
-				    Background="Yellow"
-				    BorderBrush="Red"
-				    BorderThickness="25"
-				    CornerRadius="50" />
-			</StackPanel>
-			<Line VerticalAlignment="Top"
-			    Stroke="Black"
-			    StrokeDashArray="5 4"
-			    StrokeThickness="1"
-			    X1="0"
-			    X2="730"
-			    Y1="25"
-			    Y2="25" />
-			<Line VerticalAlignment="Top"
-			    Stroke="Black"
-			    StrokeDashArray="5 4"
-			    StrokeThickness="1"
-			    X1="0"
-			    X2="730"
-			    Y1="75"
-			    Y2="75" />
-		</Grid>
-	</StackPanel>
+    <StackPanel Spacing="10">
+        <TextBlock FontSize="22">Those 7 ellipses should be identical (last is a Border with CornerRadius):</TextBlock>
+        <Grid>
+            <StackPanel
+                VerticalAlignment="Top"
+                Orientation="Horizontal"
+                Spacing="5">
+                <Grid>
+                    <Ellipse
+                        Width="100"
+                        Height="100"
+                        Fill="Red" />
+                    <Ellipse
+                        Width="50"
+                        Height="50"
+                        Fill="Yellow" />
+                </Grid>
+                <Grid>
+                    <Ellipse
+                        Width="100"
+                        Height="100"
+                        Fill="Red"
+                        StrokeThickness="45" />
+                    <Ellipse
+                        Width="50"
+                        Height="50"
+                        Fill="Yellow"
+                        StrokeThickness="15" />
+                </Grid>
+                <Grid>
+                    <Ellipse
+                        Width="100"
+                        Height="100"
+                        Fill="Yellow" />
+                    <Ellipse
+                        Width="100"
+                        Height="100"
+                        Stroke="Red"
+                        StrokeThickness="25" />
+                </Grid>
+                <Ellipse
+                    Width="100"
+                    Height="100"
+                    Fill="Yellow"
+                    Stroke="Red"
+                    StrokeThickness="25" />
+                <Ellipse
+                    Width="100"
+                    Fill="Yellow"
+                    Stroke="Red"
+                    StrokeThickness="25" />
+                <Border Width="100">
+                    <Ellipse
+                        Fill="Yellow"
+                        Stroke="Red"
+                        StrokeThickness="25" />
+                </Border>
+                <Border
+                    Width="100"
+                    Height="100"
+                    Background="Yellow"
+                    BorderBrush="Red"
+                    BorderThickness="25"
+                    CornerRadius="50" />
+            </StackPanel>
+            <Line
+                VerticalAlignment="Top"
+                Stroke="Black"
+                StrokeDashArray="5 4"
+                StrokeThickness="1"
+                X1="0"
+                X2="730"
+                Y1="25"
+                Y2="25" />
+            <Line
+                VerticalAlignment="Top"
+                Stroke="Black"
+                StrokeDashArray="5 4"
+                StrokeThickness="1"
+                X1="0"
+                X2="730"
+                Y1="75"
+                Y2="75" />
+        </Grid>
+    </StackPanel>
 </Page>

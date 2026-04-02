@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Shapes.Offscreen_Shapes"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Shapes.Offscreen_Shapes"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,134 +8,150 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid x:Name="grid"
-	    ColumnSpacing="6"
-	    RowSpacing="6">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
+    <Grid
+        x:Name="grid"
+        ColumnSpacing="6"
+        RowSpacing="6">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-		<TextBlock Grid.Row="0"
-		    Grid.Column="1"
-		    HorizontalAlignment="Center"
-		    FontSize="20">
-			XAML
-		</TextBlock>
-		<TextBlock Grid.Row="0"
-		    Grid.Column="2"
-		    HorizontalAlignment="Center"
-		    FontSize="20"
-		    FontStyle="Italic">
-			Deferred
-		</TextBlock>
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="1"
+            HorizontalAlignment="Center"
+            FontSize="20">
+            XAML
+        </TextBlock>
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="2"
+            HorizontalAlignment="Center"
+            FontSize="20"
+            FontStyle="Italic">
+            Deferred
+        </TextBlock>
 
-		<TextBlock Grid.Row="1"
-		    Grid.Column="0"
-		    VerticalAlignment="Center"
-		    FontSize="20">
-			Ellipse
-		</TextBlock>
-		<TextBlock Grid.Row="2"
-		    Grid.Column="0"
-		    VerticalAlignment="Center"
-		    FontSize="20">
-			Line
-		</TextBlock>
-		<TextBlock Grid.Row="3"
-		    Grid.Column="0"
-		    VerticalAlignment="Center"
-		    FontSize="20">
-			Path
-		</TextBlock>
-		<TextBlock Grid.Row="4"
-		    Grid.Column="0"
-		    VerticalAlignment="Center"
-		    FontSize="20">
-			Polygon
-		</TextBlock>
-		<TextBlock Grid.Row="5"
-		    Grid.Column="0"
-		    VerticalAlignment="Center"
-		    FontSize="20">
-			Polyline
-		</TextBlock>
-		<TextBlock Grid.Row="6"
-		    Grid.Column="0"
-		    VerticalAlignment="Center"
-		    FontSize="20">
-			Rectangle
-		</TextBlock>
+        <TextBlock
+            Grid.Row="1"
+            Grid.Column="0"
+            VerticalAlignment="Center"
+            FontSize="20">
+            Ellipse
+        </TextBlock>
+        <TextBlock
+            Grid.Row="2"
+            Grid.Column="0"
+            VerticalAlignment="Center"
+            FontSize="20">
+            Line
+        </TextBlock>
+        <TextBlock
+            Grid.Row="3"
+            Grid.Column="0"
+            VerticalAlignment="Center"
+            FontSize="20">
+            Path
+        </TextBlock>
+        <TextBlock
+            Grid.Row="4"
+            Grid.Column="0"
+            VerticalAlignment="Center"
+            FontSize="20">
+            Polygon
+        </TextBlock>
+        <TextBlock
+            Grid.Row="5"
+            Grid.Column="0"
+            VerticalAlignment="Center"
+            FontSize="20">
+            Polyline
+        </TextBlock>
+        <TextBlock
+            Grid.Row="6"
+            Grid.Column="0"
+            VerticalAlignment="Center"
+            FontSize="20">
+            Rectangle
+        </TextBlock>
 
-		<Ellipse x:Name="xamlShape1"
-		    Grid.Row="1"
-		    Grid.Column="1"
-		    Width="60"
-		    Height="40"
-		    Fill="Yellow"
-		    Stroke="Green"
-		    StrokeThickness="2" />
-		<Line x:Name="xamlShape2"
-		    Grid.Row="2"
-		    Grid.Column="1"
-		    Fill="Yellow"
-		    Stroke="Green"
-		    StrokeThickness="2"
-		    X2="60"
-		    Y2="30" />
-		<Path x:Name="xamlShape3"
-		    Grid.Row="3"
-		    Grid.Column="1"
-		    Width="60"
-		    Height="40"
-		    Data="M0,0L60,40 0,40 60,0Z"
-		    Fill="Yellow"
-		    Stroke="Green"
-		    StrokeThickness="2" />
-		<Polygon x:Name="xamlShape4"
-		    Grid.Row="4"
-		    Grid.Column="1"
-		    Width="60"
-		    Height="40"
-		    Fill="Yellow"
-		    Points="0,0 60,40 0,40"
-		    Stroke="Green"
-		    StrokeThickness="2" />
-		<Polyline x:Name="xamlShape5"
-		    Grid.Row="5"
-		    Grid.Column="1"
-		    Width="60"
-		    Height="40"
-		    Fill="Yellow"
-		    Points="0,0 60,40 20,30 50,10"
-		    Stroke="Green"
-		    StrokeThickness="2" />
-		<Rectangle x:Name="xamlShape6"
-		    Grid.Row="6"
-		    Grid.Column="1"
-		    Width="60"
-		    Height="40"
-		    Fill="Yellow"
-		    Stroke="Green"
-		    StrokeThickness="2" />
+        <Ellipse
+            x:Name="xamlShape1"
+            Grid.Row="1"
+            Grid.Column="1"
+            Width="60"
+            Height="40"
+            Fill="Yellow"
+            Stroke="Green"
+            StrokeThickness="2" />
+        <Line
+            x:Name="xamlShape2"
+            Grid.Row="2"
+            Grid.Column="1"
+            Fill="Yellow"
+            Stroke="Green"
+            StrokeThickness="2"
+            X2="60"
+            Y2="30" />
+        <Path
+            x:Name="xamlShape3"
+            Grid.Row="3"
+            Grid.Column="1"
+            Width="60"
+            Height="40"
+            Data="M0,0L60,40 0,40 60,0Z"
+            Fill="Yellow"
+            Stroke="Green"
+            StrokeThickness="2" />
+        <Polygon
+            x:Name="xamlShape4"
+            Grid.Row="4"
+            Grid.Column="1"
+            Width="60"
+            Height="40"
+            Fill="Yellow"
+            Points="0,0 60,40 0,40"
+            Stroke="Green"
+            StrokeThickness="2" />
+        <Polyline
+            x:Name="xamlShape5"
+            Grid.Row="5"
+            Grid.Column="1"
+            Width="60"
+            Height="40"
+            Fill="Yellow"
+            Points="0,0 60,40 20,30 50,10"
+            Stroke="Green"
+            StrokeThickness="2" />
+        <Rectangle
+            x:Name="xamlShape6"
+            Grid.Row="6"
+            Grid.Column="1"
+            Width="60"
+            Height="40"
+            Fill="Yellow"
+            Stroke="Green"
+            StrokeThickness="2" />
 
-		<TextBlock Grid.Row="7"
-		    Grid.ColumnSpan="4"
-		    FontSize="20"
-		    TextWrapping="Wrap">
-			The 2 columns should appear identical
-		</TextBlock>
-	</Grid>
+        <TextBlock
+            Grid.Row="7"
+            Grid.ColumnSpan="4"
+            FontSize="20"
+            TextWrapping="Wrap">
+            The 2 columns should appear identical
+        </TextBlock>
+    </Grid>
 </Page>

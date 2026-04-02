@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.Animations.DoubleAnimation_Cumulative"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.Animations.DoubleAnimation_Cumulative"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -9,31 +10,35 @@
     d:DesignWidth="400"
     mc:Ignorable="d not_win">
 
-	<Grid>
-		<StackPanel>
-			<Button HorizontalAlignment="Left"
-			    VerticalAlignment="Top"
-			    Content="Move to Y = 50"
-			    Tapped="LaunchAnimation1" />
-			<Button HorizontalAlignment="Left"
-			    VerticalAlignment="Top"
-			    Content="Move to Y = 0"
-			    Tapped="LaunchAnimation2" />
-		</StackPanel>
+    <Grid>
+        <StackPanel>
+            <Button
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Content="Move to Y = 50"
+                Tapped="LaunchAnimation1" />
+            <Button
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Content="Move to Y = 0"
+                Tapped="LaunchAnimation2" />
+        </StackPanel>
 
-		<Border Width="100"
-		    Height="100"
-		    HorizontalAlignment="Center"
-		    VerticalAlignment="Center"
-		    Background="Red">
-			<Border.RenderTransform>
-				<TranslateTransform x:Name="_transform" Y="0" />
-			</Border.RenderTransform>
-		</Border>
-		<Border Width="100"
-		    Height="1"
-		    HorizontalAlignment="Center"
-		    VerticalAlignment="Center"
-		    Background="Black" />
-	</Grid>
+        <Border
+            Width="100"
+            Height="100"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="Red">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="_transform" Y="0" />
+            </Border.RenderTransform>
+        </Border>
+        <Border
+            Width="100"
+            Height="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="Black" />
+    </Grid>
 </UserControl>

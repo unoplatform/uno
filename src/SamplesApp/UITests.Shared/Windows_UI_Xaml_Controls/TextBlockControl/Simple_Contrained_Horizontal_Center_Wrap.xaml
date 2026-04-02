@@ -1,4 +1,5 @@
-﻿<Page x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.Simple_Contrained_Horizontal_Center_Wrap"
+﻿<Page
+    x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.Simple_Contrained_Horizontal_Center_Wrap"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -13,39 +14,41 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android not_win">
 
-	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<Button>
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="100" />
-				</Grid.ColumnDefinitions>
-				<Grid Height="95">
-					<TextBlock HorizontalAlignment="Center"
-					    VerticalAlignment="Bottom"
-					    FontSize="20"
-					    TextTrimming="CharacterEllipsis"
-					    TextWrapping="Wrap"><Run Text="Those three Words" /></TextBlock>
-				</Grid>
-			</Grid>
-		</Button>
-		<Button Grid.Column="1">
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="100" />
-				</Grid.ColumnDefinitions>
-				<Grid Height="95">
-					<TextBlock HorizontalAlignment="Center"
-					    VerticalAlignment="Bottom"
-					    FontSize="20"
-					    TextTrimming="CharacterEllipsis"
-					    TextWrapping="Wrap"><Run Text="Should be visible" /></TextBlock>
-				</Grid>
-			</Grid>
-		</Button>
-	</Grid>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Button>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+                <Grid Height="95">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        FontSize="20"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="Wrap"><Run Text="Those three Words" /></TextBlock>
+                </Grid>
+            </Grid>
+        </Button>
+        <Button Grid.Column="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+                <Grid Height="95">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        FontSize="20"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="Wrap"><Run Text="Should be visible" /></TextBlock>
+                </Grid>
+            </Grid>
+        </Button>
+    </Grid>
 
 </Page>

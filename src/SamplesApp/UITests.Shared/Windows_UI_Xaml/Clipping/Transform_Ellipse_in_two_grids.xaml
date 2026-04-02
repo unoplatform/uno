@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml.Clipping.Transform_Ellipse_in_two_grids"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml.Clipping.Transform_Ellipse_in_two_grids"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,25 +8,28 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<Grid Width="100"
-	    Height="100"
-	    BorderBrush="yellow"
-	    BorderThickness="1">
-		<Grid Width="100"
-		    Height="100"
-		    BorderBrush="Blue"
-		    BorderThickness="1">
-			<Ellipse Width="120"
-			    Height="120"
-			    Fill="Red">
-				<Ellipse.RenderTransform>
-					<RotateTransform Angle="45" />
-				</Ellipse.RenderTransform>
-			</Ellipse>
-			<Grid.RenderTransform>
-				<RotateTransform Angle="45" />
-			</Grid.RenderTransform>
-		</Grid>
-	</Grid>
+    <Grid
+        Width="100"
+        Height="100"
+        BorderBrush="yellow"
+        BorderThickness="1">
+        <Grid
+            Width="100"
+            Height="100"
+            BorderBrush="Blue"
+            BorderThickness="1">
+            <Ellipse
+                Width="120"
+                Height="120"
+                Fill="Red">
+                <Ellipse.RenderTransform>
+                    <RotateTransform Angle="45" />
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <Grid.RenderTransform>
+                <RotateTransform Angle="45" />
+            </Grid.RenderTransform>
+        </Grid>
+    </Grid>
 
 </UserControl>

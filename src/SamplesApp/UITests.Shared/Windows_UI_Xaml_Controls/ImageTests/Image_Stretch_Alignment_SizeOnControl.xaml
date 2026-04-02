@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_Stretch_Alignment_SizeOnControl"
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_Stretch_Alignment_SizeOnControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,53 +10,53 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d not_win">
 
-	<Grid HorizontalAlignment="Center">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<local:Image_Stretch_Modes_Picker x:Name="modesPicker" />
-		<ScrollViewer Grid.Row="1">
-			<ItemsControl ItemsSource="{Binding Items, ElementName=modesPicker}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<win:VariableSizedWrapGrid Orientation="Horizontal" />
-						<not_win:WrapPanel Orientation="Horizontal" />
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<StackPanel Width="150"
-						    Margin="5"
-						    Padding="5"
-						    Background="LightGreen">
-							<TextBlock FontSize="12">
-								<Run Text="{Binding Index}" />
-								) s=<Run FontWeight="Bold"
-								    Text="{Binding Stretch}" />
-								<LineBreak />
-								h=<Run FontWeight="Bold"
-								    Text="{Binding HorizontalAlignment}" />
-								<LineBreak />
-								v=<Run FontWeight="Bold"
-								    Text="{Binding VerticalAlignment}" />
-							</TextBlock>
-							<Border Width="127"
-							    Height="152"
-							    Background="DeepPink"
-							    BorderBrush="Black"
-							    BorderThickness="1">
-								<Image Width="125"
-								    Height="150"
-								    HorizontalAlignment="{Binding HorizontalAlignment}"
-								    VerticalAlignment="{Binding VerticalAlignment}"
-								    Source="ms-appx:///Assets/test_image_100_100.png"
-								    Stretch="{Binding Stretch}" />
-							</Border>
-						</StackPanel>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-		</ScrollViewer>
-	</Grid>
+    <Grid HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <local:Image_Stretch_Modes_Picker x:Name="modesPicker" />
+        <ScrollViewer Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding Items, ElementName=modesPicker}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <win:VariableSizedWrapGrid Orientation="Horizontal" />
+                        <not_win:WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel
+                            Width="150"
+                            Margin="5"
+                            Padding="5"
+                            Background="LightGreen">
+                            <TextBlock FontSize="12">
+                                <Run Text="{Binding Index}" />
+                                ) s=<Run FontWeight="Bold" Text="{Binding Stretch}" />
+                                <LineBreak />
+                                h=<Run FontWeight="Bold" Text="{Binding HorizontalAlignment}" />
+                                <LineBreak />
+                                v=<Run FontWeight="Bold" Text="{Binding VerticalAlignment}" />
+                            </TextBlock>
+                            <Border
+                                Width="127"
+                                Height="152"
+                                Background="DeepPink"
+                                BorderBrush="Black"
+                                BorderThickness="1">
+                                <Image
+                                    Width="125"
+                                    Height="150"
+                                    HorizontalAlignment="{Binding HorizontalAlignment}"
+                                    VerticalAlignment="{Binding VerticalAlignment}"
+                                    Source="ms-appx:///Assets/test_image_100_100.png"
+                                    Stretch="{Binding Stretch}" />
+                            </Border>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
 </Page>

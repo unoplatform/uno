@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.Slider.Slider_Inside_ListViewHeader"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.Slider.Slider_Inside_ListViewHeader"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -11,45 +12,45 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<!--  Permormance slider  -->
-		<Grid Margin="15,5">
-			<ListView Header="{Binding Parent}"
-			    ItemsSource="{Binding [SampleItems]}">
-				<ListView.HeaderTemplate>
-					<DataTemplate>
-						<StackPanel x:Name="SP"
-						    Orientation="Vertical">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <!--  Permormance slider  -->
+        <Grid Margin="15,5">
+            <ListView Header="{Binding Parent}" ItemsSource="{Binding [SampleItems]}">
+                <ListView.HeaderTemplate>
+                    <DataTemplate>
+                        <StackPanel x:Name="SP" Orientation="Vertical">
 
-							<!--  Slider  -->
-							<Slider x:Name="PerformanceSlider"
-							    Maximum="10"
-							    Minimum="0"
-							    SnapsTo="StepValues"
-							    StepFrequency="1"
-							    Value="{Binding [OverallPerformance], Mode=TwoWay, FallbackValue=10}" />
+                            <!--  Slider  -->
+                            <Slider
+                                x:Name="PerformanceSlider"
+                                Maximum="10"
+                                Minimum="0"
+                                SnapsTo="StepValues"
+                                StepFrequency="1"
+                                Value="{Binding [OverallPerformance], Mode=TwoWay, FallbackValue=10}" />
 
-							<!--  Slider Value  -->
-							<TextBlock x:Name="tb"
-							    Width="25"
-							    VerticalAlignment="Center"
-							    CharacterSpacing="42"
-							    FontSize="16"
-							    FontStyle="Normal"
-							    FontWeight="Normal"
-							    Foreground="#ffffff"
-							    LineHeight="20"
-							    Text="{Binding ElementName=PerformanceSlider, Path=Value}"
-							    TextAlignment="Right" />
-						</StackPanel>
-					</DataTemplate>
-				</ListView.HeaderTemplate>
-			</ListView>
+                            <!--  Slider Value  -->
+                            <TextBlock
+                                x:Name="tb"
+                                Width="25"
+                                VerticalAlignment="Center"
+                                CharacterSpacing="42"
+                                FontSize="16"
+                                FontStyle="Normal"
+                                FontWeight="Normal"
+                                Foreground="#ffffff"
+                                LineHeight="20"
+                                Text="{Binding ElementName=PerformanceSlider, Path=Value}"
+                                TextAlignment="Right" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.HeaderTemplate>
+            </ListView>
 
-		</Grid>
-	</Grid>
+        </Grid>
+    </Grid>
 </UserControl>

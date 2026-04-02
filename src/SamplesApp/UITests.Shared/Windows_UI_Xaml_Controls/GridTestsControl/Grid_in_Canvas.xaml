@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.GridTestsControl.Grid_in_Canvas"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.GridTestsControl.Grid_in_Canvas"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,34 +8,34 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel Margin="20"
-	    Spacing="6">
-		<TextBlock FontSize="16">Text should not be cut. The following textblocks should be identical:</TextBlock>
-		<HyperlinkButton NavigateUri="https://github.com/unoplatform/uno/issues/3483">This is an illustration of GitHub Issue #3483</HyperlinkButton>
+    <StackPanel Margin="20" Spacing="6">
+        <TextBlock FontSize="16">Text should not be cut. The following textblocks should be identical:</TextBlock>
+        <HyperlinkButton NavigateUri="https://github.com/unoplatform/uno/issues/3483">This is an illustration of GitHub Issue #3483</HyperlinkButton>
 
-		<TextBlock>Straight</TextBlock>
-		<Grid HorizontalAlignment="Left"
-		    Background="Red">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-			<TextBlock FontSize="30"
-			    Foreground="White"
-			    Text="This should not be cut" />
-		</Grid>
+        <TextBlock>Straight</TextBlock>
+        <Grid HorizontalAlignment="Left" Background="Red">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                FontSize="30"
+                Foreground="White"
+                Text="This should not be cut" />
+        </Grid>
 
-		<TextBlock>In a Canvas</TextBlock>
-		<Canvas>
-			<Grid Background="Red">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-				<TextBlock FontSize="30"
-				    Foreground="White"
-				    Text="This should not be cut" />
-			</Grid>
-		</Canvas>
-	</StackPanel>
+        <TextBlock>In a Canvas</TextBlock>
+        <Canvas>
+            <Grid Background="Red">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    FontSize="30"
+                    Foreground="White"
+                    Text="This should not be cut" />
+            </Grid>
+        </Canvas>
+    </StackPanel>
 </Page>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_ConstrainedByContainer"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_ConstrainedByContainer"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -12,121 +13,129 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<StackPanel x:Name="sampleRootPanel"
-	    Spacing="4">
+    <StackPanel x:Name="sampleRootPanel" Spacing="4">
 
-		<TextBlock FontSize="16"
-		    FontWeight="Bold">
-			All the constrained TextBlocks have the same text
-		</TextBlock>
+        <TextBlock FontSize="16" FontWeight="Bold">
+            All the constrained TextBlocks have the same text
+        </TextBlock>
 
-		<TextBlock FontSize="15"
-		    TextWrapping="WrapWholeWords">
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
-		</TextBlock>
+        <TextBlock FontSize="15" TextWrapping="WrapWholeWords">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
+        </TextBlock>
 
-		<Rectangle Width="200"
-		    Height="1"
-		    Margin="0,5"
-		    Fill="Black" />
+        <Rectangle
+            Width="200"
+            Height="1"
+            Margin="0,5"
+            Fill="Black" />
 
-		<TextBlock TextWrapping="WrapWholeWords">
-			The following TextBlock is inside a 200x20 Border. There is enough space for one line of text and TextWrapping is NoWrap (single line of text).
-		</TextBlock>
+        <TextBlock TextWrapping="WrapWholeWords">
+            The following TextBlock is inside a 200x20 Border. There is enough space for one line of text and TextWrapping is NoWrap (single line of text).
+        </TextBlock>
 
-		<Border x:Name="border1"
-		    Width="200"
-		    Height="20"
-		    Margin="0,10"
-		    Background="Tomato">
-			<TextBlock x:Name="text1"
-			    FontSize="15"
-			    TextWrapping="NoWrap">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
-			</TextBlock>
-		</Border>
+        <Border
+            x:Name="border1"
+            Width="200"
+            Height="20"
+            Margin="0,10"
+            Background="Tomato">
+            <TextBlock
+                x:Name="text1"
+                FontSize="15"
+                TextWrapping="NoWrap">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
+            </TextBlock>
+        </Border>
 
-		<Rectangle Width="200"
-		    Height="1"
-		    Margin="0,5"
-		    Fill="Black" />
+        <Rectangle
+            Width="200"
+            Height="1"
+            Margin="0,5"
+            Fill="Black" />
 
-		<TextBlock Text="The following TextBlock is inside a 200x20 Border. There is enough space for one line of text so it should trim"
-		    TextWrapping="WrapWholeWords" />
+        <TextBlock Text="The following TextBlock is inside a 200x20 Border. There is enough space for one line of text so it should trim" TextWrapping="WrapWholeWords" />
 
-		<Border x:Name="border2"
-		    Width="200"
-		    Height="20"
-		    Margin="0,10"
-		    Background="Tomato">
-			<TextBlock x:Name="text2"
-			    FontSize="15"
-			    TextWrapping="WrapWholeWords">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
-			</TextBlock>
-		</Border>
+        <Border
+            x:Name="border2"
+            Width="200"
+            Height="20"
+            Margin="0,10"
+            Background="Tomato">
+            <TextBlock
+                x:Name="text2"
+                FontSize="15"
+                TextWrapping="WrapWholeWords">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
+            </TextBlock>
+        </Border>
 
-		<Rectangle Width="200"
-		    Height="1"
-		    Margin="0,5"
-		    Fill="Black" />
+        <Rectangle
+            Width="200"
+            Height="1"
+            Margin="0,5"
+            Fill="Black" />
 
-		<TextBlock Text="The following TextBlock is inside a 200x20 Border. There is enough space for one line of text so it should trim"
-		    TextWrapping="WrapWholeWords" />
+        <TextBlock Text="The following TextBlock is inside a 200x20 Border. There is enough space for one line of text so it should trim" TextWrapping="WrapWholeWords" />
 
-		<Border x:Name="border3"
-		    Width="200"
-		    Height="20"
-		    Margin="0,10"
-		    Background="Tomato">
-			<TextBlock x:Name="text3"
-			    FontSize="15"
-			    TextWrapping="WrapWholeWords">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
-			</TextBlock>
-		</Border>
+        <Border
+            x:Name="border3"
+            Width="200"
+            Height="20"
+            Margin="0,10"
+            Background="Tomato">
+            <TextBlock
+                x:Name="text3"
+                FontSize="15"
+                TextWrapping="WrapWholeWords">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
+            </TextBlock>
+        </Border>
 
-		<Rectangle Width="200"
-		    Height="1"
-		    Margin="0,5"
-		    Fill="Black" />
+        <Rectangle
+            Width="200"
+            Height="1"
+            Margin="0,5"
+            Fill="Black" />
 
-		<TextBlock Text="The following TextBlock is inside a 200x40 Border. There is enough space for two lines of text so it should wrap and trim"
-		    TextWrapping="WrapWholeWords" />
+        <TextBlock Text="The following TextBlock is inside a 200x40 Border. There is enough space for two lines of text so it should wrap and trim" TextWrapping="WrapWholeWords" />
 
-		<Border x:Name="border4"
-		    Width="200"
-		    Height="40"
-		    Margin="0,10"
-		    Background="Tomato">
-			<TextBlock x:Name="text4"
-			    FontSize="15"
-			    TextWrapping="WrapWholeWords">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
-			</TextBlock>
-		</Border>
+        <Border
+            x:Name="border4"
+            Width="200"
+            Height="40"
+            Margin="0,10"
+            Background="Tomato">
+            <TextBlock
+                x:Name="text4"
+                FontSize="15"
+                TextWrapping="WrapWholeWords">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
+            </TextBlock>
+        </Border>
 
-		<Rectangle Width="200"
-		    Height="1"
-		    Margin="0,5"
-		    Fill="Black" />
+        <Rectangle
+            Width="200"
+            Height="1"
+            Margin="0,5"
+            Fill="Black" />
 
-		<TextBlock Text="The following TextBlock is inside a 200x80 Border. There is enough text and space for 4 lines of text but the TextBlock has a MaxLines of 3."
-		    TextWrapping="WrapWholeWords" />
+        <TextBlock Text="The following TextBlock is inside a 200x80 Border. There is enough text and space for 4 lines of text but the TextBlock has a MaxLines of 3." TextWrapping="WrapWholeWords" />
 
-		<Border x:Name="border5"
-		    Width="200"
-		    Height="80"
-		    Margin="0,10"
-		    Background="Tomato">
-			<TextBlock x:Name="text5"
-			    FontSize="15"
-			    MaxLines="3"
-			    TextWrapping="WrapWholeWords">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
-			</TextBlock>
-		</Border>
+        <Border
+            x:Name="border5"
+            Width="200"
+            Height="80"
+            Margin="0,10"
+            Background="Tomato">
+            <TextBlock
+                x:Name="text5"
+                FontSize="15"
+                MaxLines="3"
+                TextWrapping="WrapWholeWords">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tellus metus. Vestibulum tellus lorem, varius non gravida vitae, consectetur.
+            </TextBlock>
+        </Border>
 
-	</StackPanel>
+    </StackPanel>
 
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.CommandBar.CommandBar_Xaml_Automated"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.CommandBar.CommandBar_Xaml_Automated"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,51 +9,57 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="auto" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="auto" />
-		</Grid.RowDefinitions>
-		<CommandBar x:Name="cb"
-		    Style="{StaticResource XamlCommandBar}">
-			<AppBarToggleButton x:Name="shuffleButton"
-			    Click="Button_Click"
-			    Icon="Shuffle"
-			    Label="Shuffle"
-			    Style="{StaticResource XamlAppBarToggleButton}" />
-			<AppBarButton x:Name="playButton"
-			    Click="Button_Click"
-			    Icon="Play"
-			    Label="Play"
-			    Style="{StaticResource XamlAppBarButton}" />
-			<CommandBar.Content>
-				<Button x:Name="appBarContentButton"
-				    Click="Button_Click"
-				    Content="Click me" />
-			</CommandBar.Content>
-		</CommandBar>
-		<StackPanel Grid.Row="1">
-			<TextBlock x:Name="clickResult" />
-		</StackPanel>
-		<CommandBar x:Name="cb_Down"
-		    Grid.Row="2"
-		    Style="{StaticResource XamlCommandBar}">
-			<AppBarToggleButton x:Name="shuffleButton_Down"
-			    Click="Button_Click"
-			    Icon="Shuffle"
-			    Label="Shuffle Down"
-			    Style="{StaticResource XamlAppBarToggleButton}" />
-			<AppBarButton x:Name="playButton_Down"
-			    Click="Button_Click"
-			    Icon="Play"
-			    Label="Play Down"
-			    Style="{StaticResource XamlAppBarButton}" />
-			<CommandBar.Content>
-				<Button x:Name="appBarContentButton_Down"
-				    Click="Button_Click"
-				    Content="Click me Down" />
-			</CommandBar.Content>
-		</CommandBar>
-	</Grid>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <CommandBar x:Name="cb" Style="{StaticResource XamlCommandBar}">
+            <AppBarToggleButton
+                x:Name="shuffleButton"
+                Click="Button_Click"
+                Icon="Shuffle"
+                Label="Shuffle"
+                Style="{StaticResource XamlAppBarToggleButton}" />
+            <AppBarButton
+                x:Name="playButton"
+                Click="Button_Click"
+                Icon="Play"
+                Label="Play"
+                Style="{StaticResource XamlAppBarButton}" />
+            <CommandBar.Content>
+                <Button
+                    x:Name="appBarContentButton"
+                    Click="Button_Click"
+                    Content="Click me" />
+            </CommandBar.Content>
+        </CommandBar>
+        <StackPanel Grid.Row="1">
+            <TextBlock x:Name="clickResult" />
+        </StackPanel>
+        <CommandBar
+            x:Name="cb_Down"
+            Grid.Row="2"
+            Style="{StaticResource XamlCommandBar}">
+            <AppBarToggleButton
+                x:Name="shuffleButton_Down"
+                Click="Button_Click"
+                Icon="Shuffle"
+                Label="Shuffle Down"
+                Style="{StaticResource XamlAppBarToggleButton}" />
+            <AppBarButton
+                x:Name="playButton_Down"
+                Click="Button_Click"
+                Icon="Play"
+                Label="Play Down"
+                Style="{StaticResource XamlAppBarButton}" />
+            <CommandBar.Content>
+                <Button
+                    x:Name="appBarContentButton_Down"
+                    Click="Button_Click"
+                    Content="Click me Down" />
+            </CommandBar.Content>
+        </CommandBar>
+    </Grid>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.Animations.VisualState_DoubleAnimationUsingKeyFrames_RotateTransform"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.Animations.VisualState_DoubleAnimationUsingKeyFrames_RotateTransform"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,110 +8,113 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<TextBlock Padding="10"
-		    HorizontalAlignment="Center"
-		    Text="Click the image below to rotate with point of rotation itself" />
+    <StackPanel>
+        <TextBlock
+            Padding="10"
+            HorizontalAlignment="Center"
+            Text="Click the image below to rotate with point of rotation itself" />
 
-		<Button Width="100"
-		    Height="100"
-		    HorizontalAlignment="Center"
-		    VerticalAlignment="Center"
-		    Background="Transparent"
-		    Content="Test">
-			<Button.Template>
-				<ControlTemplate TargetType="Button">
-					<Grid Background="{TemplateBinding Background}">
-						<Image Width="50"
-						    Height="50"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Center"
-						    RenderTransformOrigin="0.5,0.3"
-						    Source="ms-appx:///Assets/square100.png"
-						    Stretch="Uniform">
-							<Image.RenderTransform>
-								<RotateTransform x:Name="RotateTransform" />
-							</Image.RenderTransform>
-						</Image>
-						<VisualStateManager.VisualStateGroups>
-							<VisualStateGroup x:Name="CommonStates">
-								<VisualState x:Name="Normal" />
-								<VisualState x:Name="Pressed">
-									<Storyboard>
-										<DoubleAnimationUsingKeyFrames Duration="0:0:0.3"
-										    Storyboard.TargetName="RotateTransform"
-										    Storyboard.TargetProperty="Angle">
-											<DoubleAnimationUsingKeyFrames.KeyFrames>
-												<EasingDoubleKeyFrame KeyTime="0:0:0.1"
-												    Value="-25">
-													<EasingDoubleKeyFrame.EasingFunction>
-														<CubicEase EasingMode="EaseInOut" />
-													</EasingDoubleKeyFrame.EasingFunction>
-												</EasingDoubleKeyFrame>
-												<EasingDoubleKeyFrame KeyTime="0:0:0.2"
-												    Value="25">
-													<EasingDoubleKeyFrame.EasingFunction>
-														<CubicEase EasingMode="EaseInOut" />
-													</EasingDoubleKeyFrame.EasingFunction>
-												</EasingDoubleKeyFrame>
-												<EasingDoubleKeyFrame KeyTime="0:0:0.3"
-												    Value="0">
-													<EasingDoubleKeyFrame.EasingFunction>
-														<CubicEase EasingMode="EaseInOut" />
-													</EasingDoubleKeyFrame.EasingFunction>
-												</EasingDoubleKeyFrame>
-											</DoubleAnimationUsingKeyFrames.KeyFrames>
-										</DoubleAnimationUsingKeyFrames>
-									</Storyboard>
-								</VisualState>
-							</VisualStateGroup>
-						</VisualStateManager.VisualStateGroups>
-					</Grid>
-				</ControlTemplate>
-			</Button.Template>
-		</Button>
+        <Button
+            Width="100"
+            Height="100"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="Transparent"
+            Content="Test">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Image
+                            Width="50"
+                            Height="50"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            RenderTransformOrigin="0.5,0.3"
+                            Source="ms-appx:///Assets/square100.png"
+                            Stretch="Uniform">
+                            <Image.RenderTransform>
+                                <RotateTransform x:Name="RotateTransform" />
+                            </Image.RenderTransform>
+                        </Image>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames
+                                            Storyboard.TargetName="RotateTransform"
+                                            Storyboard.TargetProperty="Angle"
+                                            Duration="0:0:0.3">
+                                            <DoubleAnimationUsingKeyFrames.KeyFrames>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="-25">
+                                                    <EasingDoubleKeyFrame.EasingFunction>
+                                                        <CubicEase EasingMode="EaseInOut" />
+                                                    </EasingDoubleKeyFrame.EasingFunction>
+                                                </EasingDoubleKeyFrame>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="25">
+                                                    <EasingDoubleKeyFrame.EasingFunction>
+                                                        <CubicEase EasingMode="EaseInOut" />
+                                                    </EasingDoubleKeyFrame.EasingFunction>
+                                                </EasingDoubleKeyFrame>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0">
+                                                    <EasingDoubleKeyFrame.EasingFunction>
+                                                        <CubicEase EasingMode="EaseInOut" />
+                                                    </EasingDoubleKeyFrame.EasingFunction>
+                                                </EasingDoubleKeyFrame>
+                                            </DoubleAnimationUsingKeyFrames.KeyFrames>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
 
-		<TextBlock HorizontalAlignment="Center"
-		    Text="Rotate with point of rotation CenterX = 100 and Center Y = 300" />
+        <TextBlock HorizontalAlignment="Center" Text="Rotate with point of rotation CenterX = 100 and Center Y = 300" />
 
-		<Button Width="100"
-		    Height="100"
-		    HorizontalAlignment="Center"
-		    VerticalAlignment="Center"
-		    Background="Transparent"
-		    Content="Test 2"
-		    Foreground="Red">
-			<Button.Template>
-				<ControlTemplate TargetType="Button">
-					<Grid Background="{TemplateBinding Background}">
-						<Image Width="50"
-						    Height="50"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Center"
-						    RenderTransformOrigin="0.5,0.3"
-						    Source="ms-appx:///Assets/square100.png"
-						    Stretch="Uniform">
-							<Image.RenderTransform>
-								<RotateTransform x:Name="RotateTransform" Angle="0" CenterX="100" CenterY="300" />
-							</Image.RenderTransform>
-						</Image>
-						<VisualStateManager.VisualStateGroups>
-							<VisualStateGroup x:Name="CommonStates">
-								<VisualState x:Name="Normal" />
-								<VisualState x:Name="Pressed">
-									<Storyboard>
-										<DoubleAnimation Duration="0:0:0.5"
-										    From="-90"
-										    To="0"
-										    Storyboard.TargetName="RotateTransform"
-										    Storyboard.TargetProperty="Angle" />
-									</Storyboard>
-								</VisualState>
-							</VisualStateGroup>
-						</VisualStateManager.VisualStateGroups>
-					</Grid>
-				</ControlTemplate>
-			</Button.Template>
-		</Button>
-	</StackPanel>
+        <Button
+            Width="100"
+            Height="100"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="Transparent"
+            Content="Test 2"
+            Foreground="Red">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Image
+                            Width="50"
+                            Height="50"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            RenderTransformOrigin="0.5,0.3"
+                            Source="ms-appx:///Assets/square100.png"
+                            Stretch="Uniform">
+                            <Image.RenderTransform>
+                                <RotateTransform x:Name="RotateTransform" Angle="0" CenterX="100" CenterY="300" />
+                            </Image.RenderTransform>
+                        </Image>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="RotateTransform"
+                                            Storyboard.TargetProperty="Angle"
+                                            From="-90"
+                                            To="0"
+                                            Duration="0:0:0.5" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+    </StackPanel>
 </UserControl>

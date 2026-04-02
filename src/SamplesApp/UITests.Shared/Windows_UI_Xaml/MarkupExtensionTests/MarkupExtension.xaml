@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.MarkupExtension.MarkupExtension"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml.MarkupExtension.MarkupExtension"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:beh="using:UITests.Shared.Windows_UI_Xaml.MarkupExtensionTests.Behaviors"
@@ -9,79 +10,68 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<UserControl.Resources>
-		<x:String x:Key="ResourceString1">I'm a StaticResource, look for 123 below me...</x:String>
-		<x:String x:Key="ResourceString2">...and from within a DataTemplate I'm a custom ...</x:String>
+    <UserControl.Resources>
+        <x:String x:Key="ResourceString1">I'm a StaticResource, look for 123 below me...</x:String>
+        <x:String x:Key="ResourceString2">...and from within a DataTemplate I'm a custom ...</x:String>
 
-		<DataTemplate x:Key="MarkupDataTemplate"
-		    x:DataType="ex:EntityObject">
-			<StackPanel>
-				<TextBlock FontSize="16"
-				    Text="{x:Bind StringProperty, Mode=OneWay}" />
-				<TextBlock FontSize="16"
-				    Text="{x:Bind IntProperty, Mode=OneWay}" />
+        <DataTemplate x:Key="MarkupDataTemplate" x:DataType="ex:EntityObject">
+            <StackPanel>
+                <TextBlock FontSize="16" Text="{x:Bind StringProperty, Mode=OneWay}" />
+                <TextBlock FontSize="16" Text="{x:Bind IntProperty, Mode=OneWay}" />
 
-				<!--  Make a markup extension inside a DataTemplate generates correctly  -->
-				<TextBlock FontSize="16"
-				    Text="{ex:Simple TextValue={StaticResource ResourceString2}}" />
-			</StackPanel>
-		</DataTemplate>
-	</UserControl.Resources>
+                <!--  Make a markup extension inside a DataTemplate generates correctly  -->
+                <TextBlock FontSize="16" Text="{ex:Simple TextValue={StaticResource ResourceString2}}" />
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
 
-	<Grid>
-		<StackPanel Margin="8,0">
-			<TextBlock Foreground="Green"
-			    Text="Simple use of a custom Markup Extension" />
+    <Grid>
+        <StackPanel Margin="8,0">
+            <TextBlock Foreground="Green" Text="Simple use of a custom Markup Extension" />
 
-			<TextBlock Margin="0,0,0,40"
-			    FontSize="16"
-			    Text="{ex:Simple TextValue='Just a simple ...'}" />
+            <TextBlock
+                Margin="0,0,0,40"
+                FontSize="16"
+                Text="{ex:Simple TextValue='Just a simple ...'}" />
 
-			<TextBlock Foreground="Green"
-			    Text="Custom Markup Extension that sets a DataContext on the StackPanel"
-			    TextWrapping="Wrap" />
+            <TextBlock
+                Foreground="Green"
+                Text="Custom Markup Extension that sets a DataContext on the StackPanel"
+                TextWrapping="Wrap" />
 
-			<StackPanel Margin="0,0,0,40"
-			    DataContext="{ex:Entity TextValue='We should see the number 100 below:',
-			                            IntValue=100}">
-				<TextBlock FontSize="16"
-				    Text="{Binding StringProperty}" />
-				<TextBlock FontSize="16"
-				    Text="{Binding IntProperty}" />
-			</StackPanel>
+            <StackPanel Margin="0,0,0,40" DataContext="{ex:Entity TextValue='We should see the number 100 below:', IntValue=100}">
+                <TextBlock FontSize="16" Text="{Binding StringProperty}" />
+                <TextBlock FontSize="16" Text="{Binding IntProperty}" />
+            </StackPanel>
 
-			<TextBlock Foreground="Green"
-			    Text="Custom Markup Extension that is also used as a Converter" />
+            <TextBlock Foreground="Green" Text="Custom Markup Extension that is also used as a Converter" />
 
-			<StackPanel x:Name="StackContainer"
-			    Margin="0,0,0,40"
-			    IsTapEnabled="False">
-				<TextBlock FontSize="16"
-				    Text="This StackPanel has IsTapEnabled='False', let's inverse it below:"
-				    TextWrapping="Wrap" />
-				<TextBlock FontSize="16"
-				    Text="{Binding IsTapEnabled, ElementName=StackContainer, Converter={ex:InverseBool}}" />
-			</StackPanel>
+            <StackPanel
+                x:Name="StackContainer"
+                Margin="0,0,0,40"
+                IsTapEnabled="False">
+                <TextBlock
+                    FontSize="16"
+                    Text="This StackPanel has IsTapEnabled='False', let's inverse it below:"
+                    TextWrapping="Wrap" />
+                <TextBlock FontSize="16" Text="{Binding IsTapEnabled, ElementName=StackContainer, Converter={ex:InverseBool}}" />
+            </StackPanel>
 
-			<TextBlock Foreground="Green"
-			    Text="Custom Markup Extension using a StaticResource" />
+            <TextBlock Foreground="Green" Text="Custom Markup Extension using a StaticResource" />
 
-			<ContentControl Margin="0,0,0,40"
-			    Content="{ex:Entity TextValue={StaticResource ResourceString1},
-			                        IntValue=123}"
-			    ContentTemplate="{StaticResource MarkupDataTemplate}" />
+            <ContentControl
+                Margin="0,0,0,40"
+                Content="{ex:Entity TextValue={StaticResource ResourceString1},
+                                    IntValue=123}"
+                ContentTemplate="{StaticResource MarkupDataTemplate}" />
 
-			<TextBlock Foreground="Green"
-			    Text="Attached Property using a custom Markup Extension" />
+            <TextBlock Foreground="Green" Text="Attached Property using a custom Markup Extension" />
 
-			<TextBlock beh:MarkupExtensionBehaviors.CustomText="{ex:Simple TextValue='I am an Attached Property using a ...'}"
-			    FontSize="16" />
+            <TextBlock beh:MarkupExtensionBehaviors.CustomText="{ex:Simple TextValue='I am an Attached Property using a ...'}" FontSize="16" />
 
-			<TextBlock Foreground="Green"
-			    Text="Attached Property using a custom Markup Extension (with converter)" />
+            <TextBlock Foreground="Green" Text="Attached Property using a custom Markup Extension (with converter)" />
 
-			<TextBlock beh:MarkupExtensionBehaviors.CustomText="{Binding IsTapEnabled, ElementName=StackContainer, Converter={ex:InverseBool}}"
-			    FontSize="16" />
-		</StackPanel>
-	</Grid>
+            <TextBlock beh:MarkupExtensionBehaviors.CustomText="{Binding IsTapEnabled, ElementName=StackContainer, Converter={ex:InverseBool}}" FontSize="16" />
+        </StackPanel>
+    </Grid>
 </UserControl>

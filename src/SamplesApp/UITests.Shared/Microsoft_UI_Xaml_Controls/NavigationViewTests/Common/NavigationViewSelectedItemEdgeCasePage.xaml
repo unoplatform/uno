@@ -1,5 +1,6 @@
 ﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
-<local:TestPage x:Class="MUXControlsTestApp.NavigationViewSelectedItemEdgeCasePage"
+<local:TestPage
+    x:Class="MUXControlsTestApp.NavigationViewSelectedItemEdgeCasePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,51 +9,47 @@
     xmlns:muxcontrols="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<Grid.RowDefinitions>
-			<RowDefinition x:Name="MainGridRow"
-			    Height="*" />
-		</Grid.RowDefinitions>
-		<muxcontrols:NavigationView x:Name="NavView"
-		    HorizontalAlignment="Left"
-		    VerticalAlignment="Top"
-		    AutomationProperties.AutomationId="NavView"
-		    AutomationProperties.Name="NavView"
-		    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-		    ExpandedModeThresholdWidth="1"
-		    Header="Home"
-		    IsSettingsVisible="false"
-		    PaneTitle="NavView Test"
-		    SelectionChanged="NavView_SelectionChanged">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="MainGridRow" Height="*" />
+        </Grid.RowDefinitions>
+        <muxcontrols:NavigationView
+            x:Name="NavView"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            AutomationProperties.AutomationId="NavView"
+            AutomationProperties.Name="NavView"
+            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+            ExpandedModeThresholdWidth="1"
+            Header="Home"
+            IsSettingsVisible="false"
+            PaneTitle="NavView Test"
+            SelectionChanged="NavView_SelectionChanged">
 
-			<ScrollViewer Height="700"
-			    Margin="8,0,0,0">
-				<StackPanel>
-					<Button Click="Button_click"
-					    Content="add" />
-					<Button Click="Movies_Click"
-					    Content="Select Movies" />
-					<Button Click="TV_Click"
-					    Content="Select TV" />
-					<Button Click="Movies_Click2"
-					    Content="Select Movies via IsSelected" />
-					<Button Click="TV_Click2"
-					    Content="Select TV via IsSelected" />
-					<TextBlock Text="{Binding TVItem.IsSelected}" />
-					<TextBlock Text="{Binding NavView.SelectedItem}" />
-					<TextBlock x:Name="StatusTextBlock"
-					    AutomationProperties.Name="StatusTextBlock"
-					    Text="John" />
-					<Button AutomationProperties.Name="CopyStatusButton"
-					    Click="CopyIsSelected_Click"
-					    Content="Copy status" />
-				</StackPanel>
-			</ScrollViewer>
+            <ScrollViewer Height="700" Margin="8,0,0,0">
+                <StackPanel>
+                    <Button Click="Button_click" Content="add" />
+                    <Button Click="Movies_Click" Content="Select Movies" />
+                    <Button Click="TV_Click" Content="Select TV" />
+                    <Button Click="Movies_Click2" Content="Select Movies via IsSelected" />
+                    <Button Click="TV_Click2" Content="Select TV via IsSelected" />
+                    <TextBlock Text="{Binding TVItem.IsSelected}" />
+                    <TextBlock Text="{Binding NavView.SelectedItem}" />
+                    <TextBlock
+                        x:Name="StatusTextBlock"
+                        AutomationProperties.Name="StatusTextBlock"
+                        Text="John" />
+                    <Button
+                        AutomationProperties.Name="CopyStatusButton"
+                        Click="CopyIsSelected_Click"
+                        Content="Copy status" />
+                </StackPanel>
+            </ScrollViewer>
 
-			<muxcontrols:NavigationView.MenuItems>
-				<muxcontrols:NavigationViewItem x:Name="MoviesItem">Browse Movies</muxcontrols:NavigationViewItem>
-				<muxcontrols:NavigationViewItem x:Name="TVItem">Browse TV</muxcontrols:NavigationViewItem>
-			</muxcontrols:NavigationView.MenuItems>
-		</muxcontrols:NavigationView>
-	</Grid>
+            <muxcontrols:NavigationView.MenuItems>
+                <muxcontrols:NavigationViewItem x:Name="MoviesItem">Browse Movies</muxcontrols:NavigationViewItem>
+                <muxcontrols:NavigationViewItem x:Name="TVItem">Browse TV</muxcontrols:NavigationViewItem>
+            </muxcontrols:NavigationView.MenuItems>
+        </muxcontrols:NavigationView>
+    </Grid>
 </local:TestPage>

@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.Canvas.Grid_ZIndex"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.Canvas.Grid_ZIndex"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,79 +8,86 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid Margin="8"
-	    ColumnSpacing="8"
-	    RowSpacing="8">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="100" />
-			<RowDefinition Height="100" />
-			<RowDefinition Height="100" />
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="100" />
-			<ColumnDefinition Width="100" />
-		</Grid.ColumnDefinitions>
-		<Grid>
-			<Border x:Name="NoZIndexRed"
-			    Background="Red" />
-			<Border x:Name="NoZIndexBlue"
-			    Margin="20"
-			    Background="Green" />
-			<Border x:Name="NoZIndexGreen"
-			    Margin="40"
-			    Background="Blue" />
-		</Grid>
-		<Grid Grid.Column="1">
-			<Border x:Name="AllZIndexGreen"
-			    Margin="20"
-			    Background="Green"
-			    Canvas.ZIndex="5" />
-			<Border x:Name="AllZIndexBlue"
-			    Margin="40"
-			    Background="Blue"
-			    Canvas.ZIndex="10" />
-			<Border x:Name="AllZIndexRed"
-			    Background="Red"
-			    Canvas.ZIndex="0" />
-		</Grid>
-		<Grid Grid.Row="1"
-		    Grid.Column="0">
-			<Border x:Name="LowerZIndexGreen"
-			    Margin="20"
-			    Background="Green"
-			    Canvas.ZIndex="20" />
-			<Border x:Name="LowerZIndexRed"
-			    Background="Red" />
-			<Border x:Name="LowerZIndexBlue"
-			    Margin="40"
-			    Background="Blue"
-			    Canvas.ZIndex="40" />
-		</Grid>
-		<Grid Grid.Row="1"
-		    Grid.Column="1">
-			<Border x:Name="MixedZIndexGreen"
-			    Margin="20"
-			    Background="Green"
-			    Canvas.ZIndex="5" />
-			<Border x:Name="MixedZIndexBlue"
-			    Margin="40"
-			    Background="Blue"
-			    Canvas.ZIndex="10" />
-			<Border x:Name="MixedZIndexRed"
-			    Background="Red" />
-		</Grid>
-		<Grid Grid.Row="2"
-		    Grid.Column="0">
-			<Border x:Name="NegativeZIndexBlue"
-			    Margin="40"
-			    Background="Blue"
-			    Canvas.ZIndex="5" />
-			<Border x:Name="NegativeZIndexGreen"
-			    Margin="20"
-			    Background="Green" />
-			<Border x:Name="NegativeZIndexRed"
-			    Background="Red"
-			    Canvas.ZIndex="-5" />
-		</Grid>
-	</Grid>
+    <Grid
+        Margin="8"
+        ColumnSpacing="8"
+        RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="100" />
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Border x:Name="NoZIndexRed" Background="Red" />
+            <Border
+                x:Name="NoZIndexBlue"
+                Margin="20"
+                Background="Green" />
+            <Border
+                x:Name="NoZIndexGreen"
+                Margin="40"
+                Background="Blue" />
+        </Grid>
+        <Grid Grid.Column="1">
+            <Border
+                x:Name="AllZIndexGreen"
+                Margin="20"
+                Background="Green"
+                Canvas.ZIndex="5" />
+            <Border
+                x:Name="AllZIndexBlue"
+                Margin="40"
+                Background="Blue"
+                Canvas.ZIndex="10" />
+            <Border
+                x:Name="AllZIndexRed"
+                Background="Red"
+                Canvas.ZIndex="0" />
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Border
+                x:Name="LowerZIndexGreen"
+                Margin="20"
+                Background="Green"
+                Canvas.ZIndex="20" />
+            <Border x:Name="LowerZIndexRed" Background="Red" />
+            <Border
+                x:Name="LowerZIndexBlue"
+                Margin="40"
+                Background="Blue"
+                Canvas.ZIndex="40" />
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Border
+                x:Name="MixedZIndexGreen"
+                Margin="20"
+                Background="Green"
+                Canvas.ZIndex="5" />
+            <Border
+                x:Name="MixedZIndexBlue"
+                Margin="40"
+                Background="Blue"
+                Canvas.ZIndex="10" />
+            <Border x:Name="MixedZIndexRed" Background="Red" />
+        </Grid>
+        <Grid Grid.Row="2" Grid.Column="0">
+            <Border
+                x:Name="NegativeZIndexBlue"
+                Margin="40"
+                Background="Blue"
+                Canvas.ZIndex="5" />
+            <Border
+                x:Name="NegativeZIndexGreen"
+                Margin="20"
+                Background="Green" />
+            <Border
+                x:Name="NegativeZIndexRed"
+                Background="Red"
+                Canvas.ZIndex="-5" />
+        </Grid>
+    </Grid>
 </Page>

@@ -1,4 +1,5 @@
-﻿<Page x:Class="SamplesApp.Samples.RoutedEvents.RoutedEventsPage"
+﻿<Page
+    x:Class="SamplesApp.Samples.RoutedEvents.RoutedEventsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,78 +7,80 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid x:Name="outer"
-	    Margin="5"
-	    Background="Aqua">
-		<Border VerticalAlignment="Top"
-		    Background="#48000000">
-			<TextBlock x:Name="resultOuter"
-			    MaxHeight="75"
-			    TextWrapping="Wrap" />
-		</Border>
-		<Grid x:Name="middle"
-		    Margin="50"
-		    Background="Bisque">
-			<Border VerticalAlignment="Top"
-			    Background="#48000000">
-				<TextBlock x:Name="resultMiddle"
-				    MaxHeight="75"
-				    TextWrapping="Wrap" />
-			</Border>
-			<Grid x:Name="inner"
-			    MinWidth="200"
-			    MinHeight="200"
-			    Margin="50"
-			    Background="DeepSkyBlue">
-				<StackPanel VerticalAlignment="Top"
-				    Background="#48000000">
-					<TextBlock x:Name="resultInner"
-					    MaxHeight="75"
-					    TextWrapping="Wrap" />
-					<Slider VerticalAlignment="Bottom"
-					    Maximum="1.5"
-					    Minimum="-1"
-					    StepFrequency="0.1"
-					    Value="0.5" />
-				</StackPanel>
-				<ScrollViewer Margin="30,45">
-					<Grid x:Name="scroll"
-					    MinWidth="200"
-					    MinHeight="200"
-					    Margin="50"
-					    Background="YellowGreen">
-						<StackPanel Margin="0,0,0,40"
-						    VerticalAlignment="Top">
-							<Border Background="#48000000">
-								<TextBlock x:Name="resultScroll"
-								    MaxHeight="75"
-								    TextWrapping="Wrap" />
-							</Border>
-							<Button x:Name="btn">You can focus this button</Button>
-							<ToggleSwitch />
-							<Slider Maximum="1.5"
-							    Minimum="-1"
-							    StepFrequency="0.1"
-							    Value="0.5" />
-							<ListView x:Name="list">
-								<ListView.ItemsPanel>
-									<ItemsPanelTemplate>
-										<StackPanel Orientation="Horizontal" />
-									</ItemsPanelTemplate>
-								</ListView.ItemsPanel>
-							</ListView>
-						</StackPanel>
-						<TextBox VerticalAlignment="Bottom"
-						    PlaceholderText="Type something, the 'E' is normally filtered-out" />
-					</Grid>
-				</ScrollViewer>
-				<TextBox VerticalAlignment="Bottom"
-				    PlaceholderText="Type something, the 'E' is normally filtered-out" />
-			</Grid>
-			<TextBox VerticalAlignment="Bottom"
-			    PlaceholderText="Type something, the 'E' is normally filtered-out" />
-		</Grid>
-		<TextBox VerticalAlignment="Bottom"
-		    PlaceholderText="Type something, the 'E' is normally filtered-out" />
-	</Grid>
+    <Grid
+        x:Name="outer"
+        Margin="5"
+        Background="Aqua">
+        <Border VerticalAlignment="Top" Background="#48000000">
+            <TextBlock
+                x:Name="resultOuter"
+                MaxHeight="75"
+                TextWrapping="Wrap" />
+        </Border>
+        <Grid
+            x:Name="middle"
+            Margin="50"
+            Background="Bisque">
+            <Border VerticalAlignment="Top" Background="#48000000">
+                <TextBlock
+                    x:Name="resultMiddle"
+                    MaxHeight="75"
+                    TextWrapping="Wrap" />
+            </Border>
+            <Grid
+                x:Name="inner"
+                MinWidth="200"
+                MinHeight="200"
+                Margin="50"
+                Background="DeepSkyBlue">
+                <StackPanel VerticalAlignment="Top" Background="#48000000">
+                    <TextBlock
+                        x:Name="resultInner"
+                        MaxHeight="75"
+                        TextWrapping="Wrap" />
+                    <Slider
+                        VerticalAlignment="Bottom"
+                        Maximum="1.5"
+                        Minimum="-1"
+                        StepFrequency="0.1"
+                        Value="0.5" />
+                </StackPanel>
+                <ScrollViewer Margin="30,45">
+                    <Grid
+                        x:Name="scroll"
+                        MinWidth="200"
+                        MinHeight="200"
+                        Margin="50"
+                        Background="YellowGreen">
+                        <StackPanel Margin="0,0,0,40" VerticalAlignment="Top">
+                            <Border Background="#48000000">
+                                <TextBlock
+                                    x:Name="resultScroll"
+                                    MaxHeight="75"
+                                    TextWrapping="Wrap" />
+                            </Border>
+                            <Button x:Name="btn">You can focus this button</Button>
+                            <ToggleSwitch />
+                            <Slider
+                                Maximum="1.5"
+                                Minimum="-1"
+                                StepFrequency="0.1"
+                                Value="0.5" />
+                            <ListView x:Name="list">
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                            </ListView>
+                        </StackPanel>
+                        <TextBox VerticalAlignment="Bottom" PlaceholderText="Type something, the 'E' is normally filtered-out" />
+                    </Grid>
+                </ScrollViewer>
+                <TextBox VerticalAlignment="Bottom" PlaceholderText="Type something, the 'E' is normally filtered-out" />
+            </Grid>
+            <TextBox VerticalAlignment="Bottom" PlaceholderText="Type something, the 'E' is normally filtered-out" />
+        </Grid>
+        <TextBox VerticalAlignment="Bottom" PlaceholderText="Type something, the 'E' is normally filtered-out" />
+    </Grid>
 </Page>

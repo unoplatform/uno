@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_System.Profile.AnalyticsInfoTests"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_System.Profile.AnalyticsInfoTests"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,18 +9,14 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel Padding="12">
-		<TextBlock FontWeight="Bold"
-		    Text="DeviceForm" />
-		<TextBlock x:Name="DeviceFormTextBlock" />
-		<TextBlock FontWeight="Bold"
-		    Text="DeviceFamily" />
-		<TextBlock x:Name="DeviceFamilyTextBlock" />
-		<TextBlock FontWeight="Bold"
-		    Text="DeviceFamilyVersion" />
-		<TextBlock x:Name="DeviceFamilyVersionTextBlock" />
-		<TextBlock FontWeight="Bold"
-		    Text="Decoded DeviceFamilyVersion" />
-		<TextBlock x:Name="DecodedDeviceFamilyVersionTextBlock" />
-	</StackPanel>
+    <StackPanel Padding="12">
+        <TextBlock FontWeight="Bold" Text="DeviceForm" />
+        <TextBlock x:Name="DeviceFormTextBlock" />
+        <TextBlock FontWeight="Bold" Text="DeviceFamily" />
+        <TextBlock x:Name="DeviceFamilyTextBlock" />
+        <TextBlock FontWeight="Bold" Text="DeviceFamilyVersion" />
+        <TextBlock x:Name="DeviceFamilyVersionTextBlock" />
+        <TextBlock FontWeight="Bold" Text="Decoded DeviceFamilyVersion" />
+        <TextBlock x:Name="DecodedDeviceFamilyVersionTextBlock" />
+    </StackPanel>
 </UserControl>

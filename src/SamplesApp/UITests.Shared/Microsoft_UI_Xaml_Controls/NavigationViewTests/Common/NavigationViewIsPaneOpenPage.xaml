@@ -1,5 +1,6 @@
 ﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
-<local:TestPage x:Class="MUXControlsTestApp.NavigationViewIsPaneOpenPage"
+<local:TestPage
+    x:Class="MUXControlsTestApp.NavigationViewIsPaneOpenPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,36 +10,40 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid>
-		<muxcontrols:NavigationView x:Name="NavView"
-		    Width="800"
-		    AutomationProperties.AutomationId="NavView"
-		    AutomationProperties.Name="NavView"
-		    IsPaneOpen="False"
-		    ItemInvoked="NavigationView_ItemInvoked"
-		    PaneTitle="NavView Test">
-			<muxcontrols:NavigationView.MenuItems>
-				<!--  This NavigationViewItem can be used to check whether selecting an item right after showing it still shows the selection indicator  -->
-				<!--  See https://github.com/microsoft/microsoft-ui-xaml/issues/2941 for context  -->
-				<muxcontrols:NavigationViewItem x:Name="CollapsedItem"
-				    Content="Hidden"
-				    Icon="Home"
-				    Visibility="Collapsed" />
-				<muxcontrols:NavigationViewItem x:Name="HomeItem"
-				    Content="Home"
-				    Icon="Home" />
-				<muxcontrols:NavigationViewItem x:Name="AppsItem"
-				    Content="Apps"
-				    Icon="Shop" />
-			</muxcontrols:NavigationView.MenuItems>
-			<StackPanel HorizontalAlignment="Right"
-			    Orientation="Horizontal">
-				<CheckBox x:Name="IsPaneOpenCheckBox"
-				    Margin="5"
-				    AutomationProperties.Name="IsPaneOpenCheckBox"
-				    Content="IsPaneOpen"
-				    IsChecked="{Binding IsPaneOpen, ElementName=NavView}" />
-			</StackPanel>
-		</muxcontrols:NavigationView>
-	</Grid>
+    <Grid>
+        <muxcontrols:NavigationView
+            x:Name="NavView"
+            Width="800"
+            AutomationProperties.AutomationId="NavView"
+            AutomationProperties.Name="NavView"
+            IsPaneOpen="False"
+            ItemInvoked="NavigationView_ItemInvoked"
+            PaneTitle="NavView Test">
+            <muxcontrols:NavigationView.MenuItems>
+                <!--  This NavigationViewItem can be used to check whether selecting an item right after showing it still shows the selection indicator  -->
+                <!--  See https://github.com/microsoft/microsoft-ui-xaml/issues/2941 for context  -->
+                <muxcontrols:NavigationViewItem
+                    x:Name="CollapsedItem"
+                    Content="Hidden"
+                    Icon="Home"
+                    Visibility="Collapsed" />
+                <muxcontrols:NavigationViewItem
+                    x:Name="HomeItem"
+                    Content="Home"
+                    Icon="Home" />
+                <muxcontrols:NavigationViewItem
+                    x:Name="AppsItem"
+                    Content="Apps"
+                    Icon="Shop" />
+            </muxcontrols:NavigationView.MenuItems>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <CheckBox
+                    x:Name="IsPaneOpenCheckBox"
+                    Margin="5"
+                    AutomationProperties.Name="IsPaneOpenCheckBox"
+                    Content="IsPaneOpen"
+                    IsChecked="{Binding IsPaneOpen, ElementName=NavView}" />
+            </StackPanel>
+        </muxcontrols:NavigationView>
+    </Grid>
 </local:TestPage>

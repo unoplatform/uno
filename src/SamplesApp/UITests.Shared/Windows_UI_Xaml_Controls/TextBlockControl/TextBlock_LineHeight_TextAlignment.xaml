@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_LineHeight_TextAlignment"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_LineHeight_TextAlignment"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -13,38 +14,42 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android not_win">
 
-	<StackPanel>
-		<Border Background="Tomato">
-			<TextBlock Width="300"
-			    FontSize="40"
-			    FontWeight="Bold"
-			    LineHeight="200"
-			    Text="Center Text"
-			    TextAlignment="Center" />
-		</Border>
-		<Border Background="Cornsilk">
-			<TextBlock Width="300"
-			    FontSize="40"
-			    FontWeight="Bold"
-			    LineHeight="200"
-			    Text="Left Text"
-			    TextAlignment="Left" />
-		</Border>
-		<Border Background="Violet">
-			<TextBlock Width="300"
-			    FontSize="40"
-			    FontWeight="Bold"
-			    LineHeight="200"
-			    Text="Right Text"
-			    TextAlignment="Right" />
-		</Border>
-		<Border Background="CornflowerBlue">
-			<TextBlock Width="300"
-			    FontSize="40"
-			    FontWeight="Bold"
-			    LineHeight="200"
-			    Text="Default Text" />
-		</Border>
-	</StackPanel>
+    <StackPanel>
+        <Border Background="Tomato">
+            <TextBlock
+                Width="300"
+                FontSize="40"
+                FontWeight="Bold"
+                LineHeight="200"
+                Text="Center Text"
+                TextAlignment="Center" />
+        </Border>
+        <Border Background="Cornsilk">
+            <TextBlock
+                Width="300"
+                FontSize="40"
+                FontWeight="Bold"
+                LineHeight="200"
+                Text="Left Text"
+                TextAlignment="Left" />
+        </Border>
+        <Border Background="Violet">
+            <TextBlock
+                Width="300"
+                FontSize="40"
+                FontWeight="Bold"
+                LineHeight="200"
+                Text="Right Text"
+                TextAlignment="Right" />
+        </Border>
+        <Border Background="CornflowerBlue">
+            <TextBlock
+                Width="300"
+                FontSize="40"
+                FontWeight="Bold"
+                LineHeight="200"
+                Text="Default Text" />
+        </Border>
+    </StackPanel>
 
 </UserControl>

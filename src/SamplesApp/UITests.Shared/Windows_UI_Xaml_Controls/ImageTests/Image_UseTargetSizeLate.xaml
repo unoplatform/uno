@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.Image_UseTargetSizeLate"
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.Image_UseTargetSizeLate"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,45 +9,51 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel x:Name="hostPanel"
-	    Background="Beige"
-	    Spacing="10">
-		<TextBlock Text="There should be two images of the same size below." />
-		<Button x:Name="loadImageButton"
-		    Click="LoadNewImage"
-		    Content="Click for three" />
-		<Image x:Name="simpleImage"
-		    Width="100"
-		    Height="100"
-		    Source="https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg"
-		    Stretch="UniformToFill" />
+    <StackPanel
+        x:Name="hostPanel"
+        Background="Beige"
+        Spacing="10">
+        <TextBlock Text="There should be two images of the same size below." />
+        <Button
+            x:Name="loadImageButton"
+            Click="LoadNewImage"
+            Content="Click for three" />
+        <Image
+            x:Name="simpleImage"
+            Width="100"
+            Height="100"
+            Source="https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg"
+            Stretch="UniformToFill" />
 
-		<ContentControl x:Name="firstControl"
-		    Width="100"
-		    Height="100"
-		    Background="Red"
-		    Content="{Binding}">
-			<ContentControl.Template>
-				<ControlTemplate TargetType="ContentControl">
-					<Border x:Name="PART_ImageExBorder"
-					    Width="{TemplateBinding Width}"
-					    Height="{TemplateBinding Height}"
-					    HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-					    VerticalAlignment="{TemplateBinding VerticalAlignment}"
-					    Background="{TemplateBinding Background}"
-					    BorderBrush="{TemplateBinding BorderBrush}"
-					    BorderThickness="{TemplateBinding BorderThickness}">
-						<Grid>
-							<Image x:Name="PART_Image"
-							    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-							    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-							    Source="https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg"
-							    Stretch="UniformToFill" />
-						</Grid>
-					</Border>
+        <ContentControl
+            x:Name="firstControl"
+            Width="100"
+            Height="100"
+            Background="Red"
+            Content="{Binding}">
+            <ContentControl.Template>
+                <ControlTemplate TargetType="ContentControl">
+                    <Border
+                        x:Name="PART_ImageExBorder"
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid>
+                            <Image
+                                x:Name="PART_Image"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Source="https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg"
+                                Stretch="UniformToFill" />
+                        </Grid>
+                    </Border>
 
-				</ControlTemplate>
-			</ContentControl.Template>
-		</ContentControl>
-	</StackPanel>
+                </ControlTemplate>
+            </ContentControl.Template>
+        </ContentControl>
+    </StackPanel>
 </UserControl>

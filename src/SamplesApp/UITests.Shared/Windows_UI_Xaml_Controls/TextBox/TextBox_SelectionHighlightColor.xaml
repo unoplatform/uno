@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_SelectionHighlightColor"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_SelectionHighlightColor"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,16 +8,11 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel Padding="12"
-	    Spacing="8">
-		<TextBox Text="Default highlight" />
-		<TextBox SelectionHighlightColor="Red"
-		    Text="Red highlight" />
-		<TextBox SelectionHighlightColor="#550000FF"
-		    Text="Semi-transparent blue highlight" />
-		<TextBox SelectionHighlightColor="Black"
-		    Text="Black" />
-		<TextBox SelectionHighlightColor="White"
-		    Text="White" />
-	</StackPanel>
+    <StackPanel Padding="12" Spacing="8">
+        <TextBox Text="Default highlight" />
+        <TextBox SelectionHighlightColor="Red" Text="Red highlight" />
+        <TextBox SelectionHighlightColor="#550000FF" Text="Semi-transparent blue highlight" />
+        <TextBox SelectionHighlightColor="Black" Text="Black" />
+        <TextBox SelectionHighlightColor="White" Text="White" />
+    </StackPanel>
 </Page>

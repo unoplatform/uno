@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_TextTrimming"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_TextTrimming"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,62 +8,70 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d wasm">
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-		<Slider x:Name="slider"
-		    Header="Width"
-		    Maximum="1600"
-		    Minimum="10"
-		    Value="300" />
+        <Slider
+            x:Name="slider"
+            Header="Width"
+            Maximum="1600"
+            Minimum="10"
+            Value="300" />
 
-		<StackPanel Grid.Row="1"
-		    Spacing="5">
+        <StackPanel Grid.Row="1" Spacing="5">
 
-			<TextBlock>TextTrimming=None</TextBlock>
-			<Border x:Name="border1"
-			    MaxWidth="{Binding Value, ElementName=slider}"
-			    Background="Cyan">
-				<TextBlock FontSize="20"
-				    Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
-				    TextTrimming="None" />
-			</Border>
+            <TextBlock>TextTrimming=None</TextBlock>
+            <Border
+                x:Name="border1"
+                MaxWidth="{Binding Value, ElementName=slider}"
+                Background="Cyan">
+                <TextBlock
+                    FontSize="20"
+                    Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
+                    TextTrimming="None" />
+            </Border>
 
-			<TextBlock>TextTrimming=Clip</TextBlock>
-			<Border x:Name="border2"
-			    MaxWidth="{Binding Value, ElementName=slider}"
-			    Background="Yellow">
-				<TextBlock FontSize="20"
-				    Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
-				    TextTrimming="Clip" />
-			</Border>
+            <TextBlock>TextTrimming=Clip</TextBlock>
+            <Border
+                x:Name="border2"
+                MaxWidth="{Binding Value, ElementName=slider}"
+                Background="Yellow">
+                <TextBlock
+                    FontSize="20"
+                    Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
+                    TextTrimming="Clip" />
+            </Border>
 
-			<TextBlock>TextTrimming=CharacterEllipsis</TextBlock>
-			<Border x:Name="border3"
-			    MaxWidth="{Binding Value, ElementName=slider}"
-			    Background="Cyan">
-				<TextBlock FontSize="20"
-				    Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
-				    TextTrimming="CharacterEllipsis" />
-			</Border>
+            <TextBlock>TextTrimming=CharacterEllipsis</TextBlock>
+            <Border
+                x:Name="border3"
+                MaxWidth="{Binding Value, ElementName=slider}"
+                Background="Cyan">
+                <TextBlock
+                    FontSize="20"
+                    Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
+                    TextTrimming="CharacterEllipsis" />
+            </Border>
 
-			<TextBlock>TextTrimming=WordEllipsis</TextBlock>
-			<Border x:Name="border4"
-			    MaxWidth="{Binding Value, ElementName=slider}"
-			    Background="Yellow">
-				<TextBlock FontSize="20"
-				    Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
-				    TextTrimming="WordEllipsis" />
-			</Border>
+            <TextBlock>TextTrimming=WordEllipsis</TextBlock>
+            <Border
+                x:Name="border4"
+                MaxWidth="{Binding Value, ElementName=slider}"
+                Background="Yellow">
+                <TextBlock
+                    FontSize="20"
+                    Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
+                    TextTrimming="WordEllipsis" />
+            </Border>
 
-		</StackPanel>
-		<wasm:TextBlock Grid.Row="2">
-			(WASM ONLY) Cache: Hits=<Run x:Name="hits">0</Run>
-			, Misses=<Run x:Name="misses">0</Run>
-			.</wasm:TextBlock>
-	</Grid>
+        </StackPanel>
+        <wasm:TextBlock Grid.Row="2">
+            (WASM ONLY) Cache: Hits=<Run x:Name="hits">0</Run>
+            , Misses=<Run x:Name="misses">0</Run>
+            .</wasm:TextBlock>
+    </Grid>
 </Page>

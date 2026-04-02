@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Header"
+﻿<UserControl
+    x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Header"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -10,10 +11,8 @@
     d:DesignWidth="400"
     mc:Ignorable="d not_win">
 
-	<StackPanel>
-		<ComboBox x:Name="combobox"
-		    Header="{Binding [Header]}" />
-		<Button Command="{Binding [ToggleHeader]}"
-		    Content="Toggle header" />
-	</StackPanel>
+    <StackPanel>
+        <ComboBox x:Name="combobox" Header="{Binding [Header]}" />
+        <Button Command="{Binding [ToggleHeader]}" Content="Toggle header" />
+    </StackPanel>
 </UserControl>

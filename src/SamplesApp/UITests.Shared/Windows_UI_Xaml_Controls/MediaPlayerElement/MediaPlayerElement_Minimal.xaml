@@ -1,8 +1,9 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement.MediaPlayerElement_Minimal"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement.MediaPlayerElement_Minimal"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<!--<UserControl.Resources>
+    <!--<UserControl.Resources>
 
 		<Style TargetType="MediaTransportControls"
 			   x:Key="MediaTransportControlsMinimalStyle">
@@ -24,16 +25,16 @@
 
 							<VisualStateManager.VisualStateGroups>
 								-->
-	<!--  ControlPanel Visibility states  -->
-	<!--
+    <!--  ControlPanel Visibility states  -->
+    <!--
 								<VisualStateGroup x:Name="ControlPanelVisibilityStates">
 									<VisualState x:Name="ControlPanelFadeIn" />
 									<VisualState x:Name="ControlPanelFadeOut" />
 								</VisualStateGroup>
 								-->
-	<!--  ControlPanel Visibility states  -->
-	<!--  Media state visual states  -->
-	<!--
+    <!--  ControlPanel Visibility states  -->
+    <!--  Media state visual states  -->
+    <!--
 								<VisualStateGroup x:Name="MediaStates">
 									<VisualState x:Name="Normal" />
 									<VisualState x:Name="Buffering" />
@@ -42,40 +43,40 @@
 									<VisualState x:Name="Disabled" />
 								</VisualStateGroup>
 								-->
-	<!--  Media state visual states  -->
-	<!--  Audio Selection Button visibility states  -->
-	<!--
+    <!--  Media state visual states  -->
+    <!--  Audio Selection Button visibility states  -->
+    <!--
 								<VisualStateGroup x:Name="AudioSelectionAvailablityStates">
 									<VisualState x:Name="AudioSelectionAvailable" />
 									<VisualState x:Name="AudioSelectionUnavailable" />
 								</VisualStateGroup>
 								-->
-	<!--  Video volume visibility states  -->
-	<!--  Closed Captioning Selection Button visibility states  -->
-	<!--
+    <!--  Video volume visibility states  -->
+    <!--  Closed Captioning Selection Button visibility states  -->
+    <!--
 								<VisualStateGroup x:Name="CCSelectionAvailablityStates">
 									<VisualState x:Name="CCSelectionAvailable" />
 									<VisualState x:Name="CCSelectionUnavailable" />
 								</VisualStateGroup>
 								-->
-	<!--  Closed Captioning  visibility states  -->
-	<!--  Focus states  -->
-	<!--
+    <!--  Closed Captioning  visibility states  -->
+    <!--  Focus states  -->
+    <!--
 								<VisualStateGroup x:Name="FocusStates">
 									<VisualState x:Name="Focused" />
 									<VisualState x:Name="Unfocused" />
 									<VisualState x:Name="PointerFocused" />
 								</VisualStateGroup>
 								-->
-	<!--  Focus states  -->
-	<!--
+    <!--  Focus states  -->
+    <!--
 								<VisualStateGroup x:Name="MediaTransportControlMode">
 									<VisualState x:Name="NormalMode" />
 									<VisualState x:Name="CompactMode" />
 								</VisualStateGroup>
 								-->
-	<!--  PlayPause states  -->
-	<!--
+    <!--  PlayPause states  -->
+    <!--
 								<VisualStateGroup x:Name="PlayPauseStates">
 									<VisualState x:Name="PlayState" />
 									<VisualState x:Name="PauseState">
@@ -89,15 +90,15 @@
 									</VisualState>
 								</VisualStateGroup>
 								-->
-	<!--  VolumeMute states  -->
-	<!--
+    <!--  VolumeMute states  -->
+    <!--
 								<VisualStateGroup x:Name="VolumeMuteStates">
 									<VisualState x:Name="VolumeState" />
 									<VisualState x:Name="MuteState" />
 								</VisualStateGroup>
 								-->
-	<!--  FullWindow states  -->
-	<!--
+    <!--  FullWindow states  -->
+    <!--
 								<VisualStateGroup x:Name="FullWindowStates">
 									<VisualState x:Name="NonFullWindowState" />
 									<VisualState x:Name="FullWindowState">
@@ -147,13 +148,14 @@
 		
 	</UserControl.Resources>-->
 
-	<MediaPlayerElement AreTransportControlsEnabled="True"
-	    AutoPlay="True"
-	    PosterSource="https://bitmovin-a.akamaihd.net/content/sintel/poster.png"
-	    Source="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4">
-		<!--<MediaPlayerElement.TransportControls>
+    <MediaPlayerElement
+        AreTransportControlsEnabled="True"
+        AutoPlay="True"
+        PosterSource="https://bitmovin-a.akamaihd.net/content/sintel/poster.png"
+        Source="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4">
+        <!--<MediaPlayerElement.TransportControls>
 			<MediaTransportControls Style="{StaticResource MediaTransportControlsMinimalStyle}" />
 		</MediaPlayerElement.TransportControls>-->
-	</MediaPlayerElement>
+    </MediaPlayerElement>
 
 </UserControl>

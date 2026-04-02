@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Resizing"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Resizing"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,27 +8,22 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<StackPanel Orientation="Horizontal">
-			<Button x:Name="addButton"
-			    Command="{Binding AddRandomItem}">
-				Add Random Item
-			</Button>
-			<Button x:Name="removeButton"
-			    Command="{Binding RemoveLastItem}">
-				Remove Last Item
-			</Button>
-		</StackPanel>
-		<StackPanel Orientation="Horizontal">
-			<TextBlock x:Name="ItemCount"
-			    Text="{Binding InitialyEmptyStringList.Count}" />
-			<TextBlock Text="Items" />
-		</StackPanel>
-		<ListView x:Name="theListView"
-		    ItemsSource="{Binding InitialyEmptyStringList}" />
-		<StackPanel x:Name="heightStack"
-		    Orientation="Horizontal">
-			<TextBlock>Element to measure ListView height</TextBlock>
-		</StackPanel>
-	</StackPanel>
+    <StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Button x:Name="addButton" Command="{Binding AddRandomItem}">
+                Add Random Item
+            </Button>
+            <Button x:Name="removeButton" Command="{Binding RemoveLastItem}">
+                Remove Last Item
+            </Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock x:Name="ItemCount" Text="{Binding InitialyEmptyStringList.Count}" />
+            <TextBlock Text="Items" />
+        </StackPanel>
+        <ListView x:Name="theListView" ItemsSource="{Binding InitialyEmptyStringList}" />
+        <StackPanel x:Name="heightStack" Orientation="Horizontal">
+            <TextBlock>Element to measure ListView height</TextBlock>
+        </StackPanel>
+    </StackPanel>
 </UserControl>

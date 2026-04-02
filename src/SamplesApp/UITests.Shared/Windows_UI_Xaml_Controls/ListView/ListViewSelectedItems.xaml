@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewSelectedItems"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewSelectedItems"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -13,81 +14,85 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<StackPanel>
-		<StackPanel Orientation="Horizontal">
-			<ListView x:Name="SelectorListView"
-			    Width="120"
-			    Height="400"
-			    Header="Add to SelectedItems"
-			    IsItemClickEnabled="True"
-			    ItemClick="SelectorListView_ItemClick"
-			    SelectionMode="None">
-				<ListView.HeaderTemplate>
-					<DataTemplate>
-						<TextBlock Text="{Binding}"
-						    TextWrapping="Wrap" />
-					</DataTemplate>
-				</ListView.HeaderTemplate>
-				<ListView.ItemTemplate>
-					<DataTemplate x:DataType="local:MySelectableItem">
-						<Border Background="Bisque">
-							<TextBlock AutomationProperties.AutomationId="{x:Bind sys:String.Format('Left {0}', Name)}"
-							    Foreground="Black"
-							    Text="{Binding Name}" />
-						</Border>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
-			<ListView x:Name="SetSelectedItemListView"
-			    Width="120"
-			    Height="400"
-			    Header="Set SelectedItem"
-			    IsItemClickEnabled="True"
-			    ItemClick="SetSelectedItemListView_ItemClick"
-			    SelectionMode="None">
-				<ListView.HeaderTemplate>
-					<DataTemplate>
-						<TextBlock Text="{Binding}"
-						    TextWrapping="Wrap" />
-					</DataTemplate>
-				</ListView.HeaderTemplate>
-				<ListView.ItemTemplate>
-					<DataTemplate x:DataType="local:MySelectableItem">
-						<Border Background="Bisque">
-							<TextBlock AutomationProperties.AutomationId="{x:Bind sys:String.Format('Center {0}', Name)}"
-							    Foreground="Black"
-							    Text="{Binding Name}" />
-						</Border>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
-			<ListView x:Name="SelectedItemsListView"
-			    Width="120"
-			    Height="400"
-			    Margin="30,0,0,0"
-			    Header="SelectedItems"
-			    SelectionChanged="SelectedItemsListView_SelectionChanged"
-			    SelectionMode="Multiple">
-				<ListView.ItemTemplate>
-					<DataTemplate x:DataType="local:MySelectableItem">
-						<Border Background="Yellow">
-							<TextBlock AutomationProperties.AutomationId="{x:Bind sys:String.Format('Right {0}', Name)}"
-							    Foreground="Green"
-							    Text="{Binding Name}" />
-						</Border>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
-		</StackPanel>
-		<TextBlock x:Name="_selectedItem"
-		    Text="{x:Bind sys:String.Format('Selected item: {0}', SelectedItemsListView.SelectedItem), Mode=OneWay}" />
-		<TextBlock x:Name="SelectionChangedTextBlock"
-		    TextWrapping="Wrap" />
-		<Button x:Name="ClearSelectedItemButton"
-		    Click="ClearSelectedItem"
-		    Content="Clear selected items" />
-		<Button x:Name="SelectedItemNullButton"
-		    Click="SetSelectedItemNull"
-		    Content="Set SelectedItem to null" />
-	</StackPanel>
+    <StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <ListView
+                x:Name="SelectorListView"
+                Width="120"
+                Height="400"
+                Header="Add to SelectedItems"
+                IsItemClickEnabled="True"
+                ItemClick="SelectorListView_ItemClick"
+                SelectionMode="None">
+                <ListView.HeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+                    </DataTemplate>
+                </ListView.HeaderTemplate>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:MySelectableItem">
+                        <Border Background="Bisque">
+                            <TextBlock
+                                AutomationProperties.AutomationId="{x:Bind sys:String.Format('Left {0}', Name)}"
+                                Foreground="Black"
+                                Text="{Binding Name}" />
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ListView
+                x:Name="SetSelectedItemListView"
+                Width="120"
+                Height="400"
+                Header="Set SelectedItem"
+                IsItemClickEnabled="True"
+                ItemClick="SetSelectedItemListView_ItemClick"
+                SelectionMode="None">
+                <ListView.HeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+                    </DataTemplate>
+                </ListView.HeaderTemplate>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:MySelectableItem">
+                        <Border Background="Bisque">
+                            <TextBlock
+                                AutomationProperties.AutomationId="{x:Bind sys:String.Format('Center {0}', Name)}"
+                                Foreground="Black"
+                                Text="{Binding Name}" />
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ListView
+                x:Name="SelectedItemsListView"
+                Width="120"
+                Height="400"
+                Margin="30,0,0,0"
+                Header="SelectedItems"
+                SelectionChanged="SelectedItemsListView_SelectionChanged"
+                SelectionMode="Multiple">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:MySelectableItem">
+                        <Border Background="Yellow">
+                            <TextBlock
+                                AutomationProperties.AutomationId="{x:Bind sys:String.Format('Right {0}', Name)}"
+                                Foreground="Green"
+                                Text="{Binding Name}" />
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+        <TextBlock x:Name="_selectedItem" Text="{x:Bind sys:String.Format('Selected item: {0}', SelectedItemsListView.SelectedItem), Mode=OneWay}" />
+        <TextBlock x:Name="SelectionChangedTextBlock" TextWrapping="Wrap" />
+        <Button
+            x:Name="ClearSelectedItemButton"
+            Click="ClearSelectedItem"
+            Content="Clear selected items" />
+        <Button
+            x:Name="SelectedItemNullButton"
+            Click="SetSelectedItemNull"
+            Content="Set SelectedItem to null" />
+    </StackPanel>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.Button_Enabled_Control_Disabled"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.Button_Enabled_Control_Disabled"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,86 +8,88 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="150" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
+    <StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-			<Grid.RowDefinitions>
-				<RowDefinition Height="100" />
-				<RowDefinition Height="100" />
-				<RowDefinition Height="100" />
-				<RowDefinition Height="100" />
-				<RowDefinition Height="100" />
-			</Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100" />
+                <RowDefinition Height="100" />
+                <RowDefinition Height="100" />
+                <RowDefinition Height="100" />
+                <RowDefinition Height="100" />
+            </Grid.RowDefinitions>
 
-			<ContentControl Grid.Row="0"
-			    Grid.Column="0"
-			    IsEnabled="false">
-				<Button Content="Try to click me"
-				    IsEnabled="true" />
-			</ContentControl>
-			<TextBlock Grid.Row="0"
-			    Grid.Column="1"
-			    Text="ContentControl disabled, Button enabled" />
+            <ContentControl
+                Grid.Row="0"
+                Grid.Column="0"
+                IsEnabled="false">
+                <Button Content="Try to click me" IsEnabled="true" />
+            </ContentControl>
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="1"
+                Text="ContentControl disabled, Button enabled" />
 
-			<ContentControl Grid.Row="1"
-			    Grid.Column="0"
-			    IsEnabled="true">
-				<Button Content="Try to click me"
-				    IsEnabled="false" />
-			</ContentControl>
-			<TextBlock Grid.Row="1"
-			    Grid.Column="1"
-			    Text="ContentControl enabled, Button disabled" />
+            <ContentControl
+                Grid.Row="1"
+                Grid.Column="0"
+                IsEnabled="true">
+                <Button Content="Try to click me" IsEnabled="false" />
+            </ContentControl>
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="1"
+                Text="ContentControl enabled, Button disabled" />
 
-			<ContentControl Grid.Row="2"
-			    Grid.Column="0">
-				<Button Content="Try to click me"
-				    IsEnabled="false" />
-			</ContentControl>
-			<TextBlock Grid.Row="2"
-			    Grid.Column="1"
-			    Text="ContentControl default, Button disabled" />
+            <ContentControl Grid.Row="2" Grid.Column="0">
+                <Button Content="Try to click me" IsEnabled="false" />
+            </ContentControl>
+            <TextBlock
+                Grid.Row="2"
+                Grid.Column="1"
+                Text="ContentControl default, Button disabled" />
 
-			<ContentControl Grid.Row="3"
-			    Grid.Column="0"
-			    IsEnabled="true">
-				<Button Content="Try to click me"
-				    IsEnabled="true" />
-			</ContentControl>
-			<TextBlock Grid.Row="3"
-			    Grid.Column="1"
-			    Text="ContentControl enabled, Button enabled" />
+            <ContentControl
+                Grid.Row="3"
+                Grid.Column="0"
+                IsEnabled="true">
+                <Button Content="Try to click me" IsEnabled="true" />
+            </ContentControl>
+            <TextBlock
+                Grid.Row="3"
+                Grid.Column="1"
+                Text="ContentControl enabled, Button enabled" />
 
-			<ContentControl x:Name="cc1"
-			    Grid.Row="4"
-			    Grid.Column="0"
-			    IsEnabled="false">
-				<Button x:Name="btn"
-				    Content="Try to click me"
-				    IsEnabled="true" />
-			</ContentControl>
-			<StackPanel Grid.Row="4"
-			    Grid.Column="1">
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="ContentControl disabled in source, IsEnabled =" />
-					<TextBlock Text="{Binding IsEnabled, ElementName=cc1}" />
-				</StackPanel>
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Button enabled in source, IsEnabled =" />
-					<TextBlock Text="{Binding IsEnabled, ElementName=btn}" />
-				</StackPanel>
-			</StackPanel>
-			<StackPanel Grid.Row="4"
-			    Grid.Column="2">
-				<Button Click="Button_OnClick">Change ContentControl IsEnabled</Button>
-				<Button Click="Button2_OnClick">Change Button IsEnabled</Button>
-			</StackPanel>
-		</Grid>
-	</StackPanel>
+            <ContentControl
+                x:Name="cc1"
+                Grid.Row="4"
+                Grid.Column="0"
+                IsEnabled="false">
+                <Button
+                    x:Name="btn"
+                    Content="Try to click me"
+                    IsEnabled="true" />
+            </ContentControl>
+            <StackPanel Grid.Row="4" Grid.Column="1">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="ContentControl disabled in source, IsEnabled =" />
+                    <TextBlock Text="{Binding IsEnabled, ElementName=cc1}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Button enabled in source, IsEnabled =" />
+                    <TextBlock Text="{Binding IsEnabled, ElementName=btn}" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="4" Grid.Column="2">
+                <Button Click="Button_OnClick">Change ContentControl IsEnabled</Button>
+                <Button Click="Button2_OnClick">Change Button IsEnabled</Button>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
 
 </UserControl>

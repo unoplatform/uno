@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_CharacterSpacing"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_CharacterSpacing"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -11,12 +12,12 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<StackPanel>
-		<TextBlock CharacterSpacing="{Binding ElementName=text, Path=Text}"
-		    Text="This is my text, CharacterSpacing is in units of 1/1000 of an em" />
-		<TextBox x:Name="text"
-		    InputScope="Number"
-		    Text="0" />
-	</StackPanel>
+    <StackPanel>
+        <TextBlock CharacterSpacing="{Binding ElementName=text, Path=Text}" Text="This is my text, CharacterSpacing is in units of 1/1000 of an em" />
+        <TextBox
+            x:Name="text"
+            InputScope="Number"
+            Text="0" />
+    </StackPanel>
 
 </UserControl>

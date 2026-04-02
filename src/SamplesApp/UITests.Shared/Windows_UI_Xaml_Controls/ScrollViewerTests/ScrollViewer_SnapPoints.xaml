@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_SnapPoints"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_SnapPoints"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,82 +8,62 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<TextBlock>Snap Points</TextBlock>
-		<ComboBox x:Name="snapPointsType">
-			<ComboBoxItem>None</ComboBoxItem>
-			<ComboBoxItem>Optional</ComboBoxItem>
-			<ComboBoxItem>OptionalSingle</ComboBoxItem>
-			<ComboBoxItem IsSelected="True">Mandatory</ComboBoxItem>
-			<ComboBoxItem>MandatorySingle</ComboBoxItem>
-		</ComboBox>
-		<ComboBox x:Name="snapPointsAlignment">
-			<ComboBoxItem IsSelected="True">Near</ComboBoxItem>
-			<ComboBoxItem>Center</ComboBoxItem>
-			<ComboBoxItem>Far</ComboBoxItem>
-		</ComboBox>
-		<Slider x:Name="spacing"
-		    Maximum="30"
-		    Minimum="0"
-		    Value="20" />
-		<Slider x:Name="height"
-		    Maximum="400"
-		    Minimum="100"
-		    Value="200" />
-		<Border Width="200"
-		    Height="{Binding Value, ElementName=height}"
-		    HorizontalAlignment="Left"
-		    BorderBrush="Black"
-		    BorderThickness="3">
-			<ScrollViewer VerticalSnapPointsAlignment="{Binding SelectedItem.Content, ElementName=snapPointsAlignment}"
-			    VerticalSnapPointsType="{Binding SelectedItem.Content, ElementName=snapPointsType}">
-				<StackPanel x:Name="panel"
-				    Spacing="{Binding Value, ElementName=spacing}">
-					<Rectangle Height="75"
-					    Fill="#9400D3" />
-					<Rectangle Height="75"
-					    Fill="#4B0082" />
-					<Rectangle Height="75"
-					    Fill="#0000FF" />
-					<Rectangle Height="75"
-					    Fill="#00FF00" />
-					<Rectangle Height="75"
-					    Fill="#FFFF00" />
-					<Rectangle Height="75"
-					    Fill="#FF7F00" />
-					<Rectangle Height="75"
-					    Fill="#FF0000" />
-					<Rectangle Height="75"
-					    Fill="#9400D3" />
-					<Rectangle Height="75"
-					    Fill="#4B0082" />
-					<Rectangle Height="75"
-					    Fill="#0000FF" />
-					<Rectangle Height="75"
-					    Fill="#00FF00" />
-					<Rectangle Height="75"
-					    Fill="#FFFF00" />
-					<Rectangle Height="75"
-					    Fill="#FF7F00" />
-					<Rectangle Height="75"
-					    Fill="#FF0000" />
-					<Rectangle Height="75"
-					    Fill="#9400D3" />
-					<Rectangle Height="75"
-					    Fill="#4B0082" />
-					<Rectangle Height="75"
-					    Fill="#0000FF" />
-					<Rectangle Height="75"
-					    Fill="#00FF00" />
-					<Rectangle Height="75"
-					    Fill="#FFFF00" />
-					<Rectangle Height="75"
-					    Fill="#FF7F00" />
-					<Rectangle Height="75"
-					    Fill="#FF0000" />
-				</StackPanel>
-			</ScrollViewer>
-		</Border>
-		<TextBlock x:Name="points" />
-	</StackPanel>
+    <StackPanel>
+        <TextBlock>Snap Points</TextBlock>
+        <ComboBox x:Name="snapPointsType">
+            <ComboBoxItem>None</ComboBoxItem>
+            <ComboBoxItem>Optional</ComboBoxItem>
+            <ComboBoxItem>OptionalSingle</ComboBoxItem>
+            <ComboBoxItem IsSelected="True">Mandatory</ComboBoxItem>
+            <ComboBoxItem>MandatorySingle</ComboBoxItem>
+        </ComboBox>
+        <ComboBox x:Name="snapPointsAlignment">
+            <ComboBoxItem IsSelected="True">Near</ComboBoxItem>
+            <ComboBoxItem>Center</ComboBoxItem>
+            <ComboBoxItem>Far</ComboBoxItem>
+        </ComboBox>
+        <Slider
+            x:Name="spacing"
+            Maximum="30"
+            Minimum="0"
+            Value="20" />
+        <Slider
+            x:Name="height"
+            Maximum="400"
+            Minimum="100"
+            Value="200" />
+        <Border
+            Width="200"
+            Height="{Binding Value, ElementName=height}"
+            HorizontalAlignment="Left"
+            BorderBrush="Black"
+            BorderThickness="3">
+            <ScrollViewer VerticalSnapPointsAlignment="{Binding SelectedItem.Content, ElementName=snapPointsAlignment}" VerticalSnapPointsType="{Binding SelectedItem.Content, ElementName=snapPointsType}">
+                <StackPanel x:Name="panel" Spacing="{Binding Value, ElementName=spacing}">
+                    <Rectangle Height="75" Fill="#9400D3" />
+                    <Rectangle Height="75" Fill="#4B0082" />
+                    <Rectangle Height="75" Fill="#0000FF" />
+                    <Rectangle Height="75" Fill="#00FF00" />
+                    <Rectangle Height="75" Fill="#FFFF00" />
+                    <Rectangle Height="75" Fill="#FF7F00" />
+                    <Rectangle Height="75" Fill="#FF0000" />
+                    <Rectangle Height="75" Fill="#9400D3" />
+                    <Rectangle Height="75" Fill="#4B0082" />
+                    <Rectangle Height="75" Fill="#0000FF" />
+                    <Rectangle Height="75" Fill="#00FF00" />
+                    <Rectangle Height="75" Fill="#FFFF00" />
+                    <Rectangle Height="75" Fill="#FF7F00" />
+                    <Rectangle Height="75" Fill="#FF0000" />
+                    <Rectangle Height="75" Fill="#9400D3" />
+                    <Rectangle Height="75" Fill="#4B0082" />
+                    <Rectangle Height="75" Fill="#0000FF" />
+                    <Rectangle Height="75" Fill="#00FF00" />
+                    <Rectangle Height="75" Fill="#FFFF00" />
+                    <Rectangle Height="75" Fill="#FF7F00" />
+                    <Rectangle Height="75" Fill="#FF0000" />
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+        <TextBlock x:Name="points" />
+    </StackPanel>
 </Page>

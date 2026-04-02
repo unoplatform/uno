@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.FrameworkElementTests.ItemsControl_Loaded"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml.FrameworkElementTests.ItemsControl_Loaded"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,15 +9,15 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<Grid>
-		<StackPanel>
-			<ItemsControl>
-				<ContentControl x:Name="myControl"
-				    Content="My content"
-				    Loaded="OnControlLoaded" />
-			</ItemsControl>
-			<TextBlock x:Name="result"
-			    Text="None" />
-		</StackPanel>
-	</Grid>
+    <Grid>
+        <StackPanel>
+            <ItemsControl>
+                <ContentControl
+                    x:Name="myControl"
+                    Content="My content"
+                    Loaded="OnControlLoaded" />
+            </ItemsControl>
+            <TextBlock x:Name="result" Text="None" />
+        </StackPanel>
+    </Grid>
 </UserControl>

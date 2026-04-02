@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.ItemsControl.ItemsControl_AppendItem"
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Controls.ItemsControl.ItemsControl_AppendItem"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,21 +9,21 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<Button x:Name="AppendContent01"
-		    Click="{x:Bind OnAppendContent01}"
-		    Content="Append 01" />
+    <StackPanel>
+        <Button
+            x:Name="AppendContent01"
+            Click="{x:Bind OnAppendContent01}"
+            Content="Append 01" />
 
-		<ItemsControl x:Name="theItemsControl">
-			<ItemsControl.ItemTemplate>
-				<DataTemplate>
-					<StackPanel>
-						<Button AutomationProperties.AutomationId="{Binding}"
-						    Content="{Binding}" />
-					</StackPanel>
-				</DataTemplate>
-			</ItemsControl.ItemTemplate>
-		</ItemsControl>
-	</StackPanel>
+        <ItemsControl x:Name="theItemsControl">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <Button AutomationProperties.AutomationId="{Binding}" Content="{Binding}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
 
 </UserControl>

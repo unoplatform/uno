@@ -1,5 +1,6 @@
 ﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
-<Page x:Class="MUXControlsTestApp.HierarchicalNavigationViewDataBinding"
+<Page
+    x:Class="MUXControlsTestApp.HierarchicalNavigationViewDataBinding"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,116 +10,118 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Page.Resources>
-		<DataTemplate x:Key="NavigationViewMenuItem"
-		    x:DataType="local:Category">
-			<muxcontrols:NavigationViewItem Name="{x:Bind Name}"
-			    Content="{x:Bind Content}"
-			    MenuItemsSource="{x:Bind Children}"
-			    SelectsOnInvoked="{x:Bind SelectsOnInvoked}" />
-		</DataTemplate>
-	</Page.Resources>
+    <Page.Resources>
+        <DataTemplate x:Key="NavigationViewMenuItem" x:DataType="local:Category">
+            <muxcontrols:NavigationViewItem
+                Name="{x:Bind Name}"
+                Content="{x:Bind Content}"
+                MenuItemsSource="{x:Bind Children}"
+                SelectsOnInvoked="{x:Bind SelectsOnInvoked}" />
+        </DataTemplate>
+    </Page.Resources>
 
-	<Grid>
-		<muxcontrols:NavigationView x:Name="navview"
-		    Collapsed="OnItemCollapsed"
-		    Expanding="OnItemExpanding"
-		    ItemInvoked="{x:Bind ClickedItem}"
-		    MenuItemTemplate="{StaticResource NavigationViewMenuItem}"
-		    MenuItemsSource="{x:Bind categories, Mode=OneWay}"
-		    PaneDisplayMode="Left">
-			<StackPanel Margin="10,10,0,0">
-				<TextBlock x:Name="SelectedItemLabel"
-				    AutomationProperties.Name="SelectedItemLabel"
-				    Text="uninitialized" />
-				<Button x:Name="GetSelectedItemLabelButton"
-				    AutomationProperties.Name="GetSelectedItemLabelButton"
-				    Click="PrintSelectedItem"
-				    Content="Get Selected Item Label" />
-				<Button Click="AddMenuItem"
-				    Content="Add MenuItem" />
-				<Button Click="RemoveSecondMenuItem"
-				    Content="Remove Second MenuItem" />
-				<Button Click="SelectSecondItem"
-				    Content="Select Second Item" />
-				<Button Click="SelectItemUsingAPI"
-				    Content="Use API to selecte MenuItem5" />
-				<!--  Components that get updated when item is expanded or collapsed  -->
-				<StackPanel x:Name="ExpandCollapseRelatedComponents"
-				    Margin="0,10,0,10">
-					<Grid x:Name="ExpandingEventStates">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
-						<TextBlock Grid.Column="0"
-						    Margin="0,0,5,0"
-						    VerticalAlignment="Center">
-							Last Expanding:
-						</TextBlock>
-						<TextBlock x:Name="TextBlockExpandingItem"
-						    Grid.Column="1"
-						    Margin="0,0,10,0"
-						    AutomationProperties.Name="TextBlockExpandingItem"
-						    Text="N/A" />
-						<TextBlock Grid.Column="2"
-						    Margin="0,0,5,0"
-						    VerticalAlignment="Center">
-							Expanding Item and Container match:
-						</TextBlock>
-						<TextBlock x:Name="TextblockExpandingItemAndContainerMatch"
-						    Grid.Column="3"
-						    AutomationProperties.Name="TextblockExpandingItemAndContainerMatch"
-						    Text="N/A" />
-					</Grid>
-					<Grid x:Name="CollapsedEventStates">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
-						<TextBlock Grid.Column="0"
-						    Margin="0,0,5,0"
-						    VerticalAlignment="Center">
-							Last Collapsed:
-						</TextBlock>
-						<TextBlock x:Name="TextBlockCollapsedItem"
-						    Grid.Column="1"
-						    Margin="0,0,10,0"
-						    AutomationProperties.Name="TextBlockCollapsedItem"
-						    Text="N/A" />
-						<TextBlock Grid.Column="2"
-						    Margin="0,0,5,0"
-						    VerticalAlignment="Center">
-							Collapsed Item and Container match:
-						</TextBlock>
-						<TextBlock x:Name="TextblockCollapsedItemAndContainerMatch"
-						    Grid.Column="3"
-						    AutomationProperties.Name="TextblockCollapsedItemAndContainerMatch"
-						    Text="N/A" />
-					</Grid>
-				</StackPanel>
-				<!--  Combobox used to switch pane display modes  -->
-				<ComboBox x:Name="PaneDisplayModeCombobox"
-				    Margin="5"
-				    AutomationProperties.Name="PaneDisplayModeCombobox"
-				    Header="PaneDisplayMode"
-				    SelectionChanged="PaneDisplayModeCombobox_SelectionChanged">
-					<ComboBoxItem Content="Auto"
-					    Tag="Auto" />
-					<ComboBoxItem Content="Left"
-					    Tag="Left" />
-					<ComboBoxItem Content="Top"
-					    Tag="Top" />
-					<ComboBoxItem Content="LeftCompact"
-					    Tag="LeftCompact" />
-					<ComboBoxItem Content="LeftMinimal"
-					    Tag="LeftMinimal" />
-				</ComboBox>
-			</StackPanel>
-		</muxcontrols:NavigationView>
-	</Grid>
+    <Grid>
+        <muxcontrols:NavigationView
+            x:Name="navview"
+            Collapsed="OnItemCollapsed"
+            Expanding="OnItemExpanding"
+            ItemInvoked="{x:Bind ClickedItem}"
+            MenuItemTemplate="{StaticResource NavigationViewMenuItem}"
+            MenuItemsSource="{x:Bind categories, Mode=OneWay}"
+            PaneDisplayMode="Left">
+            <StackPanel Margin="10,10,0,0">
+                <TextBlock
+                    x:Name="SelectedItemLabel"
+                    AutomationProperties.Name="SelectedItemLabel"
+                    Text="uninitialized" />
+                <Button
+                    x:Name="GetSelectedItemLabelButton"
+                    AutomationProperties.Name="GetSelectedItemLabelButton"
+                    Click="PrintSelectedItem"
+                    Content="Get Selected Item Label" />
+                <Button Click="AddMenuItem" Content="Add MenuItem" />
+                <Button Click="RemoveSecondMenuItem" Content="Remove Second MenuItem" />
+                <Button Click="SelectSecondItem" Content="Select Second Item" />
+                <Button Click="SelectItemUsingAPI" Content="Use API to selecte MenuItem5" />
+                <!--  Components that get updated when item is expanded or collapsed  -->
+                <StackPanel x:Name="ExpandCollapseRelatedComponents" Margin="0,10,0,10">
+                    <Grid x:Name="ExpandingEventStates">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,5,0"
+                            VerticalAlignment="Center">
+                            Last Expanding:
+                        </TextBlock>
+                        <TextBlock
+                            x:Name="TextBlockExpandingItem"
+                            Grid.Column="1"
+                            Margin="0,0,10,0"
+                            AutomationProperties.Name="TextBlockExpandingItem"
+                            Text="N/A" />
+                        <TextBlock
+                            Grid.Column="2"
+                            Margin="0,0,5,0"
+                            VerticalAlignment="Center">
+                            Expanding Item and Container match:
+                        </TextBlock>
+                        <TextBlock
+                            x:Name="TextblockExpandingItemAndContainerMatch"
+                            Grid.Column="3"
+                            AutomationProperties.Name="TextblockExpandingItemAndContainerMatch"
+                            Text="N/A" />
+                    </Grid>
+                    <Grid x:Name="CollapsedEventStates">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,5,0"
+                            VerticalAlignment="Center">
+                            Last Collapsed:
+                        </TextBlock>
+                        <TextBlock
+                            x:Name="TextBlockCollapsedItem"
+                            Grid.Column="1"
+                            Margin="0,0,10,0"
+                            AutomationProperties.Name="TextBlockCollapsedItem"
+                            Text="N/A" />
+                        <TextBlock
+                            Grid.Column="2"
+                            Margin="0,0,5,0"
+                            VerticalAlignment="Center">
+                            Collapsed Item and Container match:
+                        </TextBlock>
+                        <TextBlock
+                            x:Name="TextblockCollapsedItemAndContainerMatch"
+                            Grid.Column="3"
+                            AutomationProperties.Name="TextblockCollapsedItemAndContainerMatch"
+                            Text="N/A" />
+                    </Grid>
+                </StackPanel>
+                <!--  Combobox used to switch pane display modes  -->
+                <ComboBox
+                    x:Name="PaneDisplayModeCombobox"
+                    Margin="5"
+                    AutomationProperties.Name="PaneDisplayModeCombobox"
+                    Header="PaneDisplayMode"
+                    SelectionChanged="PaneDisplayModeCombobox_SelectionChanged">
+                    <ComboBoxItem Content="Auto" Tag="Auto" />
+                    <ComboBoxItem Content="Left" Tag="Left" />
+                    <ComboBoxItem Content="Top" Tag="Top" />
+                    <ComboBoxItem Content="LeftCompact" Tag="LeftCompact" />
+                    <ComboBoxItem Content="LeftMinimal" Tag="LeftMinimal" />
+                </ComboBox>
+            </StackPanel>
+        </muxcontrols:NavigationView>
+    </Grid>
 </Page>

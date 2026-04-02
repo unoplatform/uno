@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.Animations.EasingDoubleKeyFrame_CompositeTransform"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.Animations.EasingDoubleKeyFrame_CompositeTransform"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -9,11 +10,11 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<controls:SampleControl SampleDescription="Demonstrates a pumping text based on EasingDoubleKeyFrame and CompositeTransform">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<local:EasingDoubleKeyFrame_CompositeTransform_Container />
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="Demonstrates a pumping text based on EasingDoubleKeyFrame and CompositeTransform">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <local:EasingDoubleKeyFrame_CompositeTransform_Container />
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

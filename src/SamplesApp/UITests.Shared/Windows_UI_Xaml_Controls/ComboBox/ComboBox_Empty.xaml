@@ -1,45 +1,50 @@
-﻿<Page x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Empty"
+﻿<Page
+    x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Empty"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<Grid Margin="20"
-	    HorizontalAlignment="Left"
-	    VerticalAlignment="Top"
-	    ColumnSpacing="10"
-	    RowSpacing="10">
-		<Grid.RenderTransform>
-			<ScaleTransform ScaleX="4" ScaleY="4" />
-		</Grid.RenderTransform>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="8" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="8" />
-			<ColumnDefinition Width="Auto" />
-		</Grid.ColumnDefinitions>
-		<Rectangle Grid.Column="1"
-		    Width="64"
-		    HorizontalAlignment="Right"
-		    Fill="Red" />
-		<Rectangle Grid.RowSpan="2"
-		    Grid.Column="1"
-		    Width="64"
-		    HorizontalAlignment="Right"
-		    Fill="Red"
-		    Opacity="0.3" />
-		<Rectangle Grid.Row="1"
-		    Width="8"
-		    Height="32"
-		    VerticalAlignment="Bottom"
-		    Fill="Green" />
-		<Rectangle Grid.Row="1"
-		    Grid.ColumnSpan="2"
-		    Height="32"
-		    VerticalAlignment="Bottom"
-		    Fill="Green"
-		    Opacity="0.3" />
-		<ComboBox Grid.Row="1"
-		    Grid.Column="1" />
-	</Grid>
+    <Grid
+        Margin="20"
+        HorizontalAlignment="Left"
+        VerticalAlignment="Top"
+        ColumnSpacing="10"
+        RowSpacing="10">
+        <Grid.RenderTransform>
+            <ScaleTransform ScaleX="4" ScaleY="4" />
+        </Grid.RenderTransform>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="8" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Rectangle
+            Grid.Column="1"
+            Width="64"
+            HorizontalAlignment="Right"
+            Fill="Red" />
+        <Rectangle
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Width="64"
+            HorizontalAlignment="Right"
+            Fill="Red"
+            Opacity="0.3" />
+        <Rectangle
+            Grid.Row="1"
+            Width="8"
+            Height="32"
+            VerticalAlignment="Bottom"
+            Fill="Green" />
+        <Rectangle
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            Height="32"
+            VerticalAlignment="Bottom"
+            Fill="Green"
+            Opacity="0.3" />
+        <ComboBox Grid.Row="1" Grid.Column="1" />
+    </Grid>
 </Page>

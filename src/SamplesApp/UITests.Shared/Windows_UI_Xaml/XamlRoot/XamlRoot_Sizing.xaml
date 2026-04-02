@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml.XamlRoot.XamlRoot_Sizing"
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml.XamlRoot.XamlRoot_Sizing"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,22 +9,22 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<Grid Padding="50">
+    <Grid Padding="50">
 
-		<Grid.RowDefinitions>
-			<RowDefinition />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-		<StackPanel Grid.Row="0" />
-		<StackPanel Grid.Row="1">
-			<TextBlock>
-				PageSize:<Run x:Name="PageSize" /></TextBlock>
-			<TextBlock>
-				XamlRootSize:<Run x:Name="XamlRootSize" /></TextBlock>
-			<TextBlock>
-				XamlRootChangeCount:<Run x:Name="XamlRootChangeCount" /></TextBlock>
-		</StackPanel>
+        <StackPanel Grid.Row="0" />
+        <StackPanel Grid.Row="1">
+            <TextBlock>
+                PageSize:<Run x:Name="PageSize" /></TextBlock>
+            <TextBlock>
+                XamlRootSize:<Run x:Name="XamlRootSize" /></TextBlock>
+            <TextBlock>
+                XamlRootChangeCount:<Run x:Name="XamlRootChangeCount" /></TextBlock>
+        </StackPanel>
 
-	</Grid>
+    </Grid>
 </UserControl>

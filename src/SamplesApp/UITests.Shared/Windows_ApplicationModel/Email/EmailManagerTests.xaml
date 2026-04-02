@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Shared.Windows_ApplicationModel.Email.EmailManagerTests"
+﻿<Page
+    x:Class="UITests.Shared.Windows_ApplicationModel.Email.EmailManagerTests"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,23 +8,17 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel Padding="12"
-	    Spacing="4">
-		<TextBox Header="To"
-		    Text="{Binding To, Mode=TwoWay}" />
-		<TextBox Header="CC"
-		    Text="{Binding CC, Mode=TwoWay}" />
-		<TextBox Header="Bcc"
-		    Text="{Binding Bcc, Mode=TwoWay}" />
-		<TextBox Header="Subject"
-		    Text="{Binding Subject, Mode=TwoWay}" />
-		<TextBox Height="200"
-		    AcceptsReturn="True"
-		    Header="Body"
-		    Text="{Binding Body, Mode=TwoWay}" />
-		<Button Command="{Binding ComposeCommand}"
-		    Content="Compose" />
-		<TextBlock Foreground="Red"
-		    Text="{Binding ErrorMessage, Mode=OneWay}" />
-	</StackPanel>
+    <StackPanel Padding="12" Spacing="4">
+        <TextBox Header="To" Text="{Binding To, Mode=TwoWay}" />
+        <TextBox Header="CC" Text="{Binding CC, Mode=TwoWay}" />
+        <TextBox Header="Bcc" Text="{Binding Bcc, Mode=TwoWay}" />
+        <TextBox Header="Subject" Text="{Binding Subject, Mode=TwoWay}" />
+        <TextBox
+            Height="200"
+            AcceptsReturn="True"
+            Header="Body"
+            Text="{Binding Body, Mode=TwoWay}" />
+        <Button Command="{Binding ComposeCommand}" Content="Compose" />
+        <TextBlock Foreground="Red" Text="{Binding ErrorMessage, Mode=OneWay}" />
+    </StackPanel>
 </Page>

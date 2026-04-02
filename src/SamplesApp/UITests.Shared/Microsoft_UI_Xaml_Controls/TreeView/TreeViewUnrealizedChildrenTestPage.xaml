@@ -1,4 +1,5 @@
-﻿<utilities:MUXTestPage x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests.TreeViewUnrealizedChildrenTestPage"
+﻿<utilities:MUXTestPage
+    x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests.TreeViewUnrealizedChildrenTestPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,16 +10,17 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<TextBlock Text="Unrealized children selection problem" />
-		<TextBlock x:Name="SelectedItemName"
-		    AutomationProperties.Name="SelectedItemName" />
-		<Button x:Name="GetSelectedItemName"
-		    AutomationProperties.Name="GetSelectedItemName"
-		    Click="GetSelectedItemName_Click"
-		    Content="Get selected item" />
-		<muxc:TreeView x:Name="UnrealizedTreeViewSelection"
-		    Collapsed="UnrealizedTreeViewSelection_Collapsed"
-		    Expanding="UnrealizedTreeViewSelection_Expanding" />
-	</StackPanel>
+    <StackPanel>
+        <TextBlock Text="Unrealized children selection problem" />
+        <TextBlock x:Name="SelectedItemName" AutomationProperties.Name="SelectedItemName" />
+        <Button
+            x:Name="GetSelectedItemName"
+            AutomationProperties.Name="GetSelectedItemName"
+            Click="GetSelectedItemName_Click"
+            Content="Get selected item" />
+        <muxc:TreeView
+            x:Name="UnrealizedTreeViewSelection"
+            Collapsed="UnrealizedTreeViewSelection_Collapsed"
+            Expanding="UnrealizedTreeViewSelection_Expanding" />
+    </StackPanel>
 </utilities:MUXTestPage>

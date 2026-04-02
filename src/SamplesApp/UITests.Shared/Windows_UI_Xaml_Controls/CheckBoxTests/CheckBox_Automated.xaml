@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.CheckBoxTests.CheckBox_Automated"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.CheckBoxTests.CheckBox_Automated"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,21 +9,22 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<Grid>
-		<StackPanel>
-			<TextBlock x:Name="result"
-			    Text="none" />
-			<CheckBox x:Name="twoState01"
-			    Checked="OnChecked"
-			    Content="Two State"
-			    Indeterminate="OnIndeterminate"
-			    Unchecked="OnUnchecked" />
-			<CheckBox x:Name="threeState01"
-			    Checked="OnChecked"
-			    Content="Two State"
-			    Indeterminate="OnIndeterminate"
-			    IsThreeState="true"
-			    Unchecked="OnUnchecked" />
-		</StackPanel>
-	</Grid>
+    <Grid>
+        <StackPanel>
+            <TextBlock x:Name="result" Text="none" />
+            <CheckBox
+                x:Name="twoState01"
+                Checked="OnChecked"
+                Content="Two State"
+                Indeterminate="OnIndeterminate"
+                Unchecked="OnUnchecked" />
+            <CheckBox
+                x:Name="threeState01"
+                Checked="OnChecked"
+                Content="Two State"
+                Indeterminate="OnIndeterminate"
+                IsThreeState="true"
+                Unchecked="OnUnchecked" />
+        </StackPanel>
+    </Grid>
 </UserControl>

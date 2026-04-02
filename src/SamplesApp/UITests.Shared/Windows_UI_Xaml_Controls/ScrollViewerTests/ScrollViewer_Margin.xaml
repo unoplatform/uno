@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Margin"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Margin"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,100 +8,106 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel Margin="30"
-	    Spacing="4">
+    <StackPanel Margin="30" Spacing="4">
 
-		<TextBlock FontSize="18">
-			All following shapes (squares or rectangles) should be identical
-		</TextBlock>
+        <TextBlock FontSize="18">
+            All following shapes (squares or rectangles) should be identical
+        </TextBlock>
 
-		<Slider x:Name="shapeWidth"
-		    Maximum="450"
-		    Minimum="50"
-		    Value="300" />
+        <Slider
+            x:Name="shapeWidth"
+            Maximum="450"
+            Minimum="50"
+            Value="300" />
 
-		<TextBlock>
-			<Run Text="Shape Width :" />
-			<Run Text="{Binding Value, ElementName=shapeWidth}" />
-		</TextBlock>
+        <TextBlock>
+            <Run Text="Shape Width :" />
+            <Run Text="{Binding Value, ElementName=shapeWidth}" />
+        </TextBlock>
 
-		<Slider x:Name="shapeHeight"
-		    Maximum="450"
-		    Minimum="50"
-		    Value="300" />
+        <Slider
+            x:Name="shapeHeight"
+            Maximum="450"
+            Minimum="50"
+            Value="300" />
 
-		<TextBlock>
-			<Run Text="Shape Height :" />
-			<Run Text="{Binding Value, ElementName=shapeHeight}" />
-		</TextBlock>
+        <TextBlock>
+            <Run Text="Shape Height :" />
+            <Run Text="{Binding Value, ElementName=shapeHeight}" />
+        </TextBlock>
 
-		<StackPanel Margin="0,10,0,0"
-		    Orientation="Horizontal"
-		    Spacing="8">
-			<Border x:Name="ctl1"
-			    Width="{Binding Value, ElementName=shapeWidth}"
-			    Height="{Binding Value, ElementName=shapeHeight}"
-			    Background="Orange"
-			    BorderBrush="Blue"
-			    BorderThickness="2">
-				<Border Margin="20">
-					<Rectangle Fill="Red" />
-				</Border>
-			</Border>
+        <StackPanel
+            Margin="0,10,0,0"
+            Orientation="Horizontal"
+            Spacing="8">
+            <Border
+                x:Name="ctl1"
+                Width="{Binding Value, ElementName=shapeWidth}"
+                Height="{Binding Value, ElementName=shapeHeight}"
+                Background="Orange"
+                BorderBrush="Blue"
+                BorderThickness="2">
+                <Border Margin="20">
+                    <Rectangle Fill="Red" />
+                </Border>
+            </Border>
 
-			<Border x:Name="ctl2"
-			    Width="{Binding Value, ElementName=shapeWidth}"
-			    Height="{Binding Value, ElementName=shapeHeight}"
-			    BorderBrush="Blue"
-			    BorderThickness="2">
-				<ScrollViewer Background="Orange">
-					<Border Margin="20">
-						<Rectangle Fill="Red" />
-					</Border>
-				</ScrollViewer>
-			</Border>
+            <Border
+                x:Name="ctl2"
+                Width="{Binding Value, ElementName=shapeWidth}"
+                Height="{Binding Value, ElementName=shapeHeight}"
+                BorderBrush="Blue"
+                BorderThickness="2">
+                <ScrollViewer Background="Orange">
+                    <Border Margin="20">
+                        <Rectangle Fill="Red" />
+                    </Border>
+                </ScrollViewer>
+            </Border>
 
-			<Border x:Name="ctl3"
-			    Width="{Binding Value, ElementName=shapeWidth}"
-			    Height="{Binding Value, ElementName=shapeHeight}"
-			    BorderBrush="Blue"
-			    BorderThickness="2">
-				<ScrollViewer>
-					<Border Background="Orange">
-						<Border Margin="20">
-							<Rectangle Fill="Red" />
-						</Border>
-					</Border>
-				</ScrollViewer>
-			</Border>
+            <Border
+                x:Name="ctl3"
+                Width="{Binding Value, ElementName=shapeWidth}"
+                Height="{Binding Value, ElementName=shapeHeight}"
+                BorderBrush="Blue"
+                BorderThickness="2">
+                <ScrollViewer>
+                    <Border Background="Orange">
+                        <Border Margin="20">
+                            <Rectangle Fill="Red" />
+                        </Border>
+                    </Border>
+                </ScrollViewer>
+            </Border>
 
-			<Border x:Name="ctl4"
-			    Width="{Binding Value, ElementName=shapeWidth}"
-			    Height="{Binding Value, ElementName=shapeHeight}"
-			    Padding="20"
-			    Background="Orange"
-			    BorderBrush="Blue"
-			    BorderThickness="2">
-				<ScrollViewer>
-					<Border>
-						<Rectangle Fill="Red" />
-					</Border>
-				</ScrollViewer>
-			</Border>
+            <Border
+                x:Name="ctl4"
+                Width="{Binding Value, ElementName=shapeWidth}"
+                Height="{Binding Value, ElementName=shapeHeight}"
+                Padding="20"
+                Background="Orange"
+                BorderBrush="Blue"
+                BorderThickness="2">
+                <ScrollViewer>
+                    <Border>
+                        <Rectangle Fill="Red" />
+                    </Border>
+                </ScrollViewer>
+            </Border>
 
-			<Border x:Name="ctl5"
-			    Width="{Binding Value, ElementName=shapeWidth}"
-			    Height="{Binding Value, ElementName=shapeHeight}"
-			    BorderBrush="Blue"
-			    BorderThickness="2">
-				<ScrollViewer Padding="20"
-				    Background="Orange">
-					<Border>
-						<Rectangle Fill="Red" />
-					</Border>
-				</ScrollViewer>
-			</Border>
-		</StackPanel>
+            <Border
+                x:Name="ctl5"
+                Width="{Binding Value, ElementName=shapeWidth}"
+                Height="{Binding Value, ElementName=shapeHeight}"
+                BorderBrush="Blue"
+                BorderThickness="2">
+                <ScrollViewer Padding="20" Background="Orange">
+                    <Border>
+                        <Rectangle Fill="Red" />
+                    </Border>
+                </ScrollViewer>
+            </Border>
+        </StackPanel>
 
-	</StackPanel>
+    </StackPanel>
 </Page>

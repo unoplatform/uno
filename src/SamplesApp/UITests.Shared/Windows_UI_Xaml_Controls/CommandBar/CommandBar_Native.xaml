@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_Native"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_Native"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive.com/android"
@@ -9,120 +10,129 @@
     d:DesignWidth="400"
     mc:Ignorable="d android">
 
-	<ScrollViewer>
-		<StackPanel>
+    <ScrollViewer>
+        <StackPanel>
 
-			<TextBlock Text="Those samples are expected to work properly with the native CommandBar style (iOS UINavigationBar and Android Toolbar)."
-			    TextWrapping="Wrap" />
+            <TextBlock Text="Those samples are expected to work properly with the native CommandBar style (iOS UINavigationBar and Android Toolbar)." TextWrapping="Wrap" />
 
-			<!--  Simple  -->
-			<CommandBar Content="Simple">
-				<AppBarButton Width="NaN"
-				    Click="OnCommandClicked"
-				    Content="Button"
-				    Label="Button" />
-				<AppBarButton Click="OnCommandClicked"
-				    Label="Search">
-					<AppBarButton.Icon>
-						<BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
-					</AppBarButton.Icon>
-				</AppBarButton>
-			</CommandBar>
+            <!--  Simple  -->
+            <CommandBar Content="Simple">
+                <AppBarButton
+                    Width="NaN"
+                    Click="OnCommandClicked"
+                    Content="Button"
+                    Label="Button" />
+                <AppBarButton Click="OnCommandClicked" Label="Search">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar>
 
-			<!--  Inverted  -->
-			<CommandBar Background="Black"
-			    Content="Inverted"
-			    Foreground="White">
-				<AppBarButton Width="NaN"
-				    Click="OnCommandClicked"
-				    Content="Button"
-				    Foreground="White"
-				    Label="Button" />
-				<AppBarButton Click="OnCommandClicked"
-				    Foreground="White"
-				    Label="Search">
-					<AppBarButton.Icon>
-						<BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
-					</AppBarButton.Icon>
-				</AppBarButton>
-			</CommandBar>
+            <!--  Inverted  -->
+            <CommandBar
+                Background="Black"
+                Content="Inverted"
+                Foreground="White">
+                <AppBarButton
+                    Width="NaN"
+                    Click="OnCommandClicked"
+                    Content="Button"
+                    Foreground="White"
+                    Label="Button" />
+                <AppBarButton
+                    Click="OnCommandClicked"
+                    Foreground="White"
+                    Label="Search">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar>
 
-			<!--  Transparent  -->
-			<Grid Height="200">
-				<Image HorizontalAlignment="Stretch"
-				    VerticalAlignment="Stretch"
-				    Source="http://i.imgur.com/tpFJ94J.jpg"
-				    Stretch="UniformToFill" />
-				<Border Background="Black"
-				    Opacity="0.7" />
-				<CommandBar Background="Transparent"
-				    BorderBrush="Transparent"
-				    BorderThickness="0"
-				    Content="Transparent"
-				    Foreground="White">
-					<AppBarButton Width="NaN"
-					    Click="OnCommandClicked"
-					    Content="Button"
-					    Foreground="White"
-					    Label="Button" />
-					<AppBarButton Click="OnCommandClicked"
-					    Foreground="White"
-					    Label="Search">
-						<AppBarButton.Icon>
-							<BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
-						</AppBarButton.Icon>
-					</AppBarButton>
-				</CommandBar>
-			</Grid>
+            <!--  Transparent  -->
+            <Grid Height="200">
+                <Image
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Source="http://i.imgur.com/tpFJ94J.jpg"
+                    Stretch="UniformToFill" />
+                <Border Background="Black" Opacity="0.7" />
+                <CommandBar
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    Content="Transparent"
+                    Foreground="White">
+                    <AppBarButton
+                        Width="NaN"
+                        Click="OnCommandClicked"
+                        Content="Button"
+                        Foreground="White"
+                        Label="Button" />
+                    <AppBarButton
+                        Click="OnCommandClicked"
+                        Foreground="White"
+                        Label="Search">
+                        <AppBarButton.Icon>
+                            <BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                </CommandBar>
+            </Grid>
 
-			<!--  Binding  -->
-			<CommandBar Content="{Binding Content}">
-				<AppBarButton Width="NaN"
-				    Command="{Binding Command}"
-				    Content="{Binding Content}"
-				    Label="{Binding Content}" />
-				<AppBarButton Command="{Binding Command}"
-				    Label="{Binding Content}">
-					<AppBarButton.Icon>
-						<BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
-					</AppBarButton.Icon>
-				</AppBarButton>
-			</CommandBar>
+            <!--  Binding  -->
+            <CommandBar Content="{Binding Content}">
+                <AppBarButton
+                    Width="NaN"
+                    Command="{Binding Command}"
+                    Content="{Binding Content}"
+                    Label="{Binding Content}" />
+                <AppBarButton Command="{Binding Command}" Label="{Binding Content}">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar>
 
-			<!--  States  -->
-			<CommandBar Content="IsEnabled">
-				<!--  Enabled  -->
-				<AppBarButton Width="NaN"
-				    Click="OnCommandClicked"
-				    Content="Enabled"
-				    IsEnabled="True"
-				    Label="Enabled" />
-				<AppBarButton Click="OnCommandClicked"
-				    IsEnabled="True"
-				    Label="Enabled">
-					<AppBarButton.Icon>
-						<BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
-					</AppBarButton.Icon>
-				</AppBarButton>
+            <!--  States  -->
+            <CommandBar Content="IsEnabled">
+                <!--  Enabled  -->
+                <AppBarButton
+                    Width="NaN"
+                    Click="OnCommandClicked"
+                    Content="Enabled"
+                    IsEnabled="True"
+                    Label="Enabled" />
+                <AppBarButton
+                    Click="OnCommandClicked"
+                    IsEnabled="True"
+                    Label="Enabled">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
 
-				<AppBarSeparator />
+                <AppBarSeparator />
 
-				<!--  Disabled  -->
-				<AppBarButton Width="NaN"
-				    Click="OnCommandClicked"
-				    Content="Disabled"
-				    IsEnabled="False"
-				    Label="Disabled" />
-				<AppBarButton Click="OnCommandClicked"
-				    IsEnabled="False"
-				    Label="Disabled">
-					<AppBarButton.Icon>
-						<BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
-					</AppBarButton.Icon>
-				</AppBarButton>
-			</CommandBar>
+                <!--  Disabled  -->
+                <AppBarButton
+                    Width="NaN"
+                    Click="OnCommandClicked"
+                    Content="Disabled"
+                    IsEnabled="False"
+                    Label="Disabled" />
+                <AppBarButton
+                    Click="OnCommandClicked"
+                    IsEnabled="False"
+                    Label="Disabled">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar>
 
-		</StackPanel>
-	</ScrollViewer>
+        </StackPanel>
+    </ScrollViewer>
 
 </UserControl>

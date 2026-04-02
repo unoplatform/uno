@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="GenericApp.Views.Content.UITests.Animations.DoubleAnimation_Opacity_TextBlock"
+﻿<UserControl
+    x:Class="GenericApp.Views.Content.UITests.Animations.DoubleAnimation_Opacity_TextBlock"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -8,26 +9,28 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<controls:SampleControl SampleDescription="You should see fade in and out (looping)">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<TextBlock HorizontalAlignment="Center"
-				    VerticalAlignment="Center"
-				    Loaded="BeginAnimation"
-				    Opacity="0"
-				    Text="This TextBlock changes opacity."
-				    Unloaded="EndAnimation">
-					<TextBlock.Resources>
-						<Storyboard x:Key="Storyboard">
-							<DoubleAnimation AutoReverse="True"
-							    Duration="0:0:2"
-							    RepeatBehavior="Forever"
-							    To="1"
-							    Storyboard.TargetProperty="(UIElement.Opacity)" />
-						</Storyboard>
-					</TextBlock.Resources>
-				</TextBlock>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="You should see fade in and out (looping)">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Loaded="BeginAnimation"
+                    Opacity="0"
+                    Text="This TextBlock changes opacity."
+                    Unloaded="EndAnimation">
+                    <TextBlock.Resources>
+                        <Storyboard x:Key="Storyboard">
+                            <DoubleAnimation
+                                AutoReverse="True"
+                                RepeatBehavior="Forever"
+                                Storyboard.TargetProperty="(UIElement.Opacity)"
+                                To="1"
+                                Duration="0:0:2" />
+                        </Storyboard>
+                    </TextBlock.Resources>
+                </TextBlock>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

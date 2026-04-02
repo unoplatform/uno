@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.ImageAlignment2541"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.ImageAlignment2541"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,52 +7,51 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel Margin="10"
-	    Spacing="10">
-		<TextBlock FontSize="15">
-			This is an illustration of Github bug<Hyperlink NavigateUri="https://github.com/unoplatform/uno/issues/2541">#2541</Hyperlink>
-		</TextBlock>
+    <StackPanel Margin="10" Spacing="10">
+        <TextBlock FontSize="15">
+            This is an illustration of Github bug<Hyperlink NavigateUri="https://github.com/unoplatform/uno/issues/2541">#2541</Hyperlink>
+        </TextBlock>
 
-		<TextBlock FontSize="16">
-			The following 2 squares should be identical...
-		</TextBlock>
+        <TextBlock FontSize="16">
+            The following 2 squares should be identical...
+        </TextBlock>
 
-		<Grid Width="80"
-		    Height="80"
-		    Background="Yellow">
-			<Button HorizontalAlignment="Left"
-			    VerticalAlignment="Top">
-				<Image Height="30"
-				    Source="Assets/Slices.png" />
-			</Button>
-			<ContentControl HorizontalAlignment="Left"
-			    VerticalAlignment="Bottom"
-			    Background="Brown">
-				<Image Height="30"
-				    Source="Assets/Slices.png" />
-			</ContentControl>
-			<Rectangle Stroke="Blue"
-			    StrokeThickness="3" />
-		</Grid>
+        <Grid
+            Width="80"
+            Height="80"
+            Background="Yellow">
+            <Button HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Image Height="30" Source="Assets/Slices.png" />
+            </Button>
+            <ContentControl
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Background="Brown">
+                <Image Height="30" Source="Assets/Slices.png" />
+            </ContentControl>
+            <Rectangle Stroke="Blue" StrokeThickness="3" />
+        </Grid>
 
-		<Grid Width="80"
-		    Height="80"
-		    Background="Yellow">
-			<Button HorizontalAlignment="Left"
-			    VerticalAlignment="Top">
-				<Image Width="30"
-				    Height="30"
-				    Source="Assets/Slices.png" />
-			</Button>
-			<ContentControl HorizontalAlignment="Left"
-			    VerticalAlignment="Bottom"
-			    Background="Brown">
-				<Image Width="30"
-				    Height="30"
-				    Source="Assets/Slices.png" />
-			</ContentControl>
-			<Rectangle Stroke="Blue"
-			    StrokeThickness="3" />
-		</Grid>
-	</StackPanel>
+        <Grid
+            Width="80"
+            Height="80"
+            Background="Yellow">
+            <Button HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Image
+                    Width="30"
+                    Height="30"
+                    Source="Assets/Slices.png" />
+            </Button>
+            <ContentControl
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Background="Brown">
+                <Image
+                    Width="30"
+                    Height="30"
+                    Source="Assets/Slices.png" />
+            </ContentControl>
+            <Rectangle Stroke="Blue" StrokeThickness="3" />
+        </Grid>
+    </StackPanel>
 </Page>

@@ -1,27 +1,29 @@
-﻿<Page x:Class="UITests.Shared.Windows_UI_Xaml_Input.RoutedEvents.RoutedEvent_TappedAndRelease"
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml_Input.RoutedEvents.RoutedEvent_TappedAndRelease"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<StackPanel HorizontalAlignment="Stretch">
-		<Border Height="50"
-		    HorizontalAlignment="Stretch"
-		    Background="Red"
-		    PointerPressed="ElementPointerPressed"
-		    PointerReleased="ElementPointerReleased"
-		    Tapped="ElementTapped">
-			<TextBlock Text="TAP ME!" />
-		</Border>
+    <StackPanel HorizontalAlignment="Stretch">
+        <Border
+            Height="50"
+            HorizontalAlignment="Stretch"
+            Background="Red"
+            PointerPressed="ElementPointerPressed"
+            PointerReleased="ElementPointerReleased"
+            Tapped="ElementTapped">
+            <TextBlock Text="TAP ME!" />
+        </Border>
 
-		<TextBlock>
-			Output:<LineBreak />
-			<Run x:Name="txtRoot" />
-		</TextBlock>
+        <TextBlock>
+            Output:<LineBreak />
+            <Run x:Name="txtRoot" />
+        </TextBlock>
 
-		<TextBlock xml:space="preserve">
+        <TextBlock xml:space="preserve">
 When you tap on the red border above, you see 3 lines in the output:
 	Pressed
 	Released
 	Tapped
 		</TextBlock>
-	</StackPanel>
+    </StackPanel>
 </Page>

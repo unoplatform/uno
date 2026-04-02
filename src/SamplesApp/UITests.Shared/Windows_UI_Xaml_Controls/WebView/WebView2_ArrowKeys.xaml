@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.WebView.WebView2_ArrowKeys"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.WebView.WebView2_ArrowKeys"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,25 +7,25 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel Padding="20"
-	    Spacing="12">
-		<TextBlock Text="1. Click on the WebView below to give it focus" />
-		<TextBlock Text="2. Click on the TextBox and type some text" />
-		<TextBlock Text="3. Use arrow keys to move the cursor in the TextBox" />
-		<TextBlock Text="Arrow keys should work normally in the TextBox after focusing the WebView" />
+    <StackPanel Padding="20" Spacing="12">
+        <TextBlock Text="1. Click on the WebView below to give it focus" />
+        <TextBlock Text="2. Click on the TextBox and type some text" />
+        <TextBlock Text="3. Use arrow keys to move the cursor in the TextBox" />
+        <TextBlock Text="Arrow keys should work normally in the TextBox after focusing the WebView" />
 
-		<WebView2 x:Name="TestWebView"
-		    Height="300"
-		    Source="https://platform.uno/" />
+        <WebView2
+            x:Name="TestWebView"
+            Height="300"
+            Source="https://platform.uno/" />
 
-		<TextBox x:Name="TestTextBox"
-		    PlaceholderText="Click WebView above, then type here and use arrow keys" />
+        <TextBox x:Name="TestTextBox" PlaceholderText="Click WebView above, then type here and use arrow keys" />
 
-		<TextBox x:Name="TestMultilineTextBox"
-		    Height="150"
-		    AcceptsReturn="True"
-		    PlaceholderText="Multiline TextBox - test Up/Down arrow keys here"
-		    Text="Line 1&#x0a;Line 2&#x0a;Line 3&#x0a;Line 4&#x0a;Line 5"
-		    TextWrapping="Wrap" />
-	</StackPanel>
+        <TextBox
+            x:Name="TestMultilineTextBox"
+            Height="150"
+            AcceptsReturn="True"
+            PlaceholderText="Multiline TextBox - test Up/Down arrow keys here"
+            Text="Line 1&#x0a;Line 2&#x0a;Line 3&#x0a;Line 4&#x0a;Line 5"
+            TextWrapping="Wrap" />
+    </StackPanel>
 </Page>

@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml.ApplicationTests.Given_Application"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.ApplicationTests.Given_Application"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,11 +8,9 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<Button Click="{x:Bind OnForceExit}"
-		    Content="Force exit" />
+    <StackPanel>
+        <Button Click="{x:Bind OnForceExit}" Content="Force exit" />
 
-		<Button Click="{x:Bind OnCoreApplicationForceExit}"
-		    Content="Force exit via CoreApplication" />
-	</StackPanel>
+        <Button Click="{x:Bind OnCoreApplicationForceExit}" Content="Force exit via CoreApplication" />
+    </StackPanel>
 </Page>

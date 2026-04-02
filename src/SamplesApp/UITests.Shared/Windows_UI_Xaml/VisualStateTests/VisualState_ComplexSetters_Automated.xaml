@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.VisualStateTests.VisualState_ComplexSetters_Automated"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml.VisualStateTests.VisualState_ComplexSetters_Automated"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,59 +7,61 @@
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
-	<UserControl.Resources>
-		<SolidColorBrush x:Key="myStaticResource"
-		    Color="Purple" />
-	</UserControl.Resources>
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="myStaticResource" Color="Purple" />
+    </UserControl.Resources>
 
-	<Grid>
-		<StackPanel>
-			<Button x:Name="changeState"
-			    Click="OnClick"
-			    Content="Change State" />
-			<Border x:Name="border01"
-			    Background="Red" />
+    <Grid>
+        <StackPanel>
+            <Button
+                x:Name="changeState"
+                Click="OnClick"
+                Content="Change State" />
+            <Border x:Name="border01" Background="Red" />
 
-			<TextBlock Text="Should be Blue (Element Name Binding)" />
-			<Border x:Name="border01_bound"
-			    Width="42"
-			    Height="42"
-			    Background="Blue" />
+            <TextBlock Text="Should be Blue (Element Name Binding)" />
+            <Border
+                x:Name="border01_bound"
+                Width="42"
+                Height="42"
+                Background="Blue" />
 
-			<TextBlock Text="Should be Purple (Static Resource)" />
-			<Border x:Name="border02"
-			    Width="42"
-			    Height="42"
-			    Background="Blue" />
+            <TextBlock Text="Should be Purple (Static Resource)" />
+            <Border
+                x:Name="border02"
+                Width="42"
+                Height="42"
+                Background="Blue" />
 
-			<TextBlock Text="Should be Orange (Complex Object)" />
-			<Border x:Name="border03"
-			    Width="42"
-			    Height="42"
-			    Background="Blue" />
-		</StackPanel>
-		<VisualStateManager.VisualStateGroups>
-			<VisualStateGroup x:Name="CommonStates">
-				<VisualState x:Name="DefaultState" />
+            <TextBlock Text="Should be Orange (Complex Object)" />
+            <Border
+                x:Name="border03"
+                Width="42"
+                Height="42"
+                Background="Blue" />
+        </StackPanel>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="DefaultState" />
 
-				<VisualState x:Name="State01">
-					<VisualState.Setters>
-						<!--  Element name binding  -->
-						<Setter Target="border01_bound.Background" Value="{Binding Background, ElementName=border01}" />
+                <VisualState x:Name="State01">
+                    <VisualState.Setters>
+                        <!--  Element name binding  -->
+                        <Setter Target="border01_bound.Background" Value="{Binding Background, ElementName=border01}" />
 
-						<!--  Static resource  -->
-						<Setter Target="border02.Background" Value="{StaticResource myStaticResource}" />
+                        <!--  Static resource  -->
+                        <Setter Target="border02.Background" Value="{StaticResource myStaticResource}" />
 
-						<Setter Target="border03.Background">
-							<Setter.Value>
-								<SolidColorBrush Color="Orange" />
-							</Setter.Value>
-						</Setter>
+                        <Setter Target="border03.Background">
+                            <Setter.Value>
+                                <SolidColorBrush Color="Orange" />
+                            </Setter.Value>
+                        </Setter>
 
-					</VisualState.Setters>
-				</VisualState>
-			</VisualStateGroup>
-		</VisualStateManager.VisualStateGroups>
-	</Grid>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
 
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.RefreshContainerTests.RefreshContainerScrollTop"
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.RefreshContainerTests.RefreshContainerScrollTop"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,9 +9,9 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<mux:RefreshContainer>
-		<ScrollViewer>
-			<StackPanel x:Name="StackParent" />
-		</ScrollViewer>
-	</mux:RefreshContainer>
+    <mux:RefreshContainer>
+        <ScrollViewer>
+            <StackPanel x:Name="StackParent" />
+        </ScrollViewer>
+    </mux:RefreshContainer>
 </Page>

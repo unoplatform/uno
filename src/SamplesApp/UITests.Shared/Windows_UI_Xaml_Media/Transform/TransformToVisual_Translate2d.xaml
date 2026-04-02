@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Media.Transform.TransformToVisual_Translate2d"
+﻿<UserControl
+    x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Media.Transform.TransformToVisual_Translate2d"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -12,49 +13,54 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<StackPanel>
-		<TextBlock x:Name="OffsetTextBlock" />
-		<Grid x:Name="EnclosingView"
-		    Width="340"
-		    Height="340">
-			<Border Margin="0,0,40,40">
-				<ScrollViewer HorizontalScrollBarVisibility="Auto"
-				    HorizontalScrollMode="Enabled"
-				    ViewChanged="ScrollViewer_ViewChanged">
-					<Border Width="500"
-					    Height="500">
-						<Border.Background>
-							<LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
-								<GradientStop Color="Beige" Offset="0" />
-								<GradientStop Color="Blue" Offset="1" />
-							</LinearGradientBrush>
-						</Border.Background>
-						<Border x:Name="TargetView"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Center"
-						    BorderBrush="Black"
-						    BorderThickness="2">
-							<Image x:Name="image1"
-							    Width="40"
-							    Source="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Elder_Duck_1_%28PSF%29.png/269px-Elder_Duck_1_%28PSF%29.png" />
-						</Border>
-					</Border>
-				</ScrollViewer>
-			</Border>
-			<Canvas>
-				<Ellipse x:Name="TrackerViewX"
-				    Canvas.Left="230"
-				    Canvas.Top="300"
-				    Width="20"
-				    Height="40"
-				    Fill="PaleVioletRed" />
-				<Ellipse x:Name="TrackerViewY"
-				    Canvas.Left="300"
-				    Canvas.Top="230"
-				    Width="40"
-				    Height="20"
-				    Fill="PaleVioletRed" />
-			</Canvas>
-		</Grid>
-	</StackPanel>
+    <StackPanel>
+        <TextBlock x:Name="OffsetTextBlock" />
+        <Grid
+            x:Name="EnclosingView"
+            Width="340"
+            Height="340">
+            <Border Margin="0,0,40,40">
+                <ScrollViewer
+                    HorizontalScrollBarVisibility="Auto"
+                    HorizontalScrollMode="Enabled"
+                    ViewChanged="ScrollViewer_ViewChanged">
+                    <Border Width="500" Height="500">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Offset="0" Color="Beige" />
+                                <GradientStop Offset="1" Color="Blue" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border
+                            x:Name="TargetView"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            BorderBrush="Black"
+                            BorderThickness="2">
+                            <Image
+                                x:Name="image1"
+                                Width="40"
+                                Source="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Elder_Duck_1_%28PSF%29.png/269px-Elder_Duck_1_%28PSF%29.png" />
+                        </Border>
+                    </Border>
+                </ScrollViewer>
+            </Border>
+            <Canvas>
+                <Ellipse
+                    x:Name="TrackerViewX"
+                    Canvas.Left="230"
+                    Canvas.Top="300"
+                    Width="20"
+                    Height="40"
+                    Fill="PaleVioletRed" />
+                <Ellipse
+                    x:Name="TrackerViewY"
+                    Canvas.Left="300"
+                    Canvas.Top="230"
+                    Width="40"
+                    Height="20"
+                    Fill="PaleVioletRed" />
+            </Canvas>
+        </Grid>
+    </StackPanel>
 </UserControl>

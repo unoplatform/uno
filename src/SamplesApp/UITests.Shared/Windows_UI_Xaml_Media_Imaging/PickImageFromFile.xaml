@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Media_Imaging.PickImageFromFile"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Media_Imaging.PickImageFromFile"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,14 +8,15 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<Image Width="500"
-		    Height="500"
-		    Source="{x:Bind ViewModel.SelectedItemSource, Mode=OneWay}" />
-		<Button Click="{x:Bind ViewModel.SelectImageButton}"
-		    Content="Pick image file" />
-		<TextBlock Foreground="Red"
-		    Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
-		    TextWrapping="WrapWholeWords" />
-	</StackPanel>
+    <StackPanel>
+        <Image
+            Width="500"
+            Height="500"
+            Source="{x:Bind ViewModel.SelectedItemSource, Mode=OneWay}" />
+        <Button Click="{x:Bind ViewModel.SelectImageButton}" Content="Pick image file" />
+        <TextBlock
+            Foreground="Red"
+            Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}"
+            TextWrapping="WrapWholeWords" />
+    </StackPanel>
 </Page>

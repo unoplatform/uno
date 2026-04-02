@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Samples.Shared.Content.UITests.ImageBrushInList"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Samples.Shared.Content.UITests.ImageBrushInList"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,27 +10,26 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios">
 
-	<StackPanel>
-		<TextBlock Text="If you see the same image twice, ImageBrush isn't working." />
-		<ListView Width="200"
-		    Height="500"
-		    ItemsSource="{x:Bind SampleItems}">
-			<ListView.ItemTemplate>
-				<DataTemplate>
-					<StackPanel>
-						<TextBlock Height="40"
-						    Foreground="Black">
-							<Run Text="Image uri: " /><Run Text="{Binding Uri}" />
-						</TextBlock>
-						<Border Width="200"
-						    Height="100">
-							<Border.Background>
-								<ImageBrush ImageSource="{Binding Uri}" />
-							</Border.Background>
-						</Border>
-					</StackPanel>
-				</DataTemplate>
-			</ListView.ItemTemplate>
-		</ListView>
-	</StackPanel>
+    <StackPanel>
+        <TextBlock Text="If you see the same image twice, ImageBrush isn't working." />
+        <ListView
+            Width="200"
+            Height="500"
+            ItemsSource="{x:Bind SampleItems}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Height="40" Foreground="Black">
+                            <Run Text="Image uri: " /><Run Text="{Binding Uri}" />
+                        </TextBlock>
+                        <Border Width="200" Height="100">
+                            <Border.Background>
+                                <ImageBrush ImageSource="{Binding Uri}" />
+                            </Border.Background>
+                        </Border>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackPanel>
 </UserControl>

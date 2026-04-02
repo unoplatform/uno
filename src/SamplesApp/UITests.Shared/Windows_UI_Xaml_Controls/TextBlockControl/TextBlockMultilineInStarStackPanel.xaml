@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlockMultilineInStarStackPanel"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlockMultilineInStarStackPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,20 +10,20 @@
     d:DesignWidth="400"
     mc:Ignorable="d not_win">
 
-	<u:StarStackPanel Orientation="Vertical">
-		<u:StarStackPanel Orientation="Horizontal">
-			<TextBlock Margin="0,15"
-			    VerticalAlignment="Stretch"
-			    u:StarStackPanel.Size="*"
-			    MaxLines="0"
-			    TextWrapping="Wrap">
-				<Run Text="{Binding [AlternatingLongText]}" />
-				<Run Text="that should wrap on multiple lines" />
-			</TextBlock>
-			<TextBlock u:StarStackPanel.Size="auto"
-			    Text="Small Text" />
-		</u:StarStackPanel>
-		<Border Background="Red" />
-	</u:StarStackPanel>
+    <u:StarStackPanel Orientation="Vertical">
+        <u:StarStackPanel Orientation="Horizontal">
+            <TextBlock
+                Margin="0,15"
+                VerticalAlignment="Stretch"
+                u:StarStackPanel.Size="*"
+                MaxLines="0"
+                TextWrapping="Wrap">
+                <Run Text="{Binding [AlternatingLongText]}" />
+                <Run Text="that should wrap on multiple lines" />
+            </TextBlock>
+            <TextBlock u:StarStackPanel.Size="auto" Text="Small Text" />
+        </u:StarStackPanel>
+        <Border Background="Red" />
+    </u:StarStackPanel>
 
 </UserControl>

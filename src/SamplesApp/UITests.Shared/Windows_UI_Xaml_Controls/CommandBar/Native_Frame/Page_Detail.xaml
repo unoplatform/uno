@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.CommandBar.Native_Frame.Page_Detail"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.CommandBar.Native_Frame.Page_Detail"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,11 +8,12 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<CommandBar Content="Details" />
-		<TextBlock Text="A page providing more detail" />
-		<Button x:Name="NavigateBackButton"
-		    Click="Navigate_Back"
-		    Content="Navigate back" />
-	</StackPanel>
+    <StackPanel>
+        <CommandBar Content="Details" />
+        <TextBlock Text="A page providing more detail" />
+        <Button
+            x:Name="NavigateBackButton"
+            Click="Navigate_Back"
+            Content="Navigate back" />
+    </StackPanel>
 </Page>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.FlyoutTests.Flyout_Vanilla"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.FlyoutTests.Flyout_Vanilla"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,20 +9,19 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<Grid>
-		<Button x:Name="Control1"
-		    Content="Empty cart">
-			<Button.Flyout>
-				<Flyout>
-					<StackPanel>
-						<TextBlock Margin="0,0,0,12"
-						    Style="{ThemeResource BaseTextBlockStyle}"
-						    Text="All items will be removed. Do you want to continue?" />
-						<Button Click="DeleteConfirmation_Click"
-						    Content="Yes, empty my cart" />
-					</StackPanel>
-				</Flyout>
-			</Button.Flyout>
-		</Button>
-	</Grid>
+    <Grid>
+        <Button x:Name="Control1" Content="Empty cart">
+            <Button.Flyout>
+                <Flyout>
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,12"
+                            Style="{ThemeResource BaseTextBlockStyle}"
+                            Text="All items will be removed. Do you want to continue?" />
+                        <Button Click="DeleteConfirmation_Click" Content="Yes, empty my cart" />
+                    </StackPanel>
+                </Flyout>
+            </Button.Flyout>
+        </Button>
+    </Grid>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.ItemsViewTests.ItemsView_Nested"
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.ItemsViewTests.ItemsView_Nested"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,44 +9,43 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<ItemsRepeater ItemsSource="{x:Bind Categories, Mode=OneWay}">
-			<ItemsRepeater.ItemTemplate>
-				<DataTemplate x:DataType="local:Category">
-					<ItemContainer>
-						<StackPanel DataContext="{x:Bind}">
+    <StackPanel>
+        <ItemsRepeater ItemsSource="{x:Bind Categories, Mode=OneWay}">
+            <ItemsRepeater.ItemTemplate>
+                <DataTemplate x:DataType="local:Category">
+                    <ItemContainer>
+                        <StackPanel DataContext="{x:Bind}">
 
-							<TextBlock Margin="0,10,0,10"
-							    HorizontalAlignment="Center"
-							    FontSize="20"
-							    Text="{x:Bind Label}" />
+                            <TextBlock
+                                Margin="0,10,0,10"
+                                HorizontalAlignment="Center"
+                                FontSize="20"
+                                Text="{x:Bind Label}" />
 
-							<ItemsView ItemsSource="{x:Bind}">
-								<ItemsView.ItemTemplate>
-									<DataTemplate x:DataType="local:Item">
-										<ItemContainer>
-											<TextBlock HorizontalAlignment="Center"
-											    Text="{x:Bind Label}" />
-										</ItemContainer>
-									</DataTemplate>
-								</ItemsView.ItemTemplate>
-							</ItemsView>
+                            <ItemsView ItemsSource="{x:Bind}">
+                                <ItemsView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:Item">
+                                        <ItemContainer>
+                                            <TextBlock HorizontalAlignment="Center" Text="{x:Bind Label}" />
+                                        </ItemContainer>
+                                    </DataTemplate>
+                                </ItemsView.ItemTemplate>
+                            </ItemsView>
 
-						</StackPanel>
-					</ItemContainer>
-				</DataTemplate>
-			</ItemsRepeater.ItemTemplate>
-		</ItemsRepeater>
+                        </StackPanel>
+                    </ItemContainer>
+                </DataTemplate>
+            </ItemsRepeater.ItemTemplate>
+        </ItemsRepeater>
 
-		<ItemsView ItemsSource="{x:Bind Categories}">
-			<ItemsView.ItemTemplate>
-				<DataTemplate x:DataType="local:Category">
-					<ItemContainer>
-						<TextBlock HorizontalAlignment="Center"
-						    Text="{x:Bind Label}" />
-					</ItemContainer>
-				</DataTemplate>
-			</ItemsView.ItemTemplate>
-		</ItemsView>
-	</StackPanel>
+        <ItemsView ItemsSource="{x:Bind Categories}">
+            <ItemsView.ItemTemplate>
+                <DataTemplate x:DataType="local:Category">
+                    <ItemContainer>
+                        <TextBlock HorizontalAlignment="Center" Text="{x:Bind Label}" />
+                    </ItemContainer>
+                </DataTemplate>
+            </ItemsView.ItemTemplate>
+        </ItemsView>
+    </StackPanel>
 </Page>

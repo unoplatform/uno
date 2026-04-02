@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_CornerRadius"
+﻿<UserControl
+    x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_CornerRadius"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -9,21 +10,21 @@
     d:DesignWidth="400"
     mc:Ignorable="d not_win">
 
-	<controls:SampleControl SampleDescription="CornerRadius property applied to ComboBox">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
+    <controls:SampleControl SampleDescription="CornerRadius property applied to ComboBox">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
 
-				<Grid HorizontalAlignment="Stretch"
-				    VerticalAlignment="Stretch">
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
-					<ComboBox HorizontalAlignment="Center"
-					    VerticalAlignment="Center"
-					    CornerRadius="10"
-					    ItemsSource="{Binding VariableLengthItems}" />
+                    <ComboBox
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        CornerRadius="10"
+                        ItemsSource="{Binding VariableLengthItems}" />
 
-				</Grid>
+                </Grid>
 
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.GridTestsControl.Grid_with_MinWidth_MinHeight"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.GridTestsControl.Grid_with_MinWidth_MinHeight"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -8,810 +9,911 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<controls:SampleControl SampleDescription="Grid with MinWidth and MinHeight and VerticalAlignment Top and HorizontalAlignment Center. Star Children should at least take the min size.">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ScrollViewer>
-					<StackPanel>
-						<!--  Multiple Rows and Columns With Auto and Star sizes  -->
-						<Grid MinWidth="198"
-						    MinHeight="160"
-						    Margin="0,5"
-						    Padding="6"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Top"
-						    Background="Blue"
-						    BorderBrush="Red"
-						    BorderThickness="2">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="*" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="*" />
-							</Grid.RowDefinitions>
-
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-
-							<Rectangle HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="DeepPink" />
-
-							<Rectangle Grid.Column="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightBlue" />
-
-							<Rectangle Grid.Column="2"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="Orange" />
-
-							<Rectangle Grid.Row="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightGreen" />
-
-							<Rectangle Grid.Row="1"
-							    Grid.Column="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="Yellow" />
-
-							<Rectangle Grid.Row="1"
-							    Grid.Column="2"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="Red" />
-
-							<Rectangle Grid.Row="2"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightSeaGreen" />
-
-							<Rectangle Grid.Row="2"
-							    Grid.Column="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="PaleVioletRed" />
-
-							<Rectangle Grid.Row="2"
-							    Grid.Column="2"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="Lime" />
-
-							<TextBlock HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Column="2"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="1"
-							    Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="1"
-							    Grid.Column="2"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="2"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="2"
-							    Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="2"
-							    Grid.Column="2"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-						</Grid>
-
-						<!--  Two Rows and Columns With Star sizes  -->
-						<Grid MinWidth="198"
-						    MinHeight="100"
-						    Margin="0,5"
-						    Padding="6"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Top"
-						    Background="Blue"
-						    BorderBrush="Red"
-						    BorderThickness="2">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="*" />
-								<RowDefinition Height="*" />
-							</Grid.RowDefinitions>
-
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-
-							<Rectangle HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="DeepPink" />
-
-							<Rectangle Grid.Column="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightSeaGreen" />
-
-							<TextBlock HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<Rectangle Grid.Row="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="Orange" />
-
-							<Rectangle Grid.Row="1"
-							    Grid.Column="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="Yellow" />
-
-							<TextBlock Grid.Row="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="1"
-							    Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-						</Grid>
-
-						<!--  Multiple Rows and Columns With Auto and Star sizes With RowSpan and ColumnSpan  -->
-						<Grid MinWidth="198"
-						    MinHeight="100"
-						    Margin="0,5"
-						    Padding="6"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Top"
-						    Background="Blue"
-						    BorderBrush="Red"
-						    BorderThickness="2">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="*" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="*" />
-							</Grid.RowDefinitions>
-
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-
-							<Rectangle Grid.ColumnSpan="2"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="DeepPink" />
-
-							<Rectangle Grid.Column="2"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightBlue" />
-
-							<Rectangle Grid.Row="1"
-							    Grid.RowSpan="2"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="Orange" />
-
-							<Rectangle Grid.Row="1"
-							    Grid.Column="1"
-							    Grid.ColumnSpan="2"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="Yellow" />
-
-							<Rectangle Grid.Row="2"
-							    Grid.Column="1"
-							    Grid.ColumnSpan="2"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightGreen" />
-
-							<TextBlock HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Column="2"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="1"
-							    Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="1"
-							    Grid.Column="2"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="2"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="2"
-							    Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="2"
-							    Grid.Column="2"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-						</Grid>
-
-						<!--  Two Rows With Star sizes  -->
-						<Grid MinWidth="198"
-						    MinHeight="100"
-						    Margin="0,5"
-						    Padding="6"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Top"
-						    Background="Blue"
-						    BorderBrush="Red"
-						    BorderThickness="2">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="*" />
-								<RowDefinition Height="*" />
-							</Grid.RowDefinitions>
-
-							<Rectangle HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="DeepPink" />
-
-							<Rectangle Grid.Row="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightSeaGreen" />
-
-							<TextBlock HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-						</Grid>
-
-						<!--  Two Columns With Star sizes  -->
-						<Grid MinWidth="198"
-						    MinHeight="100"
-						    Margin="0,5"
-						    Padding="6"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Top"
-						    Background="Blue"
-						    BorderBrush="Red"
-						    BorderThickness="2">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-
-							<Rectangle HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="DeepPink" />
-
-							<Rectangle Grid.Column="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightSeaGreen" />
-
-							<TextBlock HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-						</Grid>
-
-						<!--  Two Rows With Auto and Star sizes  -->
-						<Grid MinWidth="198"
-						    MinHeight="100"
-						    Margin="0,5"
-						    Padding="6"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Top"
-						    Background="Blue"
-						    BorderBrush="Red"
-						    BorderThickness="2">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="*" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-
-							<Rectangle HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="DeepPink" />
-
-							<Rectangle Grid.Row="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightSeaGreen" />
-
-							<TextBlock HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-						</Grid>
-
-						<!--  Two Cloumns With Auto and Star sizes  -->
-						<Grid MinWidth="198"
-						    MinHeight="100"
-						    Margin="0,5"
-						    Padding="6"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Top"
-						    Background="Blue"
-						    BorderBrush="Red"
-						    BorderThickness="2">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="Auto" />
-							</Grid.ColumnDefinitions>
-
-							<Rectangle HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="DeepPink" />
-
-							<Rectangle Grid.Column="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightSeaGreen" />
-
-							<TextBlock HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-						</Grid>
-
-						<!--  Two Rows With Auto sizes  -->
-						<Grid MinWidth="198"
-						    MinHeight="100"
-						    Margin="0,5"
-						    Padding="6"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Top"
-						    Background="Blue"
-						    BorderBrush="Red"
-						    BorderThickness="2">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-
-							<Rectangle HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="DeepPink" />
-
-							<Rectangle Grid.Row="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightSeaGreen" />
-
-							<TextBlock HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-						</Grid>
-
-						<!--  Two Columns With Auto sizes  -->
-						<Grid MinWidth="198"
-						    MinHeight="100"
-						    Margin="0,5"
-						    Padding="6"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Top"
-						    Background="Blue"
-						    BorderBrush="Red"
-						    BorderThickness="2">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="Auto" />
-							</Grid.ColumnDefinitions>
-
-							<Rectangle HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="DeepPink" />
-
-							<Rectangle Grid.Column="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightSeaGreen" />
-
-							<TextBlock HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-						</Grid>
-
-						<!--  Three Rows and Columns With Auto sizes  -->
-						<Grid MinWidth="198"
-						    MinHeight="100"
-						    Margin="0,5"
-						    Padding="6"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Top"
-						    Background="Blue"
-						    BorderBrush="Red"
-						    BorderThickness="2">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="Auto" />
-							</Grid.ColumnDefinitions>
-
-							<Rectangle HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="DeepPink" />
-
-							<Rectangle Grid.Column="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightSeaGreen" />
-
-							<Rectangle Grid.Column="2"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightBlue" />
-
-							<TextBlock HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Column="2"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<Rectangle Grid.Row="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="Orange" />
-
-							<Rectangle Grid.Row="1"
-							    Grid.Column="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="Yellow" />
-
-							<Rectangle Grid.Row="1"
-							    Grid.Column="2"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="LightGreen" />
-
-							<TextBlock Grid.Row="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="1"
-							    Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="1"
-							    Grid.Column="2"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<Rectangle Grid.Row="2"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="PaleTurquoise" />
-
-							<Rectangle Grid.Row="2"
-							    Grid.Column="1"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="PaleVioletRed" />
-
-							<Rectangle Grid.Row="2"
-							    Grid.Column="2"
-							    HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="PapayaWhip" />
-
-							<TextBlock Grid.Row="2"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="2"
-							    Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-
-							<TextBlock Grid.Row="2"
-							    Grid.Column="2"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-						</Grid>
-
-						<!--  Superposition with one element stretched and the other centered  -->
-						<Grid MinWidth="80"
-						    MinHeight="80"
-						    Margin="0,5"
-						    Padding="6"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Top"
-						    Background="Blue"
-						    BorderBrush="Red"
-						    BorderThickness="2">
-							<Rectangle HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="Orange" />
-
-							<TextBlock HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-						</Grid>
-
-						<!--  Grid with MinWidth only and superposition with one element stretched and the other centered  -->
-						<Grid MinWidth="80"
-						    Margin="0,5"
-						    Padding="6"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Top"
-						    Background="Green"
-						    BorderBrush="Red"
-						    BorderThickness="2">
-							<Rectangle HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="Orange" />
-
-							<TextBlock HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-						</Grid>
-
-						<!--  Grid with MinHeight only and superposition with one element stretched and the other centered  -->
-						<Grid MinHeight="80"
-						    Margin="0,5"
-						    Padding="6"
-						    HorizontalAlignment="Center"
-						    VerticalAlignment="Top"
-						    Background="Cyan"
-						    BorderBrush="Red"
-						    BorderThickness="2">
-							<Rectangle HorizontalAlignment="Stretch"
-							    VerticalAlignment="Stretch"
-							    Fill="Orange" />
-
-							<TextBlock HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    FontSize="15"
-							    FontWeight="Bold"
-							    Foreground="White"
-							    Text="test" />
-						</Grid>
-					</StackPanel>
-				</ScrollViewer>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="Grid with MinWidth and MinHeight and VerticalAlignment Top and HorizontalAlignment Center. Star Children should at least take the min size.">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <ScrollViewer>
+                    <StackPanel>
+                        <!--  Multiple Rows and Columns With Auto and Star sizes  -->
+                        <Grid
+                            MinWidth="198"
+                            MinHeight="160"
+                            Margin="0,5"
+                            Padding="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Background="Blue"
+                            BorderBrush="Red"
+                            BorderThickness="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Rectangle
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="DeepPink" />
+
+                            <Rectangle
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightBlue" />
+
+                            <Rectangle
+                                Grid.Column="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Orange" />
+
+                            <Rectangle
+                                Grid.Row="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightGreen" />
+
+                            <Rectangle
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Yellow" />
+
+                            <Rectangle
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Red" />
+
+                            <Rectangle
+                                Grid.Row="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightSeaGreen" />
+
+                            <Rectangle
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="PaleVioletRed" />
+
+                            <Rectangle
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Lime" />
+
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+                        </Grid>
+
+                        <!--  Two Rows and Columns With Star sizes  -->
+                        <Grid
+                            MinWidth="198"
+                            MinHeight="100"
+                            Margin="0,5"
+                            Padding="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Background="Blue"
+                            BorderBrush="Red"
+                            BorderThickness="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Rectangle
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="DeepPink" />
+
+                            <Rectangle
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightSeaGreen" />
+
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <Rectangle
+                                Grid.Row="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Orange" />
+
+                            <Rectangle
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Yellow" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+                        </Grid>
+
+                        <!--  Multiple Rows and Columns With Auto and Star sizes With RowSpan and ColumnSpan  -->
+                        <Grid
+                            MinWidth="198"
+                            MinHeight="100"
+                            Margin="0,5"
+                            Padding="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Background="Blue"
+                            BorderBrush="Red"
+                            BorderThickness="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Rectangle
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="DeepPink" />
+
+                            <Rectangle
+                                Grid.Column="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightBlue" />
+
+                            <Rectangle
+                                Grid.Row="1"
+                                Grid.RowSpan="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Orange" />
+
+                            <Rectangle
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Yellow" />
+
+                            <Rectangle
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightGreen" />
+
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+                        </Grid>
+
+                        <!--  Two Rows With Star sizes  -->
+                        <Grid
+                            MinWidth="198"
+                            MinHeight="100"
+                            Margin="0,5"
+                            Padding="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Background="Blue"
+                            BorderBrush="Red"
+                            BorderThickness="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Rectangle
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="DeepPink" />
+
+                            <Rectangle
+                                Grid.Row="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightSeaGreen" />
+
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+                        </Grid>
+
+                        <!--  Two Columns With Star sizes  -->
+                        <Grid
+                            MinWidth="198"
+                            MinHeight="100"
+                            Margin="0,5"
+                            Padding="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Background="Blue"
+                            BorderBrush="Red"
+                            BorderThickness="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Rectangle
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="DeepPink" />
+
+                            <Rectangle
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightSeaGreen" />
+
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+                        </Grid>
+
+                        <!--  Two Rows With Auto and Star sizes  -->
+                        <Grid
+                            MinWidth="198"
+                            MinHeight="100"
+                            Margin="0,5"
+                            Padding="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Background="Blue"
+                            BorderBrush="Red"
+                            BorderThickness="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Rectangle
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="DeepPink" />
+
+                            <Rectangle
+                                Grid.Row="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightSeaGreen" />
+
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+                        </Grid>
+
+                        <!--  Two Cloumns With Auto and Star sizes  -->
+                        <Grid
+                            MinWidth="198"
+                            MinHeight="100"
+                            Margin="0,5"
+                            Padding="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Background="Blue"
+                            BorderBrush="Red"
+                            BorderThickness="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Rectangle
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="DeepPink" />
+
+                            <Rectangle
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightSeaGreen" />
+
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+                        </Grid>
+
+                        <!--  Two Rows With Auto sizes  -->
+                        <Grid
+                            MinWidth="198"
+                            MinHeight="100"
+                            Margin="0,5"
+                            Padding="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Background="Blue"
+                            BorderBrush="Red"
+                            BorderThickness="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Rectangle
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="DeepPink" />
+
+                            <Rectangle
+                                Grid.Row="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightSeaGreen" />
+
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+                        </Grid>
+
+                        <!--  Two Columns With Auto sizes  -->
+                        <Grid
+                            MinWidth="198"
+                            MinHeight="100"
+                            Margin="0,5"
+                            Padding="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Background="Blue"
+                            BorderBrush="Red"
+                            BorderThickness="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Rectangle
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="DeepPink" />
+
+                            <Rectangle
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightSeaGreen" />
+
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+                        </Grid>
+
+                        <!--  Three Rows and Columns With Auto sizes  -->
+                        <Grid
+                            MinWidth="198"
+                            MinHeight="100"
+                            Margin="0,5"
+                            Padding="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Background="Blue"
+                            BorderBrush="Red"
+                            BorderThickness="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Rectangle
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="DeepPink" />
+
+                            <Rectangle
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightSeaGreen" />
+
+                            <Rectangle
+                                Grid.Column="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightBlue" />
+
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <Rectangle
+                                Grid.Row="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Orange" />
+
+                            <Rectangle
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Yellow" />
+
+                            <Rectangle
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="LightGreen" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <Rectangle
+                                Grid.Row="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="PaleTurquoise" />
+
+                            <Rectangle
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="PaleVioletRed" />
+
+                            <Rectangle
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="PapayaWhip" />
+
+                            <TextBlock
+                                Grid.Row="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+                        </Grid>
+
+                        <!--  Superposition with one element stretched and the other centered  -->
+                        <Grid
+                            MinWidth="80"
+                            MinHeight="80"
+                            Margin="0,5"
+                            Padding="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Background="Blue"
+                            BorderBrush="Red"
+                            BorderThickness="2">
+                            <Rectangle
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Orange" />
+
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+                        </Grid>
+
+                        <!--  Grid with MinWidth only and superposition with one element stretched and the other centered  -->
+                        <Grid
+                            MinWidth="80"
+                            Margin="0,5"
+                            Padding="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Background="Green"
+                            BorderBrush="Red"
+                            BorderThickness="2">
+                            <Rectangle
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Orange" />
+
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+                        </Grid>
+
+                        <!--  Grid with MinHeight only and superposition with one element stretched and the other centered  -->
+                        <Grid
+                            MinHeight="80"
+                            Margin="0,5"
+                            Padding="6"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Background="Cyan"
+                            BorderBrush="Red"
+                            BorderThickness="2">
+                            <Rectangle
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Fill="Orange" />
+
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="test" />
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

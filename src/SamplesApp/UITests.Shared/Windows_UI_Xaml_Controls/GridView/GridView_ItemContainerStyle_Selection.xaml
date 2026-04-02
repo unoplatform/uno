@@ -1,61 +1,69 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.GridView.GridView_ItemContainerStyle_Selection"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.GridView.GridView_ItemContainerStyle_Selection"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-	<StackPanel Padding="16"
-	    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <StackPanel Padding="16" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-		<GridView x:Name="TestGridView"
-		    MaxWidth="400"
-		    HorizontalAlignment="Left"
-		    SelectionMode="Single">
-			<GridView.ItemContainerStyle>
-				<Style BasedOn="{StaticResource DefaultGridViewItemStyle}"
-				    TargetType="GridViewItem">
-					<Setter Property="Margin" Value="0,0,8,4" />
-				</Style>
-			</GridView.ItemContainerStyle>
-			<GridView.Items>
-				<Border Width="100"
-				    Height="100"
-				    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-				    CornerRadius="4">
-					<TextBlock HorizontalAlignment="Center"
-					    VerticalAlignment="Center"
-					    Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-					    Text="Item 1" />
-				</Border>
-				<Border Width="100"
-				    Height="100"
-				    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-				    CornerRadius="4">
-					<TextBlock HorizontalAlignment="Center"
-					    VerticalAlignment="Center"
-					    Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-					    Text="Item 2" />
-				</Border>
-				<Border Width="100"
-				    Height="100"
-				    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-				    CornerRadius="4">
-					<TextBlock HorizontalAlignment="Center"
-					    VerticalAlignment="Center"
-					    Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-					    Text="Item 3" />
-				</Border>
-				<Border Width="100"
-				    Height="100"
-				    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
-				    CornerRadius="4">
-					<TextBlock HorizontalAlignment="Center"
-					    VerticalAlignment="Center"
-					    Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-					    Text="Item 4" />
-				</Border>
-			</GridView.Items>
-		</GridView>
-	</StackPanel>
+        <GridView
+            x:Name="TestGridView"
+            MaxWidth="400"
+            HorizontalAlignment="Left"
+            SelectionMode="Single">
+            <GridView.ItemContainerStyle>
+                <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
+                    <Setter Property="Margin" Value="0,0,8,4" />
+                </Style>
+            </GridView.ItemContainerStyle>
+            <GridView.Items>
+                <Border
+                    Width="100"
+                    Height="100"
+                    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                    CornerRadius="4">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                        Text="Item 1" />
+                </Border>
+                <Border
+                    Width="100"
+                    Height="100"
+                    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                    CornerRadius="4">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                        Text="Item 2" />
+                </Border>
+                <Border
+                    Width="100"
+                    Height="100"
+                    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                    CornerRadius="4">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                        Text="Item 3" />
+                </Border>
+                <Border
+                    Width="100"
+                    Height="100"
+                    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                    CornerRadius="4">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                        Text="Item 4" />
+                </Border>
+            </GridView.Items>
+        </GridView>
+    </StackPanel>
 </Page>

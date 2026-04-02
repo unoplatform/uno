@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_ApplicationModel.Appointments.AppointmentStoreTests"
+﻿<Page
+    x:Class="UITests.Windows_ApplicationModel.Appointments.AppointmentStoreTests"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:appointments="using:Windows.ApplicationModel.Appointments"
@@ -8,92 +9,83 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid Padding="8">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Button Click="GetAppointments_Click">Get appointments</Button>
-		<TextBlock Name="uiErrorMsg"
-		    Grid.Row="1"
-		    Foreground="Red"
-		    Text=""
-		    TextWrapping="Wrap" />
-		<ListView Grid.Row="2"
-		    HorizontalAlignment="Stretch"
-		    HorizontalContentAlignment="Stretch"
-		    ItemsSource="{x:Bind Results}">
-			<ListView.ItemTemplate>
-				<DataTemplate x:DataType="appointments:Appointment">
-					<Grid Padding="8"
-					    HorizontalAlignment="Stretch"
-					    ColumnSpacing="8">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-						<TextBlock Grid.ColumnSpan="2"
-						    FontSize="16">
-							<Run FontWeight="Bold"
-							    Text="Subject:" />
-							<Run Text="{x:Bind Subject}" />
-						</TextBlock>
-						<TextBlock Grid.Row="1">
-							<Run FontWeight="Bold"
-							    Text="Start time:" />
-							<Run Text="{x:Bind StartTime}" />
-						</TextBlock>
-						<TextBlock Grid.Row="2">
-							<Run FontWeight="Bold"
-							    Text="Reminder:" />
-							<Run Text="{x:Bind Reminder}" />
-						</TextBlock>
-						<TextBlock Grid.Row="3"
-						    Grid.Column="0">
-							<Run FontWeight="Bold"
-							    Text="Duration:" />
-							<Run Text="{x:Bind Duration}" />
-						</TextBlock>
+    <Grid Padding="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Button Click="GetAppointments_Click">Get appointments</Button>
+        <TextBlock
+            Name="uiErrorMsg"
+            Grid.Row="1"
+            Foreground="Red"
+            Text=""
+            TextWrapping="Wrap" />
+        <ListView
+            Grid.Row="2"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            ItemsSource="{x:Bind Results}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="appointments:Appointment">
+                    <Grid
+                        Padding="8"
+                        HorizontalAlignment="Stretch"
+                        ColumnSpacing="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.ColumnSpan="2" FontSize="16">
+                            <Run FontWeight="Bold" Text="Subject:" />
+                            <Run Text="{x:Bind Subject}" />
+                        </TextBlock>
+                        <TextBlock Grid.Row="1">
+                            <Run FontWeight="Bold" Text="Start time:" />
+                            <Run Text="{x:Bind StartTime}" />
+                        </TextBlock>
+                        <TextBlock Grid.Row="2">
+                            <Run FontWeight="Bold" Text="Reminder:" />
+                            <Run Text="{x:Bind Reminder}" />
+                        </TextBlock>
+                        <TextBlock Grid.Row="3" Grid.Column="0">
+                            <Run FontWeight="Bold" Text="Duration:" />
+                            <Run Text="{x:Bind Duration}" />
+                        </TextBlock>
 
-						<TextBlock Grid.Row="1"
-						    Grid.Column="1">
-							<Run FontWeight="Bold"
-							    Text="Location:" />
-							<Run Text="{x:Bind Location}" />
-						</TextBlock>
-						<TextBlock Grid.Row="2"
-						    Grid.Column="1">
-							<Run FontWeight="Bold"
-							    Text="Organizer:" />
-							<Run Text="{x:Bind Organizer.DisplayName}" />
-						</TextBlock>
-						<TextBlock Grid.Row="3"
-						    Grid.Column="1">
-							<Run FontWeight="Bold"
-							    Text="All day:" />
-							<Run Text="{x:Bind AllDay}" />
-						</TextBlock>
+                        <TextBlock Grid.Row="1" Grid.Column="1">
+                            <Run FontWeight="Bold" Text="Location:" />
+                            <Run Text="{x:Bind Location}" />
+                        </TextBlock>
+                        <TextBlock Grid.Row="2" Grid.Column="1">
+                            <Run FontWeight="Bold" Text="Organizer:" />
+                            <Run Text="{x:Bind Organizer.DisplayName}" />
+                        </TextBlock>
+                        <TextBlock Grid.Row="3" Grid.Column="1">
+                            <Run FontWeight="Bold" Text="All day:" />
+                            <Run Text="{x:Bind AllDay}" />
+                        </TextBlock>
 
-						<TextBlock Grid.Row="4"
-						    Grid.Column="0"
-						    Grid.ColumnSpan="2"
-						    TextWrapping="WrapWholeWords">
-							<Run FontWeight="Bold"
-							    Text="Details:" />
-							<Run Text="{x:Bind Details}" />
-						</TextBlock>
-					</Grid>
-				</DataTemplate>
-			</ListView.ItemTemplate>
-		</ListView>
+                        <TextBlock
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            TextWrapping="WrapWholeWords">
+                            <Run FontWeight="Bold" Text="Details:" />
+                            <Run Text="{x:Bind Details}" />
+                        </TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
-	</Grid>
+    </Grid>
 </Page>

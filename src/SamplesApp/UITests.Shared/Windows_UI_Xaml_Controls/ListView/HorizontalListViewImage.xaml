@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.HorizontalListViewImage"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.HorizontalListViewImage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive.com/android#using:Uno.UI.Controls.Legacy"
@@ -14,25 +15,27 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android wasm">
 
-	<controls:SampleControl SampleDescription="You might have to unload and reload the sample to replicate -&gt; Bug 16510:[Android] [Image] Timing issue makes image not visible in Horizontal List View">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ios:TextBlock Text="HorizontalListView is only used on Android." />
-				<win:TextBlock Text="HorizontalListView is only used on Android." />
-				<wasm:TextBlock Text="HorizontalListView is only used on Android." />
-				<android:HorizontalListView Width="250"
-				    Height="50"
-				    ItemsSource="{Binding [SampleItems]}"
-				    SelectionMode="None">
-					<android:HorizontalListView.ItemTemplate>
-						<DataTemplate>
-							<Image Width="100"
-							    Height="50"
-							    Source="{Binding Uri}" />
-						</DataTemplate>
-					</android:HorizontalListView.ItemTemplate>
-				</android:HorizontalListView>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="You might have to unload and reload the sample to replicate -&gt; Bug 16510:[Android] [Image] Timing issue makes image not visible in Horizontal List View">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <ios:TextBlock Text="HorizontalListView is only used on Android." />
+                <win:TextBlock Text="HorizontalListView is only used on Android." />
+                <wasm:TextBlock Text="HorizontalListView is only used on Android." />
+                <android:HorizontalListView
+                    Width="250"
+                    Height="50"
+                    ItemsSource="{Binding [SampleItems]}"
+                    SelectionMode="None">
+                    <android:HorizontalListView.ItemTemplate>
+                        <DataTemplate>
+                            <Image
+                                Width="100"
+                                Height="50"
+                                Source="{Binding Uri}" />
+                        </DataTemplate>
+                    </android:HorizontalListView.ItemTemplate>
+                </android:HorizontalListView>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_Globalization.Language_Properties"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_Globalization.Language_Properties"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,16 +8,15 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<Button Click="Refresh_Click"
-		    Content="Refresh" />
-		<TextBlock>
-			<Run FontWeight="Bold"
-			    Text="CurrentLanguageInputTag: " />
-			<Run x:Name="CurrentLanguageInputTagRun" />
-		</TextBlock>
-		<TextBox PlaceholderText="Write in this field and property will refresh automatically"
-		    TextChanged="TextChanged"
-		    TextChanging="TextChanging" />
-	</StackPanel>
+    <StackPanel>
+        <Button Click="Refresh_Click" Content="Refresh" />
+        <TextBlock>
+            <Run FontWeight="Bold" Text="CurrentLanguageInputTag: " />
+            <Run x:Name="CurrentLanguageInputTagRun" />
+        </TextBlock>
+        <TextBox
+            PlaceholderText="Write in this field and property will refresh automatically"
+            TextChanged="TextChanged"
+            TextChanging="TextChanging" />
+    </StackPanel>
 </UserControl>

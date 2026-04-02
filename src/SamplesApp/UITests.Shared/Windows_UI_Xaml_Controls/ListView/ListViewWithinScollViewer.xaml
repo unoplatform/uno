@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewWithinScollViewer"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewWithinScollViewer"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -12,20 +13,19 @@
     d:DesignWidth="400"
     mc:Ignorable="d ">
 
-	<controls:SampleControl SampleDescription="ListViewWithinScollViewer">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ScrollViewer>
-					<ListView ItemsSource="{Binding [SampleItems]}">
-						<ListView.ItemTemplate>
-							<DataTemplate>
-								<TextBlock Height="25"
-								    Text="{Binding}" />
-							</DataTemplate>
-						</ListView.ItemTemplate>
-					</ListView>
-				</ScrollViewer>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="ListViewWithinScollViewer">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <ScrollViewer>
+                    <ListView ItemsSource="{Binding [SampleItems]}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Height="25" Text="{Binding}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </ScrollViewer>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

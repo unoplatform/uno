@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.ContentPresenter.ContentPresenter_TextProperties"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.ContentPresenter.ContentPresenter_TextProperties"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive.com/android"
@@ -14,26 +15,23 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<controls:SampleControl SampleDescription="This sample demonstrates the behavior of the Text properties of the ContentPresenter">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel>
-					<Border BorderBrush="Red"
-					    BorderThickness="1">
-						<ContentPresenter Width="50"
-						    TextWrapping="Wrap">
-							<TextBlock Text="Should not wrap even if it is very long"
-							    TextWrapping="NoWrap" />
-						</ContentPresenter>
-					</Border>
-					<Border BorderBrush="Blue"
-					    BorderThickness="1">
-						<ContentPresenter Width="50"
-						    Content="Should wrap becayse if it is very long"
-						    TextWrapping="Wrap" />
-					</Border>
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="This sample demonstrates the behavior of the Text properties of the ContentPresenter">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <StackPanel>
+                    <Border BorderBrush="Red" BorderThickness="1">
+                        <ContentPresenter Width="50" TextWrapping="Wrap">
+                            <TextBlock Text="Should not wrap even if it is very long" TextWrapping="NoWrap" />
+                        </ContentPresenter>
+                    </Border>
+                    <Border BorderBrush="Blue" BorderThickness="1">
+                        <ContentPresenter
+                            Width="50"
+                            Content="Should wrap becayse if it is very long"
+                            TextWrapping="Wrap" />
+                    </Border>
+                </StackPanel>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

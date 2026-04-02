@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.SimpleText_MaxLines_Different_Font_Size"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.SimpleText_MaxLines_Different_Font_Size"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -12,47 +13,49 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<StackPanel>
-		<TextBlock x:Name="container1"
-		    android:FontFamily="sans-serif"
-		    ios:FontFamily="sans-serif"
-		    win:FontFamily="Segoe"
-		    FontSize="20"
-		    MaxLines="1"
-		    TextWrapping="Wrap">
-			<Run Text="ItemDescriptionKey :" />
-			<Run android:FontFamily="sans-serif-light"
-			    ios:FontFamily="sans-serif-light"
-			    win:FontFamily="Comic Sans MS"
-			    Text="Item description value with is a very very very very very very very very very long text that should wrap" />
-		</TextBlock>
+    <StackPanel>
+        <TextBlock
+            x:Name="container1"
+            android:FontFamily="sans-serif"
+            ios:FontFamily="sans-serif"
+            win:FontFamily="Segoe"
+            FontSize="20"
+            MaxLines="1"
+            TextWrapping="Wrap">
+            <Run Text="ItemDescriptionKey :" />
+            <Run
+                android:FontFamily="sans-serif-light"
+                ios:FontFamily="sans-serif-light"
+                win:FontFamily="Comic Sans MS"
+                Text="Item description value with is a very very very very very very very very very long text that should wrap" />
+        </TextBlock>
 
-		<TextBlock x:Name="container2"
-		    android:FontFamily="sans-serif"
-		    ios:FontFamily="sans-serif"
-		    win:FontFamily="Segoe"
-		    FontSize="20"
-		    MaxLines="1"
-		    TextWrapping="Wrap">
-			<Run FontSize="32"
-			    Text="This shouldn't get vertically cropped." />
-			<Run android:FontFamily="sans-serif-light"
-			    ios:FontFamily="sans-serif-light"
-			    win:FontFamily="Comic Sans MS"
-			    Text="Item description value with is a very very very very very very very very very long text that should wrap" />
-		</TextBlock>
+        <TextBlock
+            x:Name="container2"
+            android:FontFamily="sans-serif"
+            ios:FontFamily="sans-serif"
+            win:FontFamily="Segoe"
+            FontSize="20"
+            MaxLines="1"
+            TextWrapping="Wrap">
+            <Run FontSize="32" Text="This shouldn't get vertically cropped." />
+            <Run
+                android:FontFamily="sans-serif-light"
+                ios:FontFamily="sans-serif-light"
+                win:FontFamily="Comic Sans MS"
+                Text="Item description value with is a very very very very very very very very very long text that should wrap" />
+        </TextBlock>
 
-		<TextBlock x:Name="container3"
-		    android:FontFamily="sans-serif"
-		    ios:FontFamily="sans-serif"
-		    win:FontFamily="Segoe"
-		    FontSize="20"
-		    MaxLines="1"
-		    Text="No child container. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-		    TextWrapping="Wrap" />
-		<Button Click="MaxLinesUp"
-		    Content="+" />
-		<Button Click="MaxLinesDown"
-		    Content="-" />
-	</StackPanel>
+        <TextBlock
+            x:Name="container3"
+            android:FontFamily="sans-serif"
+            ios:FontFamily="sans-serif"
+            win:FontFamily="Segoe"
+            FontSize="20"
+            MaxLines="1"
+            Text="No child container. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+            TextWrapping="Wrap" />
+        <Button Click="MaxLinesUp" Content="+" />
+        <Button Click="MaxLinesDown" Content="-" />
+    </StackPanel>
 </UserControl>

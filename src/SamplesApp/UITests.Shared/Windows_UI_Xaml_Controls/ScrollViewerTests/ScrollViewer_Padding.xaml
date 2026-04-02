@@ -1,68 +1,67 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Padding"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Padding"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-	<Grid BorderBrush="Red"
-	    BorderThickness="2">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="3*" />
-			<ColumnDefinition Width="3*" />
-			<ColumnDefinition Width="7*" />
-		</Grid.ColumnDefinitions>
+    <Grid BorderBrush="Red" BorderThickness="2">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="7*" />
+        </Grid.ColumnDefinitions>
 
-		<Grid Padding="50"
-		    BorderBrush="Blue"
-		    BorderThickness="2">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="*" />
-			</Grid.RowDefinitions>
+        <Grid
+            Padding="50"
+            BorderBrush="Blue"
+            BorderThickness="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-			<ScrollViewer x:Name="Scroll1"
-			    Padding="0,10"
-			    Background="Pink"
-			    HorizontalScrollBarVisibility="Hidden"
-			    HorizontalScrollMode="Enabled"
-			    VerticalScrollBarVisibility="Disabled">
-				<StackPanel Background="Turquoise"
-				    Orientation="Horizontal">
-					<Button Margin="0,0,15,0"
-					    Content="Hello 1!" />
-					<Button Margin="0,0,15,0"
-					    Content="Hello 2!" />
-				</StackPanel>
-			</ScrollViewer>
-		</Grid>
+            <ScrollViewer
+                x:Name="Scroll1"
+                Padding="0,10"
+                Background="Pink"
+                HorizontalScrollBarVisibility="Hidden"
+                HorizontalScrollMode="Enabled"
+                VerticalScrollBarVisibility="Disabled">
+                <StackPanel Background="Turquoise" Orientation="Horizontal">
+                    <Button Margin="0,0,15,0" Content="Hello 1!" />
+                    <Button Margin="0,0,15,0" Content="Hello 2!" />
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
 
-		<Grid Grid.Column="1"
-		    Padding="50"
-		    BorderBrush="Green"
-		    BorderThickness="2">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="*" />
-			</Grid.RowDefinitions>
+        <Grid
+            Grid.Column="1"
+            Padding="50"
+            BorderBrush="Green"
+            BorderThickness="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-			<ScrollViewer x:Name="Scroll2"
-			    Background="Pink"
-			    HorizontalScrollBarVisibility="Hidden"
-			    HorizontalScrollMode="Enabled"
-			    VerticalScrollBarVisibility="Disabled">
-				<StackPanel Background="Turquoise"
-				    Orientation="Horizontal">
-					<Button Margin="0,0,15,0"
-					    Content="Hello 1!" />
-					<Button Margin="0,0,15,0"
-					    Content="Hello 2!" />
-				</StackPanel>
-			</ScrollViewer>
-		</Grid>
+            <ScrollViewer
+                x:Name="Scroll2"
+                Background="Pink"
+                HorizontalScrollBarVisibility="Hidden"
+                HorizontalScrollMode="Enabled"
+                VerticalScrollBarVisibility="Disabled">
+                <StackPanel Background="Turquoise" Orientation="Horizontal">
+                    <Button Margin="0,0,15,0" Content="Hello 1!" />
+                    <Button Margin="0,0,15,0" Content="Hello 2!" />
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
 
-		<TextBlock x:Name="layout"
-		    Grid.Column="2"
-		    TextWrapping="Wrap" />
-	</Grid>
+        <TextBlock
+            x:Name="layout"
+            Grid.Column="2"
+            TextWrapping="Wrap" />
+    </Grid>
 </Page>

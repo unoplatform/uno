@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.RelativePanelTests.RelativePanel_MultipleCenterAlign"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.RelativePanelTests.RelativePanel_MultipleCenterAlign"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,18 +8,19 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid>
-		<RelativePanel Height="500"
-		    Background="Red">
-			<Ellipse x:Name="picture"
-			    Width="40"
-			    Height="40"
-			    Fill="Gray"
-			    RelativePanel.AlignLeftWithPanel="True"
-			    RelativePanel.AlignVerticalCenterWithPanel="True" />
-			<TextBlock RelativePanel.AlignVerticalCenterWithPanel="True"
-			    RelativePanel.RightOf="picture"
-			    Text="This is a sample text" />
-		</RelativePanel>
-	</Grid>
+    <Grid>
+        <RelativePanel Height="500" Background="Red">
+            <Ellipse
+                x:Name="picture"
+                Width="40"
+                Height="40"
+                Fill="Gray"
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.AlignVerticalCenterWithPanel="True" />
+            <TextBlock
+                RelativePanel.AlignVerticalCenterWithPanel="True"
+                RelativePanel.RightOf="picture"
+                Text="This is a sample text" />
+        </RelativePanel>
+    </Grid>
 </Page>

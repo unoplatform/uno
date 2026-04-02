@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.FrameworkElementTests.FrameworkElement_UnloadedMeasure"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml.FrameworkElementTests.FrameworkElement_UnloadedMeasure"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,9 +9,9 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<Grid>
-		<StackPanel>
-			<ContentControl x:Name="myControl" />
-		</StackPanel>
-	</Grid>
+    <Grid>
+        <StackPanel>
+            <ContentControl x:Name="myControl" />
+        </StackPanel>
+    </Grid>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Shared.Windows_UI_Xaml_Controls.GridTestsControl.Grid_with_MinWidthColumns"
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.GridTestsControl.Grid_with_MinWidthColumns"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,58 +7,58 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel Margin="10"
-	    Spacing="10">
-		<TextBlock FontSize="15">
-			This is an illustration of Github bug<Hyperlink NavigateUri="https://github.com/unoplatform/uno/issues/1885">#1885</Hyperlink>
-		</TextBlock>
+    <StackPanel Margin="10" Spacing="10">
+        <TextBlock FontSize="15">
+            This is an illustration of Github bug<Hyperlink NavigateUri="https://github.com/unoplatform/uno/issues/1885">#1885</Hyperlink>
+        </TextBlock>
 
-		<Border Width="350"
-		    Height="350"
-		    BorderBrush="Red"
-		    BorderThickness="2">
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition MinWidth="150" />
-					<ColumnDefinition MinWidth="150" />
-					<ColumnDefinition MinWidth="150" />
-				</Grid.ColumnDefinitions>
+        <Border
+            Width="350"
+            Height="350"
+            BorderBrush="Red"
+            BorderThickness="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MinWidth="150" />
+                    <ColumnDefinition MinWidth="150" />
+                    <ColumnDefinition MinWidth="150" />
+                </Grid.ColumnDefinitions>
 
-				<Rectangle Grid.Column="0"
-				    Fill="LightBlue" />
-				<Rectangle Grid.Column="1"
-				    Fill="LightGreen" />
-				<Rectangle Grid.Column="2"
-				    Fill="LightGray"
-				    Stroke="Yellow"
-				    StrokeThickness="5" />
+                <Rectangle Grid.Column="0" Fill="LightBlue" />
+                <Rectangle Grid.Column="1" Fill="LightGreen" />
+                <Rectangle
+                    Grid.Column="2"
+                    Fill="LightGray"
+                    Stroke="Yellow"
+                    StrokeThickness="5" />
 
-				<StackPanel Grid.ColumnSpan="3"
-				    Height="40"
-				    Margin="0,30"
-				    VerticalAlignment="Bottom"
-				    Orientation="Horizontal">
-					<Border Width="150"
-					    Background="Blue" />
-					<Border Width="150"
-					    Background="Green" />
-					<Border Width="50"
-					    Background="Gray"
-					    BorderBrush="#C0C000"
-					    BorderThickness="5,0,0,0" />
-				</StackPanel>
+                <StackPanel
+                    Grid.ColumnSpan="3"
+                    Height="40"
+                    Margin="0,30"
+                    VerticalAlignment="Bottom"
+                    Orientation="Horizontal">
+                    <Border Width="150" Background="Blue" />
+                    <Border Width="150" Background="Green" />
+                    <Border
+                        Width="50"
+                        Background="Gray"
+                        BorderBrush="#C0C000"
+                        BorderThickness="5,0,0,0" />
+                </StackPanel>
 
-				<TextBlock Grid.ColumnSpan="2"
-				    Padding="10"
-				    FontSize="20"
-				    FontWeight="Bold"
-				    Foreground="#BC4905"
-				    TextWrapping="WrapWholeWords">
-					3 columns of MinWidth=150 in a 350px wide border (red border)
-					- they should be aligned with central darker rectangles.<LineBreak /><Run FontWeight="ExtraBold">3rd column shouldn't be drawn outside the grid (red border)</Run>
-				</TextBlock>
-			</Grid>
-		</Border>
+                <TextBlock
+                    Grid.ColumnSpan="2"
+                    Padding="10"
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Foreground="#BC4905"
+                    TextWrapping="WrapWholeWords">
+                    3 columns of MinWidth=150 in a 350px wide border (red border)
+                    - they should be aligned with central darker rectangles.<LineBreak /><Run FontWeight="ExtraBold">3rd column shouldn't be drawn outside the grid (red border)</Run>
+                </TextBlock>
+            </Grid>
+        </Border>
 
-	</StackPanel>
+    </StackPanel>
 </Page>

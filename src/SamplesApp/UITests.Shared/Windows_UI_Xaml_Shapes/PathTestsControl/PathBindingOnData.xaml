@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl.PathBindingOnData"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl.PathBindingOnData"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -12,17 +13,18 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<StackPanel>
-		<Button Click="ModifyPath"
-		    Content="Modify path" />
-		<Border HorizontalAlignment="Center"
-		    BorderBrush="MediumOrchid"
-		    BorderThickness="2">
-			<Path x:Name="TargetPath"
-			    Width="100"
-			    Height="100"
-			    Data="{Binding}"
-			    Fill="MediumOrchid" />
-		</Border>
-	</StackPanel>
+    <StackPanel>
+        <Button Click="ModifyPath" Content="Modify path" />
+        <Border
+            HorizontalAlignment="Center"
+            BorderBrush="MediumOrchid"
+            BorderThickness="2">
+            <Path
+                x:Name="TargetPath"
+                Width="100"
+                Height="100"
+                Data="{Binding}"
+                Fill="MediumOrchid" />
+        </Border>
+    </StackPanel>
 </UserControl>

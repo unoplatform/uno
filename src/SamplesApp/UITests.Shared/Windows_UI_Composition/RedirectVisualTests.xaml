@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Composition.RedirectVisualTests"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Composition.RedirectVisualTests"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,48 +11,58 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel HorizontalAlignment="Left"
-	    VerticalAlignment="Top"
-	    Orientation="Vertical"
-	    Spacing="20">
-		<StackPanel HorizontalAlignment="Center"
-		    Orientation="Horizontal"
-		    Spacing="20">
-			<TextBlock Width="200"
-			    FontSize="27"
-			    FontWeight="Light"
-			    Text="Source"
-			    TextAlignment="Center" />
-			<TextBlock Width="200"
-			    FontSize="27"
-			    FontWeight="Light"
-			    Text="RedirectVisual"
-			    TextAlignment="Center" />
-		</StackPanel>
-		<StackPanel HorizontalAlignment="Center"
-		    Orientation="Horizontal"
-		    Spacing="120">
-			<Image x:Name="img"
-			    Width="100"
-			    Height="100"
-			    Source="ms-appx:///Assets/test_image_125_125.png"
-			    Stretch="UniformToFill" />
-			<Canvas x:Name="canvas"
-			    Width="100"
-			    Height="100" />
-		</StackPanel>
-		<StackPanel HorizontalAlignment="Center"
-		    Orientation="Horizontal"
-		    Spacing="20">
-			<winui:AnimatedVisualPlayer x:Name="player"
-			    Width="200"
-			    Height="200"
-			    AutoPlay="True">
-				<lottie:LottieVisualSource UriSource="ms-appx:///Assets/Animations/squirrel.json" />
-			</winui:AnimatedVisualPlayer>
-			<Canvas x:Name="canvas2"
-			    Width="200"
-			    Height="200" />
-		</StackPanel>
-	</StackPanel>
+    <StackPanel
+        HorizontalAlignment="Left"
+        VerticalAlignment="Top"
+        Orientation="Vertical"
+        Spacing="20">
+        <StackPanel
+            HorizontalAlignment="Center"
+            Orientation="Horizontal"
+            Spacing="20">
+            <TextBlock
+                Width="200"
+                FontSize="27"
+                FontWeight="Light"
+                Text="Source"
+                TextAlignment="Center" />
+            <TextBlock
+                Width="200"
+                FontSize="27"
+                FontWeight="Light"
+                Text="RedirectVisual"
+                TextAlignment="Center" />
+        </StackPanel>
+        <StackPanel
+            HorizontalAlignment="Center"
+            Orientation="Horizontal"
+            Spacing="120">
+            <Image
+                x:Name="img"
+                Width="100"
+                Height="100"
+                Source="ms-appx:///Assets/test_image_125_125.png"
+                Stretch="UniformToFill" />
+            <Canvas
+                x:Name="canvas"
+                Width="100"
+                Height="100" />
+        </StackPanel>
+        <StackPanel
+            HorizontalAlignment="Center"
+            Orientation="Horizontal"
+            Spacing="20">
+            <winui:AnimatedVisualPlayer
+                x:Name="player"
+                Width="200"
+                Height="200"
+                AutoPlay="True">
+                <lottie:LottieVisualSource UriSource="ms-appx:///Assets/Animations/squirrel.json" />
+            </winui:AnimatedVisualPlayer>
+            <Canvas
+                x:Name="canvas2"
+                Width="200"
+                Height="200" />
+        </StackPanel>
+    </StackPanel>
 </UserControl>

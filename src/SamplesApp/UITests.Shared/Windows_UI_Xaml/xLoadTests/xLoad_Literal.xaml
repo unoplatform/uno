@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml.xLoadTests.xLoad_Literal"
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml.xLoadTests.xLoad_Literal"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,33 +9,39 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<TextBlock Text="Should see two Red borders, the top one should be empty, the bottom one should contain a Green box" />
-		<TextBlock Margin="0,10,0,0"
-		    HorizontalAlignment="Center"
-		    Text="Load = False" />
-		<Border Width="60"
-		    Height="60"
-		    BorderBrush="Red"
-		    BorderThickness="1">
-			<Border x:Name="LoadBorderFalse"
-			    Width="50"
-			    Height="50"
-			    x:Load="False"
-			    Background="Green" />
-		</Border>
-		<TextBlock Margin="0,10,0,0"
-		    HorizontalAlignment="Center"
-		    Text="Load = True" />
-		<Border Width="60"
-		    Height="60"
-		    BorderBrush="Red"
-		    BorderThickness="1">
-			<Border x:Name="LoadBorderTrue"
-			    Width="50"
-			    Height="50"
-			    x:Load="True"
-			    Background="Green" />
-		</Border>
-	</StackPanel>
+    <StackPanel>
+        <TextBlock Text="Should see two Red borders, the top one should be empty, the bottom one should contain a Green box" />
+        <TextBlock
+            Margin="0,10,0,0"
+            HorizontalAlignment="Center"
+            Text="Load = False" />
+        <Border
+            Width="60"
+            Height="60"
+            BorderBrush="Red"
+            BorderThickness="1">
+            <Border
+                x:Name="LoadBorderFalse"
+                Width="50"
+                Height="50"
+                x:Load="False"
+                Background="Green" />
+        </Border>
+        <TextBlock
+            Margin="0,10,0,0"
+            HorizontalAlignment="Center"
+            Text="Load = True" />
+        <Border
+            Width="60"
+            Height="60"
+            BorderBrush="Red"
+            BorderThickness="1">
+            <Border
+                x:Name="LoadBorderTrue"
+                Width="50"
+                Height="50"
+                x:Load="True"
+                Background="Green" />
+        </Border>
+    </StackPanel>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.TreeView.TreeViewAlignment"
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.TreeView.TreeViewAlignment"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,46 +9,43 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Page.Resources>
-		<Style x:Key="FileExplorerTreeViewItemStyle"
-		    TargetType="muxc:TreeViewItem" />
+    <Page.Resources>
+        <Style x:Key="FileExplorerTreeViewItemStyle" TargetType="muxc:TreeViewItem" />
 
-		<local:FSObjectTemplateSelector x:Key="FSObjectTemplateSelector"
-		    DirectoryTemplate="{StaticResource DirectoryTemplate}" />
+        <local:FSObjectTemplateSelector x:Key="FSObjectTemplateSelector" DirectoryTemplate="{StaticResource DirectoryTemplate}" />
 
-		<DataTemplate x:Key="DirectoryTemplate">
-			<muxc:TreeViewItem>
-				<Grid>
-					<TextBlock Margin="16,0,0,0"
-					    Text="MyText" />
-				</Grid>
-			</muxc:TreeViewItem>
-		</DataTemplate>
+        <DataTemplate x:Key="DirectoryTemplate">
+            <muxc:TreeViewItem>
+                <Grid>
+                    <TextBlock Margin="16,0,0,0" Text="MyText" />
+                </Grid>
+            </muxc:TreeViewItem>
+        </DataTemplate>
 
 
-	</Page.Resources>
-	<StackPanel>
-		<TextBlock Text="The following tree view should be left-aligned, not centered" />
-		<TextBlock Text="MAKE SURE that SamplesApp is using Fluent Styles BEFORE opening this sample." />
-		<muxc:TreeView ItemContainerStyle="{StaticResource FileExplorerTreeViewItemStyle}"
-		    ItemTemplateSelector="{StaticResource FSObjectTemplateSelector}">
-			<muxc:TreeView.RootNodes>
-				<muxc:TreeViewNode x:Name="RootNode"
-				    Content="Flavors"
-				    IsExpanded="True">
-					<muxc:TreeViewNode.Children>
-						<muxc:TreeViewNode Content="Vanilla" />
-						<muxc:TreeViewNode Content="Strawberry" />
-						<muxc:TreeViewNode Content="Chocolate">
-							<muxc:TreeViewNode.Children>
-								<muxc:TreeViewNode Content="Dark" />
-								<muxc:TreeViewNode Content="White" />
-							</muxc:TreeViewNode.Children>
-						</muxc:TreeViewNode>
-						<muxc:TreeViewNode Content="Caramel" />
-					</muxc:TreeViewNode.Children>
-				</muxc:TreeViewNode>
-			</muxc:TreeView.RootNodes>
-		</muxc:TreeView>
-	</StackPanel>
+    </Page.Resources>
+    <StackPanel>
+        <TextBlock Text="The following tree view should be left-aligned, not centered" />
+        <TextBlock Text="MAKE SURE that SamplesApp is using Fluent Styles BEFORE opening this sample." />
+        <muxc:TreeView ItemContainerStyle="{StaticResource FileExplorerTreeViewItemStyle}" ItemTemplateSelector="{StaticResource FSObjectTemplateSelector}">
+            <muxc:TreeView.RootNodes>
+                <muxc:TreeViewNode
+                    x:Name="RootNode"
+                    Content="Flavors"
+                    IsExpanded="True">
+                    <muxc:TreeViewNode.Children>
+                        <muxc:TreeViewNode Content="Vanilla" />
+                        <muxc:TreeViewNode Content="Strawberry" />
+                        <muxc:TreeViewNode Content="Chocolate">
+                            <muxc:TreeViewNode.Children>
+                                <muxc:TreeViewNode Content="Dark" />
+                                <muxc:TreeViewNode Content="White" />
+                            </muxc:TreeViewNode.Children>
+                        </muxc:TreeViewNode>
+                        <muxc:TreeViewNode Content="Caramel" />
+                    </muxc:TreeViewNode.Children>
+                </muxc:TreeViewNode>
+            </muxc:TreeView.RootNodes>
+        </muxc:TreeView>
+    </StackPanel>
 </Page>

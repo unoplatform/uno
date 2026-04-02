@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.SimpleText_MaxLines_One"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.SimpleText_MaxLines_One"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -14,55 +15,61 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android not_win wasm">
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-		<Slider x:Name="slider"
-		    Header="Width"
-		    Maximum="1600"
-		    Minimum="10"
-		    Value="350" />
+        <Slider
+            x:Name="slider"
+            Header="Width"
+            Maximum="1600"
+            Minimum="10"
+            Value="350" />
 
-		<StackPanel Grid.Row="1"
-		    Spacing="5">
+        <StackPanel Grid.Row="1" Spacing="5">
 
-			<TextBlock>MaxLines=1</TextBlock>
+            <TextBlock>MaxLines=1</TextBlock>
 
-			<Border x:Name="border1"
-			    Width="{Binding Value, ElementName=slider}"
-			    Background="Cyan">
-				<TextBlock FontSize="20"
-				    MaxLines="1"
-				    Text="This is a very very very very long text that should not wrap even though it goes out of the screen" />
-			</Border>
+            <Border
+                x:Name="border1"
+                Width="{Binding Value, ElementName=slider}"
+                Background="Cyan">
+                <TextBlock
+                    FontSize="20"
+                    MaxLines="1"
+                    Text="This is a very very very very long text that should not wrap even though it goes out of the screen" />
+            </Border>
 
-			<TextBlock>MaxLines=1, TextTrimming=CharacterEllipsis</TextBlock>
-			<Border x:Name="border2"
-			    Width="{Binding Value, ElementName=slider}"
-			    Background="Yellow">
-				<TextBlock FontSize="20"
-				    MaxLines="1"
-				    Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
-				    TextTrimming="CharacterEllipsis" />
-			</Border>
+            <TextBlock>MaxLines=1, TextTrimming=CharacterEllipsis</TextBlock>
+            <Border
+                x:Name="border2"
+                Width="{Binding Value, ElementName=slider}"
+                Background="Yellow">
+                <TextBlock
+                    FontSize="20"
+                    MaxLines="1"
+                    Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
+                    TextTrimming="CharacterEllipsis" />
+            </Border>
 
-			<TextBlock>TextTrimming=CharacterEllipsis</TextBlock>
-			<Border x:Name="border3"
-			    Width="{Binding Value, ElementName=slider}"
-			    Background="Cyan">
-				<TextBlock FontSize="20"
-				    Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
-				    TextTrimming="CharacterEllipsis" />
-			</Border>
+            <TextBlock>TextTrimming=CharacterEllipsis</TextBlock>
+            <Border
+                x:Name="border3"
+                Width="{Binding Value, ElementName=slider}"
+                Background="Cyan">
+                <TextBlock
+                    FontSize="20"
+                    Text="This is a very very very very long text that should not wrap even though it goes out of the screen"
+                    TextTrimming="CharacterEllipsis" />
+            </Border>
 
-		</StackPanel>
-		<wasm:TextBlock Grid.Row="2">
-			(WASM ONLY) Cache: Hits=<Run x:Name="hits">0</Run>
-			, Misses=<Run x:Name="misses">0</Run>
-			.</wasm:TextBlock>
-	</Grid>
+        </StackPanel>
+        <wasm:TextBlock Grid.Row="2">
+            (WASM ONLY) Cache: Hits=<Run x:Name="hits">0</Run>
+            , Misses=<Run x:Name="misses">0</Run>
+            .</wasm:TextBlock>
+    </Grid>
 </UserControl>

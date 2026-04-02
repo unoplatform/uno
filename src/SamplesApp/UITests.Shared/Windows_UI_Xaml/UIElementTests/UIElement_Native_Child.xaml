@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.UIElementTests.UIElement_Native_Child"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml.UIElementTests.UIElement_Native_Child"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://platform.uno/android"
@@ -9,22 +10,25 @@
     d:DesignWidth="400"
     mc:Ignorable="d android">
 
-	<Grid>
-		<StackPanel HorizontalAlignment="Center"
-		    VerticalAlignment="Top"
-		    Background="Red">
-			<android:Border Width="100"
-			    Height="200"
-			    Margin="50"
-			    Background="Orange"
-			    BorderBrush="Black"
-			    BorderThickness="2">
-				<local:NativeView />
-			</android:Border>
-			<Border x:Name="SpacerBorder"
-			    Width="200"
-			    Height="200"
-			    Background="Transparent" />
-		</StackPanel>
-	</Grid>
+    <Grid>
+        <StackPanel
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Background="Red">
+            <android:Border
+                Width="100"
+                Height="200"
+                Margin="50"
+                Background="Orange"
+                BorderBrush="Black"
+                BorderThickness="2">
+                <local:NativeView />
+            </android:Border>
+            <Border
+                x:Name="SpacerBorder"
+                Width="200"
+                Height="200"
+                Background="Transparent" />
+        </StackPanel>
+    </Grid>
 </UserControl>

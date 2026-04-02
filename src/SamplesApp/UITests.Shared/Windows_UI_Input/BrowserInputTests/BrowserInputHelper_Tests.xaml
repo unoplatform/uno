@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Input.BrowserInputTests.BrowserInputHelper_Tests"
+﻿<Page
+    x:Class="UITests.Windows_UI_Input.BrowserInputTests.BrowserInputHelper_Tests"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,109 +8,101 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d skia">
 
-	<skia:ScrollViewer Padding="16">
-		<skia:StackPanel Spacing="16">
+    <skia:ScrollViewer Padding="16">
+        <skia:StackPanel Spacing="16">
 
-			<!--  Header  -->
-			<TextBlock Style="{StaticResource TitleTextBlockStyle}"
-			    Text="BrowserInputHelper Manual Tests" />
-			<TextBlock x:Name="PlatformStatus"
-			    Foreground="{ThemeResource SystemFillColorCautionBrush}"
-			    TextWrapping="Wrap" />
+            <!--  Header  -->
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="BrowserInputHelper Manual Tests" />
+            <TextBlock
+                x:Name="PlatformStatus"
+                Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                TextWrapping="Wrap" />
 
-			<!--  Browser Zoom  -->
-			<TextBlock Style="{StaticResource SubtitleTextBlockStyle}"
-			    Text="Browser Zoom (Ctrl+Wheel)" />
-			<TextBlock Text="Default: enabled. Toggle and test Ctrl+mouse wheel in the browser."
-			    TextWrapping="Wrap" />
-			<StackPanel Orientation="Horizontal"
-			    Spacing="8">
-				<Button x:Name="DisableZoomButton"
-				    Click="DisableZoom_Click"
-				    Content="Disable Browser Zoom" />
-				<Button x:Name="EnableZoomButton"
-				    Click="EnableZoom_Click"
-				    Content="Enable Browser Zoom" />
-			</StackPanel>
-			<TextBlock x:Name="ZoomStatus"
-			    Text="Zoom: enabled (default)" />
+            <!--  Browser Zoom  -->
+            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Browser Zoom (Ctrl+Wheel)" />
+            <TextBlock Text="Default: enabled. Toggle and test Ctrl+mouse wheel in the browser." TextWrapping="Wrap" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button
+                    x:Name="DisableZoomButton"
+                    Click="DisableZoom_Click"
+                    Content="Disable Browser Zoom" />
+                <Button
+                    x:Name="EnableZoomButton"
+                    Click="EnableZoom_Click"
+                    Content="Enable Browser Zoom" />
+            </StackPanel>
+            <TextBlock x:Name="ZoomStatus" Text="Zoom: enabled (default)" />
 
-			<!--  Full Screen (required for Keyboard Lock)  -->
-			<TextBlock Margin="0,8,0,0"
-			    Style="{StaticResource SubtitleTextBlockStyle}"
-			    Text="Full Screen Mode" />
-			<TextBlock Text="The Keyboard Lock API only works in full-screen mode. Enter full screen before testing lock/unlock."
-			    TextWrapping="Wrap" />
-			<StackPanel Orientation="Horizontal"
-			    Spacing="8">
-				<Button x:Name="ToggleFullScreenButton"
-				    Click="ToggleFullScreen_Click"
-				    Content="Enter Full Screen" />
-			</StackPanel>
-			<TextBlock x:Name="FullScreenStatus"
-			    Text="Full screen: no" />
+            <!--  Full Screen (required for Keyboard Lock)  -->
+            <TextBlock
+                Margin="0,8,0,0"
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                Text="Full Screen Mode" />
+            <TextBlock Text="The Keyboard Lock API only works in full-screen mode. Enter full screen before testing lock/unlock." TextWrapping="Wrap" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button
+                    x:Name="ToggleFullScreenButton"
+                    Click="ToggleFullScreen_Click"
+                    Content="Enter Full Screen" />
+            </StackPanel>
+            <TextBlock x:Name="FullScreenStatus" Text="Full screen: no" />
 
-			<!--  Keyboard Lock - Preset Scenarios  -->
-			<TextBlock Margin="0,8,0,0"
-			    Style="{StaticResource SubtitleTextBlockStyle}"
-			    Text="Keyboard Lock (Preset Scenarios)" />
-			<TextBlock Text="Requires full screen + HTTPS + Chromium. Keys are captured from the browser/OS."
-			    TextWrapping="Wrap" />
-			<StackPanel Spacing="8">
-				<Button Click="LockEscape_Click"
-				    Content="Lock Escape" />
-				<Button Click="LockFKeys_Click"
-				    Content="Lock F1-F12" />
-				<Button Click="LockAllKeys_Click"
-				    Content="Lock All Keys" />
-				<Button Click="UnlockKeys_Click"
-				    Content="Unlock All Keys" />
-			</StackPanel>
-			<TextBlock x:Name="LockStatus"
-			    Text="Lock: none" />
+            <!--  Keyboard Lock - Preset Scenarios  -->
+            <TextBlock
+                Margin="0,8,0,0"
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                Text="Keyboard Lock (Preset Scenarios)" />
+            <TextBlock Text="Requires full screen + HTTPS + Chromium. Keys are captured from the browser/OS." TextWrapping="Wrap" />
+            <StackPanel Spacing="8">
+                <Button Click="LockEscape_Click" Content="Lock Escape" />
+                <Button Click="LockFKeys_Click" Content="Lock F1-F12" />
+                <Button Click="LockAllKeys_Click" Content="Lock All Keys" />
+                <Button Click="UnlockKeys_Click" Content="Unlock All Keys" />
+            </StackPanel>
+            <TextBlock x:Name="LockStatus" Text="Lock: none" />
 
-			<!--  Keyboard Lock - Custom Keys  -->
-			<TextBlock Margin="0,8,0,0"
-			    Style="{StaticResource SubtitleTextBlockStyle}"
-			    Text="Keyboard Lock (Custom Keys)" />
-			<TextBlock Text="Enter key codes separated by commas (e.g. KeyW,F5,Escape,MetaLeft)."
-			    TextWrapping="Wrap" />
-			<StackPanel Orientation="Horizontal"
-			    Spacing="8">
-				<TextBox x:Name="CustomKeysInput"
-				    Width="300"
-				    PlaceholderText="KeyW,F5,Escape" />
-				<Button Click="LockCustomKeys_Click"
-				    Content="Lock Custom Keys" />
-			</StackPanel>
+            <!--  Keyboard Lock - Custom Keys  -->
+            <TextBlock
+                Margin="0,8,0,0"
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                Text="Keyboard Lock (Custom Keys)" />
+            <TextBlock Text="Enter key codes separated by commas (e.g. KeyW,F5,Escape,MetaLeft)." TextWrapping="Wrap" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBox
+                    x:Name="CustomKeysInput"
+                    Width="300"
+                    PlaceholderText="KeyW,F5,Escape" />
+                <Button Click="LockCustomKeys_Click" Content="Lock Custom Keys" />
+            </StackPanel>
 
-			<!--  Keyboard Event Log  -->
-			<TextBlock Margin="0,8,0,0"
-			    Style="{StaticResource SubtitleTextBlockStyle}"
-			    Text="Keyboard Event Log" />
-			<TextBlock Text="Press keys to verify they reach the app. Focus the TextBox first."
-			    TextWrapping="Wrap" />
-			<TextBox x:Name="KeyTestInput"
-			    Width="400"
-			    PlaceholderText="Type here to verify keyboard input works" />
-			<StackPanel Orientation="Horizontal"
-			    Spacing="8">
-				<Button Click="ClearLog_Click"
-				    Content="Clear Log" />
-			</StackPanel>
-			<Border MaxHeight="200"
-			    Padding="8"
-			    BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-			    BorderThickness="1"
-			    CornerRadius="4">
-				<ScrollViewer x:Name="LogScrollViewer">
-					<TextBlock x:Name="EventLog"
-					    FontFamily="Consolas"
-					    IsTextSelectionEnabled="True"
-					    TextWrapping="Wrap" />
-				</ScrollViewer>
-			</Border>
+            <!--  Keyboard Event Log  -->
+            <TextBlock
+                Margin="0,8,0,0"
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                Text="Keyboard Event Log" />
+            <TextBlock Text="Press keys to verify they reach the app. Focus the TextBox first." TextWrapping="Wrap" />
+            <TextBox
+                x:Name="KeyTestInput"
+                Width="400"
+                PlaceholderText="Type here to verify keyboard input works" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="ClearLog_Click" Content="Clear Log" />
+            </StackPanel>
+            <Border
+                MaxHeight="200"
+                Padding="8"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                BorderThickness="1"
+                CornerRadius="4">
+                <ScrollViewer x:Name="LogScrollViewer">
+                    <TextBlock
+                        x:Name="EventLog"
+                        FontFamily="Consolas"
+                        IsTextSelectionEnabled="True"
+                        TextWrapping="Wrap" />
+                </ScrollViewer>
+            </Border>
 
-		</skia:StackPanel>
-	</skia:ScrollViewer>
+        </skia:StackPanel>
+    </skia:ScrollViewer>
 </Page>

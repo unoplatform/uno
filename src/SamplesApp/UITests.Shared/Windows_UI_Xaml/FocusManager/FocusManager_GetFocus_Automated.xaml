@@ -1,173 +1,187 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="">
 
-	<Grid Background="White">
-		<StackPanel x:Name="RootStackPanel"
-		    VerticalAlignment="Center">
+    <Grid Background="White">
+        <StackPanel x:Name="RootStackPanel" VerticalAlignment="Center">
 
-			<StackPanel HorizontalAlignment="Center">
+            <StackPanel HorizontalAlignment="Center">
 
-				<!--  Label  -->
-				<TextBlock FontSize="22"
-				    Text="Currently focused control" />
-				<!--  Current Control  -->
-				<Border Margin="0,8,0,0"
-				    Background="LightGray">
-					<TextBlock x:Name="TxtCurrentFocused"
-					    Margin="0,6"
-					    FontSize="18"
-					    FontWeight="Bold"
-					    Text="&lt;none&gt;"
-					    TextAlignment="Center" />
-				</Border>
-			</StackPanel>
+                <!--  Label  -->
+                <TextBlock FontSize="22" Text="Currently focused control" />
+                <!--  Current Control  -->
+                <Border Margin="0,8,0,0" Background="LightGray">
+                    <TextBlock
+                        x:Name="TxtCurrentFocused"
+                        Margin="0,6"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Text="&lt;none&gt;"
+                        TextAlignment="Center" />
+                </Border>
+            </StackPanel>
 
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-				<StackPanel Grid.Column="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="1">
 
-					<!--  single TextBox  -->
-					<Border Margin="0,24,0,0"
-					    BorderBrush="Black"
-					    BorderThickness="2">
-						<TextBox x:Name="TextBoxSingleLine"
-						    Margin="6"
-						    FontSize="18"
-						    Text="This a single line textbox" />
-					</Border>
+                    <!--  single TextBox  -->
+                    <Border
+                        Margin="0,24,0,0"
+                        BorderBrush="Black"
+                        BorderThickness="2">
+                        <TextBox
+                            x:Name="TextBoxSingleLine"
+                            Margin="6"
+                            FontSize="18"
+                            Text="This a single line textbox" />
+                    </Border>
 
-					<!--  MultiLine TextBox  -->
-					<Border Margin="0,16,0,0"
-					    BorderBrush="Black"
-					    BorderThickness="2">
-						<TextBox x:Name="TextBoxMultiLine"
-						    MinWidth="220"
-						    Margin="6"
-						    AcceptsReturn="True"
-						    FontSize="18"
-						    Text="This a Multiline line textbox, This a Multiline line textbox, This a Multiline line textbox"
-						    TextWrapping="Wrap" />
-					</Border>
+                    <!--  MultiLine TextBox  -->
+                    <Border
+                        Margin="0,16,0,0"
+                        BorderBrush="Black"
+                        BorderThickness="2">
+                        <TextBox
+                            x:Name="TextBoxMultiLine"
+                            MinWidth="220"
+                            Margin="6"
+                            AcceptsReturn="True"
+                            FontSize="18"
+                            Text="This a Multiline line textbox, This a Multiline line textbox, This a Multiline line textbox"
+                            TextWrapping="Wrap" />
+                    </Border>
 
-					<!--  MyButton Button  -->
-					<Button x:Name="MyButton"
-					    Margin="0,16,0,0"
-					    HorizontalAlignment="Center"
-					    Content="My Button" />
+                    <!--  MyButton Button  -->
+                    <Button
+                        x:Name="MyButton"
+                        Margin="0,16,0,0"
+                        HorizontalAlignment="Center"
+                        Content="My Button" />
 
-					<!--  CheckBox  -->
-					<CheckBox x:Name="MyCheckBox"
-					    Margin="0,16,0,0"
-					    Content="My Checkbox"
-					    IsChecked="True" />
+                    <!--  CheckBox  -->
+                    <CheckBox
+                        x:Name="MyCheckBox"
+                        Margin="0,16,0,0"
+                        Content="My Checkbox"
+                        IsChecked="True" />
 
-					<!--  HyperlinkButton  -->
-					<HyperlinkButton x:Name="MyHyperlinkButton"
-					    Margin="0,16,0,0"
-					    HorizontalAlignment="Center"
-					    Content="HyperlinkButton" />
+                    <!--  HyperlinkButton  -->
+                    <HyperlinkButton
+                        x:Name="MyHyperlinkButton"
+                        Margin="0,16,0,0"
+                        HorizontalAlignment="Center"
+                        Content="HyperlinkButton" />
 
-					<!--  My MyRadioButton_1  -->
-					<RadioButton x:Name="MyRadioButton_1"
-					    Margin="0,16,0,0"
-					    Content="RadioButton 1" />
+                    <!--  My MyRadioButton_1  -->
+                    <RadioButton
+                        x:Name="MyRadioButton_1"
+                        Margin="0,16,0,0"
+                        Content="RadioButton 1" />
 
-					<!--  My MyRadioButton_2  -->
-					<RadioButton x:Name="MyRadioButton_2"
-					    Content="RadioButton 2" />
+                    <!--  My MyRadioButton_2  -->
+                    <RadioButton x:Name="MyRadioButton_2" Content="RadioButton 2" />
 
-					<!--  My ToggleButton  -->
-					<ToggleButton x:Name="MyToggleButton"
-					    Margin="0,16,0,8"
-					    HorizontalAlignment="Center"
-					    Content="My ToggleButton" />
-				</StackPanel>
+                    <!--  My ToggleButton  -->
+                    <ToggleButton
+                        x:Name="MyToggleButton"
+                        Margin="0,16,0,8"
+                        HorizontalAlignment="Center"
+                        Content="My ToggleButton" />
+                </StackPanel>
 
-				<StackPanel Grid.Column="2">
+                <StackPanel Grid.Column="2">
 
-					<!--  TextBlock  -->
-					<TextBlock x:Name="MyTextBlock"
-					    Margin="0,24,0,0"
-					    HorizontalAlignment="Center"
-					    FontSize="18"
-					    Text="Some Textblock" />
+                    <!--  TextBlock  -->
+                    <TextBlock
+                        x:Name="MyTextBlock"
+                        Margin="0,24,0,0"
+                        HorizontalAlignment="Center"
+                        FontSize="18"
+                        Text="Some Textblock" />
 
-					<!--  Rectangle  -->
-					<Rectangle x:Name="MyRectangle"
-					    Width="50"
-					    Height="50"
-					    Margin="0,16,0,0"
-					    Fill="Orange" />
+                    <!--  Rectangle  -->
+                    <Rectangle
+                        x:Name="MyRectangle"
+                        Width="50"
+                        Height="50"
+                        Margin="0,16,0,0"
+                        Fill="Orange" />
 
-					<!--  Border  -->
-					<Border x:Name="MyBorder"
-					    Width="50"
-					    Height="50"
-					    Margin="0,16,0,0"
-					    Background="DodgerBlue" />
+                    <!--  Border  -->
+                    <Border
+                        x:Name="MyBorder"
+                        Width="50"
+                        Height="50"
+                        Margin="0,16,0,0"
+                        Background="DodgerBlue" />
 
-					<!--  Grid  -->
-					<Grid x:Name="MyGrid"
-					    Width="50"
-					    Height="50"
-					    Margin="0,16,0,0"
-					    Background="Pink" />
+                    <!--  Grid  -->
+                    <Grid
+                        x:Name="MyGrid"
+                        Width="50"
+                        Height="50"
+                        Margin="0,16,0,0"
+                        Background="Pink" />
 
-					<!--  Image  -->
-					<Border Width="50"
-					    Margin="0,16,0,0"
-					    Background="LightGreen">
-						<Image x:Name="MyImage"
-						    Width="50"
-						    Height="50"
-						    Source="ms-appx:///Assets/Icons/search.png"
-						    Stretch="UniformToFill" />
-					</Border>
+                    <!--  Image  -->
+                    <Border
+                        Width="50"
+                        Margin="0,16,0,0"
+                        Background="LightGreen">
+                        <Image
+                            x:Name="MyImage"
+                            Width="50"
+                            Height="50"
+                            Source="ms-appx:///Assets/Icons/search.png"
+                            Stretch="UniformToFill" />
+                    </Border>
 
-					<!--  ScrollViewer  -->
-					<ScrollViewer x:Name="MyScrollViewer"
-					    Margin="0,16,0,0">
-						<Rectangle x:Name="MyScrollViewerElement"
-						    Width="50"
-						    Height="50"
-						    Fill="Purple" />
-					</ScrollViewer>
+                    <!--  ScrollViewer  -->
+                    <ScrollViewer x:Name="MyScrollViewer" Margin="0,16,0,0">
+                        <Rectangle
+                            x:Name="MyScrollViewerElement"
+                            Width="50"
+                            Height="50"
+                            Fill="Purple" />
+                    </ScrollViewer>
 
-					<!--  ListView  -->
-					<ListView x:Name="MyListView"
-					    Margin="0,16,0,0"
-					    HorizontalAlignment="Center">
-						<ListViewItem x:Name="MyListViewItem">
-							<Rectangle Width="50"
-							    Height="50"
-							    Fill="Gold" />
-						</ListViewItem>
-					</ListView>
+                    <!--  ListView  -->
+                    <ListView
+                        x:Name="MyListView"
+                        Margin="0,16,0,0"
+                        HorizontalAlignment="Center">
+                        <ListViewItem x:Name="MyListViewItem">
+                            <Rectangle
+                                Width="50"
+                                Height="50"
+                                Fill="Gold" />
+                        </ListViewItem>
+                    </ListView>
 
-					<!--  ComboBox  -->
-					<ComboBox x:Name="MyComboBox"
-					    Width="190"
-					    Margin="0,16,0,0"
-					    HorizontalAlignment="Center">
+                    <!--  ComboBox  -->
+                    <ComboBox
+                        x:Name="MyComboBox"
+                        Width="190"
+                        Margin="0,16,0,0"
+                        HorizontalAlignment="Center">
 
-						<!--  ComboBox  -->
-						<ComboBoxItem x:Name="MyComboBoxItem_1"
-						    Content="My ComboBoxItem_1" />
+                        <!--  ComboBox  -->
+                        <ComboBoxItem x:Name="MyComboBoxItem_1" Content="My ComboBoxItem_1" />
 
-						<!--  ComboBox  -->
-						<ComboBoxItem x:Name="MyComboBoxItem_2"
-						    Content="My ComboBoxItem 2" />
-					</ComboBox>
-				</StackPanel>
-			</Grid>
-		</StackPanel>
-	</Grid>
+                        <!--  ComboBox  -->
+                        <ComboBoxItem x:Name="MyComboBoxItem_2" Content="My ComboBoxItem 2" />
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </Grid>
 </UserControl>

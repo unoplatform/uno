@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.RadioButton_Multiple_Unnamed_Groups"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.RadioButton_Multiple_Unnamed_Groups"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -9,34 +10,28 @@
     d:DesignWidth="400"
     mc:Ignorable="d not_win">
 
-	<controls:SampleControl SampleDescription="RadioButton_Multiple_Unnamed_Groups">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel Background="CornflowerBlue">
-					<Border BorderBrush="Black">
-						<StackPanel>
-							<TextBlock Text="RadioButton first unnamed group" />
-							<RadioButton Command="{Binding [CheckBox01_Command]}"
-							    Content="Checkbox 01" />
-							<RadioButton Command="{Binding [CheckBox02_Command]}"
-							    Content="Checkbox 02" />
-							<RadioButton Command="{Binding [CheckBox03_Command]}"
-							    Content="Checkbox 03" />
-						</StackPanel>
-					</Border>
-					<Border BorderBrush="White">
-						<StackPanel>
-							<TextBlock Text="RadioButton second unnamed group" />
-							<RadioButton Command="{Binding [CheckBox01_Command]}"
-							    Content="Checkbox 01" />
-							<RadioButton Command="{Binding [CheckBox02_Command]}"
-							    Content="Checkbox 02" />
-							<RadioButton Command="{Binding [CheckBox03_Command]}"
-							    Content="Checkbox 03" />
-						</StackPanel>
-					</Border>
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="RadioButton_Multiple_Unnamed_Groups">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <StackPanel Background="CornflowerBlue">
+                    <Border BorderBrush="Black">
+                        <StackPanel>
+                            <TextBlock Text="RadioButton first unnamed group" />
+                            <RadioButton Command="{Binding [CheckBox01_Command]}" Content="Checkbox 01" />
+                            <RadioButton Command="{Binding [CheckBox02_Command]}" Content="Checkbox 02" />
+                            <RadioButton Command="{Binding [CheckBox03_Command]}" Content="Checkbox 03" />
+                        </StackPanel>
+                    </Border>
+                    <Border BorderBrush="White">
+                        <StackPanel>
+                            <TextBlock Text="RadioButton second unnamed group" />
+                            <RadioButton Command="{Binding [CheckBox01_Command]}" Content="Checkbox 01" />
+                            <RadioButton Command="{Binding [CheckBox02_Command]}" Content="Checkbox 02" />
+                            <RadioButton Command="{Binding [CheckBox03_Command]}" Content="Checkbox 03" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

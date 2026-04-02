@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_TextHighlighters"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_TextHighlighters"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -13,125 +14,114 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android not_win">
 
-	<ScrollViewer>
-		<StackPanel Padding="20"
-		    Spacing="10">
-			<TextBlock Style="{ThemeResource TitleTextBlockStyle}"
-			    Text="TextBlock.TextHighlighters Sample" />
+    <ScrollViewer>
+        <StackPanel Padding="20" Spacing="10">
+            <TextBlock Style="{ThemeResource TitleTextBlockStyle}" Text="TextBlock.TextHighlighters Sample" />
 
-			<TextBlock x:Name="TargetTextBlock"
-			    Width="400"
-			    Height="150"
-			    FontSize="18"
-			    Foreground="Green"
-			    Text="The quick brown fox jumps over the lazy dog. Windows UI Library (WinUI) is the native UI platform for Windows."
-			    TextWrapping="Wrap" />
+            <TextBlock
+                x:Name="TargetTextBlock"
+                Width="400"
+                Height="150"
+                FontSize="18"
+                Foreground="Green"
+                Text="The quick brown fox jumps over the lazy dog. Windows UI Library (WinUI) is the native UI platform for Windows."
+                TextWrapping="Wrap" />
 
-			<StackPanel Orientation="Horizontal"
-			    Spacing="20">
-				<StackPanel>
-					<TextBlock Margin="0,0,0,4"
-					    Text="Start Index:" />
-					<Slider x:Name="StartIndexSlider"
-					    Width="200"
-					    Maximum="{x:Bind TargetTextBlock.Text.Length, Mode=OneWay}"
-					    Minimum="0"
-					    SnapsTo="Ticks"
-					    TickFrequency="1"
-					    Value="0" />
-					<TextBlock Text="{x:Bind StartIndexSlider.Value, Mode=OneWay}" />
-				</StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="20">
+                <StackPanel>
+                    <TextBlock Margin="0,0,0,4" Text="Start Index:" />
+                    <Slider
+                        x:Name="StartIndexSlider"
+                        Width="200"
+                        Maximum="{x:Bind TargetTextBlock.Text.Length, Mode=OneWay}"
+                        Minimum="0"
+                        SnapsTo="Ticks"
+                        TickFrequency="1"
+                        Value="0" />
+                    <TextBlock Text="{x:Bind StartIndexSlider.Value, Mode=OneWay}" />
+                </StackPanel>
 
-				<StackPanel>
-					<TextBlock Margin="0,0,0,4"
-					    Text="Length:" />
-					<Slider x:Name="LengthSlider"
-					    Width="200"
-					    Maximum="20"
-					    Minimum="1"
-					    SnapsTo="Ticks"
-					    TickFrequency="1"
-					    Value="5" />
-					<TextBlock Text="{x:Bind LengthSlider.Value, Mode=OneWay}" />
-				</StackPanel>
-			</StackPanel>
+                <StackPanel>
+                    <TextBlock Margin="0,0,0,4" Text="Length:" />
+                    <Slider
+                        x:Name="LengthSlider"
+                        Width="200"
+                        Maximum="20"
+                        Minimum="1"
+                        SnapsTo="Ticks"
+                        TickFrequency="1"
+                        Value="5" />
+                    <TextBlock Text="{x:Bind LengthSlider.Value, Mode=OneWay}" />
+                </StackPanel>
+            </StackPanel>
 
-			<StackPanel Orientation="Horizontal"
-			    Spacing="20">
-				<ComboBox x:Name="ColorSelect"
-				    Width="150"
-				    Header="Background Color"
-				    SelectedIndex="0">
-					<ComboBoxItem Content="Yellow"
-					    Tag="Yellow" />
-					<ComboBoxItem Content="Lime"
-					    Tag="Lime" />
-					<ComboBoxItem Content="Cyan"
-					    Tag="Cyan" />
-					<ComboBoxItem Content="Pink"
-					    Tag="Pink" />
-					<ComboBoxItem Content="Null"
-					    Tag="Null" />
-				</ComboBox>
+            <StackPanel Orientation="Horizontal" Spacing="20">
+                <ComboBox
+                    x:Name="ColorSelect"
+                    Width="150"
+                    Header="Background Color"
+                    SelectedIndex="0">
+                    <ComboBoxItem Content="Yellow" Tag="Yellow" />
+                    <ComboBoxItem Content="Lime" Tag="Lime" />
+                    <ComboBoxItem Content="Cyan" Tag="Cyan" />
+                    <ComboBoxItem Content="Pink" Tag="Pink" />
+                    <ComboBoxItem Content="Null" Tag="Null" />
+                </ComboBox>
 
-				<ComboBox x:Name="ForegroundSelect"
-				    Width="150"
-				    Header="Foreground Color"
-				    SelectedIndex="0">
-					<ComboBoxItem Content="Black"
-					    Tag="Black" />
-					<ComboBoxItem Content="Red"
-					    Tag="Red" />
-					<ComboBoxItem Content="Blue"
-					    Tag="Blue" />
-					<ComboBoxItem Content="White"
-					    Tag="White" />
-					<ComboBoxItem Content="Null"
-					    Tag="Null" />
-				</ComboBox>
-			</StackPanel>
+                <ComboBox
+                    x:Name="ForegroundSelect"
+                    Width="150"
+                    Header="Foreground Color"
+                    SelectedIndex="0">
+                    <ComboBoxItem Content="Black" Tag="Black" />
+                    <ComboBoxItem Content="Red" Tag="Red" />
+                    <ComboBoxItem Content="Blue" Tag="Blue" />
+                    <ComboBoxItem Content="White" Tag="White" />
+                    <ComboBoxItem Content="Null" Tag="Null" />
+                </ComboBox>
+            </StackPanel>
 
-			<StackPanel Orientation="Horizontal"
-			    Spacing="10">
-				<Button Click="AddHighlighter_Click"
-				    Content="Add Highlighter" />
-				<Button Click="ClearHighlighters_Click"
-				    Content="Clear All" />
-			</StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button Click="AddHighlighter_Click" Content="Add Highlighter" />
+                <Button Click="ClearHighlighters_Click" Content="Clear All" />
+            </StackPanel>
 
-			<TextBlock Margin="0,20,0,0"
-			    Style="{ThemeResource SubtitleTextBlockStyle}"
-			    Text="Active Highlighters:" />
-			<ListView x:Name="HighlightersList"
-			    Width="400"
-			    Height="200"
-			    BorderBrush="Gray"
-			    BorderThickness="1">
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<StackPanel Orientation="Horizontal"
-						    Spacing="5">
-							<TextBlock Text="Range: " />
-							<TextBlock Text="{Binding Start}" />
-							<TextBlock Text="," />
-							<TextBlock Text="{Binding Length}" />
-							<Rectangle Width="16"
-							    Height="16"
-							    Margin="10,0,0,0"
-							    Fill="{Binding Background}"
-							    Stroke="Black"
-							    StrokeThickness="1" />
-							<Rectangle Width="16"
-							    Height="16"
-							    Margin="10,0,0,0"
-							    Fill="{Binding Foreground}"
-							    Stroke="Black"
-							    StrokeThickness="1" />
-						</StackPanel>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
-		</StackPanel>
-	</ScrollViewer>
+            <TextBlock
+                Margin="0,20,0,0"
+                Style="{ThemeResource SubtitleTextBlockStyle}"
+                Text="Active Highlighters:" />
+            <ListView
+                x:Name="HighlightersList"
+                Width="400"
+                Height="200"
+                BorderBrush="Gray"
+                BorderThickness="1">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <TextBlock Text="Range: " />
+                            <TextBlock Text="{Binding Start}" />
+                            <TextBlock Text="," />
+                            <TextBlock Text="{Binding Length}" />
+                            <Rectangle
+                                Width="16"
+                                Height="16"
+                                Margin="10,0,0,0"
+                                Fill="{Binding Background}"
+                                Stroke="Black"
+                                StrokeThickness="1" />
+                            <Rectangle
+                                Width="16"
+                                Height="16"
+                                Margin="10,0,0,0"
+                                Fill="{Binding Foreground}"
+                                Stroke="Black"
+                                StrokeThickness="1" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+    </ScrollViewer>
 
 </UserControl>

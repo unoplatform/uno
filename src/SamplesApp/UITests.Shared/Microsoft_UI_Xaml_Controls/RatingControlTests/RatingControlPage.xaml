@@ -1,5 +1,6 @@
 ﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
-<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.RatingControlTests.RatingControlPage"
+<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.RatingControlTests.RatingControlPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,418 +9,469 @@
     xmlns:muxcontrols="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
-	<StackPanel HorizontalAlignment="Center"
-	    VerticalAlignment="Center"
-	    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-	    Orientation="Vertical">
-		<!--  this guy is out of the Scroller because it's where I do panning tests: [and having nested pannable things is NOT WHAT SHOULD BE DONE!]  -->
-		<!--  Uno specific: TestRatingControl_Unloaded  -->
-		<muxcontrols:RatingControl x:Name="TestRatingControl"
-		    AutomationProperties.Name="TestRatingControl"
-		    Loaded="TestRatingControl_Loaded"
-		    PlaceholderValue="2.5"
-		    Unloaded="TestRatingControl_Unloaded" />
-		<ScrollViewer Grid.Column="0"
-		    Height="500">
-			<StackPanel x:Name="mainStackPanel"
-			    HorizontalAlignment="Center"
-			    VerticalAlignment="Center">
-				<TextBlock x:Name="TestTextBlockControl"
-				    AutomationProperties.Name="TestTextBlockControl"
-				    Text="Test Not Started" />
-				<Button AutomationProperties.Name="PHButton"
-				    Click="TestRatingControlButton_Click"
-				    Content="Set Placeholder to null" />
-				<TextBlock x:Name="ScaleTextX"
-				    AutomationProperties.AutomationId="ScaleTextXBlock"
-				    Text="Scale not propagated" />
-				<TextBlock x:Name="ScaleTextY"
-				    AutomationProperties.AutomationId="ScaleTextYBlock"
-				    Text="Scale not propagated" />
-				<TextBlock x:Name="FrameDetails"
-				    AutomationProperties.AutomationId="FrameDetails"
-				    Text="NotReady" />
-				<muxcontrols:RatingControl x:Name="MyRatingReadOnly"
-				    AutomationProperties.Name="MyRatingReadOnly"
-				    Caption="ReadOnly"
-				    IsReadOnly="true"
-				    Value="2.2" />
-				<muxcontrols:RatingControl x:Name="MyRatingReadOnlyWithValue"
-				    AutomationProperties.Name="MyRatingReadOnlyWithValue"
-				    Caption="ReadOnly with Value"
-				    IsReadOnly="true"
-				    ValueChanged="MyRatingReadOnly_ValueChanged" />
-				<TextBlock x:Name="MyRatingReadOnlyTextBlock"
-				    AutomationProperties.Name="MyRatingReadOnlyTextBlock"
-				    Text="Test Not Started" />
-				<muxcontrols:RatingControl x:Name="MyRatingReadOnlyWithPlaceholder"
-				    AutomationProperties.Name="MyRatingReadOnlyWithPlaceholder"
-				    Caption="ReadOnly with Placeholder"
-				    IsReadOnly="true" />
-				<muxcontrols:RatingControl x:Name="MyRatingIsClearEnabled"
-				    AutomationProperties.Name="MyRatingIsClearEnabled"
-				    Caption="Unclearable"
-				    IsClearEnabled="false"
-				    ValueChanged="MyRatingIsClearEnabled_ValueChanged" />
-				<TextBlock x:Name="MyRatingIsClearEnabledText"
-				    AutomationProperties.Name="MyRatingIsClearEnabledText"
-				    Text="Test Not Started [2]" />
-				<muxcontrols:RatingControl x:Name="MyRatingInitialSetValue"
-				    Caption="InitialSetValue: 3"
-				    InitialSetValue="3" />
-				<muxcontrols:RatingControl x:Name="SpecText"
-				    Caption="Your rating" />
-				<muxcontrols:RatingControl x:Name="SpecNumbers"
-				    Caption="(3856)" />
+    <StackPanel
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+        Orientation="Vertical">
+        <!--  this guy is out of the Scroller because it's where I do panning tests: [and having nested pannable things is NOT WHAT SHOULD BE DONE!]  -->
+        <!--  Uno specific: TestRatingControl_Unloaded  -->
+        <muxcontrols:RatingControl
+            x:Name="TestRatingControl"
+            AutomationProperties.Name="TestRatingControl"
+            Loaded="TestRatingControl_Loaded"
+            PlaceholderValue="2.5"
+            Unloaded="TestRatingControl_Unloaded" />
+        <ScrollViewer Grid.Column="0" Height="500">
+            <StackPanel
+                x:Name="mainStackPanel"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                <TextBlock
+                    x:Name="TestTextBlockControl"
+                    AutomationProperties.Name="TestTextBlockControl"
+                    Text="Test Not Started" />
+                <Button
+                    AutomationProperties.Name="PHButton"
+                    Click="TestRatingControlButton_Click"
+                    Content="Set Placeholder to null" />
+                <TextBlock
+                    x:Name="ScaleTextX"
+                    AutomationProperties.AutomationId="ScaleTextXBlock"
+                    Text="Scale not propagated" />
+                <TextBlock
+                    x:Name="ScaleTextY"
+                    AutomationProperties.AutomationId="ScaleTextYBlock"
+                    Text="Scale not propagated" />
+                <TextBlock
+                    x:Name="FrameDetails"
+                    AutomationProperties.AutomationId="FrameDetails"
+                    Text="NotReady" />
+                <muxcontrols:RatingControl
+                    x:Name="MyRatingReadOnly"
+                    AutomationProperties.Name="MyRatingReadOnly"
+                    Caption="ReadOnly"
+                    IsReadOnly="true"
+                    Value="2.2" />
+                <muxcontrols:RatingControl
+                    x:Name="MyRatingReadOnlyWithValue"
+                    AutomationProperties.Name="MyRatingReadOnlyWithValue"
+                    Caption="ReadOnly with Value"
+                    IsReadOnly="true"
+                    ValueChanged="MyRatingReadOnly_ValueChanged" />
+                <TextBlock
+                    x:Name="MyRatingReadOnlyTextBlock"
+                    AutomationProperties.Name="MyRatingReadOnlyTextBlock"
+                    Text="Test Not Started" />
+                <muxcontrols:RatingControl
+                    x:Name="MyRatingReadOnlyWithPlaceholder"
+                    AutomationProperties.Name="MyRatingReadOnlyWithPlaceholder"
+                    Caption="ReadOnly with Placeholder"
+                    IsReadOnly="true" />
+                <muxcontrols:RatingControl
+                    x:Name="MyRatingIsClearEnabled"
+                    AutomationProperties.Name="MyRatingIsClearEnabled"
+                    Caption="Unclearable"
+                    IsClearEnabled="false"
+                    ValueChanged="MyRatingIsClearEnabled_ValueChanged" />
+                <TextBlock
+                    x:Name="MyRatingIsClearEnabledText"
+                    AutomationProperties.Name="MyRatingIsClearEnabledText"
+                    Text="Test Not Started [2]" />
+                <muxcontrols:RatingControl
+                    x:Name="MyRatingInitialSetValue"
+                    Caption="InitialSetValue: 3"
+                    InitialSetValue="3" />
+                <muxcontrols:RatingControl x:Name="SpecText" Caption="Your rating" />
+                <muxcontrols:RatingControl x:Name="SpecNumbers" Caption="(3856)" />
 
-				<muxcontrols:RatingControl x:Name="RatingBindingSample"
-				    AutomationProperties.Name="RatingBindingSample"
-				    Caption="{Binding Path=Text, Mode=OneWay}" />
-				<TextBlock x:Name="RatingBindingSampleText"
-				    AutomationProperties.AutomationId="RatingBindingSampleText"
-				    Text="Test Not Started" />
-				<Button AutomationProperties.Name="RatingBindingSampleButton"
-				    Click="RatingBindingSampleButton_Click"
-				    Content="Make ^ textblock be the ^^ rating's caption" />
+                <muxcontrols:RatingControl
+                    x:Name="RatingBindingSample"
+                    AutomationProperties.Name="RatingBindingSample"
+                    Caption="{Binding Path=Text, Mode=OneWay}" />
+                <TextBlock
+                    x:Name="RatingBindingSampleText"
+                    AutomationProperties.AutomationId="RatingBindingSampleText"
+                    Text="Test Not Started" />
+                <Button
+                    AutomationProperties.Name="RatingBindingSampleButton"
+                    Click="RatingBindingSampleButton_Click"
+                    Content="Make ^ textblock be the ^^ rating's caption" />
 
-				<muxcontrols:RatingControl x:Name="RatingXBindSample"
-				    AutomationProperties.Name="RatingXBindSample"
-				    Caption="{x:Bind CaptionStringBox.Text, Mode=OneWay}" />
-				<TextBlock x:Name="RatingXBindSampleText"
-				    AutomationProperties.Name="RatingXBindSampleText"
-				    Text="Test Not Started" />
-				<Button AutomationProperties.Name="RatingXBindSampleButton"
-				    Click="RatingXBindSampleButton_Click"
-				    Content="Make ^ textblock be the ^^ rating's caption" />
+                <muxcontrols:RatingControl
+                    x:Name="RatingXBindSample"
+                    AutomationProperties.Name="RatingXBindSample"
+                    Caption="{x:Bind CaptionStringBox.Text, Mode=OneWay}" />
+                <TextBlock
+                    x:Name="RatingXBindSampleText"
+                    AutomationProperties.Name="RatingXBindSampleText"
+                    Text="Test Not Started" />
+                <Button
+                    AutomationProperties.Name="RatingXBindSampleButton"
+                    Click="RatingXBindSampleButton_Click"
+                    Content="Make ^ textblock be the ^^ rating's caption" />
 
-				<muxcontrols:RatingControl x:Name="BindingRatingCaption"
-				    Caption="This rating control is to test {Binding} to non-RC DPs"
-				    Foreground="{Binding Foreground}"
-				    MaxRating="1" />
-				<muxcontrols:RatingControl Caption="This rating control is to test {x:Bind} to non-RC DPs"
-				    Foreground="{x:Bind ColorFlipButton.Foreground, Mode=OneWay}"
-				    MaxRating="1" />
+                <muxcontrols:RatingControl
+                    x:Name="BindingRatingCaption"
+                    Caption="This rating control is to test {Binding} to non-RC DPs"
+                    Foreground="{Binding Foreground}"
+                    MaxRating="1" />
+                <muxcontrols:RatingControl
+                    Caption="This rating control is to test {x:Bind} to non-RC DPs"
+                    Foreground="{x:Bind ColorFlipButton.Foreground, Mode=OneWay}"
+                    MaxRating="1" />
 
-				<Button x:Name="ColorFlipButton"
-				    Click="ColorFlipButton_Click"
-				    Content="Flip the bound caption colors" />
+                <Button
+                    x:Name="ColorFlipButton"
+                    Click="ColorFlipButton_Click"
+                    Content="Flip the bound caption colors" />
 
-				<TextBox x:Name="CaptionStringBox"
-				    Text="Binding successful" />
+                <TextBox x:Name="CaptionStringBox" Text="Binding successful" />
 
-				<Slider x:Name="Slider1"
-				    Maximum="5" />
-				<muxcontrols:RatingControl Value="{Binding Slider1.Value}" />
-				<muxcontrols:RatingControl Value="{x:Bind Slider1.Value, Mode=OneWay}" />
+                <Slider x:Name="Slider1" Maximum="5" />
+                <muxcontrols:RatingControl Value="{Binding Slider1.Value}" />
+                <muxcontrols:RatingControl Value="{x:Bind Slider1.Value, Mode=OneWay}" />
 
-				<muxcontrols:RatingControl x:Name="ValueChangeInMarkup"
-				    AutomationProperties.Name="ValueChangeInMarkup"
-				    Caption="Unclearable"
-				    IsClearEnabled="false"
-				    ValueChanged="ValueChangeInMarkup_ValueChanged" />
-				<TextBlock x:Name="ValueChangeInMarkupText"
-				    AutomationProperties.Name="ValueChangeInMarkupText"
-				    Text="Test Not Started [3]" />
+                <muxcontrols:RatingControl
+                    x:Name="ValueChangeInMarkup"
+                    AutomationProperties.Name="ValueChangeInMarkup"
+                    Caption="Unclearable"
+                    IsClearEnabled="false"
+                    ValueChanged="ValueChangeInMarkup_ValueChanged" />
+                <TextBlock
+                    x:Name="ValueChangeInMarkupText"
+                    AutomationProperties.Name="ValueChangeInMarkupText"
+                    Text="Test Not Started [3]" />
 
-				<muxcontrols:RatingControl Caption="this rating should be squares"
-				    FontFamily="Times New Roman" />
+                <muxcontrols:RatingControl Caption="this rating should be squares" FontFamily="Times New Roman" />
 
-				<muxcontrols:RatingControl x:Name="MakeMeSquares" />
-				<Button x:Name="MakeTheAboveRatingSquares"
-				    Click="MakeTheAboveRatingSquares_Click"
-				    Content="Make the above RC squares" />
+                <muxcontrols:RatingControl x:Name="MakeMeSquares" />
+                <Button
+                    x:Name="MakeTheAboveRatingSquares"
+                    Click="MakeTheAboveRatingSquares_Click"
+                    Content="Make the above RC squares" />
 
-				<muxcontrols:RatingControl x:Name="CustomGlyphs">
-					<muxcontrols:RatingControl.ItemInfo>
-						<muxcontrols:RatingItemFontInfo DisabledGlyph="&#xE899;"
-						    Glyph="&#xE899;"
-						    PointerOverGlyph="&#xE899;"
-						    PointerOverPlaceholderGlyph="&#xE899;"
-						    UnsetGlyph="&#xE899;" />
-					</muxcontrols:RatingControl.ItemInfo>
-				</muxcontrols:RatingControl>
+                <muxcontrols:RatingControl x:Name="CustomGlyphs">
+                    <muxcontrols:RatingControl.ItemInfo>
+                        <muxcontrols:RatingItemFontInfo
+                            DisabledGlyph="&#xE899;"
+                            Glyph="&#xE899;"
+                            PointerOverGlyph="&#xE899;"
+                            PointerOverPlaceholderGlyph="&#xE899;"
+                            UnsetGlyph="&#xE899;" />
+                    </muxcontrols:RatingControl.ItemInfo>
+                </muxcontrols:RatingControl>
 
-				<muxcontrols:RatingControl x:Name="CustomImages"
-				    AutomationProperties.AutomationId="CustomImages"
-				    Caption="CustomImages1"
-				    Loaded="CustomImages_Loaded">
-					<muxcontrols:RatingControl.ItemInfo>
-						<muxcontrols:RatingItemImageInfo DisabledImage="ms-appx:/Assets/rating_disabled.png"
-						    Image="ms-appx:/Assets/rating_set.png"
-						    PlaceholderImage="ms-appx:/Assets/rating_placeholder.png"
-						    PointerOverImage="ms-appx:/Assets/rating_mouseoverset.png"
-						    PointerOverPlaceholderImage="ms-appx:/Assets/rating_mouseoverplaceholder.png"
-						    UnsetImage="ms-appx:/Assets/rating_unset.png" />
-					</muxcontrols:RatingControl.ItemInfo>
-				</muxcontrols:RatingControl>
+                <muxcontrols:RatingControl
+                    x:Name="CustomImages"
+                    AutomationProperties.AutomationId="CustomImages"
+                    Caption="CustomImages1"
+                    Loaded="CustomImages_Loaded">
+                    <muxcontrols:RatingControl.ItemInfo>
+                        <muxcontrols:RatingItemImageInfo
+                            DisabledImage="ms-appx:/Assets/rating_disabled.png"
+                            Image="ms-appx:/Assets/rating_set.png"
+                            PlaceholderImage="ms-appx:/Assets/rating_placeholder.png"
+                            PointerOverImage="ms-appx:/Assets/rating_mouseoverset.png"
+                            PointerOverPlaceholderImage="ms-appx:/Assets/rating_mouseoverplaceholder.png"
+                            UnsetImage="ms-appx:/Assets/rating_unset.png" />
+                    </muxcontrols:RatingControl.ItemInfo>
+                </muxcontrols:RatingControl>
 
-				<CheckBox x:Name="CustomImagesLoadedCheckBox"
-				    AutomationProperties.AutomationId="CustomImagesLoadedCheckBox"
-				    Content="CustomImages loaded"
-				    IsChecked="False" />
+                <CheckBox
+                    x:Name="CustomImagesLoadedCheckBox"
+                    AutomationProperties.AutomationId="CustomImagesLoadedCheckBox"
+                    Content="CustomImages loaded"
+                    IsChecked="False" />
 
-				<muxcontrols:RatingControl x:Name="CustomImagesTwo"
-				    AutomationProperties.AutomationId="CustomImagesTwo"
-				    Caption="CustomImages2"
-				    Loaded="CustomImagesTwo_Loaded" />
-				<Button x:Name="ChangeCustomImagesTwoType"
-				    AutomationProperties.AutomationId="ChangeCustomImagesTwoType"
-				    Click="ChangeCustomImagesTwoType_Click"
-				    Content="ChangeType" />
+                <muxcontrols:RatingControl
+                    x:Name="CustomImagesTwo"
+                    AutomationProperties.AutomationId="CustomImagesTwo"
+                    Caption="CustomImages2"
+                    Loaded="CustomImagesTwo_Loaded" />
+                <Button
+                    x:Name="ChangeCustomImagesTwoType"
+                    AutomationProperties.AutomationId="ChangeCustomImagesTwoType"
+                    Click="ChangeCustomImagesTwoType_Click"
+                    Content="ChangeType" />
 
-				<CheckBox x:Name="CustomImagesTwoLoadedStageOneCheckBox"
-				    AutomationProperties.AutomationId="StageOneCheckbox"
-				    Content="Stage1 done"
-				    IsChecked="False" />
-				<CheckBox x:Name="CustomImagesTwoLoadedStageTwoCheckBox"
-				    AutomationProperties.AutomationId="StageTwoCheckbox"
-				    Content="Stage2 done"
-				    IsChecked="False" />
-				<CheckBox x:Name="CustomImagesTwoLoadedStageThreeCheckBox"
-				    AutomationProperties.AutomationId="StageThreeCheckbox"
-				    Content="Stage3 done"
-				    IsChecked="False" />
+                <CheckBox
+                    x:Name="CustomImagesTwoLoadedStageOneCheckBox"
+                    AutomationProperties.AutomationId="StageOneCheckbox"
+                    Content="Stage1 done"
+                    IsChecked="False" />
+                <CheckBox
+                    x:Name="CustomImagesTwoLoadedStageTwoCheckBox"
+                    AutomationProperties.AutomationId="StageTwoCheckbox"
+                    Content="Stage2 done"
+                    IsChecked="False" />
+                <CheckBox
+                    x:Name="CustomImagesTwoLoadedStageThreeCheckBox"
+                    AutomationProperties.AutomationId="StageThreeCheckbox"
+                    Content="Stage3 done"
+                    IsChecked="False" />
 
-				<muxcontrols:RatingControl x:Name="ValuePatternRoundTest1"
-				    AutomationProperties.AutomationId="ValuePatternRoundTest1"
-				    Value="1.50" />
-				<muxcontrols:RatingControl x:Name="ValuePatternRoundTest2"
-				    AutomationProperties.AutomationId="ValuePatternRoundTest2"
-				    Value="1.55" />
-				<muxcontrols:RatingControl x:Name="ValuePatternRoundTest3"
-				    AutomationProperties.AutomationId="ValuePatternRoundTest3"
-				    Value="1.501" />
+                <muxcontrols:RatingControl
+                    x:Name="ValuePatternRoundTest1"
+                    AutomationProperties.AutomationId="ValuePatternRoundTest1"
+                    Value="1.50" />
+                <muxcontrols:RatingControl
+                    x:Name="ValuePatternRoundTest2"
+                    AutomationProperties.AutomationId="ValuePatternRoundTest2"
+                    Value="1.55" />
+                <muxcontrols:RatingControl
+                    x:Name="ValuePatternRoundTest3"
+                    AutomationProperties.AutomationId="ValuePatternRoundTest3"
+                    Value="1.501" />
 
-				<muxcontrols:RatingControl x:Name="MagicDisengager"
-				    AutomationProperties.AutomationId="MagicDisengager"
-				    Caption="Resets at 3"
-				    ValueChanged="MagicDisengager_ValueChanged" />
-				<TextBlock x:Name="MagicDisengagerTextBlock"
-				    AutomationProperties.AutomationId="MagicDisengagerTextBlock" />
+                <muxcontrols:RatingControl
+                    x:Name="MagicDisengager"
+                    AutomationProperties.AutomationId="MagicDisengager"
+                    Caption="Resets at 3"
+                    ValueChanged="MagicDisengager_ValueChanged" />
+                <TextBlock x:Name="MagicDisengagerTextBlock" AutomationProperties.AutomationId="MagicDisengagerTextBlock" />
 
 
-				<Grid Height="48"
-				    Background="Black">
-					<muxcontrols:RatingControl x:Name="RatingDarkTheme"
-					    Caption="What"
-					    RequestedTheme="Dark" />
-				</Grid>
-				<Button AutomationProperties.Name="RTLButton"
-				    Click="Button_Click"
-				    Content="Right to Left" />
-				<muxcontrols:RatingControl x:Name="CapitalAscenders"
-				    Caption="á à Â Á" />
-				<muxcontrols:RatingControl x:Name="Capitals"
-				    Caption="A B C D" />
-				<muxcontrols:RatingControl x:Name="Descenders"
-				    Caption="j y" />
-				<muxcontrols:RatingControl x:Name="Max"
-				    Caption="j y á à Â Á" />
-				<muxcontrols:RatingControl x:Name="lowercase"
-				    Caption="a b c d e" />
-				<muxcontrols:RatingControl x:Name="lowercaseAscenders"
-				    Caption="á à" />
-				<TextBlock Text="--- there's a collapsed rating control below here ---" />
-				<muxcontrols:RatingControl x:Name="CollapsedRatingControl"
-				    AutomationProperties.Name="CollapsedRatingControl"
-				    Visibility="Collapsed" />
-				<Button AutomationProperties.Name="CollapsedRatingControlButton"
-				    Click="CollapsedRatingControlButton_Click"
-				    Content="Set Rating of invisible control above" />
+                <Grid Height="48" Background="Black">
+                    <muxcontrols:RatingControl
+                        x:Name="RatingDarkTheme"
+                        Caption="What"
+                        RequestedTheme="Dark" />
+                </Grid>
+                <Button
+                    AutomationProperties.Name="RTLButton"
+                    Click="Button_Click"
+                    Content="Right to Left" />
+                <muxcontrols:RatingControl x:Name="CapitalAscenders" Caption="á à Â Á" />
+                <muxcontrols:RatingControl x:Name="Capitals" Caption="A B C D" />
+                <muxcontrols:RatingControl x:Name="Descenders" Caption="j y" />
+                <muxcontrols:RatingControl x:Name="Max" Caption="j y á à Â Á" />
+                <muxcontrols:RatingControl x:Name="lowercase" Caption="a b c d e" />
+                <muxcontrols:RatingControl x:Name="lowercaseAscenders" Caption="á à" />
+                <TextBlock Text="--- there's a collapsed rating control below here ---" />
+                <muxcontrols:RatingControl
+                    x:Name="CollapsedRatingControl"
+                    AutomationProperties.Name="CollapsedRatingControl"
+                    Visibility="Collapsed" />
+                <Button
+                    AutomationProperties.Name="CollapsedRatingControlButton"
+                    Click="CollapsedRatingControlButton_Click"
+                    Content="Set Rating of invisible control above" />
 
-				<muxcontrols:RatingControl x:Name="MaxRating6Unset"
-				    MaxRating="6" />
-				<muxcontrols:RatingControl x:Name="MaxRating9Unset"
-				    AutomationProperties.Name="MaxRating9Unset"
-				    MaxRating="9"
-				    ValueChanged="MaxRating9Unset_ValueChanged" />
-				<TextBlock x:Name="MaxRating9UnsetTextBlock"
-				    AutomationProperties.Name="MaxRating9UnsetTextBlock"
-				    Text="Test Not Started [MR9]" />
-				<muxcontrols:RatingControl x:Name="MaxRating6Set"
-				    MaxRating="6" />
-				<muxcontrols:RatingControl x:Name="MaxRating9Set"
-				    MaxRating="9" />
+                <muxcontrols:RatingControl x:Name="MaxRating6Unset" MaxRating="6" />
+                <muxcontrols:RatingControl
+                    x:Name="MaxRating9Unset"
+                    AutomationProperties.Name="MaxRating9Unset"
+                    MaxRating="9"
+                    ValueChanged="MaxRating9Unset_ValueChanged" />
+                <TextBlock
+                    x:Name="MaxRating9UnsetTextBlock"
+                    AutomationProperties.Name="MaxRating9UnsetTextBlock"
+                    Text="Test Not Started [MR9]" />
+                <muxcontrols:RatingControl x:Name="MaxRating6Set" MaxRating="6" />
+                <muxcontrols:RatingControl x:Name="MaxRating9Set" MaxRating="9" />
 
-				<muxcontrols:RatingControl x:Name="MaxRating6UnsetWCaption"
-				    Caption="Caption"
-				    MaxRating="6" />
-				<muxcontrols:RatingControl x:Name="MaxRating9UnsetWCaption"
-				    Caption="Caption"
-				    MaxRating="9" />
-				<muxcontrols:RatingControl x:Name="MaxRating6SetWCaption"
-				    Caption="Caption"
-				    MaxRating="6" />
-				<muxcontrols:RatingControl x:Name="MaxRating9SetWCaption"
-				    Caption="Caption"
-				    MaxRating="9" />
+                <muxcontrols:RatingControl
+                    x:Name="MaxRating6UnsetWCaption"
+                    Caption="Caption"
+                    MaxRating="6" />
+                <muxcontrols:RatingControl
+                    x:Name="MaxRating9UnsetWCaption"
+                    Caption="Caption"
+                    MaxRating="9" />
+                <muxcontrols:RatingControl
+                    x:Name="MaxRating6SetWCaption"
+                    Caption="Caption"
+                    MaxRating="6" />
+                <muxcontrols:RatingControl
+                    x:Name="MaxRating9SetWCaption"
+                    Caption="Caption"
+                    MaxRating="9" />
 
-				<muxcontrols:RatingControl x:Name="DisabledWithValue"
-				    Caption="Disabled with alue"
-				    IsEnabled="False" />
-				<muxcontrols:RatingControl x:Name="DisabledWithPlaceholderValue"
-				    Caption="Disabled with placeholder value"
-				    IsEnabled="False" />
-				<muxcontrols:RatingControl Caption="Disabled"
-				    IsEnabled="False" />
+                <muxcontrols:RatingControl
+                    x:Name="DisabledWithValue"
+                    Caption="Disabled with alue"
+                    IsEnabled="False" />
+                <muxcontrols:RatingControl
+                    x:Name="DisabledWithPlaceholderValue"
+                    Caption="Disabled with placeholder value"
+                    IsEnabled="False" />
+                <muxcontrols:RatingControl Caption="Disabled" IsEnabled="False" />
 
-				<StackPanel Orientation="Vertical">
-					<StackPanel.Resources>
-						<Style BasedOn="{StaticResource BodyTextBlockStyle}"
-						    TargetType="TextBlock">
-							<Setter Property="FontFamily" Value="Times New Roman" />
-						</Style>
-					</StackPanel.Resources>
-					<muxcontrols:RatingControl x:Name="PlzDontBeSquares"
-					    Caption="These shouldn't be squares" />
-				</StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <StackPanel.Resources>
+                        <Style BasedOn="{StaticResource BodyTextBlockStyle}" TargetType="TextBlock">
+                            <Setter Property="FontFamily" Value="Times New Roman" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <muxcontrols:RatingControl x:Name="PlzDontBeSquares" Caption="These shouldn't be squares" />
+                </StackPanel>
 
-				<StackPanel Orientation="Horizontal">
-					<muxcontrols:RatingControl x:Name="UnsetFallbackRating"
-					    AutomationProperties.AutomationId="UnsetFallbackRating"
-					    Loaded="UnsetFallbackRating_Loaded"
-					    MaxRating="1">
-						<muxcontrols:RatingControl.Resources>
-							<ResourceDictionary>
-								<SolidColorBrush x:Key="RatingControlBackground"
-								    Color="Red" />
-							</ResourceDictionary>
-						</muxcontrols:RatingControl.Resources>
-						<muxcontrols:RatingControl.ItemInfo>
-							<muxcontrols:RatingItemFontInfo Glyph="&#xE00B;" />
-						</muxcontrols:RatingControl.ItemInfo>
-					</muxcontrols:RatingControl>
-					<TextBlock x:Name="UnsetFallbackTextBlock"
-					    AutomationProperties.AutomationId="UnsetFallbackTextBlock"
-					    Text="^" />
+                <StackPanel Orientation="Horizontal">
+                    <muxcontrols:RatingControl
+                        x:Name="UnsetFallbackRating"
+                        AutomationProperties.AutomationId="UnsetFallbackRating"
+                        Loaded="UnsetFallbackRating_Loaded"
+                        MaxRating="1">
+                        <muxcontrols:RatingControl.Resources>
+                            <ResourceDictionary>
+                                <SolidColorBrush x:Key="RatingControlBackground" Color="Red" />
+                            </ResourceDictionary>
+                        </muxcontrols:RatingControl.Resources>
+                        <muxcontrols:RatingControl.ItemInfo>
+                            <muxcontrols:RatingItemFontInfo Glyph="&#xE00B;" />
+                        </muxcontrols:RatingControl.ItemInfo>
+                    </muxcontrols:RatingControl>
+                    <TextBlock
+                        x:Name="UnsetFallbackTextBlock"
+                        AutomationProperties.AutomationId="UnsetFallbackTextBlock"
+                        Text="^" />
 
-					<muxcontrols:RatingControl x:Name="PlaceholderFallbackRating"
-					    AutomationProperties.AutomationId="PlaceholderFallbackRating"
-					    Loaded="PlaceholderFallbackRating_Loaded"
-					    MaxRating="1"
-					    PlaceholderValue="0.5">
-						<muxcontrols:RatingControl.ItemInfo>
-							<muxcontrols:RatingItemFontInfo Glyph="&#xE909;" />
-						</muxcontrols:RatingControl.ItemInfo>
-					</muxcontrols:RatingControl>
-					<TextBlock x:Name="PlaceholderFallbackTextBlock"
-					    AutomationProperties.AutomationId=""
-					    Text="^" />
+                    <muxcontrols:RatingControl
+                        x:Name="PlaceholderFallbackRating"
+                        AutomationProperties.AutomationId="PlaceholderFallbackRating"
+                        Loaded="PlaceholderFallbackRating_Loaded"
+                        MaxRating="1"
+                        PlaceholderValue="0.5">
+                        <muxcontrols:RatingControl.ItemInfo>
+                            <muxcontrols:RatingItemFontInfo Glyph="&#xE909;" />
+                        </muxcontrols:RatingControl.ItemInfo>
+                    </muxcontrols:RatingControl>
+                    <TextBlock
+                        x:Name="PlaceholderFallbackTextBlock"
+                        AutomationProperties.AutomationId=""
+                        Text="^" />
 
-					<muxcontrols:RatingControl x:Name="DisabledFallbackRating"
-					    AutomationProperties.AutomationId=""
-					    IsEnabled="false"
-					    Loaded="DisabledFallbackRating_Loaded"
-					    MaxRating="1">
-						<muxcontrols:RatingControl.ItemInfo>
-							<muxcontrols:RatingItemFontInfo Glyph="&#xE8DD;" />
-						</muxcontrols:RatingControl.ItemInfo>
-					</muxcontrols:RatingControl>
-					<TextBlock x:Name="DisabledFallbackTextBlock"
-					    AutomationProperties.AutomationId="DisabledFallbackTextBlock"
-					    Text="^" />
+                    <muxcontrols:RatingControl
+                        x:Name="DisabledFallbackRating"
+                        AutomationProperties.AutomationId=""
+                        IsEnabled="false"
+                        Loaded="DisabledFallbackRating_Loaded"
+                        MaxRating="1">
+                        <muxcontrols:RatingControl.ItemInfo>
+                            <muxcontrols:RatingItemFontInfo Glyph="&#xE8DD;" />
+                        </muxcontrols:RatingControl.ItemInfo>
+                    </muxcontrols:RatingControl>
+                    <TextBlock
+                        x:Name="DisabledFallbackTextBlock"
+                        AutomationProperties.AutomationId="DisabledFallbackTextBlock"
+                        Text="^" />
 
-					<muxcontrols:RatingControl x:Name="PointerOverPlaceholderFallbackRating"
-					    AutomationProperties.AutomationId="PointerOverPlaceholderFallbackRating"
-					    MaxRating="1"
-					    PlaceholderValue="0.5">
-						<muxcontrols:RatingControl.ItemInfo>
-							<muxcontrols:RatingItemFontInfo Glyph="&#xE730;"
-							    PlaceholderGlyph="&#xEBAA;" />
-						</muxcontrols:RatingControl.ItemInfo>
-					</muxcontrols:RatingControl>
-					<TextBlock x:Name="PointerOverPlaceholderFallbackTextBlock"
-					    AutomationProperties.AutomationId="PointerOverPlaceholderFallbackTextBlock"
-					    Text="^" />
+                    <muxcontrols:RatingControl
+                        x:Name="PointerOverPlaceholderFallbackRating"
+                        AutomationProperties.AutomationId="PointerOverPlaceholderFallbackRating"
+                        MaxRating="1"
+                        PlaceholderValue="0.5">
+                        <muxcontrols:RatingControl.ItemInfo>
+                            <muxcontrols:RatingItemFontInfo Glyph="&#xE730;" PlaceholderGlyph="&#xEBAA;" />
+                        </muxcontrols:RatingControl.ItemInfo>
+                    </muxcontrols:RatingControl>
+                    <TextBlock
+                        x:Name="PointerOverPlaceholderFallbackTextBlock"
+                        AutomationProperties.AutomationId="PointerOverPlaceholderFallbackTextBlock"
+                        Text="^" />
 
-					<muxcontrols:RatingControl x:Name="PointerOverFallbackRating"
-					    AutomationProperties.AutomationId="PointerOverFallbackRating"
-					    MaxRating="1">
-						<muxcontrols:RatingControl.ItemInfo>
-							<muxcontrols:RatingItemFontInfo Glyph="&#xE8CA;" />
-						</muxcontrols:RatingControl.ItemInfo>
-					</muxcontrols:RatingControl>
-					<TextBlock x:Name="PointerOverFallbackTextBlock"
-					    AutomationProperties.AutomationId="PointerOverFallbackTextBlock"
-					    Text="^" />
+                    <muxcontrols:RatingControl
+                        x:Name="PointerOverFallbackRating"
+                        AutomationProperties.AutomationId="PointerOverFallbackRating"
+                        MaxRating="1">
+                        <muxcontrols:RatingControl.ItemInfo>
+                            <muxcontrols:RatingItemFontInfo Glyph="&#xE8CA;" />
+                        </muxcontrols:RatingControl.ItemInfo>
+                    </muxcontrols:RatingControl>
+                    <TextBlock
+                        x:Name="PointerOverFallbackTextBlock"
+                        AutomationProperties.AutomationId="PointerOverFallbackTextBlock"
+                        Text="^" />
 
-					<muxcontrols:RatingControl x:Name="NoFallbackRating"
-					    AutomationProperties.AutomationId="NoFallbackRating"
-					    Loaded="NoFallbackRating_Loaded"
-					    MaxRating="1">
-						<muxcontrols:RatingControl.ItemInfo>
-							<muxcontrols:RatingItemFontInfo DisabledGlyph="&#xE8CA;" />
-						</muxcontrols:RatingControl.ItemInfo>
-					</muxcontrols:RatingControl>
-					<TextBlock x:Name="NoFallbackTextBlock"
-					    AutomationProperties.AutomationId="NoFallbackTextBlock"
-					    Text="^" />
-				</StackPanel>
+                    <muxcontrols:RatingControl
+                        x:Name="NoFallbackRating"
+                        AutomationProperties.AutomationId="NoFallbackRating"
+                        Loaded="NoFallbackRating_Loaded"
+                        MaxRating="1">
+                        <muxcontrols:RatingControl.ItemInfo>
+                            <muxcontrols:RatingItemFontInfo DisabledGlyph="&#xE8CA;" />
+                        </muxcontrols:RatingControl.ItemInfo>
+                    </muxcontrols:RatingControl>
+                    <TextBlock
+                        x:Name="NoFallbackTextBlock"
+                        AutomationProperties.AutomationId="NoFallbackTextBlock"
+                        Text="^" />
+                </StackPanel>
 
-				<StackPanel Orientation="Horizontal">
-					<muxcontrols:RatingControl x:Name="UnsetImageFallbackRating"
-					    AutomationProperties.AutomationId="UnsetImageFallbackRating"
-					    Loaded="UnsetImageFallbackRating_Loaded"
-					    MaxRating="1">
-						<muxcontrols:RatingControl.ItemInfo>
-							<muxcontrols:RatingItemImageInfo Image="ms-appx:/Assets/rating_set.png" />
-						</muxcontrols:RatingControl.ItemInfo>
-					</muxcontrols:RatingControl>
-					<TextBlock x:Name="UnsetImageFallbackTextBlock"
-					    AutomationProperties.AutomationId="UnsetImageFallbackTextBlock"
-					    Text="^" />
+                <StackPanel Orientation="Horizontal">
+                    <muxcontrols:RatingControl
+                        x:Name="UnsetImageFallbackRating"
+                        AutomationProperties.AutomationId="UnsetImageFallbackRating"
+                        Loaded="UnsetImageFallbackRating_Loaded"
+                        MaxRating="1">
+                        <muxcontrols:RatingControl.ItemInfo>
+                            <muxcontrols:RatingItemImageInfo Image="ms-appx:/Assets/rating_set.png" />
+                        </muxcontrols:RatingControl.ItemInfo>
+                    </muxcontrols:RatingControl>
+                    <TextBlock
+                        x:Name="UnsetImageFallbackTextBlock"
+                        AutomationProperties.AutomationId="UnsetImageFallbackTextBlock"
+                        Text="^" />
 
-					<muxcontrols:RatingControl x:Name="PlaceholderImageFallbackRating"
-					    AutomationProperties.AutomationId="PlaceholderImageFallbackRating"
-					    Loaded="PlaceholderImageFallbackRating_Loaded"
-					    MaxRating="1"
-					    PlaceholderValue="0.5">
-						<muxcontrols:RatingControl.ItemInfo>
-							<muxcontrols:RatingItemImageInfo Image="ms-appx:/Assets/rating_unset.png" />
-						</muxcontrols:RatingControl.ItemInfo>
-					</muxcontrols:RatingControl>
-					<TextBlock x:Name="PlaceholderImageFallbackTextBlock"
-					    AutomationProperties.AutomationId=""
-					    Text="^" />
+                    <muxcontrols:RatingControl
+                        x:Name="PlaceholderImageFallbackRating"
+                        AutomationProperties.AutomationId="PlaceholderImageFallbackRating"
+                        Loaded="PlaceholderImageFallbackRating_Loaded"
+                        MaxRating="1"
+                        PlaceholderValue="0.5">
+                        <muxcontrols:RatingControl.ItemInfo>
+                            <muxcontrols:RatingItemImageInfo Image="ms-appx:/Assets/rating_unset.png" />
+                        </muxcontrols:RatingControl.ItemInfo>
+                    </muxcontrols:RatingControl>
+                    <TextBlock
+                        x:Name="PlaceholderImageFallbackTextBlock"
+                        AutomationProperties.AutomationId=""
+                        Text="^" />
 
-					<muxcontrols:RatingControl x:Name="DisabledImageFallbackRating"
-					    AutomationProperties.AutomationId=""
-					    IsEnabled="false"
-					    Loaded="DisabledImageFallbackRating_Loaded"
-					    MaxRating="1">
-						<muxcontrols:RatingControl.ItemInfo>
-							<muxcontrols:RatingItemImageInfo Image="ms-appx:/Assets/rating_placeholder.png" />
-						</muxcontrols:RatingControl.ItemInfo>
-					</muxcontrols:RatingControl>
-					<TextBlock x:Name="DisabledImageFallbackTextBlock"
-					    AutomationProperties.AutomationId="DisabledImageFallbackTextBlock"
-					    Text="^" />
+                    <muxcontrols:RatingControl
+                        x:Name="DisabledImageFallbackRating"
+                        AutomationProperties.AutomationId=""
+                        IsEnabled="false"
+                        Loaded="DisabledImageFallbackRating_Loaded"
+                        MaxRating="1">
+                        <muxcontrols:RatingControl.ItemInfo>
+                            <muxcontrols:RatingItemImageInfo Image="ms-appx:/Assets/rating_placeholder.png" />
+                        </muxcontrols:RatingControl.ItemInfo>
+                    </muxcontrols:RatingControl>
+                    <TextBlock
+                        x:Name="DisabledImageFallbackTextBlock"
+                        AutomationProperties.AutomationId="DisabledImageFallbackTextBlock"
+                        Text="^" />
 
-					<muxcontrols:RatingControl x:Name="PointerOverPlaceholderImageFallbackRating"
-					    AutomationProperties.AutomationId="PointerOverPlaceholderImageFallbackRating"
-					    MaxRating="1"
-					    PlaceholderValue="0.5">
-						<muxcontrols:RatingControl.ItemInfo>
-							<muxcontrols:RatingItemImageInfo Image="ms-appx:/Assets/rating_mouseoverset.png"
-							    PlaceholderImage="ms-appx:/Assets/rating_disabled.png" />
-						</muxcontrols:RatingControl.ItemInfo>
-					</muxcontrols:RatingControl>
-					<TextBlock x:Name="PointerOverPlaceholderImageFallbackTextBlock"
-					    AutomationProperties.AutomationId="PointerOverPlaceholderImageFallbackTextBlock"
-					    Text="^" />
+                    <muxcontrols:RatingControl
+                        x:Name="PointerOverPlaceholderImageFallbackRating"
+                        AutomationProperties.AutomationId="PointerOverPlaceholderImageFallbackRating"
+                        MaxRating="1"
+                        PlaceholderValue="0.5">
+                        <muxcontrols:RatingControl.ItemInfo>
+                            <muxcontrols:RatingItemImageInfo Image="ms-appx:/Assets/rating_mouseoverset.png" PlaceholderImage="ms-appx:/Assets/rating_disabled.png" />
+                        </muxcontrols:RatingControl.ItemInfo>
+                    </muxcontrols:RatingControl>
+                    <TextBlock
+                        x:Name="PointerOverPlaceholderImageFallbackTextBlock"
+                        AutomationProperties.AutomationId="PointerOverPlaceholderImageFallbackTextBlock"
+                        Text="^" />
 
-					<muxcontrols:RatingControl x:Name="PointerOverImageFallbackRating"
-					    AutomationProperties.AutomationId="PointerOverImageFallbackRating"
-					    MaxRating="1">
-						<muxcontrols:RatingControl.ItemInfo>
-							<muxcontrols:RatingItemImageInfo Image="ms-appx:/Assets/rating_mouseoverplaceholder.png" />
-						</muxcontrols:RatingControl.ItemInfo>
-					</muxcontrols:RatingControl>
-					<TextBlock x:Name="PointerOverImageFallbackTextBlock"
-					    AutomationProperties.AutomationId="PointerOverImageFallbackTextBlock"
-					    Text="^" />
-				</StackPanel>
-			</StackPanel>
-		</ScrollViewer>
-	</StackPanel>
+                    <muxcontrols:RatingControl
+                        x:Name="PointerOverImageFallbackRating"
+                        AutomationProperties.AutomationId="PointerOverImageFallbackRating"
+                        MaxRating="1">
+                        <muxcontrols:RatingControl.ItemInfo>
+                            <muxcontrols:RatingItemImageInfo Image="ms-appx:/Assets/rating_mouseoverplaceholder.png" />
+                        </muxcontrols:RatingControl.ItemInfo>
+                    </muxcontrols:RatingControl>
+                    <TextBlock
+                        x:Name="PointerOverImageFallbackTextBlock"
+                        AutomationProperties.AutomationId="PointerOverImageFallbackTextBlock"
+                        Text="^" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </StackPanel>
 </Page>

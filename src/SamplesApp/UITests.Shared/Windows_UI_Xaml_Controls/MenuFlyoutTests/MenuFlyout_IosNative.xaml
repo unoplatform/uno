@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutTests.MenuFlyout_IosNative"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutTests.MenuFlyout_IosNative"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,43 +10,38 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d ios">
 
-	<StackPanel>
-		<TextBlock Margin="0,16,0,0"
-		    Text="Native MenuFlyout" />
-		<Button Content="Show native MenuFlyout">
-			<Button.Flyout>
-				<MenuFlyout ios:UseNativePopup="True">
-					<MenuFlyoutItem Text="Menu Item 1" />
-					<MenuFlyoutItem Text="Menu Item 2" />
-					<MenuFlyoutItem Text="Menu Item 3" />
-				</MenuFlyout>
-			</Button.Flyout>
-		</Button>
+    <StackPanel>
+        <TextBlock Margin="0,16,0,0" Text="Native MenuFlyout" />
+        <Button Content="Show native MenuFlyout">
+            <Button.Flyout>
+                <MenuFlyout ios:UseNativePopup="True">
+                    <MenuFlyoutItem Text="Menu Item 1" />
+                    <MenuFlyoutItem Text="Menu Item 2" />
+                    <MenuFlyoutItem Text="Menu Item 3" />
+                </MenuFlyout>
+            </Button.Flyout>
+        </Button>
 
-		<TextBlock Margin="0,16,0,0"
-		    Text="Native MenuFlyout with destructive menu item" />
-		<Button Content="Show native MenuFlyout">
-			<Button.Flyout>
-				<MenuFlyout ios:UseNativePopup="True">
-					<MenuFlyoutItem toolkit:MenuFlyoutItemExtensions.IsDestructive="True"
-					    Text="Dangerous Menu Item 1" />
-					<MenuFlyoutItem Text="Menu Item 2" />
-					<MenuFlyoutItem Text="Menu Item 3" />
-				</MenuFlyout>
-			</Button.Flyout>
-		</Button>
+        <TextBlock Margin="0,16,0,0" Text="Native MenuFlyout with destructive menu item" />
+        <Button Content="Show native MenuFlyout">
+            <Button.Flyout>
+                <MenuFlyout ios:UseNativePopup="True">
+                    <MenuFlyoutItem toolkit:MenuFlyoutItemExtensions.IsDestructive="True" Text="Dangerous Menu Item 1" />
+                    <MenuFlyoutItem Text="Menu Item 2" />
+                    <MenuFlyoutItem Text="Menu Item 3" />
+                </MenuFlyout>
+            </Button.Flyout>
+        </Button>
 
-		<TextBlock Margin="0,16,0,0"
-		    Text="Native MenuFlyout with custom cancel button text" />
-		<Button Content="Show native MenuFlyout">
-			<Button.Flyout>
-				<MenuFlyout ios:UseNativePopup="True"
-				    toolkit:MenuFlyoutExtensions.CancelTextIosOverride="Custom cancel text">
-					<MenuFlyoutItem Text="Menu Item 1" />
-					<MenuFlyoutItem Text="Menu Item 2" />
-					<MenuFlyoutItem Text="Menu Item 3" />
-				</MenuFlyout>
-			</Button.Flyout>
-		</Button>
-	</StackPanel>
+        <TextBlock Margin="0,16,0,0" Text="Native MenuFlyout with custom cancel button text" />
+        <Button Content="Show native MenuFlyout">
+            <Button.Flyout>
+                <MenuFlyout ios:UseNativePopup="True" toolkit:MenuFlyoutExtensions.CancelTextIosOverride="Custom cancel text">
+                    <MenuFlyoutItem Text="Menu Item 1" />
+                    <MenuFlyoutItem Text="Menu Item 2" />
+                    <MenuFlyoutItem Text="Menu Item 3" />
+                </MenuFlyout>
+            </Button.Flyout>
+        </Button>
+    </StackPanel>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.PivotTests.Basics"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.PivotTests.Basics"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -9,49 +10,46 @@
     d:DesignWidth="400"
     mc:Ignorable="d not_win">
 
-	<UserControl.Resources>
+    <UserControl.Resources>
 
-		<DataTemplate x:Key="FirstPivotItemTemplate">
-			<Ellipse />
-		</DataTemplate>
+        <DataTemplate x:Key="FirstPivotItemTemplate">
+            <Ellipse />
+        </DataTemplate>
 
-		<DataTemplate x:Key="SecondPivotItemTemplate">
-			<Rectangle />
-		</DataTemplate>
+        <DataTemplate x:Key="SecondPivotItemTemplate">
+            <Rectangle />
+        </DataTemplate>
 
-		<DataTemplate x:Key="ThirdPivotItemTemplate">
-			<Polygon />
-		</DataTemplate>
+        <DataTemplate x:Key="ThirdPivotItemTemplate">
+            <Polygon />
+        </DataTemplate>
 
-		<DataTemplate x:Key="FourthPivotItemTemplate">
-			<TextBlock Text="Fourth Template" />
-		</DataTemplate>
+        <DataTemplate x:Key="FourthPivotItemTemplate">
+            <TextBlock Text="Fourth Template" />
+        </DataTemplate>
 
-	</UserControl.Resources>
+    </UserControl.Resources>
 
-	<controls:SampleControl SampleDescription="Simple Pivot">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<Border Width="400"
-				    Height="400"
-				    Background="Aqua">
-					<not_win:Pivot Background="Red">
-						<Pivot.Items>
-							<PivotItem Content="First Content"
-							    Header="First" />
-							<PivotItem Header="Second">
-								<TextBlock Text="Second Content which is very long so it should wrap as we set the TextWrapping property of this property to Wrap. And_even_this_very_long_word_which_is_not_wrappable_should_wrap_as_the_PivotPanel_has_measured_its_children_using_the_width_of_its_parent_scrollviewer."
-								    TextWrapping="Wrap" />
-							</PivotItem>
-							<PivotItem Content="Third Content"
-							    Header="Third" />
-							<PivotItem Content="Fourth Content"
-							    Header="Fourth" />
-						</Pivot.Items>
-					</not_win:Pivot>
-				</Border>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="Simple Pivot">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <Border
+                    Width="400"
+                    Height="400"
+                    Background="Aqua">
+                    <not_win:Pivot Background="Red">
+                        <Pivot.Items>
+                            <PivotItem Content="First Content" Header="First" />
+                            <PivotItem Header="Second">
+                                <TextBlock Text="Second Content which is very long so it should wrap as we set the TextWrapping property of this property to Wrap. And_even_this_very_long_word_which_is_not_wrappable_should_wrap_as_the_PivotPanel_has_measured_its_children_using_the_width_of_its_parent_scrollviewer." TextWrapping="Wrap" />
+                            </PivotItem>
+                            <PivotItem Content="Third Content" Header="Third" />
+                            <PivotItem Content="Fourth Content" Header="Fourth" />
+                        </Pivot.Items>
+                    </not_win:Pivot>
+                </Border>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 
 </UserControl>

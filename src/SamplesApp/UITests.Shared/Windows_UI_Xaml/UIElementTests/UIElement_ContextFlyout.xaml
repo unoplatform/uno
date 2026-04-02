@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml.UIElementTests.UIElement_ContextFlyout"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.UIElementTests.UIElement_ContextFlyout"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,37 +8,34 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel Padding="20"
-	    Spacing="8">
-		<TextBox Width="300"
-		    PlaceholderText="TextBox">
-			<TextBox.ContextFlyout>
-				<Flyout>
-					<TextBlock Text="Hello!" />
-				</Flyout>
-			</TextBox.ContextFlyout>
-		</TextBox>
-		<Button Width="300">
-			<Button.ContextFlyout>
-				<Flyout>
-					<TextBlock Text="Hello!" />
-				</Flyout>
-			</Button.ContextFlyout>
-		</Button>
-		<RadioButton Width="300"
-		    Content="RadioButton">
-			<RadioButton.ContextFlyout>
-				<Flyout>
-					<TextBlock Text="Hello!" />
-				</Flyout>
-			</RadioButton.ContextFlyout>
-		</RadioButton>
-		<Slider Width="300">
-			<Slider.ContextFlyout>
-				<Flyout>
-					<TextBlock Text="Hello!" />
-				</Flyout>
-			</Slider.ContextFlyout>
-		</Slider>
-	</StackPanel>
+    <StackPanel Padding="20" Spacing="8">
+        <TextBox Width="300" PlaceholderText="TextBox">
+            <TextBox.ContextFlyout>
+                <Flyout>
+                    <TextBlock Text="Hello!" />
+                </Flyout>
+            </TextBox.ContextFlyout>
+        </TextBox>
+        <Button Width="300">
+            <Button.ContextFlyout>
+                <Flyout>
+                    <TextBlock Text="Hello!" />
+                </Flyout>
+            </Button.ContextFlyout>
+        </Button>
+        <RadioButton Width="300" Content="RadioButton">
+            <RadioButton.ContextFlyout>
+                <Flyout>
+                    <TextBlock Text="Hello!" />
+                </Flyout>
+            </RadioButton.ContextFlyout>
+        </RadioButton>
+        <Slider Width="300">
+            <Slider.ContextFlyout>
+                <Flyout>
+                    <TextBlock Text="Hello!" />
+                </Flyout>
+            </Slider.ContextFlyout>
+        </Slider>
+    </StackPanel>
 </Page>

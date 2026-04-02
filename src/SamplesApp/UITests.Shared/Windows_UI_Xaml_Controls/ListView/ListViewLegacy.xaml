@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewLegacy"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewLegacy"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -14,25 +15,25 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android not_win">
 
-	<controls:SampleControl SampleDescription="Legacy version of ListView - deprecated">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<win:TextBlock Text="Legacy ListView is Uno-specific, no Windows sample" />
-				<not_win:Border>
-					<legacy:ListView u:ListViewBaseCommand.Command="{Binding [DoSomething]}"
-					    IsItemClickEnabled="true"
-					    ItemsSource="{Binding [SampleItems]}"
-					    SelectedItem="{Binding [SelectedItem]}"
-					    SelectionMode="Single">
-						<legacy:ListView.ItemTemplate>
-							<DataTemplate>
-								<TextBlock Height="20"
-								    Text="{Binding}" />
-							</DataTemplate>
-						</legacy:ListView.ItemTemplate>
-					</legacy:ListView>
-				</not_win:Border>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="Legacy version of ListView - deprecated">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <win:TextBlock Text="Legacy ListView is Uno-specific, no Windows sample" />
+                <not_win:Border>
+                    <legacy:ListView
+                        u:ListViewBaseCommand.Command="{Binding [DoSomething]}"
+                        IsItemClickEnabled="true"
+                        ItemsSource="{Binding [SampleItems]}"
+                        SelectedItem="{Binding [SelectedItem]}"
+                        SelectionMode="Single">
+                        <legacy:ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Height="20" Text="{Binding}" />
+                            </DataTemplate>
+                        </legacy:ListView.ItemTemplate>
+                    </legacy:ListView>
+                </not_win:Border>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Transforms"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Transforms"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,59 +7,61 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel Margin="40"
-	    Background="Cyan"
-	    Spacing="4">
+    <StackPanel
+        Margin="40"
+        Background="Cyan"
+        Spacing="4">
 
-		<Button x:Name="turn1"
-		    Click="Turn">
-			TURN 1 - Starting at 90°
-		</Button>
+        <Button x:Name="turn1" Click="Turn">
+            TURN 1 - Starting at 90°
+        </Button>
 
-		<Grid HorizontalAlignment="Center"
-		    VerticalAlignment="Top"
-		    Background="Wheat">
-			<Image RenderTransformOrigin=".5,.5"
-			    Source="ms-appx:///Assets/rect.png"
-			    Stretch="None">
-				<Image.RenderTransform>
-					<RotateTransform x:Name="rotate" Angle="90" />
-				</Image.RenderTransform>
-			</Image>
-		</Grid>
+        <Grid
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Background="Wheat">
+            <Image
+                RenderTransformOrigin=".5,.5"
+                Source="ms-appx:///Assets/rect.png"
+                Stretch="None">
+                <Image.RenderTransform>
+                    <RotateTransform x:Name="rotate" Angle="90" />
+                </Image.RenderTransform>
+            </Image>
+        </Grid>
 
-		<Button x:Name="turn2"
-		    Click="Turn2">
-			TURN 2 - Starting at 0°
-		</Button>
+        <Button x:Name="turn2" Click="Turn2">
+            TURN 2 - Starting at 0°
+        </Button>
 
-		<Grid HorizontalAlignment="Center"
-		    VerticalAlignment="Top"
-		    Background="Wheat">
-			<Image RenderTransformOrigin=".5,.5"
-			    Source="ms-appx:///Assets/rect.png"
-			    Stretch="None">
-				<Image.RenderTransform>
-					<RotateTransform x:Name="rotate2" Angle="0" />
-				</Image.RenderTransform>
-			</Image>
-		</Grid>
+        <Grid
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Background="Wheat">
+            <Image
+                RenderTransformOrigin=".5,.5"
+                Source="ms-appx:///Assets/rect.png"
+                Stretch="None">
+                <Image.RenderTransform>
+                    <RotateTransform x:Name="rotate2" Angle="0" />
+                </Image.RenderTransform>
+            </Image>
+        </Grid>
 
-		<Button x:Name="turn3"
-		    Click="Turn3">
-			TURN 3 - Rotating a container
-		</Button>
+        <Button x:Name="turn3" Click="Turn3">
+            TURN 3 - Rotating a container
+        </Button>
 
-		<Grid HorizontalAlignment="Center"
-		    VerticalAlignment="Top"
-		    Background="Wheat">
-			<Grid RenderTransformOrigin=".5,.5">
-				<Grid.RenderTransform>
-					<RotateTransform x:Name="rotate3" Angle="0" />
-				</Grid.RenderTransform>
-				<Image Source="ms-appx:///Assets/rect.png"
-				    Stretch="None" />
-			</Grid>
-		</Grid>
-	</StackPanel>
+        <Grid
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Background="Wheat">
+            <Grid RenderTransformOrigin=".5,.5">
+                <Grid.RenderTransform>
+                    <RotateTransform x:Name="rotate3" Angle="0" />
+                </Grid.RenderTransform>
+                <Image Source="ms-appx:///Assets/rect.png" Stretch="None" />
+            </Grid>
+        </Grid>
+    </StackPanel>
 </Page>

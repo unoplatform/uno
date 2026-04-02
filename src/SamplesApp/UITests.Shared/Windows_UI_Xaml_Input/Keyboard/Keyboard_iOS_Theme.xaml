@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Input.Keyboard.Keyboard_iOS_Theme"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Input.Keyboard.Keyboard_iOS_Theme"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,80 +9,79 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d ios">
 
-	<ScrollViewer>
-		<StackPanel>
-			<TextBlock Text="Requested Theme:" />
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
+    <ScrollViewer>
+        <StackPanel>
+            <TextBlock Text="Requested Theme:" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-				<RadioButton Grid.Column="0"
-				    HorizontalAlignment="Stretch"
-				    Click="UpdateTheme"
-				    Content="Default" />
-				<RadioButton Grid.Column="1"
-				    HorizontalAlignment="Stretch"
-				    Click="UpdateTheme"
-				    Content="Light" />
-				<RadioButton Grid.Column="2"
-				    HorizontalAlignment="Stretch"
-				    Click="UpdateTheme"
-				    Content="Dark" />
-			</Grid>
+                <RadioButton
+                    Grid.Column="0"
+                    HorizontalAlignment="Stretch"
+                    Click="UpdateTheme"
+                    Content="Default" />
+                <RadioButton
+                    Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    Click="UpdateTheme"
+                    Content="Light" />
+                <RadioButton
+                    Grid.Column="2"
+                    HorizontalAlignment="Stretch"
+                    Click="UpdateTheme"
+                    Content="Dark" />
+            </Grid>
 
-			<TextBlock Text="KB Appearance: for 'custom' text/password-box" />
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
+            <TextBlock Text="KB Appearance: for 'custom' text/password-box" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-				<RadioButton Grid.Column="0"
-				    HorizontalAlignment="Stretch"
-				    Click="UpdateKeyboardAppearance"
-				    Content="Default" />
-				<RadioButton Grid.Column="1"
-				    HorizontalAlignment="Stretch"
-				    Click="UpdateKeyboardAppearance"
-				    Content="Light" />
-				<RadioButton Grid.Column="2"
-				    HorizontalAlignment="Stretch"
-				    Click="UpdateKeyboardAppearance"
-				    Content="Dark" />
-			</Grid>
-			<TextBlock Text="note: Dark will be displayed as Alert because it shared the same value."
-			    TextWrapping="WrapWholeWords" />
+                <RadioButton
+                    Grid.Column="0"
+                    HorizontalAlignment="Stretch"
+                    Click="UpdateKeyboardAppearance"
+                    Content="Default" />
+                <RadioButton
+                    Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    Click="UpdateKeyboardAppearance"
+                    Content="Light" />
+                <RadioButton
+                    Grid.Column="2"
+                    HorizontalAlignment="Stretch"
+                    Click="UpdateKeyboardAppearance"
+                    Content="Dark" />
+            </Grid>
+            <TextBlock Text="note: Dark will be displayed as Alert because it shared the same value." TextWrapping="WrapWholeWords" />
 
-			<StackPanel x:Name="TestPanel">
-				<TextBlock Margin="0,20,0,0"
-				    Text="TextBox" />
-				<TextBox PlaceholderText="default" />
-				<TextBox ios:KeyboardAppearance="Light"
-				    PlaceholderText="light" />
-				<TextBox ios:KeyboardAppearance="Dark"
-				    PlaceholderText="dark" />
-				<TextBox PlaceholderText="custom:" />
+            <StackPanel x:Name="TestPanel">
+                <TextBlock Margin="0,20,0,0" Text="TextBox" />
+                <TextBox PlaceholderText="default" />
+                <TextBox ios:KeyboardAppearance="Light" PlaceholderText="light" />
+                <TextBox ios:KeyboardAppearance="Dark" PlaceholderText="dark" />
+                <TextBox PlaceholderText="custom:" />
 
-				<TextBlock Margin="0,20,0,0"
-				    Text="PasswordBox" />
-				<PasswordBox PlaceholderText="default" />
-				<PasswordBox ios:KeyboardAppearance="Light"
-				    PlaceholderText="light" />
-				<PasswordBox ios:KeyboardAppearance="Dark"
-				    PlaceholderText="dark" />
-				<PasswordBox PlaceholderText="custom:" />
-			</StackPanel>
+                <TextBlock Margin="0,20,0,0" Text="PasswordBox" />
+                <PasswordBox PlaceholderText="default" />
+                <PasswordBox ios:KeyboardAppearance="Light" PlaceholderText="light" />
+                <PasswordBox ios:KeyboardAppearance="Dark" PlaceholderText="dark" />
+                <PasswordBox PlaceholderText="custom:" />
+            </StackPanel>
 
-			<TextBlock TextWrapping="WrapWholeWords">
-				<Run>The 'device theme' can be changed by (ios)Settings &gt; Developer &gt; Dark Appearance.</Run><LineBreak /><LineBreak />
-				<Run>'default' should be affected by requested theme or os theme.</Run><LineBreak />
-				<Run>'dark/light' should always be that theme.</Run><LineBreak />
-				<Run>'custom' should be affected by 'KB Appearance', requested theme or os theme.</Run><LineBreak />
-			</TextBlock>
-		</StackPanel>
-	</ScrollViewer>
+            <TextBlock TextWrapping="WrapWholeWords">
+                <Run>The 'device theme' can be changed by (ios)Settings &gt; Developer &gt; Dark Appearance.</Run><LineBreak /><LineBreak />
+                <Run>'default' should be affected by requested theme or os theme.</Run><LineBreak />
+                <Run>'dark/light' should always be that theme.</Run><LineBreak />
+                <Run>'custom' should be affected by 'KB Appearance', requested theme or os theme.</Run><LineBreak />
+            </TextBlock>
+        </StackPanel>
+    </ScrollViewer>
 </Page>

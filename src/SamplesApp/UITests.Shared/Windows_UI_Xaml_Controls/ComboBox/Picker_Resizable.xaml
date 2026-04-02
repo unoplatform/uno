@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.Picker_Resizable"
+﻿<UserControl
+    x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.Picker_Resizable"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -14,17 +15,15 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<controls:SampleControl SampleDescription="Picker (normally internal to iOS ComboBox) which can be resized (which should cause app to not crash).">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<not_ios:TextBlock Text="Picker is an iOS-specific control." />
-				<ios:StackPanel>
-					<Picker Width="{Binding [VariableWidth]}"
-					    ItemsSource="{Binding [SampleItems]}" />
-					<Button Command="{Binding [VaryWidth]}"
-					    Content="Change width" />
-				</ios:StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="Picker (normally internal to iOS ComboBox) which can be resized (which should cause app to not crash).">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <not_ios:TextBlock Text="Picker is an iOS-specific control." />
+                <ios:StackPanel>
+                    <Picker Width="{Binding [VariableWidth]}" ItemsSource="{Binding [SampleItems]}" />
+                    <Button Command="{Binding [VaryWidth]}" Content="Change width" />
+                </ios:StackPanel>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

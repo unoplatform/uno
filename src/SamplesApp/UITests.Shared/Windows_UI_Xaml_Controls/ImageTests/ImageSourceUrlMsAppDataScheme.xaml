@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.ImageSourceUrlMsAppDataScheme"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.ImageSourceUrlMsAppDataScheme"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,12 +8,13 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel Padding="12">
-		<TextBlock Text="{Binding AppDataUri}" />
-		<Image Width="100"
-		    Height="100"
-		    HorizontalAlignment="Left"
-		    VerticalAlignment="Top"
-		    Source="{Binding AppDataUri}" />
-	</StackPanel>
+    <StackPanel Padding="12">
+        <TextBlock Text="{Binding AppDataUri}" />
+        <Image
+            Width="100"
+            Height="100"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Source="{Binding AppDataUri}" />
+    </StackPanel>
 </Page>

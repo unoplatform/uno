@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Focus_Programmatic"
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Focus_Programmatic"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,16 +9,18 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<Grid>
-		<StackPanel>
-			<Button Content="Dummy" />
-			<Button x:Name="SetFocus"
-			    Click="SetFocus_Click"
-			    Content="Set TextBox focus" />
-			<TextBox x:Name="TargetTextBox"
-			    GotFocus="TargetTextBox_GotFocus"
-			    PlaceholderText="enter..." />
-			<TextBlock x:Name="StatusText" />
-		</StackPanel>
-	</Grid>
+    <Grid>
+        <StackPanel>
+            <Button Content="Dummy" />
+            <Button
+                x:Name="SetFocus"
+                Click="SetFocus_Click"
+                Content="Set TextBox focus" />
+            <TextBox
+                x:Name="TargetTextBox"
+                GotFocus="TargetTextBox_GotFocus"
+                PlaceholderText="enter..." />
+            <TextBlock x:Name="StatusText" />
+        </StackPanel>
+    </Grid>
 </UserControl>

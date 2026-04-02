@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_BeforeTextChanging_NumbersOnly"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_BeforeTextChanging_NumbersOnly"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,10 +8,11 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<TextBox x:Name="BeforeTextBox"
-	    Margin="5"
-	    BeforeTextChanging="OnBeforeTextChanging"
-	    IsSpellCheckEnabled="False"
-	    MaxLength="20"
-	    PlaceholderText="only permits double" />
+    <TextBox
+        x:Name="BeforeTextBox"
+        Margin="5"
+        BeforeTextChanging="OnBeforeTextChanging"
+        IsSpellCheckEnabled="False"
+        MaxLength="20"
+        PlaceholderText="only permits double" />
 </UserControl>

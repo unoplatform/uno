@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_Mailto"
+﻿<UserControl
+    x:Class="SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_Mailto"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -12,7 +13,8 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android not_win">
 
-	<mux:WebView2 x:Name="webView"
-	    Width="100"
-	    Height="100" />
+    <mux:WebView2
+        x:Name="webView"
+        Width="100"
+        Height="100" />
 </UserControl>

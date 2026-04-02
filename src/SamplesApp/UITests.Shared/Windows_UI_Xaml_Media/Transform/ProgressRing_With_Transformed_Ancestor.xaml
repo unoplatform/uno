@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Media.Transform.ProgressRing_With_Transformed_Ancestor"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Media.Transform.ProgressRing_With_Transformed_Ancestor"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -9,61 +10,66 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<controls:SampleControl SampleDescription="ProgressRing below is within a transformed view, it should still animate outside its untransformed bounds.">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel Margin="50,0,0,0"
-				    Background="LightGray">
-					<Slider x:Name="YSlider"
-					    Width="200"
-					    Maximum="100"
-					    Minimum="0"
-					    Value="10" />
-					<Button Margin="20"
-					    Content="Dummy" />
-					<CheckBox x:Name="IsActiveCheckBox"
-					    Margin="20"
-					    IsChecked="True" />
-					<Border HorizontalAlignment="Left"
-					    VerticalAlignment="Top">
-						<Border HorizontalAlignment="Left"
-						    VerticalAlignment="Top"
-						    Background="LightYellow">
-							<ProgressRing x:Name="ProgressRing"
-							    Width="20"
-							    Height="20"
-							    Margin="40,20,40,20"
-							    HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    Foreground="Green"
-							    IsActive="{Binding ElementName=IsActiveCheckBox, Path=IsChecked}" />
-						</Border>
-					</Border>
-					<Border HorizontalAlignment="Stretch"
-					    VerticalAlignment="Top"
-					    Background="Black">
-						<Border HorizontalAlignment="Left"
-						    VerticalAlignment="Top"
-						    Background="Gray">
-							<Border.RenderTransform>
-								<TranslateTransform X="{Binding ElementName=YSlider, Path=Value}" />
-							</Border.RenderTransform>
-							<Border HorizontalAlignment="Left"
-							    VerticalAlignment="Top"
-							    Background="LightPink">
-								<ProgressRing x:Name="TrProgressRing"
-								    Width="20"
-								    Height="20"
-								    Margin="40,20,40,20"
-								    HorizontalAlignment="Center"
-								    VerticalAlignment="Center"
-								    Foreground="Blue"
-								    IsActive="{Binding ElementName=IsActiveCheckBox, Path=IsChecked}" />
-							</Border>
-						</Border>
-					</Border>
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="ProgressRing below is within a transformed view, it should still animate outside its untransformed bounds.">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <StackPanel Margin="50,0,0,0" Background="LightGray">
+                    <Slider
+                        x:Name="YSlider"
+                        Width="200"
+                        Maximum="100"
+                        Minimum="0"
+                        Value="10" />
+                    <Button Margin="20" Content="Dummy" />
+                    <CheckBox
+                        x:Name="IsActiveCheckBox"
+                        Margin="20"
+                        IsChecked="True" />
+                    <Border HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <Border
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Background="LightYellow">
+                            <ProgressRing
+                                x:Name="ProgressRing"
+                                Width="20"
+                                Height="20"
+                                Margin="40,20,40,20"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Foreground="Green"
+                                IsActive="{Binding ElementName=IsActiveCheckBox, Path=IsChecked}" />
+                        </Border>
+                    </Border>
+                    <Border
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        Background="Black">
+                        <Border
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Background="Gray">
+                            <Border.RenderTransform>
+                                <TranslateTransform X="{Binding ElementName=YSlider, Path=Value}" />
+                            </Border.RenderTransform>
+                            <Border
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Background="LightPink">
+                                <ProgressRing
+                                    x:Name="TrProgressRing"
+                                    Width="20"
+                                    Height="20"
+                                    Margin="40,20,40,20"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Foreground="Blue"
+                                    IsActive="{Binding ElementName=IsActiveCheckBox, Path=IsChecked}" />
+                            </Border>
+                        </Border>
+                    </Border>
+                </StackPanel>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

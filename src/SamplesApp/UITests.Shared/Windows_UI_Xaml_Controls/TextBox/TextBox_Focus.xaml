@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_Focus"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_Focus"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -12,78 +13,81 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<UserControl.Resources>
-		<Style x:Key="TextBoxWithLabelStyle"
-		    TargetType="TextBox">
+    <UserControl.Resources>
+        <Style x:Key="TextBoxWithLabelStyle" TargetType="TextBox">
 
-			<Setter Property="TextAlignment" Value="Right" />
-			<Setter Property="HorizontalAlignment" Value="Stretch" />
-			<Setter Property="VerticalAlignment" Value="Stretch" />
-			<Setter Property="VerticalContentAlignment" Value="Bottom" />
-			<Setter Property="MinHeight" Value="0" />
+            <Setter Property="TextAlignment" Value="Right" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Bottom" />
+            <Setter Property="MinHeight" Value="0" />
 
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="TextBox">
-						<u:StarStackPanel Margin="0,0,0,6"
-						    u:StarStackPanel.Sizes="Auto,*,Auto"
-						    Background="Transparent"
-						    Orientation="Horizontal">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <u:StarStackPanel
+                            Margin="0,0,0,6"
+                            u:StarStackPanel.Sizes="Auto,*,Auto"
+                            Background="Transparent"
+                            Orientation="Horizontal">
 
-							<!--  HEADER/LABEL  -->
-							<TextBlock x:Name="HeaderContentPresenter"
-							    Margin="{TemplateBinding Padding}"
-							    Padding="2,0,0,0"
-							    VerticalAlignment="Bottom"
-							    u:StarStackPanel.Priority="1"
-							    FontWeight="Normal"
-							    MaxLines="2"
-							    Text="{TemplateBinding Header}" />
+                            <!--  HEADER/LABEL  -->
+                            <TextBlock
+                                x:Name="HeaderContentPresenter"
+                                Margin="{TemplateBinding Padding}"
+                                Padding="2,0,0,0"
+                                VerticalAlignment="Bottom"
+                                u:StarStackPanel.Priority="1"
+                                FontWeight="Normal"
+                                MaxLines="2"
+                                Text="{TemplateBinding Header}" />
 
-							<Rectangle />
+                            <Rectangle />
 
-							<Grid MinWidth="60"
-							    u:StarStackPanel.Priority="0">
-								<!--  PLACE HOLDER TEXT  -->
-								<TextBlock x:Name="PlaceholderTextContentPresenter"
-								    Margin="{TemplateBinding Padding}"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Bottom"
-								    IsHitTestVisible="False"
-								    Opacity="0.5"
-								    Text="{TemplateBinding PlaceholderText}"
-								    TextAlignment="Right" />
+                            <Grid MinWidth="60" u:StarStackPanel.Priority="0">
+                                <!--  PLACE HOLDER TEXT  -->
+                                <TextBlock
+                                    x:Name="PlaceholderTextContentPresenter"
+                                    Margin="{TemplateBinding Padding}"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Bottom"
+                                    IsHitTestVisible="False"
+                                    Opacity="0.5"
+                                    Text="{TemplateBinding PlaceholderText}"
+                                    TextAlignment="Right" />
 
-								<!--  CONTENT PRESENTER  -->
-								<ScrollViewer x:Name="ContentElement"
-								    HorizontalAlignment="Stretch"
-								    VerticalAlignment="Bottom"
-								    win:Padding="{TemplateBinding Padding}"
-								    AutomationProperties.AccessibilityView="Raw"
-								    IsTabStop="False"
-								    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-								    ScrollViewer.VerticalScrollBarVisibility="Disabled"
-								    ZoomMode="Disabled" />
-							</Grid>
+                                <!--  CONTENT PRESENTER  -->
+                                <ScrollViewer
+                                    x:Name="ContentElement"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Bottom"
+                                    win:Padding="{TemplateBinding Padding}"
+                                    AutomationProperties.AccessibilityView="Raw"
+                                    IsTabStop="False"
+                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                    ZoomMode="Disabled" />
+                            </Grid>
 
-						</u:StarStackPanel>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-	</UserControl.Resources>
+                        </u:StarStackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
 
-	<controls:SampleControl SampleDescription="Tapping on My Header should bring up the keyboard">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<Border Background="CornflowerBlue">
-					<TextBox Width="200"
-					    Height="100"
-					    Header="My Header"
-					    PlaceholderText="Placeholder"
-					    Style="{StaticResource TextBoxWithLabelStyle}" />
-				</Border>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="Tapping on My Header should bring up the keyboard">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <Border Background="CornflowerBlue">
+                    <TextBox
+                        Width="200"
+                        Height="100"
+                        Header="My Header"
+                        PlaceholderText="Placeholder"
+                        Style="{StaticResource TextBoxWithLabelStyle}" />
+                </Border>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

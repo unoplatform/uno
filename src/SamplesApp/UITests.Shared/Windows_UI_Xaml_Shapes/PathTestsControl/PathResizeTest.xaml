@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl.PathResizeTest"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl.PathResizeTest"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -8,47 +9,49 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<controls:SampleControl SampleDescription="PathResize">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<Grid Background="Red">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="70" />
-						<RowDefinition Height="70" />
-						<RowDefinition Height="*" />
-					</Grid.RowDefinitions>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="2*" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
-					<Rectangle Grid.ColumnSpan="3"
-					    Fill="LightBlue" />
-					<TextBlock Grid.ColumnSpan="3"
-					    Margin="5,5,5,0"
-					    Text="Start in portrait, path in blue should fill the second column we should only see red in the bottom corners of the shape, flip to landspace, path should resize to fill the column space"
-					    TextWrapping="Wrap" />
-					<!--  Left side of shape  -->
-					<Rectangle Grid.Row="1"
-					    Fill="Green" />
-					<Path Grid.Row="1"
-					    Grid.Column="1"
-					    HorizontalAlignment="Stretch"
-					    VerticalAlignment="Top"
-					    Data="m 0,51.649 c 40.059,0 83.304,-4.796 83.306,-4.796 l 0,-46.853 -166.353,0 0,46.853 c 0.003,0 42.988,4.796 83.047,4.796"
-					    Fill="Blue"
-					    Stretch="Fill" />
-					<!--  Right side of shape  -->
-					<Rectangle Grid.Row="1"
-					    Grid.Column="2"
-					    Fill="Green" />
-					<!--  Bottom of shape  -->
-					<Rectangle Grid.Row="2"
-					    Grid.ColumnSpan="3"
-					    Fill="LightBlue" />
-				</Grid>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="PathResize">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <Grid Background="Red">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="70" />
+                        <RowDefinition Height="70" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Grid.ColumnSpan="3" Fill="LightBlue" />
+                    <TextBlock
+                        Grid.ColumnSpan="3"
+                        Margin="5,5,5,0"
+                        Text="Start in portrait, path in blue should fill the second column we should only see red in the bottom corners of the shape, flip to landspace, path should resize to fill the column space"
+                        TextWrapping="Wrap" />
+                    <!--  Left side of shape  -->
+                    <Rectangle Grid.Row="1" Fill="Green" />
+                    <Path
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        Data="m 0,51.649 c 40.059,0 83.304,-4.796 83.306,-4.796 l 0,-46.853 -166.353,0 0,46.853 c 0.003,0 42.988,4.796 83.047,4.796"
+                        Fill="Blue"
+                        Stretch="Fill" />
+                    <!--  Right side of shape  -->
+                    <Rectangle
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Fill="Green" />
+                    <!--  Bottom of shape  -->
+                    <Rectangle
+                        Grid.Row="2"
+                        Grid.ColumnSpan="3"
+                        Fill="LightBlue" />
+                </Grid>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 
 </UserControl>

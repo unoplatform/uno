@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceUniformToFill"
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceUniformToFill"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -9,27 +10,32 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel MaxWidth="400">
-		<Button x:Name="setSource"
-		    Command="{Binding [SetSource]}"
-		    Content="Set image source" />
-		<Border Background="DarkSlateBlue"
-		    BorderBrush="Gray"
-		    BorderThickness="2">
-			<Image x:Name="refImage"
-			    HorizontalAlignment="Center"
-			    VerticalAlignment="Center"
-			    Source="{Binding [SourceUriImmediate]}"
-			    Stretch="UniformToFill" />
-		</Border>
-		<Border Background="Firebrick"
-		    BorderBrush="Azure"
-		    BorderThickness="2">
-			<Image x:Name="lateImage"
-			    HorizontalAlignment="Center"
-			    VerticalAlignment="Center"
-			    Source="{Binding [SourceUri]}"
-			    Stretch="UniformToFill" />
-		</Border>
-	</StackPanel>
+    <StackPanel MaxWidth="400">
+        <Button
+            x:Name="setSource"
+            Command="{Binding [SetSource]}"
+            Content="Set image source" />
+        <Border
+            Background="DarkSlateBlue"
+            BorderBrush="Gray"
+            BorderThickness="2">
+            <Image
+                x:Name="refImage"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Source="{Binding [SourceUriImmediate]}"
+                Stretch="UniformToFill" />
+        </Border>
+        <Border
+            Background="Firebrick"
+            BorderBrush="Azure"
+            BorderThickness="2">
+            <Image
+                x:Name="lateImage"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Source="{Binding [SourceUri]}"
+                Stretch="UniformToFill" />
+        </Border>
+    </StackPanel>
 </UserControl>

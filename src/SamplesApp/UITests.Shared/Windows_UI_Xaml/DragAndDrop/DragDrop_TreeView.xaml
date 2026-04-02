@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_TreeView"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_TreeView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,32 +10,28 @@
     d:DesignWidth="400"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
-	<StackPanel>
-		<muxc:TreeView x:Name="tv">
-			<muxc:TreeView.ItemContainerStyle>
-				<Style TargetType="muxc:TreeViewItem">
-					<Setter Property="Height" Value="60" />
-					<Setter Property="Margin" Value="0,0,0,10" />
-				</Style>
-			</muxc:TreeView.ItemContainerStyle>
-		</muxc:TreeView>
-		<Button x:Name="bt0"
-		    Content="case0" />
-		<Button x:Name="bt1"
-		    Content="case1" />
-		<Button x:Name="bt2"
-		    Content="case2" />
-		<Button x:Name="bt3"
-		    Content="case3" />
-		<Button x:Name="focusbt"
-		    Content="focus" />
-		<RadioButton x:Name="radio_disable"
-		    Content="Disable TextBox"
-		    GroupName="radio" />
-		<RadioButton x:Name="radio_enable"
-		    Content="Enable TextBox"
-		    GroupName="radio" />
-		<TextBlock x:Name="tb"
-		    Visibility="Collapsed" />
-	</StackPanel>
+    <StackPanel>
+        <muxc:TreeView x:Name="tv">
+            <muxc:TreeView.ItemContainerStyle>
+                <Style TargetType="muxc:TreeViewItem">
+                    <Setter Property="Height" Value="60" />
+                    <Setter Property="Margin" Value="0,0,0,10" />
+                </Style>
+            </muxc:TreeView.ItemContainerStyle>
+        </muxc:TreeView>
+        <Button x:Name="bt0" Content="case0" />
+        <Button x:Name="bt1" Content="case1" />
+        <Button x:Name="bt2" Content="case2" />
+        <Button x:Name="bt3" Content="case3" />
+        <Button x:Name="focusbt" Content="focus" />
+        <RadioButton
+            x:Name="radio_disable"
+            Content="Disable TextBox"
+            GroupName="radio" />
+        <RadioButton
+            x:Name="radio_enable"
+            Content="Enable TextBox"
+            GroupName="radio" />
+        <TextBlock x:Name="tb" Visibility="Collapsed" />
+    </StackPanel>
 </Page>

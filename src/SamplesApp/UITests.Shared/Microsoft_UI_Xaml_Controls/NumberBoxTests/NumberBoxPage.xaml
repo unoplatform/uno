@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBoxPage"
+﻿<UserControl
+    x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBoxPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:contract5Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -10,302 +11,323 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-		<ScrollViewer>
-			<StackPanel Padding="12"
-			    contract5Present:Spacing="4"
-			    Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
-			    Orientation="Vertical">
+        <ScrollViewer>
+            <StackPanel
+                Padding="12"
+                contract5Present:Spacing="4"
+                Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                Orientation="Vertical">
 
-				<ComboBox x:Name="ValidationComboBox"
-				    AutomationProperties.Name="ValidationComboBox"
-				    Header="Validation Mode"
-				    SelectedIndex="0"
-				    SelectionChanged="Validation_Changed">
-					<ComboBoxItem Content="InvalidInputOverwritten" />
-					<ComboBoxItem Content="Disabled" />
-				</ComboBox>
+                <ComboBox
+                    x:Name="ValidationComboBox"
+                    AutomationProperties.Name="ValidationComboBox"
+                    Header="Validation Mode"
+                    SelectedIndex="0"
+                    SelectionChanged="Validation_Changed">
+                    <ComboBoxItem Content="InvalidInputOverwritten" />
+                    <ComboBoxItem Content="Disabled" />
+                </ComboBox>
 
-				<ComboBox x:Name="SpinModeComboBox"
-				    AutomationProperties.Name="SpinModeComboBox"
-				    Header="SpinButtonMode"
-				    SelectedIndex="0"
-				    SelectionChanged="SpinMode_Changed">
-					<ComboBoxItem Content="Hidden" />
-					<ComboBoxItem Content="Compact" />
-					<ComboBoxItem Content="Inline" />
-				</ComboBox>
+                <ComboBox
+                    x:Name="SpinModeComboBox"
+                    AutomationProperties.Name="SpinModeComboBox"
+                    Header="SpinButtonMode"
+                    SelectedIndex="0"
+                    SelectionChanged="SpinMode_Changed">
+                    <ComboBoxItem Content="Hidden" />
+                    <ComboBoxItem Content="Compact" />
+                    <ComboBoxItem Content="Inline" />
+                </ComboBox>
 
-				<ComboBox x:Name="TextAlignmentComboBox"
-				    AutomationProperties.Name="TextAlignmentComboBox"
-				    Header="TextAlignment"
-				    SelectedIndex="0"
-				    SelectionChanged="TextAlignment_Changed">
-					<ComboBoxItem Content="Left" />
-					<ComboBoxItem Content="Center" />
-					<ComboBoxItem Content="Right" />
-				</ComboBox>
+                <ComboBox
+                    x:Name="TextAlignmentComboBox"
+                    AutomationProperties.Name="TextAlignmentComboBox"
+                    Header="TextAlignment"
+                    SelectedIndex="0"
+                    SelectionChanged="TextAlignment_Changed">
+                    <ComboBoxItem Content="Left" />
+                    <ComboBoxItem Content="Center" />
+                    <ComboBoxItem Content="Right" />
+                </ComboBox>
 
-				<ComboBox x:Name="InputScopeComboBox"
-				    AutomationProperties.Name="InputScopeComboBox"
-				    Header="InputScope"
-				    SelectedIndex="0"
-				    SelectionChanged="InputScope_Changed">
-					<ComboBoxItem Content="Number" />
-					<ComboBoxItem Content="Default" />
-					<ComboBoxItem Content="CurrencyAmountAndSymbol" />
-					<ComboBoxItem Content="TelephoneNumber" />
-					<ComboBoxItem Content="Formula" />
-				</ComboBox>
+                <ComboBox
+                    x:Name="InputScopeComboBox"
+                    AutomationProperties.Name="InputScopeComboBox"
+                    Header="InputScope"
+                    SelectedIndex="0"
+                    SelectionChanged="InputScope_Changed">
+                    <ComboBoxItem Content="Number" />
+                    <ComboBoxItem Content="Default" />
+                    <ComboBoxItem Content="CurrencyAmountAndSymbol" />
+                    <ComboBoxItem Content="TelephoneNumber" />
+                    <ComboBoxItem Content="Formula" />
+                </ComboBox>
 
-				<CheckBox x:Name="EnabledCheckBox"
-				    AutomationProperties.Name="EnabledCheckBox"
-				    Content="Enabled"
-				    IsChecked="True" />
+                <CheckBox
+                    x:Name="EnabledCheckBox"
+                    AutomationProperties.Name="EnabledCheckBox"
+                    Content="Enabled"
+                    IsChecked="True" />
 
-				<CheckBox x:Name="ExpressionCheckBox"
-				    AutomationProperties.Name="ExpressionCheckBox"
-				    Content="Accepts Expression"
-				    IsChecked="False" />
+                <CheckBox
+                    x:Name="ExpressionCheckBox"
+                    AutomationProperties.Name="ExpressionCheckBox"
+                    Content="Accepts Expression"
+                    IsChecked="False" />
 
-				<CheckBox x:Name="WrapCheckBox"
-				    AutomationProperties.Name="WrapCheckBox"
-				    Content="Wrap Enabled"
-				    IsChecked="False" />
+                <CheckBox
+                    x:Name="WrapCheckBox"
+                    AutomationProperties.Name="WrapCheckBox"
+                    Content="Wrap Enabled"
+                    IsChecked="False" />
 
-				<!--  Set Text instead of Value to verify that it works  -->
-				<controls:NumberBox x:Name="SmallChangeNumberBox"
-				    AutomationProperties.Name="SmallChangeNumberBox"
-				    Header="SmallChange"
-				    Text="1" />
-				<controls:NumberBox x:Name="LargeChangeNumberBox"
-				    AutomationProperties.Name="LargeChangeNumberBox"
-				    Header="LargeChange"
-				    Text="10" />
+                <!--  Set Text instead of Value to verify that it works  -->
+                <controls:NumberBox
+                    x:Name="SmallChangeNumberBox"
+                    AutomationProperties.Name="SmallChangeNumberBox"
+                    Header="SmallChange"
+                    Text="1" />
+                <controls:NumberBox
+                    x:Name="LargeChangeNumberBox"
+                    AutomationProperties.Name="LargeChangeNumberBox"
+                    Header="LargeChange"
+                    Text="10" />
 
-				<StackPanel Orientation="Horizontal">
-					<CheckBox x:Name="MinCheckBox"
-					    MinWidth="32"
-					    VerticalAlignment="Bottom"
-					    AutomationProperties.Name="MinCheckBox"
-					    Checked="MinCheckBox_CheckChanged"
-					    IsChecked="False"
-					    Unchecked="MinCheckBox_CheckChanged" />
-					<controls:NumberBox x:Name="MinNumberBox"
-					    AutomationProperties.Name="MinNumberBox"
-					    Header="Minimum"
-					    IsEnabled="False"
-					    Value="0"
-					    ValueChanged="MinValueChanged" />
-				</StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox
+                        x:Name="MinCheckBox"
+                        MinWidth="32"
+                        VerticalAlignment="Bottom"
+                        AutomationProperties.Name="MinCheckBox"
+                        Checked="MinCheckBox_CheckChanged"
+                        IsChecked="False"
+                        Unchecked="MinCheckBox_CheckChanged" />
+                    <controls:NumberBox
+                        x:Name="MinNumberBox"
+                        AutomationProperties.Name="MinNumberBox"
+                        Header="Minimum"
+                        IsEnabled="False"
+                        ValueChanged="MinValueChanged"
+                        Value="0" />
+                </StackPanel>
 
-				<StackPanel Orientation="Horizontal">
-					<CheckBox x:Name="MaxCheckBox"
-					    MinWidth="32"
-					    VerticalAlignment="Bottom"
-					    AutomationProperties.Name="MaxCheckBox"
-					    Checked="MaxCheckBox_CheckChanged"
-					    IsChecked="False"
-					    Unchecked="MaxCheckBox_CheckChanged" />
-					<!--  Verify that setting Value overrides setting Text  -->
-					<controls:NumberBox x:Name="MaxNumberBox"
-					    AutomationProperties.Name="MaxNumberBox"
-					    Header="Maximum"
-					    IsEnabled="False"
-					    Text="50"
-					    Value="100"
-					    ValueChanged="MaxValueChanged" />
-				</StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox
+                        x:Name="MaxCheckBox"
+                        MinWidth="32"
+                        VerticalAlignment="Bottom"
+                        AutomationProperties.Name="MaxCheckBox"
+                        Checked="MaxCheckBox_CheckChanged"
+                        IsChecked="False"
+                        Unchecked="MaxCheckBox_CheckChanged" />
+                    <!--  Verify that setting Value overrides setting Text  -->
+                    <controls:NumberBox
+                        x:Name="MaxNumberBox"
+                        AutomationProperties.Name="MaxNumberBox"
+                        Header="Maximum"
+                        IsEnabled="False"
+                        Text="50"
+                        ValueChanged="MaxValueChanged"
+                        Value="100" />
+                </StackPanel>
 
-				<Button x:Name="CustomFormatterButton"
-				    Margin="0,4,0,0"
-				    AutomationProperties.Name="CustomFormatterButton"
-				    Click="CustomFormatterButton_Click"
-				    Content="Custom Formatter" />
+                <Button
+                    x:Name="CustomFormatterButton"
+                    Margin="0,4,0,0"
+                    AutomationProperties.Name="CustomFormatterButton"
+                    Click="CustomFormatterButton_Click"
+                    Content="Custom Formatter" />
 
-				<Button x:Name="SetTextButton"
-				    Margin="0,4,0,0"
-				    AutomationProperties.Name="SetTextButton"
-				    Click="SetTextButton_Click"
-				    Content="Set text to 15" />
+                <Button
+                    x:Name="SetTextButton"
+                    Margin="0,4,0,0"
+                    AutomationProperties.Name="SetTextButton"
+                    Click="SetTextButton_Click"
+                    Content="Set text to 15" />
 
-				<Button x:Name="SetValueButton"
-				    Margin="0,4,0,0"
-				    AutomationProperties.Name="SetValueButton"
-				    Click="SetValueButton_Click"
-				    Content="Set value to 42" />
+                <Button
+                    x:Name="SetValueButton"
+                    Margin="0,4,0,0"
+                    AutomationProperties.Name="SetValueButton"
+                    Click="SetValueButton_Click"
+                    Content="Set value to 42" />
 
-				<Button x:Name="SetValueNaNButton"
-				    Margin="0,4,0,0"
-				    AutomationProperties.Name="SetValueNaNButton"
-				    Click="SetNaNButton_Click"
-				    Content="Set value to NaN" />
+                <Button
+                    x:Name="SetValueNaNButton"
+                    Margin="0,4,0,0"
+                    AutomationProperties.Name="SetValueNaNButton"
+                    Click="SetNaNButton_Click"
+                    Content="Set value to NaN" />
 
-				<Button x:Name="SetTwoWayBoundValueNaNButton"
-				    Margin="0,4,0,0"
-				    AutomationProperties.Name="SetTwoWayBoundValueNaNButton"
-				    Click="SetTwoWayBoundNaNButton_Click"
-				    Content="Set two way bound value to NaN" />
+                <Button
+                    x:Name="SetTwoWayBoundValueNaNButton"
+                    Margin="0,4,0,0"
+                    AutomationProperties.Name="SetTwoWayBoundValueNaNButton"
+                    Click="SetTwoWayBoundNaNButton_Click"
+                    Content="Set two way bound value to NaN" />
 
-				<Button x:Name="ToggleHeaderValueButton"
-				    Margin="0,4,0,0"
-				    AutomationProperties.Name="ToggleHeaderValueButton"
-				    Click="ToggleHeaderValueButton_Click"
-				    Content="Toggle header for clipping issue" />
+                <Button
+                    x:Name="ToggleHeaderValueButton"
+                    Margin="0,4,0,0"
+                    AutomationProperties.Name="ToggleHeaderValueButton"
+                    Click="ToggleHeaderValueButton_Click"
+                    Content="Toggle header for clipping issue" />
 
-				<Button x:Name="ToggleHeaderTemplateValueButton"
-				    Margin="0,4,0,0"
-				    AutomationProperties.Name="ToggleHeaderTemplateValueButton"
-				    Click="ToggleHeaderTemplateValueButton_Click"
-				    Content="Toggle header template" />
+                <Button
+                    x:Name="ToggleHeaderTemplateValueButton"
+                    Margin="0,4,0,0"
+                    AutomationProperties.Name="ToggleHeaderTemplateValueButton"
+                    Click="ToggleHeaderTemplateValueButton_Click"
+                    Content="Toggle header template" />
 
-			</StackPanel>
-		</ScrollViewer>
+            </StackPanel>
+        </ScrollViewer>
 
-		<Grid Grid.Column="1">
+        <Grid Grid.Column="1">
 
-			<StackPanel HorizontalAlignment="Center"
-			    VerticalAlignment="Center"
-			    contract5Present:Spacing="4"
-			    Orientation="Vertical">
-				<!--  Standard NumberBox test UI  -->
-				<StackPanel>
-					<controls:NumberBox x:Name="TestNumberBox"
-					    MinWidth="150"
-					    AcceptsExpression="{x:Bind ExpressionCheckBox.IsChecked.Value, Mode=OneWay}"
-					    Description="Description text"
-					    Header="TestNumberBox"
-					    IsEnabled="{x:Bind EnabledCheckBox.IsChecked.Value, Mode=OneWay}"
-					    IsWrapEnabled="{x:Bind WrapCheckBox.IsChecked.Value, Mode=OneWay}"
-					    LargeChange="{x:Bind LargeChangeNumberBox.Value, Mode=OneWay}"
-					    PlaceholderText="Text"
-					    SmallChange="{x:Bind SmallChangeNumberBox.Value, Mode=OneWay}"
-					    ValueChanged="NumberBoxValueChanged" />
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                contract5Present:Spacing="4"
+                Orientation="Vertical">
+                <!--  Standard NumberBox test UI  -->
+                <StackPanel>
+                    <controls:NumberBox
+                        x:Name="TestNumberBox"
+                        MinWidth="150"
+                        AcceptsExpression="{x:Bind ExpressionCheckBox.IsChecked.Value, Mode=OneWay}"
+                        Description="Description text"
+                        Header="TestNumberBox"
+                        IsEnabled="{x:Bind EnabledCheckBox.IsChecked.Value, Mode=OneWay}"
+                        IsWrapEnabled="{x:Bind WrapCheckBox.IsChecked.Value, Mode=OneWay}"
+                        LargeChange="{x:Bind LargeChangeNumberBox.Value, Mode=OneWay}"
+                        PlaceholderText="Text"
+                        SmallChange="{x:Bind SmallChangeNumberBox.Value, Mode=OneWay}"
+                        ValueChanged="NumberBoxValueChanged" />
 
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Margin="0,0,5,0"
-						    Text="Value:" />
-						<TextBlock x:Name="NewValueTextBox"
-						    AutomationProperties.Name="NewValueTextBox"
-						    Text="0" />
-					</StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="0,0,5,0" Text="Value:" />
+                        <TextBlock
+                            x:Name="NewValueTextBox"
+                            AutomationProperties.Name="NewValueTextBox"
+                            Text="0" />
+                    </StackPanel>
 
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Margin="0,0,5,0"
-						    Text="Old Value:" />
-						<TextBlock x:Name="OldValueTextBox"
-						    AutomationProperties.Name="OldValueTextBox" />
-					</StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="0,0,5,0" Text="Old Value:" />
+                        <TextBlock x:Name="OldValueTextBox" AutomationProperties.Name="OldValueTextBox" />
+                    </StackPanel>
 
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Margin="0,0,5,0"
-						    Text="Text:" />
-						<TextBlock x:Name="TextTextBox"
-						    AutomationProperties.Name="TextTextBox"
-						    Text="0" />
-					</StackPanel>
-				</StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="0,0,5,0" Text="Text:" />
+                        <TextBlock
+                            x:Name="TextTextBox"
+                            AutomationProperties.Name="TextTextBox"
+                            Text="0" />
+                    </StackPanel>
+                </StackPanel>
 
-				<!--  NumberBox for nested scrolling bug(s)  -->
-				<StackPanel Margin="30,0,0,0">
-					<TextBlock Text="NumberBox inside ScrollViewer test" />
-					<ScrollViewer x:Name="ScrollviewerWithScroll"
-					    Width="200"
-					    Height="50"
-					    ViewChanged="ScrollviewerWithScroll_ViewChanged">
-						<StackPanel>
-							<controls:NumberBox x:Name="NumberBoxInScroller"
-							    AutomationProperties.Name="NumberBoxInScroller" />
-							<controls:NumberBox />
-							<controls:NumberBox />
-						</StackPanel>
-					</ScrollViewer>
+                <!--  NumberBox for nested scrolling bug(s)  -->
+                <StackPanel Margin="30,0,0,0">
+                    <TextBlock Text="NumberBox inside ScrollViewer test" />
+                    <ScrollViewer
+                        x:Name="ScrollviewerWithScroll"
+                        Width="200"
+                        Height="50"
+                        ViewChanged="ScrollviewerWithScroll_ViewChanged">
+                        <StackPanel>
+                            <controls:NumberBox x:Name="NumberBoxInScroller" AutomationProperties.Name="NumberBoxInScroller" />
+                            <controls:NumberBox />
+                            <controls:NumberBox />
+                        </StackPanel>
+                    </ScrollViewer>
 
-					<TextBlock x:Name="VerticalOffsetDisplayBlock"
-					    AutomationProperties.Name="VerticalOffsetDisplayBlock"
-					    Text="0" />
-				</StackPanel>
+                    <TextBlock
+                        x:Name="VerticalOffsetDisplayBlock"
+                        AutomationProperties.Name="VerticalOffsetDisplayBlock"
+                        Text="0" />
+                </StackPanel>
 
-				<!--  NumberBox two way binding with x:Bind  -->
-				<StackPanel>
-					<controls:NumberBox x:Name="TwoWayBoundNumberBox"
-					    Header="TwoWayBinding"
-					    Value="{x:Bind DataModelWithINPC.Value, Mode=TwoWay}" />
-					<TextBlock x:Name="TwoWayBoundNumberBoxValue"
-					    AutomationProperties.Name="TwoWayBoundNumberBoxValue" />
-				</StackPanel>
+                <!--  NumberBox two way binding with x:Bind  -->
+                <StackPanel>
+                    <controls:NumberBox
+                        x:Name="TwoWayBoundNumberBox"
+                        Header="TwoWayBinding"
+                        Value="{x:Bind DataModelWithINPC.Value, Mode=TwoWay}" />
+                    <TextBlock x:Name="TwoWayBoundNumberBoxValue" AutomationProperties.Name="TwoWayBoundNumberBoxValue" />
+                </StackPanel>
 
-				<!--  Testing alignment with textbox and without specified header  -->
-				<StackPanel Orientation="Horizontal">
-					<TextBox MaxHeight="30"
-					    VerticalAlignment="Top" />
-					<controls:NumberBox x:Name="HeaderTestingNumberBox"
-					    MaxHeight="32"
-					    VerticalAlignment="Top"
-					    PlaceholderText="I should not be clipped without header" />
-					<controls:NumberBox x:Name="HeaderTestingNumberBoxTwo"
-					    MaxHeight="32"
-					    VerticalAlignment="Top">
-						<controls:NumberBox.HeaderTemplate>
-							<DataTemplate>
-								<TextBlock AutomationProperties.Name="HeaderTemplateBeforeApplayTemplateTest"
-								    Text="MyText" />
-							</DataTemplate>
-						</controls:NumberBox.HeaderTemplate>
-					</controls:NumberBox>
-					<controls:NumberBox>
-						<controls:NumberBox.Header>
-							<TextBlock AutomationProperties.Name="HeaderBeforeApplyTemplateTest"
-							    Text="TestNumberBox" />
-						</controls:NumberBox.Header>
-					</controls:NumberBox>
-					<controls:NumberBox x:Name="HeaderTemplateTestingNumberBox" />
-				</StackPanel>
+                <!--  Testing alignment with textbox and without specified header  -->
+                <StackPanel Orientation="Horizontal">
+                    <TextBox MaxHeight="30" VerticalAlignment="Top" />
+                    <controls:NumberBox
+                        x:Name="HeaderTestingNumberBox"
+                        MaxHeight="32"
+                        VerticalAlignment="Top"
+                        PlaceholderText="I should not be clipped without header" />
+                    <controls:NumberBox
+                        x:Name="HeaderTestingNumberBoxTwo"
+                        MaxHeight="32"
+                        VerticalAlignment="Top">
+                        <controls:NumberBox.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock AutomationProperties.Name="HeaderTemplateBeforeApplayTemplateTest" Text="MyText" />
+                            </DataTemplate>
+                        </controls:NumberBox.HeaderTemplate>
+                    </controls:NumberBox>
+                    <controls:NumberBox>
+                        <controls:NumberBox.Header>
+                            <TextBlock AutomationProperties.Name="HeaderBeforeApplyTemplateTest" Text="TestNumberBox" />
+                        </controls:NumberBox.Header>
+                    </controls:NumberBox>
+                    <controls:NumberBox x:Name="HeaderTemplateTestingNumberBox" />
+                </StackPanel>
 
-				<!--  FontSize propagation  -->
-				<controls:NumberBox FontSize="50"
-				    Header="Header text" />
+                <!--  FontSize propagation  -->
+                <controls:NumberBox FontSize="50" Header="Header text" />
 
-				<StackPanel Height="50"
-				    Orientation="Horizontal">
-					<controls:NumberBox PlaceholderText="Number" />
-					<TextBox PlaceholderText="Text" />
-					<AutoSuggestBox PlaceholderText="Auto" />
-					<!--  Not yet implemented in Uno. https://github.com/unoplatform/uno/issues/3848 https://github.com/unoplatform/uno/issues/81  -->
-					<!--<RichEditBox PlaceholderText="Rich"/>-->
-				</StackPanel>
+                <StackPanel Height="50" Orientation="Horizontal">
+                    <controls:NumberBox PlaceholderText="Number" />
+                    <TextBox PlaceholderText="Text" />
+                    <AutoSuggestBox PlaceholderText="Auto" />
+                    <!--  Not yet implemented in Uno. https://github.com/unoplatform/uno/issues/3848 https://github.com/unoplatform/uno/issues/81  -->
+                    <!--<RichEditBox PlaceholderText="Rich"/>-->
+                </StackPanel>
 
-				<!--  Property propagation  -->
-				<StackPanel Orientation="Horizontal">
-					<TextBox Width="200"
-					    Height="100"
-					    Margin="20"
-					    Padding="20"
-					    BorderBrush="Red"
-					    BorderThickness="5"
-					    FontSize="14"
-					    Foreground="{ThemeResource SystemAccentColor}"
-					    Header="Header text" />
-					<controls:NumberBox Width="200"
-					    Height="100"
-					    Margin="20"
-					    Padding="20"
-					    BorderBrush="Red"
-					    BorderThickness="5"
-					    FontSize="14"
-					    Foreground="{ThemeResource SystemAccentColor}"
-					    Header="Header text"
-					    SpinButtonPlacementMode="Inline" />
-				</StackPanel>
-			</StackPanel>
-		</Grid>
+                <!--  Property propagation  -->
+                <StackPanel Orientation="Horizontal">
+                    <TextBox
+                        Width="200"
+                        Height="100"
+                        Margin="20"
+                        Padding="20"
+                        BorderBrush="Red"
+                        BorderThickness="5"
+                        FontSize="14"
+                        Foreground="{ThemeResource SystemAccentColor}"
+                        Header="Header text" />
+                    <controls:NumberBox
+                        Width="200"
+                        Height="100"
+                        Margin="20"
+                        Padding="20"
+                        BorderBrush="Red"
+                        BorderThickness="5"
+                        FontSize="14"
+                        Foreground="{ThemeResource SystemAccentColor}"
+                        Header="Header text"
+                        SpinButtonPlacementMode="Inline" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
 
-	</Grid>
+    </Grid>
 
 </UserControl>

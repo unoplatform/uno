@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl.Path_With_DashStrokeArray"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl.Path_With_DashStrokeArray"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -13,45 +14,50 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<controls:SampleControl SampleDescription="Different use cases of the DashStrokeArray property">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel>
-					<Path Width="50"
-					    Height="50"
-					    Data="M61.5,31 C61.5,47.8447 47.8447,61.5 31,61.5 C14.1553,61.5 0.5,47.8447 0.5,31 C0.5,14.1553 14.1553,0.5 31,0.5 C47.8447,0.5 61.5,14.1553 61.5,31 z"
-					    Stretch="Uniform"
-					    Stroke="Black" />
+    <controls:SampleControl SampleDescription="Different use cases of the DashStrokeArray property">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <StackPanel>
+                    <Path
+                        Width="50"
+                        Height="50"
+                        Data="M61.5,31 C61.5,47.8447 47.8447,61.5 31,61.5 C14.1553,61.5 0.5,47.8447 0.5,31 C0.5,14.1553 14.1553,0.5 31,0.5 C47.8447,0.5 61.5,14.1553 61.5,31 z"
+                        Stretch="Uniform"
+                        Stroke="Black" />
 
-					<Path Width="50"
-					    Height="50"
-					    Data="M61.5,31 C61.5,47.8447 47.8447,61.5 31,61.5 C14.1553,61.5 0.5,47.8447 0.5,31 C0.5,14.1553 14.1553,0.5 31,0.5 C47.8447,0.5 61.5,14.1553 61.5,31 z"
-					    Stretch="Uniform"
-					    Stroke="Black"
-					    StrokeDashArray="1" />
+                    <Path
+                        Width="50"
+                        Height="50"
+                        Data="M61.5,31 C61.5,47.8447 47.8447,61.5 31,61.5 C14.1553,61.5 0.5,47.8447 0.5,31 C0.5,14.1553 14.1553,0.5 31,0.5 C47.8447,0.5 61.5,14.1553 61.5,31 z"
+                        Stretch="Uniform"
+                        Stroke="Black"
+                        StrokeDashArray="1" />
 
-					<Path Width="50"
-					    Height="50"
-					    Data="M61.5,31 C61.5,47.8447 47.8447,61.5 31,61.5 C14.1553,61.5 0.5,47.8447 0.5,31 C0.5,14.1553 14.1553,0.5 31,0.5 C47.8447,0.5 61.5,14.1553 61.5,31 z"
-					    Stretch="Uniform"
-					    Stroke="Black"
-					    StrokeDashArray="1 5" />
+                    <Path
+                        Width="50"
+                        Height="50"
+                        Data="M61.5,31 C61.5,47.8447 47.8447,61.5 31,61.5 C14.1553,61.5 0.5,47.8447 0.5,31 C0.5,14.1553 14.1553,0.5 31,0.5 C47.8447,0.5 61.5,14.1553 61.5,31 z"
+                        Stretch="Uniform"
+                        Stroke="Black"
+                        StrokeDashArray="1 5" />
 
-					<Path Width="50"
-					    Height="50"
-					    Data="M61.5,31 C61.5,47.8447 47.8447,61.5 31,61.5 C14.1553,61.5 0.5,47.8447 0.5,31 C0.5,14.1553 14.1553,0.5 31,0.5 C47.8447,0.5 61.5,14.1553 61.5,31 z"
-					    Stretch="Uniform"
-					    Stroke="Black"
-					    StrokeDashArray="1 3 5" />
+                    <Path
+                        Width="50"
+                        Height="50"
+                        Data="M61.5,31 C61.5,47.8447 47.8447,61.5 31,61.5 C14.1553,61.5 0.5,47.8447 0.5,31 C0.5,14.1553 14.1553,0.5 31,0.5 C47.8447,0.5 61.5,14.1553 61.5,31 z"
+                        Stretch="Uniform"
+                        Stroke="Black"
+                        StrokeDashArray="1 3 5" />
 
-					<Path Width="50"
-					    Height="50"
-					    Data="M61.5,31 C61.5,47.8447 47.8447,61.5 31,61.5 C14.1553,61.5 0.5,47.8447 0.5,31 C0.5,14.1553 14.1553,0.5 31,0.5 C47.8447,0.5 61.5,14.1553 61.5,31 z"
-					    Stretch="Uniform"
-					    Stroke="Black"
-					    StrokeDashArray="5 4 3 2 1 0" />
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+                    <Path
+                        Width="50"
+                        Height="50"
+                        Data="M61.5,31 C61.5,47.8447 47.8447,61.5 31,61.5 C14.1553,61.5 0.5,47.8447 0.5,31 C0.5,14.1553 14.1553,0.5 31,0.5 C47.8447,0.5 61.5,14.1553 61.5,31 z"
+                        Stretch="Uniform"
+                        Stroke="Black"
+                        StrokeDashArray="5 4 3 2 1 0" />
+                </StackPanel>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

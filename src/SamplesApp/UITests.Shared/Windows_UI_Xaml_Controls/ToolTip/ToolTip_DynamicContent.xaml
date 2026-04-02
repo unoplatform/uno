@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_DynamicContent"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_DynamicContent"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,61 +8,67 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid Padding="16"
-	    RowSpacing="16">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
+    <Grid Padding="16" RowSpacing="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-		<Border x:Name="TooltipTarget"
-		    Grid.Row="0"
-		    Padding="16"
-		    Background="SkyBlue"
-		    ToolTipService.ToolTip="default tooltip">
-			<TextBlock Text="mouse over the blue area to reveal the tooltip"
-			    TextWrapping="Wrap" />
-		</Border>
+        <Border
+            x:Name="TooltipTarget"
+            Grid.Row="0"
+            Padding="16"
+            Background="SkyBlue"
+            ToolTipService.ToolTip="default tooltip">
+            <TextBlock Text="mouse over the blue area to reveal the tooltip" TextWrapping="Wrap" />
+        </Border>
 
-		<StackPanel Grid.Row="1"
-		    HorizontalAlignment="Stretch"
-		    Spacing="4">
-			<StackPanel.Resources>
-				<Style TargetType="Button">
-					<Setter Property="HorizontalAlignment" Value="Stretch" />
-				</Style>
-			</StackPanel.Resources>
+        <StackPanel
+            Grid.Row="1"
+            HorizontalAlignment="Stretch"
+            Spacing="4">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </Style>
+            </StackPanel.Resources>
 
-			<Button x:Name="SetTooltipToNullButton"
-			    Click="SetTooltip"
-			    Content="SetTooltipToNull"
-			    Tag="{x:Null}" />
-			<Button x:Name="SetTooltipToText1Button"
-			    Click="SetTooltip"
-			    Content="SetTooltipToText1"
-			    Tag="Text 1" />
-			<Button x:Name="SetTooltipToText2Button"
-			    Click="SetTooltip"
-			    Content="SetTooltipToText2"
-			    Tag="Text 2" />
-			<Button x:Name="SetTooltipToEmptyStringButton"
-			    Click="SetTooltip"
-			    Content="SetTooltipToEmptyString"
-			    Tag="" />
-			<Button x:Name="SetTooltipToToolTipControlButton"
-			    Click="SetTooltip"
-			    Content="SetTooltipToToolTipControl">
-				<Button.Tag>
-					<ToolTip>
-						<StackPanel>
-							<Rectangle Width="16"
-							    Height="16"
-							    Fill="Pink" />
-							<TextBlock Text="Custom Tooltip Control" />
-						</StackPanel>
-					</ToolTip>
-				</Button.Tag>
-			</Button>
-		</StackPanel>
-	</Grid>
+            <Button
+                x:Name="SetTooltipToNullButton"
+                Click="SetTooltip"
+                Content="SetTooltipToNull"
+                Tag="{x:Null}" />
+            <Button
+                x:Name="SetTooltipToText1Button"
+                Click="SetTooltip"
+                Content="SetTooltipToText1"
+                Tag="Text 1" />
+            <Button
+                x:Name="SetTooltipToText2Button"
+                Click="SetTooltip"
+                Content="SetTooltipToText2"
+                Tag="Text 2" />
+            <Button
+                x:Name="SetTooltipToEmptyStringButton"
+                Click="SetTooltip"
+                Content="SetTooltipToEmptyString"
+                Tag="" />
+            <Button
+                x:Name="SetTooltipToToolTipControlButton"
+                Click="SetTooltip"
+                Content="SetTooltipToToolTipControl">
+                <Button.Tag>
+                    <ToolTip>
+                        <StackPanel>
+                            <Rectangle
+                                Width="16"
+                                Height="16"
+                                Fill="Pink" />
+                            <TextBlock Text="Custom Tooltip Control" />
+                        </StackPanel>
+                    </ToolTip>
+                </Button.Tag>
+            </Button>
+        </StackPanel>
+    </Grid>
 </Page>

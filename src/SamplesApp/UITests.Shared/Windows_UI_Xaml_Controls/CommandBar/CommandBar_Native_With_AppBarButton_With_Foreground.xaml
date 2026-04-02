@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.CommandBar.CommandBar_Native_With_AppBarButton_With_Foreground"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.CommandBar.CommandBar_Native_With_AppBarButton_With_Foreground"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive.com/android"
@@ -10,45 +11,50 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d not_win ios android">
 
-	<Page.Resources>
-		<Style x:Name="NativeCommandbarStyle"
-		    not_win:BasedOn="{StaticResource NativeDefaultCommandBar}"
-		    TargetType="CommandBar" />
-	</Page.Resources>
+    <Page.Resources>
+        <Style
+            x:Name="NativeCommandbarStyle"
+            not_win:BasedOn="{StaticResource NativeDefaultCommandBar}"
+            TargetType="CommandBar" />
+    </Page.Resources>
 
-	<Grid>
-		<android:Grid>
-			<CommandBar x:Name="MyCommandBar"
-			    Background="Gray"
-			    Style="{StaticResource NativeCommandbarStyle}">
-				<CommandBar.PrimaryCommands>
-					<AppBarButton Content="Hello">
-						<AppBarButton.Icon>
-							<BitmapIcon x:Name="MyIcon"
-							    Foreground="Red"
-							    UriSource="ms-appx:///Assets/Icons/star_full.png" />
-						</AppBarButton.Icon>
-					</AppBarButton>
-				</CommandBar.PrimaryCommands>
-			</CommandBar>
-		</android:Grid>
+    <Grid>
+        <android:Grid>
+            <CommandBar
+                x:Name="MyCommandBar"
+                Background="Gray"
+                Style="{StaticResource NativeCommandbarStyle}">
+                <CommandBar.PrimaryCommands>
+                    <AppBarButton Content="Hello">
+                        <AppBarButton.Icon>
+                            <BitmapIcon
+                                x:Name="MyIcon"
+                                Foreground="Red"
+                                UriSource="ms-appx:///Assets/Icons/star_full.png" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                </CommandBar.PrimaryCommands>
+            </CommandBar>
+        </android:Grid>
 
 
-		<ios:Grid>
-			<CommandBar x:Name="MyCommandBar"
-			    Background="Gray"
-			    Style="{StaticResource NativeCommandbarStyle}">
-				<CommandBar.PrimaryCommands>
-					<AppBarButton Content="Hello">
-						<AppBarButton.Icon>
-							<BitmapIcon x:Name="MyIcon"
-							    Foreground="Red"
-							    UriSource="ms-appx:///Assets/Icons/star_full.png" />
-						</AppBarButton.Icon>
-					</AppBarButton>
-				</CommandBar.PrimaryCommands>
-			</CommandBar>
-		</ios:Grid>
+        <ios:Grid>
+            <CommandBar
+                x:Name="MyCommandBar"
+                Background="Gray"
+                Style="{StaticResource NativeCommandbarStyle}">
+                <CommandBar.PrimaryCommands>
+                    <AppBarButton Content="Hello">
+                        <AppBarButton.Icon>
+                            <BitmapIcon
+                                x:Name="MyIcon"
+                                Foreground="Red"
+                                UriSource="ms-appx:///Assets/Icons/star_full.png" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                </CommandBar.PrimaryCommands>
+            </CommandBar>
+        </ios:Grid>
 
-	</Grid>
+    </Grid>
 </Page>

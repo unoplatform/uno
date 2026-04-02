@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Margin_Large"
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Margin_Large"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,13 +9,13 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<Grid>
-		<Border x:Name="outerBorder"
-		    HorizontalAlignment="Center"
-		    VerticalAlignment="Top"
-		    Background="Black">
-			<Image Margin="5"
-			    Source="Assets/test_image_1252_836.png" />
-		</Border>
-	</Grid>
+    <Grid>
+        <Border
+            x:Name="outerBorder"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Background="Black">
+            <Image Margin="5" Source="Assets/test_image_1252_836.png" />
+        </Border>
+    </Grid>
 </UserControl>

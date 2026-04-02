@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Windows_UI_Xaml.Clipping.Clipping4273"
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml.Clipping.Clipping4273"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,19 +9,22 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<TextBlock Text="Should show a blue rounded rectangle, edged in red" />
-		<Grid HorizontalAlignment="Center"
-		    VerticalAlignment="Top"
-		    Background="Red">
-			<Grid x:Name="RoundedGrid"
-			    Width="220"
-			    Height="140"
-			    CornerRadius="60">
-				<Border HorizontalAlignment="Stretch"
-				    VerticalAlignment="Stretch"
-				    Background="Blue" />
-			</Grid>
-		</Grid>
-	</StackPanel>
+    <StackPanel>
+        <TextBlock Text="Should show a blue rounded rectangle, edged in red" />
+        <Grid
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Background="Red">
+            <Grid
+                x:Name="RoundedGrid"
+                Width="220"
+                Height="140"
+                CornerRadius="60">
+                <Border
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="Blue" />
+            </Grid>
+        </Grid>
+    </StackPanel>
 </UserControl>

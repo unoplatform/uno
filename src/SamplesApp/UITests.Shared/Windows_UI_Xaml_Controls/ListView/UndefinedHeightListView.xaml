@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.UndefinedHeightListView"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.UndefinedHeightListView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -13,46 +14,45 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<controls:SampleControl SampleDescription="This sample is meant to show that the initial measurement of the ListView takes into consideration the sizes of the headers and footers.">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<u:StarStackPanel>
-					<ListView x:Name="TestList"
-					    Footer="{Binding}"
-					    Header="{Binding}"
-					    ItemsSource="{Binding [SampleItems]}">
-						<ListView.ItemTemplate>
-							<DataTemplate>
-								<Border BorderBrush="Black"
-								    BorderThickness="2">
-									<TextBlock Height="50"
-									    Text="{Binding}" />
-								</Border>
-							</DataTemplate>
-						</ListView.ItemTemplate>
-						<ListView.FooterTemplate>
-							<DataTemplate>
-								<Border Height="75"
-								    HorizontalAlignment="Stretch"
-								    Background="CornflowerBlue">
-									<TextBlock Height="25"
-									    Text="Footer" />
-								</Border>
-							</DataTemplate>
-						</ListView.FooterTemplate>
-						<ListView.HeaderTemplate>
-							<DataTemplate>
-								<Border Height="75"
-								    HorizontalAlignment="Stretch"
-								    Background="Goldenrod">
-									<TextBlock Height="25"
-									    Text="Header" />
-								</Border>
-							</DataTemplate>
-						</ListView.HeaderTemplate>
-					</ListView>
-				</u:StarStackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="This sample is meant to show that the initial measurement of the ListView takes into consideration the sizes of the headers and footers.">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <u:StarStackPanel>
+                    <ListView
+                        x:Name="TestList"
+                        Footer="{Binding}"
+                        Header="{Binding}"
+                        ItemsSource="{Binding [SampleItems]}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="Black" BorderThickness="2">
+                                    <TextBlock Height="50" Text="{Binding}" />
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.FooterTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Height="75"
+                                    HorizontalAlignment="Stretch"
+                                    Background="CornflowerBlue">
+                                    <TextBlock Height="25" Text="Footer" />
+                                </Border>
+                            </DataTemplate>
+                        </ListView.FooterTemplate>
+                        <ListView.HeaderTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Height="75"
+                                    HorizontalAlignment="Stretch"
+                                    Background="Goldenrod">
+                                    <TextBlock Height="25" Text="Header" />
+                                </Border>
+                            </DataTemplate>
+                        </ListView.HeaderTemplate>
+                    </ListView>
+                </u:StarStackPanel>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

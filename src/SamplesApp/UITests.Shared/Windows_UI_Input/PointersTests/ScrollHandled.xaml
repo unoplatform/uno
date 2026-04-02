@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Input.PointersTests.ScrollHandled"
+﻿<Page
+    x:Class="UITests.Windows_UI_Input.PointersTests.ScrollHandled"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,56 +8,56 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid>
-		<ScrollViewer>
-			<StackPanel PointerWheelChanged="OnPointerWheelChanged">
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-				<Button>Test</Button>
-			</StackPanel>
-		</ScrollViewer>
-	</Grid>
+    <Grid>
+        <ScrollViewer>
+            <StackPanel PointerWheelChanged="OnPointerWheelChanged">
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+                <Button>Test</Button>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </Page>

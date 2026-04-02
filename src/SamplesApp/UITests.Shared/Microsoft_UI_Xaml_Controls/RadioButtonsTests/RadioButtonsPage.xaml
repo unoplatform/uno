@@ -1,5 +1,6 @@
 ﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
-<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests.RadioButtonsPage"
+<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests.RadioButtonsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:contract5Available="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
@@ -11,513 +12,562 @@
     x:Name="RadioButtonsTestPage"
     mc:Ignorable="d">
 
-	<Grid Margin="12"
-	    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-	    GotFocus="RootGotFocus">
-		<Grid Margin="10"
-		    BorderThickness="1">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
+    <Grid
+        Margin="12"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+        GotFocus="RootGotFocus">
+        <Grid Margin="10" BorderThickness="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-			<Grid Grid.Column="0"
-			    MinWidth="500"
-			    MaxWidth="800"
-			    Margin="5">
-				<ScrollViewer HorizontalScrollBarVisibility="Visible"
-				    HorizontalScrollMode="Enabled">
-					<StackPanel>
-						<Border x:Name="TestRadioButtonsBorder"
-						    BorderBrush="Black"
-						    BorderThickness="1">
-							<controls:RadioButtons x:Name="TestRadioButtons"
-							    AccessKey="r"
-							    AutomationProperties.AutomationId="TestRadioButtons"
-							    GotFocus="TestRadioButtons_GotFocus"
-							    Header="I'm the header"
-							    LostFocus="TestRadioButtons_LostFocus"
-							    SelectionChanged="TestRadioButtons_SelectionChanged" />
-						</Border>
-						<controls:RadioButtons x:Name="SecondTestRadioButton"
-						    Header="A Second Radio Buttons, 0 selected">
-							<RadioButton x:Name="TheRadioButton">I'm really a Radio Button</RadioButton>
-							<x:String>I'm just a string</x:String>
-							<Button>And I'm a Button!</Button>
-						</controls:RadioButtons>
-						<TextBlock x:Name="ReproTextBlock"
-						    MaxWidth="300"
-						    AutomationProperties.AutomationId="ReproTextBlock"
-						    TextWrapping="WrapWholeWords">
-							Click me to have Scroll Viewer place focus on the first radio button. Selection shouldn't change but down will move selection and focus to the second radio button.
-						</TextBlock>
-						<controls:RadioButtons Header="A Third Radio Buttons, 1 selected"
-						    SelectedIndex="1">
-							<x:Double>0.0</x:Double>
-							<x:Double>1.0</x:Double>
-							<x:Double>2.0</x:Double>
-						</controls:RadioButtons>
-					</StackPanel>
-				</ScrollViewer>
-			</Grid>
-			<ScrollViewer Grid.Column="1"
-			    HorizontalScrollBarVisibility="Auto"
-			    HorizontalScrollMode="Enabled"
-			    VerticalScrollBarVisibility="Hidden"
-			    VerticalScrollMode="Disabled">
-				<StackPanel Orientation="Horizontal">
-					<ScrollViewer Margin="5">
-						<Grid MinWidth="300"
-						    contract5Available:ColumnSpacing="2"
-						    contract5Available:RowSpacing="2"
-						    Background="Bisque">
-							<Grid.RowDefinitions>
-								<!--  0  -->
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<!--  5  -->
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<!--  10  -->
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<!--  15  -->
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<!--  20  -->
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
+            <Grid
+                Grid.Column="0"
+                MinWidth="500"
+                MaxWidth="800"
+                Margin="5">
+                <ScrollViewer HorizontalScrollBarVisibility="Visible" HorizontalScrollMode="Enabled">
+                    <StackPanel>
+                        <Border
+                            x:Name="TestRadioButtonsBorder"
+                            BorderBrush="Black"
+                            BorderThickness="1">
+                            <controls:RadioButtons
+                                x:Name="TestRadioButtons"
+                                AccessKey="r"
+                                AutomationProperties.AutomationId="TestRadioButtons"
+                                GotFocus="TestRadioButtons_GotFocus"
+                                Header="I'm the header"
+                                LostFocus="TestRadioButtons_LostFocus"
+                                SelectionChanged="TestRadioButtons_SelectionChanged" />
+                        </Border>
+                        <controls:RadioButtons x:Name="SecondTestRadioButton" Header="A Second Radio Buttons, 0 selected">
+                            <RadioButton x:Name="TheRadioButton">I'm really a Radio Button</RadioButton>
+                            <x:String>I'm just a string</x:String>
+                            <Button>And I'm a Button!</Button>
+                        </controls:RadioButtons>
+                        <TextBlock
+                            x:Name="ReproTextBlock"
+                            MaxWidth="300"
+                            AutomationProperties.AutomationId="ReproTextBlock"
+                            TextWrapping="WrapWholeWords">
+                            Click me to have Scroll Viewer place focus on the first radio button. Selection shouldn't change but down will move selection and focus to the second radio button.
+                        </TextBlock>
+                        <controls:RadioButtons Header="A Third Radio Buttons, 1 selected" SelectedIndex="1">
+                            <x:Double>0.0</x:Double>
+                            <x:Double>1.0</x:Double>
+                            <x:Double>2.0</x:Double>
+                        </controls:RadioButtons>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+            <ScrollViewer
+                Grid.Column="1"
+                HorizontalScrollBarVisibility="Auto"
+                HorizontalScrollMode="Enabled"
+                VerticalScrollBarVisibility="Hidden"
+                VerticalScrollMode="Disabled">
+                <StackPanel Orientation="Horizontal">
+                    <ScrollViewer Margin="5">
+                        <Grid
+                            MinWidth="300"
+                            contract5Available:ColumnSpacing="2"
+                            contract5Available:RowSpacing="2"
+                            Background="Bisque">
+                            <Grid.RowDefinitions>
+                                <!--  0  -->
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <!--  5  -->
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <!--  10  -->
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <!--  15  -->
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <!--  20  -->
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-							<TextBlock Grid.Row="0"
-							    Grid.Column="0"
-							    Grid.ColumnSpan="2"
-							    HorizontalAlignment="Center"
-							    Foreground="Red"
-							    Text="RadioButtons APIs" />
-							<TextBlock Grid.Row="1"
-							    Grid.Column="0"
-							    Grid.ColumnSpan="2"
-							    Text="MaxColumns:" />
-							<TextBox x:Name="MaxColumnsTextBlock"
-							    Grid.Row="2"
-							    Grid.Column="0"
-							    HorizontalAlignment="Right"
-							    AutomationProperties.AutomationId="MaxColumnsTextBlock"
-							    Text="1" />
-							<Button x:Name="SetMaxColumnsButton"
-							    Grid.Row="2"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="SetMaxColumnsButton"
-							    Click="SetMaxColumnsButton_Click"
-							    Content="Set" />
-							<TextBlock Grid.Row="3"
-							    Grid.Column="0"
-							    Grid.ColumnSpan="2"
-							    Text="Number Of Items:" />
-							<TextBox x:Name="NumberOfItemsTextBlock"
-							    Grid.Row="4"
-							    Grid.Column="0"
-							    HorizontalAlignment="Right"
-							    AutomationProperties.AutomationId="NumberOfItemsTextBlock"
-							    Text="10" />
-							<Button x:Name="SetNumberOfItemsButton"
-							    Grid.Row="4"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="SetNumberOfItemsButton"
-							    Click="SetNumberOfItemsButton_Click"
-							    Content="Set" />
-							<TextBlock Grid.Row="5"
-							    Grid.Column="0"
-							    HorizontalAlignment="Right"
-							    VerticalAlignment="Center"
-							    Text="Source:" />
-							<ComboBox x:Name="SourceComboBox"
-							    Grid.Row="5"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    VerticalAlignment="Center"
-							    SelectedIndex="0"
-							    SelectionChanged="SourceComboBoxSelectionChanged">
-								<ComboBoxItem x:Name="ItemsComboBoxItem"
-								    AutomationProperties.AutomationId="ItemsComboBoxItem"
-								    Content="Items" />
-								<ComboBoxItem x:Name="ItemsSourceComboBoxItem"
-								    AutomationProperties.AutomationId="ItemsSourceComboBoxItem"
-								    Content="ItemsSource" />
-							</ComboBox>
-							<TextBlock Grid.Row="6"
-							    Grid.Column="0"
-							    HorizontalAlignment="Right"
-							    VerticalAlignment="Center"
-							    Text="ItemType:" />
-							<ComboBox x:Name="ItemTypeComboBox"
-							    Grid.Row="6"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="ItemTypeComboBox"
-							    SelectedIndex="0"
-							    SelectionChanged="ItemTypeComboBoxSelectionChanged">
-								<ComboBoxItem x:Name="StringsComboBoxItem"
-								    AutomationProperties.AutomationId="StringsComboBoxItem"
-								    Content="Strings" />
-								<ComboBoxItem x:Name="RadioButtonElementsComboBoxItem"
-								    AutomationProperties.AutomationId="RadioButtonElementsComboBoxItem"
-								    Content="RadioButton" />
-							</ComboBox>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Center"
+                                Foreground="Red"
+                                Text="RadioButtons APIs" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Text="MaxColumns:" />
+                            <TextBox
+                                x:Name="MaxColumnsTextBlock"
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                HorizontalAlignment="Right"
+                                AutomationProperties.AutomationId="MaxColumnsTextBlock"
+                                Text="1" />
+                            <Button
+                                x:Name="SetMaxColumnsButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="SetMaxColumnsButton"
+                                Click="SetMaxColumnsButton_Click"
+                                Content="Set" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Text="Number Of Items:" />
+                            <TextBox
+                                x:Name="NumberOfItemsTextBlock"
+                                Grid.Row="4"
+                                Grid.Column="0"
+                                HorizontalAlignment="Right"
+                                AutomationProperties.AutomationId="NumberOfItemsTextBlock"
+                                Text="10" />
+                            <Button
+                                x:Name="SetNumberOfItemsButton"
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="SetNumberOfItemsButton"
+                                Click="SetNumberOfItemsButton_Click"
+                                Content="Set" />
+                            <TextBlock
+                                Grid.Row="5"
+                                Grid.Column="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Text="Source:" />
+                            <ComboBox
+                                x:Name="SourceComboBox"
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                SelectedIndex="0"
+                                SelectionChanged="SourceComboBoxSelectionChanged">
+                                <ComboBoxItem
+                                    x:Name="ItemsComboBoxItem"
+                                    AutomationProperties.AutomationId="ItemsComboBoxItem"
+                                    Content="Items" />
+                                <ComboBoxItem
+                                    x:Name="ItemsSourceComboBoxItem"
+                                    AutomationProperties.AutomationId="ItemsSourceComboBoxItem"
+                                    Content="ItemsSource" />
+                            </ComboBox>
+                            <TextBlock
+                                Grid.Row="6"
+                                Grid.Column="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Text="ItemType:" />
+                            <ComboBox
+                                x:Name="ItemTypeComboBox"
+                                Grid.Row="6"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="ItemTypeComboBox"
+                                SelectedIndex="0"
+                                SelectionChanged="ItemTypeComboBoxSelectionChanged">
+                                <ComboBoxItem
+                                    x:Name="StringsComboBoxItem"
+                                    AutomationProperties.AutomationId="StringsComboBoxItem"
+                                    Content="Strings" />
+                                <ComboBoxItem
+                                    x:Name="RadioButtonElementsComboBoxItem"
+                                    AutomationProperties.AutomationId="RadioButtonElementsComboBoxItem"
+                                    Content="RadioButton" />
+                            </ComboBox>
 
-							<TextBlock Grid.Row="7"
-							    Grid.Column="0"
-							    HorizontalAlignment="Right"
-							    VerticalAlignment="Center"
-							    Text="Select Item:" />
-							<TextBox x:Name="IndexToSelectTextBlock"
-							    Grid.Row="7"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="IndexToSelectTextBlock"
-							    Text="0" />
-							<Button Grid.Row="8"
-							    Grid.Column="0"
-							    HorizontalAlignment="Center"
-							    AutomationProperties.AutomationId="SelectByIndexButton"
-							    Click="SelectByIndexButton_Click"
-							    Content="Select By Index" />
-							<Button Grid.Row="8"
-							    Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    AutomationProperties.AutomationId="SelectByItemButton"
-							    Click="SelectByItemButton_Click"
-							    Content="Select By Item" />
+                            <TextBlock
+                                Grid.Row="7"
+                                Grid.Column="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Text="Select Item:" />
+                            <TextBox
+                                x:Name="IndexToSelectTextBlock"
+                                Grid.Row="7"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="IndexToSelectTextBlock"
+                                Text="0" />
+                            <Button
+                                Grid.Row="8"
+                                Grid.Column="0"
+                                HorizontalAlignment="Center"
+                                AutomationProperties.AutomationId="SelectByIndexButton"
+                                Click="SelectByIndexButton_Click"
+                                Content="Select By Index" />
+                            <Button
+                                Grid.Row="8"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                AutomationProperties.AutomationId="SelectByItemButton"
+                                Click="SelectByItemButton_Click"
+                                Content="Select By Item" />
 
-							<TextBlock Grid.Row="9"
-							    Grid.Column="0"
-							    Grid.ColumnSpan="2"
-							    HorizontalAlignment="Center"
-							    Foreground="Red"
-							    Text="Add a custom Radio Button" />
-							<RadioButton x:Name="DisplayRadioButton"
-							    Grid.Row="10"
-							    Grid.Column="0"
-							    Grid.ColumnSpan="2"
-							    HorizontalAlignment="Center" />
-							<Button x:Name="UpdateDisplayRadioButtonButton"
-							    Grid.Row="11"
-							    Grid.Column="0"
-							    HorizontalAlignment="Center"
-							    Click="UpdateDisplayRadioButtonButton_Click"
-							    Content="Update" />
-							<Button x:Name="InsertDisplayRadioButtonButton"
-							    Grid.Row="11"
-							    Grid.Column="1"
-							    HorizontalAlignment="Center"
-							    AutomationProperties.AutomationId="InsertDisplayRadioButtonButton"
-							    Click="InsertDisplayRadioButtonButton_Click"
-							    Content="Insert" />
-							<TextBlock x:Name="DisplayRadioButtonErrorMessage"
-							    Grid.Row="12"
-							    Grid.Column="0"
-							    Grid.ColumnSpan="2"
-							    HorizontalAlignment="Center"
-							    Foreground="Green"
-							    Text="Okay" />
-							<TextBlock Grid.Row="13"
-							    Grid.Column="0"
-							    HorizontalAlignment="Right"
-							    VerticalAlignment="Center"
-							    Text="Index:" />
-							<TextBox x:Name="CustomIndexTextBox"
-							    Grid.Row="13"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="CustomIndexTextBox"
-							    Text="0" />
-							<TextBlock Grid.Row="14"
-							    Grid.Column="0"
-							    HorizontalAlignment="Right"
-							    VerticalAlignment="Center"
-							    Text="Content:" />
-							<TextBox x:Name="CustomContentTextBox"
-							    Grid.Row="14"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="CustomContentTextBox"
-							    Text="Custom" />
-							<TextBlock Grid.Row="15"
-							    Grid.Column="0"
-							    HorizontalAlignment="Right"
-							    VerticalAlignment="Center"
-							    Text="Disabled:" />
-							<CheckBox x:Name="CustomDisabledCheckBox"
-							    Grid.Row="15"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="CustomDisabledCheckBox" />
-							<TextBlock Grid.Row="16"
-							    Grid.Column="0"
-							    HorizontalAlignment="Right"
-							    VerticalAlignment="Center"
-							    Text="Checked:" />
-							<CheckBox x:Name="CustomCheckedCheckBox"
-							    Grid.Row="16"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="CustomCheckedCheckBox" />
-							<TextBlock Grid.Row="17"
-							    Grid.Column="0"
-							    Grid.ColumnSpan="2"
-							    HorizontalAlignment="Center"
-							    Foreground="Red"
-							    Text="TestPage Utilities" />
-							<TextBox x:Name="BorderWidthTextBox"
-							    Grid.Row="18"
-							    Grid.Column="0"
-							    HorizontalAlignment="Right"
-							    AutomationProperties.AutomationId="BorderWidthTextBox"
-							    Text="inf" />
-							<Button x:Name="SetBorderWidthButton"
-							    Grid.Row="18"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="SetBorderWidthButton"
-							    Click="SetBorderWidthButton_Click"
-							    Content="Set" />
-							<Button Grid.Row="19"
-							    Grid.Column="0"
-							    Grid.ColumnSpan="2"
-							    AutomationProperties.AutomationId="FocusSelectedItemButton"
-							    Click="FocusSelectedItemButton_Clicked"
-							    Content="Focus Selected Item" />
-							<Button Grid.Row="20"
-							    Grid.Column="0"
-							    Grid.ColumnSpan="2"
-							    AutomationProperties.AutomationId="Select5ThenChangeSourceButton"
-							    Click="Select5ThenChangeSourceButton_Clicked"
-							    Content="Select 5 then change source" />
-							<CheckBox x:Name="AllowInvalidValuesCheckBox"
-							    Grid.Row="21"
-							    Grid.Column="0"
-							    Grid.ColumnSpan="2"
-							    HorizontalAlignment="Center"
-							    AutomationProperties.AutomationId="AllowInvalidValuesCheckBox"
-							    Content="Allow Invalid Values"
-							    IsChecked="False"
-							    IsEnabled="False" />
-						</Grid>
-					</ScrollViewer>
-					<ScrollViewer Margin="5">
-						<Grid MinWidth="300"
-						    contract5Available:ColumnSpacing="2">
-							<Grid.RowDefinitions>
-								<!--  0  -->
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<!--  5  -->
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<!--  10  -->
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Row="9"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Center"
+                                Foreground="Red"
+                                Text="Add a custom Radio Button" />
+                            <RadioButton
+                                x:Name="DisplayRadioButton"
+                                Grid.Row="10"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Center" />
+                            <Button
+                                x:Name="UpdateDisplayRadioButtonButton"
+                                Grid.Row="11"
+                                Grid.Column="0"
+                                HorizontalAlignment="Center"
+                                Click="UpdateDisplayRadioButtonButton_Click"
+                                Content="Update" />
+                            <Button
+                                x:Name="InsertDisplayRadioButtonButton"
+                                Grid.Row="11"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                AutomationProperties.AutomationId="InsertDisplayRadioButtonButton"
+                                Click="InsertDisplayRadioButtonButton_Click"
+                                Content="Insert" />
+                            <TextBlock
+                                x:Name="DisplayRadioButtonErrorMessage"
+                                Grid.Row="12"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Center"
+                                Foreground="Green"
+                                Text="Okay" />
+                            <TextBlock
+                                Grid.Row="13"
+                                Grid.Column="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Text="Index:" />
+                            <TextBox
+                                x:Name="CustomIndexTextBox"
+                                Grid.Row="13"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="CustomIndexTextBox"
+                                Text="0" />
+                            <TextBlock
+                                Grid.Row="14"
+                                Grid.Column="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Text="Content:" />
+                            <TextBox
+                                x:Name="CustomContentTextBox"
+                                Grid.Row="14"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="CustomContentTextBox"
+                                Text="Custom" />
+                            <TextBlock
+                                Grid.Row="15"
+                                Grid.Column="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Text="Disabled:" />
+                            <CheckBox
+                                x:Name="CustomDisabledCheckBox"
+                                Grid.Row="15"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="CustomDisabledCheckBox" />
+                            <TextBlock
+                                Grid.Row="16"
+                                Grid.Column="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Text="Checked:" />
+                            <CheckBox
+                                x:Name="CustomCheckedCheckBox"
+                                Grid.Row="16"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="CustomCheckedCheckBox" />
+                            <TextBlock
+                                Grid.Row="17"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Center"
+                                Foreground="Red"
+                                Text="TestPage Utilities" />
+                            <TextBox
+                                x:Name="BorderWidthTextBox"
+                                Grid.Row="18"
+                                Grid.Column="0"
+                                HorizontalAlignment="Right"
+                                AutomationProperties.AutomationId="BorderWidthTextBox"
+                                Text="inf" />
+                            <Button
+                                x:Name="SetBorderWidthButton"
+                                Grid.Row="18"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="SetBorderWidthButton"
+                                Click="SetBorderWidthButton_Click"
+                                Content="Set" />
+                            <Button
+                                Grid.Row="19"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                AutomationProperties.AutomationId="FocusSelectedItemButton"
+                                Click="FocusSelectedItemButton_Clicked"
+                                Content="Focus Selected Item" />
+                            <Button
+                                Grid.Row="20"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                AutomationProperties.AutomationId="Select5ThenChangeSourceButton"
+                                Click="Select5ThenChangeSourceButton_Clicked"
+                                Content="Select 5 then change source" />
+                            <CheckBox
+                                x:Name="AllowInvalidValuesCheckBox"
+                                Grid.Row="21"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Center"
+                                AutomationProperties.AutomationId="AllowInvalidValuesCheckBox"
+                                Content="Allow Invalid Values"
+                                IsChecked="False"
+                                IsEnabled="False" />
+                        </Grid>
+                    </ScrollViewer>
+                    <ScrollViewer Margin="5">
+                        <Grid MinWidth="300" contract5Available:ColumnSpacing="2">
+                            <Grid.RowDefinitions>
+                                <!--  0  -->
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <!--  5  -->
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <!--  10  -->
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-							<TextBlock Grid.Row="0"
-							    Grid.Column="0"
-							    Grid.ColumnSpan="2"
-							    HorizontalAlignment="Center"
-							    Foreground="Red">
-								RadioButtons Outputs
-							</TextBlock>
-							<TextBlock Grid.Row="1"
-							    Grid.Column="0">
-								Selected Index:
-							</TextBlock>
-							<TextBlock x:Name="SelectedIndexTextBlock"
-							    Grid.Row="1"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="SelectedIndexTextBlock"
-							    Text="-1" />
-							<TextBlock Grid.Row="2"
-							    Grid.Column="0">
-								Selected Item:
-							</TextBlock>
-							<TextBlock x:Name="SelectedItemTextBlock"
-							    Grid.Row="2"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="SelectedItemTextBlock"
-							    Text="null" />
-							<TextBlock Grid.Row="3"
-							    Grid.Column="0">
-								Selected PositionInSet:
-							</TextBlock>
-							<TextBlock x:Name="SelectedPositionInSetTextBlock"
-							    Grid.Row="3"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="SelectedPositionInSetTextBlock"
-							    Text="-1" />
-							<TextBlock Grid.Row="4"
-							    Grid.Column="0">
-								Selected SizeOfSet:
-							</TextBlock>
-							<TextBlock x:Name="SelectedSizeOfSetTextBlock"
-							    Grid.Row="4"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="SelectedSizeOfSetTextBlock"
-							    Text="-1" />
-							<TextBlock Grid.Row="5"
-							    Grid.Column="0">
-								Has Focus:
-							</TextBlock>
-							<CheckBox x:Name="RadioButtonsHasFocusCheckBox"
-							    Grid.Row="5"
-							    Grid.Column="1"
-							    AutomationProperties.AutomationId="SelectedItemTextBlock"
-							    IsEnabled="false" />
-							<TextBlock Grid.Row="6"
-							    Grid.Column="0"
-							    Grid.ColumnSpan="2"
-							    HorizontalAlignment="Center"
-							    Foreground="Red">
-								Focus Outputs
-							</TextBlock>
-							<TextBlock Grid.Row="7"
-							    Grid.Column="0">
-								Focused Index:
-							</TextBlock>
-							<TextBlock x:Name="FocusedIndexTextBlock"
-							    Grid.Row="7"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="FocusedIndexTextBlock"
-							    Text="-1" />
-							<TextBlock Grid.Row="8"
-							    Grid.Column="0">
-								Focused Item:
-							</TextBlock>
-							<TextBlock x:Name="FocusedItemTextBlock"
-							    Grid.Row="8"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="FocusedItemTextBlock"
-							    Text="null" />
-							<TextBlock Grid.Row="9"
-							    Grid.Column="0"
-							    Grid.ColumnSpan="2"
-							    HorizontalAlignment="Center"
-							    Foreground="Red">
-								Layout Outputs
-							</TextBlock>
-							<TextBlock Grid.Row="10"
-							    Grid.Column="0">
-								# of Rows:
-							</TextBlock>
-							<TextBlock x:Name="LayoutNumberOfRowsTextBlock"
-							    Grid.Row="10"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="LayoutNumberOfRowsTextBlock"
-							    Text="10" />
-							<TextBlock Grid.Row="11"
-							    Grid.Column="0">
-								# of Columns:
-							</TextBlock>
-							<TextBlock x:Name="LayoutNumberOfColumnsTextBlock"
-							    Grid.Row="11"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="LayoutNumberOfColumnsTextBlock"
-							    Text="1" />
-							<TextBlock Grid.Row="12"
-							    Grid.Column="0">
-								# of larger Columns:
-							</TextBlock>
-							<TextBlock x:Name="LayoutNumberOfLargerColumnsTextBlock"
-							    Grid.Row="12"
-							    Grid.Column="1"
-							    HorizontalAlignment="Left"
-							    AutomationProperties.AutomationId="LayoutNumberOfLargerColumnsTextBlock"
-							    Text="0" />
-						</Grid>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Center"
+                                Foreground="Red">
+                                RadioButtons Outputs
+                            </TextBlock>
+                            <TextBlock Grid.Row="1" Grid.Column="0">
+                                Selected Index:
+                            </TextBlock>
+                            <TextBlock
+                                x:Name="SelectedIndexTextBlock"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="SelectedIndexTextBlock"
+                                Text="-1" />
+                            <TextBlock Grid.Row="2" Grid.Column="0">
+                                Selected Item:
+                            </TextBlock>
+                            <TextBlock
+                                x:Name="SelectedItemTextBlock"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="SelectedItemTextBlock"
+                                Text="null" />
+                            <TextBlock Grid.Row="3" Grid.Column="0">
+                                Selected PositionInSet:
+                            </TextBlock>
+                            <TextBlock
+                                x:Name="SelectedPositionInSetTextBlock"
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="SelectedPositionInSetTextBlock"
+                                Text="-1" />
+                            <TextBlock Grid.Row="4" Grid.Column="0">
+                                Selected SizeOfSet:
+                            </TextBlock>
+                            <TextBlock
+                                x:Name="SelectedSizeOfSetTextBlock"
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="SelectedSizeOfSetTextBlock"
+                                Text="-1" />
+                            <TextBlock Grid.Row="5" Grid.Column="0">
+                                Has Focus:
+                            </TextBlock>
+                            <CheckBox
+                                x:Name="RadioButtonsHasFocusCheckBox"
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                AutomationProperties.AutomationId="SelectedItemTextBlock"
+                                IsEnabled="false" />
+                            <TextBlock
+                                Grid.Row="6"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Center"
+                                Foreground="Red">
+                                Focus Outputs
+                            </TextBlock>
+                            <TextBlock Grid.Row="7" Grid.Column="0">
+                                Focused Index:
+                            </TextBlock>
+                            <TextBlock
+                                x:Name="FocusedIndexTextBlock"
+                                Grid.Row="7"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="FocusedIndexTextBlock"
+                                Text="-1" />
+                            <TextBlock Grid.Row="8" Grid.Column="0">
+                                Focused Item:
+                            </TextBlock>
+                            <TextBlock
+                                x:Name="FocusedItemTextBlock"
+                                Grid.Row="8"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="FocusedItemTextBlock"
+                                Text="null" />
+                            <TextBlock
+                                Grid.Row="9"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Center"
+                                Foreground="Red">
+                                Layout Outputs
+                            </TextBlock>
+                            <TextBlock Grid.Row="10" Grid.Column="0">
+                                # of Rows:
+                            </TextBlock>
+                            <TextBlock
+                                x:Name="LayoutNumberOfRowsTextBlock"
+                                Grid.Row="10"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="LayoutNumberOfRowsTextBlock"
+                                Text="10" />
+                            <TextBlock Grid.Row="11" Grid.Column="0">
+                                # of Columns:
+                            </TextBlock>
+                            <TextBlock
+                                x:Name="LayoutNumberOfColumnsTextBlock"
+                                Grid.Row="11"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="LayoutNumberOfColumnsTextBlock"
+                                Text="1" />
+                            <TextBlock Grid.Row="12" Grid.Column="0">
+                                # of larger Columns:
+                            </TextBlock>
+                            <TextBlock
+                                x:Name="LayoutNumberOfLargerColumnsTextBlock"
+                                Grid.Row="12"
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="LayoutNumberOfLargerColumnsTextBlock"
+                                Text="0" />
+                        </Grid>
 
-					</ScrollViewer>
-					<!--  Logging Output  -->
-					<Grid MaxWidth="450"
-					    Margin="5"
-					    Background="Bisque">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="*" />
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
+                    </ScrollViewer>
+                    <!--  Logging Output  -->
+                    <Grid
+                        MaxWidth="450"
+                        Margin="5"
+                        Background="Bisque">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-						<TextBlock HorizontalAlignment="Center"
-						    Foreground="Red"
-						    Text="RadioButtons Messages &amp; Events" />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Foreground="Red"
+                            Text="RadioButtons Messages &amp; Events" />
 
-						<StackPanel Grid.Row="1"
-						    Orientation="Horizontal">
-							<Button x:Name="ClearRadioButtonsEventsButton"
-							    Margin="1"
-							    AutomationProperties.AutomationId="ClearRadioButtonsEventsButton"
-							    Click="ClearRadioButtonsEventsButton_Click"
-							    Content="Clear" />
-							<CheckBox x:Name="LogRadioButtonsMessagesCheckBox"
-							    Margin="1"
-							    Content="Log RadioButtons Messages?"
-							    IsEnabled="false" />
-							<CheckBox x:Name="LogRadioButtonsEventsCheckBox"
-							    Margin="1"
-							    Content="Log RadioButtons Events?"
-							    IsEnabled="false" />
-							<CheckBox x:Name="DisplayLogsCheckBox"
-							    Margin="1"
-							    Content="Display Logs?"
-							    IsEnabled="false" />
-						</StackPanel>
-						<ListBox x:Name="RadioButtonsEventsList"
-						    Grid.Row="2"
-						    Margin="1"
-						    AutomationProperties.AutomationId="RadioButtonsEventsList"
-						    ScrollViewer.HorizontalScrollBarVisibility="Auto"
-						    ScrollViewer.HorizontalScrollMode="Auto" />
-					</Grid>
-				</StackPanel>
-			</ScrollViewer>
-		</Grid>
-	</Grid>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <Button
+                                x:Name="ClearRadioButtonsEventsButton"
+                                Margin="1"
+                                AutomationProperties.AutomationId="ClearRadioButtonsEventsButton"
+                                Click="ClearRadioButtonsEventsButton_Click"
+                                Content="Clear" />
+                            <CheckBox
+                                x:Name="LogRadioButtonsMessagesCheckBox"
+                                Margin="1"
+                                Content="Log RadioButtons Messages?"
+                                IsEnabled="false" />
+                            <CheckBox
+                                x:Name="LogRadioButtonsEventsCheckBox"
+                                Margin="1"
+                                Content="Log RadioButtons Events?"
+                                IsEnabled="false" />
+                            <CheckBox
+                                x:Name="DisplayLogsCheckBox"
+                                Margin="1"
+                                Content="Display Logs?"
+                                IsEnabled="false" />
+                        </StackPanel>
+                        <ListBox
+                            x:Name="RadioButtonsEventsList"
+                            Grid.Row="2"
+                            Margin="1"
+                            AutomationProperties.AutomationId="RadioButtonsEventsList"
+                            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                            ScrollViewer.HorizontalScrollMode="Auto" />
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
 </Page>

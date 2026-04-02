@@ -1,4 +1,5 @@
-﻿<ContentDialog x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Simple_Dialog"
+﻿<ContentDialog
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Simple_Dialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -11,13 +12,13 @@
     SecondaryButtonText="Button2"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<TextBox x:Name="dialogTb" />
-		<TextBlock x:Name="dialogTextBinding"
-		    Text="{Binding Text, ElementName=dialogTb}" />
-		<Button x:Name="dialogInnerButton"
-		    Click="OnDialogInnerButtonClick"
-		    Content="Inner Button" />
-		<TextBlock x:Name="buttonClickResult" />
-	</StackPanel>
+    <StackPanel>
+        <TextBox x:Name="dialogTb" />
+        <TextBlock x:Name="dialogTextBinding" Text="{Binding Text, ElementName=dialogTb}" />
+        <Button
+            x:Name="dialogInnerButton"
+            Click="OnDialogInnerButtonClick"
+            Content="Inner Button" />
+        <TextBlock x:Name="buttonClickResult" />
+    </StackPanel>
 </ContentDialog>

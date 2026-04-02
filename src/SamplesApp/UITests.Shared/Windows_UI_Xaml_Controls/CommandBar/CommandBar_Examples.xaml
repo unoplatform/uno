@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_Examples"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_Examples"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,242 +10,244 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<ScrollViewer>
+    <ScrollViewer>
 
-		<StackPanel>
+        <StackPanel>
 
-			<CommandBar />
+            <CommandBar />
 
-			<CommandBar Content="Title" />
+            <CommandBar Content="Title" />
 
-			<CommandBar Content="Title"
-			    Foreground="Red" />
+            <CommandBar Content="Title" Foreground="Red" />
 
-			<CommandBar Background="Black"
-			    Content="Title"
-			    Foreground="White" />
+            <CommandBar
+                Background="Black"
+                Content="Title"
+                Foreground="White" />
 
-			<CommandBar Content="Title">
-				<AppBarButton />
-				<AppBarButton Content="Disabled"
-				    IsEnabled="False" />
-				<AppBarButton Click="OnCommandClicked"
-				    Content="Done"
-				    Foreground="Blue" />
-			</CommandBar>
+            <CommandBar Content="Title">
+                <AppBarButton />
+                <AppBarButton Content="Disabled" IsEnabled="False" />
+                <AppBarButton
+                    Click="OnCommandClicked"
+                    Content="Done"
+                    Foreground="Blue" />
+            </CommandBar>
 
-			<CommandBar Content="Title">
+            <CommandBar Content="Title">
 
-				<AppBarButton Click="OnCommandClicked">
-					<AppBarButton.Icon>
-						<FontIcon Glyph="&#xE710;" />
-					</AppBarButton.Icon>
-				</AppBarButton>
+                <AppBarButton Click="OnCommandClicked">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE710;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
 
-				<AppBarButton Click="OnCommandClicked">
-					<AppBarButton.Icon>
-						<FontIcon Glyph="&#xE00A;" />
-					</AppBarButton.Icon>
-				</AppBarButton>
+                <AppBarButton Click="OnCommandClicked">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE00A;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
 
-				<AppBarButton Click="OnCommandClicked">
-					<AppBarButton.Icon>
-						<FontIcon Glyph="&#xE700;" />
-					</AppBarButton.Icon>
-				</AppBarButton>
+                <AppBarButton Click="OnCommandClicked">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE700;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
 
-			</CommandBar>
+            </CommandBar>
 
-			<CommandBar Content="Title">
+            <CommandBar Content="Title">
 
-				<AppBarButton Click="OnCommandClicked"
-				    Icon="Add" />
+                <AppBarButton Click="OnCommandClicked" Icon="Add" />
 
-				<AppBarButton Click="OnCommandClicked"
-				    Icon="Save"
-				    IsEnabled="False" />
+                <AppBarButton
+                    Click="OnCommandClicked"
+                    Icon="Save"
+                    IsEnabled="False" />
 
-				<AppBarButton Click="OnCommandClicked"
-				    Icon="Refresh" />
+                <AppBarButton Click="OnCommandClicked" Icon="Refresh" />
 
-				<AppBarButton Click="OnCommandClicked"
-				    Foreground="Red"
-				    Icon="Delete" />
+                <AppBarButton
+                    Click="OnCommandClicked"
+                    Foreground="Red"
+                    Icon="Delete" />
 
-				<AppBarButton Click="OnCommandClicked"
-				    Icon="Find" />
+                <AppBarButton Click="OnCommandClicked" Icon="Find" />
 
-				<AppBarButton Click="OnCommandClicked"
-				    Icon="Cancel" />
+                <AppBarButton Click="OnCommandClicked" Icon="Cancel" />
 
-				<AppBarButton Click="OnCommandClicked"
-				    Icon="Accept" />
+                <AppBarButton Click="OnCommandClicked" Icon="Accept" />
 
-				<AppBarButton Click="OnCommandClicked"
-				    Icon="Edit" />
+                <AppBarButton Click="OnCommandClicked" Icon="Edit" />
 
-				<AppBarButton Click="OnCommandClicked"
-				    Icon="Camera" />
+                <AppBarButton Click="OnCommandClicked" Icon="Camera" />
 
-				<AppBarButton Click="OnCommandClicked"
-				    Icon="Undo" />
+                <AppBarButton Click="OnCommandClicked" Icon="Undo" />
 
-				<AppBarButton Click="OnCommandClicked"
-				    Icon="Redo" />
+                <AppBarButton Click="OnCommandClicked" Icon="Redo" />
 
-			</CommandBar>
+            </CommandBar>
 
-			<CommandBar Content="Title">
-				<AppBarButton Click="OnCommandClicked"
-				    Label="Label" />
+            <CommandBar Content="Title">
+                <AppBarButton Click="OnCommandClicked" Label="Label" />
 
-				<AppBarButton Click="OnCommandClicked"
-				    Content="Content"
-				    Label="Label" />
-			</CommandBar>
+                <AppBarButton
+                    Click="OnCommandClicked"
+                    Content="Content"
+                    Label="Label" />
+            </CommandBar>
 
-			<CommandBar Content="Title">
+            <CommandBar Content="Title">
 
-				<AppBarButton Background="Green"
-				    Click="OnCommandClicked">
-					<TextBlock FontStyle="Italic"
-					    Text="TextBlock" />
-				</AppBarButton>
+                <AppBarButton Background="Green" Click="OnCommandClicked">
+                    <TextBlock FontStyle="Italic" Text="TextBlock" />
+                </AppBarButton>
 
-				<AppBarButton Background="Transparent"
-				    Click="OnCommandClicked">
-					<Border Width="20"
-					    Height="20"
-					    Background="Red" />
-				</AppBarButton>
+                <AppBarButton Background="Transparent" Click="OnCommandClicked">
+                    <Border
+                        Width="20"
+                        Height="20"
+                        Background="Red" />
+                </AppBarButton>
 
-				<AppBarButton Background="Pink"
-				    Click="OnCommandClicked"
-				    Foreground="Black"
-				    Label="Button 1">
-					<AppBarButton.Icon>
-						<FontIcon Width="44"
-						    Height="44"
-						    win:FontFamily="Segoe MDL2 Assets"
-						    Glyph="&#xEB52;" />
-					</AppBarButton.Icon>
-				</AppBarButton>
+                <AppBarButton
+                    Background="Pink"
+                    Click="OnCommandClicked"
+                    Foreground="Black"
+                    Label="Button 1">
+                    <AppBarButton.Icon>
+                        <FontIcon
+                            Width="44"
+                            Height="44"
+                            win:FontFamily="Segoe MDL2 Assets"
+                            Glyph="&#xEB52;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
 
-			</CommandBar>
+            </CommandBar>
 
-			<CommandBar>
-				<CommandBar.Content>
-					<Border Width="50"
-					    Height="50"
-					    Background="Purple" />
-				</CommandBar.Content>
-			</CommandBar>
+            <CommandBar>
+                <CommandBar.Content>
+                    <Border
+                        Width="50"
+                        Height="50"
+                        Background="Purple" />
+                </CommandBar.Content>
+            </CommandBar>
 
-			<CommandBar>
-				<CommandBar.Content>
-					<TextBlock FontSize="17"
-					    FontWeight="SemiBold"
-					    Text="TextBlock" />
-				</CommandBar.Content>
-			</CommandBar>
+            <CommandBar>
+                <CommandBar.Content>
+                    <TextBlock
+                        FontSize="17"
+                        FontWeight="SemiBold"
+                        Text="TextBlock" />
+                </CommandBar.Content>
+            </CommandBar>
 
-			<CommandBar Content="Title">
+            <CommandBar Content="Title">
 
-				<CommandBar.PrimaryCommands>
+                <CommandBar.PrimaryCommands>
 
-					<AppBarButton Click="OnCommandClicked"
-					    Foreground="Red"
-					    Label="Button 1">
-						<AppBarButton.Icon>
-							<FontIcon Width="48"
-							    Height="48"
-							    win:FontFamily="Segoe MDL2 Assets"
-							    Glyph="&#xEB52;" />
-						</AppBarButton.Icon>
-					</AppBarButton>
+                    <AppBarButton
+                        Click="OnCommandClicked"
+                        Foreground="Red"
+                        Label="Button 1">
+                        <AppBarButton.Icon>
+                            <FontIcon
+                                Width="48"
+                                Height="48"
+                                win:FontFamily="Segoe MDL2 Assets"
+                                Glyph="&#xEB52;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
 
-					<AppBarSeparator />
+                    <AppBarSeparator />
 
-					<AppBarToggleButton Click="OnCommandClicked"
-					    Label="Button 2">
-						<AppBarToggleButton.Icon>
-							<FontIcon Width="48"
-							    Height="48"
-							    Glyph="&#xEB52;" />
-						</AppBarToggleButton.Icon>
-					</AppBarToggleButton>
+                    <AppBarToggleButton Click="OnCommandClicked" Label="Button 2">
+                        <AppBarToggleButton.Icon>
+                            <FontIcon
+                                Width="48"
+                                Height="48"
+                                Glyph="&#xEB52;" />
+                        </AppBarToggleButton.Icon>
+                    </AppBarToggleButton>
 
-				</CommandBar.PrimaryCommands>
+                </CommandBar.PrimaryCommands>
 
-			</CommandBar>
+            </CommandBar>
 
-			<CommandBar Content="Title">
+            <CommandBar Content="Title">
 
-				<CommandBar.SecondaryCommands>
-					<AppBarButton Click="OnCommandClicked"
-					    Label="Label" />
-					<AppBarButton Click="OnCommandClicked"
-					    Content="Content" />
-					<AppBarButton Click="OnCommandClicked"
-					    Label="Both">
-						<AppBarButton.Icon>
-							<SymbolIcon Symbol="Add" />
-						</AppBarButton.Icon>
-					</AppBarButton>
-				</CommandBar.SecondaryCommands>
+                <CommandBar.SecondaryCommands>
+                    <AppBarButton Click="OnCommandClicked" Label="Label" />
+                    <AppBarButton Click="OnCommandClicked" Content="Content" />
+                    <AppBarButton Click="OnCommandClicked" Label="Both">
+                        <AppBarButton.Icon>
+                            <SymbolIcon Symbol="Add" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                </CommandBar.SecondaryCommands>
 
-			</CommandBar>
+            </CommandBar>
 
-			<CommandBar Background="Orange"
-			    Content="Title"
-			    Foreground="Lime">
-				<CommandBar.PrimaryCommands>
-					<AppBarButton Background="Red"
-					    Click="OnCommandClicked"
-					    Foreground="Blue"
-					    Label="Label" />
-					<AppBarButton Background="Red"
-					    Click="OnCommandClicked"
-					    Content="Content"
-					    Foreground="Blue" />
-					<AppBarButton Background="Red"
-					    Click="OnCommandClicked"
-					    Foreground="Blue"
-					    Label="Label+SymbolIcon">
-						<AppBarButton.Icon>
-							<SymbolIcon Symbol="Add" />
-						</AppBarButton.Icon>
-					</AppBarButton>
-				</CommandBar.PrimaryCommands>
+            <CommandBar
+                Background="Orange"
+                Content="Title"
+                Foreground="Lime">
+                <CommandBar.PrimaryCommands>
+                    <AppBarButton
+                        Background="Red"
+                        Click="OnCommandClicked"
+                        Foreground="Blue"
+                        Label="Label" />
+                    <AppBarButton
+                        Background="Red"
+                        Click="OnCommandClicked"
+                        Content="Content"
+                        Foreground="Blue" />
+                    <AppBarButton
+                        Background="Red"
+                        Click="OnCommandClicked"
+                        Foreground="Blue"
+                        Label="Label+SymbolIcon">
+                        <AppBarButton.Icon>
+                            <SymbolIcon Symbol="Add" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                </CommandBar.PrimaryCommands>
 
-				<CommandBar.SecondaryCommands>
-					<AppBarButton Background="Red"
-					    Click="OnCommandClicked"
-					    Foreground="Blue"
-					    Label="Label" />
-					<AppBarButton Background="Red"
-					    Click="OnCommandClicked"
-					    Content="Content"
-					    Foreground="Blue" />
-					<AppBarButton Background="Red"
-					    Click="OnCommandClicked"
-					    Foreground="Blue"
-					    Label="Both">
-						<SymbolIcon Symbol="Add" />
-					</AppBarButton>
-				</CommandBar.SecondaryCommands>
-			</CommandBar>
+                <CommandBar.SecondaryCommands>
+                    <AppBarButton
+                        Background="Red"
+                        Click="OnCommandClicked"
+                        Foreground="Blue"
+                        Label="Label" />
+                    <AppBarButton
+                        Background="Red"
+                        Click="OnCommandClicked"
+                        Content="Content"
+                        Foreground="Blue" />
+                    <AppBarButton
+                        Background="Red"
+                        Click="OnCommandClicked"
+                        Foreground="Blue"
+                        Label="Both">
+                        <SymbolIcon Symbol="Add" />
+                    </AppBarButton>
+                </CommandBar.SecondaryCommands>
+            </CommandBar>
 
-			<CommandBar Background="Transparent"
-			    Content="Transparent"
-			    Foreground="Black">
-				<CommandBar.PrimaryCommands>
-					<AppBarButton Content="Item 1" />
-					<AppBarButton Content="Item 2" />
-				</CommandBar.PrimaryCommands>
-			</CommandBar>
+            <CommandBar
+                Background="Transparent"
+                Content="Transparent"
+                Foreground="Black">
+                <CommandBar.PrimaryCommands>
+                    <AppBarButton Content="Item 1" />
+                    <AppBarButton Content="Item 2" />
+                </CommandBar.PrimaryCommands>
+            </CommandBar>
 
-		</StackPanel>
-	</ScrollViewer>
+        </StackPanel>
+    </ScrollViewer>
 
 </UserControl>

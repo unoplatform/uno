@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Shared.Windows_UI_Xaml.VisualStateTests.VisualState_Forever_Events"
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml.VisualStateTests.VisualState_Forever_Events"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,43 +8,39 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Page.Resources>
-		<Style x:Key="MyStyle"
-		    TargetType="Button">
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="Button">
-						<Grid>
-							<TextBlock x:Name="MyBlock"
-							    Text="Hello world!" />
-							<VisualStateManager.VisualStateGroups>
-								<VisualStateGroup x:Name="MyStates">
-									<VisualState x:Name="Blinking">
-										<Storyboard RepeatBehavior="Forever">
-											<ColorAnimationUsingKeyFrames Storyboard.TargetName="MyBlock"
-											    Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)">
+    <Page.Resources>
+        <Style x:Key="MyStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <TextBlock x:Name="MyBlock" Text="Hello world!" />
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="MyStates">
+                                    <VisualState x:Name="Blinking">
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="MyBlock" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)">
 
-												<LinearColorKeyFrame KeyTime="0:0:2"
-												    Value="Red" />
-												<LinearColorKeyFrame KeyTime="0:0:4"
-												    Value="Blue" />
+                                                <LinearColorKeyFrame KeyTime="0:0:2" Value="Red" />
+                                                <LinearColorKeyFrame KeyTime="0:0:4" Value="Blue" />
 
-											</ColorAnimationUsingKeyFrames>
-										</Storyboard>
-									</VisualState>
-								</VisualStateGroup>
-							</VisualStateManager.VisualStateGroups>
-						</Grid>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-	</Page.Resources>
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
 
-	<StackPanel>
-		<Button x:Name="MyButton"
-		    Click="OnClick"
-		    Style="{StaticResource MyStyle}" />
-		<TextBlock x:Name="LogsTextBlock" />
-	</StackPanel>
+    <StackPanel>
+        <Button
+            x:Name="MyButton"
+            Click="OnClick"
+            Style="{StaticResource MyStyle}" />
+        <TextBlock x:Name="LogsTextBlock" />
+    </StackPanel>
 </Page>

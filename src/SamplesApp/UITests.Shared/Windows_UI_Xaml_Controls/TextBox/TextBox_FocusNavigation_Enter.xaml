@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_FocusNavigation_Enter"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_FocusNavigation_Enter"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,44 +8,52 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel Padding="20"
-	    Spacing="20">
-		<TextBlock x:Name="StatusText"
-		    FontWeight="Bold"
-		    Text="Currently focused: None"
-		    TextWrapping="Wrap" />
+    <StackPanel Padding="20" Spacing="20">
+        <TextBlock
+            x:Name="StatusText"
+            FontWeight="Bold"
+            Text="Currently focused: None"
+            TextWrapping="Wrap" />
 
-		<TextBox x:Name="TextBox1"
-		    Header="TextBox 1 (Single-line)"
-		    PlaceholderText="Press Enter to move to next" />
+        <TextBox
+            x:Name="TextBox1"
+            Header="TextBox 1 (Single-line)"
+            PlaceholderText="Press Enter to move to next" />
 
-		<TextBox x:Name="TextBox2"
-		    Header="TextBox 2 (Single-line)"
-		    PlaceholderText="Press Enter to move to next" />
+        <TextBox
+            x:Name="TextBox2"
+            Header="TextBox 2 (Single-line)"
+            PlaceholderText="Press Enter to move to next" />
 
-		<TextBox x:Name="TextBox3"
-		    Header="TextBox 3 (Single-line)"
-		    PlaceholderText="Press Enter to move to next" />
+        <TextBox
+            x:Name="TextBox3"
+            Header="TextBox 3 (Single-line)"
+            PlaceholderText="Press Enter to move to next" />
 
-		<TextBox x:Name="TextBox4"
-		    Height="80"
-		    AcceptsReturn="True"
-		    Header="TextBox 4 (Multi-line - AcceptsReturn=true)"
-		    PlaceholderText="Enter should insert newline, NOT navigate" />
+        <TextBox
+            x:Name="TextBox4"
+            Height="80"
+            AcceptsReturn="True"
+            Header="TextBox 4 (Multi-line - AcceptsReturn=true)"
+            PlaceholderText="Enter should insert newline, NOT navigate" />
 
-		<TextBox x:Name="TextBox5"
-		    Header="TextBox 5 (Single-line)"
-		    PlaceholderText="Last TextBox" />
+        <TextBox
+            x:Name="TextBox5"
+            Header="TextBox 5 (Single-line)"
+            PlaceholderText="Last TextBox" />
 
-		<TextBlock Margin="0,20,0,0"
-		    FontWeight="SemiBold"
-		    Text="Log:" />
-		<ScrollViewer Height="150"
-		    BorderBrush="Gray"
-		    BorderThickness="1">
-			<TextBlock x:Name="LogText"
-			    Padding="5"
-			    TextWrapping="Wrap" />
-		</ScrollViewer>
-	</StackPanel>
+        <TextBlock
+            Margin="0,20,0,0"
+            FontWeight="SemiBold"
+            Text="Log:" />
+        <ScrollViewer
+            Height="150"
+            BorderBrush="Gray"
+            BorderThickness="1">
+            <TextBlock
+                x:Name="LogText"
+                Padding="5"
+                TextWrapping="Wrap" />
+        </ScrollViewer>
+    </StackPanel>
 </UserControl>

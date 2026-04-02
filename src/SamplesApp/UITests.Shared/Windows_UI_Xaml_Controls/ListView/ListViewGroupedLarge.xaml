@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewGroupedLarge"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewGroupedLarge"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -12,48 +13,53 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<controls:SampleControl SampleDescription="ListView with a grouped source with many items">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ListView Width="200"
-				    Height="450"
-				    ItemsSource="{Binding [GroupedTownsAsSource]}">
-					<ListView.ItemsPanel>
-						<ItemsPanelTemplate>
-							<ItemsStackPanel AreStickyGroupHeadersEnabled="False" />
-						</ItemsPanelTemplate>
-					</ListView.ItemsPanel>
-					<ListView.GroupStyle>
-						<GroupStyle HidesIfEmpty="False">
-							<GroupStyle.HeaderTemplate>
-								<DataTemplate>
-									<Border Background="Blue"
-									    BorderBrush="Gray"
-									    BorderThickness="2">
-										<TextBlock Width="50"
-										    Height="40"
-										    FontSize="32"
-										    Foreground="Red"
-										    Text="{Binding Key}" />
-									</Border>
-								</DataTemplate>
-							</GroupStyle.HeaderTemplate>
-						</GroupStyle>
-					</ListView.GroupStyle>
-					<ListView.ItemTemplate>
-						<DataTemplate>
-							<Border Background="White"
-							    BorderBrush="Gray"
-							    BorderThickness="2">
-								<TextBlock Width="150"
-								    Height="20"
-								    Foreground="Blue"
-								    Text="{Binding}" />
-							</Border>
-						</DataTemplate>
-					</ListView.ItemTemplate>
-				</ListView>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="ListView with a grouped source with many items">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <ListView
+                    Width="200"
+                    Height="450"
+                    ItemsSource="{Binding [GroupedTownsAsSource]}">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsStackPanel AreStickyGroupHeadersEnabled="False" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.GroupStyle>
+                        <GroupStyle HidesIfEmpty="False">
+                            <GroupStyle.HeaderTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Background="Blue"
+                                        BorderBrush="Gray"
+                                        BorderThickness="2">
+                                        <TextBlock
+                                            Width="50"
+                                            Height="40"
+                                            FontSize="32"
+                                            Foreground="Red"
+                                            Text="{Binding Key}" />
+                                    </Border>
+                                </DataTemplate>
+                            </GroupStyle.HeaderTemplate>
+                        </GroupStyle>
+                    </ListView.GroupStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Background="White"
+                                BorderBrush="Gray"
+                                BorderThickness="2">
+                                <TextBlock
+                                    Width="150"
+                                    Height="20"
+                                    Foreground="Blue"
+                                    Text="{Binding}" />
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

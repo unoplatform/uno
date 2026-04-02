@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Microsoft_UI_Xaml_Controls.ProgressBar.WinUIProgressBarPage"
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.ProgressBar.WinUIProgressBarPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
@@ -8,235 +9,255 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Page.Resources>
-		<converters:FromNullableBoolToDefaultValueConverter x:Key="NullableBooleanToBooleanConverter">
-			<converters:FromNullableBoolToDefaultValueConverter.TrueValue>
-				<x:Boolean>True</x:Boolean>
-			</converters:FromNullableBoolToDefaultValueConverter.TrueValue>
-			<converters:FromNullableBoolToDefaultValueConverter.NullOrFalseValue>
-				<x:Boolean>False</x:Boolean>
-			</converters:FromNullableBoolToDefaultValueConverter.NullOrFalseValue>
-		</converters:FromNullableBoolToDefaultValueConverter>
-	</Page.Resources>
+    <Page.Resources>
+        <converters:FromNullableBoolToDefaultValueConverter x:Key="NullableBooleanToBooleanConverter">
+            <converters:FromNullableBoolToDefaultValueConverter.TrueValue>
+                <x:Boolean>True</x:Boolean>
+            </converters:FromNullableBoolToDefaultValueConverter.TrueValue>
+            <converters:FromNullableBoolToDefaultValueConverter.NullOrFalseValue>
+                <x:Boolean>False</x:Boolean>
+            </converters:FromNullableBoolToDefaultValueConverter.NullOrFalseValue>
+        </converters:FromNullableBoolToDefaultValueConverter>
+    </Page.Resources>
 
-	<Grid Margin="12">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
+    <Grid Margin="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-		<StackPanel Grid.ColumnSpan="3"
-		    Orientation="Horizontal">
-			<TextBlock Text="Sample Progressbar" />
-			<FontIcon Margin="4,0,40,3"
-			    VerticalAlignment="Center"
-			    FontSize="14"
-			    Glyph="&#xF0AF;" />
-			<controls:ProgressBar x:Name="TestProgressBar"
-			    Width="100"
-			    HorizontalAlignment="Left"
-			    VerticalAlignment="Center"
-			    AutomationProperties.Name="TestProgressBar"
-			    IsIndeterminate="{x:Bind ShowIsIndeterminateCheckBox.IsChecked, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=OneWay}"
-			    ShowError="{x:Bind ShowErrorCheckBox.IsChecked, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=OneWay}"
-			    ShowPaused="{x:Bind ShowPausedCheckBox.IsChecked, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=OneWay}" />
-		</StackPanel>
+        <StackPanel Grid.ColumnSpan="3" Orientation="Horizontal">
+            <TextBlock Text="Sample Progressbar" />
+            <FontIcon
+                Margin="4,0,40,3"
+                VerticalAlignment="Center"
+                FontSize="14"
+                Glyph="&#xF0AF;" />
+            <controls:ProgressBar
+                x:Name="TestProgressBar"
+                Width="100"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                AutomationProperties.Name="TestProgressBar"
+                IsIndeterminate="{x:Bind ShowIsIndeterminateCheckBox.IsChecked, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=OneWay}"
+                ShowError="{x:Bind ShowErrorCheckBox.IsChecked, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=OneWay}"
+                ShowPaused="{x:Bind ShowPausedCheckBox.IsChecked, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=OneWay}" />
+        </StackPanel>
 
-		<StackPanel Grid.Row="1">
-			<StackPanel>
-				<TextBlock Text="Options" />
-				<Grid Width="300"
-				    HorizontalAlignment="Left">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="1*" />
-						<ColumnDefinition Width="1*" />
-						<ColumnDefinition Width="1*" />
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="*" />
-						<RowDefinition Height="*" />
-						<RowDefinition Height="*" />
-						<RowDefinition Height="*" />
-					</Grid.RowDefinitions>
+        <StackPanel Grid.Row="1">
+            <StackPanel>
+                <TextBlock Text="Options" />
+                <Grid Width="300" HorizontalAlignment="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-					<TextBox x:Name="MaximumInput"
-					    Grid.ColumnSpan="1"
-					    Width="90"
-					    HorizontalAlignment="Left"
-					    AutomationProperties.Name="MaximumInput"
-					    Header="Maximum"
-					    PlaceholderText="100" />
-					<TextBlock x:Name="MaximumInputText"
-					    Grid.Column="1"
-					    AutomationProperties.Name="MaximumInputText"
-					    Text="{Binding ElementName=TestProgressBar, Path=Maximum, Mode=TwoWay}" />
+                    <TextBox
+                        x:Name="MaximumInput"
+                        Grid.ColumnSpan="1"
+                        Width="90"
+                        HorizontalAlignment="Left"
+                        AutomationProperties.Name="MaximumInput"
+                        Header="Maximum"
+                        PlaceholderText="100" />
+                    <TextBlock
+                        x:Name="MaximumInputText"
+                        Grid.Column="1"
+                        AutomationProperties.Name="MaximumInputText"
+                        Text="{Binding ElementName=TestProgressBar, Path=Maximum, Mode=TwoWay}" />
 
-					<TextBox x:Name="MinimumInput"
-					    Grid.Row="1"
-					    Grid.ColumnSpan="1"
-					    Width="90"
-					    HorizontalAlignment="Left"
-					    AutomationProperties.Name="MinimumInput"
-					    Header="Minimum"
-					    PlaceholderText="0" />
-					<TextBlock x:Name="MinimumInputText"
-					    Grid.Row="1"
-					    Grid.Column="1"
-					    AutomationProperties.Name="MinimumInputText"
-					    Text="{Binding ElementName=TestProgressBar, Path=Minimum, Mode=TwoWay}" />
+                    <TextBox
+                        x:Name="MinimumInput"
+                        Grid.Row="1"
+                        Grid.ColumnSpan="1"
+                        Width="90"
+                        HorizontalAlignment="Left"
+                        AutomationProperties.Name="MinimumInput"
+                        Header="Minimum"
+                        PlaceholderText="0" />
+                    <TextBlock
+                        x:Name="MinimumInputText"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        AutomationProperties.Name="MinimumInputText"
+                        Text="{Binding ElementName=TestProgressBar, Path=Minimum, Mode=TwoWay}" />
 
-					<TextBox x:Name="WidthInput"
-					    Grid.Row="2"
-					    Grid.ColumnSpan="1"
-					    Width="90"
-					    HorizontalAlignment="Left"
-					    AutomationProperties.Name="WidthInput"
-					    Header="Width"
-					    PlaceholderText="0" />
-					<TextBlock x:Name="WidthInputText"
-					    Grid.Row="2"
-					    Grid.Column="1"
-					    AutomationProperties.Name="WidthInputText"
-					    Text="{Binding ElementName=TestProgressBar, Path=Width, Mode=TwoWay}" />
+                    <TextBox
+                        x:Name="WidthInput"
+                        Grid.Row="2"
+                        Grid.ColumnSpan="1"
+                        Width="90"
+                        HorizontalAlignment="Left"
+                        AutomationProperties.Name="WidthInput"
+                        Header="Width"
+                        PlaceholderText="0" />
+                    <TextBlock
+                        x:Name="WidthInputText"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        AutomationProperties.Name="WidthInputText"
+                        Text="{Binding ElementName=TestProgressBar, Path=Width, Mode=TwoWay}" />
 
-					<TextBox x:Name="ValueInput"
-					    Grid.Row="3"
-					    Grid.ColumnSpan="1"
-					    Width="90"
-					    HorizontalAlignment="Left"
-					    AutomationProperties.Name="ValueInput"
-					    Header="Value"
-					    PlaceholderText="0" />
-					<TextBlock x:Name="ValueText"
-					    Grid.Row="3"
-					    Grid.Column="1"
-					    AutomationProperties.Name="ValueText"
-					    Text="{Binding ElementName=TestProgressBar, Path=Value, Mode=TwoWay}" />
-				</Grid>
+                    <TextBox
+                        x:Name="ValueInput"
+                        Grid.Row="3"
+                        Grid.ColumnSpan="1"
+                        Width="90"
+                        HorizontalAlignment="Left"
+                        AutomationProperties.Name="ValueInput"
+                        Header="Value"
+                        PlaceholderText="0" />
+                    <TextBlock
+                        x:Name="ValueText"
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        AutomationProperties.Name="ValueText"
+                        Text="{Binding ElementName=TestProgressBar, Path=Value, Mode=TwoWay}" />
+                </Grid>
 
-				<TextBlock Margin="0,20,0,10"
-				    Text="Padding" />
+                <TextBlock Margin="0,20,0,10" Text="Padding" />
 
-				<Grid Width="300"
-				    HorizontalAlignment="Left">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="1*" />
-						<ColumnDefinition Width="1*" />
-						<ColumnDefinition Width="1*" />
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="*" />
-						<RowDefinition Height="*" />
-						<RowDefinition Height="*" />
-						<RowDefinition Height="*" />
-					</Grid.RowDefinitions>
+                <Grid Width="300" HorizontalAlignment="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-					<TextBox x:Name="PaddingLeftInput"
-					    Grid.Row="1"
-					    Grid.ColumnSpan="1"
-					    Width="90"
-					    HorizontalAlignment="Left"
-					    AutomationProperties.Name="PaddingLeftInput"
-					    Header="Left"
-					    PlaceholderText="0" />
-					<TextBlock x:Name="PaddingLeftText"
-					    Grid.Row="1"
-					    Grid.Column="1"
-					    AutomationProperties.Name="PaddingLeftText"
-					    Text="{Binding ElementName=TestProgressBar, Path=Padding.Left, Mode=TwoWay}" />
+                    <TextBox
+                        x:Name="PaddingLeftInput"
+                        Grid.Row="1"
+                        Grid.ColumnSpan="1"
+                        Width="90"
+                        HorizontalAlignment="Left"
+                        AutomationProperties.Name="PaddingLeftInput"
+                        Header="Left"
+                        PlaceholderText="0" />
+                    <TextBlock
+                        x:Name="PaddingLeftText"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        AutomationProperties.Name="PaddingLeftText"
+                        Text="{Binding ElementName=TestProgressBar, Path=Padding.Left, Mode=TwoWay}" />
 
-					<TextBox x:Name="PaddingRightInput"
-					    Grid.Row="2"
-					    Grid.ColumnSpan="1"
-					    Width="90"
-					    HorizontalAlignment="Left"
-					    AutomationProperties.Name="PaddingRightInput"
-					    Header="Right"
-					    PlaceholderText="0" />
-					<TextBlock x:Name="PaddingRightText"
-					    Grid.Row="2"
-					    Grid.Column="1"
-					    AutomationProperties.Name="PaddingRightText"
-					    Text="{Binding ElementName=TestProgressBar, Path=Padding.Right, Mode=TwoWay}" />
+                    <TextBox
+                        x:Name="PaddingRightInput"
+                        Grid.Row="2"
+                        Grid.ColumnSpan="1"
+                        Width="90"
+                        HorizontalAlignment="Left"
+                        AutomationProperties.Name="PaddingRightInput"
+                        Header="Right"
+                        PlaceholderText="0" />
+                    <TextBlock
+                        x:Name="PaddingRightText"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        AutomationProperties.Name="PaddingRightText"
+                        Text="{Binding ElementName=TestProgressBar, Path=Padding.Right, Mode=TwoWay}" />
 
-				</Grid>
-				<TextBlock Text="States" />
-				<CheckBox x:Name="ShowPausedCheckBox"
-				    AutomationProperties.Name="ShowPausedCheckBox"
-				    Content="ShowPaused" />
-				<CheckBox x:Name="ShowErrorCheckBox"
-				    AutomationProperties.Name="ShowErrorCheckBox"
-				    Content="ShowError" />
-				<CheckBox x:Name="ShowIsIndeterminateCheckBox"
-				    AutomationProperties.Name="ShowIsIndeterminateCheckBox"
-				    Content="IsIndeterminate" />
-			</StackPanel>
+                </Grid>
+                <TextBlock Text="States" />
+                <CheckBox
+                    x:Name="ShowPausedCheckBox"
+                    AutomationProperties.Name="ShowPausedCheckBox"
+                    Content="ShowPaused" />
+                <CheckBox
+                    x:Name="ShowErrorCheckBox"
+                    AutomationProperties.Name="ShowErrorCheckBox"
+                    Content="ShowError" />
+                <CheckBox
+                    x:Name="ShowIsIndeterminateCheckBox"
+                    AutomationProperties.Name="ShowIsIndeterminateCheckBox"
+                    Content="IsIndeterminate" />
+            </StackPanel>
 
-			<StackPanel Margin="0,16,0,0">
-				<TextBlock Text="Actions" />
-				<Button x:Name="UpdateMinMaxButton"
-				    AutomationProperties.Name="UpdateMinMaxButton"
-				    Click="UpdateMinMax_Click"
-				    Content="Update Min and Max" />
-				<Button x:Name="UpdateWidthButton"
-				    AutomationProperties.Name="UpdateWidthButton"
-				    Click="UpdateWidth_Click"
-				    Content="Update Width" />
-				<Button x:Name="UpdateValueButton"
-				    AutomationProperties.Name="UpdateValueButton"
-				    Click="UpdateValue_Click"
-				    Content="Update Value" />
-				<RepeatButton x:Name="ChangeValueButton"
-				    AutomationProperties.Name="ChangeValueButton"
-				    Click="ChangeValue_Click"
-				    Content="Hold and Change Value" />
-				<Button x:Name="UpdatePaddingButton"
-				    AutomationProperties.Name="UpdatePaddingButton"
-				    Click="UpdatePadding_Click"
-				    Content="Update Padding Left and Right" />
-			</StackPanel>
+            <StackPanel Margin="0,16,0,0">
+                <TextBlock Text="Actions" />
+                <Button
+                    x:Name="UpdateMinMaxButton"
+                    AutomationProperties.Name="UpdateMinMaxButton"
+                    Click="UpdateMinMax_Click"
+                    Content="Update Min and Max" />
+                <Button
+                    x:Name="UpdateWidthButton"
+                    AutomationProperties.Name="UpdateWidthButton"
+                    Click="UpdateWidth_Click"
+                    Content="Update Width" />
+                <Button
+                    x:Name="UpdateValueButton"
+                    AutomationProperties.Name="UpdateValueButton"
+                    Click="UpdateValue_Click"
+                    Content="Update Value" />
+                <RepeatButton
+                    x:Name="ChangeValueButton"
+                    AutomationProperties.Name="ChangeValueButton"
+                    Click="ChangeValue_Click"
+                    Content="Hold and Change Value" />
+                <Button
+                    x:Name="UpdatePaddingButton"
+                    AutomationProperties.Name="UpdatePaddingButton"
+                    Click="UpdatePadding_Click"
+                    Content="Update Padding Left and Right" />
+            </StackPanel>
 
-		</StackPanel>
+        </StackPanel>
 
-		<StackPanel Grid.Row="1"
-		    Grid.Column="1"
-		    Margin="16,0,0,0">
-			<TextBlock Text="Properties" />
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="16,0,0,0">
+            <TextBlock Text="Properties" />
 
-			<TextBlock Margin="0,20,0,0"
-			    Text="Indicator Width" />
-			<TextBlock x:Name="IndicatorWidthText"
-			    Margin="0,0,0,20"
-			    AutomationProperties.Name="IndicatorWidthText" />
+            <TextBlock Margin="0,20,0,0" Text="Indicator Width" />
+            <TextBlock
+                x:Name="IndicatorWidthText"
+                Margin="0,0,0,20"
+                AutomationProperties.Name="IndicatorWidthText" />
 
-			<TextBlock Margin="0,20,0,0"
-			    FontSize="20"
-			    Text="Is paused:" />
-			<TextBlock AutomationProperties.Name="ShowPausedText"
-			    Text="{x:Bind ShowPausedCheckBox.IsChecked, Mode=OneWay}" />
+            <TextBlock
+                Margin="0,20,0,0"
+                FontSize="20"
+                Text="Is paused:" />
+            <TextBlock AutomationProperties.Name="ShowPausedText" Text="{x:Bind ShowPausedCheckBox.IsChecked, Mode=OneWay}" />
 
-			<TextBlock Margin="0,20,0,0"
-			    FontSize="20"
-			    Text="Is error:" />
-			<TextBlock AutomationProperties.Name="ShowErrorText"
-			    Text="{x:Bind ShowErrorCheckBox.IsChecked, Mode=OneWay}" />
+            <TextBlock
+                Margin="0,20,0,0"
+                FontSize="20"
+                Text="Is error:" />
+            <TextBlock AutomationProperties.Name="ShowErrorText" Text="{x:Bind ShowErrorCheckBox.IsChecked, Mode=OneWay}" />
 
-			<TextBlock Margin="0,20,0,0"
-			    FontSize="20"
-			    Text="Is indeterminate:" />
-			<TextBlock AutomationProperties.Name="ShowIsIndeterminateText"
-			    Text="{x:Bind ShowIsIndeterminateCheckBox.IsChecked, Mode=OneWay}" />
+            <TextBlock
+                Margin="0,20,0,0"
+                FontSize="20"
+                Text="Is indeterminate:" />
+            <TextBlock AutomationProperties.Name="ShowIsIndeterminateText" Text="{x:Bind ShowIsIndeterminateCheckBox.IsChecked, Mode=OneWay}" />
 
-			<TextBlock x:Name="VisualStateText"
-			    Margin="0,20,0,0"
-			    AutomationProperties.Name="VisualStateText" />
-		</StackPanel>
-	</Grid>
+            <TextBlock
+                x:Name="VisualStateText"
+                Margin="0,20,0,0"
+                AutomationProperties.Name="VisualStateText" />
+        </StackPanel>
+    </Grid>
 </Page>

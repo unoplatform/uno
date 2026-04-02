@@ -1,5 +1,6 @@
 ﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
-<Page x:Class="MUXControlsTestApp.SwipeControlPage2"
+<Page
+    x:Class="MUXControlsTestApp.SwipeControlPage2"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,404 +10,454 @@
     AutomationProperties.Name="SwipePage2"
     mc:Ignorable="d">
 
-	<Page.Resources>
-		<muxc:SwipeItems x:Key="OneRevealItem"
-		    Mode="Reveal">
-			<muxc:SwipeItem BehaviorOnInvoked="RemainOpen"
-			    IconSource="{StaticResource FontIcon}"
-			    Invoked="SwipeItemInvoked"
-			    Text="RevealItem1" />
-		</muxc:SwipeItems>
+    <Page.Resources>
+        <muxc:SwipeItems x:Key="OneRevealItem" Mode="Reveal">
+            <muxc:SwipeItem
+                BehaviorOnInvoked="RemainOpen"
+                IconSource="{StaticResource FontIcon}"
+                Invoked="SwipeItemInvoked"
+                Text="RevealItem1" />
+        </muxc:SwipeItems>
 
-		<muxc:SymbolIconSource x:Key="SymbolIcon"
-		    Symbol="Camera" />
-		<muxc:FontIconSource x:Key="FontIcon"
-		    FontWeight="Normal"
-		    Glyph="&#xE115;" />
-		<muxc:BitmapIconSource x:Key="BitmapIcon"
-		    ShowAsMonochrome="False"
-		    UriSource="ms-appx:///Assets/ingredient3.png" />
-		<muxc:PathIconSource x:Key="PathIcon"
-		    Data="F1 M 16,12 20,2L 20,16 1,16" />
+        <muxc:SymbolIconSource x:Key="SymbolIcon" Symbol="Camera" />
+        <muxc:FontIconSource
+            x:Key="FontIcon"
+            FontWeight="Normal"
+            Glyph="&#xE115;" />
+        <muxc:BitmapIconSource
+            x:Key="BitmapIcon"
+            ShowAsMonochrome="False"
+            UriSource="ms-appx:///Assets/ingredient3.png" />
+        <muxc:PathIconSource x:Key="PathIcon" Data="F1 M 16,12 20,2L 20,16 1,16" />
 
-	</Page.Resources>
+    </Page.Resources>
 
-	<Grid x:Name="Root"
-	    VerticalAlignment="Top"
-	    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-		</Grid.ColumnDefinitions>
-		<StackPanel Grid.ColumnSpan="7"
-		    Orientation="Horizontal">
-			<CheckBox x:Name="chkSwipeControl"
-			    Margin="2,0,0,0"
-			    Checked="ChkSwipeControlProperties_Checked"
-			    Content="SwipeControl Properties"
-			    IsChecked="True"
-			    IsThreeState="False"
-			    Unchecked="ChkSwipeControlProperties_Unchecked" />
-			<CheckBox x:Name="chkSwipeMethods"
-			    Margin="2,0,0,0"
-			    Checked="ChkSwipeMethods_Checked"
-			    Content="Swipe Methods"
-			    IsChecked="True"
-			    IsThreeState="False"
-			    Unchecked="ChkSwipeMethods_Unchecked" />
-			<CheckBox x:Name="chkChildProperties"
-			    Margin="2,0,0,0"
-			    Checked="ChkSwipeItemProperties_Checked"
-			    Content="SwipeItem Properties"
-			    IsChecked="False"
-			    IsEnabled="False"
-			    IsThreeState="False"
-			    Unchecked="ChkSwipeItemProperties_Unchecked" />
-			<CheckBox x:Name="chkSwipeEvents"
-			    Margin="2,0,0,0"
-			    Checked="ChkSwipeEvents_Checked"
-			    Content="Swipe Events"
-			    IsChecked="False"
-			    IsEnabled="False"
-			    IsThreeState="False"
-			    Unchecked="ChkSwipeEvents_Unchecked" />
-			<CheckBox x:Name="chkPageMethods"
-			    Margin="2,0,0,0"
-			    Checked="ChkPageMethods_Checked"
-			    Content="Page Methods"
-			    IsChecked="False"
-			    IsEnabled="False"
-			    IsThreeState="False"
-			    Unchecked="ChkPageMethods_Unchecked" />
-			<CheckBox x:Name="chkSwipeTestHooks"
-			    Margin="2,0,0,0"
-			    Checked="ChkSwipeTestHooks_Checked"
-			    Content="Swipe Test Hooks"
-			    IsChecked="False"
-			    IsEnabled="False"
-			    IsThreeState="False"
-			    Unchecked="ChkSwipeTestHooks_Unchecked" />
-		</StackPanel>
+    <Grid
+        x:Name="Root"
+        VerticalAlignment="Top"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.ColumnSpan="7" Orientation="Horizontal">
+            <CheckBox
+                x:Name="chkSwipeControl"
+                Margin="2,0,0,0"
+                Checked="ChkSwipeControlProperties_Checked"
+                Content="SwipeControl Properties"
+                IsChecked="True"
+                IsThreeState="False"
+                Unchecked="ChkSwipeControlProperties_Unchecked" />
+            <CheckBox
+                x:Name="chkSwipeMethods"
+                Margin="2,0,0,0"
+                Checked="ChkSwipeMethods_Checked"
+                Content="Swipe Methods"
+                IsChecked="True"
+                IsThreeState="False"
+                Unchecked="ChkSwipeMethods_Unchecked" />
+            <CheckBox
+                x:Name="chkChildProperties"
+                Margin="2,0,0,0"
+                Checked="ChkSwipeItemProperties_Checked"
+                Content="SwipeItem Properties"
+                IsChecked="False"
+                IsEnabled="False"
+                IsThreeState="False"
+                Unchecked="ChkSwipeItemProperties_Unchecked" />
+            <CheckBox
+                x:Name="chkSwipeEvents"
+                Margin="2,0,0,0"
+                Checked="ChkSwipeEvents_Checked"
+                Content="Swipe Events"
+                IsChecked="False"
+                IsEnabled="False"
+                IsThreeState="False"
+                Unchecked="ChkSwipeEvents_Unchecked" />
+            <CheckBox
+                x:Name="chkPageMethods"
+                Margin="2,0,0,0"
+                Checked="ChkPageMethods_Checked"
+                Content="Page Methods"
+                IsChecked="False"
+                IsEnabled="False"
+                IsThreeState="False"
+                Unchecked="ChkPageMethods_Unchecked" />
+            <CheckBox
+                x:Name="chkSwipeTestHooks"
+                Margin="2,0,0,0"
+                Checked="ChkSwipeTestHooks_Checked"
+                Content="Swipe Test Hooks"
+                IsChecked="False"
+                IsEnabled="False"
+                IsThreeState="False"
+                Unchecked="ChkSwipeTestHooks_Unchecked" />
+        </StackPanel>
 
-		<ListView x:Name="markupListView"
-		    Grid.Row="1"
-		    Width="300"
-		    Height="500"
-		    Margin="1"
-		    VerticalAlignment="Top"
-		    BorderBrush="{ThemeResource SystemChromeDisabledLowColor}"
-		    BorderThickness="1">
-			<ListViewItem x:Name="markupListViewItem1"
-			    Height="30"
-			    AutomationProperties.Name="ListViewItem">
-				<muxc:SwipeControl x:Name="markupSwipeControl">
-					<TextBlock Text="SwipeControl 1" />
-				</muxc:SwipeControl>
-			</ListViewItem>
-			<ListViewItem>
-				<TextBlock Text="No SwipeControl " />
-			</ListViewItem>
-		</ListView>
+        <ListView
+            x:Name="markupListView"
+            Grid.Row="1"
+            Width="300"
+            Height="500"
+            Margin="1"
+            VerticalAlignment="Top"
+            BorderBrush="{ThemeResource SystemChromeDisabledLowColor}"
+            BorderThickness="1">
+            <ListViewItem
+                x:Name="markupListViewItem1"
+                Height="30"
+                AutomationProperties.Name="ListViewItem">
+                <muxc:SwipeControl x:Name="markupSwipeControl">
+                    <TextBlock Text="SwipeControl 1" />
+                </muxc:SwipeControl>
+            </ListViewItem>
+            <ListViewItem>
+                <TextBlock Text="No SwipeControl " />
+            </ListViewItem>
+        </ListView>
 
-		<TextBlock x:Name="textBlock"
-		    Grid.Row="2"
-		    Grid.ColumnSpan="7"
-		    AutomationProperties.Name="TextBlock"
-		    Text="TextBlock" />
+        <TextBlock
+            x:Name="textBlock"
+            Grid.Row="2"
+            Grid.ColumnSpan="7"
+            AutomationProperties.Name="TextBlock"
+            Text="TextBlock" />
 
-		<ScrollViewer x:Name="svSwipeControlProperties"
-		    Grid.Row="1"
-		    Grid.Column="1"
-		    MinWidth="300"
-		    Margin="2,1,2,1">
-			<Grid Padding="2"
-			    Background="{ThemeResource SystemListLowColor}"
-			    BorderBrush="{ThemeResource SystemChromeDisabledLowColor}"
-			    BorderThickness="1">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
+        <ScrollViewer
+            x:Name="svSwipeControlProperties"
+            Grid.Row="1"
+            Grid.Column="1"
+            MinWidth="300"
+            Margin="2,1,2,1">
+            <Grid
+                Padding="2"
+                Background="{ThemeResource SystemListLowColor}"
+                BorderBrush="{ThemeResource SystemChromeDisabledLowColor}"
+                BorderThickness="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-				<TextBlock Grid.Row="0"
-				    Grid.ColumnSpan="3"
-				    Foreground="Red"
-				    Text="SwipeControl Properties" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.ColumnSpan="3"
+                    Foreground="Red"
+                    Text="SwipeControl Properties" />
 
-				<TextBlock Grid.Row="1"
-				    Grid.Column="0"
-				    VerticalAlignment="Center"
-				    Text="LeftItems:" />
-				<Border Grid.Row="1"
-				    Grid.Column="1"
-				    HorizontalAlignment="Stretch"
-				    VerticalAlignment="Stretch"
-				    BorderBrush="DarkGray"
-				    BorderThickness="1">
-					<TextBlock x:Name="tblLeftItems"
-					    Margin="2"
-					    VerticalAlignment="Center" />
-				</Border>
-				<Button x:Name="btnGetLeftItems"
-				    Grid.Row="1"
-				    Grid.Column="2"
-				    Margin="1"
-				    VerticalAlignment="Center"
-				    Click="BtnGetLeftItems_Click"
-				    Content="G" />
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="LeftItems:" />
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    BorderBrush="DarkGray"
+                    BorderThickness="1">
+                    <TextBlock
+                        x:Name="tblLeftItems"
+                        Margin="2"
+                        VerticalAlignment="Center" />
+                </Border>
+                <Button
+                    x:Name="btnGetLeftItems"
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Margin="1"
+                    VerticalAlignment="Center"
+                    Click="BtnGetLeftItems_Click"
+                    Content="G" />
 
-				<TextBlock Grid.Row="2"
-				    Grid.Column="0"
-				    VerticalAlignment="Center"
-				    Text="RightItems:" />
-				<Border Grid.Row="2"
-				    Grid.Column="1"
-				    HorizontalAlignment="Stretch"
-				    VerticalAlignment="Stretch"
-				    BorderBrush="DarkGray"
-				    BorderThickness="1">
-					<TextBlock x:Name="tblRightItems"
-					    Margin="2"
-					    VerticalAlignment="Center" />
-				</Border>
-				<Button x:Name="btnGetRightItems"
-				    Grid.Row="2"
-				    Grid.Column="2"
-				    Margin="1"
-				    VerticalAlignment="Center"
-				    Click="BtnGetRightItems_Click"
-				    Content="G" />
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="RightItems:" />
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    BorderBrush="DarkGray"
+                    BorderThickness="1">
+                    <TextBlock
+                        x:Name="tblRightItems"
+                        Margin="2"
+                        VerticalAlignment="Center" />
+                </Border>
+                <Button
+                    x:Name="btnGetRightItems"
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Margin="1"
+                    VerticalAlignment="Center"
+                    Click="BtnGetRightItems_Click"
+                    Content="G" />
 
-				<TextBlock Grid.Row="3"
-				    Grid.Column="0"
-				    VerticalAlignment="Center"
-				    Text="TopItems:" />
-				<Border Grid.Row="3"
-				    Grid.Column="1"
-				    HorizontalAlignment="Stretch"
-				    VerticalAlignment="Stretch"
-				    BorderBrush="DarkGray"
-				    BorderThickness="1">
-					<TextBlock x:Name="tblTopItems"
-					    Margin="2"
-					    VerticalAlignment="Center" />
-				</Border>
-				<Button x:Name="btnGetTopItems"
-				    Grid.Row="3"
-				    Grid.Column="2"
-				    Margin="1"
-				    VerticalAlignment="Center"
-				    Click="BtnGetTopItems_Click"
-				    Content="G" />
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="TopItems:" />
+                <Border
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    BorderBrush="DarkGray"
+                    BorderThickness="1">
+                    <TextBlock
+                        x:Name="tblTopItems"
+                        Margin="2"
+                        VerticalAlignment="Center" />
+                </Border>
+                <Button
+                    x:Name="btnGetTopItems"
+                    Grid.Row="3"
+                    Grid.Column="2"
+                    Margin="1"
+                    VerticalAlignment="Center"
+                    Click="BtnGetTopItems_Click"
+                    Content="G" />
 
-				<TextBlock Grid.Row="4"
-				    Grid.Column="0"
-				    VerticalAlignment="Center"
-				    Text="BottomItems:" />
-				<Border Grid.Row="4"
-				    Grid.Column="1"
-				    HorizontalAlignment="Stretch"
-				    VerticalAlignment="Stretch"
-				    BorderBrush="DarkGray"
-				    BorderThickness="1">
-					<TextBlock x:Name="tblBottomItems"
-					    Margin="2"
-					    VerticalAlignment="Center" />
-				</Border>
-				<Button x:Name="btnGetBottomItems"
-				    Grid.Row="4"
-				    Grid.Column="2"
-				    Margin="1"
-				    VerticalAlignment="Center"
-				    Click="BtnGetBottomItems_Click"
-				    Content="G" />
-			</Grid>
-		</ScrollViewer>
+                <TextBlock
+                    Grid.Row="4"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="BottomItems:" />
+                <Border
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    BorderBrush="DarkGray"
+                    BorderThickness="1">
+                    <TextBlock
+                        x:Name="tblBottomItems"
+                        Margin="2"
+                        VerticalAlignment="Center" />
+                </Border>
+                <Button
+                    x:Name="btnGetBottomItems"
+                    Grid.Row="4"
+                    Grid.Column="2"
+                    Margin="1"
+                    VerticalAlignment="Center"
+                    Click="BtnGetBottomItems_Click"
+                    Content="G" />
+            </Grid>
+        </ScrollViewer>
 
-		<ScrollViewer x:Name="svSwipeControlMethods"
-		    Grid.Row="1"
-		    Grid.Column="2"
-		    MinWidth="300"
-		    Margin="2,1,2,1">
-			<Grid Padding="4"
-			    BorderBrush="{ThemeResource SystemChromeDisabledLowColor}"
-			    BorderThickness="1">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
+        <ScrollViewer
+            x:Name="svSwipeControlMethods"
+            Grid.Row="1"
+            Grid.Column="2"
+            MinWidth="300"
+            Margin="2,1,2,1">
+            <Grid
+                Padding="4"
+                BorderBrush="{ThemeResource SystemChromeDisabledLowColor}"
+                BorderThickness="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-				<TextBlock Grid.Row="0"
-				    Grid.ColumnSpan="2"
-				    Margin="2"
-				    Foreground="Red"
-				    Text="SwipeControl Methods" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.ColumnSpan="2"
+                    Margin="2"
+                    Foreground="Red"
+                    Text="SwipeControl Methods" />
 
-				<TextBlock Grid.Row="1"
-				    Grid.Column="0"
-				    VerticalAlignment="Center"
-				    Text="Close():" />
-				<Button x:Name="btnClose"
-				    Grid.Row="1"
-				    Grid.Column="1"
-				    Margin="1"
-				    VerticalAlignment="Center"
-				    Click="BtnClose_Click"
-				    Content="invoke" />
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="Close():" />
+                <Button
+                    x:Name="btnClose"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="1"
+                    VerticalAlignment="Center"
+                    Click="BtnClose_Click"
+                    Content="invoke" />
 
-				<TextBlock Grid.Row="2"
-				    Grid.ColumnSpan="2"
-				    Margin="2"
-				    Foreground="Red"
-				    Text="AddSwipeItem" />
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.ColumnSpan="2"
+                    Margin="2"
+                    Foreground="Red"
+                    Text="AddSwipeItem" />
 
-				<TextBlock Grid.Row="3"
-				    Grid.Column="0"
-				    VerticalAlignment="Center"
-				    Text="Collection:" />
-				<ComboBox x:Name="cmbCollection"
-				    Grid.Row="3"
-				    Grid.Column="1"
-				    VerticalAlignment="Center"
-				    SelectedIndex="0">
-					<ComboBoxItem>Left</ComboBoxItem>
-					<ComboBoxItem>Right</ComboBoxItem>
-					<ComboBoxItem>Top</ComboBoxItem>
-					<ComboBoxItem>Bottom</ComboBoxItem>
-				</ComboBox>
-				<TextBlock Grid.Row="4"
-				    Grid.Column="0"
-				    VerticalAlignment="Center"
-				    Text="Mode:" />
-				<ComboBox x:Name="cmbMode"
-				    Grid.Row="4"
-				    Grid.Column="1"
-				    VerticalAlignment="Center"
-				    SelectedIndex="0">
-					<ComboBoxItem>Reveal</ComboBoxItem>
-					<ComboBoxItem>Execute</ComboBoxItem>
-				</ComboBox>
-				<TextBlock Grid.Row="5"
-				    Grid.Column="0"
-				    VerticalAlignment="Center"
-				    Text="Text:" />
-				<TextBox x:Name="txtText"
-				    Grid.Row="5"
-				    Grid.Column="1"
-				    VerticalAlignment="Center"
-				    Text="" />
-				<TextBlock Grid.Row="6"
-				    Grid.Column="0"
-				    VerticalAlignment="Center"
-				    Text="Icon:" />
-				<ComboBox x:Name="cmbIcon"
-				    Grid.Row="6"
-				    Grid.Column="1"
-				    VerticalAlignment="Center"
-				    SelectedIndex="0">
-					<ComboBoxItem>SymbolIcon</ComboBoxItem>
-					<ComboBoxItem>FontIcon</ComboBoxItem>
-					<ComboBoxItem>BitmapIcon</ComboBoxItem>
-					<ComboBoxItem>PathIcon</ComboBoxItem>
-				</ComboBox>
-				<TextBlock Grid.Row="7"
-				    Grid.Column="0"
-				    VerticalAlignment="Center"
-				    Text="Background:" />
-				<muxc:ColorPicker x:Name="cpBackground"
-				    Grid.Row="7"
-				    Grid.Column="1"
-				    IsAlphaEnabled="True" />
-				<TextBlock Grid.Row="9"
-				    Grid.Column="0"
-				    VerticalAlignment="Center"
-				    Text="BehaviorOnInvoked:" />
-				<ComboBox x:Name="cmbBehaviorOnInvoked"
-				    Grid.Row="9"
-				    Grid.Column="1"
-				    VerticalAlignment="Center"
-				    SelectedIndex="0">
-					<ComboBoxItem>Auto</ComboBoxItem>
-					<ComboBoxItem>Close</ComboBoxItem>
-					<ComboBoxItem>RemainOpen</ComboBoxItem>
-				</ComboBox>
-				<StackPanel Grid.Row="10"
-				    Grid.ColumnSpan="2"
-				    Orientation="Horizontal">
-					<Button x:Name="btnAddItem"
-					    Margin="2"
-					    Click="BtnAddItem_Click"
-					    Content="Add Item" />
-					<Button x:Name="btnCancel"
-					    Margin="2"
-					    Click="BtnCancel_Click"
-					    Content="Cancel" />
-				</StackPanel>
-			</Grid>
-		</ScrollViewer>
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="Collection:" />
+                <ComboBox
+                    x:Name="cmbCollection"
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    SelectedIndex="0">
+                    <ComboBoxItem>Left</ComboBoxItem>
+                    <ComboBoxItem>Right</ComboBoxItem>
+                    <ComboBoxItem>Top</ComboBoxItem>
+                    <ComboBoxItem>Bottom</ComboBoxItem>
+                </ComboBox>
+                <TextBlock
+                    Grid.Row="4"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="Mode:" />
+                <ComboBox
+                    x:Name="cmbMode"
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    SelectedIndex="0">
+                    <ComboBoxItem>Reveal</ComboBoxItem>
+                    <ComboBoxItem>Execute</ComboBoxItem>
+                </ComboBox>
+                <TextBlock
+                    Grid.Row="5"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="Text:" />
+                <TextBox
+                    x:Name="txtText"
+                    Grid.Row="5"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Text="" />
+                <TextBlock
+                    Grid.Row="6"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="Icon:" />
+                <ComboBox
+                    x:Name="cmbIcon"
+                    Grid.Row="6"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    SelectedIndex="0">
+                    <ComboBoxItem>SymbolIcon</ComboBoxItem>
+                    <ComboBoxItem>FontIcon</ComboBoxItem>
+                    <ComboBoxItem>BitmapIcon</ComboBoxItem>
+                    <ComboBoxItem>PathIcon</ComboBoxItem>
+                </ComboBox>
+                <TextBlock
+                    Grid.Row="7"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="Background:" />
+                <muxc:ColorPicker
+                    x:Name="cpBackground"
+                    Grid.Row="7"
+                    Grid.Column="1"
+                    IsAlphaEnabled="True" />
+                <TextBlock
+                    Grid.Row="9"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="BehaviorOnInvoked:" />
+                <ComboBox
+                    x:Name="cmbBehaviorOnInvoked"
+                    Grid.Row="9"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    SelectedIndex="0">
+                    <ComboBoxItem>Auto</ComboBoxItem>
+                    <ComboBoxItem>Close</ComboBoxItem>
+                    <ComboBoxItem>RemainOpen</ComboBoxItem>
+                </ComboBox>
+                <StackPanel
+                    Grid.Row="10"
+                    Grid.ColumnSpan="2"
+                    Orientation="Horizontal">
+                    <Button
+                        x:Name="btnAddItem"
+                        Margin="2"
+                        Click="BtnAddItem_Click"
+                        Content="Add Item" />
+                    <Button
+                        x:Name="btnCancel"
+                        Margin="2"
+                        Click="BtnCancel_Click"
+                        Content="Cancel" />
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
 
-		<ScrollViewer x:Name="svSwipeItemProperties"
-		    Grid.Row="1"
-		    Grid.Column="3"
-		    MinWidth="300"
-		    Margin="1"
-		    Visibility="Collapsed">
-			<Grid Margin="2"
-			    Background="LightYellow">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
+        <ScrollViewer
+            x:Name="svSwipeItemProperties"
+            Grid.Row="1"
+            Grid.Column="3"
+            MinWidth="300"
+            Margin="1"
+            Visibility="Collapsed">
+            <Grid Margin="2" Background="LightYellow">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-				<TextBlock Grid.Row="0"
-				    Grid.ColumnSpan="2"
-				    Margin="2"
-				    Foreground="Red"
-				    Text="SwipeItem Properties" />
-			</Grid>
-		</ScrollViewer>
-	</Grid>
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.ColumnSpan="2"
+                    Margin="2"
+                    Foreground="Red"
+                    Text="SwipeItem Properties" />
+            </Grid>
+        </ScrollViewer>
+    </Grid>
 </Page>

@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Windows_UI_Xaml.Performance.Performance_ImageUpscaling"
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.Performance.Performance_ImageUpscaling"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,26 +8,27 @@
     xmlns:not_win="http://uno.ui/not_win"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d not_win">
-	<Page.Resources>
-		<SolidColorBrush x:Key="ColorAnimation_Background_Brush"
-		    Color="Blue" />
-		<Storyboard x:Name="colorStoryboard">
-			<ColorAnimation Duration="0:00:05"
-			    RepeatBehavior="Forever"
-			    To="Red"
-			    Storyboard.TargetName="TargetBorder"
-			    Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" />
-		</Storyboard>
-	</Page.Resources>
+    <Page.Resources>
+        <SolidColorBrush x:Key="ColorAnimation_Background_Brush" Color="Blue" />
+        <Storyboard x:Name="colorStoryboard">
+            <ColorAnimation
+                RepeatBehavior="Forever"
+                Storyboard.TargetName="TargetBorder"
+                Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                To="Red"
+                Duration="0:00:05" />
+        </Storyboard>
+    </Page.Resources>
 
-	<StackPanel>
-		<StackPanel Orientation="Horizontal">
-			<TextBlock Text="A border that has a ColorAnimation to keep rendering active: " />
-			<Border x:Name="TargetBorder"
-			    Width="10"
-			    Height="10"
-			    Background="{StaticResource ColorAnimation_Background_Brush}" />
-		</StackPanel>
-		<Image Source="ms-appx:///Assets/wide310x150logo.scale-200.png" />
-	</StackPanel>
+    <StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="A border that has a ColorAnimation to keep rendering active: " />
+            <Border
+                x:Name="TargetBorder"
+                Width="10"
+                Height="10"
+                Background="{StaticResource ColorAnimation_Background_Brush}" />
+        </StackPanel>
+        <Image Source="ms-appx:///Assets/wide310x150logo.scale-200.png" />
+    </StackPanel>
 </Page>

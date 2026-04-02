@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_Content_ThemeResource"
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_Content_ThemeResource"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,13 +10,12 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid>
-		<Button Background="{ThemeResource GlobalThemeResource_Test01}"
-		    Content="Click me">
-			<Button.Flyout>
-				<local:Flyout_Local />
-			</Button.Flyout>
-		</Button>
-	</Grid>
+    <Grid>
+        <Button Background="{ThemeResource GlobalThemeResource_Test01}" Content="Click me">
+            <Button.Flyout>
+                <local:Flyout_Local />
+            </Button.Flyout>
+        </Button>
+    </Grid>
 
 </Page>

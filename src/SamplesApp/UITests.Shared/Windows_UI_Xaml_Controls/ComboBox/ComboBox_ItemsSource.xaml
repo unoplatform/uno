@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_ItemsSource"
+﻿<UserControl
+    x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_ItemsSource"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -10,13 +11,14 @@
     d:DesignWidth="400"
     mc:Ignorable="d not_win">
 
-	<controls:SampleControl SampleDescription="ComboBox with ItemsSource">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ComboBox x:Name="theComboBox"
-				    ItemsSource="{Binding [SampleItems]}"
-				    SelectedItem="{Binding [SelectedItem]}" />
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="ComboBox with ItemsSource">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <ComboBox
+                    x:Name="theComboBox"
+                    ItemsSource="{Binding [SampleItems]}"
+                    SelectedItem="{Binding [SelectedItem]}" />
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

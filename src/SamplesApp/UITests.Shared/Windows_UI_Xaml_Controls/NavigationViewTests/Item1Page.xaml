@@ -1,4 +1,5 @@
-﻿<Page x:Class="SamplesApp.Samples.NavigationViewSample.Item1Page"
+﻿<Page
+    x:Class="SamplesApp.Samples.NavigationViewSample.Item1Page"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,16 +8,17 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Grid>
-		<StackPanel Margin="20"
-		    VerticalAlignment="Top"
-		    Orientation="Horizontal">
-			<SymbolIcon Margin="20"
-			    Symbol="Play" />
-			<TextBlock x:Name="Page1NavViewContent"
-			    VerticalAlignment="Center"
-			    FontSize="30"
-			    Text="Page 1" />
-		</StackPanel>
-	</Grid>
+    <Grid>
+        <StackPanel
+            Margin="20"
+            VerticalAlignment="Top"
+            Orientation="Horizontal">
+            <SymbolIcon Margin="20" Symbol="Play" />
+            <TextBlock
+                x:Name="Page1NavViewContent"
+                VerticalAlignment="Center"
+                FontSize="30"
+                Text="Page 1" />
+        </StackPanel>
+    </Grid>
 </Page>

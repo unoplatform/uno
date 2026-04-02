@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Inside_ListView"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Inside_ListView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -9,27 +10,27 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<!--
-		Testing that the fix for https://nventive.visualstudio.com/Umbrella/_workitems/edit/156620 stays valid
-		If not, the app will crash when displaying this sample
-	-->
-	<controls:SampleControl SampleDescription="Sample control for testing that a ListView can be displayed inside another ListView">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ListView ItemsSource="{Binding TwoLevelsItemList}">
-					<ListView.ItemTemplate>
-						<DataTemplate>
-							<ListView ItemsSource="{Binding SubLevelItems}">
-								<ListView.ItemTemplate>
-									<DataTemplate>
-										<TextBlock Text="{Binding}" />
-									</DataTemplate>
-								</ListView.ItemTemplate>
-							</ListView>
-						</DataTemplate>
-					</ListView.ItemTemplate>
-				</ListView>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <!--
+        Testing that the fix for https://nventive.visualstudio.com/Umbrella/_workitems/edit/156620 stays valid
+        If not, the app will crash when displaying this sample
+    -->
+    <controls:SampleControl SampleDescription="Sample control for testing that a ListView can be displayed inside another ListView">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <ListView ItemsSource="{Binding TwoLevelsItemList}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ListView ItemsSource="{Binding SubLevelItems}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" />
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

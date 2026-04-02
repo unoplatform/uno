@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl.StretchNone"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl.StretchNone"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http:///umbrella/ui/android"
@@ -12,17 +13,18 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android not_win">
 
-	<controls:SampleControl SampleDescription="StretchNone">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<Grid>
-					<Path Height="200"
-					    Data="M 100,200 C 100,25 400,350 400,175 H 280"
-					    Stretch="None"
-					    Stroke="Red"
-					    StrokeThickness="3" />
-				</Grid>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="StretchNone">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <Grid>
+                    <Path
+                        Height="200"
+                        Data="M 100,200 C 100,25 400,350 400,175 H 280"
+                        Stretch="None"
+                        Stroke="Red"
+                        StrokeThickness="3" />
+                </Grid>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

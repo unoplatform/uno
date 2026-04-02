@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Media.Transform.Polygon_With_RotateTransform"
+﻿<UserControl
+    x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Media.Transform.Polygon_With_RotateTransform"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive.com/android"
@@ -13,79 +14,89 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<controls:SampleControl SampleDescription="Each arrow-shaped Polygon has a different RotateTransform set.">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ScrollViewer>
-					<StackPanel>
-						<Border Width="200"
-						    Height="200"
-						    Background="LemonChiffon">
-							<Polygon HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    Fill="Black"
-							    Points="0,0 8,0 4,4"
-							    RenderTransformOrigin="0.5,0.5">
-								<Polygon.RenderTransform>
-									<RotateTransform Angle="0" />
-								</Polygon.RenderTransform>
-							</Polygon>
-						</Border>
-						<Border Width="200"
-						    Height="200"
-						    Background="MintCream">
-							<Polygon HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    Fill="Black"
-							    Points="0,0 8,0 4,4"
-							    RenderTransformOrigin="0.5,0.5">
-								<Polygon.RenderTransform>
-									<RotateTransform Angle="30" />
-								</Polygon.RenderTransform>
-							</Polygon>
-						</Border>
-						<Border Width="200"
-						    Height="200"
-						    Background="LemonChiffon">
-							<Polygon HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    Fill="Black"
-							    Points="0,0 8,0 4,4"
-							    RenderTransformOrigin="0.5,0.5">
-								<Polygon.RenderTransform>
-									<RotateTransform Angle="60" />
-								</Polygon.RenderTransform>
-							</Polygon>
-						</Border>
-						<Border Width="200"
-						    Height="200"
-						    Background="MintCream">
-							<Polygon HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    Fill="Black"
-							    Points="0,0 8,0 4,4"
-							    RenderTransformOrigin="0.5,0.5">
-								<Polygon.RenderTransform>
-									<RotateTransform Angle="90" />
-								</Polygon.RenderTransform>
-							</Polygon>
-						</Border>
-						<Border Width="200"
-						    Height="200"
-						    Background="LemonChiffon">
-							<Polygon HorizontalAlignment="Center"
-							    VerticalAlignment="Center"
-							    Fill="Black"
-							    Points="0,0 8,0 4,4"
-							    RenderTransformOrigin="0.5,0.5">
-								<Polygon.RenderTransform>
-									<RotateTransform Angle="120" />
-								</Polygon.RenderTransform>
-							</Polygon>
-						</Border>
-					</StackPanel>
-				</ScrollViewer>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="Each arrow-shaped Polygon has a different RotateTransform set.">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <ScrollViewer>
+                    <StackPanel>
+                        <Border
+                            Width="200"
+                            Height="200"
+                            Background="LemonChiffon">
+                            <Polygon
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Fill="Black"
+                                Points="0,0 8,0 4,4"
+                                RenderTransformOrigin="0.5,0.5">
+                                <Polygon.RenderTransform>
+                                    <RotateTransform Angle="0" />
+                                </Polygon.RenderTransform>
+                            </Polygon>
+                        </Border>
+                        <Border
+                            Width="200"
+                            Height="200"
+                            Background="MintCream">
+                            <Polygon
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Fill="Black"
+                                Points="0,0 8,0 4,4"
+                                RenderTransformOrigin="0.5,0.5">
+                                <Polygon.RenderTransform>
+                                    <RotateTransform Angle="30" />
+                                </Polygon.RenderTransform>
+                            </Polygon>
+                        </Border>
+                        <Border
+                            Width="200"
+                            Height="200"
+                            Background="LemonChiffon">
+                            <Polygon
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Fill="Black"
+                                Points="0,0 8,0 4,4"
+                                RenderTransformOrigin="0.5,0.5">
+                                <Polygon.RenderTransform>
+                                    <RotateTransform Angle="60" />
+                                </Polygon.RenderTransform>
+                            </Polygon>
+                        </Border>
+                        <Border
+                            Width="200"
+                            Height="200"
+                            Background="MintCream">
+                            <Polygon
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Fill="Black"
+                                Points="0,0 8,0 4,4"
+                                RenderTransformOrigin="0.5,0.5">
+                                <Polygon.RenderTransform>
+                                    <RotateTransform Angle="90" />
+                                </Polygon.RenderTransform>
+                            </Polygon>
+                        </Border>
+                        <Border
+                            Width="200"
+                            Height="200"
+                            Background="LemonChiffon">
+                            <Polygon
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Fill="Black"
+                                Points="0,0 8,0 4,4"
+                                RenderTransformOrigin="0.5,0.5">
+                                <Polygon.RenderTransform>
+                                    <RotateTransform Angle="120" />
+                                </Polygon.RenderTransform>
+                            </Polygon>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

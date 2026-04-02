@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.DoubleAnimationTestsControl"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.DoubleAnimationTestsControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -8,25 +9,26 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<Border Name="TestBorder"
-		    Height="20"
-		    Background="Red" />
+    <StackPanel>
+        <Border
+            Name="TestBorder"
+            Height="20"
+            Background="Red" />
 
-		<ComboBox Name="Box">
-			<ComboBox.ItemTemplate>
-				<DataTemplate>
-					<TextBlock VerticalAlignment="Center"
-					    Text="{Binding Name}" />
-				</DataTemplate>
-			</ComboBox.ItemTemplate>
-		</ComboBox>
+        <ComboBox Name="Box">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
 
-		<TextBlock Name="Txt" />
+        <TextBlock Name="Txt" />
 
-		<Button Name="Btn"
-		    HorizontalAlignment="Center"
-		    Content="Execute" />
-	</StackPanel>
+        <Button
+            Name="Btn"
+            HorizontalAlignment="Center"
+            Content="Execute" />
+    </StackPanel>
 
 </UserControl>

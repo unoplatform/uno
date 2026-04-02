@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl.ToggleSwitch_Header"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl.ToggleSwitch_Header"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -13,12 +14,11 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android not_win">
 
-	<StackPanel>
-		<ToggleSwitch x:Name="toggleSwitchWithHeader">
-			<ToggleSwitch.Header>
-				<TextBlock x:Name="toggleSwitchHeaderContent"
-				    Text="Test ToggleSwitch Header" />
-			</ToggleSwitch.Header>
-		</ToggleSwitch>
-	</StackPanel>
+    <StackPanel>
+        <ToggleSwitch x:Name="toggleSwitchWithHeader">
+            <ToggleSwitch.Header>
+                <TextBlock x:Name="toggleSwitchHeaderContent" Text="Test ToggleSwitch Header" />
+            </ToggleSwitch.Header>
+        </ToggleSwitch>
+    </StackPanel>
 </UserControl>

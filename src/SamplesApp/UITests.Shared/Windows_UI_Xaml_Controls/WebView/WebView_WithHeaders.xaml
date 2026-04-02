@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.WebView.WebView_WithHeaders"
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.WebView.WebView_WithHeaders"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -12,18 +13,16 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android not_win">
 
-	<not_win:Grid HorizontalAlignment="Stretch"
-	    VerticalAlignment="Stretch">
-		<StackPanel Orientation="Vertical">
-			<TextBlock Text="WebView_NavigateWithHttpRequestMessage" />
-			<WebView x:Name="MyWebView2"
-			    Width="100"
-			    Height="100"
-			    Source="about:blank" />
-			<TextBlock x:Name="MyTextBlock"
-			    TextWrapping="Wrap" />
-			<Button x:Name="MyButton"
-			    Content="Navigate to httpbin.org" />
-		</StackPanel>
-	</not_win:Grid>
+    <not_win:Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <StackPanel Orientation="Vertical">
+            <TextBlock Text="WebView_NavigateWithHttpRequestMessage" />
+            <WebView
+                x:Name="MyWebView2"
+                Width="100"
+                Height="100"
+                Source="about:blank" />
+            <TextBlock x:Name="MyTextBlock" TextWrapping="Wrap" />
+            <Button x:Name="MyButton" Content="Navigate to httpbin.org" />
+        </StackPanel>
+    </not_win:Grid>
 </UserControl>

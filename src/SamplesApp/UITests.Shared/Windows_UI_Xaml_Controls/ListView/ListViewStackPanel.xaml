@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewStackPanel"
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewStackPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
@@ -11,45 +12,49 @@
     d:DesignWidth="400"
     mc:Ignorable="d ios android">
 
-	<StackPanel>
-		<Button Click="ChangeItemsSource"
-		    Content="Change ItemsSource" />
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="Auto" />
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
-			<TextBlock Grid.Row="0"
-			    Grid.Column="0"
-			    Margin="5"
-			    Text="SelectedItem:" />
-			<TextBlock Grid.Row="0"
-			    Grid.Column="1"
-			    Margin="5"
-			    Text="{Binding ElementName=StackPanelListView, Path=SelectedItem}" />
-			<TextBlock Grid.Row="1"
-			    Grid.Column="0"
-			    Margin="5"
-			    Text="SelectedIndex:" />
-			<TextBlock Grid.Row="1"
-			    Grid.Column="1"
-			    Margin="5"
-			    Text="{Binding ElementName=StackPanelListView, Path=SelectedIndex}" />
-		</Grid>
-		<ListView x:Name="StackPanelListView"
-		    Width="100"
-		    Height="250"
-		    Background="Beige"
-		    ItemsSource="123456789ABCDEFG">
-			<ListView.ItemsPanel>
-				<ItemsPanelTemplate>
-					<StackPanel />
-				</ItemsPanelTemplate>
-			</ListView.ItemsPanel>
-		</ListView>
-	</StackPanel>
+    <StackPanel>
+        <Button Click="ChangeItemsSource" Content="Change ItemsSource" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="5"
+                Text="SelectedItem:" />
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="5"
+                Text="{Binding ElementName=StackPanelListView, Path=SelectedItem}" />
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="0"
+                Margin="5"
+                Text="SelectedIndex:" />
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="5"
+                Text="{Binding ElementName=StackPanelListView, Path=SelectedIndex}" />
+        </Grid>
+        <ListView
+            x:Name="StackPanelListView"
+            Width="100"
+            Height="250"
+            Background="Beige"
+            ItemsSource="123456789ABCDEFG">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+        </ListView>
+    </StackPanel>
 </UserControl>

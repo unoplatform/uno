@@ -1,4 +1,5 @@
-﻿<Page x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.RadioMenuFlyoutItemTests.RadioMenuFlyoutItemPage"
+﻿<Page
+    x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.RadioMenuFlyoutItemTests.RadioMenuFlyoutItemPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
@@ -7,208 +8,224 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-	<Grid Margin="12"
-	    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<StackPanel x:Name="ContentArea"
-		    Orientation="Horizontal">
-			<StackPanel MinWidth="250"
-			    VerticalAlignment="Top"
-			    Style="{ThemeResource StandardGroupingStackPanel}">
-				<TextBlock Style="{ThemeResource StandardGroupHeader}"
-				    Text="Sample controls" />
+    <Grid Margin="12" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel x:Name="ContentArea" Orientation="Horizontal">
+            <StackPanel
+                MinWidth="250"
+                VerticalAlignment="Top"
+                Style="{ThemeResource StandardGroupingStackPanel}">
+                <TextBlock Style="{ThemeResource StandardGroupHeader}" Text="Sample controls" />
 
-				<!--  Uno specific: Add x:Name to allow _app.Query() to work properly.  -->
-				<Button x:Name="FlyoutButton"
-				    Margin="12"
-				    AutomationProperties.Name="FlyoutButton"
-				    Content="Click Me">
-					<Button.Flyout>
-						<MenuFlyout x:Name="ButtonMenuFlyout">
-							<MenuFlyoutItem Text="A Normal Item" />
+                <!--  Uno specific: Add x:Name to allow _app.Query() to work properly.  -->
+                <Button
+                    x:Name="FlyoutButton"
+                    Margin="12"
+                    AutomationProperties.Name="FlyoutButton"
+                    Content="Click Me">
+                    <Button.Flyout>
+                        <MenuFlyout x:Name="ButtonMenuFlyout">
+                            <MenuFlyoutItem Text="A Normal Item" />
 
-							<MenuFlyoutSeparator />
+                            <MenuFlyoutSeparator />
 
-							<!--  Uno specific: Add x:Name to allow _app.Query() to work properly.  -->
-							<controls:RadioMenuFlyoutItem x:Name="RedItem"
-							    AutomationProperties.Name="RedItem"
-							    Text="Red" />
-							<controls:RadioMenuFlyoutItem x:Name="OrangeItem"
-							    AutomationProperties.Name="OrangeItem"
-							    IsChecked="true"
-							    Text="Orange" />
-							<controls:RadioMenuFlyoutItem x:Name="YellowItem"
-							    AutomationProperties.Name="YellowItem"
-							    Text="Yellow" />
-							<controls:RadioMenuFlyoutItem x:Name="GreenItem"
-							    AutomationProperties.Name="GreenItem"
-							    Text="Green" />
-							<controls:RadioMenuFlyoutItem x:Name="BlueItem"
-							    AutomationProperties.Name="BlueItem"
-							    Text="Blue" />
-							<controls:RadioMenuFlyoutItem x:Name="IndigoItem"
-							    AutomationProperties.Name="IndigoItem"
-							    Text="Indigo" />
-							<controls:RadioMenuFlyoutItem x:Name="VioletItem"
-							    AutomationProperties.Name="VioletItem"
-							    Text="Violet" />
+                            <!--  Uno specific: Add x:Name to allow _app.Query() to work properly.  -->
+                            <controls:RadioMenuFlyoutItem
+                                x:Name="RedItem"
+                                AutomationProperties.Name="RedItem"
+                                Text="Red" />
+                            <controls:RadioMenuFlyoutItem
+                                x:Name="OrangeItem"
+                                AutomationProperties.Name="OrangeItem"
+                                IsChecked="true"
+                                Text="Orange" />
+                            <controls:RadioMenuFlyoutItem
+                                x:Name="YellowItem"
+                                AutomationProperties.Name="YellowItem"
+                                Text="Yellow" />
+                            <controls:RadioMenuFlyoutItem
+                                x:Name="GreenItem"
+                                AutomationProperties.Name="GreenItem"
+                                Text="Green" />
+                            <controls:RadioMenuFlyoutItem
+                                x:Name="BlueItem"
+                                AutomationProperties.Name="BlueItem"
+                                Text="Blue" />
+                            <controls:RadioMenuFlyoutItem
+                                x:Name="IndigoItem"
+                                AutomationProperties.Name="IndigoItem"
+                                Text="Indigo" />
+                            <controls:RadioMenuFlyoutItem
+                                x:Name="VioletItem"
+                                AutomationProperties.Name="VioletItem"
+                                Text="Violet" />
 
-							<MenuFlyoutSeparator />
+                            <MenuFlyoutSeparator />
 
-							<!--  Uno specific: Add x:Name to allow _app.Query() to work properly.  -->
-							<controls:RadioMenuFlyoutItem x:Name="CompactItem"
-							    AutomationProperties.Name="CompactItem"
-							    GroupName="Size"
-							    IsChecked="true"
-							    Text="Compact" />
-							<controls:RadioMenuFlyoutItem x:Name="NormalItem"
-							    AutomationProperties.Name="NormalItem"
-							    GroupName="Size"
-							    Text="Normal" />
-							<controls:RadioMenuFlyoutItem x:Name="ExpandedItem"
-							    AutomationProperties.Name="ExpandedItem"
-							    GroupName="Size"
-							    Text="Expanded" />
-						</MenuFlyout>
-					</Button.Flyout>
-				</Button>
+                            <!--  Uno specific: Add x:Name to allow _app.Query() to work properly.  -->
+                            <controls:RadioMenuFlyoutItem
+                                x:Name="CompactItem"
+                                AutomationProperties.Name="CompactItem"
+                                GroupName="Size"
+                                IsChecked="true"
+                                Text="Compact" />
+                            <controls:RadioMenuFlyoutItem
+                                x:Name="NormalItem"
+                                AutomationProperties.Name="NormalItem"
+                                GroupName="Size"
+                                Text="Normal" />
+                            <controls:RadioMenuFlyoutItem
+                                x:Name="ExpandedItem"
+                                AutomationProperties.Name="ExpandedItem"
+                                GroupName="Size"
+                                Text="Expanded" />
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
 
-				<!--  Uno specific: Add x:Name to allow _app.Query() to work properly.  -->
-				<Button x:Name="SubMenuFlyoutButton"
-				    Margin="12"
-				    AutomationProperties.Name="SubMenuFlyoutButton"
-				    Content="I have a sub menu">
-					<Button.Flyout>
-						<MenuFlyout x:Name="ButtonSubMenuFlyout">
-							<MenuFlyoutItem Text="No Icon" />
+                <!--  Uno specific: Add x:Name to allow _app.Query() to work properly.  -->
+                <Button
+                    x:Name="SubMenuFlyoutButton"
+                    Margin="12"
+                    AutomationProperties.Name="SubMenuFlyoutButton"
+                    Content="I have a sub menu">
+                    <Button.Flyout>
+                        <MenuFlyout x:Name="ButtonSubMenuFlyout">
+                            <MenuFlyoutItem Text="No Icon" />
 
-							<MenuFlyoutSeparator />
+                            <MenuFlyoutSeparator />
 
-							<!--  Uno specific: Add x:Name to allow _app.Query() to work properly.  -->
-							<controls:RadioMenuFlyoutItem x:Name="NameItem"
-							    AutomationProperties.Name="NameItem"
-							    GroupName="SortGroup"
-							    IsChecked="true"
-							    Text="Name" />
-							<controls:RadioMenuFlyoutItem x:Name="DateItem"
-							    AutomationProperties.Name="DateItem"
-							    GroupName="SortGroup"
-							    Text="Date" />
-							<controls:RadioMenuFlyoutItem x:Name="SizeItem"
-							    AutomationProperties.Name="SizeItem"
-							    GroupName="SortGroup"
-							    Text="Size" />
+                            <!--  Uno specific: Add x:Name to allow _app.Query() to work properly.  -->
+                            <controls:RadioMenuFlyoutItem
+                                x:Name="NameItem"
+                                AutomationProperties.Name="NameItem"
+                                GroupName="SortGroup"
+                                IsChecked="true"
+                                Text="Name" />
+                            <controls:RadioMenuFlyoutItem
+                                x:Name="DateItem"
+                                AutomationProperties.Name="DateItem"
+                                GroupName="SortGroup"
+                                Text="Date" />
+                            <controls:RadioMenuFlyoutItem
+                                x:Name="SizeItem"
+                                AutomationProperties.Name="SizeItem"
+                                GroupName="SortGroup"
+                                Text="Size" />
 
-							<MenuFlyoutSubItem x:Name="RadioSubMenu"
-							    AutomationProperties.Name="RadioSubMenu"
-							    Style="{StaticResource RadioMenuFlyoutSubItemStyle}"
-							    Text="Other">
-								<!--  Uno specific: Add x:Name to allow _app.Query() to work properly.  -->
-								<controls:RadioMenuFlyoutItem x:Name="AlbumNameItem"
-								    AutomationProperties.Name="AlbumNameItem"
-								    GroupName="SortGroup"
-								    Text="Album Name" />
-								<controls:RadioMenuFlyoutItem x:Name="ArtistNameItem"
-								    AutomationProperties.Name="ArtistNameItem"
-								    GroupName="SortGroup"
-								    Text="Artist Name" />
-								<controls:RadioMenuFlyoutItem x:Name="GenreItem"
-								    AutomationProperties.Name="GenreItem"
-								    GroupName="SortGroup"
-								    Text="Genre" />
-							</MenuFlyoutSubItem>
-						</MenuFlyout>
-					</Button.Flyout>
-				</Button>
+                            <MenuFlyoutSubItem
+                                x:Name="RadioSubMenu"
+                                AutomationProperties.Name="RadioSubMenu"
+                                Style="{StaticResource RadioMenuFlyoutSubItemStyle}"
+                                Text="Other">
+                                <!--  Uno specific: Add x:Name to allow _app.Query() to work properly.  -->
+                                <controls:RadioMenuFlyoutItem
+                                    x:Name="AlbumNameItem"
+                                    AutomationProperties.Name="AlbumNameItem"
+                                    GroupName="SortGroup"
+                                    Text="Album Name" />
+                                <controls:RadioMenuFlyoutItem
+                                    x:Name="ArtistNameItem"
+                                    AutomationProperties.Name="ArtistNameItem"
+                                    GroupName="SortGroup"
+                                    Text="Artist Name" />
+                                <controls:RadioMenuFlyoutItem
+                                    x:Name="GenreItem"
+                                    AutomationProperties.Name="GenreItem"
+                                    GroupName="SortGroup"
+                                    Text="Genre" />
+                            </MenuFlyoutSubItem>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
 
-				<Button Margin="12"
-				    AutomationProperties.Name="IconSubMenuFlyoutButton"
-				    Content="I have a sub menu with icons">
-					<Button.Flyout>
-						<MenuFlyout x:Name="ButtonIconSubMenuFlyout">
-							<MenuFlyoutItem Icon="Save"
-							    Text="Has Icon" />
+                <Button
+                    Margin="12"
+                    AutomationProperties.Name="IconSubMenuFlyoutButton"
+                    Content="I have a sub menu with icons">
+                    <Button.Flyout>
+                        <MenuFlyout x:Name="ButtonIconSubMenuFlyout">
+                            <MenuFlyoutItem Icon="Save" Text="Has Icon" />
 
-							<MenuFlyoutSeparator />
+                            <MenuFlyoutSeparator />
 
-							<controls:RadioMenuFlyoutItem AutomationProperties.Name="AnotherNameItem"
-							    GroupName="AnotherSortGroup"
-							    Icon="People"
-							    IsChecked="true"
-							    Text="Name" />
-							<controls:RadioMenuFlyoutItem AutomationProperties.Name="AnotherDateItem"
-							    GroupName="AnotherSortGroup"
-							    Text="Date" />
-							<controls:RadioMenuFlyoutItem AutomationProperties.Name="AnotherSizeItem"
-							    GroupName="AnotherSortGroup"
-							    Text="Size" />
+                            <controls:RadioMenuFlyoutItem
+                                AutomationProperties.Name="AnotherNameItem"
+                                GroupName="AnotherSortGroup"
+                                Icon="People"
+                                IsChecked="true"
+                                Text="Name" />
+                            <controls:RadioMenuFlyoutItem
+                                AutomationProperties.Name="AnotherDateItem"
+                                GroupName="AnotherSortGroup"
+                                Text="Date" />
+                            <controls:RadioMenuFlyoutItem
+                                AutomationProperties.Name="AnotherSizeItem"
+                                GroupName="AnotherSortGroup"
+                                Text="Size" />
 
-							<MenuFlyoutSubItem Style="{StaticResource RadioMenuFlyoutSubItemStyle}"
-							    Text="Other">
-								<controls:RadioMenuFlyoutItem AutomationProperties.Name="AnotherAlbumNameItem"
-								    GroupName="AnotherSortGroup"
-								    Text="Album Name" />
-								<controls:RadioMenuFlyoutItem AutomationProperties.Name="AnotherArtistNameItem"
-								    GroupName="AnotherSortGroup"
-								    Text="Artist Name" />
-								<controls:RadioMenuFlyoutItem AutomationProperties.Name="AnotherGenreItem"
-								    GroupName="AnotherSortGroup"
-								    Text="Genre" />
-							</MenuFlyoutSubItem>
+                            <MenuFlyoutSubItem Style="{StaticResource RadioMenuFlyoutSubItemStyle}" Text="Other">
+                                <controls:RadioMenuFlyoutItem
+                                    AutomationProperties.Name="AnotherAlbumNameItem"
+                                    GroupName="AnotherSortGroup"
+                                    Text="Album Name" />
+                                <controls:RadioMenuFlyoutItem
+                                    AutomationProperties.Name="AnotherArtistNameItem"
+                                    GroupName="AnotherSortGroup"
+                                    Text="Artist Name" />
+                                <controls:RadioMenuFlyoutItem
+                                    AutomationProperties.Name="AnotherGenreItem"
+                                    GroupName="AnotherSortGroup"
+                                    Text="Genre" />
+                            </MenuFlyoutSubItem>
 
-							<MenuFlyoutSubItem Icon="People"
-							    Style="{StaticResource RadioMenuFlyoutSubItemStyle}"
-							    Text="More">
-								<controls:RadioMenuFlyoutItem AutomationProperties.Name="OneMoreThing"
-								    GroupName="AnotherSortGroup"
-								    Text="One More" />
-							</MenuFlyoutSubItem>
-						</MenuFlyout>
-					</Button.Flyout>
-				</Button>
+                            <MenuFlyoutSubItem
+                                Icon="People"
+                                Style="{StaticResource RadioMenuFlyoutSubItemStyle}"
+                                Text="More">
+                                <controls:RadioMenuFlyoutItem
+                                    AutomationProperties.Name="OneMoreThing"
+                                    GroupName="AnotherSortGroup"
+                                    Text="One More" />
+                            </MenuFlyoutSubItem>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
 
-				<Button Margin="12"
-				    Content="I have icons">
-					<Button.Flyout>
-						<MenuFlyout>
-							<ToggleMenuFlyoutItem Text="A Toggle Item" />
-							<controls:RadioMenuFlyoutItem Text="A Radio Item" />
-							<controls:RadioMenuFlyoutItem x:Name="IconRadioMenuFlyoutItem"
-							    Text="Radio And Has Icon" />
-							<controls:RadioMenuFlyoutItem x:Name="IconRadioMenuFlyoutItem2"
-							    Text="Radio with icon and accelerator">
-								<controls:RadioMenuFlyoutItem.KeyboardAccelerators>
-									<KeyboardAccelerator Key="S"
-									    Modifiers="Control" />
-								</controls:RadioMenuFlyoutItem.KeyboardAccelerators>
-							</controls:RadioMenuFlyoutItem>
-							<controls:RadioMenuFlyoutItem AccessKey="A"
-							    Text="Radio accelerator">
-								<controls:RadioMenuFlyoutItem.KeyboardAccelerators>
-									<KeyboardAccelerator Key="S"
-									    Modifiers="Control" />
-								</controls:RadioMenuFlyoutItem.KeyboardAccelerators>
-							</controls:RadioMenuFlyoutItem>
-							<MenuFlyoutItem x:Name="IconMenuFlyoutItem"
-							    Text="Just Has Icon" />
-						</MenuFlyout>
-					</Button.Flyout>
-				</Button>
-			</StackPanel>
+                <Button Margin="12" Content="I have icons">
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <ToggleMenuFlyoutItem Text="A Toggle Item" />
+                            <controls:RadioMenuFlyoutItem Text="A Radio Item" />
+                            <controls:RadioMenuFlyoutItem x:Name="IconRadioMenuFlyoutItem" Text="Radio And Has Icon" />
+                            <controls:RadioMenuFlyoutItem x:Name="IconRadioMenuFlyoutItem2" Text="Radio with icon and accelerator">
+                                <controls:RadioMenuFlyoutItem.KeyboardAccelerators>
+                                    <KeyboardAccelerator Key="S" Modifiers="Control" />
+                                </controls:RadioMenuFlyoutItem.KeyboardAccelerators>
+                            </controls:RadioMenuFlyoutItem>
+                            <controls:RadioMenuFlyoutItem AccessKey="A" Text="Radio accelerator">
+                                <controls:RadioMenuFlyoutItem.KeyboardAccelerators>
+                                    <KeyboardAccelerator Key="S" Modifiers="Control" />
+                                </controls:RadioMenuFlyoutItem.KeyboardAccelerators>
+                            </controls:RadioMenuFlyoutItem>
+                            <MenuFlyoutItem x:Name="IconMenuFlyoutItem" Text="Just Has Icon" />
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+            </StackPanel>
 
-			<StackPanel x:Name="InfoGrid"
-			    MinWidth="250"
-			    Margin="12,0,0,0"
-			    VerticalAlignment="Top"
-			    Orientation="Horizontal"
-			    Style="{ThemeResource StandardGroupingStackPanel}">
-				<StackPanel x:Name="ItemNames"
-				    Margin="0,0,12,0" />
+            <StackPanel
+                x:Name="InfoGrid"
+                MinWidth="250"
+                Margin="12,0,0,0"
+                VerticalAlignment="Top"
+                Orientation="Horizontal"
+                Style="{ThemeResource StandardGroupingStackPanel}">
+                <StackPanel x:Name="ItemNames" Margin="0,0,12,0" />
 
-				<StackPanel x:Name="ItemStates"
-				    Grid.Column="1" />
-			</StackPanel>
+                <StackPanel x:Name="ItemStates" Grid.Column="1" />
+            </StackPanel>
 
-		</StackPanel>
-	</Grid>
+        </StackPanel>
+    </Grid>
 
 </Page>

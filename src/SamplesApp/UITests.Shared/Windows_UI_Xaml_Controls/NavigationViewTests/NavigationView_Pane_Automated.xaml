@@ -1,4 +1,5 @@
-﻿<Page x:Class="SamplesApp.Samples.Windows_UI_Xaml_Controls.NavigationViewTests.NavigationView_Pane_Automated"
+﻿<Page
+    x:Class="SamplesApp.Samples.Windows_UI_Xaml_Controls.NavigationViewTests.NavigationView_Pane_Automated"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,20 +10,19 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<NavigationView IsSettingsVisible="False"
-	    MenuItemsSource="{Binding Items}"
-	    SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
-		<NavigationView.MenuItemTemplate>
-			<DataTemplate x:DataType="models:NavigationViewItemViewModel">
-				<NavigationViewItem AutomationProperties.AutomationId="{x:Bind sys:String.Format('Item {0}', Title)}"
-				    Content="{x:Bind Title}">
-					<NavigationViewItem.Icon>
-						<SymbolIcon Symbol="{x:Bind Symbol}" />
-					</NavigationViewItem.Icon>
-				</NavigationViewItem>
-			</DataTemplate>
-		</NavigationView.MenuItemTemplate>
-		<TextBlock x:Name="selectedItemText"
-		    Text="{Binding SelectedItem.Title}" />
-	</NavigationView>
+    <NavigationView
+        IsSettingsVisible="False"
+        MenuItemsSource="{Binding Items}"
+        SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+        <NavigationView.MenuItemTemplate>
+            <DataTemplate x:DataType="models:NavigationViewItemViewModel">
+                <NavigationViewItem AutomationProperties.AutomationId="{x:Bind sys:String.Format('Item {0}', Title)}" Content="{x:Bind Title}">
+                    <NavigationViewItem.Icon>
+                        <SymbolIcon Symbol="{x:Bind Symbol}" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </DataTemplate>
+        </NavigationView.MenuItemTemplate>
+        <TextBlock x:Name="selectedItemText" Text="{Binding SelectedItem.Title}" />
+    </NavigationView>
 </Page>

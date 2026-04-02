@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.FrameworkElementTests.LoadEvents"
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml.FrameworkElementTests.LoadEvents"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Uno.UI.Samples.Controls"
@@ -9,23 +10,22 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-	<StackPanel>
-		<TextBlock Margin="0,0,0,5"
-		    Text="This sample tests that Loaded and Unloaded events are raised properly. You should see ** 2 ** lines prefixed by [OK]." />
+    <StackPanel>
+        <TextBlock Margin="0,0,0,5" Text="This sample tests that Loaded and Unloaded events are raised properly. You should see ** 2 ** lines prefixed by [OK]." />
 
-		<TextBlock FontWeight="Black"
-		    Text="Loaded:" />
-		<TextBlock x:Name="loadedResult"
-		    Margin="0,5"
-		    Loaded="OnLoadTextLoaded"
-		    Text="[ERROR] loaded not received" />
+        <TextBlock FontWeight="Black" Text="Loaded:" />
+        <TextBlock
+            x:Name="loadedResult"
+            Margin="0,5"
+            Loaded="OnLoadTextLoaded"
+            Text="[ERROR] loaded not received" />
 
-		<TextBlock FontWeight="Black"
-		    Text="Unloaded:" />
-		<TextBlock x:Name="unloadedResult"
-		    Margin="0,5"
-		    Loaded="OnUnloadTextLoaded"
-		    Text="[ERROR] loaded not received"
-		    Unloaded="OnUnloadTextUnloaded" />
-	</StackPanel>
+        <TextBlock FontWeight="Black" Text="Unloaded:" />
+        <TextBlock
+            x:Name="unloadedResult"
+            Margin="0,5"
+            Loaded="OnUnloadTextLoaded"
+            Text="[ERROR] loaded not received"
+            Unloaded="OnUnloadTextUnloaded" />
+    </StackPanel>
 </UserControl>
