@@ -70,18 +70,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var kaParams = new Uno.UI.Xaml.EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
 				foreach (var item in items)
 				{
-					if (item.IsDependencyPropertySet(KeyboardAcceleratorsProperty))
-					{
-						if (item.GetValue(KeyboardAcceleratorsProperty) is KeyboardAcceleratorCollection kac)
-						{
-							kac.Enter(null, kaParams);
-						}
-					}
-
-					if (item is MenuFlyoutSubItem subItem)
-					{
-						subItem.EnterImpl(null, kaParams);
-					}
+					item.Enter(kaParams, 0);
 				}
 			}
 		}
@@ -97,18 +86,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var kaParams = new Uno.UI.Xaml.LeaveParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
 				foreach (var item in items)
 				{
-					if (item.IsDependencyPropertySet(KeyboardAcceleratorsProperty))
-					{
-						if (item.GetValue(KeyboardAcceleratorsProperty) is KeyboardAcceleratorCollection kac)
-						{
-							kac.Leave(null, kaParams);
-						}
-					}
-
-					if (item is MenuFlyoutSubItem subItem)
-					{
-						subItem.LeaveImpl(null, kaParams);
-					}
+					item.Leave(kaParams);
 				}
 			}
 		}
