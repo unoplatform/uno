@@ -487,6 +487,7 @@ function Invoke-ExternalProcessWithCapturedOutput {
     $startInfo.WorkingDirectory = $WorkingDirectory
     $startInfo.UseShellExecute = $false
     $startInfo.CreateNoWindow = $true
+    $startInfo.RedirectStandardInput = $true
     $startInfo.RedirectStandardOutput = $true
     $startInfo.RedirectStandardError = $true
     $startInfo.StandardOutputEncoding = [System.Text.Encoding]::UTF8
@@ -498,6 +499,8 @@ function Invoke-ExternalProcessWithCapturedOutput {
     if (-not $process.Start()) {
         throw "Failed to start process '$FilePath'."
     }
+
+    $process.StandardInput.Close()
 
     $stdoutTask = $process.StandardOutput.ReadToEndAsync()
     $stderrTask = $process.StandardError.ReadToEndAsync()
