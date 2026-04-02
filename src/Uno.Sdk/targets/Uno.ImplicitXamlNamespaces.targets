@@ -23,6 +23,7 @@
 			<Using Namespace="System" />
 			<Using Namespace="System.IO" />
 			<Using Namespace="System.Text" />
+			<Using Namespace="System.Collections.Generic" />
 			<Using Namespace="Microsoft.Build.Framework" />
 			<Using Namespace="Microsoft.Build.Utilities" />
 			<Code Type="Fragment" Language="cs">
@@ -45,8 +46,10 @@ foreach (var item in XamlFiles)
 
 	var content = File.ReadAllText(sourcePath);
 
-	// Skip if already has a default xmlns
-	if (content.Contains("xmlns=\""))
+	var hasDefaultXmlns = content.Contains("xmlns=\"");
+
+	// If already has both default xmlns and xmlns:x, no processing needed
+	if (hasDefaultXmlns && (content.Contains("xmlns:x=\"") || content.Contains("xmlns:x='")))
 	{
 		outputItems.Add(item);
 		continue;
@@ -103,13 +106,16 @@ foreach (var item in XamlFiles)
 	var rootTag = content.Substring(rootTagStart, rootTagEnd - rootTagStart);
 	var injections = new StringBuilder();
 
-	// Inject default xmlns
-	injections.Append(" xmlns=\"");
-	injections.Append(presentationNs);
-	injections.Append('"');
+	// Inject default xmlns if missing
+	if (!hasDefaultXmlns)
+	{
+		injections.Append(" xmlns=\"");
+		injections.Append(presentationNs);
+		injections.Append('"');
+	}
 
 	// Inject xmlns:x if missing
-	if (!rootTag.Contains("xmlns:x=\""))
+	if (!rootTag.Contains("xmlns:x=\"") && !rootTag.Contains("xmlns:x='"))
 	{
 		injections.Append(" xmlns:x=\"");
 		injections.Append(xamlNs);
@@ -157,8 +163,20 @@ ProcessedFiles = outputItems.ToArray();
 
 		<!-- Replace original XAML items with processed versions -->
 		<ItemGroup Condition="@(_UnoProcessedXamlFiles->Count()) > 0">
-			<Page Remove="@(Page)" Condition="'%(Page.OriginalPath)' != ''" />
-			<Page Include="@(_UnoProcessedXamlFiles)" Condition="'%(Extension)' == '.xaml'" />
+			<!-- Build a list of original XAML paths from the processed items -->
+			<_UnoOriginalXamlToReplace Include="@(_UnoProcessedXamlFiles->Metadata('OriginalPath'))" />
+
+			<!-- Remove original Page and ApplicationDefinition items that were processed -->
+			<Page Remove="@(_UnoOriginalXamlToReplace)" />
+			<ApplicationDefinition Remove="@(_UnoOriginalXamlToReplace)" />
+
+			<!-- Re-add processed XAML files as Pages (non-App.xaml) -->
+			<Page Include="@(_UnoProcessedXamlFiles)"
+				  Condition="'%(Filename)' != 'App'" />
+
+			<!-- Re-add processed App.xaml as ApplicationDefinition -->
+			<ApplicationDefinition Include="@(_UnoProcessedXamlFiles)"
+								   Condition="'%(Filename)' == 'App'" />
 		</ItemGroup>
 	</Target>
 

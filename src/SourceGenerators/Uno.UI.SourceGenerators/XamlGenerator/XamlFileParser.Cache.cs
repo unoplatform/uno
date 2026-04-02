@@ -13,13 +13,15 @@ internal partial class XamlFileParser
 {
 	private struct CachedFileKey : IEquatable<CachedFileKey>
 	{
-		public CachedFileKey(string includeXamlNamespaces, string excludeXamlNamespaces, string file, string link, ImmutableArray<byte> checksum)
+		public CachedFileKey(string includeXamlNamespaces, string excludeXamlNamespaces, string file, string link, ImmutableArray<byte> checksum, bool enableImplicitNamespaces, string implicitPrefixesKey)
 		{
 			IncludeXamlNamespaces = includeXamlNamespaces;
 			ExcludeXamlNamespaces = excludeXamlNamespaces;
 			File = file;
 			Link = link;
 			Checksum = checksum;
+			EnableImplicitNamespaces = enableImplicitNamespaces;
+			ImplicitPrefixesKey = implicitPrefixesKey;
 		}
 
 		public string IncludeXamlNamespaces { get; }
@@ -27,6 +29,8 @@ internal partial class XamlFileParser
 		public string File { get; }
 		public string Link { get; }
 		public ImmutableArray<byte> Checksum { get; }
+		public bool EnableImplicitNamespaces { get; }
+		public string ImplicitPrefixesKey { get; }
 
 		public override bool Equals(object? obj) => obj is CachedFileKey key && Equals(key);
 
@@ -34,6 +38,8 @@ internal partial class XamlFileParser
 			IncludeXamlNamespaces == other.IncludeXamlNamespaces &&
 			ExcludeXamlNamespaces == other.ExcludeXamlNamespaces &&
 			File == other.File &&
+			EnableImplicitNamespaces == other.EnableImplicitNamespaces &&
+			ImplicitPrefixesKey == other.ImplicitPrefixesKey &&
 			ByteSequenceComparer.Equals(Checksum, other.Checksum);
 
 		public override int GetHashCode()
@@ -44,6 +50,8 @@ internal partial class XamlFileParser
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(File);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Link);
 			hashCode = hashCode * -1521134295 + ByteSequenceComparer.GetHashCode(Checksum);
+			hashCode = hashCode * -1521134295 + EnableImplicitNamespaces.GetHashCode();
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ImplicitPrefixesKey);
 			return hashCode;
 		}
 

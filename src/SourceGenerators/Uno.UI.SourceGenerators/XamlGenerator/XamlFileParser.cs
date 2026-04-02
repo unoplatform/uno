@@ -43,6 +43,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private readonly bool _enableImplicitNamespaces;
 		private readonly (string Prefix, string Uri)[] _implicitPrefixes;
+		private readonly string _implicitPrefixesKey;
 
 		private int _depth;
 
@@ -64,6 +65,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_metadataHelper = roslynMetadataHelper;
 			_enableImplicitNamespaces = enableImplicitNamespaces;
 			_implicitPrefixes = implicitPrefixes ?? Array.Empty<(string, string)>();
+			_implicitPrefixesKey = string.Join("|", _implicitPrefixes.Select(p => p.Prefix + ":" + p.Uri));
 		}
 
 		public ParallelQuery<XamlFileDefinition> ParseFiles(IEnumerable<XamlSource> xamlSourceFiles, string projectDirectory, CancellationToken ct)
@@ -109,7 +111,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var sourceText = src.Item.File.GetText(ct) ?? throw new Exception($"Failed to read additional file '{sourcePath}'");
 				var sourceLink = src.Link.Replace('\\', '/');
 
-				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, sourcePath, sourceLink, sourceText.GetChecksum());
+				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, sourcePath, sourceLink, sourceText.GetChecksum(), _enableImplicitNamespaces, _implicitPrefixesKey);
 				if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
 				{
 					_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
@@ -215,12 +217,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Injects missing xmlns declarations into the root element of a XAML document.
 		/// This ensures XAML files without explicit xmlns/xmlns:x declarations can be
 		/// parsed by the standard XmlReader without requiring ConformanceLevel.Fragment.
-		/// Only modifies files that are missing the default xmlns declaration.
+		/// Injects each missing declaration independently (default xmlns, xmlns:x, implicit prefixes).
 		/// </summary>
 		private string InjectImplicitXmlns(string content)
 		{
-			// Quick check: if the file already has a default xmlns, skip injection entirely
-			if (content.Contains("xmlns=\"", StringComparison.Ordinal))
+			var hasDefaultXmlns = content.Contains("xmlns=\"", StringComparison.Ordinal);
+			var hasXmlnsX = content.Contains("xmlns:x=\"", StringComparison.Ordinal)
+				|| content.Contains("xmlns:x='", StringComparison.Ordinal);
+
+			// Quick check: if all base declarations are present and no implicit prefixes to inject, skip
+			if (hasDefaultXmlns && hasXmlnsX && _implicitPrefixes.Length == 0)
 			{
 				return content;
 			}
@@ -281,13 +287,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var rootTag = content.AsSpan(rootTagStart, rootTagEnd - rootTagStart);
 			var injections = new StringBuilder();
 
-			// Inject default xmlns
-			injections.Append(" xmlns=\"");
-			injections.Append(XamlConstants.PresentationXamlXmlNamespace);
-			injections.Append('"');
+			// Inject default xmlns if missing
+			if (!hasDefaultXmlns)
+			{
+				injections.Append(" xmlns=\"");
+				injections.Append(XamlConstants.PresentationXamlXmlNamespace);
+				injections.Append('"');
+			}
 
 			// Inject xmlns:x if missing
-			if (rootTag.IndexOf("xmlns:x=\"".AsSpan(), StringComparison.Ordinal) < 0)
+			if (!hasXmlnsX)
 			{
 				injections.Append(" xmlns:x=\"");
 				injections.Append(XamlConstants.XamlXmlNamespace);
@@ -305,6 +314,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					injections.Append(uri);
 					injections.Append('"');
 				}
+			}
+
+			if (injections.Length == 0)
+			{
+				return content;
 			}
 
 			// Insert injections just before the closing '>' of the root element
