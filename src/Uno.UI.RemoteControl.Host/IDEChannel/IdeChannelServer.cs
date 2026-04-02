@@ -246,9 +246,9 @@ internal class IdeChannelServer : IIdeChannel, IIdeChannelManager, IDisposable
 		}
 	}
 
-	private const int KeepAliveDelay = 10000; // 10 seconds
+	internal static int KeepAliveDelayMs { get; set; } = 10_000;
 
-	private void ScheduleKeepAlive() => _keepAliveTimer.Change(KeepAliveDelay, KeepAliveDelay);
+	private void ScheduleKeepAlive() => _keepAliveTimer.Change(KeepAliveDelayMs, KeepAliveDelayMs);
 
 	/// <inheritdoc />
 	public void Dispose()

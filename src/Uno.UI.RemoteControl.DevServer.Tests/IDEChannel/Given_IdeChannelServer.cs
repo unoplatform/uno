@@ -297,23 +297,33 @@ public class Given_IdeChannelServer
 	[TestMethod]
 	public async Task WhenTimerFires_ExceptionInSendDoesNotCrash()
 	{
-		// The keep-alive timer should not crash if the pipe disconnects mid-send.
-		var channelId = $"ide-channel-{Guid.NewGuid():N}";
-		using var server = CreateServer();
+		var originalDelay = IdeChannelServer.KeepAliveDelayMs;
+		IdeChannelServer.KeepAliveDelayMs = 50; // Use a short delay so the timer fires quickly.
+		try
+		{
+			var channelId = $"ide-channel-{Guid.NewGuid():N}";
+			using var server = CreateServer();
 
-		(await Rebind(server, channelId)).Should().BeTrue();
+			(await Rebind(server, channelId)).Should().BeTrue();
 
-		using var client = CreateClient(channelId);
-		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
-		await client.ConnectAsync(cts.Token);
-		(await server.WaitForReady()).Should().BeTrue();
+			using var client = CreateClient(channelId);
+			using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+			await client.ConnectAsync(cts.Token);
+			(await server.WaitForReady()).Should().BeTrue();
 
-		// Disconnect the client abruptly — the next keep-alive should not throw.
-		client.Close();
-		await Task.Delay(100); // Let the disconnect propagate.
+			// Disconnect the client abruptly — the next keep-alive should not throw.
+			client.Close();
 
-		// The server should not have crashed — it should still be usable.
-		Manager(server).ChannelId.Should().Be(channelId);
+			// Wait long enough for multiple timer ticks to fire on the broken pipe.
+			await Task.Delay(300);
+
+			// The server should not have crashed — it should still be usable.
+			Manager(server).ChannelId.Should().Be(channelId);
+		}
+		finally
+		{
+			IdeChannelServer.KeepAliveDelayMs = originalDelay;
+		}
 	}
 
 	// ── Helpers ──────────────────────────────────────────────────────
