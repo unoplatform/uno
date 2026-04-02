@@ -82,6 +82,12 @@ internal partial class Win32WindowWrapper
 
 			var success2 = PInvoke.BitBlt(paintDc, 0, 0, width, height, bitmapDc, 0, 0, ROP_CODE.SRCCOPY);
 			if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.BitBlt)} failed: {Win32Helper.GetErrorMessage()}"); }
+
+			// Block until the DWM compositor's next VSync to pace frames.
+			// Without this, BitBlt returns instantly (unlike GL's SwapBuffers
+			// which blocks for VSync), causing the render loop to spin at
+			// hundreds of fps — wasting CPU and reporting misleading frame rates.
+			PInvoke.DwmFlush();
 		}
 
 		bool IRenderer.IsSoftware() => true;
