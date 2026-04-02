@@ -25,9 +25,6 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 	<!-- Build Targets -->
 	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Build.targets" />
 
-	<!-- Implicit XAML Namespaces - WinAppSDK pre-processing -->
-	<Import Project="$(_UnoSdkTargetsDirectory)Uno.ImplicitXamlNamespaces.targets" />
-
 	<!-- Microsoft.NET.Sdk should be loaded last. This ensures our targets are evaluated before all others. -->
 	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.targets" />
 

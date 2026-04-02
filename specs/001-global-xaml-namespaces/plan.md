@@ -5,7 +5,7 @@
 
 ## Summary
 
-Add support for global/implicit XAML namespaces to Uno Platform, allowing developers to write XAML without boilerplate `xmlns` declarations. The feature is enabled by default via the Uno.Sdk. For Uno targets (Skia, WebAssembly, Mobile), the XAML source generator is modified to pre-populate namespace mappings using `XmlParserContext` with `ConformanceLevel.Fragment`. For WinAppSDK targets, an MSBuild pre-processing task injects `xmlns` declarations into temporary XAML copies before the WinUI compiler runs. Developers register custom namespaces to a dedicated global URI via `[assembly: XmlnsDefinition]` attributes.
+Add support for global/implicit XAML namespaces to Uno Platform, allowing developers to write XAML without boilerplate `xmlns` declarations. The feature is enabled by default via the Uno.Sdk. The XAML source generator is modified to pre-populate namespace mappings using `XmlParserContext` with `ConformanceLevel.Fragment`. Developers register custom namespaces to a dedicated global URI via `[assembly: XmlnsDefinition]` attributes.
 
 ## Technical Context
 
@@ -13,10 +13,10 @@ Add support for global/implicit XAML namespaces to Uno Platform, allowing develo
 **Primary Dependencies**: Roslyn source generators, System.Xaml, MSBuild
 **Storage**: N/A
 **Testing**: Runtime tests (`Uno.UI.RuntimeTests`), Unit tests (`Uno.UI.Tests`)
-**Target Platform**: All Uno Platform targets (WebAssembly, Skia Desktop, Android, iOS, Windows/WinAppSDK)
+**Target Platform**: All Uno Platform targets (WebAssembly, Skia Desktop, Android, iOS)
 **Project Type**: Framework library (source generator + MSBuild SDK)
 **Performance Goals**: No measurable regression in XAML compilation time
-**Constraints**: Must not break existing XAML files with explicit `xmlns`; WinUI compiler is closed-source
+**Constraints**: Must not break existing XAML files with explicit `xmlns`
 **Scale/Scope**: Affects all XAML files in all Uno Platform projects
 
 ## Constitution Check
@@ -26,14 +26,14 @@ Add support for global/implicit XAML namespaces to Uno Platform, allowing develo
 | Principle | Status | Notes |
 |-----------|--------|-------|
 | I. WinUI API Fidelity | PASS | `XmlnsDefinition` and `XmlnsPrefix` are standard WinUI APIs. Global namespace feature extends XAML tooling, not the API surface. |
-| II. Cross-Platform Parity | PASS | Feature works on all targets including WinAppSDK. WinAppSDK uses MSBuild pre-processing; all others use source generator. |
+| II. Cross-Platform Parity | PASS | Feature works on all Uno Platform targets via the source generator. |
 | III. Test-First Quality Gates | PASS | Runtime tests will be added for all user stories. |
 | IV. Performance and Resource Discipline | PASS | `XmlnsDefinition` scanning happens once per compilation (cached). No per-frame impact. |
 | V. Generated Code Boundaries | PASS | No changes to Generated/ folders. Feature modifies the source generator itself. |
 | VI. Backward Compatibility | PASS | Feature is additive. Existing XAML with explicit `xmlns` works unchanged. Opt-out available. |
 | VII. WinUI Implementation Alignment | N/A | This is a tooling feature, not a WinUI control behavior. No WinUI C++ reference implementation exists. |
 
-**Post-Phase 1 re-check**: All gates still pass. The MSBuild pre-processing for WinAppSDK is a build tooling concern, not a runtime behavior change.
+**Post-Phase 1 re-check**: All gates still pass.
 
 ## Project Structure
 
@@ -70,18 +70,16 @@ src/SourceGenerators/Uno.UI.SourceGenerators/
 
 src/Uno.Sdk/
 ├── targets/
-│   ├── Uno.ImplicitXamlNamespaces.props    # NEW: Set default property values
-│   └── Uno.ImplicitXamlNamespaces.targets  # NEW: WinAppSDK pre-processing task
+│   └── Uno.ImplicitXamlNamespaces.props    # NEW: Set default property values
 ├── Sdk/
-│   ├── Sdk.props                           # MODIFY: Import new props
-│   └── Sdk.targets                         # MODIFY: Import new targets
+│   └── Sdk.props                           # MODIFY: Import new props
 
 src/Uno.UI.RuntimeTests/
 └── Tests/Windows_UI_Xaml/
     └── Given_ImplicitXamlNamespaces.cs     # NEW: Runtime tests
 ```
 
-**Structure Decision**: This feature spans the source generator (compile-time XAML processing), the Uno.Sdk (MSBuild integration), and runtime tests. No new projects are created; changes are distributed across existing projects.
+**Structure Decision**: This feature spans the source generator (compile-time XAML processing), the Uno.Sdk (MSBuild property defaults), and runtime tests. No new projects are created; changes are distributed across existing projects.
 
 ## Design Details
 
@@ -179,19 +177,7 @@ internal static class GlobalNamespaceResolver
 <CompilerVisibleProperty Include="UnoGlobalXamlNamespaceUri" />
 ```
 
-### Component 5: WinAppSDK Pre-Processing Task
-
-**File**: `Uno.ImplicitXamlNamespaces.targets` (new)
-
-For WinAppSDK targets only, an MSBuild task runs before `XamlPreCompile`:
-1. Copies XAML files to a temp directory
-2. Injects implicit `xmlns` declarations into the root element
-3. Redirects the WinUI XAML compiler to use the temp copies
-4. Cleans up after compilation
-
-The injection is simple string manipulation: find the root element's opening tag and insert `xmlns="..." xmlns:x="..."` plus any globally registered prefixed namespaces.
-
-### Component 6: Ambiguity Error Handling
+### Component 5: Ambiguity Error Handling
 
 When `SourceFindTypeByXamlType` finds a type name in multiple global CLR namespaces, emit a diagnostic:
 

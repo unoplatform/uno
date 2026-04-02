@@ -134,28 +134,7 @@
 
 ---
 
-## Phase 7: User Story 5 - Works on WinUI/WinAppSDK via Uno.Sdk (Priority: P1)
-
-**Goal**: Same XAML files (without `xmlns`) compile on WinAppSDK targets via MSBuild pre-processing
-
-**Independent Test**: Build a XAML file without `xmlns` for both Skia and `net10.0-windows10.0.19041.0` targets; both succeed
-
-### Tests for User Story 5
-
-- [X] T033 [US5] Add unit test in `src/Uno.UI/Uno.UI.Tests.csproj`: `When_WinAppSdk_XamlPreprocessor_Injects_Xmlns` — the xmlns injection logic is implemented as a RoslynCodeTaskFactory inline task in Uno.ImplicitXamlNamespaces.targets, mirroring the InjectImplicitXmlns logic in XamlFileParser.cs. Verification requires a WinAppSDK build environment
-
-### Implementation for User Story 5
-
-- [X] T034 [US5] Create `src/Uno.Sdk/targets/Uno.ImplicitXamlNamespaces.targets` — MSBuild targets that, for WinAppSDK builds only (`Condition="'$(IsWinAppSdk)'=='true'"`), run before `MarkupCompilePass1` to: (a) copy XAML files to temp directory, (b) inject implicit `xmlns` and `xmlns:x` declarations into root elements, (c) redirect WinUI compiler to use processed copies
-- [X] T035 [US5] Implement the XAML pre-processing inline MSBuild task (RoslynCodeTaskFactory) in `src/Uno.Sdk/targets/Uno.ImplicitXamlNamespaces.targets` — string manipulation to find root element opening tag and insert missing `xmlns` attributes; preserve any explicit declarations already present
-- [X] T036 [US5] Import `Uno.ImplicitXamlNamespaces.targets` from `src/Uno.Sdk/Sdk/Sdk.targets`
-- [X] T037 [US5] Add cleanup target that removes temp XAML copies after WinUI compilation completes
-
-**Checkpoint**: Same XAML compiles on both Uno targets and WinAppSDK targets.
-
----
-
-## Phase 8: Polish & Cross-Cutting Concerns
+## Phase 7: Polish & Cross-Cutting Concerns
 
 **Purpose**: Edge cases, Hot Reload, and final validation
 
@@ -177,13 +156,11 @@
 - **User Story 2 (Phase 4)**: Depends on Phase 2; enhanced by Phase 3 but independently testable
 - **User Story 3 (Phase 5)**: Depends on Phase 2 and T022 from Phase 4 (GlobalNamespaceResolver for current assembly must work before cross-assembly)
 - **User Story 4 (Phase 6)**: Depends on Phase 4 (needs global namespace resolution working to test ambiguity)
-- **User Story 5 (Phase 7)**: Depends on Phase 1 only (MSBuild-only, independent of source generator)
-- **Polish (Phase 8)**: Depends on Phases 3-7 completion
+- **Polish (Phase 7)**: Depends on Phases 3-6 completion
 
 ### User Story Dependencies
 
 - **US1 (P1)**: After Phase 2 — no dependencies on other stories
-- **US5 (P1)**: After Phase 1 — can run in parallel with Phase 2 and US1 (MSBuild-only work)
 - **US2 (P2)**: After Phase 2 — independent of US1, but builds on same GlobalNamespaceResolver
 - **US3 (P2)**: After US2 T022 — needs current-assembly resolution working first
 - **US4 (P3)**: After US2 — needs global namespace resolution to test ambiguity
@@ -197,7 +174,6 @@
 ### Parallel Opportunities
 
 - T002 and T003 (Setup) can run in parallel (different files)
-- US1 and US5 can proceed in parallel after their respective prerequisites
 - US2 and US3 tests (T019-T021, T025-T026) can be written in parallel
 - T041 and T042 (Polish) can run in parallel
 
@@ -210,18 +186,6 @@
 Task T002: "Create Uno.ImplicitXamlNamespaces.props in src/Uno.Sdk/targets/"
 Task T003: "Add CompilerVisibleProperty in Uno.UI.SourceGenerators.props"
 ```
-
-## Parallel Example: User Story 1 + User Story 5
-
-```bash
-# US1 (source generator) and US5 (MSBuild) work on completely different subsystems:
-# After Phase 1 setup:
-Agent A: US5 tasks (T033-T037) — MSBuild pre-processing for WinAppSDK
-# After Phase 2 foundational:
-Agent B: US1 tasks (T011-T018) — Source generator implicit namespace support
-```
-
----
 
 ## Implementation Strategy
 
@@ -237,11 +201,10 @@ Agent B: US1 tasks (T011-T018) — Source generator implicit namespace support
 
 1. Setup + Foundational → MSBuild plumbing and parser ready
 2. User Story 1 → XAML without `xmlns` works on Uno targets → **MVP!**
-3. User Story 5 → Same XAML also works on WinAppSDK → **Cross-platform parity**
-4. User Story 2 → Custom CLR namespaces registered globally → **Full developer workflow**
-5. User Story 3 → Third-party libraries registered globally → **Ecosystem support**
-6. User Story 4 → Ambiguity errors and disambiguation → **Edge case handling**
-7. Polish → Hot Reload, regression testing → **Production ready**
+3. User Story 2 → Custom CLR namespaces registered globally → **Full developer workflow**
+4. User Story 3 → Third-party libraries registered globally → **Ecosystem support**
+5. User Story 4 → Ambiguity errors and disambiguation → **Edge case handling**
+6. Polish → Hot Reload, regression testing → **Production ready**
 
 ### Parallel Agent Strategy
 
@@ -250,10 +213,9 @@ With multiple agents:
 1. All agents complete Setup (Phase 1) together
 2. Once Setup is done:
    - Agent A: Foundational (Phase 2) + US1 (Phase 3) — source generator path
-   - Agent B: US5 (Phase 7) — MSBuild/WinAppSDK path (independent)
 3. After Phase 2:
    - Agent A: US2 (Phase 4) + US3 (Phase 5) + US4 (Phase 6)
-   - Agent B: Polish (Phase 8)
+   - Agent B: Polish (Phase 7)
 
 ---
 
@@ -263,6 +225,5 @@ With multiple agents:
 - [Story] label maps task to specific user story for traceability
 - Constitution Principle III requires runtime tests — all stories include test tasks
 - The source generator runs at compile time; changes affect ALL platforms simultaneously
-- WinAppSDK is the only target needing a separate implementation path (MSBuild pre-processing)
 - Commit after each task or logical group using conventional commits
 - Stop at any checkpoint to validate story independently
