@@ -102,10 +102,8 @@ Cleanup:
 	{
 		MenuFlyoutPresenter presenter = new();
 		presenter.SetParentMenuFlyout(this);
-
 		var style = MenuFlyoutPresenterStyle;
 		SetPresenterStyle(presenter, style);
-
 		return presenter;
 	}
 
@@ -132,26 +130,27 @@ Cleanup:
 	// Raise Opening event.
 	private protected override void OnOpening()
 	{
-		// Update the TemplateSettings as it is about to open.
 		var presenter = GetPresenter();
 		var menuFlyoutPresenter = presenter as MenuFlyoutPresenter;
 
 		if (menuFlyoutPresenter is not null)
 		{
 			IMenu parentMenu = (this as IMenu).ParentMenu as IMenu;
-
 			(menuFlyoutPresenter as IMenuPresenter).OwningMenu = parentMenu != null ? parentMenu : this;
 			menuFlyoutPresenter.UpdateTemplateSettings();
 		}
 
 		base.OnOpening();
 
-		// Reset the presenter's ItemsSource.  Since Items is not an IObservableVector, we don't
-		// automatically respond to changes within the vector.  Clearing the property when the presenter
-		// unloads and resetting it before we reopen ensures any changes to Items are reflected
-		// when the MenuFlyoutPresenter shows.  It also allows sharing of MenuFlyouts; since MenuFlyoutItemBases
-		// are UIElements they must be unparented when leaving the tree before they can be inserted elsewhere.
 		menuFlyoutPresenter.ItemsSource = m_tpItems;
+
+		// The items collection (MenuFlyoutItemBaseCollection) is a DependencyObject.
+		// Setting it as ItemsSource on the presenter causes the DP system to propagate
+		// the presenter's DataContext to the collection (via ValueInheritsDataContext,
+		// which is the default FrameworkPropertyMetadata option). This would retain the
+		// placement target's ViewModel through the collection even after the flyout closes.
+		// Clear the inherited DataContext immediately to prevent this retention.
+		(m_tpItems as IDependencyObjectStoreProvider)?.Store.ClearInheritedDataContext();
 
 		AutomationPeer.RaiseEventIfListener(menuFlyoutPresenter, AutomationEvents.MenuOpened);
 	}
@@ -178,6 +177,17 @@ Cleanup:
 		{
 			presenter.m_iFocusedIndex = -1;
 			presenter.ItemsSource = null;
+		}
+
+		// Clear any inherited DataContext that may have been set on the items collection
+		// or individual items during the flyout's lifetime.
+		(m_tpItems as IDependencyObjectStoreProvider)?.Store.ClearInheritedDataContext();
+		if (m_tpItems is not null)
+		{
+			foreach (var item in m_tpItems)
+			{
+				(item as IDependencyObjectStoreProvider)?.Store.ClearInheritedDataContext();
+			}
 		}
 	}
 

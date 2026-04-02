@@ -1219,13 +1219,17 @@ namespace Microsoft.UI.Xaml
 			// Pass updated params to children.
 			DependencyObject_EnterImpl(@params);
 
-			// Extends EnterImpl to the ContextFlyout
-			// TODO: WinUI nulls out visualTree before this call (Bug 19548424). Align once
-			// Uno's VisualTree infrastructure supports shared FlyoutBase across ContentRoots.
+			// Extends EnterImpl to the ContextFlyout.
+			// WinUI nulls out the VisualTree pointer before this call because a FlyoutBase can
+			// be shared between ContentRoots (Bug 19548424). We do the same to avoid associating
+			// the shared flyout with a specific visual tree, which would prevent GC of the owning
+			// element's subtree once it leaves the tree.
 			FlyoutBase pFlyoutBase = this.ContextFlyout;
 			if (pFlyoutBase is not null)
 			{
-				pFlyoutBase.Enter(null, @params);
+				var flyoutParams = @params;
+				flyoutParams.VisualTree = null;
+				pFlyoutBase.Enter(null, flyoutParams);
 			}
 
 			// TODO: Uno specific - In WinUI, CDependencyObject::EnterImpl calls EnterSparseProperties
@@ -1882,12 +1886,14 @@ namespace Microsoft.UI.Xaml
 			DependencyObject_LeaveImpl(@params);
 
 			// Extends LeaveImpl to the ContextFlyout.
-			// TODO: WinUI nulls out visualTree before this call (Bug 19548424). Align once
-			// Uno's VisualTree infrastructure supports shared FlyoutBase across ContentRoots.
+			// WinUI nulls out the VisualTree pointer before this call because a FlyoutBase can
+			// be shared between ContentRoots (Bug 19548424).
 			FlyoutBase pFlyoutBase = ContextFlyout;
 			if (pFlyoutBase is not null)
 			{
-				pFlyoutBase.Leave(null, @params);
+				var flyoutParams = @params;
+				flyoutParams.VisualTree = null;
+				pFlyoutBase.Leave(null, flyoutParams);
 			}
 
 			// TODO: Uno specific - In WinUI, CDependencyObject::LeaveImpl calls LeaveSparseProperties
