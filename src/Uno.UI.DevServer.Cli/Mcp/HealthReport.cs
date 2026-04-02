@@ -120,4 +120,5 @@ internal enum IssueCode
 	NoSolutionFound,
 	WorkspaceAmbiguous,
 	WorkspaceNotResolved,
+	HostMcpEndpointNotAvailable,
 }

@@ -217,4 +217,21 @@ public class MonitorDecisionsTests
 	{
 		MonitorDecisions.ShouldShortCircuitReadiness(null).Should().BeFalse();
 	}
+
+	// -------------------------------------------------------------------
+	// ReadinessProbeResult — enum coverage
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("ReadinessProbeResult has exactly four values for all probe outcomes")]
+	public void ReadinessProbeResult_HasExpectedValues()
+	{
+		var values = Enum.GetValues<MonitorDecisions.ReadinessProbeResult>();
+
+		values.Should().Contain(MonitorDecisions.ReadinessProbeResult.Ready);
+		values.Should().Contain(MonitorDecisions.ReadinessProbeResult.ProcessExited);
+		values.Should().Contain(MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp);
+		values.Should().Contain(MonitorDecisions.ReadinessProbeResult.TimedOut);
+		values.Should().HaveCount(4);
+	}
 }

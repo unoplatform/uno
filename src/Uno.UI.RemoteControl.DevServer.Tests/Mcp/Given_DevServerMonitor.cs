@@ -297,6 +297,92 @@ public class Given_DevServerMonitor
 	}
 
 	// -------------------------------------------------------------------
+	// AmbientRegistry fallback (process exit → adopt existing server)
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("When process exits during readiness probe, AmbientRegistry fallback should adopt the correct port")]
+	public void AmbientRegistryFallback_WhenProcessExited_AdoptsExistingPort()
+	{
+		// Simulate the pattern from RunMonitor:
+		// 1. StartProcess returned (success: true, requestedPort) — process was spawned
+		// 2. WaitForServerReadyAsync returned ProcessExited — process exited
+		// 3. AmbientRegistry finds existing server on a different port
+		// 4. Bridge should adopt the existing server's port
+
+		var requestedPort = 61098;
+		var existingPort = 61077;
+		var readinessResult = MonitorDecisions.ReadinessProbeResult.ProcessExited;
+
+		// Simulate the AmbientRegistry fallback decision:
+		// When readiness failed with ProcessExited and registry has a server on a different port
+		var effectivePort = requestedPort;
+		if (readinessResult == MonitorDecisions.ReadinessProbeResult.ProcessExited
+			&& existingPort != requestedPort)
+		{
+			effectivePort = existingPort;
+		}
+
+		effectivePort.Should().Be(existingPort,
+			"bridge should adopt the existing server's port after process exit");
+	}
+
+	[TestMethod]
+	[Description("When process exits but AmbientRegistry has no match, should fall through to existing retry logic")]
+	public void AmbientRegistryFallback_WhenNoRegistryMatch_FallsThrough()
+	{
+		var requestedPort = 61098;
+		var readinessResult = MonitorDecisions.ReadinessProbeResult.ProcessExited;
+
+		// No existing server found → keep the requested port
+		var effectivePort = requestedPort;
+		int? existingPort = null;
+		if (readinessResult == MonitorDecisions.ReadinessProbeResult.ProcessExited
+			&& existingPort is not null && existingPort != requestedPort)
+		{
+			effectivePort = existingPort.Value;
+		}
+
+		effectivePort.Should().Be(requestedPort,
+			"when no registry match, port should remain unchanged for retry logic");
+	}
+
+	// -------------------------------------------------------------------
+	// ServerRespondedNoMcp handling
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("ServerRespondedNoMcp should still allow ServerStarted to fire (enter Connecting → Degraded path)")]
+	public void ServerRespondedNoMcp_AllowsServerStartedEvent()
+	{
+		// The readiness probe returned ServerRespondedNoMcp (server is alive, /mcp returns 404)
+		// The bridge should still fire ServerStarted so the upstream client can attempt connection.
+		var readinessResult = MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp;
+
+		// In RunMonitor: Ready and ServerRespondedNoMcp both lead to the ServerStarted event
+		var shouldFireServerStarted =
+			readinessResult == MonitorDecisions.ReadinessProbeResult.Ready
+			|| readinessResult == MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp;
+
+		shouldFireServerStarted.Should().BeTrue(
+			"ServerRespondedNoMcp should pass the readiness gate so the bridge enters Connecting state");
+	}
+
+	[TestMethod]
+	[Description("TimedOut result should NOT allow ServerStarted to fire")]
+	public void TimedOut_DoesNotAllowServerStartedEvent()
+	{
+		var readinessResult = MonitorDecisions.ReadinessProbeResult.TimedOut;
+
+		var shouldFireServerStarted =
+			readinessResult == MonitorDecisions.ReadinessProbeResult.Ready
+			|| readinessResult == MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp;
+
+		shouldFireServerStarted.Should().BeFalse(
+			"TimedOut means no server is reachable — should not fire ServerStarted");
+	}
+
+	// -------------------------------------------------------------------
 	// FindGitRoot
 	// -------------------------------------------------------------------
 

@@ -67,6 +67,33 @@ internal static class MonitorDecisions
 		=> serverProcess is { HasExited: true };
 
 	/// <summary>
+	/// Result of a readiness probe performed by <see cref="DevServerMonitor"/>.
+	/// </summary>
+	internal enum ReadinessProbeResult
+	{
+		/// <summary>The <c>/mcp</c> endpoint responded successfully.</summary>
+		Ready,
+
+		/// <summary>
+		/// The server process exited during the probe. The caller should check
+		/// <see cref="AmbientRegistry"/> for an active server that may have been
+		/// reused by the controller (exit code 0 scenario) before treating this
+		/// as a hard failure.
+		/// </summary>
+		ProcessExited,
+
+		/// <summary>
+		/// The server responded to HTTP requests, but the <c>/mcp</c> endpoint
+		/// returned 404 or 400 on every attempt. Indicates a pre-MCP host or a
+		/// host where MCP transport failed to register.
+		/// </summary>
+		ServerRespondedNoMcp,
+
+		/// <summary>No HTTP response was received within the timeout budget.</summary>
+		TimedOut,
+	}
+
+	/// <summary>
 	/// Determines whether the MCP client supports roots. Checks for the presence of
 	/// the Roots capability object (not just ListChanged), so clients like Junie that
 	/// declare Roots support without ListChanged are correctly detected.

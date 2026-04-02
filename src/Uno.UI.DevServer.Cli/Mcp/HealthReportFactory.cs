@@ -17,7 +17,8 @@ internal static class HealthReportFactory
 		string? hostEndpoint = null,
 		string? upstreamError = null,
 		bool forceRootsFallback = false,
-		bool rootsProvided = false)
+		bool rootsProvided = false,
+		bool hostRespondedNoMcp = false)
 	{
 		var issues = new List<ValidationIssue>();
 
@@ -81,6 +82,17 @@ internal static class HealthReportFactory
 				Severity = ValidationSeverity.Warning,
 				Message = "The DevServer host process is started but the upstream MCP connection is not yet established.",
 				Remediation = "The host may still be initializing. Wait a few seconds and retry.",
+			});
+		}
+
+		if (hostRespondedNoMcp)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.HostMcpEndpointNotAvailable,
+				Severity = ValidationSeverity.Warning,
+				Message = "The DevServer host responds to HTTP but the /mcp endpoint is not available. The host version may predate MCP support or the MCP HTTP transport failed to register.",
+				Remediation = "Upgrade the Uno.WinUI.DevServer / Uno.UI.DevServer NuGet package to a version that supports MCP (6.6+). Hot Reload and other WebSocket-based features may still work.",
 			});
 		}
 

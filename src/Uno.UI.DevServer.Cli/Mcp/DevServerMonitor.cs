@@ -67,6 +67,15 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 	private int _noHostDiscoveryCount;
 	private const int MaxNoHostRetries = 3;
 
+	/// <summary>
+	/// Set to <c>true</c> when the host responds to HTTP on the expected port but the
+	/// <c>/mcp</c> endpoint is not available (404/400 on every probe attempt). This
+	/// indicates a pre-MCP host version or a host where MCP transport failed to register.
+	/// Used by <see cref="HealthService"/> to surface an actionable diagnostic.
+	/// Reset on stop and at the beginning of each readiness cycle to avoid stale diagnostics.
+	/// </summary>
+	public bool HostRespondedNoMcp { get; private set; }
+
 	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs,
 		WorkspaceResolution? workspaceResolution = null)
 	{
@@ -247,10 +256,38 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 						_logger.LogInformation("Starting MCP stdio proxy to {Endpoint}", remoteEndpoint);
 
 						var readinessStopwatch = Stopwatch.StartNew();
-						if (!await WaitForServerReadyAsync(effectivePort, ct))
+						var readinessResult = await WaitForServerReadyAsync(effectivePort, ct);
+
+						// ── AmbientRegistry fallback ──────────────────────────
+						// When the spawned process exits during the readiness
+						// probe (e.g. the controller detected an existing server
+						// started by another IDE and exited with code 0), re-check
+						// the AmbientRegistry for an active server on a different
+						// port and adopt it.
+						if (readinessResult == MonitorDecisions.ReadinessProbeResult.ProcessExited
+							&& !string.IsNullOrWhiteSpace(solution))
+						{
+							var fallbackAmbient = new AmbientRegistry(_logger);
+							var existing = fallbackAmbient.GetActiveDevServerForPath(solution);
+							if (existing is not null && existing.Port != effectivePort)
+							{
+								_logger.LogInformation(
+									"Spawned process exited; adopting existing DevServer (PID {Pid}) on port {Port} via AmbientRegistry",
+									existing.ProcessId, existing.Port);
+								LogTimeline("wait-ready.ambient-fallback", monitorCycleStopwatch.ElapsedMilliseconds,
+									$"oldPort={effectivePort};newPort={existing.Port};pid={existing.ProcessId}");
+								effectivePort = existing.Port;
+								_serverProcess = MonitorDecisions.DisposeAndClearProcess(_serverProcess);
+
+								readinessResult = await WaitForServerReadyAsync(effectivePort, ct);
+							}
+						}
+
+						if (readinessResult != MonitorDecisions.ReadinessProbeResult.Ready
+							&& readinessResult != MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp)
 						{
 							LogTimeline("wait-ready.failed", monitorCycleStopwatch.ElapsedMilliseconds,
-								$"port={effectivePort};duration={readinessStopwatch.ElapsedMilliseconds}ms");
+								$"port={effectivePort};duration={readinessStopwatch.ElapsedMilliseconds}ms;result={readinessResult}");
 							var failAction = MonitorDecisions.DetermineReadinessFailureAction(_serverProcess);
 							if (failAction == MonitorDecisions.ReadinessFailureAction.RetryStart)
 							{
@@ -275,7 +312,23 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 						}
 
 						LogTimeline("wait-ready.complete", monitorCycleStopwatch.ElapsedMilliseconds,
-							$"port={effectivePort};duration={readinessStopwatch.ElapsedMilliseconds}ms");
+							$"port={effectivePort};duration={readinessStopwatch.ElapsedMilliseconds}ms;result={readinessResult}");
+
+						if (readinessResult == MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp)
+						{
+							HostRespondedNoMcp = true;
+							_logger.LogWarning(
+								"Host responds to HTTP on port {Port} but the /mcp endpoint is not available. " +
+								"The host version may predate MCP support or the MCP transport failed to register.",
+								effectivePort);
+						}
+						else
+						{
+							HostRespondedNoMcp = false;
+						}
+
+						// Update remoteEndpoint in case effectivePort changed via AmbientRegistry fallback
+						remoteEndpoint = $"http://localhost:{effectivePort}/mcp";
 
 						_logger.LogTrace("DevServerMonitor detected ready server at {Endpoint}; raising ServerStarted",
 							remoteEndpoint);
@@ -341,7 +394,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 			.FirstOrDefault();
 	}
 
-	private async Task<bool> WaitForServerReadyAsync(int port, CancellationToken ct)
+	private async Task<MonitorDecisions.ReadinessProbeResult> WaitForServerReadyAsync(int port, CancellationToken ct)
 	{
 		var readinessStopwatch = Stopwatch.StartNew();
 		var endpoints = new[]
@@ -353,6 +406,8 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 
 		using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(1) };
 
+		var anyHttpResponse = false;
+
 		for (int i = 0; i < maxAttempts; i++)
 		{
 			// Short-circuit: if the process already died, no point polling further
@@ -361,7 +416,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 				_logger.LogDebug(
 					"Server process has exited during readiness probe (attempt {Attempt}/{Max}); short-circuiting",
 					i + 1, maxAttempts);
-				return false;
+				return MonitorDecisions.ReadinessProbeResult.ProcessExited;
 			}
 
 			// Test all endpoints simultaneously
@@ -373,15 +428,19 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 					if (response.StatusCode != HttpStatusCode.NotFound
 						&& response.StatusCode != HttpStatusCode.BadRequest)
 					{
-						return (success: true, endpoint);
+						return (success: true, httpResponse: true, endpoint);
 					}
+
+					// Got an HTTP response but it was 404/400 — server is alive,
+					// but /mcp is not registered (older host or MCP init failure).
+					return (success: false, httpResponse: true, endpoint);
 				}
 				catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
 				{
 					// Server not ready yet on this endpoint
 				}
 
-				return (success: false, endpoint: endpoint);
+				return (success: false, httpResponse: false, endpoint: endpoint);
 			}).ToArray();
 
 			var results = await Task.WhenAll(tasks);
@@ -392,7 +451,13 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 			{
 				_logger.LogDebug("DevServer is ready at {Endpoint}", successfulEndpoint.endpoint);
 				LogTimeline("ready-probe.success", readinessStopwatch.ElapsedMilliseconds, successfulEndpoint.endpoint);
-				return true;
+				return MonitorDecisions.ReadinessProbeResult.Ready;
+			}
+
+			// Track whether we ever got an HTTP response (even 404/400)
+			if (results.Any(r => r.httpResponse))
+			{
+				anyHttpResponse = true;
 			}
 
 			// Probe aggressively for the first ~2 seconds (10×200ms), then slow to 1s (~30s total budget)
@@ -400,10 +465,21 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 			await Task.Delay(delay, ct);
 		}
 
+		// Distinguish between "server alive but /mcp unavailable" and "nothing listening"
+		if (anyHttpResponse)
+		{
+			_logger.LogWarning(
+				"DevServer responded to HTTP but /mcp was not available within timeout on: {Endpoints}",
+				string.Join(", ", endpoints));
+			LogTimeline("ready-probe.server-responded-no-mcp", readinessStopwatch.ElapsedMilliseconds,
+				string.Join(", ", endpoints));
+			return MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp;
+		}
+
 		_logger.LogError("DevServer did not become ready within timeout period on any of: {Endpoints}",
 			string.Join(", ", endpoints));
 		LogTimeline("ready-probe.timeout", readinessStopwatch.ElapsedMilliseconds, string.Join(", ", endpoints));
-		return false;
+		return MonitorDecisions.ReadinessProbeResult.TimedOut;
 	}
 
 	/// <summary>
