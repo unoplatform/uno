@@ -103,7 +103,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.RegisterWindow(_hwnd);
 
-		_renderTimer = CreateRenderTimer();
+		_framePacer = CreateFramePacer();
 		_renderer = FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
 			? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
 			: new SoftwareRenderer(_hwnd);
