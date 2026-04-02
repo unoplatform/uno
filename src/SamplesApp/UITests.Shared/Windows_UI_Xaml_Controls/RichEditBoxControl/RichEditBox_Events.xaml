@@ -1,0 +1,167 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.RichEditBoxControl.RichEditBox_Events"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="1100"
+	d:DesignWidth="500">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="16">
+			<TextBlock Text="RichEditBox - Events" FontSize="20" FontWeight="Bold" />
+			<TextBlock Text="Demonstrates TextChanged, TextChanging, and SelectionChanged events with live logging."
+					   TextWrapping="Wrap"
+					   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+			<!-- TextChanged Event -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="TextChanged Event" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Fires after the text content has changed. The control's text already reflects the change."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<RichEditBox x:Name="TextChangedRichEditBox"
+								 PlaceholderText="Type here to trigger TextChanged..."
+								 MinHeight="80"
+								 AcceptsReturn="True"
+								 TextChanged="TextChangedRichEditBox_TextChanged" />
+					<TextBlock x:Name="TextChangedCountTextBlock"
+							   Text="TextChanged count: 0"
+							   FontWeight="SemiBold" />
+					<Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+							CornerRadius="4" Padding="8" MaxHeight="120">
+						<ScrollViewer>
+							<TextBlock x:Name="TextChangedLogTextBlock"
+									   Text="(events will be logged here)"
+									   TextWrapping="Wrap"
+									   FontSize="12"
+									   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+						</ScrollViewer>
+					</Border>
+				</StackPanel>
+			</Border>
+
+			<!-- TextChanging Event -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="TextChanging Event" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Fires synchronously while the text is being changed, before the UI updates. Use with caution as modifications here can cause reentrancy."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<RichEditBox x:Name="TextChangingRichEditBox"
+								 PlaceholderText="Type here to trigger TextChanging..."
+								 MinHeight="80"
+								 AcceptsReturn="True"
+								 TextChanging="TextChangingRichEditBox_TextChanging" />
+					<TextBlock x:Name="TextChangingCountTextBlock"
+							   Text="TextChanging count: 0"
+							   FontWeight="SemiBold" />
+					<Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+							CornerRadius="4" Padding="8" MaxHeight="120">
+						<ScrollViewer>
+							<TextBlock x:Name="TextChangingLogTextBlock"
+									   Text="(events will be logged here)"
+									   TextWrapping="Wrap"
+									   FontSize="12"
+									   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+						</ScrollViewer>
+					</Border>
+				</StackPanel>
+			</Border>
+
+			<!-- SelectionChanged Event -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="SelectionChanged Event" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Fires whenever the selection changes (cursor move, text selection, etc.)."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<RichEditBox x:Name="SelectionChangedRichEditBox"
+								 PlaceholderText="Click, type, or select text to trigger SelectionChanged..."
+								 MinHeight="80"
+								 AcceptsReturn="True"
+								 SelectionChanged="SelectionChangedRichEditBox_SelectionChanged" />
+					<TextBlock x:Name="SelectionChangedCountTextBlock"
+							   Text="SelectionChanged count: 0"
+							   FontWeight="SemiBold" />
+					<Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+							CornerRadius="4" Padding="8" MaxHeight="120">
+						<ScrollViewer>
+							<TextBlock x:Name="SelectionChangedLogTextBlock"
+									   Text="(events will be logged here)"
+									   TextWrapping="Wrap"
+									   FontSize="12"
+									   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+						</ScrollViewer>
+					</Border>
+				</StackPanel>
+			</Border>
+
+			<!-- All events combined -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="All Events Combined" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Observe the order of events as you interact with this RichEditBox."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<RichEditBox x:Name="AllEventsRichEditBox"
+								 PlaceholderText="Interact to see all events fire in order..."
+								 MinHeight="80"
+								 AcceptsReturn="True"
+								 TextChanged="AllEventsRichEditBox_TextChanged"
+								 TextChanging="AllEventsRichEditBox_TextChanging"
+								 SelectionChanged="AllEventsRichEditBox_SelectionChanged" />
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button Content="Clear Log" Click="ClearAllEventsLogButton_Click" />
+						<TextBlock x:Name="AllEventsSequenceTextBlock"
+								   Text="Event sequence #: 0"
+								   VerticalAlignment="Center"
+								   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+					</StackPanel>
+					<Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+							CornerRadius="4" Padding="8" MaxHeight="200">
+						<ScrollViewer x:Name="AllEventsScrollViewer">
+							<TextBlock x:Name="AllEventsLogTextBlock"
+									   Text="(events will be logged here)"
+									   TextWrapping="Wrap"
+									   FontSize="12"
+									   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+						</ScrollViewer>
+					</Border>
+				</StackPanel>
+			</Border>
+
+			<!-- Programmatic changes and events -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Programmatic Changes" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Observe whether events fire when text is changed programmatically via the Document API."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+					<RichEditBox x:Name="ProgrammaticRichEditBox"
+								 PlaceholderText="Watch the log when using the buttons..."
+								 MinHeight="60"
+								 TextChanged="ProgrammaticRichEditBox_TextChanged"
+								 SelectionChanged="ProgrammaticRichEditBox_SelectionChanged" />
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button Content="SetText" Click="ProgrammaticSetTextButton_Click" />
+						<Button Content="TypeText" Click="ProgrammaticTypeTextButton_Click" />
+						<Button Content="Clear Log" Click="ClearProgrammaticLogButton_Click" />
+					</StackPanel>
+					<TextBlock x:Name="ProgrammaticLogTextBlock"
+							   Text="(events will be logged here)"
+							   TextWrapping="Wrap"
+							   FontSize="12"
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+				</StackPanel>
+			</Border>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

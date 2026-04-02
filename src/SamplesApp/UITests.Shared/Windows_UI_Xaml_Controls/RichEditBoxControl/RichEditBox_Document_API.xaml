@@ -1,0 +1,147 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.RichEditBoxControl.RichEditBox_Document_API"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="1100"
+	d:DesignWidth="500">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="16">
+			<TextBlock Text="RichEditBox - Document API" FontSize="20" FontWeight="Bold" />
+			<TextBlock Text="Demonstrates Document.GetText, SetText, GetRange, and GetDefaultCharacterFormat."
+					   TextWrapping="Wrap"
+					   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+			<!-- Main editor -->
+			<RichEditBox x:Name="MainRichEditBox"
+						 Header="Editor"
+						 PlaceholderText="Type or use the buttons below to manipulate the document..."
+						 MinHeight="120"
+						 AcceptsReturn="True" />
+
+			<!-- GetText / SetText section -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Document.GetText / SetText" FontWeight="SemiBold" FontSize="16" />
+
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button x:Name="GetTextButton" Content="GetText (None)" Click="GetTextButton_Click" />
+						<Button x:Name="GetTextCrLfButton" Content="GetText (UseCrlf)" Click="GetTextCrLfButton_Click" />
+					</StackPanel>
+					<Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+							CornerRadius="4" Padding="8">
+						<TextBlock x:Name="GetTextOutputTextBlock"
+								   Text="(click a GetText button above)"
+								   TextWrapping="Wrap"
+								   IsTextSelectionEnabled="True"
+								   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+					</Border>
+
+					<TextBox x:Name="SetTextInput"
+							 Header="Text to set (use \r or \n for line breaks)"
+							 PlaceholderText="Enter text to set into the document..."
+							 AcceptsReturn="True"
+							 MinHeight="60"
+							 TextWrapping="Wrap" />
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button x:Name="SetTextNoneButton" Content="SetText (None)" Click="SetTextNoneButton_Click" />
+						<Button x:Name="ClearTextButton" Content="Clear Document" Click="ClearTextButton_Click" />
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- GetRange section -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Document.GetRange" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Retrieve text from a specific range within the document."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+							   TextWrapping="Wrap" />
+
+					<Grid ColumnDefinitions="*,*,Auto" ColumnSpacing="8">
+						<NumberBox x:Name="RangeStartPosition" Header="Start Position" Value="0" Minimum="0"
+								   SpinButtonPlacementMode="Compact" Grid.Column="0" />
+						<NumberBox x:Name="RangeEndPosition" Header="End Position" Value="10" Minimum="0"
+								   SpinButtonPlacementMode="Compact" Grid.Column="1" />
+						<Button Content="Get Range"
+								Click="GetRangeButton_Click"
+								VerticalAlignment="Bottom"
+								Grid.Column="2" />
+					</Grid>
+
+					<Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+							CornerRadius="4" Padding="8">
+						<TextBlock x:Name="RangeTextOutputTextBlock"
+								   Text="(configure range and click Get Range)"
+								   TextWrapping="Wrap"
+								   IsTextSelectionEnabled="True"
+								   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+					</Border>
+				</StackPanel>
+			</Border>
+
+			<!-- SetText on a range -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Set Text on a Range" FontWeight="SemiBold" FontSize="16" />
+					<TextBlock Text="Replace text in a specific range with new content."
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+							   TextWrapping="Wrap" />
+
+					<Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+						<NumberBox x:Name="RangeSetStart" Header="Start" Value="0" Minimum="0"
+								   SpinButtonPlacementMode="Compact" Grid.Column="0" />
+						<NumberBox x:Name="RangeSetEnd" Header="End" Value="5" Minimum="0"
+								   SpinButtonPlacementMode="Compact" Grid.Column="1" />
+					</Grid>
+					<TextBox x:Name="RangeSetTextInput"
+							 Header="Replacement text"
+							 PlaceholderText="Text to insert at the specified range..." />
+					<Button Content="Replace Range Text" Click="ReplaceRangeButton_Click" />
+				</StackPanel>
+			</Border>
+
+			<!-- GetDefaultCharacterFormat -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Default Character Format" FontWeight="SemiBold" FontSize="16" />
+					<Button x:Name="GetDefaultFormatButton" Content="Get Default Character Format"
+							Click="GetDefaultFormatButton_Click" />
+					<Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+							CornerRadius="4" Padding="8">
+						<TextBlock x:Name="DefaultFormatOutputTextBlock"
+								   Text="(click the button above)"
+								   TextWrapping="Wrap"
+								   IsTextSelectionEnabled="True"
+								   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+					</Border>
+				</StackPanel>
+			</Border>
+
+			<!-- Document info -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="12">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Document Information" FontWeight="SemiBold" FontSize="16" />
+					<Button x:Name="RefreshDocInfoButton" Content="Refresh Document Info" Click="RefreshDocInfoButton_Click" />
+					<TextBlock x:Name="DocInfoTextBlock"
+							   Text="(click the button above)"
+							   TextWrapping="Wrap"
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+				</StackPanel>
+			</Border>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

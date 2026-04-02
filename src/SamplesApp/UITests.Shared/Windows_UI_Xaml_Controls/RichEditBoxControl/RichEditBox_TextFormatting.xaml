@@ -1,0 +1,97 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.RichEditBoxControl.RichEditBox_TextFormatting"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="900"
+	d:DesignWidth="500">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="16">
+			<TextBlock Text="RichEditBox - Text Formatting" FontSize="20" FontWeight="Bold" />
+			<TextBlock Text="Select text in the editor below, then use the formatting buttons to apply styles."
+					   TextWrapping="Wrap"
+					   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+			<!-- Formatting toolbar -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="8">
+				<StackPanel Spacing="8">
+					<TextBlock Text="Formatting Toolbar" FontWeight="SemiBold" />
+					<StackPanel Orientation="Horizontal" Spacing="4">
+						<Button x:Name="BoldButton" Content="B" FontWeight="Bold"
+								Click="BoldButton_Click" Width="40" />
+						<Button x:Name="ItalicButton" Content="I" FontStyle="Italic"
+								Click="ItalicButton_Click" Width="40" />
+						<Button x:Name="UnderlineButton" Click="UnderlineButton_Click" Width="40">
+							<TextBlock TextDecorations="Underline" Text="U" />
+						</Button>
+						<Button x:Name="StrikethroughButton" Click="StrikethroughButton_Click" Width="40">
+							<TextBlock TextDecorations="Strikethrough" Text="S" />
+						</Button>
+						<Rectangle Width="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="4,2" />
+						<Button x:Name="ClearFormattingButton" Content="Clear"
+								Click="ClearFormattingButton_Click" />
+					</StackPanel>
+
+					<!-- Keyboard shortcuts info -->
+					<TextBlock Text="Keyboard shortcuts: Ctrl+B (Bold), Ctrl+I (Italic), Ctrl+U (Underline)"
+							   FontSize="11"
+							   Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+							   TextWrapping="Wrap" />
+				</StackPanel>
+			</Border>
+
+			<!-- Main formatting editor -->
+			<RichEditBox x:Name="FormattingRichEditBox"
+						 PlaceholderText="Type or paste text here, then select it and apply formatting..."
+						 MinHeight="200"
+						 AcceptsReturn="True" />
+
+			<!-- Current selection format info -->
+			<Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+					BorderThickness="1" CornerRadius="4" Padding="8">
+				<StackPanel Spacing="4">
+					<TextBlock Text="Current Selection Format" FontWeight="SemiBold" />
+					<Button x:Name="CheckFormatButton" Content="Check Selection Format" Click="CheckFormatButton_Click" />
+					<TextBlock x:Name="FormatInfoTextBlock"
+							   Text="(select text and click the button above)"
+							   TextWrapping="Wrap"
+							   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+				</StackPanel>
+			</Border>
+
+			<!-- Pre-formatted text demo -->
+			<TextBlock Text="Pre-formatted Text (applied via code)" FontWeight="SemiBold" Margin="0,8,0,0" />
+			<RichEditBox x:Name="PreFormattedRichEditBox"
+						 MinHeight="120"
+						 IsReadOnly="True" />
+
+			<!-- Apply formatting to specific range -->
+			<TextBlock Text="Apply Formatting to Range" FontWeight="SemiBold" Margin="0,8,0,0" />
+			<RichEditBox x:Name="RangeFormatRichEditBox"
+						 PlaceholderText="Type some text here..."
+						 MinHeight="80" />
+			<Grid ColumnDefinitions="*,*,*,Auto" ColumnSpacing="8">
+				<NumberBox x:Name="FormatStartPosition" Header="Start" Value="0" Minimum="0"
+						   SpinButtonPlacementMode="Compact" Grid.Column="0" />
+				<NumberBox x:Name="FormatEndPosition" Header="End" Value="5" Minimum="0"
+						   SpinButtonPlacementMode="Compact" Grid.Column="1" />
+				<ComboBox x:Name="FormatTypeComboBox" Header="Format" SelectedIndex="0" Grid.Column="2">
+					<ComboBoxItem Content="Bold" />
+					<ComboBoxItem Content="Italic" />
+					<ComboBoxItem Content="Underline" />
+					<ComboBoxItem Content="Strikethrough" />
+				</ComboBox>
+				<Button Content="Apply"
+						Click="ApplyRangeFormatButton_Click"
+						VerticalAlignment="Bottom"
+						Grid.Column="3" />
+			</Grid>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>
