@@ -426,7 +426,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 			{
 				try
 				{
-					var response = await httpClient.GetAsync(endpoint, ct);
+					using var response = await httpClient.GetAsync(endpoint, ct);
 					if (response.StatusCode != HttpStatusCode.NotFound
 						&& response.StatusCode != HttpStatusCode.BadRequest)
 					{
@@ -518,7 +518,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 			{
 				try
 				{
-					var response = await httpClient.GetAsync(endpoint, ct);
+					using var response = await httpClient.GetAsync(endpoint, ct);
 					anySuccess = true;
 					break;
 				}
