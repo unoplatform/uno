@@ -59,6 +59,30 @@ internal static class MonitorDecisions
 	}
 
 	/// <summary>
+	/// Determines whether the monitor should attempt an AmbientRegistry fallback
+	/// after a readiness probe failure. Returns <c>true</c> when the probe result
+	/// is <see cref="ReadinessProbeResult.ProcessExited"/> and a candidate server
+	/// exists on a different port.
+	/// </summary>
+	internal static bool ShouldAttemptAmbientFallback(
+		ReadinessProbeResult probeResult,
+		string? solution,
+		int? existingPort,
+		int currentPort)
+		=> probeResult == ReadinessProbeResult.ProcessExited
+			&& !string.IsNullOrWhiteSpace(solution)
+			&& existingPort is not null
+			&& existingPort.Value != currentPort;
+
+	/// <summary>
+	/// Determines whether the readiness result allows the monitor to proceed
+	/// to the ServerStarted event (connect the MCP proxy).
+	/// </summary>
+	internal static bool IsReadinessAcceptable(ReadinessProbeResult probeResult)
+		=> probeResult == ReadinessProbeResult.Ready
+			|| probeResult == ReadinessProbeResult.ServerRespondedNoMcp;
+
+	/// <summary>
 	/// Returns <c>true</c> when the server process has already exited, allowing
 	/// <see cref="DevServerMonitor"/> to short-circuit the readiness probe loop
 	/// instead of waiting the full timeout (~30 s).

@@ -132,6 +132,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 		_monitor = null;
 		cts?.Dispose();
 		_serverProcess = null;
+		HostRespondedNoMcp = false;
 	}
 
 	private async Task RunMonitor(CancellationToken ct)
@@ -256,6 +257,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 						_logger.LogInformation("Starting MCP stdio proxy to {Endpoint}", remoteEndpoint);
 
 						var readinessStopwatch = Stopwatch.StartNew();
+						HostRespondedNoMcp = false;
 						var readinessResult = await WaitForServerReadyAsync(effectivePort, ct);
 
 						// ── AmbientRegistry fallback ──────────────────────────
@@ -269,11 +271,12 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 						{
 							var fallbackAmbient = new AmbientRegistry(_logger);
 							var existing = fallbackAmbient.GetActiveDevServerForPath(solution);
-							if (existing is not null && existing.Port != effectivePort)
+							if (MonitorDecisions.ShouldAttemptAmbientFallback(
+								readinessResult, solution, existing?.Port, effectivePort))
 							{
 								_logger.LogInformation(
 									"Spawned process exited; adopting existing DevServer (PID {Pid}) on port {Port} via AmbientRegistry",
-									existing.ProcessId, existing.Port);
+									existing!.ProcessId, existing.Port);
 								LogTimeline("wait-ready.ambient-fallback", monitorCycleStopwatch.ElapsedMilliseconds,
 									$"oldPort={effectivePort};newPort={existing.Port};pid={existing.ProcessId}");
 								effectivePort = existing.Port;
@@ -283,8 +286,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 							}
 						}
 
-						if (readinessResult != MonitorDecisions.ReadinessProbeResult.Ready
-							&& readinessResult != MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp)
+						if (!MonitorDecisions.IsReadinessAcceptable(readinessResult))
 						{
 							LogTimeline("wait-ready.failed", monitorCycleStopwatch.ElapsedMilliseconds,
 								$"port={effectivePort};duration={readinessStopwatch.ElapsedMilliseconds}ms;result={readinessResult}");

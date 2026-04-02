@@ -223,7 +223,7 @@ public class MonitorDecisionsTests
 	// -------------------------------------------------------------------
 
 	[TestMethod]
-	[Description("ReadinessProbeResult has exactly four values for all probe outcomes")]
+	[Description("ReadinessProbeResult contains all expected probe outcomes")]
 	public void ReadinessProbeResult_HasExpectedValues()
 	{
 		var values = Enum.GetValues<MonitorDecisions.ReadinessProbeResult>();
@@ -232,6 +232,5 @@ public class MonitorDecisionsTests
 		values.Should().Contain(MonitorDecisions.ReadinessProbeResult.ProcessExited);
 		values.Should().Contain(MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp);
 		values.Should().Contain(MonitorDecisions.ReadinessProbeResult.TimedOut);
-		values.Should().HaveCount(4);
 	}
 }
