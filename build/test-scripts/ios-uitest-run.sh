@@ -152,24 +152,27 @@ while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
 	ATTEMPT=$((ATTEMPT + 1))
 
 	# Try the specified device first
-	export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
+	# Cache simulator JSON once per attempt to avoid redundant xcrun calls
+	SIMCTL_JSON="$(xcrun simctl list -j)"
+
+	export UITEST_IOSDEVICE_ID=`echo "$SIMCTL_JSON" | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
 	SELECTED_DEVICE="$UNO_UITEST_SIMULATOR_NAME"
 
 	# Fallback to any iPad Pro 13-inch
 	if [ -z "$UITEST_IOSDEVICE_ID" ]; then
-		FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | grep -i "13-inch" | head -1 || true`
+		FALLBACK_DEVICE=`echo "$SIMCTL_JSON" | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | grep -i "13-inch" | head -1 || true`
 		if [ -n "$FALLBACK_DEVICE" ]; then
 			SELECTED_DEVICE="$FALLBACK_DEVICE"
-			export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$SELECTED_DEVICE" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
+			export UITEST_IOSDEVICE_ID=`echo "$SIMCTL_JSON" | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$SELECTED_DEVICE" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
 		fi
 	fi
 
 	# Fallback to any iPad Pro
 	if [ -z "$UITEST_IOSDEVICE_ID" ]; then
-		FALLBACK_DEVICE=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | head -1 || true`
+		FALLBACK_DEVICE=`echo "$SIMCTL_JSON" | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" '.devices[$sim] // [] | .[].name' | grep -i "iPad Pro" | head -1 || true`
 		if [ -n "$FALLBACK_DEVICE" ]; then
 			SELECTED_DEVICE="$FALLBACK_DEVICE"
-			export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$SELECTED_DEVICE" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
+			export UITEST_IOSDEVICE_ID=`echo "$SIMCTL_JSON" | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$SELECTED_DEVICE" '.devices[$sim] // [] | .[] | select(.name==$name) | .udid'`
 		fi
 	fi
 

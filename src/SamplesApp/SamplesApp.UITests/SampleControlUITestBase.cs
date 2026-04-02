@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Input;
 using NUnit.Framework;
@@ -94,7 +95,8 @@ namespace SamplesApp.UITests
 			}
 			catch
 			{
-				ResetSimulator();
+				// ColdStartWithRetry already performs resets inside its retry loop for iOS.
+				// For non-iOS, ResetSimulator is a no-op. Avoid a redundant reset here.
 				throw;
 			}
 
@@ -284,7 +286,7 @@ namespace SamplesApp.UITests
 				catch (Exception ex)
 				{
 					lastError = ex;
-					Console.WriteLine($"Cold start attempt {attempt}/{maxAttempts} failed: {ex.Message}");
+					Console.WriteLine($"Cold start attempt {attempt}/{maxAttempts} failed: {ex}");
 
 					// ResetSimulator internally calls ColdStartApp after erasing the sim.
 					// Wrap in try/catch so a failure inside reset doesn't abort the retry loop.
@@ -294,12 +296,12 @@ namespace SamplesApp.UITests
 					}
 					catch (Exception resetEx)
 					{
-						Console.WriteLine($"Simulator reset failed: {resetEx.Message}");
+						Console.WriteLine($"Simulator reset failed: {resetEx}");
 					}
 
 					if (attempt < maxAttempts)
 					{
-						Task.Delay(retryDelay).Wait();
+						Thread.Sleep(retryDelay);
 					}
 				}
 			}
