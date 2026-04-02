@@ -15,6 +15,9 @@ internal partial class Win32WindowWrapper
 {
 	private class GlRenderer : IRenderer
 	{
+		[UnmanagedFunctionPointer(CallingConvention.Winapi)]
+		private delegate int WglSwapIntervalEXT(int interval);
+
 		private readonly HWND _hwnd;
 		private readonly HDC _hdc;
 		private HGLRC _glContext; // recreated when window is extended into titlebar
@@ -103,6 +106,17 @@ internal partial class Win32WindowWrapper
 					version is null
 						? $"{nameof(PInvoke.glGetString)} failed with error code {PInvoke.glGetError().ToString("X", CultureInfo.InvariantCulture)}"
 						: $"OpenGL Version: {Marshal.PtrToStringUTF8((IntPtr)version)}");
+			}
+
+			// Enable VSync so SwapBuffers blocks until the next display refresh.
+			// Without this, some GPU drivers default to swap interval 0,
+			// causing SwapBuffers to return immediately and the render loop
+			// to spin at hundreds of fps.
+			var wglSwapIntervalAddr = PInvoke.wglGetProcAddress("wglSwapIntervalEXT");
+			if (wglSwapIntervalAddr != IntPtr.Zero)
+			{
+				var wglSwapInterval = Marshal.GetDelegateForFunctionPointer<WglSwapIntervalEXT>(wglSwapIntervalAddr);
+				wglSwapInterval(1);
 			}
 
 			var grGlInterface = GRGlInterface.Create();
