@@ -872,6 +872,13 @@ namespace Microsoft.UI.Xaml
 					newValue.SetVisualTree(visualTree);
 				}
 			}
+
+			// NOTE: DataContext propagation to ContextFlyout is handled automatically by the
+			// mentor mechanism in DependencyObjectStore.Binder.OnDependencyPropertyChanged.
+			// ContextFlyoutProperty is marked with ValueDoesNotInheritDataContext, which triggers
+			// the mentor path: the flyout gets a weak reference to this UIElement as its mentor,
+			// and DataContext is propagated at Inheritance precedence. This matches WinUI's
+			// SetParentForInheritanceContextOnly / GetMentor pattern.
 		}
 
 		partial void EnableContextMenuGestures();

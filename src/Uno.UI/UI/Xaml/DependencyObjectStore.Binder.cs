@@ -42,6 +42,14 @@ namespace Microsoft.UI.Xaml
 		private List<object?>? _childrenBindable;
 		private object? _associatedParent; // see note in AssociateParent(object)
 
+		// Mentor mechanism (models WinUI's SetParentForInheritanceContextOnly / GetMentor):
+		// On the CHILD side: weak ref to owning FrameworkElement (the mentor).
+		private ManagedWeakReference? _mentorRef;
+		// On the PARENT side: tracks non-UIElement DependencyObjects set as property values
+		// with ValueDoesNotInheritDataContext, so DataContext can be propagated to them.
+		private HashtableEx? _mentoredChildrenMap; // maps DependencyProperty → index in _mentoredChildren
+		private List<ManagedWeakReference?>? _mentoredChildren;
+
 		private HashtableEx ChildrenBindableMap => _childrenBindableMap ??= new HashtableEx(DependencyPropertyComparer.Default);
 		private List<object?> ChildrenBindable => _childrenBindable ??= new List<object?>();
 
@@ -248,6 +256,25 @@ namespace Microsoft.UI.Xaml
 
 			_properties.Dispose();
 			_childrenBindableMap?.Dispose();
+			_mentoredChildrenMap?.Dispose();
+
+			if (_mentorRef is not null)
+			{
+				WeakReferencePool.ReturnWeakReference(this, _mentorRef);
+				_mentorRef = null;
+			}
+
+			if (_mentoredChildren is not null)
+			{
+				for (int i = 0; i < _mentoredChildren.Count; i++)
+				{
+					if (_mentoredChildren[i] is { } childRef)
+					{
+						WeakReferencePool.ReturnWeakReference(this, childRef);
+					}
+				}
+				_mentoredChildren = null;
+			}
 		}
 
 		private void OnDataContextChanged(object? providedDataContext, object? actualDataContext, DependencyPropertyValuePrecedences precedence)
@@ -305,6 +332,7 @@ namespace Microsoft.UI.Xaml
 		{
 			_properties.ApplyDataContext(actualDataContext);
 			ApplyChildrenBindable(actualDataContext);
+			ApplyMentoredChildrenDataContext(actualDataContext);
 		}
 
 		private IDisposable? TryWriteDataContextChangedEventActivity()
@@ -579,6 +607,23 @@ namespace Microsoft.UI.Xaml
 					}
 				}
 			}
+			else
+			{
+				// For ValueDoesNotInheritDataContext properties, establish a weak mentor link
+				// instead of using _childrenBindable (which calls AssociateParent with a strong ref).
+				// This matches WinUI's SetParentForInheritanceContextOnly behavior where
+				// non-FrameworkElement property values get a weak ref to the owning element.
+				if (newValue is IDependencyObjectStoreProvider newProvider
+					&& newProvider is not UIElement)
+				{
+					SetMentoredChild(propertyDetails, newProvider);
+				}
+				else
+				{
+					// Clear the old mentored child (value is null or a UIElement)
+					SetMentoredChild(propertyDetails, null);
+				}
+			}
 		}
 
 		private void SetChildrenBindableValue(DependencyPropertyDetails propertyDetails, object? value)
@@ -684,6 +729,161 @@ namespace Microsoft.UI.Xaml
 				_associatedParent = null;
 			}
 		}
+
+		#region Mentor mechanism
+
+		/// <summary>
+		/// Sets the mentor (inheritance context parent) on this store.
+		/// Called on the CHILD's store. The mentor is stored as a weak reference
+		/// (matching WinUI's SetParentForInheritanceContextOnly which uses xref::weakref_ptr).
+		/// </summary>
+		internal void SetMentor(object? mentor)
+		{
+			if (_mentorRef is not null)
+			{
+				WeakReferencePool.ReturnWeakReference(this, _mentorRef);
+				_mentorRef = null;
+			}
+
+			if (mentor is not null)
+			{
+				_mentorRef = WeakReferencePool.RentWeakReference(this, mentor);
+			}
+			else
+			{
+				ClearInheritedDataContext();
+			}
+		}
+
+		/// <summary>
+		/// Gets the mentor (inheritance context parent) for this store.
+		/// Returns null if no mentor is set or the mentor has been collected.
+		/// </summary>
+		internal object? GetMentor() => _mentorRef?.IsAlive == true ? _mentorRef.Target : null;
+
+		/// <summary>
+		/// Tracks a non-UIElement DependencyObject as a mentored child of this store.
+		/// Called on the PARENT's store when a property with ValueDoesNotInheritDataContext
+		/// is set to a non-UIElement IDependencyObjectStoreProvider value.
+		/// </summary>
+		private void SetMentoredChild(DependencyPropertyDetails propertyDetails, IDependencyObjectStoreProvider? newValue)
+		{
+			var property = propertyDetails.Property;
+
+			// Get or create slot for this property
+			int index;
+			if (_mentoredChildrenMap is not null && _mentoredChildrenMap.TryGetValue(property, out var indexRaw))
+			{
+				index = (int)indexRaw!;
+			}
+			else if (newValue is null)
+			{
+				return; // Nothing to clear
+			}
+			else
+			{
+				_mentoredChildrenMap ??= new HashtableEx(DependencyPropertyComparer.Default);
+				_mentoredChildren ??= new List<ManagedWeakReference?>();
+				index = _mentoredChildren.Count;
+				_mentoredChildrenMap[property] = index;
+				_mentoredChildren.Add(null);
+			}
+
+			// Clear mentor on old value
+			var oldRef = _mentoredChildren![index];
+			if (oldRef?.Target is IDependencyObjectStoreProvider oldProvider)
+			{
+				var oldMentor = oldProvider.Store.GetMentor();
+				if (oldMentor is not null && ReferenceEquals(oldMentor, ActualInstance))
+				{
+					oldProvider.Store.SetMentor(null);
+				}
+			}
+			if (oldRef is not null)
+			{
+				WeakReferencePool.ReturnWeakReference(this, oldRef);
+			}
+
+			// Set mentor on new value
+			if (newValue is not null)
+			{
+				_mentoredChildren[index] = WeakReferencePool.RentWeakReference(this, newValue);
+				newValue.Store.SetMentor(ActualInstance);
+
+				// Immediately propagate current DataContext
+				var currentDC = GetValue(_properties.DataContextPropertyDetails);
+				newValue.Store.SetInheritedDataContext(currentDC);
+			}
+			else
+			{
+				_mentoredChildren[index] = null;
+			}
+		}
+
+		/// <summary>
+		/// Propagates DataContext to all mentored children whose mentor is still this instance.
+		/// Called from ApplyDataContext when the parent's DataContext changes.
+		/// </summary>
+		private void ApplyMentoredChildrenDataContext(object? dataContext)
+		{
+			if (_mentoredChildren is null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < _mentoredChildren.Count; i++)
+			{
+				var childRef = _mentoredChildren[i];
+				if (childRef?.Target is IDependencyObjectStoreProvider childProvider)
+				{
+					var mentor = childProvider.Store.GetMentor();
+					if (mentor is not null && ReferenceEquals(mentor, ActualInstance))
+					{
+						childProvider.Store.SetInheritedDataContext(dataContext);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Clears inherited DataContext on all mentored children.
+		/// Called when the owning UIElement is unloaded to break the
+		/// reference chain and prevent ViewModel leaks.
+		/// </summary>
+		internal void ClearMentoredChildrenDataContext()
+		{
+			if (_mentoredChildren is null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < _mentoredChildren.Count; i++)
+			{
+				var childRef = _mentoredChildren[i];
+				if (childRef?.Target is IDependencyObjectStoreProvider childProvider)
+				{
+					childProvider.Store.ClearInheritedDataContext();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Re-propagates current DataContext to all mentored children.
+		/// Called when the owning UIElement is loaded (after a previous unload
+		/// may have cleared their DataContext).
+		/// </summary>
+		internal void RepropagateMentoredChildrenDataContext()
+		{
+			if (_mentoredChildren is null)
+			{
+				return;
+			}
+
+			var currentDC = GetValue(_properties.DataContextPropertyDetails);
+			ApplyMentoredChildrenDataContext(currentDC);
+		}
+
+		#endregion
 
 		public BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 			=> _properties.GetBindingExpression(dependencyProperty);
