@@ -9,17 +9,21 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class MenuFlyoutSubItem
 {
-	internal void EnterImpl(DependencyObject pNamescopeOwner, EnterParams parameters)
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	// MUX Reference: CMenuFlyoutSubItem::EnterImpl in MenuFlyoutSubItem.cpp
+	internal override void EnterImpl(EnterParams @params, int depth)
 	{
-		//base.EnterImpl(pNamescopeOwner, parameters);
-		MenuFlyout.KeyboardAcceleratorFlyoutItemEnter(this, pNamescopeOwner, MenuFlyoutSubItem.ItemsProperty, parameters);
+		base.EnterImpl(@params, depth);
+		MenuFlyout.KeyboardAcceleratorFlyoutItemEnter(this, this, MenuFlyoutSubItem.ItemsProperty, @params);
 	}
 
-	internal void LeaveImpl(DependencyObject pNamescopeOwner, LeaveParams parameters)
+	// MUX Reference: CMenuFlyoutSubItem::LeaveImpl in MenuFlyoutSubItem.cpp
+	internal override void LeaveImpl(LeaveParams @params)
 	{
-		//base.LeaveImpl(pNamescopeOwner, parameters);
-		MenuFlyout.KeyboardAcceleratorFlyoutItemLeave(this, pNamescopeOwner, MenuFlyoutSubItem.ItemsProperty, parameters);
+		base.LeaveImpl(@params);
+		MenuFlyout.KeyboardAcceleratorFlyoutItemLeave(this, this, MenuFlyoutSubItem.ItemsProperty, @params);
 	}
+#endif
 
 	// Uno specific: Walk sub-items to find keyboard accelerators.
 	// In WinUI, this is handled by the core-level TryInvokeKeyboardAccelerator tree walk

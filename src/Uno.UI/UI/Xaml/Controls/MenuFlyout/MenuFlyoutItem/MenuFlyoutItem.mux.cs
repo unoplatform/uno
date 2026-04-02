@@ -28,10 +28,9 @@ partial class MenuFlyoutItem
 		//base.Initialize();
 		Loaded += (s, e) => ClearStateFlags();
 
-
-#if HAS_UNO // Ensure Enter/Leave are called.
-		Loaded += (s, e) => EnterImpl(true, false, false, false);
-		Unloaded += (s, e) => LeaveImpl(true, false, false, false);
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		Loaded += (s, e) => EnterImpl(true);
+		Unloaded += (s, e) => LeaveImpl(true);
 #endif
 	}
 
@@ -383,11 +382,17 @@ partial class MenuFlyoutItem
 		}
 	}
 
-	private void EnterImpl(bool isLive, bool skipNameRegistration, bool coercedIsEnabled, bool useLayoutRounding)
+	// MUX Reference: MenuFlyoutItem::EnterImpl in MenuFlyoutItem_Partial.cpp
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	private protected override void EnterImpl(bool live)
 	{
-		//base.EnterImpl(isLive, skipNameRegistration, coercedIsEnabled, useLayoutRounding);
+		base.EnterImpl(live);
+#else
+	private void EnterImpl(bool live)
+	{
+#endif
 
-		if (isLive)
+		if (live)
 		{
 			var command = Command;
 
@@ -409,11 +414,17 @@ partial class MenuFlyoutItem
 		}
 	}
 
-	private void LeaveImpl(bool isLive, bool skipNameRegistration, bool coercedIsEnabled, bool useLayoutRounding)
+	// MUX Reference: MenuFlyoutItem::LeaveImpl in MenuFlyoutItem_Partial.cpp
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	private protected override void LeaveImpl(bool live)
 	{
-		//base.LeaveImpl(isLive, skipNameRegistration, coercedIsEnabled, useLayoutRounding);
+		base.LeaveImpl(live);
+#else
+	private void LeaveImpl(bool live)
+	{
+#endif
 
-		if (isLive && m_epCanExecuteChangedHandler.Disposable is not null)
+		if (live && m_epCanExecuteChangedHandler.Disposable is not null)
 		{
 			var spCommand = Command;
 
