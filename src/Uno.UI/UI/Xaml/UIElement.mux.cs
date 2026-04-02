@@ -1102,14 +1102,6 @@ namespace Microsoft.UI.Xaml
 			}
 			// ----------------------- UNO-specific END -----------------------
 
-			// Propagate Enter to KeyboardAccelerators collection so it registers with ContentRoot.
-			// In WinUI, this is handled by EnterSparseProperties walking all sparse property values.
-			if ((@params.IsLive || @params.IsForKeyboardAccelerator)
-				&& KeyboardAccelerators is KeyboardAcceleratorCollection kac)
-			{
-				kac.Enter(null, @params);
-			}
-
 			//if (@params.IsLive && m_bitFields.fWantsInheritanceContextChanged)
 			//{
 			//	// We only raise this InheritanceContextChanged if we're entering the live tree because the
@@ -1246,16 +1238,18 @@ namespace Microsoft.UI.Xaml
 			DependencyObject_EnterImpl(@params);
 
 			// Extends EnterImpl to the ContextFlyout
+			// TODO: WinUI nulls out visualTree before this call (Bug 19548424). Align once
+			// Uno's VisualTree infrastructure supports shared FlyoutBase across ContentRoots.
 			FlyoutBase pFlyoutBase = this.ContextFlyout;
 			if (pFlyoutBase is not null)
 			{
 				pFlyoutBase.Enter(null, @params);
 			}
 
-			// Propagate Enter to KeyboardAccelerators collection.
-			// In WinUI, CDependencyObject::EnterImpl propagates Enter to all effective sparse values.
-			// In Uno, we need to do this explicitly for the KeyboardAccelerators collection.
-			// Use GetValue with IsDependencyPropertyValueSet to avoid creating default empty collections.
+			// TODO: Uno specific - In WinUI, CDependencyObject::EnterImpl calls EnterSparseProperties
+			// which generically walks all sparse IsVisualTreeProperty values. Remove this explicit
+			// KA propagation when Uno implements EnterSparseProperties/LeaveSparseProperties.
+			// Use IsDependencyPropertySet to avoid creating default empty collections.
 			if (this.IsDependencyPropertySet(KeyboardAcceleratorsProperty))
 			{
 				if (GetValue(KeyboardAcceleratorsProperty) is KeyboardAcceleratorCollection kac)
@@ -1664,14 +1658,6 @@ namespace Microsoft.UI.Xaml
 
 			//LeaveSparseProperties(pNamescopeOwner, @params);
 
-			// Propagate Leave to KeyboardAccelerators collection so it unregisters from ContentRoot.
-			// In WinUI, this is handled by LeaveSparseProperties walking all sparse property values.
-			if ((@params.IsLive || @params.IsForKeyboardAccelerator)
-				&& KeyboardAccelerators is KeyboardAcceleratorCollection kac)
-			{
-				kac.Leave(null, @params);
-			}
-
 			//if (@params.IsLive)
 			//{
 			//	// If we're currently the focused element, remove ourselves from being focused
@@ -1914,15 +1900,17 @@ namespace Microsoft.UI.Xaml
 			DependencyObject_LeaveImpl(@params);
 
 			// Extends LeaveImpl to the ContextFlyout.
+			// TODO: WinUI nulls out visualTree before this call (Bug 19548424). Align once
+			// Uno's VisualTree infrastructure supports shared FlyoutBase across ContentRoots.
 			FlyoutBase pFlyoutBase = ContextFlyout;
 			if (pFlyoutBase is not null)
 			{
 				pFlyoutBase.Leave(null, @params);
 			}
 
-			// Propagate Leave to KeyboardAccelerators collection.
-			// In WinUI, CDependencyObject::LeaveImpl propagates Leave to all effective sparse values.
-			// In Uno, we need to do this explicitly for the KeyboardAccelerators collection.
+			// TODO: Uno specific - In WinUI, CDependencyObject::LeaveImpl calls LeaveSparseProperties
+			// which generically walks all sparse IsVisualTreeProperty values. Remove this explicit
+			// KA propagation when Uno implements EnterSparseProperties/LeaveSparseProperties.
 			if (this.IsDependencyPropertySet(KeyboardAcceleratorsProperty))
 			{
 				if (GetValue(KeyboardAcceleratorsProperty) is KeyboardAcceleratorCollection kac)

@@ -34,6 +34,7 @@ public class Given_InputInjector
 {
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_InjectTouch()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
@@ -119,6 +120,7 @@ public class Given_InputInjector
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_MouseClick_PointerPressedAndReleasedAreRaised()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
