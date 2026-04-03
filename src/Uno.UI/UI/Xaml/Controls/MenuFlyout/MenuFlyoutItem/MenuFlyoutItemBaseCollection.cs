@@ -29,6 +29,10 @@ internal class MenuFlyoutItemBaseCollection : DependencyObjectCollection<MenuFly
 		{
 			menuFlyoutSubItem.QueueRefreshItemsSource();
 		}
+		else if (_owner is SplitMenuFlyoutItem splitMenuFlyoutItem)
+		{
+			splitMenuFlyoutItem.QueueRefreshItemsSource();
+		}
 		else
 		{
 			throw new InvalidOperationException("Unknown owner of MenuFlyoutItemBaseCollection.");
