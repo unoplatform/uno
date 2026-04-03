@@ -1,0 +1,165 @@
+<Page
+    x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.SplitMenuFlyoutItemTests.SplitMenuFlyoutItemPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Spacing="16" Padding="16">
+            <TextBlock Text="SplitMenuFlyoutItem Manual Tests" Style="{ThemeResource SubtitleTextBlockStyle}" />
+
+            <!-- Basic usage -->
+            <TextBlock Text="1. Basic Split Menu Flyout Item" FontWeight="SemiBold" />
+            <TextBlock Text="Click left side = primary action, hover/click right chevron = submenu" FontSize="12" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+            <Button x:Name="BasicButton" AutomationProperties.Name="BasicButton" Content="File Menu">
+                <Button.Flyout>
+                    <MenuFlyout>
+                        <SplitMenuFlyoutItem x:Name="SaveItem" AutomationProperties.Name="SaveItem" Text="Save">
+                            <SplitMenuFlyoutItem.Icon>
+                                <SymbolIcon Symbol="Save" />
+                            </SplitMenuFlyoutItem.Icon>
+                            <SplitMenuFlyoutItem.Items>
+                                <MenuFlyoutItem x:Name="SaveAsItem" AutomationProperties.Name="SaveAsItem" Text="Save As..." />
+                                <MenuFlyoutItem Text="Save a Copy..." />
+                                <MenuFlyoutSeparator />
+                                <MenuFlyoutItem Text="Export..." />
+                            </SplitMenuFlyoutItem.Items>
+                        </SplitMenuFlyoutItem>
+                        <SplitMenuFlyoutItem x:Name="OpenWithItem" AutomationProperties.Name="OpenWithItem" Text="Open With Photos">
+                            <SplitMenuFlyoutItem.Items>
+                                <MenuFlyoutItem Text="Paint" />
+                                <MenuFlyoutItem Text="Paint 3D" />
+                                <MenuFlyoutItem Text="Snipping Tool" />
+                            </SplitMenuFlyoutItem.Items>
+                        </SplitMenuFlyoutItem>
+                        <MenuFlyoutSeparator />
+                        <MenuFlyoutItem Text="Regular Item" />
+                    </MenuFlyout>
+                </Button.Flyout>
+            </Button>
+            <TextBlock x:Name="BasicStatus" AutomationProperties.Name="BasicStatus" Text="(no action yet)" />
+
+            <!-- Click event test -->
+            <TextBlock Text="2. Primary Click Event" FontWeight="SemiBold" Margin="0,16,0,0" />
+            <TextBlock Text="Primary click should update status text and close the flyout" FontSize="12" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+            <Button x:Name="ClickTestButton" AutomationProperties.Name="ClickTestButton" Content="Click Test">
+                <Button.Flyout>
+                    <MenuFlyout>
+                        <SplitMenuFlyoutItem x:Name="ClickTestItem" AutomationProperties.Name="ClickTestItem" Text="Click Me">
+                            <SplitMenuFlyoutItem.Items>
+                                <MenuFlyoutItem Text="Sub Option A" />
+                                <MenuFlyoutItem Text="Sub Option B" />
+                            </SplitMenuFlyoutItem.Items>
+                        </SplitMenuFlyoutItem>
+                    </MenuFlyout>
+                </Button.Flyout>
+            </Button>
+            <TextBlock x:Name="ClickStatus" AutomationProperties.Name="ClickStatus" Text="(waiting for click)" />
+
+            <!-- SubMenuItemStyle test -->
+            <TextBlock Text="3. SubMenuItemStyle" FontWeight="SemiBold" Margin="0,16,0,0" />
+            <TextBlock Text="Sub-items should have red foreground from SubMenuItemStyle" FontSize="12" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+            <Button x:Name="StyleTestButton" AutomationProperties.Name="StyleTestButton" Content="Styled Sub-Items">
+                <Button.Flyout>
+                    <MenuFlyout>
+                        <SplitMenuFlyoutItem Text="Styled Split Item">
+                            <SplitMenuFlyoutItem.SubMenuItemStyle>
+                                <Style TargetType="MenuFlyoutItem">
+                                    <Setter Property="Foreground" Value="Red" />
+                                </Style>
+                            </SplitMenuFlyoutItem.SubMenuItemStyle>
+                            <SplitMenuFlyoutItem.Items>
+                                <MenuFlyoutItem Text="Red Item 1" />
+                                <MenuFlyoutItem Text="Red Item 2" />
+                                <MenuFlyoutItem Text="Red Item 3" />
+                            </SplitMenuFlyoutItem.Items>
+                        </SplitMenuFlyoutItem>
+                    </MenuFlyout>
+                </Button.Flyout>
+            </Button>
+
+            <!-- Empty items test -->
+            <TextBlock Text="4. Empty Items Collection" FontWeight="SemiBold" Margin="0,16,0,0" />
+            <TextBlock Text="Split item with no sub-items (chevron area should still render)" FontSize="12" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+            <Button x:Name="EmptyItemsButton" AutomationProperties.Name="EmptyItemsButton" Content="Empty Sub-Items">
+                <Button.Flyout>
+                    <MenuFlyout>
+                        <SplitMenuFlyoutItem Text="No Sub-Items" />
+                        <MenuFlyoutItem Text="Regular Item" />
+                    </MenuFlyout>
+                </Button.Flyout>
+            </Button>
+
+            <!-- Mixed items test -->
+            <TextBlock Text="5. Mixed with Other Item Types" FontWeight="SemiBold" Margin="0,16,0,0" />
+            <TextBlock Text="SplitMenuFlyoutItem mixed with regular items, toggles, and separators" FontSize="12" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+            <Button x:Name="MixedButton" AutomationProperties.Name="MixedButton" Content="Mixed Menu">
+                <Button.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Cut">
+                            <MenuFlyoutItem.Icon>
+                                <SymbolIcon Symbol="Cut" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Copy">
+                            <MenuFlyoutItem.Icon>
+                                <SymbolIcon Symbol="Copy" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutSeparator />
+                        <SplitMenuFlyoutItem Text="Paste">
+                            <SplitMenuFlyoutItem.Icon>
+                                <SymbolIcon Symbol="Paste" />
+                            </SplitMenuFlyoutItem.Icon>
+                            <SplitMenuFlyoutItem.Items>
+                                <MenuFlyoutItem Text="Paste Special..." />
+                                <MenuFlyoutItem Text="Paste as Plain Text" />
+                            </SplitMenuFlyoutItem.Items>
+                        </SplitMenuFlyoutItem>
+                        <MenuFlyoutSeparator />
+                        <ToggleMenuFlyoutItem Text="Word Wrap" />
+                    </MenuFlyout>
+                </Button.Flyout>
+            </Button>
+
+            <!-- Disabled state -->
+            <TextBlock Text="6. Disabled State" FontWeight="SemiBold" Margin="0,16,0,0" />
+            <Button x:Name="DisabledButton" AutomationProperties.Name="DisabledButton" Content="Disabled Item">
+                <Button.Flyout>
+                    <MenuFlyout>
+                        <SplitMenuFlyoutItem Text="Enabled Item">
+                            <SplitMenuFlyoutItem.Items>
+                                <MenuFlyoutItem Text="Sub 1" />
+                            </SplitMenuFlyoutItem.Items>
+                        </SplitMenuFlyoutItem>
+                        <SplitMenuFlyoutItem Text="Disabled Item" IsEnabled="False">
+                            <SplitMenuFlyoutItem.Items>
+                                <MenuFlyoutItem Text="Sub 1" />
+                            </SplitMenuFlyoutItem.Items>
+                        </SplitMenuFlyoutItem>
+                    </MenuFlyout>
+                </Button.Flyout>
+            </Button>
+
+            <!-- Separator in sub-items -->
+            <TextBlock Text="7. Separators in Sub-Items" FontWeight="SemiBold" Margin="0,16,0,0" />
+            <Button x:Name="SeparatorButton" AutomationProperties.Name="SeparatorButton" Content="Sub-Items with Separators">
+                <Button.Flyout>
+                    <MenuFlyout>
+                        <SplitMenuFlyoutItem Text="Compress">
+                            <SplitMenuFlyoutItem.Items>
+                                <MenuFlyoutItem Text="ZIP file" />
+                                <MenuFlyoutItem Text="7z file" />
+                                <MenuFlyoutItem Text="TAR file" />
+                                <MenuFlyoutSeparator />
+                                <MenuFlyoutItem Text="Additional Options..." />
+                            </SplitMenuFlyoutItem.Items>
+                        </SplitMenuFlyoutItem>
+                    </MenuFlyout>
+                </Button.Flyout>
+            </Button>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
