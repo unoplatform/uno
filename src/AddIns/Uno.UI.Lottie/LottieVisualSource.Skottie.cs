@@ -16,8 +16,10 @@ using Uno.Disposables;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml;
-using Windows.System;
 using System.Diagnostics;
+#if !__SKIA__
+using Windows.System;
+#endif
 using SkiaSharp.SceneGraph;
 using Microsoft.UI.Xaml.Media;
 using System.Text;
@@ -48,7 +50,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 
 		private bool _wasPlaying;
+#if __SKIA__
+		private readonly SerialDisposable _renderingSubscription = new();
+#else
 		private DispatcherQueueTimer? _timer;
+#endif
 		private object _gate = new();
 
 #if USE_HARDWARE_ACCELERATION
@@ -353,7 +359,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private TimeSpan GetFrameTime()
 		{
-			if (_animation is null || _timer is null || !(_playState is { } playState) || _player is null)
+			if (_animation is null || !(_playState is { } playState) || _player is null)
 			{
 				return _progress ?? TimeSpan.Zero;
 			}
@@ -394,11 +400,15 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				_progress = null;
 
+#if __SKIA__
+				SubscribeToRendering();
+#else
 				_timer = Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
 				_timer.Tick += (s, e) => Invalidate();
 
 				_timer.Interval = TimeSpan.FromSeconds(Math.Max(1 / 120d, 1 / _animation.Fps));
 				_timer.Start();
+#endif
 				_stopwatch.Restart();
 
 				SetIsPlaying(true);
@@ -408,6 +418,16 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				_playState = new(fromProgress, toProgress, looped);
 			}
 		}
+
+#if __SKIA__
+		private void SubscribeToRendering()
+		{
+			CompositionTarget.Rendering += OnCompositionTargetRendering;
+			_renderingSubscription.Disposable = Disposable.Create(() => CompositionTarget.Rendering -= OnCompositionTargetRendering);
+		}
+
+		private void OnCompositionTargetRendering(object? sender, object e) => Invalidate();
+#endif
 
 		private void Invalidate()
 		{
@@ -426,7 +446,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				_playState = null;
 				SetIsPlaying(false);
+#if __SKIA__
+				_renderingSubscription.Disposable = null;
+#else
 				_timer?.Stop();
+#endif
 				_stopwatch.Stop();
 				_invalidationController?.End();
 			}
@@ -443,7 +467,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Pause()
 		{
+#if __SKIA__
+			_renderingSubscription.Disposable = null;
+#else
 			_timer?.Stop();
+#endif
 			_stopwatch.Stop();
 
 			SetIsPlaying(false);
@@ -452,7 +480,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		public void Resume()
 		{
 			_stopwatch.Start();
+#if __SKIA__
+			SubscribeToRendering();
+#else
 			_timer?.Start();
+#endif
 
 			SetIsPlaying(true);
 		}
