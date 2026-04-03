@@ -73,15 +73,12 @@ Types from registered namespaces resolve unprefixed in XAML:
 
 ### Registering Prefixed Namespaces
 
-You can also make a namespace implicitly available with a specific prefix using `XmlnsPrefix`:
+You can make a CLR namespace implicitly available with a specific prefix using `XmlnsPrefix`:
 
 ```csharp
-[assembly: System.Windows.Markup.XmlnsDefinition(
-    "http://myapp.com/controls",
-    "MyApp.Controls.Advanced")]
-[assembly: System.Windows.Markup.XmlnsPrefix(
-    "http://myapp.com/controls",
-    "adv")]
+using System.Windows.Markup;
+
+[assembly: XmlnsPrefix("MyApp.Controls.Advanced", "adv")]
 ```
 
 The `adv:` prefix is then available in XAML without declaring `xmlns:adv`:
@@ -92,6 +89,15 @@ The `adv:` prefix is then available in XAML without declaring `xmlns:adv`:
         <adv:AdvancedControl Value="42" />
     </StackPanel>
 </Page>
+```
+
+Alternatively, if you already have a custom XML namespace URI defined via `XmlnsDefinition`, you can associate a prefix with that URI:
+
+```csharp
+using System.Windows.Markup;
+
+[assembly: XmlnsDefinition("http://myapp.com/controls", "MyApp.Controls.Advanced")]
+[assembly: XmlnsPrefix("http://myapp.com/controls", "adv")]
 ```
 
 ## Cross-Assembly Support
