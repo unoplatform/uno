@@ -366,7 +366,7 @@ WinUI does not support tunneling events. Replace `PreviewMouseDown`, `PreviewKey
 
 **How do I migrate the Dispatcher pattern?**
 
-Replace `Application.Current.Dispatcher.Invoke(...)` with `App.Window.DispatcherQueue.TryEnqueue(...)`. The `DispatcherQueue` API is asynchronous by default and has no synchronous `Invoke` method.
+Replace `Application.Current.Dispatcher.Invoke(...)` with `App.MainWindow.DispatcherQueue.TryEnqueue(...)`. The `DispatcherQueue` API is asynchronous by default and has no synchronous `Invoke` method.
 
 **Does Uno Platform add controls beyond WinUI?**
 
