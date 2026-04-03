@@ -888,14 +888,13 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 			}
 
-			// Use Floor for both edges, sourced from the same prefix-sum expression,
-			// The +1 on the right edge guarantees 1 px of overlap, which
-			// prevents antialiased-edge seams that appear when rects merely touch.
+			// Floor every edge and +1 the trailing edges so adjacent background
+			// rects always overlap by 1 px, preventing antialiased-edge seams.
 			var backgroundRect = new SKRect(
 				MathF.Floor(unalignedX + alignmentOffset),
-				y,
+				MathF.Floor(y),
 				MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1,
-				y + line.lineHeight);
+				MathF.Floor(y + line.lineHeight) + 1);
 			highlighter.Value.background?.Paint(session.Canvas, session.Opacity, backgroundRect);
 
 			if (_corrections?[wordBoundariesIndex] is { } correction)
