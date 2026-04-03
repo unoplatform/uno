@@ -106,7 +106,7 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 | `PreviewKeyDown` | `KeyDown` | No tunneling/preview events in WinUI |
 
 > [!NOTE]
-> WinUI does not support tunneling (preview) events. If you relied on tunneling to intercept events, use the `Handled` property or `AddHandler` with `handledEventsToo: true`.
+> WinUI does not support tunneling (preview) events. Routed events are bubbling-only, so if you need to listen for an event even after a child marks it handled, use `AddHandler` with `handledEventsToo: true`. This does not reproduce WPF-style preview ordering (parent before child).
 
 ### Mouse Capture
 
