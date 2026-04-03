@@ -76,7 +76,7 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 
 | Package | Purpose |
 |---|---|
-| `CommunityToolkit.WinUI.UI.Controls` | DataGrid, WrapPanel, DockPanel, UniformGrid |
+| `CommunityToolkit.WinUI.UI.Controls` | DataGrid, WrapPanel, DockPanel, UniformGrid. Note: `DataGrid` and some related controls are available in Windows Community Toolkit 7.x; they were removed from 8.x. |
 | `CommunityToolkit.Mvvm` | RelayCommand, ObservableObject, source generators |
 | `Uno.Themes.WinUI` | Material, Cupertino, or Fluent theme support |
 | `Uno.Toolkit.WinUI` | Additional cross-platform controls and helpers |
