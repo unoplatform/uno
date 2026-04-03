@@ -87,7 +87,7 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 |---|---|---|
 | `Visibility.Hidden` | Not available | Use `Opacity="0"` together with `IsHitTestVisible="False"` (and, for focusable controls, `IsTabStop="False"`) to be invisible, non-interactive, but still layout-occupying. |
 | `TextWrapping.WrapWithOverflow` | `TextWrapping.Wrap` | WinUI does not distinguish |
-| `Focusable="True"` | `IsTabStop="True"` | Different property name, same behavior |
+| `Focusable` | `IsTabStop` and, when preventing interaction focus, `AllowFocusOnInteraction` | `IsTabStop` controls keyboard tab navigation; to also prevent focus via pointer interaction in WinUI/Uno, typically use `AllowFocusOnInteraction="False"` as well (and `IsTabStop="False"` where applicable). |
 
 ## Event Mappings
 
