@@ -23,7 +23,7 @@ Enabling Native AOT enables faster app startup and improves performance, typical
 
 > [!NOTE]
 > App startup times are provided for comparison purposes.  Actual startup times will vary depending on hardware.
-
+>
 > [!NOTE]
 > .NET support for Native AOT on Android is still experimental.
 
