@@ -254,8 +254,8 @@ Always use `BasedOn` when overriding default control styles. Without it, your st
 
 | WPF Code | WinUI Replacement | Notes |
 |---|---|---|
-| `Application.Current.Dispatcher.Invoke(...)` | `App.Window.DispatcherQueue.TryEnqueue(...)` | Async only; no synchronous `Invoke` |
-| `Window.Current` | Custom `App.Window` static | Not supported in Windows App SDK |
+| `Application.Current.Dispatcher.Invoke(...)` | `App.MainWindow.DispatcherQueue.TryEnqueue(...)` | Async only; no synchronous `Invoke` |
+| `Window.Current` | `App.MainWindow` (captured at startup) | Not supported in Windows App SDK |
 | `Clipboard` (System.Windows) | `Windows.ApplicationModel.DataTransfer.Clipboard` | Different API surface |
 | `MessageBox.Show()` | `ContentDialog` with `XamlRoot` | No MessageBox in WinUI |
 
