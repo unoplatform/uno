@@ -4,7 +4,7 @@ uid: Uno.Features.NativeAOT
 
 # Native AOT Support
 
-Uno Platform 6.6 *introduces* support for [.NET Native AOT deployment](https://learn.microsoft.com/dotnet/core/deploying/native-aot) across Android, iOS, Linux, macOS, and Windows. Note that Native AOT support *itself* is experimental on Android.
+Uno Platform 6.6 introduces *experimental* support for [.NET Native AOT deployment](https://learn.microsoft.com/dotnet/core/deploying/native-aot) across Android, iOS, Linux, macOS, and Windows. Note that Native AOT support *itself* is experimental on Android.
 
 Enabling Native AOT enables faster app startup and improves performance, typically at the cost of larger app sizes:
 
@@ -31,7 +31,7 @@ Enabling Native AOT enables faster app startup and improves performance, typical
 
 Please see the [.NET SDK Prerequisites](https://learn.microsoft.com/dotnet/core/deploying/native-aot/#prerequisites) documentation.
 
-Additionally, some platforms have additional prerequisites.
+Some platforms have additional prerequisites.
 
 ### [**Android**](#tab/prereqs-Android)
 
@@ -49,6 +49,28 @@ and requires setting the `$(PublishAot)` MSBuild property within `App.csproj` to
   <PublishAot>true</PublishAot>
 </PropertyGroup>
 ```
+
+*However*, simply setting `$(PublishAot)` will cause issues for iOS; see [dotnet/sdk#21877](https://github.com/dotnet/sdk/issues/21877). Consequently, *if* your app multi-targets multiple target frameworks *and* iOS is one of those multiple frameworks, then you need to either:
+
+1. Set `$(PublishAot)` for each target framework separately, as per
+    [Native AOT deployment on iOS and Mac Catalyst > Publish using Native AOT](https://learn.microsoft.com/dotnet/maui/deployment/nativeaot?view=net-maui-10.0#publish-using-native-aot):
+
+    ```xml
+    <PropertyGroup>
+      <PublishAot Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' ">true</PublishAot>
+      <PublishAot Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' ">true</PublishAot>
+      <!-- repeat for any other platforms that Native AOT should be enabled on… -->
+    </PropertyGroup>
+    ```
+
+2. *Exclude* `$(PublishAot)` for target frameworks which cause the error described in [dotnet/sdk#21877](https://github.com/dotnet/sdk/issues/21877).
+    At the time of this writing, excluding only `browserwasm` from Native AOT allows `dotnet publish` to work reliably.
+
+    ```xml
+    <PropertyGroup>
+      <PublishAot Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'browserwasm' ">true</PublishAot>
+    </PropertyGroup>
+    ```
 
 It is also recommended to set the `$(IsAotCompatible)` MSBuild property in projects, which enables additional trimmer warnings:
 
@@ -68,7 +90,9 @@ dotnet publish -f net10.0-ios -r ios-arm64 App.csproj
 
 ```xml
 <PropertyGroup>
-  <PublishAot Condition=" '$(PublishAot)' == '' And '$(TestPublishAot)' != '' ">$(TestPublishAot)</PublishAot>
+  <PublishAot Condition=" '$(PublishAot)' == ''
+      And '$(TestPublishAot)' != ''
+      And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'browserwasm' ">$(TestPublishAot)</PublishAot>
   <IsAotCompatible>true</IsAotCompatible>
 </PropertyGroup>
 ```
@@ -153,15 +177,15 @@ Consequently, when a Uno Platform app is built for Native AOT and runs, it is po
 
 Broadly speaking, Uno Platform apps write diagnostic log messages via two *separate* mechanisms:
 
-1. via an `ILogger` instance obtained from a `.Log()` extension method; see also [Logging](xref:Uno.Development.Logging)
-2. via an `ILogger` instance obtained via Dependency Injection, [when using Uno.Extensions](xref:Uno.Extensions.Logging.Overview)
+1. via an `ILogger` instance obtained from a `.Log()` extension method; see [Logging](xref:Uno.Development.Logging).
+2. via an `ILogger` instance obtained via Dependency Injection, [when using Uno.Extensions](xref:Uno.Extensions.Logging.Overview).
 
 You need to see messages from *both* sources in order to track down, understand, and fix runtime errors.  This may require changes to your App startup code: if you have an `App.InitializeLogging()` method, then:
 
 1. Ensure that it is called from your relevant `Main()` or startup code, and
 2. Ensure it emits output in Release configuration builds, at least during testing.  Native AOT is only enabled in Release configuration builds.
 
-If your app does *not* have an `App.InitializeLogging()` method, then *add one* and call it from your startup code.  See also [unoplatform/uno.extensions#3008](https://github.com/unoplatform/uno.extensions/issues/3008).
+If your app does *not* have an `App.InitializeLogging()` method, then *add one* and call it from your startup code.  See [unoplatform/uno.extensions#3008](https://github.com/unoplatform/uno.extensions/issues/3008).
 
 Messages will be written to your app's console output.
 
@@ -207,25 +231,39 @@ Messages are written to stdout.
 
 ## Reflection metadata
 
+While Native AOT supports System.Reflection, there are a number of *constraints* when using Reflection, and XAML often uses Reflection in "fallback" code paths.  Consequently, apps may not work properly when running in a Native AOT environment.
+
 Native AOT compiles managed code into a single native binary. In order to support System.Reflection, a Reflection metadata "database" is generated at build time. To gain insight into what is *retained* from the trimming process and what is kept in Reflection metadata, add the following options to the `dotnet publish` command:
 
-While Native AOT supports System.Reflection, there are a number of *constraints*, and XAML often uses System.Reflection in "fallback" codepath.  Consequently, apps may not work properly when running in a Native AOT environment.
-
 * `-p:TrimmerSingleWarn=false -p:_ExtraTrimmerArgs=--verbose`: Show all warning messages from the trimmer during the build. Often times you will see "Assembly X has trimmer warnings" with no specifics; these options show all the warnings.
+
 * `-p:IlcGenerateMetadataLog=true`: Emit `$(MSBuildProjectName).metadata.csv` within `$(IntermediateOutputPath)`. This allows viewing the "reflection metadata" that will be accessible to the app at runtime.
-* `-p:IlcGenerateMstatFile=true`: Emit `$(MSBuildProjectName).mstat` within `$(IntermediateOutputPath)`. This is an assembly that references all types, fields, non-inlined methods, etc., which make up the resulting native binary.
+
 * `-p:EmitCompilerGeneratedFiles=true "-p:CompilerGeneratedFilesOutputPath=PATH"`: Emit C# source generator output into PATH. It is frequently useful to separately review and search generated output.
 
-The `.mstat` file produced by `-p:IlcGenerateMstatFile=true` is useful as it reference types and members retained *after* trimming. It can be disassembled with ildasm.  (*Note*: it contains type and member *references*. I find using the old Mono SDK `monodis` utility to be helpful, such as `monodis --typeref App.mstat` to view all referenced types.)
+* `-p:IlcGenerateMstatFile=true`: Emit `$(MSBuildProjectName).mstat` within `$(IntermediateOutputPath)`. This is an assembly that references all types, fields, non-inlined methods, etc., which make up the resulting native binary *after* trimming.
 
-*However*, just because the `.mstat` file references a type or property, that does *not* mean that the member is available via Reflection. Only members listed in the `.metadata.csv` file are accessible via Reflection.
+    The `.mstat` can be disassembled with [ildasm](https://learn.microsoft.com/en-us/dotnet/framework/tools/ildasm-exe-il-disassembler).
+
+    The output of [monodis](https://www.mono-project.com/docs/tools+libraries/tools/monodis/) may be easier to understand, such as `monodis --typeref App.mstat` to view all referenced types, and `monodis --memberref App.mstat` to view all referenced members.
+
+    > [!NOTE]
+    > Just because the `.mstat` file references a type or property does *not* mean that the member is available via Reflection. Only information within the `.metadata.csv` file generated by `-p:IlcGenerateMetadataLog=true` is accessible via Reflection.
+
+For example, to build an App project which prints all trimmer messages, retains all generated C# Source generator output, and dumps Reflection metadata:
+
+```pwsh
+dotnet publish -f net10.0-ios -r ios-arm64 -p:TestPublishAot=true -bl App.csproj `
+  -p:TrimmerSingleWarn=false -p:_ExtraTrimmerArgs=--verbose -p:IlcGenerateMetadataLog=true -p:IlcGenerateMstatFile=true `
+  -p:EmitCompilerGeneratedFiles=true "-p:CompilerGeneratedFilesOutputPath=$(Join-Path -Path $pwd -ChildPath ../_gen)"
+```
 
 There are three ways to *add* types and members to Reflection metadata:
 
-1. [Linker Descriptor XML](https://github.com/dotnet/runtime/blob/main/docs/tools/illink/data-formats.md#descriptor-format) via the
+1. The [`DynamicallyAccessedMembersAttribute`](https://learn.microsoft.com/dotnet/api/system.diagnostics.codeanalysis.dynamicallyaccessedmembersattribute?view=net-10.0) custom attribute
+2. The [`DynamicDependencyAttribute`](https://learn.microsoft.com/dotnet/api/system.diagnostics.codeanalysis.dynamicdependencyattribute?view=net-10.0) custom attribute.
+3. With [Linker Descriptor XML files](https://github.com/dotnet/runtime/blob/main/docs/tools/illink/data-formats.md#descriptor-format) via the
     [`@(TrimmerRootDescriptor)` item group](https://learn.microsoft.com/dotnet/maui/android/linking#preserve-assemblies-types-and-members) and other locations.
-2. The [`DynamicallyAccessedMembersAttribute`](https://learn.microsoft.com/dotnet/api/system.diagnostics.codeanalysis.dynamicallyaccessedmembersattribute?view=net-10.0) custom attribute
-3. The [`DynamicDependencyAttribute`](https://learn.microsoft.com/dotnet/api/system.diagnostics.codeanalysis.dynamicdependencyattribute?view=net-10.0) custom attribute.
 
 <a name="adaptations"></a>
 
@@ -237,17 +275,17 @@ See the [Fixing trim warnings](https://learn.microsoft.com/dotnet/core/deploying
 
 Additional common problems and their workarounds follow.
 
-### `Type.GetType()`
+### Use of `Type.GetType(string)`
 
-[`Type.GetType()`](https://learn.microsoft.com/dotnet/api/system.type.gettype?view=net-10.0) only works reliably when given a *string constant*:
+[`Type.GetType(string)`](https://learn.microsoft.com/dotnet/api/system.type.gettype?view=net-10.0) and related overloads only work reliably when given a *string constant*:
 
 ```csharp
 var t = Type.GetType("System.Int32, System.Runtime");
 ```
 
-Any other use may mean that the type isn't available at runtime, resulting in an exception at runtime.
+Any other use may mean that the specified type isn't available at runtime, resulting in an exception.
 
-*If* `Type.GetType()` must be used, *always use a string constant* containing an [assembly-qualified name](https://learn.microsoft.com/en-us/dotnet/api/system.type.assemblyqualifiedname?view=net-10.0#remarks).
+*If* `Type.GetType(string)` must be used, *always use a string constant* containing an [assembly-qualified name](https://learn.microsoft.com/en-us/dotnet/api/system.type.assemblyqualifiedname?view=net-10.0#remarks).
 
 ### JSON serialization
 
