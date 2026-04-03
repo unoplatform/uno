@@ -16,8 +16,10 @@ using Uno.Disposables;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml;
-using Windows.System;
 using System.Diagnostics;
+#if !__SKIA__
+using Windows.System;
+#endif
 using SkiaSharp.SceneGraph;
 using Microsoft.UI.Xaml.Media;
 using System.Text;
@@ -48,7 +50,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 
 		private bool _wasPlaying;
-#if !__SKIA__
+#if __SKIA__
+		private readonly SerialDisposable _renderingSubscription = new();
+#else
 		private DispatcherQueueTimer? _timer;
 #endif
 		private object _gate = new();
@@ -397,7 +401,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				_progress = null;
 
 #if __SKIA__
-				CompositionTarget.Rendering += OnCompositionTargetRendering;
+				SubscribeToRendering();
 #else
 				_timer = Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
 				_timer.Tick += (s, e) => Invalidate();
@@ -416,6 +420,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 
 #if __SKIA__
+		private void SubscribeToRendering()
+		{
+			CompositionTarget.Rendering += OnCompositionTargetRendering;
+			_renderingSubscription.Disposable = Disposable.Create(() => CompositionTarget.Rendering -= OnCompositionTargetRendering);
+		}
+
 		private void OnCompositionTargetRendering(object? sender, object e) => Invalidate();
 #endif
 
@@ -437,7 +447,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				_playState = null;
 				SetIsPlaying(false);
 #if __SKIA__
-				CompositionTarget.Rendering -= OnCompositionTargetRendering;
+				_renderingSubscription.Disposable = null;
 #else
 				_timer?.Stop();
 #endif
@@ -458,7 +468,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		public void Pause()
 		{
 #if __SKIA__
-			CompositionTarget.Rendering -= OnCompositionTargetRendering;
+			_renderingSubscription.Disposable = null;
 #else
 			_timer?.Stop();
 #endif
@@ -471,7 +481,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			_stopwatch.Start();
 #if __SKIA__
-			CompositionTarget.Rendering += OnCompositionTargetRendering;
+			SubscribeToRendering();
 #else
 			_timer?.Start();
 #endif
