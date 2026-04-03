@@ -5100,6 +5100,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		public async Task When_Selection_Background_Has_No_Gaps_Between_Characters()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// Text with spaces that can produce cluster boundaries at exact
+			// integer coordinates, which previously caused 1-pixel gaps in
+			// the selection background due to rounding/antialiasing issues.
+			var SUT = new TextBox
+			{
+				Text = "____",
+				FontSize = 14,
+				Width = 300,
+				SelectionHighlightColor = new SolidColorBrush(Colors.Red),
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			SUT.SelectAll();
+			await UITestHelper.WaitForIdle();
+
+			var tb = SUT.FindVisualChildByType<TextBlock>();
+			var screenshot = await UITestHelper.ScreenShot(tb);
+			for (int i = 0; i < 20; i++)
+			{
+				screenshot.GetPixel(i, screenshot.Height / 2).Should().Be(Colors.Red, $"Selection background should have no gaps at x={i}");
+			}
+		}
+
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{
 			private bool _useOverlay;
