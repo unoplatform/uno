@@ -21,11 +21,11 @@ Enabling Native AOT enables faster app startup and improves performance, typical
 | [Uno.Chefs][uno-chefs] with Uno.Sdk 6.6.0-dev.168     | Windows, .NET 10  | CoreCLR     |  625M                     | 3.169s |
 | [Uno.Chefs][uno-chefs] with Uno.Sdk 6.6.0-dev.168     | Windows, .NET 10  | NativeAOT   |  871M <br> (139% CoreCLR) | 1.122s <br> (35% CoreCLR) |
 
-[!NOTE]
-App startup times are provided for comparison purposes.  Actual startup times will vary depending on hardware.
+> [!NOTE]
+> App startup times are provided for comparison purposes.  Actual startup times will vary depending on hardware.
 
-[!NOTE]
-.NET support for Native AOT on Android is still experimental.
+> [!NOTE]
+> .NET support for Native AOT on Android is still experimental.
 
 ## Prerequisites
 
@@ -36,6 +36,8 @@ Additionally, some platforms have additional prerequisites.
 ### [**Android**](#tab/prereqs-Android)
 
 Publishing Android apps with Native AOT requires NDK r27 or later, in addition to the normal .NET for Android SDK requirements.
+
+---
 
 ## Publish Native AOT using the CLI
 
@@ -200,6 +202,8 @@ Path\To\Your\App.exe | Out-Default
 ```
 
 Messages are written to stdout.
+
+---
 
 ## Reflection metadata
 
