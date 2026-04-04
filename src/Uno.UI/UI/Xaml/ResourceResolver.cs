@@ -8,6 +8,7 @@ using System.Text;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml;
@@ -15,6 +16,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Resources;
 using System.Diagnostics.CodeAnalysis;
+using Windows.UI;
 
 namespace Uno.UI
 {
@@ -51,6 +53,18 @@ namespace Uno.UI
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
 		private static readonly Logger _log = typeof(ResourceResolver).Log();
+		private static readonly Dictionary<ResourceDictionary, HighContrastSystemColors> _highContrastSystemColorDefaults = new();
+		private static readonly (string ResourceKey, Func<HighContrastSystemColors, Color> Selector)[] _highContrastSystemColorMappings =
+		{
+			("SystemColorButtonFaceColor", colors => colors.ButtonFaceColor),
+			("SystemColorButtonTextColor", colors => colors.ButtonTextColor),
+			("SystemColorGrayTextColor", colors => colors.GrayTextColor),
+			("SystemColorHighlightColor", colors => colors.HighlightColor),
+			("SystemColorHighlightTextColor", colors => colors.HighlightTextColor),
+			("SystemColorHotlightColor", colors => colors.HotlightColor),
+			("SystemColorWindowColor", colors => colors.WindowColor),
+			("SystemColorWindowTextColor", colors => colors.WindowTextColor),
+		};
 
 		private static readonly Stack<XamlScope> _scopeStack;
 
@@ -601,6 +615,9 @@ namespace Uno.UI
 		/// </summary>
 		internal static bool TrySystemResourceRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, out object value) => MasterDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false);
 
+		internal static void UpdateHighContrastSystemColors()
+			=> UpdateHighContrastSystemColors(MasterDictionary, SystemThemeHelper.HighContrastSystemColors);
+
 		internal static bool ContainsKeySystem(in SpecializedResourceDictionary.ResourceKey resourceKey) => MasterDictionary.ContainsKey(resourceKey, shouldCheckSystem: false);
 
 		/// <summary>
@@ -794,7 +811,88 @@ namespace Uno.UI
 		public static object ResolveStaticResourceAlias(string resourceKey, object parseContext)
 			=> ResourceDictionary.GetStaticResourceAliasPassthrough(resourceKey, parseContext as XamlParseContext);
 
-		internal static void UpdateSystemThemeBindings(ResourceUpdateReason updateReason) => MasterDictionary.UpdateThemeBindings(updateReason);
+		internal static void UpdateSystemThemeBindings(ResourceUpdateReason updateReason)
+		{
+			UpdateHighContrastSystemColors();
+			MasterDictionary.UpdateThemeBindings(updateReason);
+		}
+
+		private static void UpdateHighContrastSystemColors(ResourceDictionary dictionary, HighContrastSystemColors? highContrastSystemColors)
+		{
+			ApplyHighContrastSystemColors(dictionary, highContrastSystemColors);
+
+			foreach (var mergedDictionary in dictionary.MergedDictionaries)
+			{
+				UpdateHighContrastSystemColors(mergedDictionary, highContrastSystemColors);
+			}
+		}
+
+		private static void ApplyHighContrastSystemColors(ResourceDictionary dictionary, HighContrastSystemColors? highContrastSystemColors)
+		{
+			if (!dictionary.TryGetThemeDictionary("HighContrast", out var highContrastThemeDictionary))
+			{
+				return;
+			}
+
+			var baselineColors = GetOrCreateHighContrastSystemColorDefaults(highContrastThemeDictionary);
+
+			foreach (var (resourceKey, selector) in _highContrastSystemColorMappings)
+			{
+				var targetColor = highContrastSystemColors is { } colors
+					? selector(colors)
+					: selector(baselineColors);
+
+				SetColorResource(highContrastThemeDictionary, resourceKey, targetColor);
+			}
+		}
+
+		private static HighContrastSystemColors GetOrCreateHighContrastSystemColorDefaults(ResourceDictionary highContrastThemeDictionary)
+		{
+			if (!_highContrastSystemColorDefaults.TryGetValue(highContrastThemeDictionary, out var defaults))
+			{
+				defaults = new HighContrastSystemColors(
+					ButtonFaceColor: GetColorResource(highContrastThemeDictionary, "SystemColorButtonFaceColor"),
+					ButtonTextColor: GetColorResource(highContrastThemeDictionary, "SystemColorButtonTextColor"),
+					GrayTextColor: GetColorResource(highContrastThemeDictionary, "SystemColorGrayTextColor"),
+					HighlightColor: GetColorResource(highContrastThemeDictionary, "SystemColorHighlightColor"),
+					HighlightTextColor: GetColorResource(highContrastThemeDictionary, "SystemColorHighlightTextColor"),
+					HotlightColor: GetColorResource(highContrastThemeDictionary, "SystemColorHotlightColor"),
+					WindowColor: GetColorResource(highContrastThemeDictionary, "SystemColorWindowColor"),
+					WindowTextColor: GetColorResource(highContrastThemeDictionary, "SystemColorWindowTextColor"));
+
+				_highContrastSystemColorDefaults[highContrastThemeDictionary] = defaults;
+			}
+
+			return defaults;
+		}
+
+		private static Color GetColorResource(ResourceDictionary dictionary, string resourceKey)
+		{
+			if (dictionary.TryGetValue(resourceKey, out var value, shouldCheckSystem: false)
+				&& value is Color color)
+			{
+				return color;
+			}
+
+			if (_log.IsEnabled(LogLevel.Warning))
+			{
+				_log.LogWarning($"Unable to locate high contrast color resource '{resourceKey}' in system resources.");
+			}
+
+			return global::Windows.UI.Colors.Transparent;
+		}
+
+		private static void SetColorResource(ResourceDictionary dictionary, string resourceKey, Color color)
+		{
+			if (dictionary.TryGetValue(resourceKey, out var existingValue, shouldCheckSystem: false)
+				&& existingValue is Color existingColor
+				&& existingColor == color)
+			{
+				return;
+			}
+
+			dictionary[resourceKey] = color;
+		}
 	}
 
 

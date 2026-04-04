@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using Uno.Foundation.Extensibility;
 
@@ -11,16 +11,44 @@ internal static partial class SystemThemeHelper
 	internal static SystemTheme GetSystemTheme() => GetExtension() is { } extension ?
 		extension.GetSystemTheme() : SystemTheme.Light;
 
+	static partial void GetIsHighContrastEnabledPlatform(ref bool result)
+	{
+		if (GetExtension() is { } extension)
+		{
+			result = extension.IsHighContrastEnabled();
+		}
+	}
+
+	static partial void GetHighContrastSchemeNamePlatform(ref string result)
+	{
+		if (GetExtension() is { } extension)
+		{
+			result = extension.GetHighContrastSchemeName();
+		}
+	}
+
+	static partial void GetHighContrastSystemColorsPlatform(ref HighContrastSystemColors? result)
+	{
+		if (GetExtension() is { } extension)
+		{
+			result = extension.GetHighContrastSystemColors();
+		}
+	}
+
 	static partial void ObserveThemeChangesPlatform()
 	{
 		if (GetExtension() is { } extension)
 		{
 			extension.SystemThemeChanged += OnSystemThemeChanged;
+			extension.HighContrastChanged += OnHighContrastChanged;
 		}
 	}
 
 	private static void OnSystemThemeChanged(object? sender, System.EventArgs e) =>
 		RefreshSystemTheme();
+
+	private static void OnHighContrastChanged(object? sender, System.EventArgs e) =>
+		RefreshHighContrast();
 
 	private static ISystemThemeHelperExtension? GetExtension()
 	{
@@ -32,3 +60,4 @@ internal static partial class SystemThemeHelper
 		return _systemThemeHelperExtension;
 	}
 }
+

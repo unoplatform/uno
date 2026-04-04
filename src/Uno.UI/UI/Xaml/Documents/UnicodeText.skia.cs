@@ -93,6 +93,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static readonly LRUCache<int, SKTypeface?> _skFontManagerDefaultMatchCharacterCache = new(1000); // most languages need much less than 1000 unique Unicode codepoints
 	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
 	private static readonly SKPaint _spareDrawPaint = new() { IsStroke = false, IsAntialias = true };
+	private static readonly SKPaint _spareBackplatePaint = new() { IsStroke = false, IsAntialias = true };
 	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
@@ -801,10 +802,17 @@ internal readonly partial struct UnicodeText : IParsedText
 		return shapingRuns;
 	}
 
-	public void Draw(in Visual.PaintingSession session,
+	public void Draw(UIElement owner, in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
 		IEnumerable<TextHighlighter> highlighters)
 	{
+		var useHighContrastTextAdjustment = owner.UseHighContrastTextAdjustment();
+		var effectiveOpacity = owner.GetEffectiveTextOpacity(session.Opacity);
+		var (highContrastForeground, highContrastBackground, highContrastHighlightForeground) =
+			useHighContrastTextAdjustment
+				? global::Microsoft.UI.Xaml.UIElement.GetHighContrastTextColors()
+				: default;
+
 		var highlighterSlicer = new RangeSlicer<(CompositionBrush? background, Brush foreground)>(0, _text.Length);
 		foreach (var highlighter in highlighters)
 		{
@@ -862,7 +870,13 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			if (!cluster.Value.containsTab && (!cluster.Value.containsOnlyWhitespace || FeatureConfiguration.TextBlock.RenderWhiteSpace))
 			{
-				var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, session.Opacity);
+				var color = useHighContrastTextAdjustment
+					? new SKColor(
+						red: (highlighter.Value.background is not null ? highContrastHighlightForeground : highContrastForeground).R,
+						green: (highlighter.Value.background is not null ? highContrastHighlightForeground : highContrastForeground).G,
+						blue: (highlighter.Value.background is not null ? highContrastHighlightForeground : highContrastForeground).B,
+						alpha: (byte)((highlighter.Value.background is not null ? highContrastHighlightForeground : highContrastForeground).A * effectiveOpacity))
+					: BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, effectiveOpacity);
 				if (!_colorToFontToGlyphs.TryGetValue(color, out var fontToGlyphs))
 				{
 					_colorToFontToGlyphs[color] = fontToGlyphs = new Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>();
@@ -895,7 +909,17 @@ internal readonly partial struct UnicodeText : IParsedText
 				MathF.Floor(y),
 				MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1,
 				MathF.Floor(y + line.lineHeight) + 1);
-			highlighter.Value.background?.Paint(session.Canvas, session.Opacity, backgroundRect);
+			if (useHighContrastTextAdjustment && !cluster.Value.containsTab && (!cluster.Value.containsOnlyWhitespace || FeatureConfiguration.TextBlock.RenderWhiteSpace))
+			{
+				_spareBackplatePaint.Color = new SKColor(
+					red: highContrastBackground.R,
+					green: highContrastBackground.G,
+					blue: highContrastBackground.B,
+					alpha: (byte)(highContrastBackground.A * effectiveOpacity));
+				session.Canvas.DrawRect(backgroundRect, _spareBackplatePaint);
+			}
+
+			highlighter.Value.background?.Paint(session.Canvas, effectiveOpacity, backgroundRect);
 
 			if (_corrections?[wordBoundariesIndex] is { } correction)
 			{
@@ -959,6 +983,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		foreach (var (path, strokeThickness) in spellCheckUnderlines)
 		{
+			_spareSpellCheckPaint.Color = new SKColor(SKColors.Red.Red, SKColors.Red.Green, SKColors.Red.Blue, (byte)(255 * effectiveOpacity));
 			_spareSpellCheckPaint.StrokeWidth = strokeThickness;
 			session.Canvas.DrawPath(path, _spareSpellCheckPaint);
 		}
@@ -974,7 +999,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		if (caretRect is not null)
 		{
-			caret!.Value.brush.Paint(session.Canvas, session.Opacity, caretRect.Value);
+			caret!.Value.brush.Paint(session.Canvas, effectiveOpacity, caretRect.Value);
 		}
 	}
 

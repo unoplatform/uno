@@ -19,11 +19,22 @@ internal class MacOSSystemThemeHelperExtension : ISystemThemeHelperExtension
 	{
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => _instance);
 		NativeUno.uno_set_system_theme_change_callback(&Update);
+		NativeUno.uno_set_high_contrast_change_callback(&OnHighContrastUpdate);
 	}
 
 	public event EventHandler? SystemThemeChanged;
+	public event EventHandler? HighContrastChanged;
 
 	SystemTheme ISystemThemeHelperExtension.GetSystemTheme() => (SystemTheme)NativeUno.uno_get_system_theme();
+
+	public bool IsHighContrastEnabled() => NativeUno.uno_get_high_contrast();
+
+	public string GetHighContrastSchemeName()
+	{
+		// macOS doesn't differentiate between HC Black/White/Custom.
+		// "Increase Contrast" is essentially the only mode.
+		return "High Contrast Black";
+	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	internal static void Update()
@@ -35,4 +46,16 @@ internal class MacOSSystemThemeHelperExtension : ISystemThemeHelperExtension
 
 		_instance.SystemThemeChanged?.Invoke(_instance, EventArgs.Empty);
 	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	internal static void OnHighContrastUpdate()
+	{
+		if (typeof(MacOSSystemThemeHelperExtension).Log().IsEnabled(LogLevel.Trace))
+		{
+			typeof(MacOSSystemThemeHelperExtension).Log().Trace($"MacOSSystemThemeHelperExtension.HighContrastChanged IsHighContrast={_instance.IsHighContrastEnabled()}");
+		}
+
+		_instance.HighContrastChanged?.Invoke(_instance, EventArgs.Empty);
+	}
 }
+

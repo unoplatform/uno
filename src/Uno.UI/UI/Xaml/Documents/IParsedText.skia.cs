@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml.Documents;
 
 internal interface IParsedText
 {
-	void Draw(in Visual.PaintingSession session,
+	void Draw(UIElement owner, in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
 		IEnumerable<TextHighlighter> highlighters
 	);

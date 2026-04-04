@@ -6,6 +6,7 @@
 
 static UNOApplicationDelegate *ad;
 static system_theme_change_fn_ptr system_theme_change;
+static high_contrast_change_fn_ptr high_contrast_change;
 static id<MTLDevice> device;
 
 inline system_theme_change_fn_ptr uno_get_system_theme_change_callback(void)
@@ -27,6 +28,21 @@ uint32 /* Uno.Helpers.Theming.SystemTheme */ uno_get_system_theme(void)
     return [appearanceName isEqualToString:NSAppearanceNameAqua] ? 0 : 1;
 }
 
+inline high_contrast_change_fn_ptr uno_get_high_contrast_change_callback(void)
+{
+    return high_contrast_change;
+}
+
+void uno_set_high_contrast_change_callback(high_contrast_change_fn_ptr p)
+{
+    high_contrast_change = p;
+}
+
+bool uno_get_high_contrast(void)
+{
+    return [[NSWorkspace sharedWorkspace] accessibilityDisplayShouldIncreaseContrast];
+}
+
 bool uno_app_initialize(bool *metal)
 {
     NSApplication *app = [NSApplication sharedApplication];
@@ -36,6 +52,12 @@ bool uno_app_initialize(bool *metal)
 
         // KVO observation for dark/light theme
         [app addObserver:ad forKeyPath:NSStringFromSelector(@selector(effectiveAppearance)) options:NSKeyValueObservingOptionNew context:nil];
+
+        // Observe accessibility display options changes (includes "Increase Contrast")
+        [[NSNotificationCenter defaultCenter] addObserver:ad
+                                                 selector:@selector(accessibilityDisplayOptionsChanged:)
+                                                     name:NSWorkspaceAccessibilityDisplayOptionsDidChangeNotification
+                                                   object:[NSWorkspace sharedWorkspace]];
         
         if (app.mainMenu == nil) {
             NSMenu *mainMenu = [[NSMenu alloc] init];
@@ -191,6 +213,18 @@ void uno_application_quit(void)
     if ([keyPath isEqualToString:NSStringFromSelector(@selector(effectiveAppearance))]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             uno_get_system_theme_change_callback()();
+        });
+    }
+}
+
+- (void)accessibilityDisplayOptionsChanged:(NSNotification *)notification
+{
+#if DEBUG
+    NSLog(@"UNOApplicationDelegate.accessibilityDisplayOptionsChanged notification:%@", notification);
+#endif
+    if (uno_get_high_contrast_change_callback()) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            uno_get_high_contrast_change_callback()();
         });
     }
 }

@@ -276,6 +276,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}) : TextHighlighters;
 			ParsedText.Draw(
+				this,
 				session,
 				_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null,
 				highligherters);
