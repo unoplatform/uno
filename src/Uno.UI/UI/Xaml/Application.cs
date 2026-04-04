@@ -475,6 +475,12 @@ namespace Microsoft.UI.Xaml
 			{
 				if (contentRoot.VisualTree.RootElement is IRootElement rootElement)
 				{
+					if (contentRoot.GetOwnerWindow() is { HasSupportedSystemBackdrop: true })
+					{
+						rootElement.SetBackgroundColor(Microsoft.UI.Colors.Transparent);
+						continue;
+					}
+
 					rootElement.SetBackgroundColor(ThemingHelper.GetRootVisualBackground());
 				}
 			}

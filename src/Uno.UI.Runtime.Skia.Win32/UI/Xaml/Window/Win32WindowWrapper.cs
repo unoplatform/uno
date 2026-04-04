@@ -713,15 +713,32 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	public override unsafe void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
 	{
+		if (!OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22621))
+		{
+			if (backdrop is not null)
+			{
+				this.LogWarn()?.Warn($"System backdrops on Win32 currently require Windows 11 build 22621 or later. '{backdrop.GetType().Name}' was ignored.");
+			}
+
+			return;
+		}
+
+		if (backdrop is not null and not (Microsoft.UI.Xaml.Media.MicaBackdrop or Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop))
+		{
+			this.LogWarn()?.Warn($"Only {nameof(Microsoft.UI.Xaml.Media.MicaBackdrop)} and {nameof(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)} are currently supported on Win32. '{backdrop.GetType().Name}' was ignored.");
+		}
+
 		DWM_SYSTEMBACKDROP_TYPE backdropType = backdrop switch
 		{
+			null
+				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_NONE,
 			Microsoft.UI.Xaml.Media.MicaBackdrop { Kind: Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt }
 				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_TABBEDWINDOW,
 			Microsoft.UI.Xaml.Media.MicaBackdrop
 				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_MAINWINDOW,
 			Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop
 				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_TRANSIENTWINDOW,
-			_ => DWM_SYSTEMBACKDROP_TYPE.DWMSBT_AUTO,
+			_ => DWM_SYSTEMBACKDROP_TYPE.DWMSBT_NONE,
 		};
 
 		var hResult = PInvoke.DwmSetWindowAttribute(

@@ -11,7 +11,7 @@
     <StackPanel Spacing="8" Padding="16">
         <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Window.SystemBackdrop" />
         <TextBlock TextWrapping="Wrap"
-            Text="Sets the system backdrop material on the current window. On macOS this uses NSVisualEffectView with the corresponding vibrancy material. On Windows 11 this uses the native Mica API. Set the page Background to Transparent to see the effect." />
+            Text="Sets the system backdrop material on the current window. On macOS this uses NSVisualEffectView with the corresponding vibrancy material. On Windows 11 (22621+) this uses DwmSetWindowAttribute with DWMWA_SYSTEMBACKDROP_TYPE. The page and surrounding shell containers must be transparent for the effect to show through." />
 
         <TextBlock FontWeight="SemiBold">
             <Run Text="IsSupported: " />

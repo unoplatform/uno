@@ -23,6 +23,7 @@ public sealed partial class MicaBackdropTests : Page
 	{
 		this.InitializeComponent();
 		DataContextChanged += OnDataContextChanged;
+		Unloaded += OnUnloaded;
 	}
 
 	internal MicaBackdropTestsViewModel ViewModel { get; private set; }
@@ -31,11 +32,16 @@ public sealed partial class MicaBackdropTests : Page
 	{
 		ViewModel = args.NewValue as MicaBackdropTestsViewModel;
 	}
+
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		ViewModel?.ClearBackdrop();
+	}
 }
 
 internal class MicaBackdropTestsViewModel : ViewModelBase
 {
-	private readonly List<(Panel panel, Brush original)> _savedBackgrounds = new();
+	private readonly List<(DependencyObject element, Brush original)> _savedBackgrounds = new();
 
 	public MicaBackdropTestsViewModel()
 	{
@@ -74,50 +80,92 @@ internal class MicaBackdropTestsViewModel : ViewModelBase
 	public void ClearBackdrop()
 	{
 		App.MainWindow.SystemBackdrop = null;
-		RestoreAncestorBackgrounds();
+		RestoreSavedBackgrounds();
 		RaisePropertyChanged(nameof(CurrentBackdrop));
 	}
 
 	private void SetBackdrop(SystemBackdrop backdrop)
 	{
 		App.MainWindow.SystemBackdrop = backdrop;
-		MakeAncestorBackgroundsTransparent();
+		MakeVisualTreeBackgroundsTransparent();
 		RaisePropertyChanged(nameof(CurrentBackdrop));
 	}
 
 	/// <summary>
-	/// Walks the visual tree from the Window content down to this page and makes all
-	/// Panel backgrounds transparent so the system backdrop material can show through.
-	/// This mirrors WinUI behavior where apps must use transparent backgrounds with Mica.
+	/// Walks the visible visual tree hosted by SamplesApp and makes opaque container
+	/// backgrounds transparent so the system backdrop material can show through.
 	/// </summary>
-	private void MakeAncestorBackgroundsTransparent()
+	private void MakeVisualTreeBackgroundsTransparent()
 	{
-		RestoreAncestorBackgrounds();
+		RestoreSavedBackgrounds();
 
 		var transparentBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-		DependencyObject current = App.MainWindow.Content;
-		while (current is not null)
+		if (App.MainWindow.Content is not DependencyObject root)
 		{
-			if (current is Panel panel && panel.Background is SolidColorBrush scb && scb.Color.A > 0)
+			return;
+		}
+
+		var pending = new Stack<DependencyObject>();
+		var visited = new HashSet<DependencyObject>();
+		pending.Push(root);
+
+		while (pending.Count > 0)
+		{
+			var current = pending.Pop();
+			if (!visited.Add(current))
 			{
-				_savedBackgrounds.Add((panel, panel.Background));
-				panel.Background = transparentBrush;
+				continue;
 			}
-			// Walk into the visual tree
-			current = current is ContentControl cc ? cc.Content as DependencyObject
-				: current is Panel p && p.Children.Count > 0 ? p.Children[0]
-				: Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(current) > 0
-					? Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(current, 0)
-					: null;
+
+			if (TryGetOpaqueBackground(current, out var originalBrush))
+			{
+				_savedBackgrounds.Add((current, originalBrush));
+				SetBackground(current, transparentBrush);
+			}
+
+			for (var i = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(current) - 1; i >= 0; i--)
+			{
+				pending.Push(Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(current, i));
+			}
 		}
 	}
 
-	private void RestoreAncestorBackgrounds()
+	private static bool TryGetOpaqueBackground(DependencyObject element, out Brush originalBrush)
 	{
-		foreach (var (panel, original) in _savedBackgrounds)
+		switch (element)
 		{
-			panel.Background = original;
+			case Panel panel when panel.Background is SolidColorBrush panelBrush && panelBrush.Color.A > 0:
+				originalBrush = panel.Background;
+				return true;
+			case Border border when border.Background is SolidColorBrush borderBrush && borderBrush.Color.A > 0:
+				originalBrush = border.Background;
+				return true;
+			default:
+				originalBrush = null;
+				return false;
 		}
+	}
+
+	private static void SetBackground(DependencyObject element, Brush background)
+	{
+		switch (element)
+		{
+			case Panel panel:
+				panel.Background = background;
+				break;
+			case Border border:
+				border.Background = background;
+				break;
+		}
+	}
+
+	private void RestoreSavedBackgrounds()
+	{
+		foreach (var (element, original) in _savedBackgrounds)
+		{
+			SetBackground(element, original);
+		}
+
 		_savedBackgrounds.Clear();
 	}
 }

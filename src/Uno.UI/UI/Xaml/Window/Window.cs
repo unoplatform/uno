@@ -294,9 +294,22 @@ public partial class Window
 		set => AppWindow.TitleBar.ExtendsContentIntoTitleBar = value;
 	}
 
+	internal bool HasSupportedSystemBackdrop
+	{
+		get
+		{
+#if __SKIA__
+			return IsBackdropSupported(_systemBackdrop);
+#else
+			return false;
+#endif
+		}
+	}
+
 #if __SKIA__
 	private Microsoft.UI.Xaml.Media.SystemBackdrop? _systemBackdrop;
 	private Brush? _originalRootBackground;
+	private bool _hasOriginalRootBackground;
 
 	/// <summary>
 	/// Gets or sets the system backdrop used to render materials like Mica and Acrylic.
@@ -306,6 +319,11 @@ public partial class Window
 		get => _systemBackdrop;
 		set
 		{
+			if (value is not null && !IsBackdropImplemented(value))
+			{
+				this.LogWarn()?.Warn($"{nameof(SystemBackdrop)} currently supports only {nameof(Media.MicaBackdrop)} and {nameof(Media.DesktopAcrylicBackdrop)} on Skia. '{value.GetType().Name}' will not be applied natively.");
+			}
+
 			_systemBackdrop = value;
 			NativeWrapper?.SetSystemBackdrop(value);
 			UpdateRootVisualBackgroundForBackdrop(value);
@@ -314,26 +332,39 @@ public partial class Window
 
 	private void UpdateRootVisualBackgroundForBackdrop(Media.SystemBackdrop? backdrop)
 	{
-		if (!IsBackdropSupported(backdrop))
+		if (RootElement is not Controls.Panel rootPanel)
 		{
 			return;
 		}
 
-		if (RootElement is Controls.Panel rootPanel)
+		if (backdrop is null || !IsBackdropSupported(backdrop))
 		{
-			if (backdrop is not null)
+			if (_hasOriginalRootBackground)
 			{
-				_originalRootBackground ??= rootPanel.Background;
-				rootPanel.Background = new Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
-			}
-			else
-			{
-				rootPanel.Background = _originalRootBackground
-					?? new Media.SolidColorBrush(ThemingHelper.GetRootVisualBackground());
+				rootPanel.Background = _originalRootBackground;
 				_originalRootBackground = null;
+				_hasOriginalRootBackground = false;
 			}
+
+			return;
 		}
+
+		if (!_hasOriginalRootBackground)
+		{
+			_originalRootBackground = rootPanel.Background;
+			_hasOriginalRootBackground = true;
+		}
+
+		rootPanel.Background = new Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
 	}
+
+	private static bool IsBackdropImplemented(Media.SystemBackdrop? backdrop) => backdrop switch
+	{
+		null => true,
+		Media.MicaBackdrop => true,
+		Media.DesktopAcrylicBackdrop => true,
+		_ => false,
+	};
 
 	private static bool IsBackdropSupported(Media.SystemBackdrop? backdrop) => backdrop switch
 	{
