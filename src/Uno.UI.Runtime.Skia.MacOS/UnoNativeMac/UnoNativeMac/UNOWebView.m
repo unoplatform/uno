@@ -112,7 +112,7 @@ NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel)
     webview.okString = [NSString stringWithUTF8String:ok];
     webview.cancelString = [NSString stringWithUTF8String:cancel];
 
-    webview.originalSuperView = window.contentViewController.view;
+    webview.originalSuperView = ((UNOWindow*)window).renderingView;
     return webview;
 }
 
