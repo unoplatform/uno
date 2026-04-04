@@ -614,6 +614,8 @@
           href: features/routed-events.md
         - name: Shapes & Brushes
           href: features/shapes-and-brushes.md
+        - name: SystemBackdrop
+          href: features/system-backdrop.md
         - name: String resources and localization
           href: features/working-with-strings.md
         - name: Succinct syntax
