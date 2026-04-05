@@ -13,7 +13,7 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 			InitializeComponent();
 
 			NarrativeTextBox.Loaded += NarrativeTextBox_Loaded;
-			
+
 			// Pre-populate with ~45 lines of text to require scrolling when the keyboard is open.
 			NarrativeTextBox.Text = new System.Text.StringBuilder()
 				.AppendLine("Sample document header")
