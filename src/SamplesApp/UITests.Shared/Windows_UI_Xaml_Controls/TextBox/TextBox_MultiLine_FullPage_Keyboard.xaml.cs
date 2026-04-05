@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[Sample("TextBox", Name = "TextBox_MultiLine_FullPage_Keyboard", IgnoreInSnapshotTests = true,
+	[Sample("TextBox", Name = "TextBox_MultiLine_FullPage_Keyboard", IgnoreInSnapshotTests = true, IsManualTest = true,
 		Description = "Multiline TextBox filling the entire page - keyboard should push content up so cursor stays visible")]
 	public sealed partial class TextBox_MultiLine_FullPage_Keyboard : UserControl
 	{

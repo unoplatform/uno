@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[Sample("TextBox", Name = "TextBox_ScrollView_Inset_ChangeView", IgnoreInSnapshotTests = true,
+	[Sample("TextBox", Name = "TextBox_ScrollView_Inset_ChangeView", IgnoreInSnapshotTests = true, IsManualTest = true,
 		Description = "ScrollViewer with multiline TextBox - tests scrolling and ChangeView when keyboard opens")]
 	public sealed partial class TextBox_ScrollView_Inset_ChangeView : UserControl
 	{
