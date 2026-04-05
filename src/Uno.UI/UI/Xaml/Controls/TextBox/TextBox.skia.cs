@@ -829,7 +829,7 @@ public partial class TextBox
 				: _selection.start + _selection.length;
 
 			var caretRect = parsedText.GetRectForIndex(selectionEnd);
-			caretRect = new Rect(caretRect.X, caretRect.Y, Math.Max(caretRect.Width, TextBlock.CaretThickness), caretRect.Height);
+			caretRect = caretRect with { Width = Math.Max(caretRect.Width, TextBlock.CaretThickness) };
 
 			// Transform from TextBlock coordinate space to TextBox coordinate space
 			var transform = displayBlock.TransformToVisual(this);
