@@ -2,7 +2,6 @@
 
 #nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -10,9 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
-using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
@@ -30,9 +27,7 @@ public partial class Given_ItemCollectionTransitionProvider
 	{
 		var data = new ObservableCollection<string>(Enumerable.Range(0, 10).Select(i => $"Item #{i}"));
 
-		var elementFactory = new RecyclingElementFactory();
-		elementFactory.RecyclePool = new RecyclePool();
-		elementFactory.Templates["Item"] = (DataTemplate)XamlReader.Load(
+		var dataTemplate = (DataTemplate)XamlReader.Load(
 			@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
 				<TextBlock Text='{Binding}' Height='50' />
 			</DataTemplate>");
@@ -40,7 +35,7 @@ public partial class Given_ItemCollectionTransitionProvider
 		var repeater = new ItemsRepeater()
 		{
 			ItemsSource = data,
-			ItemTemplate = elementFactory,
+			ItemTemplate = dataTemplate,
 		};
 
 		TestServices.WindowHelper.WindowContent = new ItemsRepeaterScrollHost()
@@ -141,9 +136,7 @@ public partial class Given_ItemCollectionTransitionProvider
 	{
 		var data = new ObservableCollection<string>(Enumerable.Range(0, 3).Select(i => $"Item #{i}"));
 
-		var elementFactory = new RecyclingElementFactory();
-		elementFactory.RecyclePool = new RecyclePool();
-		elementFactory.Templates["Item"] = (DataTemplate)XamlReader.Load(
+		var dataTemplate = (DataTemplate)XamlReader.Load(
 			@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
 				<TextBlock Text='{Binding}' Height='50' />
 			</DataTemplate>");
@@ -151,7 +144,7 @@ public partial class Given_ItemCollectionTransitionProvider
 		var repeater = new ItemsRepeater()
 		{
 			ItemsSource = data,
-			ItemTemplate = elementFactory,
+			ItemTemplate = dataTemplate,
 		};
 
 		TestServices.WindowHelper.WindowContent = new ItemsRepeaterScrollHost()
