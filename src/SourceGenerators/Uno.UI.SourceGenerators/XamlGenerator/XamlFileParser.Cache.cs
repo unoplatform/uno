@@ -38,6 +38,7 @@ internal partial class XamlFileParser
 			IncludeXamlNamespaces == other.IncludeXamlNamespaces &&
 			ExcludeXamlNamespaces == other.ExcludeXamlNamespaces &&
 			File == other.File &&
+			Link == other.Link &&
 			EnableImplicitNamespaces == other.EnableImplicitNamespaces &&
 			ImplicitPrefixesKey == other.ImplicitPrefixesKey &&
 			ByteSequenceComparer.Equals(Checksum, other.Checksum);

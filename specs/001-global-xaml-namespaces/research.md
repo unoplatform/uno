@@ -5,13 +5,13 @@
 
 ## Decision 1: XAML Parsing Approach for Implicit Namespaces
 
-**Decision**: Use `XmlParserContext` with pre-populated `XmlNamespaceManager` and `ConformanceLevel.Fragment`, matching MAUI's proven approach.
+**Decision**: Inject missing `xmlns` declarations into the root element of each XAML file before parsing (string rewriting via `InjectImplicitXmlns`).
 
-**Rationale**: Uno's `XamlFileParser.cs` creates an `XmlReader` via `XmlReader.Create(new StringReader(xaml))` at line 182. By providing an `XmlParserContext` with pre-configured namespace mappings and switching to `ConformanceLevel.Fragment`, the XML parser can handle XAML without explicit `xmlns` declarations. This is identical to how MAUI implements it in their `XamlLoader.cs`, `XamlCTask.cs`, and source generator - a pattern proven in production.
+**Rationale**: The initial plan was to use `XmlParserContext` with `ConformanceLevel.Fragment` (MAUI's approach), but this was changed during implementation because `ConformanceLevel.Fragment` alters `XmlReader` behavior in ways that broke Uno's existing XAML parser assumptions (e.g., error positions, node handling). Instead, the source generator's `XamlFileParser.InjectImplicitXmlns` method scans for the root element's opening tag and inserts any missing `xmlns` declarations (default, `xmlns:x`, and implicit `XmlnsPrefix` prefixes) before the closing `>`. This preserves the existing `XmlReader` pipeline unchanged while making the XAML valid XML before it reaches the parser.
 
 **Alternatives considered**:
-- **String rewriting**: Inject `xmlns` declarations into XAML text before parsing. Rejected because it modifies source positions (breaking error reporting and line info), adds complexity, and is fragile with edge cases.
-- **Custom XML reader wrapper**: Intercept namespace resolution at the reader level. Rejected because it's more complex and the `XmlParserContext` approach already solves the problem cleanly.
+- **`XmlParserContext` + `ConformanceLevel.Fragment`** (MAUI approach): Initially chosen, but rejected during implementation because `ConformanceLevel.Fragment` changes `XmlReader` behavior in ways incompatible with Uno's parser pipeline.
+- **Custom XML reader wrapper**: Intercept namespace resolution at the reader level. Rejected because it's more complex and fragile.
 
 ## Decision 2: Feature Flag Mechanism
 
