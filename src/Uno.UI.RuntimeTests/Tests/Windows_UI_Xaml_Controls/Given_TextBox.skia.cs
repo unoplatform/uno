@@ -5104,6 +5104,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		public async Task When_Tab_Pressed_Should_Not_Insert_Character()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+			var button = new Button { Content = "Next" };
+			var panel = new StackPanel
+			{
+				Children = { SUT, button }
+			};
+
+			WindowHelper.WindowContent = panel;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Simulate Tab key press with unicode '\t' (as macOS/FrameBuffer/Android backends do)
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Tab, VirtualKeyModifiers.None, unicodeKey: '\t'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(string.Empty, SUT.Text, "Tab should not insert a character in TextBox");
+			Assert.IsFalse(SUT.Text.Contains('\t'), "TextBox.Text should not contain a tab character");
+
+			// Ensure that Tab key still moves focus to the next control
+			var focusedElement = FocusManager.GetFocusedElement() as Control;
+			Assert.AreEqual(button, focusedElement, "Tab should move focus to the next control (button)");
+		}
+
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{
 			private bool _useOverlay;
