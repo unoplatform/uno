@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
+using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
@@ -2885,8 +2886,8 @@ public class Given_ElementTheme
 		// Initial state: UncheckedNormal — foreground should be white in Dark theme
 		var initialFg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
 		Assert.IsNotNull(initialFg, "ContentPresenter should have a SolidColorBrush foreground initially");
-		Assert.IsTrue(initialFg.Value.R > 128,
-			$"Initial foreground in Dark theme should be light/white. Got R={initialFg.Value.R}, color={initialFg}");
+		Assert.IsTrue((initialFg.Value.R + initialFg.Value.G + initialFg.Value.B) / 3 > 128,
+			$"Initial foreground in Dark theme should be light/white. Got color={initialFg}");
 
 		// Hover: UncheckedPointerOver
 		VisualStateManager.GoToState(checkBox, "UncheckedPointerOver", false);
@@ -2894,8 +2895,8 @@ public class Given_ElementTheme
 
 		var hoverFg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
 		Assert.IsNotNull(hoverFg, "ContentPresenter should have foreground during hover");
-		Assert.IsTrue(hoverFg.Value.R > 128,
-			$"Hover foreground in Dark theme should be light/white. Got R={hoverFg.Value.R}, color={hoverFg}");
+		Assert.IsTrue((hoverFg.Value.R + hoverFg.Value.G + hoverFg.Value.B) / 3 > 128,
+			$"Hover foreground in Dark theme should be light/white. Got color={hoverFg}");
 
 		// Leave hover: back to UncheckedNormal
 		VisualStateManager.GoToState(checkBox, "UncheckedNormal", false);
@@ -2903,8 +2904,8 @@ public class Given_ElementTheme
 
 		var afterHoverFg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
 		Assert.IsNotNull(afterHoverFg, "ContentPresenter should have foreground after hover exit");
-		Assert.IsTrue(afterHoverFg.Value.R > 128,
-			$"After hover exit, foreground in Dark theme should be light/white. Got R={afterHoverFg.Value.R}, color={afterHoverFg}");
+		Assert.IsTrue((afterHoverFg.Value.R + afterHoverFg.Value.G + afterHoverFg.Value.B) / 3 > 128,
+			$"After hover exit, foreground in Dark theme should be light/white. Got color={afterHoverFg}");
 
 		// Foreground should be consistent across all states
 		Assert.AreEqual(initialFg, afterHoverFg,
@@ -2918,10 +2919,8 @@ public class Given_ElementTheme
 		// containing both Light and Dark themed borders with checked CheckBoxes.
 		// The Dark CheckBox's NormalRectangle.Fill should also be accent-colored,
 		// matching the Light one in intent (accent), but using its theme-specific shade.
-		var root = (Grid)XamlReader.Load("""
-			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-				  Width="600" Height="300">
+		var root = XamlHelper.LoadXaml<Grid>("""
+			<Grid Width="600" Height="300">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
@@ -2929,11 +2928,13 @@ public class Given_ElementTheme
 				<Border Grid.Column="0" RequestedTheme="Light">
 					<StackPanel>
 						<CheckBox x:Name="lightCb" Content="Light check" IsChecked="True" />
+						<Border x:Name="lightAccentRef" Background="{ThemeResource CheckBoxCheckBackgroundFillChecked}" Width="10" Height="10" />
 					</StackPanel>
 				</Border>
 				<Border Grid.Column="1" RequestedTheme="Dark">
 					<StackPanel>
-						<CheckBox x:Name="darkCb" Content="Remember me" IsChecked="True" />
+						<CheckBox x:Name="darkCb" Content="Dark check" IsChecked="True" />
+						<Border x:Name="darkAccentRef" Background="{ThemeResource CheckBoxCheckBackgroundFillChecked}" Width="10" Height="10" />
 					</StackPanel>
 				</Border>
 			</Grid>
@@ -2942,6 +2943,8 @@ public class Given_ElementTheme
 		WindowHelper.WindowContent = root;
 		var lightCb = (CheckBox)root.FindName("lightCb");
 		var darkCb = (CheckBox)root.FindName("darkCb");
+		var lightAccentRef = (Border)root.FindName("lightAccentRef");
+		var darkAccentRef = (Border)root.FindName("darkAccentRef");
 		await WindowHelper.WaitForLoaded(darkCb);
 		await WindowHelper.WaitForIdle();
 
@@ -2952,15 +2955,18 @@ public class Given_ElementTheme
 
 		var lightFill = (lightRect.Fill as SolidColorBrush)?.Color;
 		var darkFill = (darkRect.Fill as SolidColorBrush)?.Color;
+		var lightExpected = (lightAccentRef.Background as SolidColorBrush)?.Color;
+		var darkExpected = (darkAccentRef.Background as SolidColorBrush)?.Color;
 
-		Assert.IsNotNull(lightFill, $"Light NormalRectangle.Fill should be a SolidColorBrush");
-		Assert.IsNotNull(darkFill, $"Dark NormalRectangle.Fill should be a SolidColorBrush");
+		Assert.IsNotNull(lightFill, "Light NormalRectangle.Fill should be a SolidColorBrush");
+		Assert.IsNotNull(darkFill, "Dark NormalRectangle.Fill should be a SolidColorBrush");
+		Assert.IsNotNull(lightExpected, "Light CheckBoxCheckBackgroundFillChecked should resolve to a SolidColorBrush");
+		Assert.IsNotNull(darkExpected, "Dark CheckBoxCheckBackgroundFillChecked should resolve to a SolidColorBrush");
 
-		Assert.IsTrue(lightFill.Value.B > 100,
-			$"Light CheckBox fill should be accent blue. Got B={lightFill.Value.B}, color={lightFill}");
-		Assert.IsTrue(darkFill.Value.B > 100,
-			$"Dark CheckBox fill should be accent blue, not grey. Got B={darkFill.Value.B}, color={darkFill}. " +
-			$"Light fill for comparison={lightFill}");
+		Assert.AreEqual(lightExpected.Value, lightFill.Value,
+			$"Light CheckBox fill should match CheckBoxCheckBackgroundFillChecked. Expected={lightExpected}, Got={lightFill}");
+		Assert.AreEqual(darkExpected.Value, darkFill.Value,
+			$"Dark CheckBox fill should match CheckBoxCheckBackgroundFillChecked. Expected={darkExpected}, Got={darkFill}");
 		// Light and Dark themes use different shades of accent (e.g. #FF005A9E vs #FF76B9ED).
 		Assert.AreNotEqual(lightFill.Value, darkFill.Value,
 			$"Light and Dark fills should differ (different theme dictionaries). Light={lightFill}, Dark={darkFill}");
@@ -3392,44 +3398,27 @@ public class Given_ElementTheme
 		var col1Panel = (StackPanel)page.FindName("col1Panel");
 		var col2Panel = (StackPanel)page.FindName("col2Panel");
 
-		// Borders
-		var col0_bg0 = (Border)page.FindName("col0_ThemeResource_Themed");
-		var col0_bg1 = (Border)page.FindName("col0_StaticResource_Themed");
-		var col0_bg2 = (Border)page.FindName("col0_ThemeResource_Static");
-		var col0_bg3 = (Border)page.FindName("col0_StaticResource_Static");
-
-		var col1_bg0 = (Border)page.FindName("col1_ThemeResource_Themed");
-		var col1_bg1 = (Border)page.FindName("col1_StaticResource_Themed");
-		var col1_bg2 = (Border)page.FindName("col1_ThemeResource_Static");
-		var col1_bg3 = (Border)page.FindName("col1_StaticResource_Static");
-
-		var col2_bg0 = (Border)page.FindName("col2_ThemeResource_Themed");
-		var col2_bg1 = (Border)page.FindName("col2_StaticResource_Themed");
-		var col2_bg2 = (Border)page.FindName("col2_ThemeResource_Static");
-		var col2_bg3 = (Border)page.FindName("col2_StaticResource_Static");
-
-		// TextBlocks (4 per column = 12 total)
-		var col0_texts = new[]
+		(Border TRThemed, Border SRThemed, Border TRStatic, Border SRStatic) GetColumnBorders(int col) => (
+			(Border)page.FindName($"col{col}_ThemeResource_Themed"),
+			(Border)page.FindName($"col{col}_StaticResource_Themed"),
+			(Border)page.FindName($"col{col}_ThemeResource_Static"),
+			(Border)page.FindName($"col{col}_StaticResource_Static")
+		);
+		TextBlock[] GetColumnTexts(int col) => new[]
 		{
-			(TextBlock)page.FindName("col0_text0"),
-			(TextBlock)page.FindName("col0_text1"),
-			(TextBlock)page.FindName("col0_text2"),
-			(TextBlock)page.FindName("col0_text3"),
+			(TextBlock)page.FindName($"col{col}_text0"),
+			(TextBlock)page.FindName($"col{col}_text1"),
+			(TextBlock)page.FindName($"col{col}_text2"),
+			(TextBlock)page.FindName($"col{col}_text3"),
 		};
-		var col1_texts = new[]
-		{
-			(TextBlock)page.FindName("col1_text0"),
-			(TextBlock)page.FindName("col1_text1"),
-			(TextBlock)page.FindName("col1_text2"),
-			(TextBlock)page.FindName("col1_text3"),
-		};
-		var col2_texts = new[]
-		{
-			(TextBlock)page.FindName("col2_text0"),
-			(TextBlock)page.FindName("col2_text1"),
-			(TextBlock)page.FindName("col2_text2"),
-			(TextBlock)page.FindName("col2_text3"),
-		};
+
+		var (col0_bg0, col0_bg1, col0_bg2, col0_bg3) = GetColumnBorders(0);
+		var (col1_bg0, col1_bg1, col1_bg2, col1_bg3) = GetColumnBorders(1);
+		var (col2_bg0, col2_bg1, col2_bg2, col2_bg3) = GetColumnBorders(2);
+
+		var col0_texts = GetColumnTexts(0);
+		var col1_texts = GetColumnTexts(1);
+		var col2_texts = GetColumnTexts(2);
 
 		// Helper: extract foreground color of a TextBlock
 		static Windows.UI.Color? Fg(TextBlock tb) => (tb.Foreground as SolidColorBrush)?.Color;
@@ -3470,16 +3459,22 @@ public class Given_ElementTheme
 			$"Light foreground ({lightFg}) and Dark foreground ({darkFg}) must differ");
 
 		// Col 0 (Default→Light): all texts should have light foreground (black-ish)
-		foreach (var (tb, i) in col0_texts.Select((t, i) => (t, i)))
-			Assert.AreEqual(lightFg, Fg(tb), $"Init col0_text{i} should have Light foreground");
+		foreach (var tb in col0_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Init {tb.Name} should have Light foreground");
+		}
 
 		// Col 1 (Dark): all texts should have dark foreground (white-ish)
-		foreach (var (tb, i) in col1_texts.Select((t, i) => (t, i)))
-			Assert.AreEqual(darkFg, Fg(tb), $"Init col1_text{i} should have Dark foreground");
+		foreach (var tb in col1_texts)
+		{
+			Assert.AreEqual(darkFg, Fg(tb), $"Init {tb.Name} should have Dark foreground");
+		}
 
 		// Col 2 (Light): all texts should have light foreground (black-ish)
-		foreach (var (tb, i) in col2_texts.Select((t, i) => (t, i)))
-			Assert.AreEqual(lightFg, Fg(tb), $"Init col2_text{i} should have Light foreground");
+		foreach (var tb in col2_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Init {tb.Name} should have Light foreground");
+		}
 
 		// =====================================================================
 		// SET ROOT TO DARK  (simulates clicking "Local Dark" button)
@@ -3495,19 +3490,22 @@ public class Given_ElementTheme
 
 		// Foregrounds — THE KEY ASSERTIONS
 		// Col 0 (Default→now Dark): white text
-		foreach (var (tb, i) in col0_texts.Select((t, i) => (t, i)))
-			Assert.AreEqual(darkFg, Fg(tb),
-				$"Dark: col0_text{i} should switch to Dark foreground, got {Fg(tb)}");
+		foreach (var tb in col0_texts)
+		{
+			Assert.AreEqual(darkFg, Fg(tb), $"Dark: {tb.Name} should switch to Dark foreground, got {Fg(tb)}");
+		}
 
 		// Col 1 (explicit Dark): white text (unchanged)
-		foreach (var (tb, i) in col1_texts.Select((t, i) => (t, i)))
-			Assert.AreEqual(darkFg, Fg(tb),
-				$"Dark: col1_text{i} should stay Dark foreground, got {Fg(tb)}");
+		foreach (var tb in col1_texts)
+		{
+			Assert.AreEqual(darkFg, Fg(tb), $"Dark: {tb.Name} should stay Dark foreground, got {Fg(tb)}");
+		}
 
 		// Col 2 (explicit Light): MUST stay black text
-		foreach (var (tb, i) in col2_texts.Select((t, i) => (t, i)))
-			Assert.AreEqual(lightFg, Fg(tb),
-				$"Dark: col2_text{i} MUST keep Light foreground, got {Fg(tb)}");
+		foreach (var tb in col2_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Dark: {tb.Name} MUST keep Light foreground, got {Fg(tb)}");
+		}
 
 		// ActualTheme
 		Assert.AreEqual(ElementTheme.Dark, col0Panel.ActualTheme, "Dark: col0 ActualTheme");
@@ -3528,19 +3526,22 @@ public class Given_ElementTheme
 
 		// Foregrounds
 		// Col 0 (Default→Light): black text
-		foreach (var (tb, i) in col0_texts.Select((t, i) => (t, i)))
-			Assert.AreEqual(lightFg, Fg(tb),
-				$"Default: col0_text{i} should revert to Light foreground, got {Fg(tb)}");
+		foreach (var tb in col0_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Default: {tb.Name} should revert to Light foreground, got {Fg(tb)}");
+		}
 
 		// Col 1 (explicit Dark): MUST stay white text
-		foreach (var (tb, i) in col1_texts.Select((t, i) => (t, i)))
-			Assert.AreEqual(darkFg, Fg(tb),
-				$"Default: col1_text{i} MUST keep Dark foreground, got {Fg(tb)}");
+		foreach (var tb in col1_texts)
+		{
+			Assert.AreEqual(darkFg, Fg(tb), $"Default: {tb.Name} MUST keep Dark foreground, got {Fg(tb)}");
+		}
 
 		// Col 2 (explicit Light): black text
-		foreach (var (tb, i) in col2_texts.Select((t, i) => (t, i)))
-			Assert.AreEqual(lightFg, Fg(tb),
-				$"Default: col2_text{i} should stay Light foreground, got {Fg(tb)}");
+		foreach (var tb in col2_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Default: {tb.Name} should stay Light foreground, got {Fg(tb)}");
+		}
 	}
 
 	#endregion
@@ -3599,7 +3600,7 @@ public class Given_ElementTheme
 			// Verify Light theme foreground (should be dark/black text)
 			var lightForeground = toolTip.Foreground as SolidColorBrush;
 			Assert.IsNotNull(lightForeground, "ToolTip Foreground should be a SolidColorBrush in Light theme");
-			Assert.IsTrue(lightForeground.Color.R < 100,
+			Assert.IsTrue((lightForeground.Color.R + lightForeground.Color.G + lightForeground.Color.B) / 3 < 100,
 				$"In Light theme, ToolTip Foreground should be dark, but was {lightForeground.Color}");
 
 			// Close the tooltip
@@ -3620,8 +3621,8 @@ public class Given_ElementTheme
 			// Verify Dark theme foreground (should be white/light text)
 			var darkForeground = toolTip.Foreground as SolidColorBrush;
 			Assert.IsNotNull(darkForeground, "ToolTip Foreground should be a SolidColorBrush in Dark theme");
-			Assert.IsTrue(darkForeground.Color.R > 200,
-				$"In Dark theme, ToolTip Foreground R should be > 200 (white), but was {darkForeground.Color} (R={darkForeground.Color.R})");
+			Assert.IsTrue((darkForeground.Color.R + darkForeground.Color.G + darkForeground.Color.B) / 3 > 200,
+				$"In Dark theme, ToolTip Foreground should be light/white, but was {darkForeground.Color}");
 
 			// Also verify the TextBlock content has the correct effective Foreground
 			var textBlock = toolTip.Content as TextBlock;
@@ -3629,8 +3630,8 @@ public class Given_ElementTheme
 
 			var textBlockForeground = textBlock.Foreground as SolidColorBrush;
 			Assert.IsNotNull(textBlockForeground, "TextBlock Foreground should be a SolidColorBrush");
-			Assert.IsTrue(textBlockForeground.Color.R > 200,
-				$"TextBlock Foreground R should be > 200 (white for Dark theme), but was {textBlockForeground.Color} (R={textBlockForeground.Color.R})");
+			Assert.IsTrue((textBlockForeground.Color.R + textBlockForeground.Color.G + textBlockForeground.Color.B) / 3 > 200,
+				$"TextBlock Foreground should be light/white for Dark theme, but was {textBlockForeground.Color}");
 		}
 		finally
 		{

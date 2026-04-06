@@ -1410,7 +1410,8 @@ namespace Microsoft.UI.Xaml
 			|| property == Controls.TextBlock.ForegroundProperty
 			|| property == Controls.IconElement.ForegroundProperty
 			|| property == Controls.ContentPresenter.ForegroundProperty
-			|| property == Controls.RichTextBlock.ForegroundProperty;
+			|| property == Controls.RichTextBlock.ForegroundProperty
+			|| property == Documents.TextElement.ForegroundProperty;
 
 		/// <summary>
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.
