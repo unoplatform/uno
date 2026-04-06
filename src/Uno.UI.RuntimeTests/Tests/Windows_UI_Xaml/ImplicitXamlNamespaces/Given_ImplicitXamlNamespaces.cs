@@ -7,6 +7,8 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CustomGlobal;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CustomPrefixed;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.AmbiguousA;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.AmbiguousB;
+using AmbiguousA = Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.AmbiguousA;
+using AmbiguousB = Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.AmbiguousB;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -204,10 +206,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		// --- Phase 6: User Story 4 - Disambiguation ---
 
 		// T029: Ambiguity detection test - when two global namespaces contain
-		// the same type name, a compile-time diagnostic (UNO0501) should be emitted.
-		// This is a build-time behavior that cannot be validated at runtime.
-		// The ambiguity detection is implemented in SourceFindTypeByXamlType() and
-		// would need a separate test project with conflicting types to verify.
+		// the same type name, a compile-time diagnostic (UXAML0005) is emitted.
+		// This is a build-time behavior validated by the source generator test
+		// Given_ImplicitXamlNamespaces.When_Ambiguous_Type_In_Global_Namespaces.
 
 		[TestMethod]
 		public async Task When_Explicit_Prefix_Resolves_Ambiguity()
@@ -232,6 +233,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.IsNotNull(control.ExplicitA, "Explicit prefix should resolve UniqueControlA");
 			Assert.IsInstanceOfType(control.ExplicitA, typeof(UniqueControlA));
 			Assert.AreEqual("Explicit A", control.ExplicitA.LabelA);
+		}
+
+		[TestMethod]
+		public async Task When_Same_Named_Types_Resolved_By_Explicit_Prefix()
+		{
+			// Verify that when two global namespaces both contain a type with the
+			// same name ("SharedControl"), explicit xmlns prefixes disambiguate
+			// to the correct namespace.
+			var control = new ImplicitXamlNamespaces_SameNameDisambiguation();
+			TestServices.WindowHelper.WindowContent = control;
+			await TestServices.WindowHelper.WaitForLoaded(control);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// ambA:SharedControl should resolve to AmbiguousA.SharedControl
+			Assert.IsNotNull(control.SharedFromA, "SharedControl from namespace A should be resolved");
+			Assert.IsInstanceOfType(control.SharedFromA, typeof(AmbiguousA.SharedControl));
+			Assert.AreEqual("Resolved A", control.SharedFromA.Origin);
+
+			// ambB:SharedControl should resolve to AmbiguousB.SharedControl
+			Assert.IsNotNull(control.SharedFromB, "SharedControl from namespace B should be resolved");
+			Assert.IsInstanceOfType(control.SharedFromB, typeof(AmbiguousB.SharedControl));
+			Assert.AreEqual("Resolved B", control.SharedFromB.Origin);
 		}
 
 		[TestMethod]

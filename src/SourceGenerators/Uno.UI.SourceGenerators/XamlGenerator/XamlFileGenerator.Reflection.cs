@@ -507,7 +507,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					&& _globalClrNamespaces.Length > 0
 					&& (trimmedNamespace == XamlConstants.PresentationXamlXmlNamespace || string.IsNullOrEmpty(trimmedNamespace)))
 				{
-					if (SearchNamespaces(type.Name, _globalClrNamespaces) is INamedTypeSymbol globalResult)
+					if (SearchNamespacesWithAmbiguityCheck(type.Name, _globalClrNamespaces) is INamedTypeSymbol globalResult)
 					{
 						return globalResult;
 					}
@@ -581,6 +581,51 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return null;
+		}
+
+		/// <summary>
+		/// Searches for a type across the given namespaces, reporting a UXAML0005 error
+		/// if the same type name is found in more than one namespace.
+		/// </summary>
+		private INamedTypeSymbol? SearchNamespacesWithAmbiguityCheck(string name, string[] namespaces)
+		{
+			INamedTypeSymbol? firstMatch = null;
+			string? firstNamespace = null;
+			List<(string Namespace, INamedTypeSymbol Symbol)>? additionalMatches = null;
+
+			foreach (var @namespace in namespaces)
+			{
+				if (_metadataHelper.FindTypeByFullName(@namespace + "." + name) is INamedTypeSymbol type)
+				{
+					if (firstMatch is null)
+					{
+						firstMatch = type;
+						firstNamespace = @namespace;
+					}
+					else
+					{
+						additionalMatches ??= new();
+						additionalMatches.Add((@namespace, type));
+					}
+				}
+			}
+
+			if (firstMatch is not null && additionalMatches is not null)
+			{
+				var allNamespaces = new[] { firstNamespace! }
+					.Concat(additionalMatches.Select(m => m.Namespace));
+				var namespacesText = string.Join(", ", allNamespaces.Select(n => $"'{n}'"));
+
+				_generatorContext.ReportDiagnostic(
+					Diagnostic.Create(
+						XamlCodeGenerationDiagnostics.AmbiguousGlobalTypeRule,
+						Location.None,
+						$"The type '{name}' was found in multiple global XAML namespaces: {namespacesText}. Use an explicit xmlns prefix to disambiguate."));
+
+				return null;
+			}
+
+			return firstMatch;
 		}
 
 		private INamedTypeSymbol? SearchClrNamespaces(string name)

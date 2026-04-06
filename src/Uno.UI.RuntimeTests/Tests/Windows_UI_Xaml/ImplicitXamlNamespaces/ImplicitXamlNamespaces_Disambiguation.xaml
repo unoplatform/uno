@@ -12,7 +12,7 @@
 		<UniqueControlB x:Name="ControlB"
 						x:FieldModifier="public"
 						LabelB="From B" />
-		<!-- Explicit prefix resolves ambiguity when needed -->
+		<!-- Explicit prefix still works alongside implicit resolution -->
 		<ambA:UniqueControlA x:Name="ExplicitA"
 							 x:FieldModifier="public"
 							 LabelA="Explicit A" />

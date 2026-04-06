@@ -221,16 +221,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private string InjectImplicitXmlns(string content)
 		{
-			var hasDefaultXmlns = content.Contains("xmlns=\"", StringComparison.Ordinal);
-			var hasXmlnsX = content.Contains("xmlns:x=\"", StringComparison.Ordinal)
-				|| content.Contains("xmlns:x='", StringComparison.Ordinal);
-
-			// Quick check: if all base declarations are present and no implicit prefixes to inject, skip
-			if (hasDefaultXmlns && hasXmlnsX && _implicitPrefixes.Length == 0)
-			{
-				return content;
-			}
-
 			// Find the root element opening tag, skipping XML declarations, comments, and whitespace.
 			// The root element starts with '<' followed by a letter or underscore (not '?', '!', or '/').
 			var rootTagStart = -1;
@@ -277,14 +267,57 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return content;
 			}
 
-			// Find the end of the root element opening tag
-			var rootTagEnd = content.IndexOf('>', rootTagStart);
+			// Find the end of the root element opening tag, tracking quotes to avoid
+			// matching '>' characters inside attribute values.
+			var rootTagEnd = -1;
+			{
+				var inQuote = false;
+				var quoteChar = '\0';
+				for (var i = rootTagStart + 1; i < content.Length; i++)
+				{
+					var c = content[i];
+					if (inQuote)
+					{
+						if (c == quoteChar)
+						{
+							inQuote = false;
+						}
+					}
+					else
+					{
+						if (c == '"' || c == '\'')
+						{
+							inQuote = true;
+							quoteChar = c;
+						}
+						else if (c == '>')
+						{
+							rootTagEnd = i;
+							break;
+						}
+					}
+				}
+			}
+
 			if (rootTagEnd < 0)
 			{
 				return content;
 			}
 
+			// Check xmlns presence within the root tag span only (not the entire document),
+			// handling both single-quoted and double-quoted attribute values.
 			var rootTag = content.AsSpan(rootTagStart, rootTagEnd - rootTagStart);
+			var hasDefaultXmlns = rootTag.IndexOf("xmlns=\"".AsSpan(), StringComparison.Ordinal) >= 0
+				|| rootTag.IndexOf("xmlns='".AsSpan(), StringComparison.Ordinal) >= 0;
+			var hasXmlnsX = rootTag.IndexOf("xmlns:x=\"".AsSpan(), StringComparison.Ordinal) >= 0
+				|| rootTag.IndexOf("xmlns:x='".AsSpan(), StringComparison.Ordinal) >= 0;
+
+			// Quick check: if all base declarations are present and no implicit prefixes to inject, skip
+			if (hasDefaultXmlns && hasXmlnsX && _implicitPrefixes.Length == 0)
+			{
+				return content;
+			}
+
 			var injections = new StringBuilder();
 
 			// Inject default xmlns if missing
@@ -303,14 +336,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				injections.Append('"');
 			}
 
-			// Inject any XmlnsPrefix-registered prefixes if missing
+			// Inject any XmlnsPrefix-registered prefixes if missing from root tag
 			foreach (var (prefix, uri) in _implicitPrefixes)
 			{
-				var prefixDecl = $"xmlns:{prefix}=\"";
-				if (rootTag.IndexOf(prefixDecl.AsSpan(), StringComparison.Ordinal) < 0)
+				var prefixDeclDouble = $"xmlns:{prefix}=\"";
+				var prefixDeclSingle = $"xmlns:{prefix}='";
+				if (rootTag.IndexOf(prefixDeclDouble.AsSpan(), StringComparison.Ordinal) < 0
+					&& rootTag.IndexOf(prefixDeclSingle.AsSpan(), StringComparison.Ordinal) < 0)
 				{
 					injections.Append(' ');
-					injections.Append(prefixDecl);
+					injections.Append(prefixDeclDouble);
 					injections.Append(uri);
 					injections.Append('"');
 				}
