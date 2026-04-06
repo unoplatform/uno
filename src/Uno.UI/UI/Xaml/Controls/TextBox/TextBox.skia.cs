@@ -821,6 +821,7 @@ public partial class TextBox
 		if (_isSkiaTextBox
 			&& (e.TargetElement is null || e.TargetElement == this)
 			&& FocusState != FocusState.Unfocused
+			&& _contentElement is ScrollViewer { VerticalScrollMode: ScrollMode.Disabled }
 			&& TextBoxView?.DisplayBlock is { } displayBlock
 			&& displayBlock.ParsedText is { } parsedText)
 		{
