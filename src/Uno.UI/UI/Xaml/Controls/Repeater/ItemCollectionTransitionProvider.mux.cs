@@ -41,7 +41,7 @@ partial class ItemCollectionTransitionProvider
 			// The batch gets a new id.
 			_transitionsBatch++;
 			CompositionTarget.Rendering += OnRendering;
-			_renderingRevoker.Disposable = new DisposableAction(() => CompositionTarget.Rendering -= OnRendering);
+			_renderingRevoker.Disposable = Disposable.Create(() => CompositionTarget.Rendering -= OnRendering);
 		}
 
 		// We'll animate if animations are enabled and the transition provider has indicated we should animate this transition.
