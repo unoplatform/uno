@@ -1,25 +1,12 @@
-// MUX Reference ItemCollectionTransitionCompletedEventArgs.h + ItemCollectionTransitionCompletedEventArgs.cpp, tag winui3/release/1.6-stable
-
-using Microsoft.UI.Xaml;
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ItemCollectionTransitionCompletedEventArgs.h, commit 5f9e851133b3
 
 namespace Microsoft.UI.Xaml.Controls;
 
+/// <summary>
+/// Provides data for the ItemCollectionTransitionProvider.TransitionCompleted event.
+/// </summary>
 public partial class ItemCollectionTransitionCompletedEventArgs
 {
-	private ItemCollectionTransition _transition;
-
-	internal ItemCollectionTransitionCompletedEventArgs(ItemCollectionTransition transition)
-	{
-		_transition = transition;
-	}
-
-	/// <summary>
-	/// Gets the ItemCollectionTransition whose animations have completed.
-	/// </summary>
-	public ItemCollectionTransition Transition => _transition;
-
-	/// <summary>
-	/// Gets the UIElement that was transitioned.
-	/// </summary>
-	public UIElement Element => _transition?.ElementInternal;
 }

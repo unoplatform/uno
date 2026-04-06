@@ -1,5 +1,7 @@
 // MUX Reference Repeater/APITests/ItemCollectionTransitionProviderTests.cs, tag winui3/release/1.6-stable
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
