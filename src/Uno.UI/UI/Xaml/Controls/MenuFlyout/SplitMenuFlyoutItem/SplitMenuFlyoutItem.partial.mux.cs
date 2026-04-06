@@ -3,6 +3,7 @@
 // MUX Reference dxaml\xcp\dxaml\lib\SplitMenuFlyoutItem_Partial.cpp, commit 5f9e85113
 
 using System.Collections.Generic;
+using System.Globalization;
 using DirectUI;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -778,12 +779,14 @@ partial class SplitMenuFlyoutItem
 		}
 	}
 
+#if false // Never called in WinUI
 	private void ClearStateFlags()
 	{
 		m_focusComingFromSubmenu = false;
 		m_focusComingFromUpwardNavigation = false;
 		m_menuHelper.ClearStateFlags();
 	}
+#endif
 
 	private void OnPresenterSizeChanged(object pSender, SizeChangedEventArgs args)
 	{
@@ -1106,6 +1109,7 @@ partial class SplitMenuFlyoutItem
 		if (!string.IsNullOrEmpty(secondaryButtonAutomationName))
 		{
 			secondaryButtonAutomationName = string.Format(
+				CultureInfo.InvariantCulture,
 				secondaryButtonAutomationName.Replace("%s", "{0}"),
 				ownerAutomationName ?? string.Empty);
 		}

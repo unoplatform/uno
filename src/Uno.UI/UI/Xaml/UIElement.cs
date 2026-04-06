@@ -841,7 +841,7 @@ namespace Microsoft.UI.Xaml
 			// because ContextFlyout is marked IsVisualTreeProperty. Remove this block when Uno's DP
 			// system implements EnterEffectiveValue/LeaveEffectiveValue for IsVisualTreeProperty properties.
 			// Remove this workaround when https://github.com/unoplatform/uno/issues/22949 is implemented.
-			if (IsActiveInVisualTree)
+			if (IsInLiveTree)
 			{
 				// Mirror WinUI's LeaveEffectiveValue → RemoveParent + Leave for old value,
 				// then EnterEffectiveValue → AddParent + Enter for new value.
