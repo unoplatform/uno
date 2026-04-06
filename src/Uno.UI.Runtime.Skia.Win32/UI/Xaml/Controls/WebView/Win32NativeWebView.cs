@@ -18,6 +18,7 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
@@ -99,30 +100,38 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String(WindowClassName);
 
 		_webViewForNextCreateWindow = new WeakReference<Win32NativeWebView>(this);
+		var parentHwnd = ParentHwnd;
+		// Create as a child from the start so the native WebView never exists as a top-level popup between
+		// creation and first attach. This is critical during rapid reload cycles to avoid transient taskbar entries.
+		var windowStyle = parentHwnd != HWND.Null ? WINDOW_STYLE.WS_CHILD | WINDOW_STYLE.WS_CLIPSIBLINGS : 0;
 		unsafe
 		{
 			_hwnd = PInvoke.CreateWindowEx(
 				0,
 				lpClassName,
 				new PCWSTR(),
-				0,
+				windowStyle,
 				PInvoke.CW_USEDEFAULT,
 				PInvoke.CW_USEDEFAULT,
 				PInvoke.CW_USEDEFAULT,
 				PInvoke.CW_USEDEFAULT,
-				HWND.Null,
+				parentHwnd,
 				HMENU.Null,
 				Win32Helper.GetHInstance(),
 				null);
 		}
 		_webViewForNextCreateWindow = null;
 
-		_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MINIMIZE);
-
 		if (_hwnd == HWND.Null)
 		{
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
+
+		// Keep the backing HWND fully hidden until host arrange + clipping pipeline makes it visible.
+		// Using SW_MINIMIZE on child windows can paint transient minimize artifacts in the parent client area.
+		_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_HIDE);
+
+		this.LogTrace()?.Trace($"Created child hwnd={_hwnd.Value} appParent={ParentHwnd.Value}");
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -150,6 +159,12 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		}
 
 		_controller = tcs.Task.Result;
+		// WebView2 can start non-rendering when the controller is created while the child HWND is hidden.
+		// Keep controller visibility explicit so the first show after arrange is deterministic, even under
+		// rapid unload/reload churn.
+		_controller.IsVisible = true;
+		// Align the initial WebView2 fallback fill with the host window to minimize white pre-content flashes.
+		ApplyInitialControllerBackgroundColor();
 		_nativeWebView = _controller.CoreWebView2;
 		_nativeWebView.Settings.IsScriptEnabled = true;
 		_nativeWebView.Settings.IsWebMessageEnabled = true;
@@ -221,7 +236,9 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 			}
 			else if (!_hwndToWebView.TryGetValue(hwnd, out webView))
 			{
-				throw new Exception($"{nameof(WndProc)} was fired on a {nameof(HWND)} before it was added to, or after it was removed from, {nameof(_hwndToWebView)}.");
+				// Defensive fallback: if teardown raced and the map no longer has this HWND, avoid crashing in static WndProc.
+				// DefWindowProc is the safest fallback here.
+				return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 			}
 			if (webView.TryGetTarget(out var target))
 			{
@@ -234,6 +251,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 	private LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
 		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
+		LogVerboseWin32Trace(() => $"WndProc {GetTrackedWndProcMessageName(msg)} hwnd={hwnd.Value} presenterParent={ParentHwnd.Value} wParam={wParam.Value} lParam={lParam.Value}{TryGetWindowPosPayload(msg, lParam)} active={PInvoke.GetActiveWindow().Value} childRect={GetWindowRectSnapshot(hwnd)} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
 
 		switch (msg)
 		{
@@ -241,6 +259,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 			case PInvoke.WM_SIZE when _controller is not null:
 				PInvoke.GetClientRect(_hwnd, out var bounds);
 				_controller.Bounds = bounds;
+				this.LogTrace()?.Trace($"Resized controller bounds to left={bounds.left} top={bounds.top} right={bounds.right} bottom={bounds.bottom}");
 				return new LRESULT(0);
 			case PInvoke.WM_SYSCOMMAND:
 				// When Alt+F4 is pressed on a focused WebView2, Windows sends WM_SYSCOMMAND with SC_CLOSE
@@ -252,9 +271,11 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 					var parentHwnd = ParentHwnd;
 					if (parentHwnd != HWND.Null)
 					{
+						this.LogTrace()?.Trace($"Forwarding {nameof(PInvoke.WM_SYSCOMMAND)} {nameof(PInvoke.SC_CLOSE)} to parent={parentHwnd.Value}");
 						PInvoke.SendMessage(parentHwnd, msg, wParam, lParam);
 						return new LRESULT(0);
 					}
+					this.LogTrace()?.Trace($"Received {nameof(PInvoke.WM_SYSCOMMAND)} {nameof(PInvoke.SC_CLOSE)} without parent window.");
 				}
 				break;
 			case PInvoke.WM_CLOSE:
@@ -264,13 +285,93 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 					var parentHwnd = ParentHwnd;
 					if (parentHwnd != HWND.Null)
 					{
+						this.LogTrace()?.Trace($"Forwarding {nameof(PInvoke.WM_CLOSE)} to parent={parentHwnd.Value}");
 						PInvoke.SendMessage(parentHwnd, msg, wParam, lParam);
 						return new LRESULT(0);
 					}
+					this.LogTrace()?.Trace($"Received {nameof(PInvoke.WM_CLOSE)} without parent window.");
 				}
 				break;
 		}
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+
+	private void ApplyInitialControllerBackgroundColor()
+	{
+		if (_presenter.XamlRoot?.HostWindow?.Background is not SolidColorBrush brush)
+		{
+			return;
+		}
+
+		// Match the *effective* host background alpha, including brush opacity, so the controller's fallback fill
+		// blends the same way as the host window while the first page paint is still pending.
+		var opacity = brush.Opacity;
+		if (!double.IsFinite(opacity))
+		{
+			opacity = 1;
+		}
+
+		opacity = Math.Clamp(opacity, 0d, 1d);
+		var effectiveAlpha = (byte)Math.Clamp((int)Math.Round(brush.Color.A * opacity, MidpointRounding.AwayFromZero), 0, byte.MaxValue);
+		var color = Color.FromArgb(effectiveAlpha, brush.Color.R, brush.Color.G, brush.Color.B);
+		_controller.DefaultBackgroundColor = color;
+		this.LogTrace()?.Trace($"Applied initial controller background argb=0x{color.ToArgb():X8} from host window background (opacity={opacity:0.###}).");
+	}
+
+	private void LogVerboseWin32Trace(Func<string> messageFactory)
+	{
+		this.LogTrace()?.Trace(messageFactory());
+	}
+
+	private static string GetTrackedWndProcMessageName(uint msg)
+		=> msg switch
+		{
+			PInvoke.WM_ACTIVATE => nameof(PInvoke.WM_ACTIVATE),
+			PInvoke.WM_ACTIVATEAPP => nameof(PInvoke.WM_ACTIVATEAPP),
+			PInvoke.WM_SETFOCUS => nameof(PInvoke.WM_SETFOCUS),
+			PInvoke.WM_KILLFOCUS => nameof(PInvoke.WM_KILLFOCUS),
+			PInvoke.WM_MOUSEACTIVATE => nameof(PInvoke.WM_MOUSEACTIVATE),
+			PInvoke.WM_NCACTIVATE => nameof(PInvoke.WM_NCACTIVATE),
+			PInvoke.WM_WINDOWPOSCHANGING => nameof(PInvoke.WM_WINDOWPOSCHANGING),
+			PInvoke.WM_WINDOWPOSCHANGED => nameof(PInvoke.WM_WINDOWPOSCHANGED),
+			PInvoke.WM_SHOWWINDOW => nameof(PInvoke.WM_SHOWWINDOW),
+			PInvoke.WM_SIZE => nameof(PInvoke.WM_SIZE),
+			PInvoke.WM_SYSCOMMAND => nameof(PInvoke.WM_SYSCOMMAND),
+			PInvoke.WM_CLOSE => nameof(PInvoke.WM_CLOSE),
+			_ => $"UnknownMessage:0x{msg:X}"
+		};
+
+	private static string TryGetWindowPosPayload(uint msg, LPARAM lParam)
+	{
+		if ((msg != PInvoke.WM_WINDOWPOSCHANGING && msg != PInvoke.WM_WINDOWPOSCHANGED) || lParam.Value == 0)
+		{
+			return string.Empty;
+		}
+
+		try
+		{
+			var windowPos = Marshal.PtrToStructure<WINDOWPOS>((IntPtr)lParam.Value);
+			return $" windowPos=(x={windowPos.x},y={windowPos.y},cx={windowPos.cx},cy={windowPos.cy},flags=0x{(uint)windowPos.flags:X})";
+		}
+		catch (Exception)
+		{
+			return " windowPos=(unavailable)";
+		}
+	}
+
+	internal static string GetWindowRectSnapshot(HWND hwnd)
+	{
+		if (hwnd == HWND.Null)
+		{
+			return "null";
+		}
+
+		if (PInvoke.GetWindowRect(hwnd, out var rect))
+		{
+			return $"{rect.left},{rect.top},{rect.right - rect.left}x{rect.bottom - rect.top}";
+		}
+
+		return $"error={Marshal.GetLastWin32Error()}";
 	}
 
 	public string DocumentTitle
@@ -298,6 +399,8 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void NativeWebView_NavigationStarting(object? sender, NativeWebView.CoreWebView2NavigationStartingEventArgs e)
 	{
+		this.LogTrace()?.Trace($"NavigationStarting id={e.NavigationId} uri={e.Uri ?? "<null>"} child={_hwnd.Value} childRect={GetWindowRectSnapshot(_hwnd)} parent={ParentHwnd.Value} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
+
 		if (e.Uri is null)
 		{
 			return; // this is what the Wpf version does
@@ -319,6 +422,8 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void NativeWebView_NavigationCompleted(object? sender, NativeWebView.CoreWebView2NavigationCompletedEventArgs e)
 	{
+		this.LogTrace()?.Trace($"NavigationCompleted id={e.NavigationId} success={e.IsSuccess} http={e.HttpStatusCode} errorStatus={e.WebErrorStatus} child={_hwnd.Value} childRect={GetWindowRectSnapshot(_hwnd)} parent={ParentHwnd.Value} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
+
 		if (!_navigationIdToUriMap.TryGetValue(e.NavigationId, out var uriString))
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
