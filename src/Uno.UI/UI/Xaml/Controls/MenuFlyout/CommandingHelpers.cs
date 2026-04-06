@@ -44,14 +44,13 @@ public class CommandingHelpers
 
 	class KeyboardAcceleratorCopyConverter : IValueConverter
 	{
-#if HAS_UNO // We have to pass in the target element so that we can set the parent of KeyboardAcceleratorCollection.
+		// We have to pass in the target element so that we can set the parent of KeyboardAcceleratorCollection.
 		private readonly ManagedWeakReference _targetWeakRef;
 
 		public KeyboardAcceleratorCopyConverter(ManagedWeakReference targetWeakRef)
 		{
 			_targetWeakRef = targetWeakRef;
 		}
-#endif
 
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{

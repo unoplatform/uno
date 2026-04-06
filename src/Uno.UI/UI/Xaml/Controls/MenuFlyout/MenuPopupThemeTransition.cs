@@ -12,7 +12,7 @@ internal class MenuPopupThemeTransition : PopupThemeTransition
 		set => SetValue(OpenedLengthProperty, value);
 	}
 
-	public static DependencyProperty OpenedLengthProperty =
+	public static DependencyProperty OpenedLengthProperty { get; } =
 		DependencyProperty.Register(nameof(OpenedLength), typeof(double), typeof(MenuPopupThemeTransition), new FrameworkPropertyMetadata(0.0));
 
 	public double ClosedRatio

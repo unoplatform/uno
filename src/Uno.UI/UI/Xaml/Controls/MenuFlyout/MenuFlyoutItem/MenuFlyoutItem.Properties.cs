@@ -42,8 +42,8 @@ partial class MenuFlyoutItem : MenuFlyoutItemBase
 	/// </summary>
 	public static DependencyProperty CommandParameterProperty { get; } =
 		DependencyProperty.Register(
-			"CommandParameter", typeof(object),
-			typeof(Controls.MenuFlyoutItem),
+			nameof(CommandParameter), typeof(object),
+			typeof(MenuFlyoutItem),
 			new FrameworkPropertyMetadata(default(object)));
 
 	/// <summary>

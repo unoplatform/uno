@@ -11,7 +11,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
-using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Scaling;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;

@@ -1,7 +1,7 @@
 ﻿namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
-/// Represents a horizontal line that separates items in an MenuFlyout.
+/// Represents a horizontal line that separates items in a MenuFlyout.
 /// </summary>
 public partial class MenuFlyoutSeparator : MenuFlyoutItemBase
 {

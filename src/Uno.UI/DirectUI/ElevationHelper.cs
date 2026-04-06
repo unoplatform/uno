@@ -44,6 +44,13 @@ internal static class ElevationHelper
 
 	internal static void ClearElevationEffect(UIElement target)
 	{
+		if (target is null)
+		{
+			return;
+		}
+
+		target.Translation = default;
+		target.Shadow = null;
 	}
 
 	internal static bool IsDefaultShadowEnabled(FrameworkElement resourceTarget) => false;

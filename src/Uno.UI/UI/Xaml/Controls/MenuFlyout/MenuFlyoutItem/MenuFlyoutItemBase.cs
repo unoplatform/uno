@@ -2,9 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference dxaml\xcp\dxaml\lib\MenuFlyoutItemBase_Partial.cpp, tag winui3/release/1.8.1, commit cd3b7ad0eca
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.DataBinding;
 
@@ -27,7 +24,14 @@ public abstract partial class MenuFlyoutItemBase : Control
 
 	// Sets the parent MenuFlyoutPresenter.
 	internal void SetParentMenuFlyoutPresenter(MenuFlyoutPresenter pParentMenuFlyoutPresenter)
-		=> m_wrParentMenuFlyoutPresenter = WeakReferencePool.RentWeakReference(this, pParentMenuFlyoutPresenter);
+	{
+		if (m_wrParentMenuFlyoutPresenter is not null)
+		{
+			WeakReferencePool.ReturnWeakReference(this, m_wrParentMenuFlyoutPresenter);
+		}
+
+		m_wrParentMenuFlyoutPresenter = WeakReferencePool.RentWeakReference(this, pParentMenuFlyoutPresenter);
+	}
 
 	internal bool GetShouldBeNarrow()
 	{

@@ -29,7 +29,7 @@ public partial class MenuFlyoutPresenterAutomationPeer : ItemsControlAutomationP
 		return result;
 	}
 
-	protected override string GetClassNameCore() => nameof(MenuFlyoutPresenter);
+	protected override string GetClassNameCore() => "MenuFlyout";
 
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Menu;
 
@@ -41,6 +41,6 @@ public partial class MenuFlyoutPresenterAutomationPeer : ItemsControlAutomationP
 			return null;
 		}
 
-		return new ItemAutomationPeer(item, this); // TODO:MZ: Currently throws
+		return new ItemAutomationPeer(item, this);
 	}
 }

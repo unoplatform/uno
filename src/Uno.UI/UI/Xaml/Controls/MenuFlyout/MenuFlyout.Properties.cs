@@ -16,7 +16,7 @@ partial class MenuFlyout
 	/// <summary>
 	/// Identifies the Items dependency property.
 	/// </summary>
-	internal static DependencyProperty ItemsProperty { get; } =
+	public static DependencyProperty ItemsProperty { get; } =
 		DependencyProperty.Register(
 			nameof(Items),
 			typeof(IList<MenuFlyoutItemBase>),

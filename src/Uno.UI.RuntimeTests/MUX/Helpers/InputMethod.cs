@@ -7,4 +7,4 @@ public enum InputMethod
 	Keyboard,
 	Mouse,
 	Remote
-};
+}
