@@ -255,4 +255,78 @@ public partial class Given_VisualStateManager
 		}
 	}
 #endif
+
+	// Repro tests for https://github.com/unoplatform/uno/issues/2042
+	[TestClass]
+	[RunsOnUIThread]
+	public class Given_VisualStateManager_Issue2042
+	{
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2042")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_VisualState_Has_Both_Setter_And_Storyboard_Setter_Is_Applied()
+		{
+			// Issue: VisualState with both Setters and a Storyboard only executes the Storyboard on iOS/Android.
+			// The Setter values are ignored on those platforms.
+			// Expected: Both Setter and Storyboard should be applied when transitioning to the state.
+
+			var vsm = (Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				             Width="300" Height="300">
+				    <Grid>
+				        <VisualStateManager.VisualStateGroups>
+				            <VisualStateGroup x:Name="TestGroup">
+				                <VisualState x:Name="Normal" />
+				                <VisualState x:Name="ActiveState">
+				                    <VisualState.Setters>
+				                        <Setter Target="TestBorder.Tag" Value="SetterApplied" />
+				                    </VisualState.Setters>
+				                    <Storyboard>
+				                        <ObjectAnimationUsingKeyFrames
+				                            Storyboard.TargetName="TestBorder"
+				                            Storyboard.TargetProperty="Background">
+				                            <DiscreteObjectKeyFrame KeyTime="0:0:0">
+				                                <DiscreteObjectKeyFrame.Value>
+				                                    <SolidColorBrush Color="Red" />
+				                                </DiscreteObjectKeyFrame.Value>
+				                            </DiscreteObjectKeyFrame>
+				                        </ObjectAnimationUsingKeyFrames>
+				                    </Storyboard>
+				                </VisualState>
+				            </VisualStateGroup>
+				        </VisualStateManager.VisualStateGroups>
+				        <Border x:Name="TestBorder" Width="100" Height="100">
+				            <Border.Background>
+				                <SolidColorBrush Color="Blue" />
+				            </Border.Background>
+				        </Border>
+				    </Grid>
+				</UserControl>
+				""")) as UserControl;
+
+			await UITestHelper.Load(vsm);
+			await UITestHelper.WaitForIdle();
+
+			var testBorder = vsm.FindName("TestBorder") as Border;
+			Assert.IsNotNull(testBorder);
+
+			// Transition to the active state (no transitions to avoid timing issues)
+			VisualStateManager.GoToState(vsm, "ActiveState", false);
+			await UITestHelper.WaitForIdle();
+
+			// Check that the Setter was applied (Tag should be "SetterApplied")
+			// On iOS/Android, only the Storyboard runs and the Setter is ignored.
+			Assert.AreEqual("SetterApplied", testBorder.Tag?.ToString(),
+				$"Expected Tag to be 'SetterApplied' from the VisualState Setter, but got '{testBorder.Tag}'. " +
+				$"On iOS/Android, only the Storyboard is applied and Setters are ignored when both are present.");
+
+			// Check that the Storyboard was also applied (Background should be Red)
+			var bg = testBorder.Background as SolidColorBrush;
+			Assert.IsNotNull(bg, "Expected Background to be a SolidColorBrush from the Storyboard.");
+			Assert.AreEqual(Windows.UI.Colors.Red, bg.Color,
+				$"Expected Background to be Red from the Storyboard animation, but got {bg.Color}.");
+		}
+	}
 }
