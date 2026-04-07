@@ -603,6 +603,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __SKIA__
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22839")]
+		public async Task When_SVGImageSource_SetSourceAsync_Stream()
+		{
+			// Regression test: when SVG is loaded via SetSourceAsync (stream, no URI),
+			// AbsoluteUri is null. GetSvgImageDataAsync must not call GetImageDataFromUriAsBytes
+			// in that case, as it would throw internally and cause spurious exceptions.
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Uno.UI.RuntimeTests/Assets/couch.svg"));
+			using var stream = await file.OpenReadAsync();
+
+			var svgImageSource = new SvgImageSource();
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+
+			var imageOpened = false;
+			var imageFailedMessage = (string)null;
+			image.ImageOpened += (_, _) => imageOpened = true;
+			image.ImageFailed += (_, e) => imageFailedMessage = e.ErrorMessage;
+
+			await UITestHelper.Load(image);
+
+			await svgImageSource.SetSourceAsync(stream);
+
+			await WindowHelper.WaitFor(() => imageOpened || imageFailedMessage is not null);
+
+			Assert.IsNull(imageFailedMessage, $"ImageFailed should not be raised when loading SVG via stream. Error: {imageFailedMessage}");
+			Assert.IsTrue(imageOpened, "ImageOpened should be raised when loading SVG via stream");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[RequiresScaling(1f)]
 		[Ignore("We are no longer using CatmullRom in favor of better performance.")]
 		public async Task When_Png_Should_Have_High_Quality()
