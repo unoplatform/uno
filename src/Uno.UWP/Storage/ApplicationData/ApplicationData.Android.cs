@@ -15,7 +15,11 @@ partial class ApplicationData
 		=> GetAndroidAppContext().FilesDir.AbsolutePath;
 
 	private static string GetRoamingFolder()
-		=> Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+	{
+		var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+		Directory.CreateDirectory(path);
+		return path;
+	}
 
 	private static string GetSharedLocalFolder()
 		=> Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
