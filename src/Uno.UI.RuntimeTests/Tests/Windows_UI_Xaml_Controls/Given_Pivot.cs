@@ -10,13 +10,14 @@ using Microsoft.UI.Xaml.Data;
 using AwesomeAssertions.Execution;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.Extensions;
+using static Uno.UI.Extensions.ViewExtensions;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
-	public class Given_Pivot
+	public partial class Given_Pivot
 	{
 		private TestsResources _testsResources;
 
@@ -170,5 +171,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		public string Title { get; set; }
 		public string Content { get; set; }
+	}
+
+	// Repro tests for https://github.com/unoplatform/uno/issues/4566
+	public partial class Given_Pivot
+	{
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4566")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Pivot_Loads_First_Header_Is_In_Selected_VisualState()
+		{
+			// Issue: PivotHeaderItem does not trigger the "Selected" VisualState when the
+			// Pivot first loads. The first tab is selected (SelectedIndex=0) but its header
+			// remains in the wrong visual state.
+			// Workaround: Reset SelectedIndex in Loaded event.
+			// Expected: First header should be in "Selected" state immediately after loading.
+
+			var pivot = new Pivot
+			{
+				Width = 400,
+				Height = 300,
+			};
+			pivot.Items.Add(new PivotItem { Header = "Tab1", Content = new TextBlock { Text = "Content1" } });
+			pivot.Items.Add(new PivotItem { Header = "Tab2", Content = new TextBlock { Text = "Content2" } });
+
+			await UITestHelper.Load(pivot, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+
+			// The first PivotItem should be selected by default
+			Assert.AreEqual(0, pivot.SelectedIndex, "Expected SelectedIndex to be 0 after loading.");
+
+			// Find the first PivotHeaderItem and check its visual state
+			var headerPanel = pivot.FindFirstDescendant<PivotHeaderPanel>();
+			Assert.IsNotNull(headerPanel, "Expected to find PivotHeaderPanel.");
+
+			var firstHeader = headerPanel.Children.OfType<PivotHeaderItem>().FirstOrDefault();
+			Assert.IsNotNull(firstHeader, "Expected at least one PivotHeaderItem.");
+
+			// The first header should be selected — verify via visual tree/state inspection
+			// Check that the Pivot has SelectedIndex=0 and the first header item exists and is loaded
+			var currentState = VisualStateManager.GetVisualStateGroups(firstHeader)
+				.FirstOrDefault(g => g.Name == "SelectionStates")
+				?.CurrentState?.Name;
+
+			Assert.AreEqual("Selected", currentState,
+				$"Expected first PivotHeaderItem to be in 'Selected' VisualState after Pivot loads, " +
+				$"but got '{currentState ?? "null"}'. " +
+				$"This confirms the 'Selected' VisualState is not triggered on initial load.");
+		}
 	}
 }
