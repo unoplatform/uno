@@ -17,6 +17,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
+using Uno.UI.RuntimeTests.Helpers;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -496,5 +498,71 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			"DOMINICA",
 			"DOMINICAN REPUBLIC"
 		};
+
+		// Repro tests for https://github.com/unoplatform/uno/issues/4293
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4293")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ListView_Grouped_Items_Have_Correct_DataContext()
+		{
+			// Issue: ListView with CollectionViewSource grouping provides null DataContext
+			// to item containers on Android and WASM.
+			// Expected: Each item container should have its corresponding item as DataContext.
+
+			var items = new[]
+			{
+				new GroupItemClass("Group1", new[] { new ItemClass("Item1:1"), new ItemClass("Item1:2") }),
+				new GroupItemClass("Group2", new[] { new ItemClass("Item2:1"), new ItemClass("Item2:2") }),
+			};
+
+			var cvs = new CollectionViewSource
+			{
+				Source = items,
+				IsSourceGrouped = true,
+			};
+
+			var sut = new ListView
+			{
+				Height = 400,
+				Width = 300,
+				ItemsSource = cvs.View,
+				ItemTemplate = (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+					@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+						<TextBlock Text='{Binding Name}' />
+					</DataTemplate>"),
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitFor(() => sut.ContainerFromIndex(0) != null, timeoutMS: 3000);
+
+			// Check that item containers have non-null DataContext
+			for (int i = 0; i < 4; i++)
+			{
+				var container = sut.ContainerFromIndex(i) as ListViewItem;
+				if (container != null)
+				{
+					Assert.IsNotNull(container.DataContext,
+						$"Expected item container at index {i} to have non-null DataContext, but got null. " +
+						$"On Android/WASM, ListView grouping provides null DataContext to items.");
+
+					Assert.IsInstanceOfType(container.DataContext, typeof(ItemClass),
+						$"Expected DataContext at index {i} to be ItemClass, but got {container.DataContext?.GetType()?.Name}.");
+				}
+			}
+		}
+
+		private class ItemClass
+		{
+			public string Name { get; }
+			public ItemClass(string name) => Name = name;
+		}
+
+		private class GroupItemClass : List<ItemClass>
+		{
+			public string Key { get; }
+			public GroupItemClass(string key, IEnumerable<ItemClass> items) : base(items) { Key = key; }
+		}
 	}
 }
