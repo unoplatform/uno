@@ -733,5 +733,73 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			Assert.AreEqual(CollectionChange.Reset, lastChange);
 			Assert.IsNull(lastKey);
 		}
+
+		[TestMethod]
+		public void When_Nested_Container_Keys_Are_Relative()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("keysRelative", ApplicationDataCreateDisposition.Always);
+			container.Values["alpha"] = "1";
+			container.Values["beta"] = "2";
+
+			var keys = container.Values.Keys.ToList();
+			Assert.Contains("alpha", keys);
+			Assert.Contains("beta", keys);
+			// Keys should not contain the container path prefix
+			Assert.IsFalse(keys.Any(k => k.Contains("keysRelative")));
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Enumerate()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("enumerate", ApplicationDataCreateDisposition.Always);
+			container.Values["x"] = "10";
+			container.Values["y"] = "20";
+
+			var dict = new Dictionary<string, object>();
+			foreach (var kvp in container.Values)
+			{
+				dict[kvp.Key] = kvp.Value;
+			}
+
+			Assert.AreEqual("10", dict["x"]);
+			Assert.AreEqual("20", dict["y"]);
+			Assert.IsFalse(dict.Keys.Any(k => k.Contains("enumerate")));
+		}
+
+		[TestMethod]
+		public void When_Delete_Container_Does_Not_Corrupt_Sibling()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var containerA = SUT.CreateContainer("siblingA", ApplicationDataCreateDisposition.Always);
+			var containerB = SUT.CreateContainer("siblingB", ApplicationDataCreateDisposition.Always);
+
+			containerA.Values["a1"] = "value_a1";
+			containerB.Values["b1"] = "value_b1";
+
+			// Delete container A
+			SUT.DeleteContainer("siblingA");
+
+			// Container B should still be intact
+			Assert.HasCount(1, SUT.Containers);
+			Assert.AreEqual("value_b1", containerB.Values["b1"]);
+			Assert.IsTrue(SUT.Containers.ContainsKey("siblingB"));
+		}
+
+		[TestMethod]
+		public void When_Delete_Container_Does_Not_Corrupt_Root_Settings()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			SUT.Values["rootSetting"] = "rootValue";
+			var container = SUT.CreateContainer("toDelete", ApplicationDataCreateDisposition.Always);
+			container.Values["nested"] = "nestedValue";
+
+			SUT.DeleteContainer("toDelete");
+
+			// Root settings should still be intact
+			Assert.AreEqual("rootValue", SUT.Values["rootSetting"]);
+			Assert.HasCount(0, SUT.Containers);
+		}
 	}
 }
