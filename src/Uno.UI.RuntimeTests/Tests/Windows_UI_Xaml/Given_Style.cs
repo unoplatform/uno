@@ -22,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	}
 
 	[TestClass]
-	public class Given_Style
+	public partial class Given_Style
 	{
 		[TestMethod]
 		[RunsOnUIThread]
@@ -105,6 +105,66 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var popupForeground = (SolidColorBrush)page.PopupTextBlock.Foreground;
 			Assert.AreEqual(Microsoft.UI.Colors.Red, popupForeground.Color);
+		}
+	}
+
+	// Repro tests for https://github.com/unoplatform/uno/issues/4066
+	public partial class Given_Style
+	{
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4066")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_TargetType_Style_Not_Applied_To_NonTarget_Elements()
+		{
+			// Issue: A Style with TargetType="Border" in a container's Resources is applied
+			// to non-Border elements (like ScrollViewer), overriding their explicitly set properties.
+			// Expected: A typed implicit style should ONLY be applied to elements of that type.
+
+			var root = (FrameworkElement)XamlReader.Load(
+				@"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+					   xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
+					   Width='400' Height='300'>
+					<Grid.Resources>
+						<!-- This Border style should NOT affect the ScrollViewer -->
+						<Style TargetType='Border'>
+							<Setter Property='Width' Value='350' />
+							<Setter Property='Height' Value='200' />
+							<Setter Property='Padding' Value='20' />
+							<Setter Property='VerticalAlignment' Value='Top' />
+						</Style>
+					</Grid.Resources>
+					<ScrollViewer x:Name='TestScrollViewer'
+						Width='400'
+						Height='300'
+						VerticalAlignment='Stretch'
+						Padding='0' />
+				</Grid>");
+
+			await UITestHelper.Load(root);
+			await UITestHelper.WaitForIdle();
+
+			var scrollViewer = root.FindName("TestScrollViewer") as ScrollViewer;
+			Assert.IsNotNull(scrollViewer);
+
+			// ScrollViewer's VerticalAlignment should be Stretch (explicitly set)
+			// NOT Top (from Border style)
+			Assert.AreEqual(VerticalAlignment.Stretch, scrollViewer.VerticalAlignment,
+				$"Expected ScrollViewer.VerticalAlignment to be Stretch (explicitly set), " +
+				$"but got {scrollViewer.VerticalAlignment}. " +
+				$"The Border-targeted style is leaking into the ScrollViewer.");
+
+			// ScrollViewer's Padding should be 0 (explicitly set), not 20 (from Border style)
+			Assert.AreEqual(new Thickness(0), scrollViewer.Padding,
+				$"Expected ScrollViewer.Padding to be 0 (explicitly set), " +
+				$"but got {scrollViewer.Padding}. " +
+				$"The Border-targeted style is leaking into the ScrollViewer.");
+
+			// ScrollViewer's Width should be 400 (explicitly set), not 350 (from Border style)
+			Assert.AreEqual(400d, scrollViewer.Width, 1d,
+				$"Expected ScrollViewer.Width to be 400 (explicitly set), " +
+				$"but got {scrollViewer.Width}. " +
+				$"The Border-targeted style is leaking into the ScrollViewer.");
 		}
 	}
 }
