@@ -5480,5 +5480,80 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public class SubclassOfObservableCollection : ObservableCollection<string>
 		{
 		}
+
+		// Repro tests for https://github.com/unoplatform/uno/issues/473
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/473")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ItemsStackPanel_GroupPadding_Adds_Space_Between_Groups()
+		{
+			// Issue: ItemsStackPanel.GroupPadding has no effect on Android and iOS.
+			// Expected: When GroupPadding is set, there should be extra spacing before/after each group.
+
+			const double ItemHeight = 40;
+			const double GroupPaddingTop = 30;
+			const double GroupPaddingBottom = 20;
+
+			// Build a two-group source: Group A has 1 item, Group B has 1 item
+			var source = new[]
+			{
+				new[] { "A-Item1" },
+				new[] { "B-Item1" },
+			};
+			var grouped = source.Select((g, i) => new GroupingHelper(i == 0 ? "Group A" : "Group B", g));
+
+			var cvs = new CollectionViewSource
+			{
+				Source = grouped,
+				IsSourceGrouped = true,
+			};
+
+			var itemTemplate = (DataTemplate)XamlReader.Load(
+				$@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+					<Border Height=""{ItemHeight}"" Background=""Blue"">
+						<TextBlock Text=""{{Binding}}"" />
+					</Border>
+				</DataTemplate>");
+
+			var sut = new ListView
+			{
+				Height = 400,
+				Width = 300,
+				ItemsSource = cvs.View,
+				ItemTemplate = itemTemplate,
+				ItemsPanel = (ItemsPanelTemplate)XamlReader.Load(
+					$@"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+						<ItemsStackPanel GroupPadding=""{GroupPaddingTop},{GroupPaddingBottom},0,0"" />
+					</ItemsPanelTemplate>"),
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+
+			// Find the container for "B-Item1" (the first item of the second group)
+			var containerB = sut.ContainerFromItem("B-Item1") as ListViewItem;
+			Assert.IsNotNull(containerB, "Could not find container for B-Item1");
+
+			// Get Y position of the second group's item relative to the ListView
+			var transformB = containerB.TransformToVisual(sut);
+			var topOfB = transformB.TransformPoint(new Point(0, 0)).Y;
+
+			// Without GroupPadding the item would be at: GroupHeader height + ItemHeight (for A-Item1)
+			// With GroupPadding it should be further down by at least GroupPaddingTop + GroupPaddingBottom
+			// We don't know the exact header height, so just verify the offset is larger than a threshold
+			// By checking that B-Item1 starts below where it would without any padding.
+			// Conservative check: top of B-Item1 should be > ItemHeight (A-Item1) + some padding
+			Assert.IsTrue(topOfB > ItemHeight + GroupPaddingTop - 5,
+				$"Expected second group's first item to be positioned below Y={ItemHeight + GroupPaddingTop - 5} " +
+				$"(accounting for GroupPadding.Top={GroupPaddingTop}), but got Y={topOfB}. " +
+				$"This suggests GroupPadding is not applied.");
+		}
+	}
+
+	file class GroupingHelper : List<string>, IGrouping<string, string>
+	{
+		public string Key { get; }
+		public GroupingHelper(string key, IEnumerable<string> items) : base(items) { Key = key; }
 	}
 }
