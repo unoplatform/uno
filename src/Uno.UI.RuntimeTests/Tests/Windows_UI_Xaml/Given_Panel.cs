@@ -100,4 +100,84 @@ public class Given_Panel
 			}
 		}
 	}
+
+	// Repro tests for https://github.com/unoplatform/uno/issues/606
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/606")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Layout_With_Large_Margin_Does_Not_Produce_Negative_Rect()
+	{
+		// Issue: When AllowNegativeWidthHeight=false (strict UWP behavior), some panels/controls
+		// pass negative Width/Height to Rect during Measure/Arrange, causing exceptions.
+		// Expected: Layout should clamp negative sizes to 0 instead of creating negative Rects.
+		// Note: The original bug was reported primarily on iOS (UIKit native layout path).
+		// These tests pass on Skia Desktop — they serve as regression tests for managed layout.
+		// The iOS-specific layout path in VirtualizingPanelLayout.UIKit.cs may still be affected.
+
+		var originalValue = Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight;
+		Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight = false;
+
+		try
+		{
+			// Scenario: Border with Padding larger than its Width/Height
+			// This commonly causes the content area to have a negative size.
+			var border = new Border
+			{
+				Width = 30,
+				Height = 30,
+				Padding = new Thickness(50), // padding (100 total) exceeds size (30)
+				Child = new Border
+				{
+					Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Red)
+				}
+			};
+
+			WindowHelper.WindowContent = border;
+			// Should not throw ArgumentOutOfRangeException about negative width/height
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+		}
+		finally
+		{
+			Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight = originalValue;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/606")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Layout_With_Large_Margin_On_Child_Does_Not_Produce_Negative_Rect()
+	{
+		// Issue: Panels create Rect with negative dimensions when a child has margins
+		// that exceed the available space.
+
+		var originalValue = Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight;
+		Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight = false;
+
+		try
+		{
+			// Scenario: Grid with a small size where child margins exceed available space
+			var grid = new Grid
+			{
+				Width = 20,
+				Height = 20,
+			};
+			grid.Children.Add(new Border
+			{
+				Margin = new Thickness(30), // 60 total margin exceeds grid 20x20
+				Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.Blue)
+			});
+
+			WindowHelper.WindowContent = grid;
+			// Should not throw ArgumentOutOfRangeException about negative width/height
+			await WindowHelper.WaitForLoaded(grid);
+			await WindowHelper.WaitForIdle();
+		}
+		finally
+		{
+			Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight = originalValue;
+		}
+	}
 }
