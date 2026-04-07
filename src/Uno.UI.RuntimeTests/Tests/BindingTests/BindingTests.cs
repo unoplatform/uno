@@ -11,6 +11,7 @@ using Private.Infrastructure;
 using SamplesApp.UITests;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests;
 
@@ -260,4 +261,67 @@ partial class BindingTests
 		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => _impl(item);
 	}
 
+}
+
+// Repro tests for https://github.com/unoplatform/uno/issues/1516
+[TestClass]
+[RunsOnUIThread]
+public class BindingTests_Issue1516
+{
+	private static T FindDescendant<T>(DependencyObject parent) where T : class
+	{
+		for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+		{
+			var child = VisualTreeHelper.GetChild(parent, i);
+			if (child is T t) return t;
+			var result = FindDescendant<T>(child);
+			if (result != null) return result;
+		}
+		return null;
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/1516")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_TemplateBinding_Missing_Property_Does_Not_Break_DP_Inheritance()
+	{
+		// Issue: When a TemplateBinding references a missing/non-existent property,
+		// the bound DependencyProperty is set to DependencyProperty.UnsetValue instead of
+		// retaining its inherited/default value.
+		// Expected: Invalid TemplateBinding should be silently ignored; the property should
+		// retain its inherited or default value.
+
+		var sut = (ContentControl)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+			@"<ContentControl xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+					xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
+				<ContentControl.Template>
+					<ControlTemplate TargetType='ContentControl'>
+						<ScrollViewer x:Name='PART_ScrollViewer'
+							HorizontalScrollBarVisibility='{TemplateBinding ARandomMissingProperty}' />
+					</ControlTemplate>
+				</ContentControl.Template>
+			</ContentControl>");
+
+		await UITestHelper.Load(sut);
+		await UITestHelper.WaitForIdle();
+
+		var scrollViewer = FindDescendant<ScrollViewer>(sut);
+		Assert.IsNotNull(scrollViewer, "ScrollViewer should be found in the visual tree.");
+
+		// HorizontalScrollBarVisibility should retain its default/inherited value (Disabled),
+		// NOT be set to DependencyProperty.UnsetValue (which could cause exceptions or unexpected behavior).
+		// The default for ScrollViewer.HorizontalScrollBarVisibility is Disabled.
+		var hsv = scrollViewer.HorizontalScrollBarVisibility;
+		Assert.AreNotEqual((ScrollBarVisibility)999, hsv,
+			"HorizontalScrollBarVisibility should not be an invalid/unset value.");
+
+		// The value should be a valid ScrollBarVisibility enum value
+		Assert.IsTrue(
+			hsv == ScrollBarVisibility.Auto ||
+			hsv == ScrollBarVisibility.Disabled ||
+			hsv == ScrollBarVisibility.Hidden ||
+			hsv == ScrollBarVisibility.Visible,
+			$"HorizontalScrollBarVisibility should be a valid enum value, but got {(int)hsv}. " +
+			$"A failed TemplateBinding to a missing property is setting it to DependencyProperty.UnsetValue.");
+	}
 }
