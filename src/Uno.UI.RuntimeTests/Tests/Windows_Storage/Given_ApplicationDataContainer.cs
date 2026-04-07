@@ -569,6 +569,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaUIKit)] // NSUserDefaults contains system keys that leak into Values
 		public void When_Nested_Container_Not_Included_In_Values()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
