@@ -9,7 +9,6 @@ on:
 
 jobs:
   xaml-style:
-    if: github.repository == 'unoplatform/uno'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
