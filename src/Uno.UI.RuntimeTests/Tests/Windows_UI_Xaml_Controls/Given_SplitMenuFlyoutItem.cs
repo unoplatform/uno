@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+#if HAS_UNO
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -222,3 +223,4 @@ public class Given_SplitMenuFlyoutItem
 		Assert.IsInstanceOfType(item.Items[1], typeof(MenuFlyoutSeparator));
 	}
 }
+#endif
