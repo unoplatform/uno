@@ -5480,5 +5480,83 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public class SubclassOfObservableCollection : ObservableCollection<string>
 		{
 		}
+
+		// Repro tests for https://github.com/unoplatform/uno/issues/166
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/166")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ItemsStackPanel_ItemsUpdatingScrollMode_KeepLastItemInView_Scrolls_On_Add()
+		{
+			// Issue: ItemsStackPanel.ItemsUpdatingScrollMode is not implemented.
+			// Expected: When ItemsUpdatingScrollMode = KeepLastItemInView and new items are added,
+			// the ListView should scroll to show the last (newest) item.
+
+			var source = new ObservableCollection<string>();
+			var sut = new ListView
+			{
+				Height = 200,
+				ItemsSource = source,
+				ItemsPanel = (ItemsPanelTemplate)XamlReader.Load(
+					@"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+						<ItemsStackPanel VerticalAlignment=""Bottom"" ItemsUpdatingScrollMode=""KeepLastItemInView"" />
+					</ItemsPanelTemplate>")
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			// Add enough items to overflow the visible area
+			for (int i = 1; i <= 20; i++)
+			{
+				source.Add($"Item {i}");
+			}
+
+			await UITestHelper.WaitForIdle();
+
+			var sv = sut.FindFirstDescendant<ScrollViewer>() ?? throw new Exception("Failed to find the ListView's ScrollViewer");
+
+			// With KeepLastItemInView, the scroll should be at the bottom after adding items
+			Assert.AreEqual(sv.ScrollableHeight, sv.VerticalOffset,
+				$"Expected ListView to scroll to bottom (VerticalOffset={sv.ScrollableHeight}) with KeepLastItemInView, but got VerticalOffset={sv.VerticalOffset}");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/166")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ItemsStackPanel_VerticalAlignment_Bottom_AlignedToBottom()
+		{
+			// Issue: ItemsStackPanel with VerticalAlignment="Bottom" for inverted/chat-style lists.
+			// Expected: When there are fewer items than the list height, items should be aligned at the bottom.
+
+			var source = new ObservableCollection<string>();
+			for (int i = 1; i <= 3; i++)
+			{
+				source.Add($"Item {i}");
+			}
+
+			var sut = new ListView
+			{
+				Height = 300,
+				ItemsSource = source,
+				ItemsPanel = (ItemsPanelTemplate)XamlReader.Load(
+					@"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+						<ItemsStackPanel VerticalAlignment=""Bottom"" ItemsUpdatingScrollMode=""KeepLastItemInView"" />
+					</ItemsPanelTemplate>")
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+
+			var panel = sut.FindFirstDescendant<ItemsStackPanel>() ?? throw new Exception("Failed to find ItemsStackPanel");
+
+			// With VerticalAlignment=Bottom, the panel should be positioned at the bottom of the ScrollViewer
+			// i.e., the top of the panel should be > 0 (pushed down)
+			var transform = panel.TransformToVisual(sut);
+			var panelTop = transform.TransformPoint(new Point(0, 0)).Y;
+
+			Assert.IsTrue(panelTop > 0,
+				$"Expected ItemsStackPanel to be aligned to the bottom (panelTop > 0), but got panelTop={panelTop}");
+		}
 	}
 }
