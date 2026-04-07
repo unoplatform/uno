@@ -16,7 +16,7 @@ using Uno.UI.RuntimeTests.Helpers;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
-	public class Given_Pivot
+	public partial class Given_Pivot
 	{
 		private TestsResources _testsResources;
 
@@ -170,5 +170,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		public string Title { get; set; }
 		public string Content { get; set; }
+	}
+
+	// Repro tests for https://github.com/unoplatform/uno/issues/3596
+	public partial class Given_Pivot
+	{
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3596")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_PivotPanel_Used_Multiple_Headers_Are_Visible()
+		{
+			// Issue: When PivotPanel is used as the Panel in the Pivot template (matching WinUI),
+			// only the first tab header is visible — it stretches the entire width.
+			// Expected: All tab headers should be visible at their natural width.
+
+			var pivot = new Pivot();
+			pivot.Width = 400;
+			pivot.Height = 300;
+			pivot.Items.Add(new PivotItem { Header = "Tab1", Content = new TextBlock { Text = "Content1" } });
+			pivot.Items.Add(new PivotItem { Header = "Tab2", Content = new TextBlock { Text = "Content2" } });
+			pivot.Items.Add(new PivotItem { Header = "Tab3", Content = new TextBlock { Text = "Content3" } });
+
+			await UITestHelper.Load(pivot, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+
+			// Find all the pivot header buttons
+			var headerItems = new List<PivotHeaderItem>();
+			void FindAll(Microsoft.UI.Xaml.DependencyObject obj)
+			{
+				for (int i = 0; i < Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(obj); i++)
+				{
+					var child = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(obj, i);
+					if (child is PivotHeaderItem phi && phi.ActualWidth > 0) headerItems.Add(phi);
+					FindAll(child);
+				}
+			}
+			FindAll(pivot);
+
+			// All 3 tabs should have visible header items
+			Assert.AreEqual(3, headerItems.Count,
+				$"Expected 3 PivotHeaderItems with ActualWidth > 0, but found {headerItems.Count}. " +
+				$"When PivotPanel is used as the Panel part, only the first header stretches to full width.");
+
+			// No single header should take up the full width of the pivot (that would indicate the stretch bug)
+			foreach (var header in headerItems)
+			{
+				Assert.IsTrue(header.ActualWidth < pivot.ActualWidth,
+					$"PivotHeaderItem has width {header.ActualWidth} which equals the full pivot width {pivot.ActualWidth}. " +
+					$"This indicates the header is stretching to fill the entire width (bug).");
+			}
+		}
 	}
 }
