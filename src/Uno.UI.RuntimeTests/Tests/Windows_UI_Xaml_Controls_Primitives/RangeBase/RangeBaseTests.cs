@@ -154,6 +154,49 @@ public class RangeBaseTests
 		valueChangedEvent = false;
 	}
 
+	// Reproduces https://github.com/unoplatform/uno/issues/22884
+	// When Value is set before Maximum (as happens when Maximum comes from a style),
+	// Value is incorrectly coerced against the stale Maximum because SetValue(ValueProperty)
+	// inside SetRangeBaseValue(MaximumProperty) reads the not-yet-committed Maximum.
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22884")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Value_Set_Before_Maximum_Value_Is_Correctly_Recoerced()
+	{
+		// Simulates the case where Maximum comes from a style (applied after local Value):
+		// 1. ProgressBar created, Value=25 set as local value → clamped to default Maximum=1
+		// 2. Style applies Maximum=100 → SetRangeBaseValue(MaximumProperty) tries to re-coerce Value
+		//    but reads stale Maximum=1 inside ValueProperty coercion → Value stays at 1
+		await RunOnUIThread(() =>
+		{
+			var progressBar = new ProgressBar();
+			progressBar.Value = 25.0; // Clamped to 1.0 (default Maximum=1)
+			progressBar.Maximum = 100.0; // Should re-coerce Value to 25.0
+
+			// Bug: Value is 1.0 because coercion inside MaximumProperty setter reads stale Maximum=1
+			Assert.AreEqual(25.0, progressBar.Value,
+				"Value should be correctly coerced to 25 after Maximum is expanded to 100");
+		});
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22884")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Value_Set_Before_Maximum_Slider_Value_Is_Correctly_Recoerced()
+	{
+		// Note: this test passes on Skia Desktop (Slider behavior differs from ProgressBar in this scenario)
+		await RunOnUIThread(() =>
+		{
+			var slider = new Slider();
+			slider.Value = 50.0;
+			slider.Maximum = 100.0;
+
+			Assert.AreEqual(50.0, slider.Value,
+				"Slider Value should be correctly coerced to 50 after Maximum is expanded to 100");
+		});
+	}
+
 	[TestMethod]
 	public async Task MinMaxValueSetThroughMarkupWork()
 	{
