@@ -16,7 +16,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 [RequiresFullWindow]
 [PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-public class Given_Frame
+public partial class Given_Frame
 {
 	[TestMethod]
 	public async Task When_Page_Ctor_Navigates()
@@ -829,5 +829,33 @@ public partial class FinalizeCounterPage : Page
 	~FinalizeCounterPage()
 	{
 		Interlocked.Increment(ref _finalizerCalls);
+	}
+}
+
+// Repro tests for https://github.com/unoplatform/uno/issues/4249
+public partial class Given_Frame
+{
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4249")]
+	public async Task When_Frame_Has_Fixed_Width_Larger_Than_Parent_Keeps_Width()
+	{
+		// Issue: Frame with Width="300" inside a Border with Width="100" shrinks to 100 on Android.
+		// Expected: Frame should keep its explicit Width=300 and clip, not shrink to parent.
+
+		var frame = new Frame { Width = 300 };
+		var border = new Border
+		{
+			Width = 100,
+			Height = 200,
+			Child = frame,
+		};
+
+		await UITestHelper.Load(border);
+		await UITestHelper.WaitForIdle();
+
+		// The Frame should have ActualWidth=300 (its explicit size), not 100 (parent's size)
+		Assert.AreEqual(300d, frame.ActualWidth, 2d,
+			$"Expected Frame.ActualWidth to be 300 (its explicit Width), but got {frame.ActualWidth}. " +
+			$"On Android, the Frame shrinks to the parent Border's width (100) instead of keeping 300.");
 	}
 }
