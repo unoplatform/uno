@@ -2166,6 +2166,7 @@
 		  <!-- END AutomationPeer API alignment -->
 
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Layout.InvalidateMeasure()" reason="protected to protected internal" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.SetSubMenuDirection(System.Boolean isSubMenuDirectionUp)" reason="Moved to explicit ISubMenuOwner interface implementation" />
 	  </Methods>
 	</IgnoreSet>
 	<![CDATA[
