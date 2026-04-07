@@ -50,177 +50,193 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.StackPanel
-			{
-				IsParsing = true,
-				// Source 0\MainPage.xaml (Line 10:3)
-				Children = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.StackPanel
 				{
-					new Microsoft.UI.Xaml.ElementStub( () => 
-					new global::Microsoft.UI.Xaml.Controls.Grid
+					IsParsing = true,
+					// Source 0\MainPage.xaml (Line 10:3)
+					Children = 
 					{
-						IsParsing = true,
-						Name = "outerGrid",
-						// Source 0\MainPage.xaml (Line 11:4)
-						Children = 
-						{
-							new global::Microsoft.UI.Xaml.Controls.StackPanel
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new Microsoft.UI.Xaml.ElementStub( () => 
+							new global::Microsoft.UI.Xaml.Controls.Grid
 							{
 								IsParsing = true,
-								Name = "inner1",
-								// Source 0\MainPage.xaml (Line 12:5)
+								Name = "outerGrid",
+								// Source 0\MainPage.xaml (Line 11:4)
 								Children = 
 								{
-									new global::Microsoft.UI.Xaml.Controls.Button
-									{
-										IsParsing = true,
-										Name = "inner1Button",
-										// Source 0\MainPage.xaml (Line 13:6)
-									}
-									.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-									{
-									__nameScope.RegisterName("inner1Button", __p1);
-									__that.inner1Button = __p1;
-									global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-									__p1.CreationComplete();
-									}
-									))
+									global::MyProject.GlobalStaticResources.__PreserveProperties(
+										new global::Microsoft.UI.Xaml.Controls.StackPanel
+										{
+											IsParsing = true,
+											Name = "inner1",
+											// Source 0\MainPage.xaml (Line 12:5)
+											Children = 
+											{
+												global::MyProject.GlobalStaticResources.__PreserveProperties(
+													new global::Microsoft.UI.Xaml.Controls.Button
+													{
+														IsParsing = true,
+														Name = "inner1Button",
+														// Source 0\MainPage.xaml (Line 13:6)
+													}
+													.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+													{
+													__nameScope.RegisterName("inner1Button", __p1);
+													__that.inner1Button = __p1;
+													global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+													__p1.CreationComplete();
+													}
+													))
+												)
+												,
+											}
+										}
+										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+										{
+										__nameScope.RegisterName("inner1", __p1);
+										__that.inner1 = __p1;
+										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+										__p1.CreationComplete();
+										}
+										))
+									)
+									,
+									global::MyProject.GlobalStaticResources.__PreserveProperties(
+										new global::Microsoft.UI.Xaml.Controls.Button
+										{
+											IsParsing = true,
+											Name = "inner2",
+											Template = 											global::MyProject.GlobalStaticResources.__PreserveProperties(
+												new global::Microsoft.UI.Xaml.Controls.ControlTemplate(this, Build_PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem)
+											)
+											,
+											// Source 0\MainPage.xaml (Line 15:5)
+										}
+										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+										{
+										__nameScope.RegisterName("inner2", __p1);
+										__that.inner2 = __p1;
+										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+										__p1.CreationComplete();
+										}
+										))
+									)
+									,
+									global::MyProject.GlobalStaticResources.__PreserveProperties(
+										new global::Microsoft.UI.Xaml.Controls.StackPanel
+										{
+											IsParsing = true,
+											Name = "inner3",
+											// Source 0\MainPage.xaml (Line 24:5)
+											Children = 
+											{
+												global::MyProject.GlobalStaticResources.__PreserveProperties(
+													new global::Microsoft.UI.Xaml.Controls.Button
+													{
+														IsParsing = true,
+														Name = "inner3Button",
+														// Source 0\MainPage.xaml (Line 25:6)
+													}
+													.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+													{
+													__nameScope.RegisterName("inner3Button", __p1);
+													__that.inner3Button = __p1;
+													global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+													__p1.CreationComplete();
+													}
+													))
+												)
+												,
+											}
+										}
+										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+										{
+										__nameScope.RegisterName("inner3", __p1);
+										__that.inner3 = __p1;
+										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+										__p1.CreationComplete();
+										}
+										))
+									)
 									,
 								}
 							}
-							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 							{
-							__nameScope.RegisterName("inner1", __p1);
-							__that.inner1 = __p1;
+							/* _isTopLevelDictionary:False */
+							__that._component_0 = __p1;
+							__nameScope.RegisterName("outerGrid", __p1);
+							__that.outerGrid = __p1;
+							/* Skipping x:Load attribute already applied to ElementStub */
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 							__p1.CreationComplete();
 							}
 							))
-							,
-							new global::Microsoft.UI.Xaml.Controls.Button
+							)							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 							{
-								IsParsing = true,
-								Name = "inner2",
-								Template = 								new global::Microsoft.UI.Xaml.Controls.ControlTemplate(this, Build_PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem)
-								,
-								// Source 0\MainPage.xaml (Line 15:5)
-							}
-							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-							{
-							__nameScope.RegisterName("inner2", __p1);
-							__that.inner2 = __p1;
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-							__p1.CreationComplete();
-							}
-							))
-							,
-							new global::Microsoft.UI.Xaml.Controls.StackPanel
-							{
-								IsParsing = true,
-								Name = "inner3",
-								// Source 0\MainPage.xaml (Line 24:5)
-								Children = 
+							__p1.Name = "outerGrid";
+							_outerGridSubject.ElementInstance = __p1;
+							__p1.SetBinding(
+								global::Microsoft.UI.Xaml.ElementStub.LoadProperty,
+								new Microsoft.UI.Xaml.Data.Binding()
 								{
-									new global::Microsoft.UI.Xaml.Controls.Button
+									Mode = BindingMode.OneTime,
+								}
+									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime IsLoaded*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null ))
+							);
+							__that._component_1 = __p1;
+							var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
+							void _component_1_update(global::Microsoft.UI.Xaml.ElementStub sender)
+							{
+								if (_component_1_update_That.Target is global::TestRepro.MainPage that)
+								{
+									if (sender.IsMaterialized)
 									{
-										IsParsing = true,
-										Name = "inner3Button",
-										// Source 0\MainPage.xaml (Line 25:6)
+										that.Bindings.UpdateResources();
+										that.Bindings.NotifyXLoad("outerGrid");
 									}
-									.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+									else
 									{
-									__nameScope.RegisterName("inner3Button", __p1);
-									__that.inner3Button = __p1;
-									global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-									__p1.CreationComplete();
+										that._outerGridSubject.ElementInstance = null;
+										that._inner1Subject.ElementInstance = null;
+										that._inner1Subject.ElementInstance = null;
+										that._inner1ButtonSubject.ElementInstance = null;
+										that._inner1ButtonSubject.ElementInstance = null;
+										that._inner2Subject.ElementInstance = null;
+										that._inner2Subject.ElementInstance = null;
+										that._inner3Subject.ElementInstance = null;
+										that._inner3Subject.ElementInstance = null;
+										that._inner3ButtonSubject.ElementInstance = null;
+										that._inner3ButtonSubject.ElementInstance = null;
 									}
-									))
-									,
 								}
 							}
-							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+							__p1.MaterializationChanged += _component_1_update;
+							var owner = this;
+							void _component_1_materializing(object sender)
 							{
-							__nameScope.RegisterName("inner3", __p1);
-							__that.inner3 = __p1;
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-							__p1.CreationComplete();
+								if (_component_1_update_That.Target is global::TestRepro.MainPage that)
+								{
+									that._component_0.ApplyXBind();
+									that._component_0.UpdateResourceBindings();
+								}
+							}
+							__p1.Materializing += _component_1_materializing;
 							}
 							))
-							,
-						}
+						)
+						,
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
-					{
-					/* _isTopLevelDictionary:False */
-					__that._component_0 = __p1;
-					__nameScope.RegisterName("outerGrid", __p1);
-					__that.outerGrid = __p1;
-					/* Skipping x:Load attribute already applied to ElementStub */
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
-					)					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
-					{
-					__p1.Name = "outerGrid";
-					_outerGridSubject.ElementInstance = __p1;
-					__p1.SetBinding(
-						global::Microsoft.UI.Xaml.ElementStub.LoadProperty,
-						new Microsoft.UI.Xaml.Data.Binding()
-						{
-							Mode = BindingMode.OneTime,
-						}
-							.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime IsLoaded*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null ))
-					);
-					__that._component_1 = __p1;
-					var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
-					void _component_1_update(global::Microsoft.UI.Xaml.ElementStub sender)
-					{
-						if (_component_1_update_That.Target is global::TestRepro.MainPage that)
-						{
-							if (sender.IsMaterialized)
-							{
-								that.Bindings.UpdateResources();
-								that.Bindings.NotifyXLoad("outerGrid");
-							}
-							else
-							{
-								that._outerGridSubject.ElementInstance = null;
-								that._inner1Subject.ElementInstance = null;
-								that._inner1Subject.ElementInstance = null;
-								that._inner1ButtonSubject.ElementInstance = null;
-								that._inner1ButtonSubject.ElementInstance = null;
-								that._inner2Subject.ElementInstance = null;
-								that._inner2Subject.ElementInstance = null;
-								that._inner3Subject.ElementInstance = null;
-								that._inner3Subject.ElementInstance = null;
-								that._inner3ButtonSubject.ElementInstance = null;
-								that._inner3ButtonSubject.ElementInstance = null;
-							}
-						}
-					}
-					__p1.MaterializationChanged += _component_1_update;
-					var owner = this;
-					void _component_1_materializing(object sender)
-					{
-						if (_component_1_update_That.Target is global::TestRepro.MainPage that)
-						{
-							that._component_0.ApplyXBind();
-							that._component_0.UpdateResourceBindings();
-						}
-					}
-					__p1.Materializing += _component_1_materializing;
-					}
-					))
-					,
 				}
-			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-			{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-			__p1.CreationComplete();
-			}
-			))
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+				{
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this
@@ -321,38 +337,42 @@ namespace TestRepro
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
 					this.__rootInstance = 
-					new global::Microsoft.UI.Xaml.Controls.Grid
-					{
-						IsParsing = true,
-						Name = "gridInsideTemplate",
-						// Source 0\MainPage.xaml (Line 18:8)
-						Children = 
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.Controls.Grid
 						{
-							new global::Microsoft.UI.Xaml.Controls.Grid
+							IsParsing = true,
+							Name = "gridInsideTemplate",
+							// Source 0\MainPage.xaml (Line 18:8)
+							Children = 
 							{
-								IsParsing = true,
-								Name = "gridInsideGridInsideTemplate",
-								// Source 0\MainPage.xaml (Line 19:9)
+								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.Controls.Grid
+									{
+										IsParsing = true,
+										Name = "gridInsideGridInsideTemplate",
+										// Source 0\MainPage.xaml (Line 19:9)
+									}
+									.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+									{
+									__nameScope.RegisterName("gridInsideGridInsideTemplate", __p1);
+									__that.gridInsideGridInsideTemplate = __p1;
+									global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+									__p1.CreationComplete();
+									}
+									))
+								)
+								,
 							}
-							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
-							{
-							__nameScope.RegisterName("gridInsideGridInsideTemplate", __p1);
-							__that.gridInsideGridInsideTemplate = __p1;
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-							__p1.CreationComplete();
-							}
-							))
-							,
 						}
-					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
-					{
-					__nameScope.RegisterName("gridInsideTemplate", __p1);
-					__that.gridInsideTemplate = __p1;
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
+						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+						{
+						__nameScope.RegisterName("gridInsideTemplate", __p1);
+						__that.gridInsideTemplate = __p1;
+						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+						__p1.CreationComplete();
+						}
+						))
+					)
 					;
 					if (__rootInstance is DependencyObject d)
 					{

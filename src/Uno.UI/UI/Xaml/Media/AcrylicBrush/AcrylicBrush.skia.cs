@@ -3,7 +3,6 @@
 using System;
 using System.IO;
 using Windows.UI;
-using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Windows.Graphics.Effects;
 using Microsoft.Graphics.Canvas;
@@ -14,6 +13,13 @@ namespace Microsoft.UI.Xaml.Media;
 
 public partial class AcrylicBrush
 {
+	private static Lazy<SkiaSharp.SKImage?> _noiseImage = new(() =>
+	{
+		using Stream? imgStream = typeof(AcrylicBrush).Assembly.GetManifestResourceStream(NoiseAssetResourceName);
+		return imgStream is not null
+			? SkiaSharp.SKImage.FromEncodedData(imgStream)
+			: null;
+	});
 	private CompositionEffectBrush? _noiseBrush;
 	private CompositionBrush? _brush;
 	private bool _isUsingOpaqueBrush;
@@ -21,6 +27,8 @@ public partial class AcrylicBrush
 
 	private const float BlurRadius = 30.0f;
 	private const float NoiseOpacity = 0.02f;
+
+	private const string NoiseAssetResourceName = "Uno.UI.Resources.NoiseAsset256x256.png";
 
 	private struct EffectNames
 	{
@@ -65,6 +73,12 @@ public partial class AcrylicBrush
 	{
 		base.OnPropertyChanged2(args);
 
+		if (args.Property == AcrylicBrushExtensions.UseCompositionEffectBrushProperty)
+		{
+			UpdateAcrylicBrush();
+			return;
+		}
+
 		switch (args.Property.Name)
 		{
 			case nameof(TintColor):
@@ -91,60 +105,12 @@ public partial class AcrylicBrush
 	{
 		Compositor compositor = Compositor.GetSharedCompositor();
 
+		_brush?.Dispose();
 		if (forceCreateAcrylicBrush)
 		{
-			if
-			(
-#if UNO_DISABLE_ACRYLIC_ON_CPU
-				compositor.IsSoftwareRenderer is true ||
-#endif
-				!EnsureNoiseBrush() || _noiseBrush is null
-			)
-			{
-				CreateAcrylicBrush(false, false);
-				return;
-			}
-
-			Color tintColor = GetEffectiveTintColor();
-			Color luminosityColor = GetEffectiveLuminosityColor();
-
-			_isUsingOpaqueBrush = tintColor.A == 255;
-
-			var acrylicBrush = CreateAcrylicBrushWorker(
-				compositor,
-				false,
-				useCrossFadeEffect,
-				tintColor,
-				luminosityColor,
-				FallbackColor,
-				_isUsingOpaqueBrush);
-
-			if (acrylicBrush is null)
-			{
-				CreateAcrylicBrush(false, false);
-				return;
-			}
-
-			// Set noise image source
-			acrylicBrush.SetSourceParameter("Noise", _noiseBrush);
-
-			// Clamp the backdrop blur to prevent color bleeding from neighboring elements
-			acrylicBrush.UseBackdropBlurClamp = true;
-
-			// TODO: Composition properties aren't supported yet
-			/*acrylicBrush.Properties.InsertColor("TintColor.Color", tintColor);
-			if (!_isUsingOpaqueBrush)
-			{
-				acrylicBrush.Properties.InsertColor("LuminosityColor.Color", luminosityColor);
-			}
-
-			if (useCrossFadeEffect)
-			{
-				acrylicBrush.Properties.InsertColor("FallbackColor.Color", FallbackColor);
-			}*/
-
-			// Update the AcrylicBrush
-			_brush = acrylicBrush;
+			_brush = AcrylicBrushExtensions.GetUseCompositionEffectBrush(this)
+				? CreateAcrylicBrushViaCompositionEffect(compositor, useCrossFadeEffect)
+				: CreateAcrylicBrushDirect(compositor);
 		}
 		else
 		{
@@ -152,6 +118,86 @@ public partial class AcrylicBrush
 		}
 
 		CompositionBrush = _brush;
+	}
+
+	#region Direct SkiaAcrylicBrush path
+
+	private CompositionBrush CreateAcrylicBrushDirect(Compositor compositor)
+	{
+		if (_noiseImage.Value is null)
+		{
+			return compositor.CreateColorBrush(FallbackColor);
+		}
+
+		Color tintColor = GetEffectiveTintColor();
+		Color luminosityColor = GetEffectiveLuminosityColor();
+
+		_isUsingOpaqueBrush = tintColor.A == 255;
+
+		var skLuminosity = new SkiaSharp.SKColor(luminosityColor.R, luminosityColor.G, luminosityColor.B, luminosityColor.A);
+		var skTint = new SkiaSharp.SKColor(tintColor.R, tintColor.G, tintColor.B, tintColor.A);
+
+		var existingBrush = new SkiaAcrylicBrush(Compositor.GetSharedCompositor());
+		existingBrush.IsOpaque = _isUsingOpaqueBrush;
+		existingBrush.LuminosityColor = skLuminosity;
+		existingBrush.TintColor = skTint;
+		existingBrush.BlurSigma = BlurRadius;
+		existingBrush.NoiseOpacity = NoiseOpacity;
+		existingBrush.NoiseImage = _noiseImage.Value;
+
+		return existingBrush;
+	}
+
+	#endregion
+
+	#region CompositionEffectBrush path (legacy, behind flag)
+
+	private CompositionBrush CreateAcrylicBrushViaCompositionEffect(Compositor compositor, bool useCrossFadeEffect)
+	{
+		if (!EnsureNoiseBrush() || _noiseBrush is null)
+		{
+			return compositor.CreateColorBrush(FallbackColor);
+		}
+
+		Color tintColor = GetEffectiveTintColor();
+		Color luminosityColor = GetEffectiveLuminosityColor();
+
+		_isUsingOpaqueBrush = tintColor.A == 255;
+
+		var acrylicBrush = CreateAcrylicBrushWorker(
+			compositor,
+			false,
+			useCrossFadeEffect,
+			tintColor,
+			luminosityColor,
+			FallbackColor,
+			_isUsingOpaqueBrush);
+
+		if (acrylicBrush is null)
+		{
+			return compositor.CreateColorBrush(FallbackColor);
+		}
+
+		// Set noise image source
+		acrylicBrush.SetSourceParameter("Noise", _noiseBrush);
+
+		// Clamp the backdrop blur to prevent color bleeding from neighboring elements
+		acrylicBrush.UseBackdropBlurClamp = true;
+
+		// TODO: Composition properties aren't supported yet
+		/*acrylicBrush.Properties.InsertColor("TintColor.Color", tintColor);
+		if (!_isUsingOpaqueBrush)
+		{
+			acrylicBrush.Properties.InsertColor("LuminosityColor.Color", luminosityColor);
+		}
+
+		if (useCrossFadeEffect)
+		{
+			acrylicBrush.Properties.InsertColor("FallbackColor.Color", FallbackColor);
+		}*/
+
+		// Update the AcrylicBrush
+		return acrylicBrush;
 	}
 
 	private bool EnsureNoiseBrush()
@@ -331,6 +377,8 @@ public partial class AcrylicBrush
 
 		return colorBlendEffect;
 	}
+
+	#endregion
 
 	private Color GetEffectiveLuminosityColor()
 	{

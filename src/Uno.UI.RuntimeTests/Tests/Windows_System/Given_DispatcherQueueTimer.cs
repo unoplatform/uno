@@ -158,6 +158,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno/issues/22862
 		public void When_SetNegativeInterval()
 		{
 			var timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
@@ -166,6 +167,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno/issues/22862
 		public async Task When_No_Interval_Set()
 		{
 			var dispatcherTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
@@ -224,6 +226,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno/issues/22862
 		public async Task When_Change_Interval_Higher()
 		{
 			var dispatcherTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();

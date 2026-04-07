@@ -457,6 +457,81 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS)]
+	public async Task When_WebMessageReceived_After_RemoveAdd()
+	{
+		var border = new Border();
+		var webView = new WebView2();
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		await webView.EnsureCoreWebView2Async();
+
+		string message = null;
+		bool navigationCompleted = false;
+		webView.WebMessageReceived += (s, e) =>
+		{
+			message = e.WebMessageAsJson;
+		};
+		webView.NavigationCompleted += (s, e) =>
+		{
+			navigationCompleted = true;
+		};
+
+		var html =
+"""
+<html>
+	<body>
+		<script type="text/javascript">
+			function sendWebMessage(){
+				try{
+					let message = {"test": "postmessage"};
+
+					if (window.hasOwnProperty("chrome") && typeof chrome.webview !== undefined) {
+						chrome.webview.postMessage(message);
+					} else if (window.hasOwnProperty("unoWebView")) {
+						unoWebView.postMessage(JSON.stringify(message));
+					} else if (window.hasOwnProperty("webkit") && typeof webkit.messageHandlers !== undefined) {
+						webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));
+					}
+				}
+				catch (ex){
+					alert("Error occurred: " + ex);
+				}
+			}
+		</script>
+	</body>
+</html>
+""";
+
+		// First, verify PostMessage works before remove/add
+		webView.NavigateToString(html);
+		await TestServices.WindowHelper.WaitFor(() => navigationCompleted, 2000);
+		await webView.ExecuteScriptAsync("sendWebMessage()");
+		await TestServices.WindowHelper.WaitFor(() => message is not null, 2000);
+		Assert.IsNotNull(message, "PostMessage should work before remove/add");
+
+		// Remove WebView2 from visual tree
+		message = null;
+		navigationCompleted = false;
+		border.Child = null;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Re-add the same WebView2 instance
+		border.Child = webView;
+		await TestServices.WindowHelper.WaitForLoaded(webView);
+
+		// Navigate again and verify PostMessage still works
+		webView.NavigateToString(html);
+		await TestServices.WindowHelper.WaitFor(() => navigationCompleted, 2000);
+		await webView.ExecuteScriptAsync("sendWebMessage()");
+		await TestServices.WindowHelper.WaitFor(() => message is not null, 2000);
+		Assert.IsNotNull(message, "PostMessage should still work after removing and re-adding WebView2 to visual tree");
+	}
+
+	[TestMethod]
 	[Ignore("WebResourceResponseReceived is not yet implemented")]
 	public async Task When_Navigate_Error()
 	{

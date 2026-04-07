@@ -55,7 +55,17 @@ internal partial class InputManager : IInputInjectorTarget
 	//TODO Uno: Set along with user input - this needs to be adjusted soon
 	internal InputDeviceType LastInputDeviceType { get; set; } = InputDeviceType.None;
 
-	internal FocusInputDeviceKind LastFocusInputDeviceKind { get; set; }
+	internal FocusInputDeviceKind LastFocusInputDeviceKind =>
+		LastInputDeviceType switch
+		{
+			InputDeviceType.None => FocusInputDeviceKind.None,
+			InputDeviceType.Mouse => FocusInputDeviceKind.Mouse,
+			InputDeviceType.Touch => FocusInputDeviceKind.Touch,
+			InputDeviceType.Pen => FocusInputDeviceKind.Pen,
+			InputDeviceType.Keyboard => FocusInputDeviceKind.Keyboard,
+			InputDeviceType.GamepadOrRemote => FocusInputDeviceKind.GameController,
+			_ => throw new ArgumentOutOfRangeException()
+		};
 
 	internal bool ShouldRequestFocusSound()
 	{

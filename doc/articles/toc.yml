@@ -209,6 +209,8 @@
         href: platform-specific-csharp.md
       - name: Platform-specific XAML markup
         href: platform-specific-xaml.md
+      - name: Auto-Generated Code-Behind
+        href: xref:Uno.Features.AutoCodeBehind
       - name: Creating Custom Controls
         href: guides/creating-custom-controls.md
       - name: Control Libraries
@@ -622,6 +624,8 @@
           href: features/working-with-themes.md
         - name: User inputs - Keyboard, Pointers, Gestures, Manipulations, Drag and drop
           href: features/pointers-keyboard-and-other-user-inputs.md
+        - name: Preventing Browser Keyboard Shortcuts (WASM)
+          href: features/browser-input-helper.md
         - name: Using Fluent styles in legacy apps
           href: features/using-winui2.md
         - name: Windowing

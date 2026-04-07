@@ -56,6 +56,8 @@ public partial class TextBox
 	private (int start, int length)? _pendingSelection;
 
 	private bool _clearHistoryOnTextChanged = true;
+	private CompositionBrush _cachedCaretBrush;
+	private Color _cachedCaretColor;
 
 	private static readonly VirtualKeyModifiers _platformCtrlKey;
 
@@ -315,7 +317,12 @@ public partial class TextBox
 
 	partial void OnIsReadonlyChangedPartial() => UpdateCanPasteClipboardContent();
 
-	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
+	partial void OnForegroundColorChangedPartial(Brush newValue)
+	{
+		TextBoxView?.OnForegroundChanged(newValue);
+		// Update the caret brush to match the new foreground color.
+		UpdateDisplaySelection();
+	}
 
 	partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => TextBoxView?.OnSelectionHighlightColorChanged(brush);
 
@@ -602,8 +609,12 @@ public partial class TextBox
 				!IsReadOnly &&
 				!FeatureConfiguration.TextBox.HideCaret)
 			{
-				var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor());
-				displayBlock.RenderCaret = (IsBackwardSelection ? SelectionStart : SelectionStart + SelectionLength, brush);
+				// WinUI uses DestInvert composite mode with a white brush so the caret
+				// is always visible regardless of theme. Uno doesn't support DestInvert,
+				// so we use the TextBox's own Foreground (element-theme-aware via
+				// ThemeResource) with fully opaque alpha for maximum caret visibility.
+				var caretBrush = GetOpaqueCaretBrush();
+				displayBlock.RenderCaret = (IsBackwardSelection ? SelectionStart : SelectionStart + SelectionLength, caretBrush);
 			}
 			else
 			{
@@ -618,6 +629,38 @@ public partial class TextBox
 				_textBoxNotificationsSingleton?.NotifySelectionChanged(this);
 			}
 		}
+	}
+
+	/// <summary>
+	/// Gets a fully opaque composition brush derived from the TextBox's Foreground for caret rendering.
+	/// WinUI uses DestInvert composite mode (white brush + invert), but Uno doesn't support that.
+	/// Instead, we use the element-theme-aware Foreground with full opacity for maximum visibility.
+	/// </summary>
+	private CompositionBrush GetOpaqueCaretBrush()
+	{
+		var compositor = Compositor.GetSharedCompositor();
+		if (Foreground is SolidColorBrush scb)
+		{
+			var color = scb.Color;
+			if (color.A < 255)
+			{
+				// Force fully opaque for caret visibility
+				color = Color.FromArgb(255, color.R, color.G, color.B);
+			}
+
+			if (_cachedCaretBrush is not null && _cachedCaretColor == color)
+			{
+				return _cachedCaretBrush;
+			}
+
+			_cachedCaretColor = color;
+			_cachedCaretBrush = compositor.CreateColorBrush(color);
+			return _cachedCaretBrush;
+		}
+
+		_cachedCaretBrush = null;
+		_cachedCaretColor = default;
+		return DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
 	}
 
 	private void UpdateScrolling() => UpdateScrolling(true);
@@ -762,6 +805,42 @@ public partial class TextBox
 	#endregion
 
 	/// <summary>
+	/// Narrows the BringIntoView target rect to the caret position so that parent
+	/// ScrollViewers scroll to the cursor rather than the full TextBox bounds.
+	/// </summary>
+	/// <remarks>
+	/// When a TextBox has its internal scrolling disabled and relies on an outer
+	/// ScrollViewer, the default BringIntoView uses the full element bounds.
+	/// For a tall TextBox this causes the outer ScrollViewer to scroll to the
+	/// element edges rather than to the cursor position.
+	/// </remarks>
+	protected override void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs e)
+	{
+		base.OnBringIntoViewRequested(e);
+
+		if (_isSkiaTextBox
+			&& (e.TargetElement is null || e.TargetElement == this)
+			&& FocusState != FocusState.Unfocused
+			&& _contentElement is ScrollViewer { VerticalScrollMode: ScrollMode.Disabled }
+			&& TextBoxView?.DisplayBlock is { } displayBlock
+			&& displayBlock.ParsedText is { } parsedText)
+		{
+			var selectionEnd = _selection.selectionEndsAtTheStart
+				? _selection.start
+				: _selection.start + _selection.length;
+
+			var caretRect = parsedText.GetRectForIndex(selectionEnd);
+			caretRect = caretRect with { Width = Math.Max(caretRect.Width, TextBlock.CaretThickness) };
+
+			// Transform from TextBlock coordinate space to TextBox coordinate space
+			var transform = displayBlock.TransformToVisual(this);
+			var caretRectInTextBox = transform.TransformBounds(caretRect);
+
+			e.TargetRect = caretRectInTextBox;
+		}
+	}
+
+	/// <summary>
 	/// Scrolls the <see cref="_contentElement"/> so that the caret is inside the visible viewport
 	/// </summary>
 	/// <remarks>
@@ -789,6 +868,14 @@ public partial class TextBox
 			var newVerticalOffset = verticalOffset.AtMost(caretRect.Top).AtLeast(caretRect.Bottom - sv.ViewportHeight);
 
 			sv.ChangeView(newHorizontalOffset, newVerticalOffset, null);
+		}
+
+		// When the TextBox's internal scrolling is disabled, an outer ScrollViewer
+		// handles scrolling. Notify it so the caret stays visible after text changes.
+		if (FocusState != FocusState.Unfocused
+			&& _contentElement is ScrollViewer { VerticalScrollMode: ScrollMode.Disabled })
+		{
+			StartBringIntoView(new BringIntoViewOptions { AnimationDesired = false });
 		}
 	}
 
@@ -930,6 +1017,11 @@ public partial class TextBox
 			case VirtualKey.Control:
 			case VirtualKey.LeftControl:
 			case VirtualKey.RightControl:
+			case VirtualKey.Menu:
+			case VirtualKey.LeftMenu:
+			case VirtualKey.RightMenu:
+			case VirtualKey.LeftWindows:
+			case VirtualKey.RightWindows:
 				// No-op when pressing these key specifically.
 				return;
 		}

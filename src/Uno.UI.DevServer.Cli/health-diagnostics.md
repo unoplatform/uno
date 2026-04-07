@@ -1,6 +1,25 @@
 # Health & Diagnostics
 
-`HealthService` exposes an always-available `uno_health` MCP tool and a `uno://health` resource so AI agents can inspect DevServer state even before the upstream Host is ready.
+`HealthService` exposes an always-available `uno_health` MCP tool and a `uno://health` resource so AI agents can inspect DevServer state even before the upstream Host is ready. The CLI also exposes `uno.devserver health`, with `--json` returning the same `HealthReport` payload. The bridge also exposes `uno_app_select_solution` so an agent can explicitly choose a Uno solution when auto-discovery is ambiguous or deferred.
+
+## Active Server Ownership
+
+`list`, `disco`, and `health` all need enough runtime detail to answer one practical question: **who started the DevServer that is currently running for this workspace?**
+
+To support that, active server diagnostics should include:
+
+- `ProcessId`
+- `ParentProcessId`
+- `IdeChannelId`
+- a bounded **process ancestry chain** displayed ancestor-first (`IDE → ... → dotnet → Host`) with PID + process name (up to 8 levels)
+
+The ancestry chain is diagnostic only. It helps callers distinguish:
+
+- a host launched by the current IDE session
+- a host launched by another IDE
+- a host launched indirectly by an MCP server or shell
+
+This is especially important when `uno.devserver start --ideChannel ...` reuses an existing Host and updates the active IDE channel in-place instead of killing the Host.
 
 ## Data Flow
 
@@ -18,6 +37,8 @@ DevServerMonitor.LastDiscoveryInfo
 |------|------|
 | `Mcp/HealthService.cs` | Produces `uno_health` tool and `uno://health` resource |
 | `Mcp/HealthReport.cs` | Data model, `IssueCode` enum, `ValidationSeverity` enum |
+| `Mcp/HealthReportFactory.cs` | Shared builder for MCP and CLI health reports |
+| `Helpers/HealthReportFormatter.cs` | Plain-text / JSON rendering for CLI health output |
 | `Mcp/DiscoveryIssueMapper.cs` | Static mapper: `DiscoveryInfo` --> `ValidationIssue[]` |
 
 ## Discovery-Time Issues (`DiscoveryIssueMapper`)
@@ -26,6 +47,8 @@ Static mapper that converts `DiscoveryInfo` fields into `ValidationIssue[]`. Iss
 
 | IssueCode | Severity | Trigger | Early exit? |
 |-----------|----------|---------|-------------|
+| `WorkspaceNotResolved` | Fatal | Solutions exist, but none resolve to a valid Uno workspace | Yes |
+| `WorkspaceAmbiguous` | Warning | Multiple Uno workspaces match equally well | Yes |
 | `GlobalJsonNotFound` | Fatal | `GlobalJsonPath` is null | Yes |
 | `UnoSdkNotInGlobalJson` | Fatal | `UnoSdkPackage` or `UnoSdkVersion` is null | Yes |
 | `SdkNotInCache` | Fatal | `UnoSdkPath` is null | Yes |
@@ -60,9 +83,38 @@ Three codes exist in the `IssueCode` enum but are **not currently mapped** in CL
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `DiscoveredSolutions` | `string[]?` | Relative paths to `.sln`/`.slnx` files found by recursive search (null when none found) |
+| `DiscoveredSolutions` | `string[]?` | `.sln`/`.slnx` paths relative to the active monitor working directory. This may be `null` when a caller omits the field, or an empty array when discovery completed with no candidates. |
 | `ConnectionState` | `ConnectionState?` | Lifecycle state of the MCP bridge (see `Mcp/ConnectionState.cs` for state diagram) |
-| `Discovery` | `DiscoverySummary?` | Full discovery info including `ActiveServers[]` with `IsInWorkspace` flag |
+| `EffectiveWorkspaceDirectory` | `string?` | Resolved workspace directory used for discovery and cache identity |
+| `SelectedSolutionPath` | `string?` | Solution selected for the current workspace |
+| `SelectionSource` | `WorkspaceSelectionSource?` | Whether the current selection was automatic, roots-confirmed, or explicitly user-selected |
+| `ResolutionKind` | `WorkspaceResolutionKind?` | How the workspace was selected (`CurrentDirectory`, `AutoDiscovered`, `Ambiguous`, `NoValidWorkspace`, `NoCandidates`) |
+| `Discovery` | `DiscoverySummary?` | Full discovery info including `ActiveServers[]` with `IsInWorkspace`, `IdeChannelId`, and process ancestry |
+
+## `start --ideChannel` reuse semantics
+
+When a Host already exists for the selected solution:
+
+- `uno.devserver start` without `--ideChannel` keeps the existing "already running" behavior
+- `uno.devserver start --ideChannel <id>` reuses the Host and replaces the active IDE channel without restarting the process
+
+Because the Host stays alive, `health` and `disco` must show the updated `IdeChannelId` and current process ancestry so launchers can verify that the running instance was reused rather than respawned.
+
+### IDE channel lifecycle logging
+
+The Host emits the following diagnostic logs during channel operations:
+
+| Log level | Message | When |
+|-----------|---------|------|
+| Information | `IDE channel rebind requested: {ChannelId}` | HTTP POST hits the rebind endpoint |
+| Information | `IDE channel pipe created: \\.\pipe\{ChannelId}` | Named pipe server stream created |
+| Information | `IDE channel {ChannelId}: waiting for client connection...` | `WaitForConnectionAsync` begins |
+| Information | `IDE channel {ChannelId}: client connected, JsonRpc attached.` | Client connected, RPC active |
+| Warning | `IDE channel {ChannelId}: session was superseded` | Another rebind replaced this session |
+| Warning | `IDE channel {ChannelId}: wait for connection was cancelled.` | Session CTS was cancelled |
+| Debug | `IDE channel {ChannelId} is already active, skipping rebind.` | Idempotent rebind (same channelId) |
+
+The CLI also forwards the Host subprocess stdout/stderr at Debug level on success, so IDE extensions can see reuse decisions (`"A DevServer is already running..."`) and rebind POST results.
 
 ## Health Status
 

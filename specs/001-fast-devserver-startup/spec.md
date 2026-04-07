@@ -1,4 +1,4 @@
-﻿# Spec 001: Fast DevServer Startup
+# Spec 001: Fast DevServer Startup
 
 > **Status**: Draft v1
 > **Author**: Carl de Billy
@@ -72,10 +72,12 @@ Today, IDE extensions and CLI launch DevServer instances independently with no a
 | [Appendix B: Add-In Discovery](spec-appendix-b-addin-discovery.md) | Add-in discovery system: algorithms, conventions, author guide, package layout |
 | [Appendix C: Testing](spec-appendix-c-testing.md) | Verification plan, test strategy, compatibility matrix |
 | [Appendix D: MCP Improvements](spec-appendix-d-mcp-improvements.md) | MCP protocol optimization and DI refactoring recommendations |
-| [Appendix E: Reference](spec-appendix-e-reference.md) | MCP tools list, IDE extension analysis, convergence analysis |
+| [Appendix E: Reference](spec-appendix-e-reference.md) | MCP built-in tools, upstream app tools list, IDE extension analysis, convergence analysis |
 | [Appendix F: Discovery Roadmap](spec-appendix-f-discovery-roadmap.md) | Broader discovery roadmap (absorbed from DevServerDiscovery.md) |
 | [Appendix G: Compatibility Matrix](spec-appendix-g-compatibility-matrix.md) | Exhaustive backward/forward compatibility validation matrix |
 | [Appendix H: Manual QA](spec-appendix-h-manual-qa.md) | Scenarios requiring human testing (IDE compat, multi-instance, MCP clients, perf) |
+| [Appendix I: Workspace Resolution Matrix](spec-appendix-i-workspace-resolution-matrix.md) | Normative workspace/MCP support matrix and automated coverage audit |
+| [Appendix J: Workspace Transition Matrix](spec-appendix-j-workspace-transition-matrix.md) | Normative behavior when repo/workspace structure changes after startup |
 
 ---
 
@@ -157,10 +159,10 @@ Both use the same registration pattern:
 
 | ID | Requirement | Priority |
 |----|------------|----------|
-| **FR1** | MCP STDIO server starts and responds to `list_tools` within 1 second of process launch (with tool cache) | Must |
+| **FR1** | MCP STDIO server starts and responds to `list_tools` within 1 second of process launch. For clients that do not re-query `list_tools` after `tools/list_changed`, meta-tools (`uno_discover_tools`, `uno_execute_tool`) provide access to upstream tools. | Must |
 | **FR2** | Licensed MCP tools functional within 5 seconds of launch (warm cache). Tool count depends on license tier (Community 9, Pro 11, Business 12). | Must |
 | **FR3** | If host is not ready, tool calls return structured errors with remediation hints | Must |
-| **FR4** | `uno://health` resource exposes structured diagnostics | Must |
+| **FR4** | `uno://health`, `uno_health`, and CLI `health` expose the same structured diagnostics model | Must |
 | **FR5** | Host process crash triggers automatic reconnection without MCP client restart | Must |
 | **FR6** | Works with Uno SDK 5.x, 6.5, and current versions | Must |
 | **FR7** | IDE integrations (VS, Rider, VS Code) remain functional | Must |
@@ -184,7 +186,7 @@ Both use the same registration pattern:
 
 1. **Backward compatibility is critical**: Must work with older Uno SDK versions (5.x, 6.5). Package structures and add-in layouts may differ.
 2. **IDE integrations use the same Host process**: VS, Rider, VS Code extensions launch `RemoteControl.Host` directly. Changes to Host must not break these paths.
-3. **All existing CLI flags must remain functional**: `--force-roots-fallback`, `--force-generate-tool-cache`, `--solution-dir`, `--mcp-wait-tools-list`, `--port`, `--log-level`, `--file-log`.
+3. **All existing CLI flags must remain accepted**: `--force-roots-fallback`, `--force-generate-tool-cache` (deprecated no-op, kept for backward compatibility), `--solution-dir`, `--mcp-wait-tools-list`, `--port`, `--log-level`, `--file-log`.
 4. **MCP protocol constraints**: Most MCP clients do not support `tools/list_changed` (only 3 of 8 do). Several don't support `roots` (Claude Desktop, Codex CLI, Windsurf). No client supports `resources/subscribe`. The `--force-roots-fallback` + `--mcp-wait-tools-list` workarounds must continue working. See [Appendix G](spec-appendix-g-compatibility-matrix.md) section 5 for the full matrix.
 5. **License validation must not block startup**: The `MCPToolsObserverService` in `Uno.UI.App.Mcp.Server` already handles license-based tool filtering asynchronously. We must not introduce new blocking license checks.
 6. **Code conventions**: New code should follow the project `.editorconfig` and **match the style of surrounding code** in each file. Prefer `internal` for new types unless they are part of a public API contract. Follow existing patterns in the target project (`*Extensions.cs` for extension methods, DI via `IServiceCollection`). Note: the existing codebase uses both block-scoped and file-scoped namespaces; `.editorconfig` expresses a preference, not a hard rule. Do not reformat existing files to match a different style.
@@ -205,7 +207,7 @@ Both use the same registration pattern:
 | **NuGet cache** | Default (`~/.nuget/packages/`), custom (`$NUGET_PACKAGES`), multiple fallback locations | Package path resolution |
 | **.NET SDK version** | 9.0, 10.0, preview | TFM resolution, Host binary availability, `dotnet tool` behavior |
 | **MCP client** | Claude Code, Claude Desktop, Cursor, Codex CLI, VS Code Copilot, Windsurf | `roots` support, `tools/list_changed` support, resource support |
-| **License tier** | Community, Pro, Business | Tool count, tool cache content |
+| **License tier** | Community, Pro, Business | Tool count, tool visibility |
 
 ### Rules (apply to ALL phases)
 
@@ -475,18 +477,18 @@ Program.Main()
   --> McpProxy.RunAsync()
       --> Start STDIO MCP server immediately
       --> Register handlers:
-          - list_tools: return cached tools from tools-cache.json
+          - list_tools: return bridge tools + meta-tools (uno_discover_tools, uno_execute_tool)
           - call_tool: if upstream not ready, return structured error
           - resource (uno://health): return current diagnostics
       --> Background: start discovery + host launch
 ```
 
 On first `list_tools`:
-- Return cached tools from `tools-cache.json` immediately
-- These give the AI model tool *descriptions* and *schemas* to plan with
+- Return bridge tools (`uno_health`, `uno_app_select_solution`, `uno_app_initialize` when in force-roots-fallback mode) plus meta-tools (`uno_discover_tools`, `uno_execute_tool`)
+- Meta-tools allow clients that do not re-query `list_tools` after `tools/list_changed` to discover and invoke upstream tools
 - Tool *calls* that arrive before the host is ready get a structured error (not a hang)
 
-**Current state**: `ToolCacheFile` (`src/Uno.UI.DevServer.Cli/Mcp/ToolCacheFile.cs`) already exists and handles reading, writing, SHA256 validation, and legacy format migration. However, it is **only active** when `IsToolCacheEnabled` (`McpProxy.cs:38`) returns `true`, which requires `--force-roots-fallback` or `--force-generate-tool-cache`. Phase 1a must enable it unconditionally in `--mcp-app` mode.
+> **Implementation note**: The tool cache (`tools-cache.json`, `ToolCacheFile`) has been removed entirely. There is no more file persistence for tool definitions (`IsToolCacheEnabled`, `PersistToolCacheIfNeeded`, `RefreshCachedToolsFromUpstreamAsync` no longer exist). The meta-tools `uno_discover_tools` and `uno_execute_tool` replace the cache as the mechanism for clients to access tools that arrive after the initial `list_tools`. The `--force-generate-tool-cache` CLI option is now a no-op, kept for backward compatibility.
 
 #### 1b. Background Discovery + Direct Server Launch
 
@@ -571,14 +573,15 @@ internal enum IssueCode
 
 **Never expose raw exceptions to the AI model.**
 
-#### 1d. Health Endpoint — Resource AND Tool *(Phase 1a target — not implemented today)*
+#### 1d. Health Endpoint — Resource, Tool, AND CLI Command *(implemented)*
 
-> **Current state**: The CLI MCP proxy exposes only `tools/call` and `tools/list` handlers (`McpProxy.cs:383`, `:414`). There is no health resource, no health tool, and no structured error model. Tool calls to an unready upstream return generic exceptions or hang.
+> **Current state**: The CLI exposes health through three surfaces backed by the same `HealthReport` model: `uno://health`, `uno_health`, and `uno.devserver health [--json]`. Tool calls to an unready upstream return structured errors, and health can be queried before the upstream Host is connected.
 
-**Phase 1a target**: MCP Resources are supported by only 3 of 8 tested clients: Cursor, VS Code Copilot, and Windsurf (see [Appendix G](spec-appendix-g-compatibility-matrix.md) section 5 for the full matrix). Claude Code, Claude Desktop, Codex CLI, Antigravity, and JetBrains Junie do **not** support `resources`. To maximize compatibility, expose health as **both**:
+MCP Resources are supported by only 3 of 8 tested clients: Cursor, VS Code Copilot, and Windsurf (see [Appendix G](spec-appendix-g-compatibility-matrix.md) section 5 for the full matrix). Claude Code, Claude Desktop, Codex CLI, Antigravity, and JetBrains Junie do **not** support `resources`. To maximize compatibility, expose health as **all of**:
 
 1. **`uno://health` resource** — for clients that support MCP Resources (read via `resources/read`)
 2. **`uno_health` tool** — for all clients (always available, zero-argument tool call)
+3. **`uno.devserver health` CLI command** — for shell-based diagnostics, with `--json` returning the same payload shape
 
 Both return the same `HealthReport` JSON payload:
 
@@ -599,7 +602,8 @@ internal sealed record HealthReport
 internal enum HealthStatus { Healthy, Degraded, Unhealthy }
 ```
 
-The `uno_health` tool is always registered in `tools-cache.json` and available even before upstream connection. It is the **first tool the AI model should call** when encountering errors.
+The `uno_health` tool is always registered as a bridge tool and available even before upstream connection. It is the **first tool the AI model should call** when encountering errors.
+The CLI `health` command is the equivalent entry point for local command-line diagnostics.
 
 **Resource subscription**: As of February 2026, **no MCP client supports `resources/subscribe`** (see [Appendix G](spec-appendix-g-compatibility-matrix.md) section 5). Health updates therefore rely on: (1) `tools/list_changed` notification for clients that support it (Cursor, VS Code Copilot, Windsurf), or (2) the `uno_health` tool called on demand. The subscription capability is declared for future-proofing but should not be relied upon.
 
@@ -655,20 +659,12 @@ Based on MCP ecosystem research (Stripe, GitHub MCP Server, Anthropic context en
 - `tools/list_changed` notification sent when license state changes (e.g., user signs in mid-session)
 - Unlicensed tools are invisible, not error-producing
 
-**The spec does NOT mandate changing this behavior.** FR2's tool count is license-dependent, and the tool cache should reflect the last-known license state.
+**The spec does NOT mandate changing this behavior.** FR2's tool count is license-dependent.
 
-**Tool cache implication**: `tools-cache.json` reflects the license tier active at cache time. A Community user's cache will have 9 tools. This is correct behavior — the cache is refreshed when upstream responds with a different tool list.
+> **Tool cache removal note**: The `tools-cache.json` file, along with `IsToolCacheEnabled`, `PersistToolCacheIfNeeded`, and `RefreshCachedToolsFromUpstreamAsync`, has been removed. The meta-tools `uno_discover_tools` and `uno_execute_tool` replace the cache as the mechanism for clients to access upstream tools that arrive after the initial `list_tools`. Tool cache invalidation, keying, and per-workspace caching are no longer concerns.
 
-**Tool cache invalidation** (currently not formalized — must be addressed):
-The current cache is a single global file (`McpProxy.cs:110`) with non-atomic writes (`McpProxy.cs:696`). The cache must be keyed or invalidated by:
-- **Workspace** (solution path): Different projects may have different add-ins
-- **Uno SDK version**: Different SDK versions expose different tools
-- **License tier**: Community/Pro/Business see different tool counts
-
-Proposed: Include metadata in the cache file (workspace hash, SDK version, timestamp). On cache read, validate metadata matches current context. On mismatch, treat as cache miss (serve stale tools while refreshing in background).
-
-**Atomic cache writes** (applies to `tools-cache.json`, `dotnet-version-cache.json`, and any other disk caches):
-- Write to a temporary file in the same directory (e.g., `tools-cache.json.tmp`)
+**Atomic cache writes** (applies to `dotnet-version-cache.json` and any other disk caches):
+- Write to a temporary file in the same directory (e.g., `dotnet-version-cache.json.tmp`)
 - Rename (move) the temp file to the target path — `File.Move(temp, target, overwrite: true)`
 - This prevents partial reads if the process crashes mid-write
 - **NOT** NTFS transactions (`TxF`) — `TxF` is deprecated by Microsoft and not cross-platform
@@ -794,9 +790,19 @@ New flag on Host: `--addins {dll1;dll2;...}` to bypass `AddIns.Discover()`.
 1. **Check AmbientRegistry** before launching a new Host
 2. If an instance already exists for this solution:
    - **MCP mode**: Connect to the **existing** Host's `/mcp` endpoint instead of launching a new one. This is the ideal scenario — the MCP proxy becomes a client of the IDE-launched DevServer.
-   - **CLI `start` mode**: Current behavior (block with message)
+   - **CLI `start` mode without `--ideChannel`**: Current behavior (block with message)
+   - **CLI `start` mode with `--ideChannel`**: Reuse the **existing** Host instance and update its active IDE channel in-place. The Host process MUST remain alive; this is a channel reassignment, not a takeover by restart.
 3. **Register in AmbientRegistry** after launching a new Host
 4. **Unregister on shutdown** (or let the stale-process cleanup handle it)
+
+**Normative contract for `start --ideChannel` on an existing Host**:
+
+- If a Host already exists for the resolved solution and `start` is invoked with `--ideChannel {id}`, the command MUST reuse that Host.
+- The Host MUST replace the currently configured IDE channel with `{id}`. This applies whether the previous value was `null` or another channel identifier.
+- Rebinding the active IDE channel MUST NOT stop or restart the Host process.
+- The command MUST return success only after the Host has accepted the new channel configuration (or return a structured error if the rebind failed).
+- Supporting multiple simultaneous IDE channels is **out of scope for this spec revision**. The current target is **single active IDE channel replacement**.
+- When `start` reuses an existing Host in this way, diagnostics (`list`, `disco`, `health`) MUST report the updated active IDE channel so the caller can verify ownership.
 
 **`.csproj.user` generation**: This is **controller-only** (`Program.Command.cs:101` calls `CsprojUserGenerator.SetCsprojUserPort()`). The Host server-mode process does NOT write `.csproj.user` — it only registers in AmbientRegistry (`Program.cs:221`).
 
@@ -810,6 +816,14 @@ IDE extensions handle `.csproj.user` independently:
 2. **Host-side**: Add `.csproj.user` generation to the server-mode startup path
 
 Without this, the running app won't know the DevServer port for Hot Reload.
+
+**Process ownership diagnostics**: AmbientRegistry-backed discovery is also the right place to explain **who started the Host**. `list`, `disco`, and `health` MUST surface a bounded process ancestry chain displayed ancestor-first (`IDE → ... → dotnet → Host`) with PID + process name (up to 8 levels). This is required so IDE and MCP launchers can distinguish:
+
+- a Host they launched themselves
+- a Host launched by another IDE session
+- a Host launched indirectly by an external MCP server
+
+The ancestry chain is diagnostic state only; it does not change instance ownership semantics.
 
 > **Note — encoding is NOT an issue**: `CsprojUserGenerator` uses `XDocument.Save()` (`CsprojUserGenerator.cs:137`) which defaults to **UTF-8** in modern .NET. The previous UTF-16 concern was based on stale information and is no longer applicable.
 
@@ -852,15 +866,29 @@ Add ReadyToRun compilation to `Uno.UI.DevServer.Cli.csproj`:
 
 ### Phase 3: Graceful Degradation + Startup Without Workspace
 
-#### 3a. No global.json? Start Anyway
+#### 3a. No valid Uno workspace? Fail Fast with Health
 
-Current behavior: discovery fails, MCP server never starts.
+Current behavior: the MCP bridge starts, resolves an effective workspace if possible, and fails fast to `Unhealthy` when no valid Uno workspace can be identified.
 
-New behavior:
+The full support contract for workspace resolution lives in [Appendix I](spec-appendix-i-workspace-resolution-matrix.md). That appendix is normative for:
+- which directory/solution layouts are supported
+- which `ResolutionKind` is expected for each layout
+- when DevServer must not start
+- which scenarios require resolver, health, lifecycle, or CLI tests
+
+The transition contract for **repo/workspace changes after startup** lives in [Appendix J](spec-appendix-j-workspace-transition-matrix.md). That appendix is normative for:
+- when the bridge must refresh in place
+- when it must stop the current DevServer
+- when it must stop one workspace and start another
+- when it must stay diagnostic instead of switching silently
+
+Implemented behavior:
 1. MCP STDIO server starts immediately
-2. `list_tools` returns cached tools (if available) or `uno_app_set_roots` only
-3. `uno://health` shows `GlobalJsonNotFound` issue with remediation
-4. When workspace is provided (via `uno_app_set_roots` or MCP roots protocol), discovery runs
+2. Workspace resolution scans downward for `.sln` / `.slnx` files and prioritizes solutions that resolve to a valid Uno `global.json`
+3. Non-Uno solutions do not start DevServer
+4. If no valid Uno workspace is found, health becomes `Unhealthy` immediately with `WorkspaceNotResolved` or `NoSolutionFound`
+5. The bridge does not wait for upstream connection timeout before surfacing this state
+6. When roots later confirm the same resolved workspace, startup continues without restart
 
 #### 3b. Backward Compatibility with Older Uno Versions
 
@@ -910,13 +938,16 @@ New behavior:
 | `src/Uno.UI.RemoteControl.Host/Program.Command.cs` | Add `--addins` parameter to `StartCommandAsync`, forward to child process argument list | 0 |
 | `src/Uno.UI.RemoteControl.Host/Extensibility/AddInsExtensions.cs` | Support pre-resolved add-in paths via new overload | 0 |
 | `src/Uno.UI.DevServer.Cli/Helpers/UnoToolsLocator.cs` | Wire in `TargetsAddInResolver`, dotnet version disk caching | 0 |
-| `src/Uno.UI.DevServer.Cli/CliManager.cs` | Pass resolved add-in paths when launching Host for `start` command; add `--addins-only` flag to `disco` command | 0 |
-| `src/Uno.UI.DevServer.Cli/Helpers/DiscoveryInfo.cs` | Add `AddIns`, `AddInsDiscoveryMethod`, `AddInsDiscoveryDurationMs` fields; add `ResolvedAddIn` record | 0 |
-| `src/Uno.UI.DevServer.Cli/Helpers/DiscoveryOutputFormatter.cs` | Display `globalJsonPath` in plain text; display add-in paths; support `--addins-only` output | 0 |
+| `src/Uno.UI.DevServer.Cli/CliManager.cs` | Pass resolved add-in paths when launching Host for `start`; add `--addins-only` to `disco`; add `health` command; resolve effective workspace before MCP startup | 0/1a |
+| `src/Uno.UI.DevServer.Cli/Helpers/DiscoveryInfo.cs` | Add add-in metadata plus effective workspace / selected solution diagnostics | 0/1a |
+| `src/Uno.UI.DevServer.Cli/Helpers/DiscoveryOutputFormatter.cs` | Display `globalJsonPath`, add-in paths, and effective workspace details | 0/1a |
+| `src/Uno.UI.DevServer.Cli/Helpers/WorkspaceResolver.cs` | Resolve effective workspace, prefer Uno solutions, detect ambiguity | 1a |
 | `src/Uno.UI.DevServer.Cli/Mcp/McpProxy.cs` | Immediate MCP start, background discovery, health resource, structured errors | 1a |
 | `src/Uno.UI.DevServer.Cli/Mcp/DevServerMonitor.cs` | Direct server launch (skip controller), hot restart, add-in path passing | 1b |
 | `src/Uno.UI.DevServer.Cli/Mcp/McpClientProxy.cs` | Reconnection support (new upstream URL), dispose + recreate pattern | 1c |
-| `src/Uno.UI.DevServer.Cli/Program.cs` | DI registration for new services (HealthService, etc.) | 1a |
+| `src/Uno.UI.DevServer.Cli/Mcp/HealthReportFactory.cs` | Shared `HealthReport` builder for MCP and CLI surfaces | 1a |
+| `src/Uno.UI.DevServer.Cli/Helpers/HealthReportFormatter.cs` | CLI rendering for shared health model | 1a |
+| `src/Uno.UI.DevServer.Cli/Program.cs` | DI registration for new services (HealthService, WorkspaceResolver, etc.) | 1a |
 | `src/Uno.UI.DevServer.Cli/Uno.UI.DevServer.Cli.csproj` | R2R compilation settings | 2 |
 
 ### Files to Create
@@ -1093,7 +1124,7 @@ Add `globalJsonPath` to the plain text table in the "Uno SDK" section of `Discov
 |---------|---------------|-----------------|
 | `McpStdioServer` | STDIO transport, handler registration | `IToolListManager`, `IHealthService` |
 | `McpUpstreamClient` | HTTP connection to Host `/mcp`, reconnection | `IDevServerMonitor` |
-| `ToolListManager` | Cache, timeout, TCS lifecycle, `tools/list_changed` | `IUpstreamClient` |
+| `ToolListManager` | Meta-tool registration, timeout, TCS lifecycle, `tools/list_changed` | `IUpstreamClient` |
 | `HealthService` | Report aggregation, issue collection | `IDiscoveryService`, `IDevServerMonitor` |
 | `ProxyLifecycleManager` | State machine (8 states), orchestration | All above |
 
@@ -1135,7 +1166,7 @@ This refactoring is a **prerequisite** for the state machine (Phase 1c). All ser
 | Upstream `MCPToolsObserverService` TCS has no timeout | If license check throws or hangs **before** `TrySetResult()` at `:161`, upstream `list_tools` blocks forever (`MCPToolsObserverService.cs:194`, TCS at `:37`). Note: `TrySetResult()` IS called in the normal 0-tool path; the gap is exception/hang before that line. | **High (upstream bug)** | Upstream fix recommended — see `uno.app-mcp/README.md` alongside this spec. CLI-side 30s timeout (Phase 1a) mitigates for MCP mode once implemented. |
 | `.targets` diagnostic finds `tools/devserver/` but entry point unknown | Silently degraded state | Medium | Warning in health resource; do NOT load DLLs blindly |
 | Upstream `list_tools` blocks on license resolution | Slower than expected "functional tools" time | Medium | FR10 acknowledges this; CLI-side cache serves tools while upstream resolves |
-| **Tool cache only active in forced modes** | `IsToolCacheEnabled` (`McpProxy.cs:38`) returns `true` only when `--force-roots-fallback` or `--force-generate-tool-cache` is set. In normal MCP mode (no flags), `tools-cache.json` is never read or written. The "instant start with cached tools" strategy (Phase 1a) requires the cache to be active **unconditionally** in MCP mode. `File.WriteAllText` at `:696` is also non-atomic (crash mid-write → corrupt cache). | **Medium** | Phase 1a: enable cache unconditionally in `--mcp-app` mode. Use atomic write (write to temp file, then `File.Move` with overwrite). Consider per-solution cache path to avoid context mixing across projects. |
+| **Tool cache removed** | The `tools-cache.json` file and all associated code (`IsToolCacheEnabled`, `PersistToolCacheIfNeeded`, `RefreshCachedToolsFromUpstreamAsync`) have been removed. Meta-tools (`uno_discover_tools`, `uno_execute_tool`) replace the cache as the mechanism for clients that do not re-query `list_tools` after `tools/list_changed`. `--force-generate-tool-cache` is now a no-op. | **Resolved** | Meta-tools provide a runtime mechanism that does not require file persistence. |
 | **Controller bypass reimplementation scope** (Phase 1b) | Missing controller responsibilities break MCP mode | **Medium-High** | Controller has 9 responsibilities (see 1g table). Each must be reimplemented or explicitly delegated. High test coverage required — each responsibility needs a dedicated test. |
 | **VS extension launcher reflection fragility** | VS extension (`uno.studio`) uses reflection to load `Uno.UI.RemoteControl.VS.dll` and probe **two type names**: `Uno.UI.DevServer.VS.EntryPoint` then `Uno.UI.RemoteControl.VS.EntryPoint` (`DevServerLauncher.cs:302-303`), with v3/v2/v1 constructor probing (`DevServerLauncher.cs:313-326`). Changes to either type name or any constructor signature break the VS extension. | Medium | Lock both type names and all three constructor signatures (v1/v2/v3) with regression tests. See `uno.studio/README.md` alongside this spec for full signature details. |
 | **Rider auto-restart race condition** | Rider extension auto-restarts Host immediately on process exit. If CLI MCP mode kills and relaunches Host, Rider may race to restart its own copy → two instances. | **Medium** | AmbientRegistry pre-check exists **only in the controller path** (`Program.Command.cs:37-49`), NOT in the server-mode startup (`Program.cs` only registers at line 221, no pre-check). Rider launches Host directly (no controller). **Mitigation requires adding AmbientRegistry pre-check to the server-mode path** OR ensuring Rider uses the controller path. Test: MCP restarts Host while Rider is connected → verify only one instance survives. |
@@ -1177,7 +1208,7 @@ This refactoring is a **prerequisite** for the state machine (Phase 1c). All ser
 
 ### Phase 1a: Immediate MCP Start (MCP-only)
 - Restructure `McpProxy` to start STDIO server immediately
-- Return cached tools on first `list_tools` (enable `ToolCacheFile` unconditionally in `--mcp-app` mode)
+- Return bridge tools + meta-tools (`uno_discover_tools`, `uno_execute_tool`) on first `list_tools` for clients that do not re-query after `tools/list_changed`
 - Structured error responses for premature tool calls
 - **Fix `list_tools` indefinite blocking** (FR11): bounded timeout, handle 0-tool case
 - **Fix `McpClientProxy.DisposeAsync` hang**: `TrySetCanceled()` on TCS before awaiting (process shutdown must not block)
@@ -1740,12 +1771,12 @@ The global.json parsing logic is currently duplicated in two locations:
 
 | Location | File | SDK Handling | Data Extracted |
 |----------|------|-------------|----------------|
-| **CLI** | `UnoToolsLocator.cs:267-307` | Both `Uno.Sdk` and `Uno.Sdk.Private` | Tuple: (path, sdkPackage, sdkVersion) |
+| **CLI** | `Helpers/GlobalJsonLocator.cs` | Both `Uno.Sdk` and `Uno.Sdk.Private` | Tuple: (path, sdkPackage, sdkVersion) |
 | **VS extension** | `GlobalJsonObserver.cs:162-207` | Both `Uno.Sdk` and `Uno.Sdk.Private` | Version string only |
 
 Both implementations walk directories upward to find `global.json`, parse `msbuild-sdks`, and handle both SDK variants. The VS extension's implementation is out of scope (deployed, cannot change), but the CLI implementation MUST be the **canonical** implementation for all new code.
 
-**Rule**: All new discovery code (Phase 0's `TargetsAddInResolver`, `DotNetVersionCache`, etc.) MUST call `UnoToolsLocator.ParseGlobalJsonForUnoSdk()` — no additional global.json parsing implementations.
+**Rule**: All new discovery code (Phase 0's `TargetsAddInResolver`, `DotNetVersionCache`, `WorkspaceResolver`, etc.) MUST call `GlobalJsonLocator.ParseGlobalJsonForUnoSdkAsync()` or `ParseGlobalJsonFileForUnoSdkAsync()` — no additional global.json parsing implementations.
 
 ### 15.2 Uno.Sdk vs Uno.Sdk.Private — Version Identity
 
@@ -1935,7 +1966,7 @@ internal sealed class HealthChecker(ILogger<HealthChecker> logger)
 
 ## Appendices
 
-See the Document Map at the top of this file for links to all appendices (A through H).
+See the Document Map at the top of this file for links to all appendices (A through J).
 
 [Appendix E: Reference](spec-appendix-e-reference.md) contains:
 - **E.1**: MCP tools by license tier (Community 9, Pro 11, Business 12)

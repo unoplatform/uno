@@ -80,9 +80,10 @@ partial class SvgImageSource
 		try
 		{
 			ImageData imageData = ImageData.Empty;
-			if (AbsoluteUri is not null)
+
+			if (AbsoluteUri is { } uri)
 			{
-				imageData = await ImageSourceHelpers.GetImageDataFromUriAsBytes(AbsoluteUri, ct);
+				imageData = await ImageSourceHelpers.GetImageDataFromUriAsBytes(uri, ct);
 			}
 
 			if (!imageData.HasData && _stream is not null)

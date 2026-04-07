@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging.Console;
 using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.DevServer.Cli.Logging;
 using Uno.UI.DevServer.Cli.Mcp;
+using Uno.UI.DevServer.Cli.Mcp.Setup;
 
 namespace Uno.UI.DevServer.Cli;
 
@@ -31,13 +32,36 @@ internal class Program
 			WriteOption("--mcp-app", "Start in App MCP STDIO mode");
 			WriteOption("--mcp-wait-tools-list", "Wait for upstream server tools before responding to list_tools (MCP mode only)");
 			WriteOption("--force-roots-fallback", "This mode can be used when the MCP client does not support the roots feature");
-			WriteOption("--force-generate-tool-cache", "Force tool discovery and persist the cache immediately (MCP mode only)");
+			WriteOption("--force-generate-tool-cache", "Deprecated (no-op). Kept for backward compatibility.");
 			Console.WriteLine();
 			Console.WriteLine("Commands:");
 			WriteCommand("start", "Start the DevServer for the current folder");
 			WriteCommand("stop", "Stop the DevServer for the current folder");
 			WriteCommand("list", "List active DevServer instances");
 			WriteCommand("disco", "Discover environment and SDK details");
+			WriteCommand("health", "Report Uno DevServer health for the current workspace");
+			Console.WriteLine();
+			Console.WriteLine("MCP setup commands:");
+			WriteCommand("mcp serve", "Start the MCP STDIO proxy (alias: --mcp-app)");
+			WriteCommand("mcp status", "Report installation state of MCP servers across clients");
+			WriteCommand("mcp install", "Register MCP servers in client config files");
+			WriteCommand("mcp uninstall", "Remove MCP servers from client config files");
+			Console.WriteLine();
+			Console.WriteLine("MCP setup options:");
+			WriteOption("<client>", "Target client (positional, or use --all-ides): copilot-vscode, copilot-vs, copilot-cli, cursor, windsurf, kiro, gemini-antigravity, gemini-cli, junie-rider, claude-code, claude-desktop, codex-cli, jetbrains-air, opencode, unknown");
+			WriteOption("--workspace <path>", "Workspace root (default: current directory)");
+			WriteOption("--channel <stable|prerelease>", "Select the Uno MCP definition channel");
+			WriteOption("--tool-version <ver>", "Pin the Uno MCP tool definition to a specific version");
+			WriteOption("--servers <list>", "Comma-separated server names (default: all)");
+			WriteOption("--all-scopes", "For mcp uninstall, remove matching registrations from every configured scope");
+			WriteOption("--all-ides", "For mcp install/uninstall without <client>, target all detected clients");
+			WriteOption("--dry-run", "Show what would be done without modifying any files");
+			WriteOption("--json", "Emit JSON output");
+			WriteOption("--ide-definitions <path>", "Override embedded MCP client profiles");
+			WriteOption("--server-definitions <path>", "Override embedded server definitions");
+			Console.WriteLine();
+			Console.WriteLine("Note: MCP setup options choose the expected Uno MCP definition.");
+			Console.WriteLine("      Any dnx --prerelease or dnx --version written to config files is derived output.");
 			Console.WriteLine();
 			return 0;
 		}
@@ -82,10 +106,13 @@ internal class Program
 		});
 		services.AddSingleton<CliManager>();
 		services.AddSingleton<UnoToolsLocator>();
+		services.AddSingleton<ISolutionFileFinder, FileSystemSolutionFileFinder>();
+		services.AddSingleton<WorkspaceResolver>();
+		services.AddSingleton<IWorkspaceResolver>(sp => sp.GetRequiredService<WorkspaceResolver>());
 		services.AddSingleton(sp =>
 		new ManifestAddInResolver(
 			sp.GetRequiredService<ILogger<ManifestAddInResolver>>(),
-			McpStdioServer.GetAssemblyVersion()));
+			AssemblyVersionHelper.GetAssemblyVersion(typeof(Program).Assembly)));
 		services.AddSingleton<TargetsAddInResolver>();
 		services.AddSingleton<DevServerMonitor>();
 		services.AddSingleton<McpUpstreamClient>();
@@ -93,6 +120,9 @@ internal class Program
 		services.AddSingleton<HealthService>();
 		services.AddSingleton<McpStdioServer>();
 		services.AddSingleton<ProxyLifecycleManager>();
+		services.AddSingleton<IFileSystem, FileSystem>();
+		services.AddSingleton<CliCommandRunner>();
+		services.AddSingleton<McpSetupOrchestrator>();
 
 		using var sp = services.BuildServiceProvider();
 		var manager = sp.GetRequiredService<CliManager>();
@@ -147,7 +177,7 @@ internal class Program
 
 	private static void WriteCommand(string command, string description)
 	{
-		const int commandWidth = 10;
+		const int commandWidth = 16;
 		Console.WriteLine($"  {command,-commandWidth} {description}");
 	}
 }

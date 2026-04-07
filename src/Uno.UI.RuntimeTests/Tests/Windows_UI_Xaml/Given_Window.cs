@@ -103,17 +103,22 @@ public class Given_Window
 		Assert.AreEqual(startingNumberOfWindows, endNumberOfWindows);
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_Secondary_Window_No_Background_Light_Dark()
 	{
 		AssertSupportsMultipleWindows();
 
-		using var _ = ThemeHelper.UseDarkTheme();
+		// Use application-level dark theme. Element-level theming on the main
+		// window root no longer syncs to Application.Current.RequestedTheme,
+		// so secondary windows must be tested with the application theme API.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
 		var sut = new NoBackgroundWindow();
 
 		await VerifyWindowBackgroundAsync(sut, false, Colors.Black);
 	}
+#endif
 
 	[TestMethod]
 	[RunsOnUIThread]
@@ -126,6 +131,7 @@ public class Given_Window
 		await VerifyWindowBackgroundAsync(sut, false, Colors.White);
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_Secondary_Window_No_Background_Switch_Theme()
@@ -136,9 +142,12 @@ public class Given_Window
 
 		await VerifyWindowBackgroundAsync(sut, false, Colors.White);
 
-		using var _ = ThemeHelper.UseDarkTheme();
+		// Use application-level dark theme to test that secondary window root
+		// backgrounds update when the application theme changes.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
 		await VerifyWindowBackgroundAsync(sut, true, Colors.Black);
 	}
+#endif
 
 	private static async Task VerifyWindowBackgroundAsync(Window sut, bool wasActivated, Color expectedColor)
 	{

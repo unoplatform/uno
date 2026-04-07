@@ -4,6 +4,7 @@
 
 #nullable enable
 
+using System;
 using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -18,7 +19,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal bool SetTarget(Microsoft.UI.Xaml.Window? xamlWindow)
 		{
-			// Uno specific: Actual Mica is not yet supported on any target.
+#if __SKIA__
+			if (OperatingSystem.IsMacOS() && xamlWindow is not null)
+			{
+				return true;
+			}
+#endif
 			return false;
 		}
 	}

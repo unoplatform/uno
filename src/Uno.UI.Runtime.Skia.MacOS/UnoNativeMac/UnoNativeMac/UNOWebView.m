@@ -112,8 +112,17 @@ NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel)
     webview.okString = [NSString stringWithUTF8String:ok];
     webview.cancelString = [NSString stringWithUTF8String:cancel];
 
-    webview.originalSuperView = window.contentViewController.view;
+    webview.originalSuperView = ((UNOWindow*)window).renderingView;
     return webview;
+}
+
+void uno_webview_register_message_handler(WKWebView *webview)
+{
+#if DEBUG
+    NSLog(@"uno_webview_register_message_handler %p", webview);
+#endif
+    __weak id weakSelf = webview;
+    [webview.configuration.userContentController addScriptMessageHandler:weakSelf name:@"unoWebView"];
 }
 
 const char* uno_webview_get_title(WKWebView *webview)
@@ -300,9 +309,6 @@ void uno_webview_set_scrolling_enabled(UNOWebView* webview, bool enabled)
         self.UIDelegate = self;
         self.navigationDelegate = self;
         self.scrollingEnabled = true;
-        
-        __weak id weakSelf = self;
-        [configuration.userContentController addScriptMessageHandler:weakSelf name:@"unoWebView"];
     }
     return self;
 }

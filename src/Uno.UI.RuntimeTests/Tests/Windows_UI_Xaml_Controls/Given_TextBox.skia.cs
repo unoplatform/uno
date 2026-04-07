@@ -25,7 +25,7 @@ using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
-using Uno.UI.Xaml.Media;
+
 using static Private.Infrastructure.TestServices;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
@@ -219,6 +219,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(11, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_End_And_Shift_End_At_Position_Zero()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await KeyboardHelper.InputText("hello world", SUT);
+
+			// Move cursor to position 0
+			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart, "Cursor should be at position 0 after Home");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Press End at position 0 - should move to end of line
+			await KeyboardHelper.PressKeySequence("$d$_end#$u$_end", SUT);
+			Assert.AreEqual(11, SUT.SelectionStart, "End key at position 0 should move cursor to end of text");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Move back to position 0
+			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Press Shift+End at position 0 - should select all text
+			await KeyboardHelper.PressKeySequence("$d$_shift#$d$_end#$u$_end#$u$_shift", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart, "Shift+End at position 0 should keep SelectionStart at 0");
+			Assert.AreEqual(11, SUT.SelectionLength, "Shift+End at position 0 should select all text");
 		}
 
 		[TestMethod]
@@ -460,6 +498,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("hello world", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Alt_Or_Win_Key_Alone()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "hello world" };
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Test Option/Alt keys
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Menu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(1, keyDownCount);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(2, keyDownCount);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(3, keyDownCount);
+
+			// Test Command/Windows keys
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(4, keyDownCount);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(5, keyDownCount);
 		}
 
 		[TestMethod]
@@ -4390,38 +4472,109 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
+			// Light mode: caret should appear as a dark pixel on the white background.
+			// The exact rendered color depends on visual tree opacity and compositing,
+			// so we use a threshold check rather than exact color matching.
 			var random = new Random();
 			var i = 0;
 			for (; i < 20; i++)
 			{
 				await Task.Delay(random.Next(75, 126));
 				var screenshot = await UITestHelper.ScreenShot(SUT);
-				// this color is the result of alpha blending 0xE4000000 (the default caret color) on top of 0xFFFFFFFF
-				var black = Colors.White.AlphaBlend(((SolidColorBrush)DefaultBrushes.TextForegroundBrush).Color);
-				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), black) &&
-					!HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), black))
+				if (HasDarkPixelOnlyInLeftHalf(screenshot))
 				{
 					break;
 				}
 			}
 
-			Assert.IsLessThan(20, i);
+			Assert.IsLessThan(20, i, "Light mode: caret not found as dark pixel in left half");
 
 			using var _2 = ThemeHelper.UseDarkTheme();
 			await WindowHelper.WaitForIdle();
 
+			// Re-focus to force visual states to re-apply with the new theme resources.
+			// Visual state animations (e.g., TextControlBackgroundFocused) use ThemeResource
+			// values that were resolved when the state was first entered.
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Dark mode: caret should appear as a lighter pixel on the dark background.
 			for (; i < 20; i++)
 			{
 				await Task.Delay(random.Next(75, 126));
 				var screenshot = await UITestHelper.ScreenShot(SUT);
-				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), Colors.White) &&
-					!HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.White))
+				if (HasLightPixelOnlyInLeftHalf(screenshot))
 				{
 					break;
 				}
 			}
 
-			Assert.IsLessThan(20, i);
+			Assert.IsLessThan(20, i, "Dark mode: caret not found as light pixel in left half");
+		}
+
+		/// <summary>
+		/// Checks if the left half has a dark pixel (luminance &lt; 200) that isn't in the right half.
+		/// Used for detecting the caret in light mode where the exact color depends on compositing.
+		/// </summary>
+		private static bool HasDarkPixelOnlyInLeftHalf(RawBitmap screenshot)
+		{
+			var innerMargin = 3; // Skip border pixels
+			var midX = screenshot.Width / 2;
+			var darkColors = new System.Collections.Generic.HashSet<Color>();
+			for (var x = innerMargin; x < midX; x++)
+			{
+				for (var y = innerMargin; y < screenshot.Height - innerMargin; y++)
+				{
+					var px = screenshot.GetPixel(x, y);
+					if (px.A > 0x20 && (px.R + px.G + px.B) / 3 < 200)
+					{
+						darkColors.Add(px);
+					}
+				}
+			}
+
+			foreach (var dark in darkColors)
+			{
+				if (!HasColorInRectangle(screenshot, new Rectangle(midX, 0, midX, screenshot.Height), dark))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Checks if the left half has a lighter pixel than the background,
+		/// that isn't in the right half. Used for detecting the caret in dark mode.
+		/// </summary>
+		private static bool HasLightPixelOnlyInLeftHalf(RawBitmap screenshot)
+		{
+			var innerMargin = 3;
+			var midX = screenshot.Width / 2;
+
+			// Determine the dominant background color in the right half (no caret there)
+			var bgPixel = screenshot.GetPixel(screenshot.Width - innerMargin - 5, screenshot.Height / 2);
+			var bgLum = (bgPixel.R + bgPixel.G + bgPixel.B) / 3;
+
+			for (var x = innerMargin; x < midX; x++)
+			{
+				for (var y = innerMargin; y < screenshot.Height - innerMargin; y++)
+				{
+					var px = screenshot.GetPixel(x, y);
+					var pxLum = (px.R + px.G + px.B) / 3;
+					// Look for pixels significantly lighter than the background
+					if (px != bgPixel && pxLum > bgLum + 50)
+					{
+						if (!HasColorInRectangle(screenshot, new Rectangle(midX, 0, midX, screenshot.Height), px))
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
 		}
 
 		[TestMethod]
@@ -4916,6 +5069,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			try
 			{
+				if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+				{
+					Assert.Inconclusive("Clipboard is not available on this platform.");
+				}
 				var SUT = new PasswordBox { Password = "secret pass", Width = 200 };
 				CopyPlaceholderTextToClipboard();
 				WindowHelper.WindowContent = SUT;
@@ -4946,6 +5103,111 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_OuterScrollViewer_BringIntoView_Scrolls_To_Caret()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// Build enough text so the TextBox is taller than the ScrollViewer viewport.
+			var sb = new System.Text.StringBuilder();
+			for (int i = 0; i < 40; i++)
+			{
+				sb.AppendLine($"Line {i}");
+			}
+
+			var textBox = new TextBox
+			{
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				Text = sb.ToString(),
+				// Disable internal scrolling so the outer ScrollViewer handles it.
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			// Disable internal ScrollViewer scrolling via attached properties.
+			ScrollViewer.SetVerticalScrollMode(textBox, ScrollMode.Disabled);
+			ScrollViewer.SetVerticalScrollBarVisibility(textBox, ScrollBarVisibility.Disabled);
+
+			var outerScrollViewer = new ScrollViewer
+			{
+				Height = 300,
+				Content = textBox,
+			};
+
+			await UITestHelper.Load(outerScrollViewer);
+
+			// Place cursor at the end (bottom of the TextBox).
+			textBox.Focus(FocusState.Programmatic);
+			textBox.SelectionStart = textBox.Text.Length;
+			await WindowHelper.WaitForIdle();
+
+			// The outer ScrollViewer should have scrolled down to bring the caret into view.
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset > 0,
+				timeoutMS: 2000,
+				message: "Outer ScrollViewer should scroll to bring the caret at the end into view.");
+
+			var offsetAfterFocus = outerScrollViewer.VerticalOffset;
+
+			// Now type an Enter to add a new line — the caret moves further down.
+			textBox.SafeRaiseEvent(UIElement.KeyDownEvent,
+				new KeyRoutedEventArgs(textBox, VirtualKey.Enter, VirtualKeyModifiers.None, unicodeKey: '\r'));
+			await WindowHelper.WaitForIdle();
+
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset > offsetAfterFocus,
+				timeoutMS: 2000,
+				message: "Outer ScrollViewer should scroll further after adding a new line.");
+		}
+
+		[TestMethod]
+		public async Task When_OuterScrollViewer_Caret_Middle_Does_Not_Scroll_To_Bottom()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// Build enough text so the TextBox is taller than the ScrollViewer viewport.
+			var sb = new System.Text.StringBuilder();
+			for (int i = 0; i < 60; i++)
+			{
+				sb.AppendLine($"Line {i}");
+			}
+
+			var textBox = new TextBox
+			{
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				Text = sb.ToString(),
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			ScrollViewer.SetVerticalScrollMode(textBox, ScrollMode.Disabled);
+			ScrollViewer.SetVerticalScrollBarVisibility(textBox, ScrollBarVisibility.Disabled);
+
+			var outerScrollViewer = new ScrollViewer
+			{
+				Height = 300,
+				Content = textBox,
+			};
+
+			await UITestHelper.Load(outerScrollViewer);
+
+			// Place cursor at roughly the middle of the text.
+			textBox.Focus(FocusState.Programmatic);
+			textBox.SelectionStart = textBox.Text.Length / 2;
+			await WindowHelper.WaitForIdle();
+
+			// Wait for the ScrollViewer to scroll to the caret.
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset > 0,
+				timeoutMS: 2000,
+				message: "Outer ScrollViewer should scroll to bring the caret into view.");
+
+			// The scroll offset for cursor at the middle should be less than
+			// the maximum scrollable height (it should NOT scroll to the bottom).
+			Assert.IsTrue(outerScrollViewer.VerticalOffset < outerScrollViewer.ScrollableHeight,
+				"Outer ScrollViewer should scroll to the caret at the middle, not to the bottom.");
+		}
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{

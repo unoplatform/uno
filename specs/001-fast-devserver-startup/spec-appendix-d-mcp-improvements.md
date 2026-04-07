@@ -69,7 +69,7 @@ The current `Mcp/` directory has architectural issues that should be addressed a
 |-----------|---------------|
 | `McpStdioServer` | STDIO MCP server lifecycle, handler registration |
 | `McpUpstreamClient` | Upstream HTTP connection management, reconnection |
-| `ToolListManager` | Tool caching, list_changed handling, timeout logic |
+| `ToolListManager` | Meta-tool registration, list_changed handling, timeout logic |
 | `HealthService` | Health report aggregation, resource + tool exposure |
 | `ProxyLifecycleManager` | State machine (Initializing → Connected → Degraded), orchestration |
 
