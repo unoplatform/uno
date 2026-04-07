@@ -74,11 +74,15 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 
 	public bool IsReadOnly => false;
 
-	public ICollection<string> Keys => _nativeApplicationSettings
-		.GetKeys(IsCurrentContainerPublicKey)
+	public ICollection<string> Keys => GetFullPublicKeys()
+		.Select(k => k.Substring(_container.ContainerPath.Length))
 		.ToArray();
 
-	public ICollection<object> Values => _nativeApplicationSettings.GetValues(Keys).ToArray();
+	public ICollection<object> Values => GetFullPublicKeys()
+		.Select(k => _nativeApplicationSettings[k])
+		.Where(v => v != null)
+		.Cast<object>()
+		.ToArray();
 
 	public void Add(string key, object value)
 	{
@@ -160,6 +164,9 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		_nativeApplicationSettings.RemoveKeys(IsCurrentContainerInternalKey);
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	private IEnumerable<string> GetFullPublicKeys() => _nativeApplicationSettings
+		.GetKeys(IsCurrentContainerPublicKey);
 
 	private bool IsCurrentContainerKey(string key) => key.StartsWith(_container.ContainerPath, StringComparison.Ordinal);
 
