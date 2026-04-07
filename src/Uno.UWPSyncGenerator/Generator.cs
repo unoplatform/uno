@@ -1010,6 +1010,24 @@ namespace Uno.UWPSyncGenerator
 					{
 						return true;
 					}
+
+					// CsWinRT projections may use explicit interface implementations for
+					// collection members (e.g., IList<T>.this[int]) while also exposing a
+					// public member with the same signature. FindImplementationForInterfaceMember
+					// returns the explicit implementation, which won't equal the public member.
+					// Fall back to name+kind matching for indexers and common collection members.
+					if (member is IPropertySymbol memberProp && ifaceMember is IPropertySymbol ifaceProp
+						&& memberProp.IsIndexer && ifaceProp.IsIndexer)
+					{
+						return true;
+					}
+
+					if (member is IMethodSymbol memberMethod && ifaceMember is IMethodSymbol ifaceMethod
+						&& memberMethod.Name == ifaceMethod.Name
+						&& memberMethod.Parameters.Length == ifaceMethod.Parameters.Length)
+					{
+						return true;
+					}
 				}
 			}
 
