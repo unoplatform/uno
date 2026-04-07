@@ -78,6 +78,7 @@ internal sealed class ThemeWalkResourceCache
 			if (_owner is not null)
 			{
 				_owner._isCachingThemeResources = false;
+				_owner.ReturnAllWeakReferences();
 				_owner._cache.Clear();
 			}
 		}
@@ -169,16 +170,28 @@ internal sealed class ThemeWalkResourceCache
 		{
 			foreach (var cacheKey in keysToRemove)
 			{
-				_cache.Remove(cacheKey);
+				if (_cache.Remove(cacheKey, out var weakRef))
+				{
+					WeakReferencePool.ReturnWeakReference(this, weakRef);
+				}
 			}
 		}
 	}
 
 	/// <summary>
-	/// Clears all cached entries.
+	/// Clears all cached entries, returning rented weak references to the pool.
 	/// </summary>
 	public void Clear()
 	{
+		ReturnAllWeakReferences();
 		_cache.Clear();
+	}
+
+	private void ReturnAllWeakReferences()
+	{
+		foreach (var weakRef in _cache.Values)
+		{
+			WeakReferencePool.ReturnWeakReference(this, weakRef);
+		}
 	}
 }

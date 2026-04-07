@@ -422,11 +422,16 @@ public partial class DependencyObjectStore
 				ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
 			}
 
-			_properties.UpdateBindingExpressions();
-
-			for (int i = 0; i < dictionariesInScope.Length; i++)
+			try
 			{
-				ResourceResolver.PopSourceFromScope();
+				_properties.UpdateBindingExpressions();
+			}
+			finally
+			{
+				for (int i = 0; i < dictionariesInScope.Length; i++)
+				{
+					ResourceResolver.PopSourceFromScope();
+				}
 			}
 		}
 
@@ -499,43 +504,48 @@ public partial class DependencyObjectStore
 			}
 		}
 
-		var wasSet = false;
-		foreach (var dict in dictionariesInScope)
+		try
 		{
-			if (dict.TryGetValue(binding.ResourceKey, out var value, out var providingDict, shouldCheckSystem: false))
-			{
-				wasSet = true;
-				SetResourceBindingValue(property, binding, value);
-
-				// Pin the providing dictionary in the _themeResources entry (if any)
-				// so that subsequent theme changes can re-resolve from it directly.
-				if (providingDict is not null && _themeResources is not null)
-				{
-					var themeRef = _themeResources.Get(property, binding.Precedence);
-					themeRef?.SetTargetDictionary(providingDict);
-					if (themeRef is not null)
-					{
-						themeRef.LastResolvedValue = value;
-					}
-				}
-
-				break;
-			}
-		}
-
-		if (!wasSet)
-		{
-			if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
-			{
-				SetResourceBindingValue(property, binding, value);
-			}
-		}
-
-		if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
-		{
+			var wasSet = false;
 			foreach (var dict in dictionariesInScope)
 			{
-				ResourceResolver.PopSourceFromScope();
+				if (dict.TryGetValue(binding.ResourceKey, out var value, out var providingDict, shouldCheckSystem: false))
+				{
+					wasSet = true;
+					SetResourceBindingValue(property, binding, value);
+
+					// Pin the providing dictionary in the _themeResources entry (if any)
+					// so that subsequent theme changes can re-resolve from it directly.
+					if (providingDict is not null && _themeResources is not null)
+					{
+						var themeRef = _themeResources.Get(property, binding.Precedence);
+						themeRef?.SetTargetDictionary(providingDict);
+						if (themeRef is not null)
+						{
+							themeRef.LastResolvedValue = value;
+						}
+					}
+
+					break;
+				}
+			}
+
+			if (!wasSet)
+			{
+				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
+				{
+					SetResourceBindingValue(property, binding, value);
+				}
+			}
+		}
+		finally
+		{
+			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
+			{
+				foreach (var dict in dictionariesInScope)
+				{
+					ResourceResolver.PopSourceFromScope();
+				}
 			}
 		}
 	}
