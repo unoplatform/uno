@@ -306,9 +306,10 @@ namespace Uno.UI
 
 			var effectivePrecedence = precedence ?? DependencyPropertyValuePrecedences.Local;
 
-			// Set initial value based on statically-available top-level resources.
-			// Use the original 3-param TryStaticRetrieval for reliability, then separately
-			// resolve the providing dictionary for theme resource pinning.
+			// Set the initial value from statically-available top-level resources.
+			// This uses the 3-parameter TryStaticRetrieval overload, which does not capture
+			// the providing ResourceDictionary. For theme resources, dictionary pinning is
+			// deferred until the load-time re-resolution path.
 			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
@@ -340,7 +341,7 @@ namespace Uno.UI
 				}
 
 				// Non-theme persistent binding (HotReload) -- use old path
-				(owner as IDependencyObjectStoreProvider).Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
+				(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
 				return;
 			}
 
@@ -357,7 +358,7 @@ namespace Uno.UI
 			// Also register in the old ResourceBinding path to ensure deferred resolution
 			// on loading still works. The _resourceBindings path handles the initial tree-walk
 			// resolution, and the _themeResources path handles efficient theme-change re-resolution.
-			(owner as IDependencyObjectStoreProvider).Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
+			(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
 		}
 
 		/// <summary>
