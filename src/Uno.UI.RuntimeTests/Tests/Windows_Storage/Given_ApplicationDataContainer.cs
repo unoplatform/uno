@@ -424,5 +424,60 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			Assert.AreEqual("value2", result["key2"]);
 			Assert.AreEqual("value4", result["key3"]);
 		}
+
+		// Repro tests for https://github.com/unoplatform/uno/issues/1285
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/1285")]
+		public void When_GetEnumerator_Returns_Correct_Values_Not_Keys()
+		{
+			// Issue: On iOS, ApplicationDataContainer.GetEnumerator() passes the KEY (not the VALUE)
+			// to DataTypeSerializer.Deserialize, causing values to be null or incorrect.
+			// Root cause: ApplicationDataContainer.Apple.cs line 104 uses k.Key.ToString() instead
+			// of k.Value?.ToString() when constructing the KeyValuePair for enumeration.
+			// Expected: Iterating over Values should yield the stored value, not null.
+
+			var sut = ApplicationData.Current.LocalSettings;
+			const string testKey = "repro_1285_enum_test";
+			const string testValue = "hello_world";
+
+			sut.Values[testKey] = testValue;
+
+			// Enumerate via GetEnumerator (foreach)
+			string foundValue = null;
+			foreach (var kvp in sut.Values)
+			{
+				if (kvp.Key == testKey)
+				{
+					foundValue = kvp.Value as string;
+					break;
+				}
+			}
+
+			Assert.AreEqual(testValue, foundValue,
+				$"Expected to find value '{testValue}' when enumerating, but got '{foundValue}'. " +
+				$"On iOS, this fails because GetEnumerator passes the key to DataTypeSerializer.Deserialize " +
+				$"instead of the value (ApplicationDataContainer.Apple.cs line 104).");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/1285")]
+		public void When_Values_Collection_Returns_Stored_Value()
+		{
+			// Issue: On iOS, the Values property reads from NSUserDefaults.StandardUserDefaults
+			// which includes system keys (AppleLanguages, AppleLocale, etc.).
+			// When those system values are deserialized with DataTypeSerializer, they return null
+			// or garbage since they're not in Uno's TypeName:value format.
+			// Expected: Values added by the app should be retrievable from the Values collection.
+
+			var sut = ApplicationData.Current.LocalSettings;
+			const string testKey = "repro_1285_values_test";
+			const string testValue = "test_value_42";
+
+			sut.Values[testKey] = testValue;
+
+			Assert.IsTrue(sut.Values.Values.Contains(testValue),
+				$"Expected Values collection to contain '{testValue}', but it doesn't. " +
+				$"On iOS, this may fail if system NSUserDefaults values pollute the deserialized output.");
+		}
 	}
 }
