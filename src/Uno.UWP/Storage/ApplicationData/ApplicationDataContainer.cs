@@ -56,16 +56,16 @@ public partial class ApplicationDataContainer : IDisposable
 	private Dictionary<string, ApplicationDataContainer> CreateContainersDictionary()
 	{
 		var containers = new Dictionary<string, ApplicationDataContainer>();
-		var prefix = ContainerPath + InternalSettingPrefix;
-		var keysWithPrefix = _nativeApplicationSettings.GetKeysWithPrefix(prefix);
-		foreach (var key in keysWithPrefix)
+		var containerList = _nativeApplicationSettings[ContainerPath + ContainerListKey] as string ?? "";
+		if (containerList.Length > 0)
 		{
-			var relativeKey = key.AsSpan(prefix.Length);
-			if (relativeKey.IndexOf(ContainerSeparator) is { } separatorIndex && separatorIndex == relativeKey.Length - 1)
+			foreach (var containerName in containerList.Split(ContainerSeparator))
 			{
-				var containerName = relativeKey.Slice(0, relativeKey.Length - 1).ToString();
-				var container = new ApplicationDataContainer(this, containerName);
-				containers.Add(containerName, container);
+				if (containerName.Length > 0)
+				{
+					var container = new ApplicationDataContainer(this, containerName);
+					containers.Add(containerName, container);
+				}
 			}
 		}
 
