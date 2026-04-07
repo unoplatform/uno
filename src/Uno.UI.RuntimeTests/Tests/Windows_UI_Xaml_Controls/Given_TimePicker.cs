@@ -510,6 +510,66 @@ currentItemCount, $"Should have visible items during fast scrolling at position 
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
+		// Reproduces https://github.com/unoplatform/uno/issues/22889
+		// TimePicker flyout won't reopen after being dismissed when placed inside a nested Flyout.
+		// Note: passes on Skia Desktop — the issue was reported on WebAssembly.
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22889")]
+		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_TimePicker_In_Nested_Flyout_Reopens_After_Dismiss()
+		{
+			var timePicker = new TimePicker();
+#if HAS_UNO
+			timePicker.UseNativeStyle = false;
+#endif
+
+			var flyoutContent = new Grid { Width = 300, Height = 200 };
+			flyoutContent.Children.Add(timePicker);
+
+			var outerFlyout = new Flyout { Content = flyoutContent };
+
+			var button = new Button
+			{
+				Content = "Open Flyout",
+				Flyout = outerFlyout,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+			};
+
+			TestServices.WindowHelper.WindowContent = button;
+			await TestServices.WindowHelper.WaitForLoaded(button);
+
+			// Open the outer flyout
+			await RunOnUIThread.ExecuteAsync(() => outerFlyout.ShowAt(button));
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+
+			// Open TimePicker inner flyout the first time
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Dismiss the inner flyout (click the dismiss/X button)
+			await ControlHelper.ClickFlyoutCloseButton(timePicker, false /* isAccept */);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Try to open the TimePicker flyout again — this should work but doesn't with the bug
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Verify the flyout is open again
+#if HAS_UNO
+			var openFlyouts = FlyoutBase.OpenFlyouts;
+			Assert.IsTrue(openFlyouts.Any(f => f is TimePickerFlyout),
+				"TimePicker flyout should reopen after being dismissed in a nested Flyout");
+#else
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot)
+				.FirstOrDefault(p => p.Child is TimePickerFlyoutPresenter);
+			Assert.IsNotNull(popup, "TimePicker flyout presenter should be open after reopen");
+#endif
+		}
+
 		class MyContext
 		{
 			public object StartTime => null;
