@@ -381,6 +381,104 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 #endif
 
+		// Repro tests for https://github.com/unoplatform/uno/issues/182
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/182")]
+		public async Task When_DoubleAnimation_AutoReverse_Completes_At_FromValue()
+		{
+			// Issue: With RepeatBehavior=Forever and AutoReverse=True, on WASM the element disappears
+			// (value goes to 0/wrong value) instead of reversing. This test verifies the single-pass
+			// AutoReverse behavior: after one forward+reverse cycle, value should end at the From value.
+			var target = new Rectangle
+			{
+				Width = 10,
+				Height = 50,
+				Fill = new SolidColorBrush(Colors.Blue)
+			};
+			WindowHelper.WindowContent = target;
+			await WindowHelper.WaitForLoaded(target);
+			await WindowHelper.WaitForIdle();
+
+			var animation = new DoubleAnimation
+			{
+				From = 10,
+				To = 50,
+				EnableDependentAnimation = true,
+				Duration = TimeSpan.FromMilliseconds(300),
+				AutoReverse = true,
+				FillBehavior = FillBehavior.HoldEnd,
+			}.BindTo(target, nameof(Rectangle.Width));
+
+			// Wait for the animation to complete (forward 300ms + reverse 300ms + small buffer)
+			await animation.ToStoryboard().RunAsync(timeout: TimeSpan.FromMilliseconds(800));
+			await WindowHelper.WaitForIdle();
+
+			// After AutoReverse, value should be at the From value (10), not at To (50) or 0/missing
+			Assert.AreEqual(10d, target.Width, 2d,
+				$"Expected Width to be at From value (10) after AutoReverse completes, but got {target.Width}");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/182")]
+#if __ANDROID__
+		[Ignore("android: Native animations don't expose mid-animation values to DP readers mid-loop; covered by When_RepeatForever_ShouldLoop.")]
+#endif
+		public async Task When_DoubleAnimation_RepeatForever_AutoReverse_StaysInBounds()
+		{
+			// Issue: On Android, with RepeatBehavior=Forever, after the first cycle the rectangle
+			// instantly expands to fill the screen. On WASM, with AutoReverse=True, the element
+			// disappears (Width=0) instead of reversing.
+			// Expected: Width should always stay between From (0) and To (50).
+			var target = new Rectangle
+			{
+				Width = 10,
+				Height = 50,
+				Fill = new SolidColorBrush(Colors.Blue)
+			};
+			WindowHelper.WindowContent = target;
+			await WindowHelper.WaitForLoaded(target);
+			await WindowHelper.WaitForIdle();
+
+			var animation = new DoubleAnimation
+			{
+				From = 0,
+				To = 50,
+				EnableDependentAnimation = true,
+				Duration = TimeSpan.FromMilliseconds(300),
+				RepeatBehavior = RepeatBehavior.Forever,
+				AutoReverse = true,
+			}.BindTo(target, nameof(Rectangle.Width));
+
+			var storyboard = animation.ToStoryboard();
+			storyboard.Begin();
+
+			// Observe the value across 3 full cycles (300ms forward + 300ms reverse = 600ms each)
+			double maxObservedWidth = 0;
+			double minObservedWidth = double.MaxValue;
+
+			for (int i = 0; i < 18; i++)
+			{
+				await Task.Delay(100);
+				var w = target.Width;
+				if (w > maxObservedWidth) maxObservedWidth = w;
+				if (w < minObservedWidth) minObservedWidth = w;
+			}
+
+			storyboard.Stop();
+
+			// Width should never exceed the To value (50) - bug on Android caused it to fill the screen
+			Assert.IsTrue(maxObservedWidth <= 51d,
+				$"Width should not exceed To value (50), but max observed was {maxObservedWidth} (bug: rectangle expands to fill screen)");
+
+			// Width should at some point be > 0 (animation is running, not disappearing)
+			Assert.IsTrue(maxObservedWidth > 1d,
+				$"Width should animate above 0, but max observed was {maxObservedWidth} (bug: element disappears)");
+
+			// Width should at some point be close to 0 (reverse pass brings it back down)
+			Assert.IsTrue(minObservedWidth < 49d,
+				$"Width should reach near 0 during reverse pass, but min observed was {minObservedWidth} (bug: no reversal)");
+		}
+
 		private static double GetTranslateY(TranslateTransform translate, bool isStillAnimating = false) =>
 #if !__ANDROID__
 			translate.Y;
