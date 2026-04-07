@@ -15,14 +15,11 @@ namespace Windows.Storage;
 public partial class ApplicationDataContainerSettings : IPropertySet, IObservableMap<string, object>, IDictionary<string, object>, IEnumerable<KeyValuePair<string, object>>
 {
 	private readonly ApplicationDataContainer _container;
-	private readonly ApplicationDataLocality _locality;
 	private readonly NativeApplicationSettings _nativeApplicationSettings;
 
 	internal ApplicationDataContainerSettings(ApplicationDataContainer container, ApplicationDataLocality locality)
 	{
 		_container = container ?? throw new ArgumentNullException(nameof(container));
-		_locality = locality;
-
 		_nativeApplicationSettings = NativeApplicationSettings.GetForLocality(locality);
 	}
 
@@ -116,7 +113,7 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		{
 			throw new ArgumentNullException(nameof(array));
 		}
-		if (arrayIndex < 0 || arrayIndex >= array.Length)
+		if (arrayIndex < 0 || arrayIndex > array.Length)
 		{
 			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
 		}
