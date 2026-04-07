@@ -2069,5 +2069,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The scroll offset should remain 0 — there's nothing to scroll
 			Assert.AreEqual(0d, sut.VerticalOffset, "Should not have scrolled");
 		}
+
+		// Repro tests for https://github.com/unoplatform/uno/issues/661
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/661")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ScrollViewer_TopHeader_Is_Rendered()
+		{
+			// Issue: ScrollViewer.TopHeader content does not render.
+			// Expected: Content set as TopHeader should appear above the scrollable content,
+			// be visible, and have a non-zero actual height.
+
+			var headerText = new TextBlock { Text = "TopHeaderContent" };
+			var bodyText = new TextBlock { Text = "BodyContent" };
+
+			var sut = new ScrollViewer
+			{
+				Height = 300,
+				Width = 300,
+				TopHeader = headerText,
+				Content = new Border
+				{
+					Height = 500,
+					Child = bodyText,
+				}
+			};
+
+			await UITestHelper.Load(sut);
+			await UITestHelper.WaitForIdle();
+
+			// The TopHeader TextBlock should be in the visual tree
+			// (i.e., it should have a parent or be reachable via visual tree traversal)
+			var parent = VisualTreeHelper.GetParent(headerText);
+			Assert.IsNotNull(parent,
+				"TopHeader content should be in the visual tree (have a parent), but it is not rendered.");
+
+			// TopHeader content should have non-zero size
+			Assert.IsTrue(headerText.ActualHeight > 0,
+				$"TopHeader TextBlock should have ActualHeight > 0, but got {headerText.ActualHeight}. " +
+				$"This confirms the TopHeader content is not being rendered.");
+		}
 	}
 }
