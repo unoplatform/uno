@@ -2139,5 +2139,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+	// Repro tests for https://github.com/unoplatform/uno/issues/4579
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4579")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_Segoe_UI_Symbols_Is_Remapped_To_Symbols_Font()
+	{
+		// Issue: FontFamily="Segoe UI Symbols" renders invalid/wrong icons on Android.
+		// Root cause: FontFamily.cs remaps "Segoe MDL2 Assets" to the Uno symbols font,
+		// but does NOT remap "Segoe UI Symbols", leaving it to fall back to the system default.
+		// Expected: "Segoe UI Symbols" should be remapped to FeatureConfiguration.Font.SymbolsFont.
+
+		var symbolsFont = Uno.UI.FeatureConfiguration.Font.SymbolsFont;
+
+		// Verify that Segoe MDL2 Assets IS remapped (existing behavior)
+		var mdl2Family = new Microsoft.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets");
+		Assert.AreEqual(symbolsFont, mdl2Family.Source,
+			"Segoe MDL2 Assets should be remapped to SymbolsFont.");
+
+		// Verify that Segoe UI Symbols is ALSO remapped (the fix)
+		var symbolsFamily = new Microsoft.UI.Xaml.Media.FontFamily("Segoe UI Symbols");
+		Assert.AreEqual(symbolsFont, symbolsFamily.Source,
+			$"Expected 'Segoe UI Symbols' to be remapped to '{symbolsFont}', " +
+			$"but got '{symbolsFamily.Source}'. " +
+			$"This confirms Segoe UI Symbols is NOT remapped to the Uno symbols font, " +
+			$"causing wrong icon rendering on Android.");
+	}
 	}
 }
