@@ -14,13 +14,14 @@ parameters:
   jobPrefix: 'Skia_Linux'
   testRunTitle: 'Linux Skia Runtime Tests'
   testResultLabel: ''
+  timeoutInMinutes: 25
 
 jobs:
 
 - ${{ if eq(parameters.runSnapshotTests, true) }}:
   - job: ${{ parameters.jobPrefix }}_Screenshot_Tests
     displayName: 'Snapshot Tests'
-    timeoutInMinutes: 60
+    timeoutInMinutes: 25
     cancelTimeoutInMinutes: 0
 
     pool:
@@ -65,7 +66,7 @@ jobs:
 
 - job: ${{ parameters.jobPrefix }}_Runtime_Tests_Build
   displayName: 'Runtime Tests'
-  timeoutInMinutes: 60
+  timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
   cancelTimeoutInMinutes: 0
 
   pool:
