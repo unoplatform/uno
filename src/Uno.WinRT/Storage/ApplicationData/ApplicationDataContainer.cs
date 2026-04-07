@@ -124,8 +124,7 @@ public partial class ApplicationDataContainer : IDisposable
 	internal void ClearIncludingInternals()
 	{
 		DeleteAllSubcontainers();
-		Values.Clear();
-		_nativeApplicationSettings.RemoveKeysWithPrefix(InternalSettingPrefix);
+		_nativeApplicationSettings.RemoveKeysWithPrefix(ContainerPath);
 	}
 
 	internal void DeleteAllSubcontainers()
