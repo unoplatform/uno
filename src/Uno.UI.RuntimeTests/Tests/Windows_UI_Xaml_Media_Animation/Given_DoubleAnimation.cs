@@ -392,5 +392,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				// And, when the animation is completed, this native value is reset even for HoldEnd animation.
 				: translate.Y;
 #endif
+
+		// Repro tests for https://github.com/unoplatform/uno/issues/2955
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2955")]
+		public async Task When_DoubleAnimation_Zero_Duration_On_CompositeTransform_ScaleY_Does_Not_Throw()
+		{
+			// Issue: DoubleAnimation with Duration="00:00:00" targeting CompositeTransform.ScaleY
+			// throws "Specified cast is invalid" in DoubleAnimation.GetDefaultTargetValue() on Android.
+			// The issue is that Convert.ToSingle(object) fails on the native double value.
+			// Expected: Animation should apply without exception.
+
+			var transform = new CompositeTransform();
+			var border = new Border
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Colors.Blue),
+				RenderTransform = transform,
+			};
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			Exception caught = null;
+			try
+			{
+				var animation = new DoubleAnimation
+				{
+					To = 0.8,
+					Duration = TimeSpan.Zero, // Duration="00:00:00" - triggers the bug
+					FillBehavior = FillBehavior.HoldEnd,
+				};
+				Storyboard.SetTarget(animation, transform);
+				Storyboard.SetTargetProperty(animation, nameof(CompositeTransform.ScaleY));
+
+				var storyboard = new Storyboard();
+				storyboard.Children.Add(animation);
+				storyboard.Begin();
+
+				await WindowHelper.WaitForIdle();
+				storyboard.Stop();
+			}
+			catch (Exception ex)
+			{
+				caught = ex;
+			}
+
+			Assert.IsNull(caught,
+				$"Expected DoubleAnimation with Duration=0 on CompositeTransform.ScaleY to not throw, " +
+				$"but got: {caught?.Message}");
+
+			// Verify the animation applied (ScaleY should be 0.8)
+			Assert.AreEqual(0.8, transform.ScaleY, 0.01,
+				$"Expected ScaleY to be 0.8 after animation, but got {transform.ScaleY}");
+		}
 	}
 }
