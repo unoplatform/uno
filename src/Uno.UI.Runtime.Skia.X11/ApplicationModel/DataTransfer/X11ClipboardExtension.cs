@@ -694,17 +694,41 @@ internal class X11ClipboardExtension : IClipboardExtension
 			X11Helper.CurrentTime);
 
 		// We don't need an event mask here as Selection events aren't maskable.
+		// Use a timeout to avoid blocking forever if the selection owner doesn't respond.
+		var deadline = System.Diagnostics.Stopwatch.GetTimestamp() + System.Diagnostics.Stopwatch.Frequency * 2; // 2 seconds
+		XEvent event_ = default;
+		bool gotSelection = false;
 
-		_ = XLib.XNextEvent(x11Window.Display, out var event_);
-
-		while (event_.type != XEventName.SelectionNotify)
+		while (System.Diagnostics.Stopwatch.GetTimestamp() < deadline)
 		{
-			if (_logger.IsEnabled(LogLevel.Debug))
+			if (X11Helper.XPending(x11Window.Display) > 0)
 			{
-				_logger.Debug($"{nameof(WaitForFormats)}: Unexpected X {event_.type} event while waiting for clipboard formats.");
+				_ = XLib.XNextEvent(x11Window.Display, out event_);
+				if (event_.type == XEventName.SelectionNotify)
+				{
+					gotSelection = true;
+					break;
+				}
+
+				if (_logger.IsEnabled(LogLevel.Debug))
+				{
+					_logger.Debug($"{nameof(WaitForFormats)}: Unexpected X {event_.type} event while waiting for clipboard formats.");
+				}
+			}
+			else
+			{
+				Thread.Sleep(10);
+			}
+		}
+
+		if (!gotSelection)
+		{
+			if (_logger.IsEnabled(LogLevel.Warning))
+			{
+				_logger.Warn($"{nameof(WaitForFormats)}: Timed out waiting for SelectionNotify from clipboard owner.");
 			}
 
-			_ = XLib.XNextEvent(x11Window.Display, out event_);
+			return null;
 		}
 
 		var sel = event_.SelectionEvent;
@@ -783,17 +807,32 @@ internal class X11ClipboardExtension : IClipboardExtension
 		_ = XLib.XConvertSelection(x11Window.Display, selection, format, format,
 			x11Window.Window, X11Helper.CurrentTime);
 
-		// We don't need an event mask here as Selection events aren't maskable.
-		_ = XLib.XNextEvent(x11Window.Display, out var event_);
+		// Wait for SelectionNotify with a timeout to avoid blocking forever
+		// if the selection owner doesn't respond (e.g. headless/minimal WM).
+		var deadline = System.Diagnostics.Stopwatch.GetTimestamp() + System.Diagnostics.Stopwatch.Frequency * 2;
+		XEvent event_ = default;
+		bool gotSelection = false;
 
-		while (event_.type != XEventName.SelectionNotify)
+		while (System.Diagnostics.Stopwatch.GetTimestamp() < deadline)
 		{
-			if (_logger.IsEnabled(LogLevel.Debug))
+			if (X11Helper.XPending(x11Window.Display) > 0)
 			{
-				_logger.Debug($"{nameof(WaitForBytes)}: Unexpected {event_.type} event while waiting for clipboard data.");
+				_ = XLib.XNextEvent(x11Window.Display, out event_);
+				if (event_.type == XEventName.SelectionNotify)
+				{
+					gotSelection = true;
+					break;
+				}
 			}
+			else
+			{
+				Thread.Sleep(10);
+			}
+		}
 
-			_ = XLib.XNextEvent(x11Window.Display, out event_);
+		if (!gotSelection)
+		{
+			return null;
 		}
 
 		var sel = event_.SelectionEvent;
