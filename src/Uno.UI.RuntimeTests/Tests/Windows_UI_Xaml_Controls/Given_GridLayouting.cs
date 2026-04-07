@@ -2978,7 +2978,7 @@ public partial class Given_GridLayouting
 	[DataRow("rb", 2d, "28,28,10,10", null)]
 	[DataRow("lb", 2d, "2,28,10,10", null)]
 	[TestMethod]
-	[Ignore("https://github.com/unoplatform/uno/issues/2733")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2733")]
 	public void When_One_Child_Alignment(string alignment, double margin, string expected, string expectedClippedFrame)
 	{
 		var SUT = new Grid { Name = "test" };
