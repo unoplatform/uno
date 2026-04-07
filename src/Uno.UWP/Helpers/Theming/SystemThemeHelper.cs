@@ -35,6 +35,31 @@ internal static partial class SystemThemeHelper
 	}
 
 	/// <summary>
+	/// Removes event handlers whose target belongs to a non-default ALC.
+	/// Called during ALC teardown to release references to inner-app objects.
+	/// </summary>
+	internal static void ClearNonDefaultAlcHandlers()
+	{
+		var handler = _systemThemeChanged;
+		if (handler is null)
+		{
+			return;
+		}
+
+		foreach (var d in handler.GetInvocationList())
+		{
+			if (d.Target is not null)
+			{
+				var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(d.Target.GetType().Assembly);
+				if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+				{
+					_systemThemeChanged -= (EventHandler)d;
+				}
+			}
+		}
+	}
+
+	/// <summary>
 	/// Starts observing system theme changes.
 	/// </summary>
 	internal static void ObserveThemeChanges()

@@ -11,7 +11,7 @@ using Uno.UI.Tasks.HotReloadInfo;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
-public partial class ClientHotReloadProcessor : IClientProcessor
+public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 {
 	private string? _projectPath;
 	private readonly IRemoteControlClient _rcClient;
@@ -26,6 +26,12 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 	}
 
 	partial void InitializeMetadataUpdater();
+
+	public void Dispose()
+	{
+		_agent?.Dispose();
+		_agent = null;
+	}
 
 	string IClientProcessor.Scope => WellKnownScopes.HotReload;
 

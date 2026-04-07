@@ -40,6 +40,30 @@ namespace Microsoft.UI.Xaml
 				=> _entries.Add(key, value);
 
 			internal void Clear() => _entries.Clear();
+
+			/// <summary>
+			/// Removes entries whose Type key belongs to a non-default ALC.
+			/// </summary>
+			internal void RemoveNonDefaultAlcEntries()
+			{
+				var keysToRemove = new List<Type>();
+				foreach (var key in _entries.Keys)
+				{
+					if (key is Type t)
+					{
+						var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(t.Assembly);
+						if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+						{
+							keysToRemove.Add(t);
+						}
+					}
+				}
+
+				foreach (var key in keysToRemove)
+				{
+					_entries.Remove(key);
+				}
+			}
 		}
 	}
 }

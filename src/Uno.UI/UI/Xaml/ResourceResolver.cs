@@ -609,6 +609,52 @@ namespace Uno.UI
 		}
 
 		/// <summary>
+		/// Removes entries from global resource registrations whose Func delegate targets
+		/// belong to non-default ALCs. Called during ALC teardown.
+		/// </summary>
+		internal static void ClearNonDefaultAlcRegistrations()
+		{
+			var keysToRemove = new List<string>();
+			foreach (var kvp in _registeredDictionariesByUri)
+			{
+				var target = kvp.Value?.Target;
+				if (target is not null)
+				{
+					var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(target.GetType().Assembly);
+					if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+					{
+						keysToRemove.Add(kvp.Key);
+					}
+				}
+			}
+
+			foreach (var key in keysToRemove)
+			{
+				_registeredDictionariesByUri.Remove(key);
+			}
+
+			// Also clear filepath registrations from ALCs
+			keysToRemove.Clear();
+			foreach (var kvp in _registeredDictionariesByFilepath)
+			{
+				var target = kvp.Value?.Target;
+				if (target is not null)
+				{
+					var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(target.GetType().Assembly);
+					if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+					{
+						keysToRemove.Add(kvp.Key);
+					}
+				}
+			}
+
+			foreach (var key in keysToRemove)
+			{
+				_registeredDictionariesByFilepath.Remove(key);
+			}
+		}
+
+		/// <summary>
 		/// Register a dictionary for a given source with ALC awareness.
 		/// When called from a non-default AssemblyLoadContext, the registration is scoped to that ALC.
 		/// </summary>

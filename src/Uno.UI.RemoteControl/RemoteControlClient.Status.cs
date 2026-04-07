@@ -17,7 +17,7 @@ public partial class RemoteControlClient
 
 	public RemoteControlStatus Status => _status.BuildStatus();
 
-	private class StatusSink : DevServerDiagnostics.ISink
+	private class StatusSink : DevServerDiagnostics.ISink, IDisposable
 	{
 		private readonly RemoteControlClient _owner;
 		private ConnectionState _state = ConnectionState.Idle;
@@ -143,6 +143,12 @@ public partial class RemoteControlClient
 			_sinceLastPing?.Stop();
 			_keepAliveState = KeepAliveState.Aborted;
 			NotifyStatusChanged();
+		}
+
+		public void Dispose()
+		{
+			Interlocked.Exchange(ref _pongTimeout, null)?.Dispose();
+			_sinceLastPing?.Stop();
 		}
 		#endregion
 

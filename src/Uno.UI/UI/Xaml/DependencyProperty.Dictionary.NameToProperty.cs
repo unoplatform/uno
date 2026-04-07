@@ -53,6 +53,12 @@ namespace Microsoft.UI.Xaml
 			internal int Count => _entries.Count;
 
 			internal void Clear() => _entries.Clear();
+
+			/// <summary>
+			/// Clears the cache to release Type references from a specific ALC.
+			/// The cache rebuilds on demand, so wholesale clearing is safe.
+			/// </summary>
+			internal void RemoveEntriesForAlc(System.Runtime.Loader.AssemblyLoadContext alc) => Clear();
 		}
 	}
 }
