@@ -164,7 +164,7 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 				return null;
 			}
 
-			return StorageFile.GetFileFromPath(new Uri(results["uris"].GetArray<string>()[0]).AbsolutePath);
+			return StorageFile.GetFileFromPath(new Uri(results["uris"].GetArray<string>()[0]).LocalPath);
 		}
 		catch (Exception e)
 		{
