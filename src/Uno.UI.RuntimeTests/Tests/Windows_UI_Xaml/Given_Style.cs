@@ -10,6 +10,7 @@ using Private.Infrastructure;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
+using static Uno.UI.Extensions.ViewExtensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -105,6 +106,76 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var popupForeground = (SolidColorBrush)page.PopupTextBlock.Foreground;
 			Assert.AreEqual(Microsoft.UI.Colors.Red, popupForeground.Color);
+		}
+
+		// Repro tests for https://github.com/unoplatform/uno/issues/3443
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3443")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_TextBlock_ImplicitStyle_Not_Applied_Inside_DataTemplate()
+		{
+			// Issue: Implicit styles for TextBlock are incorrectly applied inside DataTemplates.
+			// Expected: Only elements inheriting from Control should have implicit styles applied
+			// inside a DataTemplate. TextBlock (inherits from UIElement) should NOT get them.
+			// On WinUI: TextBlock inside DataTemplate is black (no implicit style), outside is green.
+			// Bug: On Uno, both are green (implicit style leaks into DataTemplate).
+
+			var greenBrush = new SolidColorBrush(Microsoft.UI.Colors.Green);
+			var defaultColor = new TextBlock().Foreground is SolidColorBrush tb ? tb.Color : Microsoft.UI.Colors.Black;
+
+			// Create a container with an implicit TextBlock style (green foreground)
+			var root = (FrameworkElement)XamlReader.Load(
+				@"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+					   xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
+					   Width='300' Height='100'>
+					<Grid.Resources>
+						<Style TargetType='TextBlock'>
+							<Setter Property='Foreground' Value='Green' />
+						</Style>
+					</Grid.Resources>
+					<StackPanel Orientation='Horizontal'>
+						<!-- TextBlock outside DataTemplate — should get implicit style (green) -->
+						<TextBlock x:Name='OutsideTextBlock' Text='Outside' />
+						<!-- ContentControl using DataTemplate — TextBlock inside should NOT get implicit style -->
+						<ContentControl>
+							<ContentControl.ContentTemplate>
+								<DataTemplate>
+									<TextBlock x:Name='InsideTextBlock' Text='Inside' />
+								</DataTemplate>
+							</ContentControl.ContentTemplate>
+							<ContentControl.Content>
+								<x:String>test</x:String>
+							</ContentControl.Content>
+						</ContentControl>
+					</StackPanel>
+				</Grid>");
+
+			await UITestHelper.Load(root);
+			await UITestHelper.WaitForIdle();
+
+			var outsideTextBlock = root.FindName("OutsideTextBlock") as TextBlock;
+			Assert.IsNotNull(outsideTextBlock, "OutsideTextBlock should be found.");
+
+			// Outside TextBlock SHOULD get the implicit style (green)
+			var outsideForeground = outsideTextBlock.Foreground as SolidColorBrush;
+			Assert.IsNotNull(outsideForeground);
+			Assert.AreEqual(Microsoft.UI.Colors.Green, outsideForeground.Color,
+				$"Outside TextBlock should have green foreground from implicit style, but got {outsideForeground.Color}.");
+
+			// Find the inside TextBlock via visual tree
+			var contentControl = root.FindFirstDescendant<ContentControl>();
+			Assert.IsNotNull(contentControl, "ContentControl should be found.");
+
+			var insideTextBlock = contentControl.FindFirstDescendant<TextBlock>();
+			Assert.IsNotNull(insideTextBlock, "InsideTextBlock should be found inside DataTemplate.");
+
+			// Inside TextBlock should NOT get the implicit style (should be default, not green)
+			var insideForeground = insideTextBlock.Foreground as SolidColorBrush;
+			Assert.IsNotNull(insideForeground);
+			Assert.AreNotEqual(Microsoft.UI.Colors.Green, insideForeground.Color,
+				$"Inside DataTemplate TextBlock should NOT have green foreground (implicit style should not apply inside DataTemplate), " +
+				$"but got {insideForeground.Color}. This confirms implicit styles leak into DataTemplates.");
 		}
 	}
 }
