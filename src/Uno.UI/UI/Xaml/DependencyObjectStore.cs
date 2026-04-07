@@ -66,6 +66,7 @@ namespace Microsoft.UI.Xaml
 
 		private readonly DependencyPropertyDetailsCollection _properties;
 		private ResourceBindingCollection? _resourceBindings;
+		private ThemeResourceMap? _themeResources;
 
 		private DependencyProperty _parentDataContextProperty = UIElement.DataContextProperty;
 
@@ -550,6 +551,7 @@ namespace Microsoft.UI.Xaml
 					{
 						// If a non-theme value is being set, clear any theme binding so it's not overwritten if the theme changes.
 						_resourceBindings?.ClearBinding(property, precedence);
+						_themeResources?.Clear(property, precedence);
 					}
 
 					// Value may or may not have changed based on the precedence
@@ -1022,6 +1024,25 @@ namespace Microsoft.UI.Xaml
 
 			PropagateInheritedProperties(childStore);
 
+			// MUX ref: depends.cpp:2262 — increment counter on tree entry
+			// so all descendants' TextFormatting becomes stale.
+			GlobalTextFormattingCounter.Invalidate();
+
+			// MUX ref: EnsureTextFormatting / PullInheritedTextFormatting on tree entry.
+			// Create TextFormatting and pull inherited values from parent.
+			if (childStore.ActualInstance is UIElement childElement)
+			{
+				childElement._textFormatting ??= TextFormatting.CreateDefault();
+				childElement.PullInheritedTextFormatting();
+				childElement._textFormatting.SetIsUpToDate();
+			}
+			else if (childStore.ActualInstance is Documents.TextElement childTextElement)
+			{
+				childTextElement._textFormatting ??= TextFormatting.CreateDefault();
+				childTextElement.PullInheritedTextFormatting();
+				childTextElement._textFormatting.SetIsUpToDate();
+			}
+
 			// This weak reference ensure that the disposable will not link
 			// the caller and the callee, in the same way "newValueActionWeak"
 			// does not link the callee to the caller.
@@ -1174,6 +1195,14 @@ namespace Microsoft.UI.Xaml
 		// Internal for unit testing
 		internal object GetDefaultValue(DependencyProperty dp)
 		{
+			// MUX ref: GetPropertyOffset → GetGroupCreator → EnsureTextFormatting
+			// For text formatting properties at default, return the inherited value
+			// from TextFormatting instead of the DP system default.
+			if (dp.IsTextFormattingProperty && TryGetTextFormattingValue(dp, out var tfValue) && tfValue is not null)
+			{
+				return tfValue;
+			}
+
 			var actualInstance = ActualInstance;
 			var defaultValue = dp.GetDefaultValue(actualInstance, actualInstance?.GetType());
 			if (GetCurrentHighestValuePrecedence(dp) == DependencyPropertyValuePrecedences.DefaultValue &&
@@ -1184,6 +1213,39 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return defaultValue;
+		}
+
+		/// <summary>
+		/// Attempts to get a text property's value from the TextFormatting system.
+		/// Called when a text formatting property has no local/style/animation value
+		/// (at DefaultValue precedence). Triggers EnsureTextFormatting to lazily pull
+		/// inherited values from the parent.
+		/// </summary>
+		private bool TryGetTextFormattingValue(DependencyProperty dp, out object? value)
+		{
+			value = null;
+
+			if (ActualInstance is ITextFormattingOwner owner and DependencyObject dobj)
+			{
+				// Only intercept for properties that are actually mapped as TextFormatting-managed
+				// on this element type. For example, FontIcon.FontSizeProperty (default 20) should
+				// NOT be intercepted — it's not a TextFormatting-managed property on IconElement.
+				var correspondingDP = TextFormattingHelper.GetCorrespondingTextProperty(dobj, dp.Name);
+				if (correspondingDP is null)
+				{
+					return false;
+				}
+
+				owner.EnsureTextFormatting(dp, forGetValue: true);
+				var tf = owner.TextFormatting;
+				if (tf is not null)
+				{
+					value = tf.GetFieldValue(dp.Name);
+					return value is not null;
+				}
+			}
+
+			return false;
 		}
 
 		private object? GetHighestValueFromDetails(DependencyPropertyDetails details)
@@ -1201,6 +1263,10 @@ namespace Microsoft.UI.Xaml
 
 		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
+			// NOTE: Foreground cascade blocking removed. Text formatting properties
+			// (Foreground, FontSize, etc.) no longer use DP Inherits — they propagate
+			// through the TextFormatting system with FreezeForeground at theme boundaries.
+
 			var (localProperty, propertyDetails) = GetLocalPropertyDetails(parentProperty);
 
 			if (localProperty != null)
@@ -1382,236 +1448,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return (null, null);
-		}
-
-		/// <summary>
-		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
-		/// </summary>
-		internal void UpdateResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null, ResourceDictionary? containingDictionary = null)
-		{
-			if (updateReason == ResourceUpdateReason.None)
-			{
-				throw new ArgumentException();
-			}
-
-			ResourceDictionary[]? dictionariesInScope = null;
-
-			if ((updateReason & ResourceUpdateReason.ThemeResource) != 0 &&
-				_properties.HasBindings)
-			{
-				dictionariesInScope = GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
-				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
-				{
-					ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
-				}
-
-				_properties.UpdateBindingExpressions();
-
-				for (int i = 0; i < dictionariesInScope.Length; i++)
-				{
-					ResourceResolver.PopSourceFromScope();
-				}
-			}
-
-			if (_resourceBindings?.HasBindings == true)
-			{
-				dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
-
-				var bindings = _resourceBindings.GetAllBindings();
-				foreach (var binding in bindings)
-				{
-					InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
-				}
-			}
-
-			UpdateChildResourceBindings(updateReason, resourceContextProvider);
-		}
-
-		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and
-		/// can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
-		{
-			try
-			{
-				InnerUpdateResourceBindingsUnsafe(updateReason, dictionariesInScope, property, binding);
-			}
-			catch (Exception e)
-			{
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
-				{
-					this.Log().Warn($"Failed to update binding, target may have been disposed", e);
-				}
-			}
-		}
-
-		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and
-		/// can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
-		{
-			if ((binding.UpdateReason & updateReason) == ResourceUpdateReason.None)
-			{
-				// If the reason for the update doesn't match the reason(s) that the binding was created for, don't update it
-				return;
-			}
-
-			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
-			{
-				// Add the current dictionaries to the resolver scope,
-				// this allows for StaticResource.ResourceKey to resolve properly
-
-				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
-				{
-					ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
-				}
-			}
-
-			var wasSet = false;
-			foreach (var dict in dictionariesInScope)
-			{
-				if (dict.TryGetValue(binding.ResourceKey, out var value, shouldCheckSystem: false))
-				{
-					wasSet = true;
-					SetResourceBindingValue(property, binding, value);
-					break;
-				}
-			}
-
-			if (!wasSet)
-			{
-				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
-				{
-					SetResourceBindingValue(property, binding, value);
-				}
-			}
-
-			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
-			{
-				foreach (var dict in dictionariesInScope)
-				{
-					ResourceResolver.PopSourceFromScope();
-				}
-			}
-		}
-
-		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "normal flow of operation")]
-		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "normal flow of operation")]
-		private void SetResourceBindingValue(DependencyProperty property, ResourceBinding binding, object? value)
-		{
-			var convertedValue = BindingPropertyHelper.Convert(property.Type, value);
-			if (binding.SetterBindingPath != null)
-			{
-				try
-				{
-					_isSettingPersistentResourceBinding = binding.IsPersistent;
-					binding.SetterBindingPath.Value = convertedValue;
-				}
-				finally
-				{
-					_isSettingPersistentResourceBinding = false;
-				}
-			}
-			else
-			{
-				SetValue(property, convertedValue, binding.Precedence, isPersistentResourceBinding: binding.IsPersistent);
-			}
-		}
-
-		private bool _isUpdatingChildResourceBindings;
-
-		private void UpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
-		{
-			if (_isUpdatingChildResourceBindings)
-			{
-				// Some DPs might be creating reference cycles, so we make sure not to enter an infinite loop.
-				return;
-			}
-
-			if ((updateReason & ResourceUpdateReason.PropagatesThroughTree) != ResourceUpdateReason.None)
-			{
-				try
-				{
-					InnerUpdateChildResourceBindings(updateReason, resourceContextProvider);
-				}
-				finally
-				{
-					_isUpdatingChildResourceBindings = false;
-				}
-
-				if (ActualInstance is IThemeChangeAware themeChangeAware)
-				{
-					// Call OnThemeChanged after bindings of descendants have been updated
-					themeChangeAware.OnThemeChanged();
-				}
-
-				_properties.OnThemeChanged();
-			}
-		}
-
-		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and
-		/// can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
-		{
-			_isUpdatingChildResourceBindings = true;
-
-			foreach (var propertyDetail in _properties.GetAllDetails())
-			{
-				if (propertyDetail == null
-					|| propertyDetail == _properties.DataContextPropertyDetails)
-				{
-					continue;
-				}
-
-				var propertyValue = GetValue(propertyDetail);
-
-				if (propertyValue is IEnumerable<DependencyObject> dependencyObjectCollection &&
-					// Try to avoid enumerating collections that shouldn't be enumerated, since we may be encountering user-defined values. This may need to be refined to somehow only consider values coming from the framework itself.
-					(propertyValue is ICollection || propertyValue is DependencyObjectCollectionBase)
-				)
-				{
-					foreach (var innerValue in dependencyObjectCollection)
-					{
-						UpdateResourceBindingsIfNeeded(innerValue, updateReason, resourceContextProvider);
-					}
-				}
-
-				if (propertyValue is IAdditionalChildrenProvider updateable)
-				{
-					foreach (var innerValue in updateable.GetAdditionalChildObjects())
-					{
-						UpdateResourceBindingsIfNeeded(innerValue, updateReason, resourceContextProvider);
-					}
-				}
-
-				if (propertyValue is DependencyObject dependencyObject)
-				{
-					UpdateResourceBindingsIfNeeded(dependencyObject, updateReason, resourceContextProvider);
-				}
-			}
-		}
-
-		private void UpdateResourceBindingsIfNeeded(DependencyObject dependencyObject, ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
-		{
-			// propagate to non-FE DO
-			if (dependencyObject is not IFrameworkElement && dependencyObject is IDependencyObjectStoreProvider storeProvider)
-			{
-				storeProvider.Store.UpdateResourceBindings(
-					updateReason,
-					// when propagating to non-FE, we need to inject a FE as the resource context
-					resourceContextProvider: resourceContextProvider ?? ActualInstance as FrameworkElement
-				);
-			}
 		}
 
 		/// <summary>
@@ -2090,6 +1926,100 @@ namespace Microsoft.UI.Xaml
 			_dpChangedEventArgsPool.Return(eventArgs);
 		}
 
+		/// <summary>
+		/// Raises property change notifications for a text formatting property
+		/// WITHOUT modifying the DP system storage. This is the Uno equivalent
+		/// of WinUI's NotifyPropertyChanged called from MarkInheritedPropertyDirty.
+		/// </summary>
+		/// <remarks>
+		/// Raises: PropertyChanged callback, AffectsMeasure/AffectsArrange/AffectsRender,
+		/// backing field update, RegisterPropertyChangedCallback handlers, generic callbacks.
+		/// Does NOT: store value, cascade via HasInherits, update auto-parent.
+		/// </remarks>
+		internal void RaiseTextFormattingPropertyChanged(DependencyProperty property, object oldValue, object newValue)
+		{
+			var actualInstanceAlias = ActualInstance;
+			if (actualInstanceAlias is null)
+			{
+				return;
+			}
+
+			var propertyMetadata = property.Metadata;
+
+			// Layout invalidation
+			if (propertyMetadata is FrameworkPropertyMetadata frameworkPropertyMetadata)
+			{
+				if (frameworkPropertyMetadata.Options.HasAffectsMeasure())
+				{
+					actualInstanceAlias.InvalidateMeasure();
+				}
+
+				if (frameworkPropertyMetadata.Options.HasAffectsArrange())
+				{
+					actualInstanceAlias.InvalidateArrange();
+				}
+
+				if (frameworkPropertyMetadata.Options.HasAffectsRender())
+				{
+					if (actualInstanceAlias is UIElement elt)
+					{
+						var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(elt);
+						visual.Compositor.InvalidateRender(visual);
+					}
+				}
+
+				// NOTE: We intentionally skip HasInherits() cascade here.
+				// TextFormatting handles its own propagation via MarkInheritedPropertyDirty.
+			}
+
+			// Backing field update
+			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);
+
+			// PropertyChanged callback
+			var eventArgs = _dpChangedEventArgsPool.Rent();
+			eventArgs.PropertyInternal = property;
+			eventArgs.OldValueInternal = oldValue;
+			eventArgs.NewValueInternal = newValue;
+
+			TextFormattingHelper.IsProcessingInheritedNotification = true;
+			try
+			{
+				if (propertyMetadata.HasPropertyChanged)
+				{
+					propertyMetadata.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
+				}
+
+				// OnPropertyChanged2
+				if (actualInstanceAlias is IDependencyObjectInternal doInternal)
+				{
+					doInternal.OnPropertyChanged2(eventArgs);
+				}
+
+				// RegisterPropertyChangedCallback handlers
+				var propertyDetails = _properties.FindPropertyDetails(property);
+				if (propertyDetails is { CanRaisePropertyChanged: true })
+				{
+					propertyDetails.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
+				}
+
+				// Generic callbacks
+				var instanceRef = _originalObjectRef ?? ThisWeakReference;
+				var currentCallbacks = _genericCallbacks.Data;
+				for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
+				{
+					currentCallbacks[callbackIndex].Invoke(instanceRef, property, eventArgs);
+				}
+			}
+			finally
+			{
+				TextFormattingHelper.IsProcessingInheritedNotification = false;
+			}
+
+			eventArgs.OldValueInternal = null;
+			eventArgs.NewValueInternal = null;
+			_dpChangedEventArgsPool.Return(eventArgs);
+		}
+
 		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, object? newValue)
 		{
 			var propagateUnregistering = (_unregisteringInheritedProperties || _parentUnregisteringInheritedProperties) && property == _dataContextProperty;
@@ -2162,6 +2092,15 @@ namespace Microsoft.UI.Xaml
 			}
 
 			propertyDetails.SetValue(value, precedence);
+
+			// MUX ref: When a text formatting property is cleared (UnsetValue),
+			// increment the global counter BEFORE the new effective value is computed.
+			// This ensures TextFormatting.IsOld returns true when GetDefaultValue
+			// calls EnsureTextFormatting to compute the new inherited value.
+			if (value == DependencyProperty.UnsetValue && propertyDetails.Property.IsTextFormattingProperty)
+			{
+				GlobalTextFormattingCounter.Invalidate();
+			}
 
 			if (value == DependencyProperty.UnsetValue && precedence >= DependencyPropertyValuePrecedences.Local)
 			{
