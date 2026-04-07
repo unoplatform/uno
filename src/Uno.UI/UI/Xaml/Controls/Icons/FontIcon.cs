@@ -178,6 +178,65 @@ public partial class FontIcon : IconElement, IThemeChangeAware
 				false,
 				propertyChangedCallback: (s, e) => ((FontIcon)s).UpdateMirroring()));
 
+	/// <summary>
+	/// Pulls inherited text formatting from parent with FontIcon-specific defaults.
+	/// MUX ref: CFontIcon::PullInheritedTextFormatting (icon.cpp:688-747).
+	/// FontIcon overrides the base IconElement behavior:
+	/// - FontFamily defaults to "Segoe Fluent Icons,Segoe MDL2 Assets" (not parent's)
+	/// - FontSize defaults to 20.0 (g_ClientCoreFontSize, not parent's)
+	/// - FontWeight/FontStyle are NOT pulled from parent
+	/// </summary>
+	internal override void PullInheritedTextFormatting()
+	{
+		var parent = GetParentTextFormatting();
+
+		// MUX ref: icon.cpp:701-706 — FontFamily defaults to Segoe Fluent Icons, NOT parent's
+		if (IsPropertyDefault(FontFamilyProperty))
+		{
+			// Keep whatever FontFamily is in TextFormatting (default or explicitly set).
+			// Don't pull from parent — FontIcon uses its own default font.
+		}
+
+		// MUX ref: icon.cpp:709-712 — Foreground pulls from parent if default
+		if (IsPropertyDefault(ForegroundProperty) && !_textFormatting.FreezeForeground)
+		{
+			_textFormatting.Foreground = parent.Foreground;
+		}
+
+		// MUX ref: icon.cpp:715-720 — Language from parent if default
+		if (IsPropertyDefault(FrameworkElement.LanguageProperty))
+		{
+			_textFormatting.Language = parent.Language;
+		}
+
+		// MUX ref: icon.cpp:722-726 — FontSize defaults to 20.0, NOT parent's
+		if (IsPropertyDefault(FontSizeProperty))
+		{
+			_textFormatting.FontSize = 20.0; // g_ClientCoreFontSize
+		}
+
+		// MUX ref: icon.cpp:728-730 — FontStretch, CharacterSpacing, TextDecorations from parent (unconditional)
+		_textFormatting.FontStretch = parent.FontStretch;
+		_textFormatting.CharacterSpacing = parent.CharacterSpacing;
+		_textFormatting.TextDecorations = parent.TextDecorations;
+
+		// MUX ref: icon.cpp:732-735 — FlowDirection from parent if default
+		if (IsPropertyDefault(FrameworkElement.FlowDirectionProperty))
+		{
+			_textFormatting.FlowDirection = parent.FlowDirection;
+		}
+
+		// MUX ref: icon.cpp:737-741 — IsTextScaleFactorEnabled from parent if default
+		if (IsPropertyDefault(IsTextScaleFactorEnabledProperty))
+		{
+			_textFormatting.IsTextScaleFactorEnabled = parent.IsTextScaleFactorEnabled;
+		}
+
+		// NOTE: FontWeight and FontStyle are NOT pulled from parent.
+		// In WinUI CFontIcon::PullInheritedTextFormatting, these properties
+		// are not mentioned at all — they keep their default values.
+	}
+
 	private void SynchronizeProperties()
 	{
 		_textBlock.Style = null;

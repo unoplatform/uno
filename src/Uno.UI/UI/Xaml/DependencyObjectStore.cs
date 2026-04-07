@@ -1263,9 +1263,17 @@ namespace Microsoft.UI.Xaml
 
 		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
-			// NOTE: Foreground cascade blocking removed. Text formatting properties
-			// (Foreground, FontSize, etc.) no longer use DP Inherits — they propagate
-			// through the TextFormatting system with FreezeForeground at theme boundaries.
+			// MUX ref: In WinUI, Foreground propagates through TextFormatting with
+			// FreezeForeground at theme boundaries. In Uno, Foreground also uses DP
+			// Inherits for notification/binding support. Block the DP cascade at theme
+			// boundaries where FreezeForeground is set, matching WinUI's behavior where
+			// themed subtrees don't inherit foreground from outside their theme boundary.
+			if (parentProperty.IsTextFormattingProperty
+				&& parentProperty.Name == "Foreground"
+				&& ActualInstance is FrameworkElement { _textFormatting.FreezeForeground: true })
+			{
+				return;
+			}
 
 			var (localProperty, propertyDetails) = GetLocalPropertyDetails(parentProperty);
 
@@ -1449,22 +1457,6 @@ namespace Microsoft.UI.Xaml
 
 			return (null, null);
 		}
-
-		/// <summary>
-		/// Returns true if the given DependencyProperty is one of the known Foreground properties
-		/// that participate in theme-boundary inheritance blocking.
-		/// </summary>
-		/// <remarks>
-		/// MUX Reference: WinUI uses KnownPropertyIndex and InheritedProperties::GetCorrespondingInheritedProperty
-		/// to identify Foreground properties. We use DP identity checks to avoid fragile string comparison.
-		/// </remarks>
-		private static bool IsForegroundDependencyProperty(DependencyProperty property) =>
-			property == Controls.Control.ForegroundProperty
-			|| property == Controls.TextBlock.ForegroundProperty
-			|| property == Controls.IconElement.ForegroundProperty
-			|| property == Controls.ContentPresenter.ForegroundProperty
-			|| property == Controls.RichTextBlock.ForegroundProperty
-			|| property == Documents.TextElement.ForegroundProperty;
 
 		/// <summary>
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.
