@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.Toolkit.DevTools.Input;
 
+using static Uno.UI.Extensions.ViewExtensions;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.CommandBarPages;
 
 #if __APPLE_UIKIT__
@@ -24,7 +25,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
-	public class Given_CommandBar
+	public partial class Given_CommandBar
 	{
 		[TestMethod]
 		public async Task TestNativeCommandBarIcon()
@@ -262,4 +263,58 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 #endif
+
+	// Repro tests for https://github.com/unoplatform/uno/issues/4396
+	public partial class Given_CommandBar
+	{
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4396")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_CommandBarOverflowPresenterStyle_Is_Applied()
+		{
+			// Issue: CommandBar.CommandBarOverflowPresenterStyle is ignored.
+			// Expected: The style set via CommandBarOverflowPresenterStyle should be
+			// applied to the overflow presenter popup.
+
+			var overflowStyle = new Style(typeof(CommandBarOverflowPresenter));
+			overflowStyle.Setters.Add(new Setter(CommandBarOverflowPresenter.BackgroundProperty,
+				new SolidColorBrush(Windows.UI.Colors.Red)));
+
+			var sut = new CommandBar
+			{
+				Width = 300,
+				CommandBarOverflowPresenterStyle = overflowStyle,
+			};
+			sut.SecondaryCommands.Add(new AppBarButton { Label = "Secondary 1" });
+			sut.SecondaryCommands.Add(new AppBarButton { Label = "Secondary 2" });
+
+			await UITestHelper.Load(sut);
+			await UITestHelper.WaitForIdle();
+
+			// Verify the style is stored on the CommandBar
+			Assert.IsNotNull(sut.CommandBarOverflowPresenterStyle,
+				"CommandBarOverflowPresenterStyle should be set on the CommandBar.");
+			Assert.AreEqual(typeof(CommandBarOverflowPresenter),
+				sut.CommandBarOverflowPresenterStyle.TargetType,
+				"CommandBarOverflowPresenterStyle.TargetType should be CommandBarOverflowPresenter.");
+
+			// Open the overflow popup to verify the style is applied
+			sut.IsOpen = true;
+			await UITestHelper.WaitForIdle();
+
+			// Find the overflow presenter in the visual tree
+			var overflow = sut.FindFirstDescendant<CommandBarOverflowPresenter>();
+			if (overflow != null)
+			{
+				var bg = overflow.Background as SolidColorBrush;
+				Assert.IsNotNull(bg, "CommandBarOverflowPresenter.Background should be set (Red from style).");
+				Assert.AreEqual(Windows.UI.Colors.Red, bg.Color,
+					$"Expected CommandBarOverflowPresenter.Background to be Red from the applied style, " +
+					$"but got {bg?.Color}. This confirms CommandBarOverflowPresenterStyle is being ignored.");
+			}
+
+			sut.IsOpen = false;
+		}
+	}
 }
