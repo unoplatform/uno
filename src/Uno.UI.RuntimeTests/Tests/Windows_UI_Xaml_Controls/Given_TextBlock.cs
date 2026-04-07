@@ -2139,5 +2139,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+	// Repro tests for https://github.com/unoplatform/uno/issues/2795
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2795")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_TextBlock_TextLineBounds_Tight_Is_Shorter_Than_Full()
+	{
+		// Issue: TextLineBounds property is not implemented — it has no effect on text height.
+		// Expected: A TextBlock with TextLineBounds.Tight should have a smaller ActualHeight
+		// than one with TextLineBounds.Full, because Tight trims the top and bottom spacing
+		// beyond the cap height and baseline.
+
+		var fullTextBlock = new TextBlock
+		{
+			Text = "Ag",
+			FontSize = 40,
+			TextLineBounds = TextLineBounds.Full,
+		};
+
+		var tightTextBlock = new TextBlock
+		{
+			Text = "Ag",
+			FontSize = 40,
+			TextLineBounds = TextLineBounds.Tight,
+		};
+
+		var stack = new StackPanel
+		{
+			Children = { fullTextBlock, tightTextBlock }
+		};
+
+		await UITestHelper.Load(stack);
+		await UITestHelper.WaitForIdle();
+
+		// With TextLineBounds.Tight, height should be less than Full
+		// (no line-leading/trailing spacing, only cap-height to baseline)
+		Assert.IsTrue(tightTextBlock.ActualHeight < fullTextBlock.ActualHeight,
+			$"Expected TextLineBounds.Tight ({tightTextBlock.ActualHeight}px) to be shorter than " +
+			$"TextLineBounds.Full ({fullTextBlock.ActualHeight}px). " +
+			$"TextLineBounds is not implemented — it has no effect on text line height.");
+	}
 	}
 }
