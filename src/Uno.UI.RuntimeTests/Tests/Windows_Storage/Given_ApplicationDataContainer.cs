@@ -20,7 +20,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
 			SUT.Values.Clear();
-			foreach (var container in SUT.Containers)
+			foreach (var container in SUT.Containers.ToList())
 			{
 				SUT.DeleteContainer(container.Key);
 			}
@@ -282,7 +282,6 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		public void When_Container_Values_Type()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
-			var instance = SUT.Values;
 			Assert.IsInstanceOfType(SUT.Values, typeof(ApplicationDataContainerSettings));
 		}
 
