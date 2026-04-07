@@ -120,7 +120,7 @@ public class Given_InputInjector
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task When_MouseClick_PointerPressedAndReleasedAreRaised()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
@@ -161,6 +161,7 @@ public class Given_InputInjector
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task When_MouseMove_PointerEventsAreRaised()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)

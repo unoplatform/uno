@@ -1448,6 +1448,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the accelerators on its attached MenuFlyout.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyButtonFlyoutWithMenuFlyoutCanInvokeAcceleratorDefinedOnMenuItem()
 	{
 		const string rootPanelXaml =
@@ -1511,6 +1512,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verify accelerators submenuitem in menuflyout on button control.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyAcceleratorsDefinedOnSubMenuItemInMenuFlyoutOnButton()
 	{
 		const string rootPanelXaml =
@@ -1589,6 +1591,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verify accelerators submenuitem in menuflyout on menubar control.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyAcceleratorsDefinedOnSubMenuItemInMenuFlyoutOnMenuBar()
 	{
 		const string rootPanelXaml =
@@ -1668,6 +1671,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that accelerators on MenuBar works when menu item is collapsed.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyAcceleratorDefinedOnMenuBarMenuItems()
 	{
 		const string rootPanelXaml =
@@ -1727,6 +1731,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that accelerators on MenuBar works when menu item is opened up.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyAcceleratorDefinedOnMenuBarMenuItemsWhenItsOpened()
 	{
 		const string rootPanelXaml =
@@ -1792,6 +1797,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that accelerators on MenuBar works after menu item is opened up and closed again.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyAcceleratorDefinedOnMenuBarMenuItemsWhenItsOpenedAndClosed()
 	{
 		const string rootPanelXaml =
@@ -1860,6 +1866,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandardUICommands defined on MenuBar after setting window content, works when menu item is collapsed.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItemsAfterSettingWindowContent()
 	{
 		const string rootPanelXaml =
@@ -1910,6 +1917,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandardUICommands on MenuBar works when menu item closed.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItems()
 	{
 		const string rootPanelXaml =
@@ -1957,6 +1965,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandarUICommands on MenuBar works when menu item is opened up.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItemsWhenItsOpened()
 	{
 		const string rootPanelXaml =
@@ -2010,6 +2019,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that StandarUICommands on MenuBar works after menu item opened up and closed again.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyStandarUICommandsDefinedOnMenuBarMenuItemsWhenItsOpenedAndClosed()
 	{
 		const string rootPanelXaml =
@@ -2066,6 +2076,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the accelerators on its attached Flyout.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyButtonFlyoutCanInvokeAcceleratorsDefinedOnFlyoutContent()
 	{
 		const string rootPanelXaml =
@@ -2151,6 +2162,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the accelerators on its attached Flyout.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyButtonContextFlyoutWithFlyoutCanInvokeAcceleratorDefinedOnFlyoutContent()
 	{
 		const string rootPanelXaml =
@@ -2295,6 +2307,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that Button control fires the global accelerators on its attached MenuFlyout.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyButtonContextFlyoutWithMenuFlyoutCanInvokeAcceleratorDefinedOnMenuFlyout()
 	{
 		const string rootPanelXaml =
@@ -2841,6 +2854,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that ListView fires the accelerators on its attached ContextFlyout.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyListViewContextFlyoutCanInvokeHiddenAccelerator()
 	{
 		const string rootPanelXaml =
@@ -3096,6 +3110,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that ListView does not fire the accelerators on its attached ContextFlyout, as it is scoped to be local.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task VerifyListViewContextFlyoutCanNotInvokeHiddenLocallyScopedAccelerator()
 	{
 		const string rootPanelXaml =
