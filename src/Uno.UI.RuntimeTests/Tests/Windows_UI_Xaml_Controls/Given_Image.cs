@@ -603,7 +603,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __SKIA__
 		[TestMethod]
 		[RunsOnUIThread]
-		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18804")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22839")]
 		public async Task When_SVGImageSource_SetSourceAsync_Stream()
 		{
 			// Regression test: when SVG is loaded via SetSourceAsync (stream, no URI),
