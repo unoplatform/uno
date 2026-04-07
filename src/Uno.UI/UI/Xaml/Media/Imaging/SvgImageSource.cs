@@ -97,9 +97,6 @@ public partial class SvgImageSource : ImageSource
 
 			using var x = Subscribe(OnChanged);
 
-
-			InvalidateSource();
-
 			return await tcs.Task;
 
 			void OnChanged(ImageData data)
