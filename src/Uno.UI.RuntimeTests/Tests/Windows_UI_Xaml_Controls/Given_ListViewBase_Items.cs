@@ -17,6 +17,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
+using Uno.UI.RuntimeTests.Helpers;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -496,5 +499,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			"DOMINICA",
 			"DOMINICAN REPUBLIC"
 		};
+
+		// Repro tests for https://github.com/unoplatform/uno/issues/4597
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4597")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ItemsControl_Items_DataContext_Does_Not_Switch()
+		{
+			// Issue: ItemsControl items have weird DataContext behavior — they first get
+			// the correct DataContext, then the parent's DataContext, then the correct one again.
+			// Expected: Items should only get the correct DataContext (the item itself), never
+			// the parent/container DataContext.
+
+			var parentContext = new { Name = "ParentContext" };
+			var items = new[] { "Item1", "Item2", "Item3" };
+
+			var dataContextChanges = new System.Collections.Generic.List<(int containerIndex, object context)>();
+
+			var sut = new ItemsControl
+			{
+				Width = 300,
+				Height = 200,
+				DataContext = parentContext,
+				ItemsSource = items,
+				ItemTemplate = (DataTemplate)XamlReader.Load(
+					@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+						<TextBlock Text='{Binding}' />
+					</DataTemplate>"),
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+
+			// After loading, each item container should have its corresponding item as DataContext
+			// (not the parent DataContext)
+			for (int i = 0; i < items.Length; i++)
+			{
+				var container = sut.ContainerFromIndex(i) as ContentPresenter;
+				if (container != null)
+				{
+					Assert.AreEqual(items[i], container.DataContext,
+						$"Item container at index {i} should have DataContext='{items[i]}', " +
+						$"but got '{container.DataContext}'. " +
+						$"If DataContext is the parent context object, " +
+						$"the DataContext switched to parent then back unexpectedly.");
+
+					Assert.AreNotEqual(parentContext, container.DataContext,
+						$"Item container at index {i} should NOT have the parent DataContext. " +
+						$"This confirms the DataContext switching bug.");
+				}
+			}
+		}
 	}
 }
