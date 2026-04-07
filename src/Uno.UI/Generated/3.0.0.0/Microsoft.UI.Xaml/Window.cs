@@ -16,8 +16,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property CoreWindow
 		// Skipping already declared property Dispatcher
 		// Skipping already declared property DispatcherQueue
-		// Skipping already declared property Visible
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+		// Skipping already declared property ExtendsContentIntoTitleBar
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.SystemBackdrop SystemBackdrop
 		{

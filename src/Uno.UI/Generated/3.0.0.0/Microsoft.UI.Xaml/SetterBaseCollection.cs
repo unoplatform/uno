@@ -10,20 +10,7 @@ namespace Microsoft.UI.Xaml
 	{
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.SetterBase this[int index]
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SetterBase SetterBaseCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SetterBase%20SetterBaseCollection.this%5Bint%20index%5D");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.SetterBaseCollection", "SetterBase SetterBaseCollection.this[int index]");
-			}
-		}
-#endif
+		// Skipping collection property provided by base class: this[]
 		// Skipping already declared property IsSealed
 		// Skipping already declared method Microsoft.UI.Xaml.SetterBaseCollection.SetterBaseCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.SetterBaseCollection()

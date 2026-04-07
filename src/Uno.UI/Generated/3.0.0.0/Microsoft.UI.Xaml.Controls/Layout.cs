@@ -21,6 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.InvalidateArrange()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.SetIndexBasedLayoutOrientation(Microsoft.UI.Xaml.Controls.IndexBasedLayoutOrientation)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.CreateDefaultItemTransitionProvider()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.IndexBasedLayoutOrientation.get
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Layout.ArrangeInvalidated
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Layout.MeasureInvalidated
 	}
