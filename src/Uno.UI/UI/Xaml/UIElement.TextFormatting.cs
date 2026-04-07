@@ -187,19 +187,41 @@ public partial class UIElement : ITextFormattingOwner
 				// The property is not set locally on the child.
 				// i.e. the child does not block inheritance of this property.
 
+				// MUX ref: FreezeForeground check — when a child has FreezeForeground set
+				// (it's a theme boundary), don't push Foreground into it or its subtree.
+				if (propertyName == "Foreground"
+					&& childUIE._textFormatting is { FreezeForeground: true })
+				{
+					continue;
+				}
+
 				if (correspondingDP is not null)
 				{
-					// Update child's TextFormatting field
+					// MUX ref: childUIE->NotifyPropertyChanged(...)
+					// Only update children that already have TextFormatting initialized.
+					// Children without TextFormatting will pull inherited values lazily
+					// via EnsureTextFormatting when their properties are read.
 					var childTF = childUIE._textFormatting;
 					if (childTF is not null)
 					{
 						var oldValue = childTF.GetFieldValue(propertyName);
-						childTF.SetFieldValue(propertyName, newValue);
 
-						// Raise property change notifications
-						// MUX ref: childUIE->NotifyPropertyChanged(...)
-						var store = ((IDependencyObjectStoreProvider)childUIE).Store;
-						store.RaiseTextFormattingPropertyChanged(correspondingDP, oldValue, newValue);
+						// Write the parent's value, then immediately let the child's
+						// PullInheritedTextFormatting correct it. This is critical for
+						// elements like FontIcon that override PullInheritedTextFormatting
+						// with special defaults (e.g., FontSize=20 instead of parent's).
+						// MUX ref: In WinUI, NotifyPropertyChanged doesn't directly write
+						// to TextFormatting — the pull mechanism handles value correction.
+						childTF.SetFieldValue(propertyName, newValue);
+						childUIE.PullInheritedTextFormatting();
+						childTF.SetIsUpToDate();
+
+						var effectiveValue = childTF.GetFieldValue(propertyName);
+						if (!Equals(oldValue, effectiveValue))
+						{
+							var store = ((IDependencyObjectStoreProvider)childUIE).Store;
+							store.RaiseTextFormattingPropertyChanged(correspondingDP, oldValue, effectiveValue);
+						}
 					}
 				}
 

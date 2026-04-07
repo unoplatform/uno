@@ -1429,9 +1429,17 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			// NOTE: Foreground cascade blocking removed. Text formatting properties
-			// (Foreground, FontSize, etc.) no longer use DP Inherits — they propagate
-			// through the TextFormatting system with FreezeForeground at theme boundaries.
+			// MUX ref: In WinUI, Foreground propagates through TextFormatting with
+			// FreezeForeground at theme boundaries. In Uno, Foreground also uses DP
+			// Inherits for notification/binding support. Block the DP cascade at theme
+			// boundaries where FreezeForeground is set, matching WinUI's behavior where
+			// themed subtrees don't inherit foreground from outside their theme boundary.
+			if (parentProperty.IsTextFormattingProperty
+				&& parentProperty.Name == "Foreground"
+				&& ActualInstance is FrameworkElement { _textFormatting.FreezeForeground: true })
+			{
+				return;
+			}
 
 			// Non-FrameworkElement DependencyObject: it has no DataContextProperty of its own (WinUI parity). Route the
 			// inherited DataContext through ApplyDataContext so its own {Binding}s resolve against the mentor/parent
