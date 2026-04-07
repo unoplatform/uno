@@ -613,8 +613,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var stream = await file.OpenReadAsync();
 
 			var svgImageSource = new SvgImageSource();
-			await svgImageSource.SetSourceAsync(stream);
-
 			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
 
 			var imageOpened = false;
@@ -623,6 +621,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			image.ImageFailed += (_, e) => imageFailedMessage = e.ErrorMessage;
 
 			await UITestHelper.Load(image);
+
+			await svgImageSource.SetSourceAsync(stream);
+
 			await WindowHelper.WaitFor(() => imageOpened || imageFailedMessage is not null);
 
 			Assert.IsNull(imageFailedMessage, $"ImageFailed should not be raised when loading SVG via stream. Error: {imageFailedMessage}");
