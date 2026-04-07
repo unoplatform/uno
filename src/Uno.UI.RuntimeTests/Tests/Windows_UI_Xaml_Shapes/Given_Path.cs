@@ -345,5 +345,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		private void Brush_ImageOpened(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) => throw new NotImplementedException();
+
+		// Repro tests for https://github.com/unoplatform/uno/issues/4563
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4563")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Paths_In_Canvas_With_MatrixTransform_Render_Without_Exception()
+		{
+			// Issue: Path objects inside nested Canvases with MatrixTransform and TranslateTransform
+			// don't render correctly on WASM (visual mismatch with UWP).
+			// This test verifies the layout doesn't throw and produces non-zero bounds.
+
+			Exception caught = null;
+			Microsoft.UI.Xaml.Controls.Canvas canvas = null;
+
+			try
+			{
+				var root = (Microsoft.UI.Xaml.FrameworkElement)XamlReader.Load(
+					@"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+						   xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
+						   Width='200' Height='200'>
+						<Viewbox>
+							<Canvas x:Name='layer1' Width='53' Height='53'>
+								<Canvas x:Name='g958'>
+									<Canvas.RenderTransform>
+										<MatrixTransform Matrix='1.1048446, 0, 0, 1.1959561, -67.035883, -96.098854'/>
+									</Canvas.RenderTransform>
+									<Canvas x:Name='g920'>
+										<Canvas.RenderTransform>
+											<TranslateTransform X='3.6170566' Y='26.121871'/>
+										</Canvas.RenderTransform>
+										<Path x:Name='path882' Fill='#FFFFFFFF' Data='m 89.844925 86.908932 -5.484915 -9.50015 -5.484913 -9.500149 10.969828 -10e-7 10.969825 0 -5.484911 9.50015 z'>
+											<Path.RenderTransform>
+												<MatrixTransform Matrix='0.99974084, 0, 0, 1.0590767, 0.02096173, -5.1400261'/>
+											</Path.RenderTransform>
+										</Path>
+									</Canvas>
+									<Rectangle Canvas.Left='68.170586' Canvas.Top='85.901428' Width='38.119644' Height='2.9399648' x:Name='rect9016' Fill='#FFFFFFFF'/>
+								</Canvas>
+							</Canvas>
+						</Viewbox>
+					</Grid>");
+
+				canvas = root.FindName("layer1") as Microsoft.UI.Xaml.Controls.Canvas;
+
+				WindowHelper.WindowContent = root;
+				await WindowHelper.WaitForLoaded(root);
+				await WindowHelper.WaitForIdle();
+			}
+			catch (Exception ex)
+			{
+				caught = ex;
+			}
+
+			Assert.IsNull(caught,
+				$"Expected paths in nested Canvases with MatrixTransform to load without exception, but got: {caught?.Message}");
+
+			Assert.IsNotNull(canvas, "Canvas layer1 should be found in visual tree.");
+			Assert.IsTrue(canvas.ActualWidth > 0,
+				$"Expected Canvas to have non-zero width after rendering.");
+		}
 	}
 }
