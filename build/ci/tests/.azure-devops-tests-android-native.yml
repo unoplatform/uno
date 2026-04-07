@@ -160,7 +160,7 @@ jobs:
     displayName: 'Enable KVM'
 
   - task: DownloadPipelineArtifact@2
-    displayName: 'Download SamplesApp UnitTests'
+    displayName: 'Download SamplesApp Android artifact'
     inputs:
       artifact: $(SAMPLEAPP_ARTIFACT_NAME)
       path: '$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android'

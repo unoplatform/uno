@@ -70,7 +70,7 @@ fi
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
-## The python server serves the current working directory, and may be changed by the nunit runner
+## dotnet-serve hosts the specified directory; the working directory may be changed by the nunit runner
 dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/samplesapp-wasm-native/site-$SITE_SUFFIX" &
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
