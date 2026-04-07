@@ -1,0 +1,49 @@
+<UserControl x:Class="Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_BottomOpenUp"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="400">
+
+    <!-- Repro for https://github.com/unoplatform/uno/issues/1612
+         Bug: A CommandBar placed at the bottom of the screen does not animate in the correct direction.
+         Expected: The CommandBar should expand UPWARD (using CompactOpenUp/MinimalOpenUp visual states).
+         How to verify: Click the expand chevron button on the CommandBar below.
+                        It should open upward, revealing secondary commands above the bar.
+                        On Windows: opens upward correctly.
+                        Bug: On other platforms it may open downward (off-screen) or not at all. -->
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8">
+            <TextBlock Text="Bug: CommandBar does not support OpenUp states"
+                       Style="{ThemeResource SubtitleTextBlockStyle}"
+                       TextWrapping="Wrap" />
+            <TextBlock Text="The CommandBar is placed at the bottom of this view. Tap the expand button (chevron) on it."
+                       TextWrapping="Wrap" />
+            <TextBlock Text="Expected: The CommandBar should expand UPWARD, showing secondary commands above it."
+                       TextWrapping="Wrap" />
+            <TextBlock Text="Bug: The animation direction is incorrect — it may expand downward or clip off-screen."
+                       Foreground="Red"
+                       TextWrapping="Wrap" />
+        </StackPanel>
+
+        <CommandBar Grid.Row="1"
+                    ClosedDisplayMode="Compact"
+                    DefaultLabelPosition="Right">
+            <AppBarButton Icon="Refresh" Label="Refresh" />
+            <AppBarButton Icon="Save" Label="Save" />
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Icon="Setting" Label="Settings" />
+                <AppBarButton Icon="Help" Label="Help" />
+                <AppBarButton Icon="Delete" Label="Delete" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Grid>
+</UserControl>
