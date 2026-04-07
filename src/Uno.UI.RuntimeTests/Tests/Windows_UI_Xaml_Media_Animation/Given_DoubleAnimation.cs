@@ -392,5 +392,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				// And, when the animation is completed, this native value is reset even for HoldEnd animation.
 				: translate.Y;
 #endif
+
+		// Repro tests for https://github.com/unoplatform/uno/issues/635
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/635")]
+		public async Task When_Shared_RenderTransform_Animated_Both_Targets_Move()
+		{
+			// Issue: Animations are tightly coupled with the control they animate.
+			// A transform declared in resources and shared between multiple controls cannot be animated.
+			// Expected: Animating a shared TranslateTransform moves all controls that use it as RenderTransform.
+
+			var sharedTransform = new TranslateTransform();
+
+			var border1 = new Border
+			{
+				Width = 50,
+				Height = 50,
+				Background = new SolidColorBrush(Colors.Red),
+				RenderTransform = sharedTransform,
+			};
+			var border2 = new Border
+			{
+				Width = 50,
+				Height = 50,
+				Background = new SolidColorBrush(Colors.Blue),
+				RenderTransform = sharedTransform,
+			};
+
+			var stack = new StackPanel
+			{
+				Orientation = Orientation.Horizontal,
+				Children = { border1, border2 }
+			};
+
+			WindowHelper.WindowContent = stack;
+			await WindowHelper.WaitForLoaded(stack);
+			await WindowHelper.WaitForIdle();
+
+			// Animate the shared transform X from 0 to 100
+			var animation = new DoubleAnimation
+			{
+				From = 0,
+				To = 100,
+				Duration = TimeSpan.FromMilliseconds(500),
+				FillBehavior = FillBehavior.HoldEnd,
+			}.BindTo(sharedTransform, nameof(TranslateTransform.X));
+
+			await animation.ToStoryboard().RunAsync(timeout: TimeSpan.FromMilliseconds(700));
+			await WindowHelper.WaitForIdle();
+
+			// Both borders should have moved by 100 on X via the shared transform
+			Assert.AreEqual(100d, sharedTransform.X, 2d,
+				$"Expected shared transform X=100 after animation, but got {sharedTransform.X}");
+
+			// Verify both borders are visually offset (their actual position relative to parent)
+			var transform1 = border1.TransformToVisual(stack);
+			var pos1 = transform1.TransformPoint(new Windows.Foundation.Point(0, 0));
+			Assert.IsTrue(pos1.X >= 98d,
+				$"Expected border1 X position >= 98 (moved by shared transform), but got {pos1.X}");
+
+			var transform2 = border2.TransformToVisual(stack);
+			var pos2 = transform2.TransformPoint(new Windows.Foundation.Point(0, 0));
+			// border2 is after border1 in StackPanel (starts at X=50), plus 100 from transform
+			Assert.IsTrue(pos2.X >= 148d,
+				$"Expected border2 X position >= 148 (50 layout offset + 100 from shared transform), but got {pos2.X}");
+		}
 	}
 }
