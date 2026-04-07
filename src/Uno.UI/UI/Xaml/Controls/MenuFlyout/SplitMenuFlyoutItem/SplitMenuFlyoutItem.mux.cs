@@ -25,10 +25,10 @@ partial class SplitMenuFlyoutItem
 	}
 #endif
 
-	// Uno specific: Walk sub-items to find keyboard accelerators.
-	// In WinUI, this is handled by the core-level TryInvokeKeyboardAccelerator tree walk
-	// which can access sub-items directly. In Uno, sub-items are not visual children,
-	// so we need to explicitly iterate them here.
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+	// Uno specific fallback for platforms without enhanced lifecycle (Android/iOS native).
+	// On Skia/WASM, the dead enter in EnterImpl registers sub-item KeyboardAcceleratorCollections
+	// into the global live list, and ProcessGlobalAccelerators finds them — matching WinUI behavior.
 	protected override void OnProcessKeyboardAccelerators(ProcessKeyboardAcceleratorEventArgs args)
 	{
 		base.OnProcessKeyboardAccelerators(args);
@@ -51,4 +51,5 @@ partial class SplitMenuFlyoutItem
 			}
 		}
 	}
+#endif
 }
