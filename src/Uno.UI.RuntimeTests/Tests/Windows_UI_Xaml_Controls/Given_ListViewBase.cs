@@ -5480,5 +5480,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public class SubclassOfObservableCollection : ObservableCollection<string>
 		{
 		}
+
+		// Repro tests for https://github.com/unoplatform/uno/issues/1133
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/1133")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ListView_HorizontalAlignment_Left_Sizes_To_Content()
+		{
+			// Issue: ListView with HorizontalAlignment="Left" ignores the alignment and stretches
+			// to fill the available width (behaves as if HorizontalAlignment="Stretch").
+			// Expected: With HorizontalAlignment="Left", the ListView should size itself to its
+			// content width and NOT stretch to fill the container.
+
+			const double ItemWidth = 80;
+			const double ContainerWidth = 400;
+
+			var sut = new ListView
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				ItemsSource = Enumerable.Range(1, 5).Select(i => $"Item {i}").ToList(),
+				ItemTemplate = (DataTemplate)XamlReader.Load(
+					$@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+						<Border Width=""{ItemWidth}"" Height=""40"">
+							<TextBlock Text=""{{Binding}}"" />
+						</Border>
+					</DataTemplate>"),
+			};
+
+			var container = new Grid
+			{
+				Width = ContainerWidth,
+				Height = 300,
+				Children = { sut }
+			};
+
+			await UITestHelper.Load(container, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+
+			// With HorizontalAlignment="Left", the ListView should NOT fill the container width.
+			// Its ActualWidth should be significantly less than the container width (400).
+			Assert.IsTrue(sut.ActualWidth < ContainerWidth - 10,
+				$"Expected ListView with HorizontalAlignment=Left to have width < {ContainerWidth - 10}, " +
+				$"but got ActualWidth={sut.ActualWidth}. " +
+				$"This confirms the ListView is ignoring HorizontalAlignment=Left and stretching to fill the container.");
+		}
 	}
 }
