@@ -65,6 +65,7 @@ internal static class TextFormattingHelper
 			TextBlock => GetTextBlockProperty(propertyName),
 			Control => GetControlProperty(propertyName),
 			ContentPresenter => GetContentPresenterProperty(propertyName),
+			FontIcon => GetFontIconProperty(propertyName),
 			IconElement => propertyName == "Foreground" ? IconElement.ForegroundProperty : GetFrameworkElementProperty(propertyName),
 			// RichTextBlock is NotImplemented in Uno — skip for now
 			TextElement => GetTextElementProperty(propertyName),
@@ -128,6 +129,20 @@ internal static class TextFormattingHelper
 		"TextDecorations" => TextElement.TextDecorationsProperty,
 		// MUX ref: InheritedProperties.cpp:622 — Language maps to TextElement_Language
 		"Language" => TextElement.LanguageProperty,
+		_ => null
+	};
+
+	// MUX ref: InheritedProperties.cpp — FontIcon has its own FontSize, FontFamily,
+	// FontWeight, FontStyle DPs with specific defaults (e.g., FontSize=20, not 14).
+	private static DependencyProperty GetFontIconProperty(string name) => name switch
+	{
+		"Foreground" => IconElement.ForegroundProperty,
+		"FontSize" => FontIcon.FontSizeProperty,
+		"FontFamily" => FontIcon.FontFamilyProperty,
+		"FontWeight" => FontIcon.FontWeightProperty,
+		"FontStyle" => FontIcon.FontStyleProperty,
+		"FlowDirection" => FrameworkElement.FlowDirectionProperty,
+		"Language" => FrameworkElement.LanguageProperty,
 		_ => null
 	};
 
