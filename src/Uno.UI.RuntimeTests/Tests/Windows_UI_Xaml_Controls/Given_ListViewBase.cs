@@ -5481,4 +5481,78 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 		}
 	}
+
+	// Repro tests for https://github.com/unoplatform/uno/issues/1362
+	[TestClass]
+	[RunsOnUIThread]
+	public class Given_ListBox
+	{
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/1362")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ListBox_ItemsSource_Set_Items_Are_Populated_Without_Resize()
+		{
+			// Issue: On WASM, ListBox items only appear after the browser window is resized.
+			// The ListBox fails to invalidate its layout when ItemsSource is initially set.
+			// Expected: Items should be visible/populated immediately after setting ItemsSource.
+
+			var items = new[] { "Apple", "Banana", "Cherry", "Date" };
+			var sut = new ListBox
+			{
+				Width = 200,
+				Height = 200,
+				ItemsSource = items,
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+
+			// Items should be populated in the items panel
+			var panelRoot = sut.ItemsPanelRoot;
+			Assert.IsNotNull(panelRoot, "Expected ItemsPanelRoot to be non-null.");
+
+			var listBoxItems = panelRoot.Children.OfType<ListBoxItem>().ToList();
+			Assert.AreEqual(4, listBoxItems.Count,
+				$"Expected 4 ListBoxItem children in the panel, but got {listBoxItems.Count}. " +
+				$"On WASM, this fails because items only appear after browser resize.");
+
+			// The ListBox itself should have non-zero ActualHeight
+			Assert.IsTrue(sut.ActualHeight > 0,
+				$"Expected ListBox to have ActualHeight > 0, but got {sut.ActualHeight}.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/1362")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ListBox_ItemsSource_Set_After_Load_Items_Are_Populated()
+		{
+			// Issue: ListBox items not populated when ItemsSource is set after the control is loaded.
+			// This is the more common scenario (async data fetch then assign).
+
+			var sut = new ListBox
+			{
+				Width = 200,
+				Height = 200,
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+
+			// Set ItemsSource after load (simulating async data fetch)
+			sut.ItemsSource = new[] { "Item 1", "Item 2", "Item 3" };
+
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual(3, sut.Items.Count,
+				$"Expected 3 items in the ListBox but got {sut.Items.Count}.");
+
+			var panelRoot = sut.ItemsPanelRoot;
+			Assert.IsNotNull(panelRoot, "Expected ItemsPanelRoot to be non-null.");
+
+			var listBoxItems = panelRoot.Children.OfType<ListBoxItem>().ToList();
+			Assert.AreEqual(3, listBoxItems.Count,
+				$"Expected 3 ListBoxItem children in the panel after setting ItemsSource, but got {listBoxItems.Count}. " +
+				$"On WASM, this fails because the layout invalidation doesn't trigger without a resize.");
+		}
+	}
 }
