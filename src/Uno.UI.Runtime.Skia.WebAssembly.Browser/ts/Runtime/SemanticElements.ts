@@ -51,14 +51,30 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		/**
+		 * Removes any existing DOM element with the given id to prevent duplicates.
+		 * Returns the removed element (for potential reuse) or null.
+		 */
+		private static removeExistingById(id: string): HTMLElement | null {
+			const existing = document.getElementById(id);
+			if (existing) {
+				existing.remove();
+			}
+			return existing;
+		}
+
+		/**
 		 * Appends a created semantic element to its proper parent in the tree,
 		 * or falls back to the semantics root if the parent is not found.
+		 * Automatically removes any pre-existing element with the same id.
 		 */
 		private static appendToParent(
 			element: HTMLElement,
 			parentHandle: number,
 			index: number | null
 		): void {
+			// Remove any pre-existing element with this id to prevent duplicates
+			SemanticElements.removeExistingById(element.id);
+
 			let parent: HTMLElement | null = null;
 			if (parentHandle !== 0) {
 				parent = document.getElementById(`uno-semantics-${parentHandle}`);
@@ -149,21 +165,13 @@ namespace Uno.UI.Runtime.Skia {
 
 			const callbacks = this.getCallbacks();
 
-			// Click handler for button activation
+			// Click handler for button activation.
+			// <button> natively fires 'click' on both Enter and Space,
+			// so no separate keydown handler is needed.
 			element.addEventListener('click', (e) => {
 				e.preventDefault();
 				if (callbacks.onInvoke) {
 					callbacks.onInvoke(handle);
-				}
-			});
-
-			// Keyboard handlers for Enter/Space
-			element.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					e.preventDefault();
-					if (callbacks.onInvoke) {
-						callbacks.onInvoke(handle);
-					}
 				}
 			});
 
@@ -207,19 +215,12 @@ namespace Uno.UI.Runtime.Skia {
 
 			const callbacks = this.getCallbacks();
 
+			// <button> natively fires 'click' on both Enter and Space,
+			// so no separate keydown handler is needed.
 			element.addEventListener('click', (e) => {
 				e.preventDefault();
 				if (callbacks.onToggle) {
 					callbacks.onToggle(handle);
-				}
-			});
-
-			element.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					e.preventDefault();
-					if (callbacks.onToggle) {
-						callbacks.onToggle(handle);
-					}
 				}
 			});
 
@@ -264,19 +265,12 @@ namespace Uno.UI.Runtime.Skia {
 
 			const callbacks = this.getCallbacks();
 
+			// <button> natively fires 'click' on both Enter and Space,
+			// so no separate keydown handler is needed.
 			element.addEventListener('click', (e) => {
 				e.preventDefault();
 				if (callbacks.onToggle) {
 					callbacks.onToggle(handle);
-				}
-			});
-
-			element.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					e.preventDefault();
-					if (callbacks.onToggle) {
-						callbacks.onToggle(handle);
-					}
 				}
 			});
 
@@ -1332,6 +1326,19 @@ namespace Uno.UI.Runtime.Skia {
 			label: string,
 			multiselectable: boolean
 		): void {
+			// If an element for this container already exists (created by CreateListBoxElement),
+			// just update its attributes instead of creating a duplicate.
+			const existing = document.getElementById(`uno-semantics-${containerHandle}`);
+			if (existing) {
+				if (label) {
+					existing.setAttribute('aria-label', label);
+				}
+				if (multiselectable) {
+					existing.setAttribute('aria-multiselectable', 'true');
+				}
+				return;
+			}
+
 			const root = SemanticElements.getSemanticsRoot();
 			if (!root) {
 				return;
@@ -1371,6 +1378,22 @@ namespace Uno.UI.Runtime.Skia {
 			SemanticElements.scheduleVirtualizedMutation(() => {
 				const container = document.getElementById(`uno-semantics-${containerHandle}`);
 				if (!container) {
+					return;
+				}
+
+				// If an element for this item already exists (created by OnChildAdded→CreateListItemElement),
+				// just update it instead of creating a duplicate.
+				const existingItem = document.getElementById(`uno-semantics-${itemHandle}`);
+				if (existingItem) {
+					existingItem.setAttribute('aria-posinset', String(index + 1));
+					existingItem.setAttribute('aria-setsize', String(totalCount));
+					if (label) {
+						existingItem.setAttribute('aria-label', label);
+					}
+					// Ensure item is inside the correct container
+					if (existingItem.parentElement !== container) {
+						container.appendChild(existingItem);
+					}
 					return;
 				}
 

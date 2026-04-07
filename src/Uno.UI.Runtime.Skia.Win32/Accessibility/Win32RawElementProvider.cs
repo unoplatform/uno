@@ -295,6 +295,15 @@ internal class Win32RawElementProvider :
 				var localRect = new Windows.Foundation.Rect(0, 0, size.X, size.Y);
 				var logicalRect = transform.Transform(localRect);
 
+				// Clip to ancestor scroll/clip regions so Narrator doesn't report
+				// bounds for content that is scrolled out of view.
+				logicalRect = ClipToAncestors(_owner, logicalRect);
+
+				if (logicalRect.Width <= 0 || logicalRect.Height <= 0)
+				{
+					return default;
+				}
+
 				// Convert logical pixels to physical screen coordinates
 				float dpiScale = Win32UIAutomationInterop.GetDpiForWindow(_hwnd)
 					/ (float)Win32UIAutomationInterop.USER_DEFAULT_SCREEN_DPI;
@@ -1031,4 +1040,40 @@ internal class Win32RawElementProvider :
 		Win32UIAutomationInterop.UIA_TablePatternId => "Table",
 		_ => $"Unknown({patternId})",
 	};
+
+	// IRawElementProviderAdviseEvents
+
+	public void AdviseEventAdded(int eventId, int[]? propertyIds)
+	{
+		_accessibility.OnAdviseEventAdded(eventId, propertyIds);
+	}
+
+	public void AdviseEventRemoved(int eventId, int[]? propertyIds)
+	{
+		_accessibility.OnAdviseEventRemoved(eventId, propertyIds);
+	}
+
+	/// <summary>
+	/// Clips a logical rect to ancestor elements that have Clip set (e.g., ScrollViewer).
+	/// This prevents Narrator from reporting bounds for content scrolled out of view.
+	/// </summary>
+	private static Windows.Foundation.Rect ClipToAncestors(UIElement element, Windows.Foundation.Rect rect)
+	{
+		var ancestor = element.GetParent() as UIElement;
+		while (ancestor is not null)
+		{
+			if (ancestor.Clip is RectangleGeometry clip)
+			{
+				var clipTransform = UIElement.GetTransform(from: ancestor, to: null);
+				var clipRect = clipTransform.Transform(clip.Rect);
+				rect.Intersect(clipRect);
+				if (rect.IsEmpty)
+				{
+					return new Windows.Foundation.Rect(0, 0, 0, 0);
+				}
+			}
+			ancestor = ancestor.GetParent() as UIElement;
+		}
+		return rect;
+	}
 }

@@ -604,6 +604,14 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 	public bool ListenerExistsHelper(AutomationEvents eventId)
 		=> IsAccessibilityEnabled;
 
+	public void OnAdviseEventAdded(int eventId, int[]? propertyIds)
+	{
+	}
+
+	public void OnAdviseEventRemoved(int eventId, int[]? propertyIds)
+	{
+	}
+
 	// Property mapping
 
 	private static int? MapAutomationPropertyToUia(AutomationProperty property)

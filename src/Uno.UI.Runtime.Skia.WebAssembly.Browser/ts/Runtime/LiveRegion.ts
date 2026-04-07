@@ -30,6 +30,7 @@ namespace Uno.UI.Runtime.Skia {
 			LiveRegion.politeRegion.style.overflow = "hidden";
 			LiveRegion.politeRegion.style.clip = "rect(0, 0, 0, 0)";
 			LiveRegion.politeRegion.style.whiteSpace = "nowrap";
+			LiveRegion.applyLangDir(LiveRegion.politeRegion);
 			container.appendChild(LiveRegion.politeRegion);
 
 			// Create assertive live region
@@ -43,6 +44,7 @@ namespace Uno.UI.Runtime.Skia {
 			LiveRegion.assertiveRegion.style.overflow = "hidden";
 			LiveRegion.assertiveRegion.style.clip = "rect(0, 0, 0, 0)";
 			LiveRegion.assertiveRegion.style.whiteSpace = "nowrap";
+			LiveRegion.applyLangDir(LiveRegion.assertiveRegion);
 			container.appendChild(LiveRegion.assertiveRegion);
 		}
 
@@ -77,6 +79,21 @@ namespace Uno.UI.Runtime.Skia {
 			}
 			if (LiveRegion.assertiveRegion) {
 				LiveRegion.assertiveRegion.textContent = "";
+			}
+		}
+
+		/**
+		 * Copies lang and dir from the document root to a live region element
+		 * so screen readers use the correct language and reading direction.
+		 */
+		private static applyLangDir(element: HTMLElement): void {
+			const lang = document.documentElement.lang;
+			const dir = document.documentElement.dir;
+			if (lang) {
+				element.setAttribute("lang", lang);
+			}
+			if (dir) {
+				element.setAttribute("dir", dir);
 			}
 		}
 	}

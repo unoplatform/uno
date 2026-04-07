@@ -112,9 +112,7 @@ public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer, Pro
 	{
 		if (Owner is TextBox owner)
 		{
-			//UNO TODO Implement TextBoxPlaceholderTextHelper
-			//IFC_RETURN(TextBoxPlaceholderTextHelper::SetupPlaceholderTextBlockDescribedBy(spOwner));
-
+			DirectUI.TextBoxPlaceholderTextHelper.SetupPlaceholderTextBlockDescribedBy(owner);
 			return base.GetDescribedByCore();
 		}
 

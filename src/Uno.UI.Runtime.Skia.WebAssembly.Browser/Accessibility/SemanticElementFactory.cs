@@ -742,7 +742,8 @@ internal static partial class SemanticElementFactory
 		float height,
 		AriaAttributes attributes)
 	{
-		var rowIndex = attributes.PositionInSet ?? 0;
+		// ARIA aria-rowindex is 1-based; ensure at least 1
+		var rowIndex = Math.Max(attributes.PositionInSet ?? 1, 1);
 
 		NativeMethods.CreateGridRowElement(
 			parentHandle,
@@ -775,8 +776,9 @@ internal static partial class SemanticElementFactory
 
 		if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider gridItemProvider)
 		{
-			rowIndex = gridItemProvider.Row;
-			colIndex = gridItemProvider.Column;
+			// ARIA aria-rowindex/aria-colindex are 1-based; GridItemProvider is 0-based
+			rowIndex = gridItemProvider.Row + 1;
+			colIndex = gridItemProvider.Column + 1;
 		}
 
 		NativeMethods.CreateGridCellElement(

@@ -118,11 +118,11 @@ public sealed partial class AutomationProperties
 		}
 		if (uIElement is ListView or ListBox)
 		{
-			return "list";
+			return "listbox";
 		}
 		if (uIElement is ListViewItem or ListBoxItem)
 		{
-			return "listitem";
+			return "option";
 		}
 		if (uIElement is ScrollViewer)
 		{
@@ -179,7 +179,11 @@ public sealed partial class AutomationProperties
 				AutomationControlType.StatusBar => "statusbar",
 				AutomationControlType.Tab => "tab",
 				AutomationControlType.TabItem => "tabitem",
-				AutomationControlType.Text => "label",
+				// "label" is NOT a valid WAI-ARIA role. Screen readers (VoiceOver)
+				// ignore it and may announce the element as "group" instead.
+				// Text elements should use no explicit role — their text is
+				// communicated via aria-label or text content.
+				AutomationControlType.Text => null,
 				AutomationControlType.ToolBar => "toolbar",
 				AutomationControlType.ToolTip => "tooltip",
 				AutomationControlType.Tree => "tree",

@@ -50,7 +50,8 @@ namespace Uno.UI.Runtime.Skia {
 				modalElement.setAttribute("aria-modal", "true");
 			}
 
-			// Create keydown handler for Tab wrapping
+			// Create keydown handler for Tab wrapping.
+			// Use capture phase so user code cannot stopPropagation() to escape the trap.
 			const keydownHandler = (e: KeyboardEvent) => {
 				if (e.key === "Tab") {
 					const wrapped = FocusTrap.handleTrapTab(modalHandle, e.shiftKey);
@@ -60,7 +61,7 @@ namespace Uno.UI.Runtime.Skia {
 				}
 			};
 
-			document.addEventListener("keydown", keydownHandler);
+			document.addEventListener("keydown", keydownHandler, true);
 
 			FocusTrap.activeTrap = {
 				modalHandle,
@@ -86,33 +87,37 @@ namespace Uno.UI.Runtime.Skia {
 		 */
 		public static deactivateFocusTrap(modalHandle: number): void {
 			const trap = FocusTrap.activeTrap;
-			if (!trap || trap.modalHandle !== modalHandle) {
+			if (!trap) {
 				return;
 			}
 
-			// Remove keydown handler
-			document.removeEventListener("keydown", trap.keydownHandler);
+			// Handle out-of-order deactivation: if the requested modal is not
+			// the topmost, walk the parent chain to find and remove it.
+			if (trap.modalHandle !== modalHandle) {
+				let current: FocusTrapState | null = trap;
+				while (current) {
+					if (current.parentState?.modalHandle === modalHandle) {
+						const target = current.parentState;
+						document.removeEventListener("keydown", target.keydownHandler, true);
+						FocusTrap.restoreHiddenElements(target);
+						FocusTrap.removeDialogRole(target.modalHandle);
+						// Splice out of linked list
+						current.parentState = target.parentState;
+						return;
+					}
+					current = current.parentState;
+				}
+				return;
+			}
+
+			// Remove keydown handler (must match capture phase used in activate)
+			document.removeEventListener("keydown", trap.keydownHandler, true);
 
 			// Restore hidden elements
-			for (const item of trap.hiddenElements) {
-				if (item.originalAriaHidden !== null) {
-					item.element.setAttribute("aria-hidden", item.originalAriaHidden);
-				} else {
-					item.element.removeAttribute("aria-hidden");
-				}
-				if (item.originalTabIndex !== null) {
-					item.element.setAttribute("tabindex", item.originalTabIndex);
-				} else {
-					item.element.removeAttribute("tabindex");
-				}
-			}
+			FocusTrap.restoreHiddenElements(trap);
 
 			// Remove dialog role
-			const modalElement = document.getElementById(`uno-semantics-${modalHandle}`);
-			if (modalElement) {
-				modalElement.removeAttribute("role");
-				modalElement.removeAttribute("aria-modal");
-			}
+			FocusTrap.removeDialogRole(modalHandle);
 
 			// Reactivate parent trap or clear
 			FocusTrap.activeTrap = trap.parentState;
@@ -197,6 +202,29 @@ namespace Uno.UI.Runtime.Skia {
 		 */
 		public static getActiveTrapHandle(): number {
 			return FocusTrap.activeTrap?.modalHandle ?? 0;
+		}
+
+		private static restoreHiddenElements(trap: FocusTrapState): void {
+			for (const item of trap.hiddenElements) {
+				if (item.originalAriaHidden !== null) {
+					item.element.setAttribute("aria-hidden", item.originalAriaHidden);
+				} else {
+					item.element.removeAttribute("aria-hidden");
+				}
+				if (item.originalTabIndex !== null) {
+					item.element.setAttribute("tabindex", item.originalTabIndex);
+				} else {
+					item.element.removeAttribute("tabindex");
+				}
+			}
+		}
+
+		private static removeDialogRole(modalHandle: number): void {
+			const modalElement = document.getElementById(`uno-semantics-${modalHandle}`);
+			if (modalElement) {
+				modalElement.removeAttribute("role");
+				modalElement.removeAttribute("aria-modal");
+			}
 		}
 	}
 }

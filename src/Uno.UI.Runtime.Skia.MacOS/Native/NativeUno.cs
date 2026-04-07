@@ -599,6 +599,9 @@ internal static partial class NativeUno
 	internal static partial void uno_accessibility_update_read_only(nint handle, [MarshalAs(UnmanagedType.I1)] bool readOnly);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_update_selection(nint handle, int selectionStart, int selectionLength);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_accessibility_update_modal(nint handle, [MarshalAs(UnmanagedType.I1)] bool isModal);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]

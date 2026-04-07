@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -109,6 +110,13 @@ public static class AriaMapper
 	{
 		if (peer.GetPattern(PatternInterface.Toggle) is IToggleProvider)
 		{
+			// ToggleSwitch maps to the ARIA switch pattern (role="switch" + aria-checked)
+			// rather than toggle button (aria-pressed), so VoiceOver announces "On"/"Off".
+			if (peer is ToggleSwitchAutomationPeer)
+			{
+				return SemanticElementType.Switch;
+			}
+
 			return SemanticElementType.ToggleButton;
 		}
 
@@ -236,6 +244,14 @@ public static class AriaMapper
 			if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
 			{
 				attributes.Selected = selectionItemProvider.IsSelected;
+			}
+			else if (peer is FrameworkElementAutomationPeer { Owner: SelectorItem selectorItem })
+			{
+				// ListViewItemAutomationPeer and ListBoxItemAutomationPeer are container
+				// peers that don't implement ISelectionItemProvider (that's on the data
+				// peer SelectorItemAutomationPeer). Fall back to SelectorItem.IsSelected
+				// so the initial aria-selected state is correct for list items.
+				attributes.Selected = selectorItem.IsSelected;
 			}
 
 			if (peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider rangeValueProvider)

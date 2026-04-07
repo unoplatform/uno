@@ -35,6 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) double unoRangeMax;
 @property (nonatomic) BOOL unoIsSelected; // maps to ARIA aria-selected
 @property (nonatomic) BOOL unoIsReadOnly;
+@property (nonatomic) NSInteger unoSelectionStart; // text caret/selection start index
+@property (nonatomic) NSInteger unoSelectionLength; // text selection length (0 = caret only)
 @property (nonatomic) NSInteger unoPositionInSet; // maps to ARIA aria-posinset (1-based, 0=unset)
 @property (nonatomic) NSInteger unoSizeOfSet; // maps to ARIA aria-setsize (0=unset)
 @property (nonatomic, strong, nullable) NSString *unoLandmarkRole; // landmark type (main, navigation, search, form, region)
@@ -89,6 +91,7 @@ void uno_accessibility_update_position_in_set(intptr_t handle, int32_t position,
 void uno_accessibility_update_landmark(intptr_t handle, const char* _Nullable landmarkRole);
 void uno_accessibility_update_required(intptr_t handle, bool required);
 void uno_accessibility_update_read_only(intptr_t handle, bool readOnly);
+void uno_accessibility_update_selection(intptr_t handle, int32_t selectionStart, int32_t selectionLength);
 void uno_accessibility_update_modal(intptr_t handle, bool isModal);
 
 // Focus

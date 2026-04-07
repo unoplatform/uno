@@ -562,12 +562,15 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 				elements = AutomationProperties.GetFlowsFrom(Owner);
 			}
 
-			if (elements.Count > 0)
+			if (elements is not null && elements.Count > 0)
 			{
 				for (var i = 0; i < elements.Count; ++i)
 				{
-					var ap = (elements[i] as UIElement).GetOrCreateAutomationPeer();
-					peers.Add(ap);
+					var ap = (elements[i] as UIElement)?.GetOrCreateAutomationPeer();
+					if (ap is not null)
+					{
+						peers.Add(ap);
+					}
 				}
 			}
 		}
