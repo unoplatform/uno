@@ -1,10 +1,9 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Uno.Foundation.Logging;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 using static __Uno.Storage.NativeApplicationSettings;
 
@@ -115,10 +114,4 @@ partial class NativeApplicationSettings
 			}
 		}
 	}
-
-
-
-
-
-
 }
