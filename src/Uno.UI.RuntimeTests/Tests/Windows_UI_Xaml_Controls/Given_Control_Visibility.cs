@@ -72,6 +72,7 @@ public class Given_Control_Visibility
 					type == typeof(MediaTransportControls) || // matches winui
 					type == typeof(MenuBarItem) || // matches winui
 					type == typeof(MenuFlyoutSubItem) || // matches winui
+					type == typeof(SplitMenuFlyoutItem) || // matches winui
 					type == typeof(ColorPickerSlider) ||
 
 #if HAS_UNO
