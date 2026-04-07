@@ -5481,4 +5481,58 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 		}
 	}
+
+	// Repro tests for https://github.com/unoplatform/uno/issues/3739
+	[TestClass]
+	[RunsOnUIThread]
+	public class Given_TemplatePoolRecycling
+	{
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3739")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_CheckBox_IsChecked_True_In_DataTemplate_Not_Reset_After_Recycling()
+		{
+			// Issue: Template recycling calls OnTemplateRecycled() which resets IsChecked to false
+			// even when the DataTemplate explicitly sets IsChecked="True".
+			// Expected: After recycling, a CheckBox with IsChecked="True" in the DataTemplate
+			// should keep its initial value of true (not be reset to false).
+
+			var sut = new ListView
+			{
+				Height = 100, // Small height to force virtualization with many items
+				Width = 300,
+				ItemsSource = Enumerable.Range(1, 30).ToList(),
+				ItemTemplate = (DataTemplate)XamlReader.Load(
+					@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+						<CheckBox IsChecked='True' Content='{Binding}' />
+					</DataTemplate>"),
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+
+			// Scroll to the bottom to trigger recycling of the initial items
+			var sv = sut.FindFirstDescendant<ScrollViewer>();
+			Assert.IsNotNull(sv, "ScrollViewer should exist.");
+			sv.ScrollToVerticalOffset(sv.ScrollableHeight);
+			await UITestHelper.WaitForIdle();
+
+			// Scroll back to the top — recycled containers should now be repopulated
+			sv.ScrollToVerticalOffset(0);
+			await UITestHelper.WaitForIdle();
+
+			// Find the first visible CheckBox — it should have IsChecked=True from the template
+			var container0 = sut.ContainerFromIndex(0) as ListViewItem;
+			Assert.IsNotNull(container0, "Container for index 0 should be visible.");
+
+			var checkBox = container0.FindFirstDescendant<CheckBox>();
+			Assert.IsNotNull(checkBox, "CheckBox should be found in the container.");
+
+			// After recycling, the CheckBox IsChecked should still be true (from the template)
+			// Bug: OnTemplateRecycled() calls IsChecked = false, overriding the template value
+			Assert.IsTrue(checkBox.IsChecked == true,
+				$"Expected CheckBox.IsChecked to be true (from DataTemplate default), but got {checkBox.IsChecked}. " +
+				$"Template recycling is resetting IsChecked to false instead of the template's initial value.");
+		}
+	}
 }
