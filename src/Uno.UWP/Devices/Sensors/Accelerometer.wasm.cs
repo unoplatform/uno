@@ -40,7 +40,7 @@ namespace Windows.Devices.Sensors
 
 		private void StartShaken()
 		{
-			if (_shakeDetector == null)
+			if (_shakeDetector is null)
 			{
 				_shakeDetector = new ShakeDetector(this);
 			}

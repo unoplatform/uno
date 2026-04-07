@@ -90,7 +90,7 @@ namespace Windows.Devices.Lights
 			var captureDevice = AVCaptureDevice.GetDefaultDevice(AVMediaTypes.Video.GetConstant());
 
 			var lampAvailable =
-				captureDevice != null &&
+				captureDevice is not null &&
 				(captureDevice.HasFlash || captureDevice.HasTorch);
 
 			if (lampAvailable)

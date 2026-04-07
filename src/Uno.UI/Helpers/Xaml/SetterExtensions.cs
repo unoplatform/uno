@@ -8,6 +8,7 @@ using Uno.Extensions;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
+using Uno.UI.DataBinding;
 
 namespace Uno.UI.Helpers.Xaml
 {
@@ -33,14 +34,16 @@ namespace Uno.UI.Helpers.Xaml
 			setter.ThemeResourceKey = !themeResourceName.IsNullOrEmpty() ? themeResourceName : null;
 			setter.ThemeResourceContext = parseContext as XamlParseContext;
 
+			var updateReason = ResourceUpdateReason.None;
 			if (isTheme)
 			{
-				setter.ResourceBindingUpdateReason |= ResourceUpdateReason.ThemeResource;
+				updateReason |= ResourceUpdateReason.ThemeResource;
 			}
 			if (isHotReload)
 			{
-				setter.ResourceBindingUpdateReason |= ResourceUpdateReason.HotReload;
+				updateReason |= ResourceUpdateReason.HotReload;
 			}
+			setter.ResourceBindingUpdateReason |= updateReason;
 
 			return setter;
 		}

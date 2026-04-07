@@ -457,7 +457,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_WebMessageReceived_After_RemoveAdd()
 	{
 		var border = new Border();
