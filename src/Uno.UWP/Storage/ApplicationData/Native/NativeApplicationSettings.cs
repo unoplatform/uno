@@ -100,7 +100,7 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 	private partial IEnumerable<string> GetKeysPlatform();
 
 	internal IEnumerable<string> GetKeysWithPrefix(string prefix) =>
-		Keys.Where(kvp => kvp.StartsWith(prefix, StringComparison.InvariantCulture));
+		Keys.Where(kvp => kvp.StartsWith(prefix, StringComparison.Ordinal));
 
 	internal IEnumerable<string> GetKeys(Predicate<string> shouldInclude) =>
 		Keys.Where(kvp => shouldInclude(kvp));
