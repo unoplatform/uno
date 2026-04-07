@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
@@ -105,6 +106,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var popupForeground = (SolidColorBrush)page.PopupTextBlock.Foreground;
 			Assert.AreEqual(Microsoft.UI.Colors.Red, popupForeground.Color);
+		}
+
+		// Repro tests for https://github.com/unoplatform/uno/issues/3999
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3999")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ToggleButton_Background_Transparent_Via_Style()
+		{
+			// Issue: ToggleButton background is not set to Transparent when set via a Style
+			// that defines all related resource style keys to Transparent.
+			// This was visible in the ColorPicker's 'MoreButton' style.
+			// Expected: Background should be Transparent after the style is applied.
+
+			var sut = (ToggleButton)XamlReader.Load(
+				@"<ToggleButton xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+						xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
+						Content='More'>
+					<ToggleButton.Style>
+						<Style TargetType='ToggleButton'>
+							<Setter Property='Background' Value='Transparent' />
+							<Setter Property='BorderBrush' Value='Transparent' />
+							<Setter Property='BorderThickness' Value='0' />
+						</Style>
+					</ToggleButton.Style>
+				</ToggleButton>");
+
+			await UITestHelper.Load(sut);
+			await UITestHelper.WaitForIdle();
+
+			// Background should be Transparent (or null — both indicate no visible background)
+			var background = sut.Background as SolidColorBrush;
+			if (background != null)
+			{
+				Assert.AreEqual(Microsoft.UI.Colors.Transparent, background.Color,
+					$"Expected ToggleButton Background to be Transparent from Style, but got {background.Color}. " +
+					$"This confirms transparent background via Style is not being applied correctly.");
+			}
+			// null background is also acceptable — transparent
 		}
 	}
 }
