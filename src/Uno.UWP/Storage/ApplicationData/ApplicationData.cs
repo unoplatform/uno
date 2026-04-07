@@ -145,7 +145,7 @@ public sealed partial class ApplicationData
 	private async Task SetVersionTaskAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler, CancellationToken ct)
 	{
 		var request = new SetVersionRequest(Version, desiredVersion);
-		handler?.Invoke(request);
+		handler.Invoke(request);
 		request.DeferralManager.EventRaiseCompleted();
 		await request.DeferralManager.WhenAllCompletedAsync();
 		Version = desiredVersion;

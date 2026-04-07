@@ -18,5 +18,5 @@ public partial class SetVersionDeferral
 	/// <summary>
 	/// Notifies the system that the app has set the version of the application data in its app data store.
 	/// </summary>
-	public void Complete() => _handler?.Invoke();
+	public void Complete() => _handler.Invoke();
 }
