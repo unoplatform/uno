@@ -24,7 +24,7 @@ public partial class ApplicationDataContainer : IDisposable
 	private readonly Lazy<Dictionary<string, ApplicationDataContainer>> _containers;
 	private readonly NativeApplicationSettings _nativeApplicationSettings;
 	private readonly ApplicationDataContainerSettings _values;
-	private readonly ApplicationDataContainer _parent;
+	private readonly ApplicationDataContainer? _parent;
 
 	internal ApplicationDataContainer(string name, ApplicationDataLocality locality)
 	{
