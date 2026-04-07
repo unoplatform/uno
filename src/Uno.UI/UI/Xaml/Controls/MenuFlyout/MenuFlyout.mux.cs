@@ -1,8 +1,9 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference dxaml\xcp\core\core\elements\MenuFlyout.cpp, tag winui3/release/1.5.4, commit 98a60c8
 
 using Microsoft.UI.Xaml.Input;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -20,7 +21,11 @@ partial class MenuFlyout
 		{
 			// This is a dead enter to register any keyboard accelerators that may be present in the MenuFlyout items
 			// to the list of live accelerators
-			parameters = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = parameters.VisualTree };
+			var visualTree = parameters.VisualTree;
+#if HAS_UNO // Uno specific: recover VisualTree from parent (see Flyout.mux.cs Enter for rationale).
+			visualTree ??= (element.GetParent() as DependencyObject)?.GetVisualTree();
+#endif
+			parameters = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
 			//params.fSkipNameRegistration = true;
 			//params.fUseLayoutRounding = false;
 			//params.fCoercedIsEnabled = false;
@@ -45,7 +50,11 @@ partial class MenuFlyout
 		{
 			// This is a dead leave to remove any keyboard accelerators that may be present in the MenuFlyout items
 			// from the list of live accelerators
-			parameters = new LeaveParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = parameters.VisualTree };
+			var visualTree = parameters.VisualTree;
+#if HAS_UNO // Uno specific: recover VisualTree from parent (see Flyout.mux.cs Enter for rationale).
+			visualTree ??= (element.GetParent() as DependencyObject)?.GetVisualTree();
+#endif
+			parameters = new LeaveParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
 			//params.fSkipNameRegistration = true;
 			//params.fUseLayoutRounding = false;
 			//params.fCoercedIsEnabled = false;
