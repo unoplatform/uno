@@ -609,7 +609,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Regression test: when SVG is loaded via SetSourceAsync (stream, no URI),
 			// AbsoluteUri is null. GetSvgImageDataAsync must not call GetImageDataFromUriAsBytes
 			// in that case, as it would throw internally and cause spurious exceptions.
-			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/couch.svg"));
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Uno.UI.RuntimeTests/Assets/couch.svg"));
 			using var stream = await file.OpenReadAsync();
 
 			var svgImageSource = new SvgImageSource();
