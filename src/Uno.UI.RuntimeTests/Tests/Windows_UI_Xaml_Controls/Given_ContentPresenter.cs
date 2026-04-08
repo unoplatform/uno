@@ -502,6 +502,68 @@ public partial class Given_ContentPresenter
 		SUT.ActualHeight.Should().BeLessThanOrEqualTo(200); // WPf returns 200, everywhere else returns 0
 	}
 #endif
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4894")]
+	public async Task When_Content_Set_Then_ContentPresenter_ShouldNot_Become_Parent()
+	{
+		// Issue #4894: When ContentPresenter.Content is set, the ContentPresenter
+		// should NOT become the Parent of the content. In WinUI, ContentPresenter
+		// is not the parent — the content is part of the visual tree but Parent
+		// remains unchanged.
+
+		var button = new Button { Content = "Test" };
+		var presenter = new ContentPresenter();
+
+		var stackPanel = new StackPanel();
+		stackPanel.Children.Add(presenter);
+		stackPanel.Children.Add(button);
+
+		await UITestHelper.Load(stackPanel);
+
+		// Record the button's parent before moving it to ContentPresenter
+		var originalParent = button.Parent;
+
+		// Remove button from StackPanel, then set as ContentPresenter content
+		stackPanel.Children.Remove(button);
+		presenter.Content = button;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// In WinUI, ContentPresenter should NOT be the Parent of its Content
+		Assert.AreNotEqual(presenter, button.Parent,
+			"ContentPresenter should not become the Parent of its Content. " +
+			$"Actual parent: {button.Parent?.GetType().Name ?? "null"}");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4894")]
+	public async Task When_Content_Set_Then_DataContext_ShouldNot_Inherit_Immediately()
+	{
+		// Issue #4894: When content is moved to ContentPresenter, it should NOT
+		// immediately inherit the ContentPresenter's DataContext. However, if the
+		// ContentPresenter's DataContext changes later, the content should inherit it.
+
+		var button = new Button { Content = "{Binding}" };
+		button.DataContext = "Original DataContext";
+
+		var presenter = new ContentPresenter();
+		presenter.DataContext = "Presenter DataContext";
+
+		var stackPanel = new StackPanel();
+		stackPanel.Children.Add(presenter);
+
+		await UITestHelper.Load(stackPanel);
+
+		// Set the button as ContentPresenter content
+		presenter.Content = button;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// In WinUI, setting content should NOT cause immediate DataContext inheritance
+		// from the ContentPresenter. The button should retain its original DataContext.
+		Assert.AreEqual("Original DataContext", button.DataContext,
+			"Content's DataContext should not change immediately when set as " +
+			"ContentPresenter.Content. The content should retain its pre-existing DataContext.");
+	}
 }
 public partial class Given_ContentPresenter
 {
@@ -556,4 +618,6 @@ public partial class Given_ContentPresenter
 			return $"{OuterHorizontal}/{OuterVertical}/{InnerHorizontal}/{InnerVertical}/{ExpectedPosition}/{ExpectedSize}";
 		}
 	}
+
+	// Tests for issue #4894 are in the main test class above
 }
