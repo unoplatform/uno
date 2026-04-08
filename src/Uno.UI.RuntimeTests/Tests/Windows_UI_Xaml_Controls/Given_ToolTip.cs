@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Windows.UI;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
@@ -12,6 +14,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Toolkit.DevTools.Input;
 using Uno.Extensions;
+using Uno.UI.Extensions;
+using Microsoft.UI.Xaml.Automation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -520,5 +524,97 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(tooltip.IsOpen);
 		}
 #endif
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/9906")]
+		[RequiresFullWindow]
+		public async Task When_InfoBar_CloseButton_ToolTip_Position_Is_Near_Button()
+		{
+			// Issue #9906: InfoBar close button tooltip displays randomly anywhere
+			// on the screen instead of near the close button.
+			try
+			{
+				var infoBar = new InfoBar
+				{
+					IsOpen = true,
+					IsClosable = true,
+					Title = "Test InfoBar",
+					Message = "This is a test for tooltip positioning",
+					HorizontalAlignment = HorizontalAlignment.Stretch,
+				};
+
+				await UITestHelper.Load(infoBar);
+
+				// Find the close button within the InfoBar
+				var closeButton = infoBar.FindFirstDescendant<Button>(b =>
+					b.Name == "CloseButton" || AutomationProperties.GetName(b) == "Close");
+
+				Assert.IsNotNull(closeButton, "Close button should exist in InfoBar when IsClosable is true");
+
+				// Get the tooltip from the close button
+				var tooltip = ToolTipService.GetToolTip(closeButton) as ToolTip;
+
+				// If no explicit ToolTip is set, try opening programmatically
+				if (tooltip == null)
+				{
+					// The close button may have a string tooltip
+					var tooltipObj = ToolTipService.GetToolTip(closeButton);
+					if (tooltipObj is string tooltipStr)
+					{
+						// Create a ToolTip wrapping the string to control it
+						tooltip = new ToolTip { Content = tooltipStr };
+						ToolTipService.SetToolTip(closeButton, tooltip);
+					}
+					else
+					{
+						// No tooltip at all, set one for testing
+						tooltip = new ToolTip { Content = "Close" };
+						ToolTipService.SetToolTip(closeButton, tooltip);
+					}
+				}
+
+				// Open the tooltip
+				tooltip.IsOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				// Find the tooltip's popup in the visual tree
+				var tooltipPopup = VisualTreeHelper.GetOpenPopupsForXamlRoot(infoBar.XamlRoot)
+					.FirstOrDefault(p => p.Child is ToolTip || (p.Child is FrameworkElement fe && fe.FindFirstDescendant<ToolTip>() != null));
+
+				Assert.IsNotNull(tooltipPopup, "Tooltip popup should be open");
+
+				// Get the positions
+				var closeButtonBounds = closeButton.GetAbsoluteBoundsRect();
+				var tooltipBounds = new Rect(
+					tooltipPopup.HorizontalOffset,
+					tooltipPopup.VerticalOffset,
+					(tooltipPopup.Child as FrameworkElement)?.ActualWidth ?? 0,
+					(tooltipPopup.Child as FrameworkElement)?.ActualHeight ?? 0);
+
+				// The tooltip should be reasonably close to the close button.
+				// Allow generous margins (200px) but catch the "randomly anywhere" case.
+				var maxAllowedDistance = 200.0;
+				var horizontalDistance = Math.Max(0,
+					Math.Max(tooltipBounds.Left - closeButtonBounds.Right, closeButtonBounds.Left - tooltipBounds.Right));
+				var verticalDistance = Math.Max(0,
+					Math.Max(tooltipBounds.Top - closeButtonBounds.Bottom, closeButtonBounds.Top - tooltipBounds.Bottom));
+
+				Assert.IsTrue(horizontalDistance < maxAllowedDistance,
+					$"Tooltip is too far horizontally from the close button. " +
+					$"Button bounds: {closeButtonBounds}, Tooltip bounds: {tooltipBounds}, " +
+					$"Horizontal distance: {horizontalDistance}px (max allowed: {maxAllowedDistance}px)");
+
+				Assert.IsTrue(verticalDistance < maxAllowedDistance,
+					$"Tooltip is too far vertically from the close button. " +
+					$"Button bounds: {closeButtonBounds}, Tooltip bounds: {tooltipBounds}, " +
+					$"Vertical distance: {verticalDistance}px (max allowed: {maxAllowedDistance}px)");
+			}
+			finally
+			{
+#if HAS_UNO
+				Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#endif
+			}
+		}
 	}
 }
