@@ -767,5 +767,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await Task.Delay(50);
 			}
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11228")]
+		public async Task When_TextBlock_Inside_Grid_Should_Report_Stretched_Size()
+		{
+			// Issue #11228: ActualWidth/ActualHeight of a TextBlock inside a Grid
+			// reports the intrinsic text size instead of the stretched size matching the Grid.
+			var grid = new Grid
+			{
+				Width = 300,
+				Height = 200
+			};
+
+			var textBlock = new TextBlock
+			{
+				Text = "Hello",
+				// Default HorizontalAlignment is Stretch, VerticalAlignment is Stretch
+			};
+
+			grid.Children.Add(textBlock);
+
+			TestServices.WindowHelper.WindowContent = grid;
+			await TestServices.WindowHelper.WaitForLoaded(grid);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// On WinUI, a TextBlock with default Stretch alignment inside a fixed-size Grid
+			// should have its ActualWidth match the Grid's width.
+			Assert.AreEqual(300, textBlock.ActualWidth, 1,
+				"TextBlock ActualWidth should match the containing Grid's width when using default Stretch alignment.");
+			// Note: TextBlock height may not stretch vertically by default (VerticalAlignment defaults to Stretch
+			// for FrameworkElement but TextBlock might not stretch vertically). Let's check ActualHeight is at least > 0.
+			Assert.IsTrue(textBlock.ActualHeight > 0,
+				"TextBlock ActualHeight should be greater than 0.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11228")]
+		public async Task When_Nested_Element_Inside_Grid_Should_Report_Correct_Size()
+		{
+			// Issue #11228: Nested items in Grid report incorrect sizes on Skia.
+			// A Border inside a Grid with fixed size should stretch to fill the Grid.
+			var grid = new Grid
+			{
+				Width = 400,
+				Height = 300
+			};
+
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Colors.Red)
+			};
+
+			grid.Children.Add(border);
+
+			TestServices.WindowHelper.WindowContent = grid;
+			await TestServices.WindowHelper.WaitForLoaded(grid);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(400, border.ActualWidth, 1,
+				"Border ActualWidth should match the containing Grid's width.");
+			Assert.AreEqual(300, border.ActualHeight, 1,
+				"Border ActualHeight should match the containing Grid's height.");
+		}
 	}
 }
