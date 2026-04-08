@@ -440,6 +440,28 @@ public class Given_DevServerMonitor
 		}
 	}
 
+	/// <summary>
+	/// Regression test for unoplatform/uno#22982: git.exe zombie processes.
+	/// When the DevServer runs as an MCP server behind a libuv-based client,
+	/// git.exe inherits the parent's stdin (a libuv named pipe) and hangs.
+	/// The fix is to set RedirectStandardInput = true in the ProcessStartInfo
+	/// so git gets a fresh empty pipe instead of the inherited handle.
+	/// </summary>
+	[TestMethod]
+	[Description("ProcessStartInfo for git check-ignore must redirect stdin to prevent libuv pipe inheritance (fixes #22982)")]
+	public void GetGitIgnoredPaths_ProcessStartInfo_RedirectsStdin()
+	{
+		var psi = SolutionFileFinder.CreateGitCheckIgnoreStartInfo(".", ["some/path"]);
+
+		psi.RedirectStandardInput.Should().BeTrue(
+			"git.exe must NOT inherit the parent's stdin — when stdin is a libuv named pipe "
+			+ "(from an MCP client), git hangs during I/O initialization (see #22982)");
+		psi.RedirectStandardOutput.Should().BeTrue();
+		psi.RedirectStandardError.Should().BeTrue();
+		psi.UseShellExecute.Should().BeFalse(
+			"UseShellExecute=false is required for stream redirection");
+	}
+
 	[TestMethod]
 	public void FindSolutionFiles_UsesHardcodedSkipList_WhenGitFails()
 	{

@@ -128,25 +128,17 @@ internal static class SolutionFileFinder
 			}
 
 			// Pass paths as arguments (--stdin has issues on Windows via ProcessStartInfo)
-			var psi = new ProcessStartInfo("git")
-			{
-				WorkingDirectory = gitRoot,
-				RedirectStandardOutput = true,
-				RedirectStandardError = true,
-				UseShellExecute = false,
-				CreateNoWindow = true,
-			};
-			psi.ArgumentList.Add("check-ignore");
-			foreach (var relativePath in relativePaths)
-			{
-				psi.ArgumentList.Add(relativePath);
-			}
+			var psi = CreateGitCheckIgnoreStartInfo(gitRoot, relativePaths);
 
 			using var process = Process.Start(psi);
 			if (process is null)
 			{
 				return null; // git not available
 			}
+
+			// Close stdin immediately — git check-ignore reads from args, not stdin.
+			// This signals EOF on the redirected pipe so git doesn't wait for input.
+			process.StandardInput.Close();
 
 			// Kill the process after a timeout to prevent hanging. This
 			// ensures that the subsequent synchronous ReadToEnd() will
@@ -237,5 +229,29 @@ internal static class SolutionFileFinder
 		{
 			// Skip directories we can't access or that disappeared during scanning
 		}
+	}
+
+	/// <summary>
+	/// Creates the <see cref="ProcessStartInfo"/> for <c>git check-ignore</c>.
+	/// Exposed as <c>internal</c> so tests can verify critical properties
+	/// (e.g. <see cref="ProcessStartInfo.RedirectStandardInput"/>).
+	/// </summary>
+	internal static ProcessStartInfo CreateGitCheckIgnoreStartInfo(string gitRoot, List<string> relativePaths)
+	{
+		var psi = new ProcessStartInfo("git")
+		{
+			WorkingDirectory = gitRoot,
+			RedirectStandardOutput = true,
+			RedirectStandardError = true,
+			RedirectStandardInput = true, // Prevent inheriting parent's stdin (e.g. libuv named pipe from MCP client)
+			UseShellExecute = false,
+			CreateNoWindow = true,
+		};
+		psi.ArgumentList.Add("check-ignore");
+		foreach (var relativePath in relativePaths)
+		{
+			psi.ArgumentList.Add(relativePath);
+		}
+		return psi;
 	}
 }
