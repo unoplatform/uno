@@ -557,6 +557,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			numberBox.Value.Should().Be(42);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4689")]
+		public async Task When_ElementPrepared_Then_FiredBeforeOnApplyTemplate()
+		{
+			// Issue #4689: In WinUI, ElementPrepared is called before the element's OnApplyTemplate.
+			// In Uno, OnApplyTemplate fires first, which causes problems for controls like
+			// NavigationViewItem that rely on state set during ElementPrepared (e.g. SetNavigationViewParent)
+			// being available when OnApplyTemplate runs.
+
+			var events = new List<string>();
+
+			var repeater = new ItemsRepeater
+			{
+				ItemsSource = new[] { "Item1", "Item2", "Item3" },
+				Layout = new StackLayout(),
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var control = new ElementPreparedOrderTrackingControl(events);
+					return control;
+				})
+			};
+
+			repeater.ElementPrepared += (sender, args) =>
+			{
+				events.Add($"ElementPrepared:{args.Index}");
+			};
+
+			TestServices.WindowHelper.WindowContent = new Border
+			{
+				Width = 200,
+				Height = 600,
+				Child = repeater
+			};
+
+			await TestServices.WindowHelper.WaitForLoaded(repeater);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// We should have events for all 3 items.
+			// For each item, the expected WinUI order is:
+			//   ElementPrepared:N -> OnApplyTemplate:N
+			// Verify that for each index, ElementPrepared appears before OnApplyTemplate.
+			for (int i = 0; i < 3; i++)
+			{
+				var preparedIndex = events.IndexOf($"ElementPrepared:{i}");
+				var templateIndex = events.IndexOf($"OnApplyTemplate:{i}");
+
+				Assert.IsTrue(preparedIndex >= 0, $"ElementPrepared should have been raised for index {i}. Events: {string.Join(", ", events)}");
+				Assert.IsTrue(templateIndex >= 0, $"OnApplyTemplate should have been called for index {i}. Events: {string.Join(", ", events)}");
+				Assert.IsTrue(preparedIndex < templateIndex,
+					$"ElementPrepared:{i} (at position {preparedIndex}) should fire before OnApplyTemplate:{i} (at position {templateIndex}). " +
+					$"Full event order: [{string.Join(", ", events)}]");
+			}
+		}
+
 		private record MyItem(int Id, double Height, Color Color)
 		{
 			public string Title => $"Item {Id}";
@@ -635,5 +690,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			}
 		}
 #endif
+	}
+
+	internal partial class ElementPreparedOrderTrackingControl : ContentControl
+	{
+		private readonly List<string> _events;
+
+		public ElementPreparedOrderTrackingControl(List<string> events)
+		{
+			_events = events;
+			DefaultStyleKey = typeof(ElementPreparedOrderTrackingControl);
+			Content = new TextBlock();
+		}
+
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			// Find our index in the ItemsRepeater
+			var parent = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(this);
+			if (parent is ItemsRepeater repeater)
+			{
+				var index = repeater.GetElementIndex(this);
+				_events.Add($"OnApplyTemplate:{index}");
+			}
+			else
+			{
+				_events.Add("OnApplyTemplate:unknown");
+			}
+		}
 	}
 }
