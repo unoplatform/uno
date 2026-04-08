@@ -5480,5 +5480,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public class SubclassOfObservableCollection : ObservableCollection<string>
 		{
 		}
+
+#if __SKIA__
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/8939")]
+		public async Task When_ManyItems_Then_ScrollBarShownInitially()
+		{
+			// Issue #8939: On Skia, ListView ScrollBar is not shown initially when
+			// populated with many items. It only appears after resizing the window.
+
+			var items = Enumerable.Range(0, 100).Select(i => $"Item {i}").ToList();
+
+			var listView = new ListView
+			{
+				ItemsSource = items,
+				Height = 300,
+				Width = 200
+			};
+
+			WindowHelper.WindowContent = listView;
+			await WindowHelper.WaitForLoaded(listView);
+			await WindowHelper.WaitForIdle();
+
+			// Find the ScrollViewer inside the ListView
+			var scrollViewer = listView.FindFirstDescendant<ScrollViewer>();
+
+			Assert.IsNotNull(scrollViewer, "ListView should contain a ScrollViewer");
+
+			// The ScrollViewer should know that content is scrollable
+			Assert.IsTrue(scrollViewer.ScrollableHeight > 0,
+				$"ScrollableHeight should be > 0 for 100 items in a 300px tall ListView, " +
+				$"but got {scrollViewer.ScrollableHeight}");
+
+			// The vertical ScrollBar should be visible (not collapsed)
+			// In WinUI, with ComputedVerticalScrollBarVisibility, it should be Visible
+			Assert.AreEqual(Visibility.Visible, scrollViewer.ComputedVerticalScrollBarVisibility,
+				"ComputedVerticalScrollBarVisibility should be Visible for 100 items in a 300px ListView");
+		}
+#endif
 	}
 }
