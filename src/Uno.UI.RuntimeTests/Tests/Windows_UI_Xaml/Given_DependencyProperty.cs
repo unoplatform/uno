@@ -53,6 +53,63 @@ public partial class Given_DependencyProperty
 	private partial class CustomControl : Control { }
 	private partial class CustomUserControl : UserControl { }
 
+	private enum TestEnum { A, S, D }
+
+	private partial class EnumDPOwner : FrameworkElement
+	{
+		public static int ChangeCount;
+
+		public static DependencyProperty EnumValueProperty { get; } = DependencyProperty.Register(
+			nameof(EnumValue),
+			typeof(TestEnum),
+			typeof(EnumDPOwner),
+			new PropertyMetadata(TestEnum.A, OnEnumValueChanged));
+
+		public TestEnum EnumValue
+		{
+			get => (TestEnum)GetValue(EnumValueProperty);
+			set => SetValue(EnumValueProperty, value);
+		}
+
+		private static void OnEnumValueChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			ChangeCount++;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11448")]
+	public void When_DP_Set_To_Default_Value_Should_Raise_Changed()
+	{
+		// Issue #11448: Setting a DP explicitly to its default value should
+		// still raise the PropertyChangedCallback. On WinUI it does; on Uno it doesn't.
+		EnumDPOwner.ChangeCount = 0;
+
+		var owner = new EnumDPOwner();
+
+		// Set the value to the same as the default (TestEnum.A)
+		owner.EnumValue = TestEnum.A;
+
+		// On WinUI, this raises the callback with OldValue=A, NewValue=A
+		Assert.AreEqual(1, EnumDPOwner.ChangeCount,
+			"Setting a DP explicitly to its default value should raise PropertyChangedCallback (WinUI parity).");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11448")]
+	public void When_DP_Set_To_Different_Value_Should_Raise_Changed()
+	{
+		// Baseline test: setting a DP to a different value should always raise the callback.
+		EnumDPOwner.ChangeCount = 0;
+
+		var owner = new EnumDPOwner();
+
+		owner.EnumValue = TestEnum.S;
+
+		Assert.AreEqual(1, EnumDPOwner.ChangeCount,
+			"Setting a DP to a different value should raise PropertyChangedCallback.");
+	}
+
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_IsTabStop()
