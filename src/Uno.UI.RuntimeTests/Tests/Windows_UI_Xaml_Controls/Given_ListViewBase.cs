@@ -5480,5 +5480,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public class SubclassOfObservableCollection : ObservableCollection<string>
 		{
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11604")]
+		public async Task When_CollectionViewSource_SelectionMode_None_First_Item_Not_Selected_After_Scroll()
+		{
+			// Issue #11604: When using CollectionViewSource as ItemsSource with SelectionMode=None,
+			// the first element becomes visually selected after scrolling it out of viewport and back.
+
+			var source = Enumerable.Range(0, 50).Select(i => $"Item {i}").ToList();
+			var cvs = new CollectionViewSource { Source = source };
+
+			var listView = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.None,
+				ItemsSource = cvs.View,
+				Height = 200,
+				Width = 300,
+				ItemContainerStyle = BasicContainerStyle,
+			};
+
+			WindowHelper.WindowContent = listView;
+			await WindowHelper.WaitForLoaded(listView);
+			await WindowHelper.WaitForIdle();
+
+			// Verify the first item container exists and is not selected initially
+			var firstContainer = listView.ContainerFromIndex(0) as ListViewItem;
+			Assert.IsNotNull(firstContainer, "First item container should exist");
+			Assert.IsFalse(firstContainer.IsSelected, "First item should not be selected initially");
+
+			// Scroll down so the first item goes off screen
+			var sv = listView.FindFirstDescendant<ScrollViewer>();
+			Assert.IsNotNull(sv, "ScrollViewer should exist");
+
+			sv.ChangeView(null, 1000, null, disableAnimation: true);
+			await Task.Delay(100);
+			await WindowHelper.WaitForIdle();
+
+			// Scroll back to the top
+			sv.ChangeView(null, 0, null, disableAnimation: true);
+			await Task.Delay(100);
+			await WindowHelper.WaitForIdle();
+
+			// Get the first container again (it may have been recycled)
+			firstContainer = listView.ContainerFromIndex(0) as ListViewItem;
+			Assert.IsNotNull(firstContainer, "First item container should exist after scrolling back");
+
+			// The first item should NOT be selected — this is the core of the bug
+			Assert.IsFalse(firstContainer.IsSelected,
+				"First item should not be selected after scrolling out and back with SelectionMode=None");
+		}
 	}
 }
