@@ -463,6 +463,43 @@ public class Given_DevServerMonitor
 	}
 
 	[TestMethod]
+	[Description("Calling GetGitIgnoredPaths twice with the same input should not spawn git twice (#22982)")]
+	public void GetGitIgnoredPaths_ReturnsCachedResult_WhenInputUnchanged()
+	{
+		var tempDir = Path.Combine(Path.GetTempPath(), $"cache-test-{Guid.NewGuid():N}");
+		Directory.CreateDirectory(tempDir);
+		try
+		{
+			RunGit(tempDir, "init");
+			RunGit(tempDir, "config user.email test@test.com");
+			RunGit(tempDir, "config user.name Test");
+			File.WriteAllText(Path.Combine(tempDir, ".gitignore"), "ignored/\n");
+			RunGit(tempDir, "add .gitignore");
+			RunGit(tempDir, "commit -m init");
+
+			var ignoredDir = Path.Combine(tempDir, "ignored");
+			var visibleDir = Path.Combine(tempDir, "src");
+			Directory.CreateDirectory(ignoredDir);
+			Directory.CreateDirectory(visibleDir);
+
+			var paths = new List<string> { ignoredDir, visibleDir };
+
+			var result1 = SolutionFileFinder.GetGitIgnoredPaths(paths, tempDir);
+			var result2 = SolutionFileFinder.GetGitIgnoredPaths(paths, tempDir);
+
+			result1.Should().NotBeNull();
+			result2.Should().NotBeNull();
+			// The second call should return the same cached instance
+			ReferenceEquals(result1, result2).Should().BeTrue(
+				"the second call with identical input should return the cached result without spawning git again");
+		}
+		finally
+		{
+			ForceDeleteDirectory(tempDir);
+		}
+	}
+
+	[TestMethod]
 	public void FindSolutionFiles_UsesHardcodedSkipList_WhenGitFails()
 	{
 		// Even if a .git exists, if git executable is broken or not a real repo,

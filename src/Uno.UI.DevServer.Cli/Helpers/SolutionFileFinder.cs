@@ -41,6 +41,14 @@ internal static class SolutionFileFinder
 	private static readonly string[] HardcodedSkipDirs =
 		["node_modules", "bin", "obj", ".vs", ".idea", "packages"];
 
+	/// <summary>
+	/// Cached result of the last <c>git check-ignore</c> call. The cache key is the
+	/// sorted set of paths that were checked; the value is the set of ignored paths.
+	/// This avoids re-spawning git every 10 seconds when the input hasn't changed.
+	/// </summary>
+	private static string? _cachedGitIgnoreCacheKey;
+	private static HashSet<string>? _cachedGitIgnoreResult;
+
 	private static bool ShouldAlwaysSkipDirectory(string directoryName)
 	{
 		if (HardcodedSkipDirs.Contains(directoryName, StringComparer.OrdinalIgnoreCase))
@@ -114,6 +122,14 @@ internal static class SolutionFileFinder
 			return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 		}
 
+		// Build a cache key from the sorted paths + git root so we don't
+		// re-spawn git check-ignore every 10 seconds for the same input.
+		var cacheKey = gitRoot + "|" + string.Join("|", paths.OrderBy(p => p, StringComparer.OrdinalIgnoreCase));
+		if (cacheKey == _cachedGitIgnoreCacheKey && _cachedGitIgnoreResult is not null)
+		{
+			return _cachedGitIgnoreResult;
+		}
+
 		try
 		{
 			// Build relative paths for git check-ignore (absolute Windows paths don't work)
@@ -140,13 +156,16 @@ internal static class SolutionFileFinder
 			// This signals EOF on the redirected pipe so git doesn't wait for input.
 			process.StandardInput.Close();
 
-			// Kill the process after a timeout to prevent hanging. This
-			// ensures that the subsequent synchronous ReadToEnd() will
-			// return promptly because killing closes the stdout pipe.
+			// Drain stderr on a background thread to prevent pipe buffer deadlocks.
+			// The OS pipe buffer is ~4 KB; if git writes enough to stderr while we
+			// block on WaitForExit reading only stdout, both processes deadlock.
+			process.ErrorDataReceived += (_, _) => { };
+			process.BeginErrorReadLine();
+
 			if (!process.WaitForExit(2000))
 			{
-				// git hung — kill it and fall back
-				try { process.Kill(); } catch { /* best effort */ }
+				// git hung — kill the entire process tree and fall back
+				try { process.Kill(entireProcessTree: true); } catch { /* best effort */ }
 				return null;
 			}
 
@@ -169,6 +188,8 @@ internal static class SolutionFileFinder
 				}
 			}
 
+			_cachedGitIgnoreCacheKey = cacheKey;
+			_cachedGitIgnoreResult = ignored;
 			return ignored;
 		}
 		catch
