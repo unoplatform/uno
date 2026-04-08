@@ -2090,6 +2090,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		#endregion
 #endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/9987")]
+		public async Task When_ProtectedCursor_Is_Set_Via_Subclass()
+		{
+			// Issue #9987: ProtectedCursor was not implemented in Uno.
+			// This test verifies that the API is now functional:
+			// a custom control can set ProtectedCursor and the
+			// CalculatedFinalCursor reflects the correct shape.
+			var control = new ProtectedCursorTestControl { Width = 100, Height = 100 };
+
+			TestServices.WindowHelper.WindowContent = control;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Set cursor to IBeam via the ProtectedCursor API
+			control.SetCursor(InputSystemCursorShape.IBeam);
+
+			// Verify the CalculatedFinalCursor property reflects the change
+			Assert.AreEqual(InputSystemCursorShape.IBeam, control.CalculatedFinalCursor,
+				"CalculatedFinalCursor should reflect the ProtectedCursor value");
+
+			// Change to Hand cursor
+			control.SetCursor(InputSystemCursorShape.Hand);
+			Assert.AreEqual(InputSystemCursorShape.Hand, control.CalculatedFinalCursor,
+				"CalculatedFinalCursor should update when ProtectedCursor changes");
+
+			// Clear the cursor
+			control.ClearCursor();
+			// After clearing, CalculatedFinalCursor should be unset (null)
+			Assert.IsNull(control.ReadLocalValue(UIElement.CalculatedFinalCursorProperty) as InputSystemCursorShape?,
+				"CalculatedFinalCursor should be cleared when ProtectedCursor is set to null");
+		}
+
+		private partial class ProtectedCursorTestControl : Control
+		{
+			public void SetCursor(InputSystemCursorShape shape)
+			{
+				ProtectedCursor = InputSystemCursor.Create(shape);
+			}
+
+			public void ClearCursor()
+			{
+				ProtectedCursor = null;
+			}
+		}
+#endif
 	}
 
 	internal partial class When_UpdateLayout_Then_ReentrancyNotAllowed_Element : FrameworkElement
