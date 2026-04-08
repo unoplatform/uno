@@ -493,5 +493,119 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(defaultButton.Padding, accentButton.Padding, "Padding should match between default and AccentButtonStyle buttons");
 			Assert.AreEqual(defaultButton.ActualHeight, accentButton.ActualHeight, "ActualHeight should match between default and AccentButtonStyle buttons");
 		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/7888")]
+#if !__SKIA__
+		[Ignore("Requires InputInjector which is only available on Skia")]
+#endif
+		public async Task When_ClickMode_Press_Then_ClickFiredOnPointerPressed()
+		{
+			// Issue #7888: Button events are improperly raised for ClickMode.Press.
+			// In WinUI, ClickMode.Press should fire Click on PointerPressed (not PointerReleased).
+
+			var button = new Button
+			{
+				Content = "Press Me",
+				ClickMode = ClickMode.Press,
+				Width = 200,
+				Height = 50
+			};
+
+			var clickCount = 0;
+			var clickFiredBeforeRelease = false;
+			var pointerReleasedCount = 0;
+
+			button.Click += (s, e) =>
+			{
+				clickCount++;
+				if (pointerReleasedCount == 0)
+				{
+					clickFiredBeforeRelease = true;
+				}
+			};
+
+			button.PointerReleased += (s, e) =>
+			{
+				pointerReleasedCount++;
+			};
+
+			WindowHelper.WindowContent = button;
+			await WindowHelper.WaitForLoaded(button);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = button.GetAbsoluteBoundsRect();
+			var center = new Point(bounds.GetMidX(), bounds.GetMidY());
+
+			// Move to center of button, then press
+			mouse.MoveTo(center);
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			// For ClickMode.Press, Click should have fired on press (before release)
+			Assert.AreEqual(1, clickCount, "Click should fire once on PointerPressed for ClickMode.Press");
+			Assert.IsTrue(clickFiredBeforeRelease,
+				"Click should fire BEFORE PointerReleased for ClickMode.Press");
+
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			// Click should NOT fire again on release
+			Assert.AreEqual(1, clickCount,
+				"Click should not fire again on PointerReleased for ClickMode.Press");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/7888")]
+#if !__SKIA__
+		[Ignore("Requires InputInjector which is only available on Skia")]
+#endif
+		public async Task When_ClickMode_Hover_Then_ClickFiredOnPointerEnter()
+		{
+			// Issue #7888: Button events for ClickMode.Hover.
+			// In WinUI, ClickMode.Hover should fire Click when pointer enters the button.
+
+			var button = new Button
+			{
+				Content = "Hover Me",
+				ClickMode = ClickMode.Hover,
+				Width = 200,
+				Height = 50
+			};
+
+			var clickCount = 0;
+			button.Click += (s, e) => clickCount++;
+
+			var container = new StackPanel { Spacing = 50 };
+			container.Children.Add(new Border { Width = 200, Height = 50 }); // Spacer to move away from
+			container.Children.Add(button);
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// Start from the spacer (outside the button)
+			var spacerBounds = ((FrameworkElement)container.Children[0]).GetAbsoluteBoundsRect();
+			mouse.MoveTo(new Point(spacerBounds.GetMidX(), spacerBounds.GetMidY()));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, clickCount, "Click should not have fired yet");
+
+			// Move into the button
+			var buttonBounds = button.GetAbsoluteBoundsRect();
+			mouse.MoveTo(new Point(buttonBounds.GetMidX(), buttonBounds.GetMidY()));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, clickCount,
+				"Click should fire when pointer enters button for ClickMode.Hover");
+		}
 	}
 }
