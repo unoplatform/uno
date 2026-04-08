@@ -1601,6 +1601,114 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public TType GetAt(int index) => this[index];
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/9775")]
+		public async Task When_ComboBox_With_Many_Items_Reopens_After_Scrolling_To_Bottom()
+		{
+			// Issue #9775: ComboBox with ~300 items is very slow to reopen
+			// after scrolling to the bottom and selecting the last element.
+			var source = Enumerable.Range(0, 300).Select(i => $"Item {i}").ToArray();
+			var sut = new ComboBox
+			{
+				ItemsSource = source,
+			};
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			var popup = sut.FindFirstDescendantOrThrow<Popup>("Popup");
+
+			// Open the ComboBox and select the last item
+			sut.IsDropDownOpen = true;
+			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 2000, "timed out waiting on the popup to open");
+			await UITestHelper.WaitFor(() => sut.ItemsPanelRoot is { }, timeoutMS: 2000, "timed out waiting on the ItemsPanelRoot");
+
+			sut.SelectedIndex = source.Length - 1;
+			await UITestHelper.WaitForIdle();
+
+			// Close the dropdown
+			sut.IsDropDownOpen = false;
+			await UITestHelper.WaitFor(() => !popup.IsOpen, timeoutMS: 2000, "timed out waiting on the popup to close");
+			await UITestHelper.WaitForIdle();
+
+			// Reopen - this is the slow part described in the issue.
+			// Measure the time it takes to reopen after selecting the last item.
+			var sw = System.Diagnostics.Stopwatch.StartNew();
+			sut.IsDropDownOpen = true;
+			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 10000, "timed out waiting on the popup to reopen after selecting the last item");
+			await UITestHelper.WaitForIdle();
+			sw.Stop();
+
+			// The reopening should not take an unreasonable amount of time.
+			// On a well-performing system this should be under 1 second.
+			// We use a generous 3-second threshold to avoid flakiness.
+			Assert.IsTrue(sw.ElapsedMilliseconds < 3000,
+				$"ComboBox took {sw.ElapsedMilliseconds}ms to reopen after selecting the last item - this is too slow (threshold: 3000ms)");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/9775")]
+		public async Task When_ComboBox_With_Many_Items_Reopens_After_Selecting_First_Vs_Last()
+		{
+			// Issue #9775: Comparative test - reopening after selecting the first
+			// item should take roughly the same time as after selecting the last item.
+			var source = Enumerable.Range(0, 300).Select(i => $"Item {i}").ToArray();
+			var sut = new ComboBox
+			{
+				ItemsSource = source,
+			};
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			var popup = sut.FindFirstDescendantOrThrow<Popup>("Popup");
+
+			// Scenario 1: Open, select first item, close, measure reopen time
+			sut.IsDropDownOpen = true;
+			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 2000, "timed out waiting on the popup to open (first)");
+			await UITestHelper.WaitFor(() => sut.ItemsPanelRoot is { }, timeoutMS: 2000, "timed out waiting on the ItemsPanelRoot (first)");
+
+			sut.SelectedIndex = 0;
+			await UITestHelper.WaitForIdle();
+
+			sut.IsDropDownOpen = false;
+			await UITestHelper.WaitFor(() => !popup.IsOpen, timeoutMS: 2000, "timed out waiting on the popup to close (first)");
+			await UITestHelper.WaitForIdle();
+
+			var swFirst = System.Diagnostics.Stopwatch.StartNew();
+			sut.IsDropDownOpen = true;
+			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 10000, "timed out waiting on the popup to reopen (first)");
+			await UITestHelper.WaitForIdle();
+			swFirst.Stop();
+
+			sut.IsDropDownOpen = false;
+			await UITestHelper.WaitFor(() => !popup.IsOpen, timeoutMS: 2000, "timed out waiting on the popup to close (between)");
+			await UITestHelper.WaitForIdle();
+
+			// Scenario 2: Open, select last item, close, measure reopen time
+			sut.IsDropDownOpen = true;
+			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 2000, "timed out waiting on the popup to open (last)");
+			await UITestHelper.WaitFor(() => sut.ItemsPanelRoot is { }, timeoutMS: 2000, "timed out waiting on the ItemsPanelRoot (last)");
+
+			sut.SelectedIndex = source.Length - 1;
+			await UITestHelper.WaitForIdle();
+
+			sut.IsDropDownOpen = false;
+			await UITestHelper.WaitFor(() => !popup.IsOpen, timeoutMS: 2000, "timed out waiting on the popup to close (last)");
+			await UITestHelper.WaitForIdle();
+
+			var swLast = System.Diagnostics.Stopwatch.StartNew();
+			sut.IsDropDownOpen = true;
+			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 10000, "timed out waiting on the popup to reopen (last)");
+			await UITestHelper.WaitForIdle();
+			swLast.Stop();
+
+			// The time to reopen after selecting the last item should not be
+			// dramatically worse than after selecting the first item.
+			// Allow up to 5x difference to account for normal variance, but
+			// catch the pathological case described in the issue.
+			var ratio = swLast.ElapsedMilliseconds / Math.Max(1.0, swFirst.ElapsedMilliseconds);
+			Assert.IsTrue(ratio < 5.0,
+				$"Reopening after selecting last item ({swLast.ElapsedMilliseconds}ms) was {ratio:F1}x slower than after selecting first item ({swFirst.ElapsedMilliseconds}ms). " +
+				$"This suggests a performance regression when the ComboBox scroll position is at the bottom.");
+		}
+
 	}
 
 
