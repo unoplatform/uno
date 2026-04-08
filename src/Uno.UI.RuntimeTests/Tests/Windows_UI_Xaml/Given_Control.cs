@@ -19,6 +19,8 @@ using Windows.Foundation;
 using Windows.UI;
 using Expander = Microsoft.UI.Xaml.Controls.Expander;
 using MUXControlsTestApp.Utilities;
+using SamplesApp.UITests;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 
 
 #if HAS_UNO
@@ -644,6 +646,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var tabView = SUT.Children.OfType<DerivedTabView>().First();
 			Assert.AreEqual(Colors.Pink, ((SolidColorBrush)tabView.Background).Color);
 			Assert.IsNotNull(VisualTreeUtils.FindVisualChildByName(tabView, "TabContainerGrid"));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/9781")]
+		public async Task When_Xaml_ContentProperty_Collection_Items_Are_Added_Not_Replaced()
+		{
+			// Issue #9781: When adding items in XAML to a ContentProperty collection,
+			// items should be added via .Add() on the existing collection instance,
+			// not by replacing the collection with a new one.
+			var sut = new When_Xaml_Collection_Add_9781();
+
+			// Set as window content and wait for idle (the control may not
+			// fully "load" since it has no template, but InitializeComponent
+			// runs synchronously in the constructor)
+			TestServices.WindowHelper.WindowContent = sut;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var parent = sut.ParentControl;
+
+			// The collection should contain both children
+			Assert.AreEqual(2, parent.Sources.Count,
+				"Sources should contain 2 children added from XAML");
+
+			// The collection should NOT have been replaced — it should be the same instance
+			// that was created in the constructor
+			Assert.IsFalse(parent.WasCollectionReplaced,
+				"The collection was replaced with a new instance. " +
+				"XAML code-gen should call .Add() on the existing collection, not create a new one.");
+
+			// Verify it's actually the same instance
+			Assert.AreSame(parent.OriginalCollection, parent.Sources,
+				"Sources should be the same instance as the original collection created in the constructor");
+
+			// The original CollectionChanged handler should have received Add notifications
+			Assert.AreEqual(2, parent.AddNotificationCount,
+				"CollectionChanged should have fired 2 Add notifications on the original collection");
 		}
 	}
 

@@ -1,0 +1,11 @@
+<UserControl
+	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.When_Xaml_Collection_Add_9781"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls">
+
+	<local:CollectionContentControl_9781 x:Name="ParentControl" x:FieldModifier="public">
+		<local:CollectionChildControl_9781 x:Name="Child1" x:FieldModifier="public" Tag="First" />
+		<local:CollectionChildControl_9781 x:Name="Child2" x:FieldModifier="public" Tag="Second" />
+	</local:CollectionContentControl_9781>
+</UserControl>
