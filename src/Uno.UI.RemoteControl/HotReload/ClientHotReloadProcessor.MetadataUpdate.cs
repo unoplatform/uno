@@ -99,30 +99,52 @@ partial class ClientHotReloadProcessor
 	/// </summary>
 	private static async Task ReloadWithUpdatedTypes(HotReloadClientOperation? hrOp, Window window, Type[] updatedTypes)
 	{
-		if (_log.IsEnabled(LogLevel.Information))
+		// Invoked by hot-design (... until we expose real API)
+		if (Instance is { } instance)
 		{
-			_log.Info($"[HotReload] ReloadWithUpdatedTypes ENTER — {updatedTypes.Length} type(s): [{string.Join(", ", updatedTypes.Select(t => t.FullName ?? t.Name))}], TypeMappings.IsPaused={TypeMappings.IsPaused}");
+			using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(default);
+
+			// Note: We use ContinueOrStartLocal as HD is actually just delaying updates, we should not create a new one for that.
+			await instance.DoUpdateVisualTreeCore(hrOp ?? instance._status.ContinueOrStartLocal(HotReloadSource.Manual, updatedTypes), window, updatedTypes);
+		}
+		else if (_log.IsEnabled(LogLevel.Warning))
+		{
+			_log.Warn($"[HotReload] Received hot reload update with no active processor instance. Ignoring update for {updatedTypes.Length} type(s): [{string.Join(", ", updatedTypes.Select(t => t.FullName ?? t.Name))}]");
+		}
+	}
+
+	private async Task UpdateVisualTree(HotReloadClientOperation? hrOp, Window window, Type[] updatedTypes)
+	{
+		using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(default);
+
+		var op = hrOp ?? HotReloadClientOperation.Empty;
+
+		if (ShouldReload() is { value: false } prevent)
+		{
+			if (_log.IsEnabled(LogLevel.Warning))
+			{
+				_log.Warn($"[HotReload] DoUpdateVisualTreeCore SKIPPED — reason='{prevent.reason}', TypeMappings.IsPaused={TypeMappings.IsPaused}");
+			}
+
+			op.ReportIgnored(prevent.reason);
+			return;
 		}
 
-		using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(default);
+		await DoUpdateVisualTreeCore(op, window, updatedTypes);
+	}
+
+	private async Task DoUpdateVisualTreeCore(HotReloadClientOperation hrOp, Window window, Type[] updatedTypes)
+	{
+		if (_log.IsEnabled(LogLevel.Information))
+		{
+			_log.Info($"[HotReload] DoUpdateVisualTreeCore ENTER — {updatedTypes.Length} type(s): [{string.Join(", ", updatedTypes.Select(t => t.FullName ?? t.Name))}], TypeMappings.IsPaused={TypeMappings.IsPaused}");
+		}
 
 		var handlerActions = ElementAgent?.ElementHandlerActions;
 		var uiUpdating = true;
 		try
 		{
-			hrOp?.SetCurrent();
-
-			if (ShouldReload() is { value: false } prevent)
-			{
-				if (_log.IsEnabled(LogLevel.Warning))
-				{
-					_log.Warn($"[HotReload] ReloadWithUpdatedTypes SKIPPED — reason='{prevent.reason}', TypeMappings.IsPaused={TypeMappings.IsPaused}");
-				}
-
-				uiUpdating = false;
-				hrOp?.ReportIgnored(prevent.reason);
-				return;
-			}
+			hrOp.SetCurrent();
 
 			UpdateGlobalResources(updatedTypes);
 
@@ -154,32 +176,17 @@ partial class ClientHotReloadProcessor
 					_log.Error("Error doing UI Update - no visual root");
 				}
 
+				hrOp?.ReportError(new InvalidOperationException("No visual root found for hot reload update"));
 				return;
 			}
 
-			// Collect non-fatal exceptions from element updates and handler callbacks
-			// so the entire update runs to completion before re-throwing.
-			List<Exception>? deferredExceptions = null;
-
 			// Action: BeforeVisualTreeUpdate
-			// This is called before the visual tree is updated
+			// Already try/catch wrapped by the ElementUpdateAgent's CreateAction.
 			_ = handlerActions?.Do(h =>
 			{
 				foreach (var a in h.Value)
 				{
-					try
-					{
-						a.BeforeVisualTreeUpdate(updatedTypes);
-					}
-					catch (Exception ex)
-					{
-						deferredExceptions ??= [];
-						deferredExceptions.Add(ex);
-						if (_log.IsEnabled(LogLevel.Error))
-						{
-							_log.Error($"[HotReload] BeforeVisualTreeUpdate handler failed: {ex.Message}", ex);
-						}
-					}
+					a.BeforeVisualTreeUpdate(updatedTypes);
 				}
 			}).ToArray();
 
@@ -281,28 +288,16 @@ partial class ClientHotReloadProcessor
 					continue;
 				}
 
-				try
+				// Action: ElementUpdate
+				// This is invoked for each existing element that is in the tree that needs to be replaced
+				foreach (var elementHandler in elementHandlers)
 				{
-					// Action: ElementUpdate
-					// This is invoked for each existing element that is in the tree that needs to be replaced
-					foreach (var elementHandler in elementHandlers)
-					{
-						try
-						{
-							elementHandler?.ElementUpdate(element, updatedTypes);
-						}
-						catch (Exception handlerEx)
-						{
-							deferredExceptions ??= [];
-							deferredExceptions.Add(handlerEx);
-							if (_log.IsEnabled(LogLevel.Error))
-							{
-								_log.Error($"[HotReload] ElementUpdate handler failed for [{element.GetType().Name}]: {handlerEx.Message}", handlerEx);
-							}
-						}
-					}
+					elementHandler?.ElementUpdate(element, updatedTypes);
+				}
 
-					if (elementMappedType is not null)
+				if (elementMappedType is not null)
+				{
+					try
 					{
 						if (_log.IsEnabled(LogLevel.Debug))
 						{
@@ -310,19 +305,19 @@ partial class ClientHotReloadProcessor
 						}
 
 						ReplaceViewInstance(element, elementMappedType, elementHandlers, updatedTypes);
+						hrOp.ReportElementReplaced();
 					}
-				}
-				catch (Exception elementEx)
-				{
-					deferredExceptions ??= [];
-					deferredExceptions.Add(elementEx);
-					if (_log.IsEnabled(LogLevel.Error))
+					catch (Exception elementEx)
 					{
-						_log.Error(
-							$"[HotReload] Failed to update element [{element.GetType().Name}] " +
-							$"(target type: {elementMappedType?.Name ?? "same"}): {elementEx.Message}. " +
-							$"Continuing with remaining elements.",
-							elementEx);
+						hrOp.ReportElementError(elementEx);
+						if (_log.IsEnabled(LogLevel.Error))
+						{
+							_log.Error(
+								$"[HotReload] Failed to update element [{element.GetType().Name}] " +
+								$"(target type: {elementMappedType?.Name ?? "same"}): {elementEx.Message}. " +
+								$"Continuing with remaining elements.",
+								elementEx);
+						}
 					}
 				}
 			}
@@ -341,46 +336,25 @@ partial class ClientHotReloadProcessor
 			_ = await treeIterator.ToArrayAsync();
 
 			// Action: AfterVisualTreeUpdate
+			// Already try/catch wrapped by the ElementUpdateAgent's CreateAction.
 			_ = handlerActions?.Do(h =>
 			{
 				foreach (var a in h.Value)
 				{
-					try
-					{
-						a.AfterVisualTreeUpdate(updatedTypes);
-					}
-					catch (Exception ex)
-					{
-						deferredExceptions ??= [];
-						deferredExceptions.Add(ex);
-						if (_log.IsEnabled(LogLevel.Error))
-						{
-							_log.Error($"[HotReload] AfterVisualTreeUpdate handler failed: {ex.Message}", ex);
-						}
-					}
+					a.AfterVisualTreeUpdate(updatedTypes);
 				}
 			}).ToArray();
-
-			// After all updates, state restoration, and handler callbacks have had
-			// a chance to run, re-throw collected exceptions so callers know
-			// the operation was not fully successful.
-			if (deferredExceptions is { Count: > 0 })
-			{
-				throw new AggregateException(
-					$"{deferredExceptions.Count} error(s) occurred during hot-reload UI update.",
-					deferredExceptions);
-			}
 		}
 		catch (Exception ex)
 		{
-			hrOp?.ReportError(ex);
+			hrOp.ReportError(ex);
 
 			if (_log.IsEnabled(LogLevel.Error))
 			{
 				_log.Error($"Error doing UI Update - {ex.Message}", ex);
 			}
+
 			uiUpdating = false;
-			throw;
 		}
 		finally
 		{
@@ -388,12 +362,12 @@ partial class ClientHotReloadProcessor
 			{
 				if (_log.IsEnabled(LogLevel.Information))
 				{
-					_log.Info($"[HotReload] ReloadWithUpdatedTypes COMPLETED — {updatedTypes.Length} type(s)");
+					_log.Info($"[HotReload] DoUpdateVisualTreeCore COMPLETED — {updatedTypes.Length} type(s)");
 				}
 			}
 			else if (_log.IsEnabled(LogLevel.Warning))
 			{
-				_log.Warn($"[HotReload] ReloadWithUpdatedTypes DID NOT UPDATE — {updatedTypes.Length} type(s), TypeMappings.IsPaused={TypeMappings.IsPaused}");
+				_log.Warn($"[HotReload] DoUpdateVisualTreeCore DID NOT UPDATE — {updatedTypes.Length} type(s), TypeMappings.IsPaused={TypeMappings.IsPaused}");
 			}
 
 			// Action: ReloadCompleted
@@ -401,22 +375,21 @@ partial class ClientHotReloadProcessor
 			{
 				foreach (var a in h.Value)
 				{
-					try
-					{
-						a.ReloadCompleted(updatedTypes, uiUpdating);
-					}
-					catch (Exception ex)
-					{
-						if (_log.IsEnabled(LogLevel.Error))
-						{
-							_log.Error($"[HotReload] ReloadCompleted handler failed: {ex.Message}", ex);
-						}
-					}
+					a.ReloadCompleted(updatedTypes, uiUpdating);
 				}
 			}).ToArray();
 
-			hrOp?.ResignCurrent();
-			hrOp?.ReportCompleted();
+			hrOp.ResignCurrent();
+			hrOp.ReportCompleted();
+		}
+
+		// If any per-element errors were reported, re-throw so callers know
+		// the operation was not fully successful.
+		if (hrOp.Exceptions.Count > 0)
+		{
+			throw new AggregateException(
+				$"{hrOp.Exceptions.Count} error(s) occurred during hot-reload UI update.",
+				hrOp.Exceptions);
 		}
 	}
 
@@ -663,7 +636,7 @@ partial class ClientHotReloadProcessor
 			_log.Info($"[HotReload] UpdateApplicationCore called with {types.Length} type(s): [{string.Join(", ", types.Select(t => t.FullName ?? t.Name))}], TypeMappings.IsPaused={TypeMappings.IsPaused}, CurrentWindow={(CurrentWindow is not null ? "set" : "null")}");
 		}
 
-		var hr = Instance?._status.ReportLocalStarting(types);
+		var hr = Instance?._status.StartLocal(types);
 
 		foreach (var type in types)
 		{
@@ -709,28 +682,29 @@ partial class ClientHotReloadProcessor
 		}
 
 #if WINUI
-		if (CurrentWindow is { DispatcherQueue: { } dispatcherQueue } window)
+		if (Instance is { } instance && CurrentWindow is { DispatcherQueue: { } dispatcherQueue } window)
 		{
 			if (_log.IsEnabled(LogLevel.Information))
 			{
-				_log.Info($"[HotReload] Dispatching ReloadWithUpdatedTypes on UI thread for {types.Length} type(s)");
+				_log.Info($"[HotReload] Dispatching UpdateVisualTree on UI thread for {types.Length} type(s)");
 			}
-			dispatcherQueue.TryEnqueue(async () => await ReloadWithUpdatedTypes(hr, window, types));
+			dispatcherQueue.TryEnqueue(async () => await instance.UpdateVisualTree(hr, window, types));
 		}
 #else
-		if (CurrentWindow is { Dispatcher: { } dispatcher } window)
+		if (Instance is { } instance && CurrentWindow is { Dispatcher: { } dispatcher } window)
 		{
 			if (_log.IsEnabled(LogLevel.Information))
 			{
-				_log.Info($"[HotReload] Dispatching ReloadWithUpdatedTypes on UI thread for {types.Length} type(s)");
+				_log.Info($"[HotReload] Dispatching UpdateVisualTree on UI thread for {types.Length} type(s)");
 			}
-			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await ReloadWithUpdatedTypes(hr, window, types));
+			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await instance.UpdateVisualTree(hr, window, types));
 		}
 #endif
 		else
 		{
-			var errorMsg = $"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}. Make sure you have enabled hot-reload (Window.UseStudio()) in app startup. See https://aka.platform.uno/hot-reload";
+			var errorMsg = $"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(UpdateVisualTree)}. Make sure you have enabled hot-reload (Window.UseStudio()) in app startup. See https://aka.platform.uno/hot-reload";
 			hr?.ReportError(new InvalidOperationException(errorMsg));
+			hr?.ReportCompleted();
 			if (_log.IsEnabled(LogLevel.Warning))
 			{
 				_log.Warn(errorMsg);
