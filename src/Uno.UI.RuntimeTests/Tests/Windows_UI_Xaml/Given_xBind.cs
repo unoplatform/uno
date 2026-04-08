@@ -44,6 +44,45 @@ public class Given_xBind
 		Assert.AreEqual("Hello", SUT.tb.Text);
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11815")]
+	public async Task When_xBind_IsEnabled_In_CustomCollection()
+	{
+		// Issue #11815: x:Bind on Control.IsEnabled doesn't work when the control
+		// is placed inside a custom control's collection property.
+		// The binding works for controls outside the collection.
+
+		var SUT = new When_xBind_IsEnabled_In_CustomCollection();
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Initially, IsEnabled should be true (ViewModel.IsEnabled defaults to true)
+		Assert.IsTrue(SUT.ButtonOutsideCollection.IsEnabled,
+			"Reference button outside collection should be enabled initially");
+		Assert.IsTrue(SUT.ButtonInCollection.IsEnabled,
+			"Button inside custom collection should be enabled initially");
+
+		// Set IsEnabled to false
+		SUT.ViewModel.IsEnabled = false;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Both buttons should now be disabled
+		Assert.IsFalse(SUT.ButtonOutsideCollection.IsEnabled,
+			"Reference button outside collection should be disabled");
+		Assert.IsFalse(SUT.ButtonInCollection.IsEnabled,
+			"Button inside custom collection should be disabled — this is the core bug");
+
+		// Set back to true
+		SUT.ViewModel.IsEnabled = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(SUT.ButtonOutsideCollection.IsEnabled,
+			"Reference button should be re-enabled");
+		Assert.IsTrue(SUT.ButtonInCollection.IsEnabled,
+			"Button inside collection should be re-enabled");
+	}
+
 #if __ANDROID__
 	[TestMethod]
 	public async Task When_XBind_TargetDisposed_Test()
