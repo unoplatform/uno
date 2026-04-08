@@ -29,7 +29,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 {
 	[ThreadStatic] private static bool _isDispatcherThread;
-	private readonly EventLoop _eventLoop;
+	private readonly EventLoop? _eventLoop;
 
 	// Must be a static field to prevent GC collection while the native callback is active.
 	private static readonly XErrorHandler s_x11ErrorHandler = OnX11Error;
@@ -233,7 +233,16 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 	protected override Task RunLoop()
 	{
 		Thread.CurrentThread.Name = "Main Thread (keep-alive)";
-		_eventLoop.Schedule(StartApp);
+
+		if (_eventLoop is not null)
+		{
+			_eventLoop.Schedule(StartApp);
+		}
+		else
+		{
+			// Secondary ALC app — schedule on the existing host dispatcher.
+			CoreDispatcher.DispatchOverride(StartApp, Uno.UI.Dispatching.NativeDispatcherPriority.Normal);
+		}
 
 		while (!X11XamlRootHost.AllWindowsDone())
 		{
