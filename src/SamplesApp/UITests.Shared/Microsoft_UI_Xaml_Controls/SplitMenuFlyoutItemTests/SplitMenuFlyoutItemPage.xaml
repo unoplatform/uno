@@ -4,9 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    xmlns:not_win="http://uno.ui/not_win"
+    mc:Ignorable="d not_win">
 
-    <ScrollViewer>
+    <not_win:ScrollViewer>
         <StackPanel Spacing="16" Padding="16">
             <TextBlock Text="SplitMenuFlyoutItem Manual Tests" Style="{ThemeResource SubtitleTextBlockStyle}" />
 
@@ -161,5 +162,5 @@
                 </Button.Flyout>
             </Button>
         </StackPanel>
-    </ScrollViewer>
+    </not_win:ScrollViewer>
 </Page>
