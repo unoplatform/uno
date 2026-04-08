@@ -54,8 +54,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			//{ X11Key.?, VirtualKey.ImeAccept }
 			//{ X11Key.?, VirtualKey.ImeModeChange }
 			{ X11Key.space, VirtualKey.Space },
-			// {X11Key.Prior, VirtualKey.Prior},
-			// {X11Key.KP_Prior, VirtualKey.Prior},
+			{ X11Key.Page_Up, VirtualKey.PageUp },
+			{ X11Key.KP_Page_Up, VirtualKey.PageUp },
 			{ X11Key.Page_Down, VirtualKey.PageDown },
 			{ X11Key.KP_Page_Down, VirtualKey.PageDown },
 			{ X11Key.End, VirtualKey.End },

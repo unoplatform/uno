@@ -41,6 +41,17 @@ internal static class SolutionFileFinder
 	private static readonly string[] HardcodedSkipDirs =
 		["node_modules", "bin", "obj", ".vs", ".idea", "packages"];
 
+	/// <summary>
+	/// Cached result of the last <c>git check-ignore</c> call. The cache key is the
+	/// sorted set of paths that were checked; the value is the set of ignored paths.
+	/// This avoids re-spawning git every 10 seconds when the input hasn't changed.
+	/// The cache expires after <see cref="GitIgnoreCacheTtl"/> to pick up .gitignore changes.
+	/// </summary>
+	private static string? _cachedGitIgnoreCacheKey;
+	private static HashSet<string>? _cachedGitIgnoreResult;
+	private static DateTime _cachedGitIgnoreTimestamp;
+	private static readonly TimeSpan GitIgnoreCacheTtl = TimeSpan.FromSeconds(60);
+
 	private static bool ShouldAlwaysSkipDirectory(string directoryName)
 	{
 		if (HardcodedSkipDirs.Contains(directoryName, StringComparer.OrdinalIgnoreCase))
@@ -114,6 +125,16 @@ internal static class SolutionFileFinder
 			return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 		}
 
+		// Build a cache key from the sorted paths + git root so we don't
+		// re-spawn git check-ignore every 10 seconds for the same input.
+		var cacheKey = gitRoot + "|" + string.Join("|", paths.OrderBy(p => p, StringComparer.OrdinalIgnoreCase));
+		if (cacheKey == _cachedGitIgnoreCacheKey
+			&& _cachedGitIgnoreResult is not null
+			&& DateTime.UtcNow - _cachedGitIgnoreTimestamp < GitIgnoreCacheTtl)
+		{
+			return _cachedGitIgnoreResult;
+		}
+
 		try
 		{
 			// Build relative paths for git check-ignore (absolute Windows paths don't work)
@@ -128,19 +149,7 @@ internal static class SolutionFileFinder
 			}
 
 			// Pass paths as arguments (--stdin has issues on Windows via ProcessStartInfo)
-			var psi = new ProcessStartInfo("git")
-			{
-				WorkingDirectory = gitRoot,
-				RedirectStandardOutput = true,
-				RedirectStandardError = true,
-				UseShellExecute = false,
-				CreateNoWindow = true,
-			};
-			psi.ArgumentList.Add("check-ignore");
-			foreach (var relativePath in relativePaths)
-			{
-				psi.ArgumentList.Add(relativePath);
-			}
+			var psi = CreateGitCheckIgnoreStartInfo(gitRoot, relativePaths);
 
 			using var process = Process.Start(psi);
 			if (process is null)
@@ -148,13 +157,20 @@ internal static class SolutionFileFinder
 				return null; // git not available
 			}
 
-			// Kill the process after a timeout to prevent hanging. This
-			// ensures that the subsequent synchronous ReadToEnd() will
-			// return promptly because killing closes the stdout pipe.
+			// Close stdin immediately — git check-ignore reads from args, not stdin.
+			// This signals EOF on the redirected pipe so git doesn't wait for input.
+			process.StandardInput.Close();
+
+			// Drain stderr on a background thread to prevent pipe buffer deadlocks.
+			// The OS pipe buffer is ~4 KB; if git writes enough to stderr while we
+			// block on WaitForExit reading only stdout, both processes deadlock.
+			process.ErrorDataReceived += (_, _) => { };
+			process.BeginErrorReadLine();
+
 			if (!process.WaitForExit(2000))
 			{
-				// git hung — kill it and fall back
-				try { process.Kill(); } catch { /* best effort */ }
+				// git hung — kill the entire process tree and fall back
+				try { process.Kill(entireProcessTree: true); } catch { /* best effort */ }
 				return null;
 			}
 
@@ -177,7 +193,10 @@ internal static class SolutionFileFinder
 				}
 			}
 
-			return ignored;
+			_cachedGitIgnoreCacheKey = cacheKey;
+			_cachedGitIgnoreResult = new HashSet<string>(ignored, StringComparer.OrdinalIgnoreCase);
+			_cachedGitIgnoreTimestamp = DateTime.UtcNow;
+			return _cachedGitIgnoreResult;
 		}
 		catch
 		{
@@ -237,5 +256,29 @@ internal static class SolutionFileFinder
 		{
 			// Skip directories we can't access or that disappeared during scanning
 		}
+	}
+
+	/// <summary>
+	/// Creates the <see cref="ProcessStartInfo"/> for <c>git check-ignore</c>.
+	/// Exposed as <c>internal</c> so tests can verify critical properties
+	/// (e.g. <see cref="ProcessStartInfo.RedirectStandardInput"/>).
+	/// </summary>
+	internal static ProcessStartInfo CreateGitCheckIgnoreStartInfo(string gitRoot, List<string> relativePaths)
+	{
+		var psi = new ProcessStartInfo("git")
+		{
+			WorkingDirectory = gitRoot,
+			RedirectStandardOutput = true,
+			RedirectStandardError = true,
+			RedirectStandardInput = true, // Prevent inheriting parent's stdin (e.g. libuv named pipe from MCP client)
+			UseShellExecute = false,
+			CreateNoWindow = true,
+		};
+		psi.ArgumentList.Add("check-ignore");
+		foreach (var relativePath in relativePaths)
+		{
+			psi.ArgumentList.Add(relativePath);
+		}
+		return psi;
 	}
 }

@@ -44,6 +44,8 @@ namespace Microsoft.UI.Xaml.Controls
 		public FlowLayout()
 		{
 			LayoutId = "FlowLayout";
+
+			UpdateIndexBasedLayoutOrientation(Orientation.Horizontal);
 		}
 
 		#region IVirtualizingLayoutOverrides
@@ -384,6 +386,8 @@ namespace Microsoft.UI.Xaml.Controls
 				//i.e. the properties are the inverse of each other.
 				ScrollOrientation scrollOrientation = (orientation == Orientation.Horizontal) ? ScrollOrientation.Vertical : ScrollOrientation.Horizontal;
 				ScrollOrientation = scrollOrientation;
+
+				UpdateIndexBasedLayoutOrientation(orientation);
 			}
 			else if (property == MinColumnSpacingProperty)
 			{
@@ -399,6 +403,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			InvalidateLayout();
+		}
+
+		private void UpdateIndexBasedLayoutOrientation(Orientation orientation)
+		{
+			SetIndexBasedLayoutOrientation(orientation == Orientation.Horizontal ?
+				IndexBasedLayoutOrientation.LeftToRight : IndexBasedLayoutOrientation.TopToBottom);
 		}
 
 		#region private helpers

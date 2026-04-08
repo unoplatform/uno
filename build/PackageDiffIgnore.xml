@@ -2164,6 +2164,8 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer..ctor(System.Object o)" reason="AP reorganization - constructor signature alignment" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer..ctor(System.Object item, Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer parent)" reason="AP reorganization - constructor signature alignment" />
 		  <!-- END AutomationPeer API alignment -->
+
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Layout.InvalidateMeasure()" reason="protected to protected internal" />
 	  </Methods>
 	</IgnoreSet>
 	<![CDATA[

@@ -104,4 +104,19 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		presenter.SetNative(new MacOSNativeOverlappedPresenter(_nativeWindow));
 		return Disposable.Create(() => presenter.SetNative(null));
 	}
+
+	public override void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
+	{
+		int material = 0; // None
+		if (backdrop is Microsoft.UI.Xaml.Media.MicaBackdrop micaBackdrop)
+		{
+			material = micaBackdrop.Kind == Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt ? 2 : 1;
+		}
+		else if (backdrop is Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)
+		{
+			material = 3;
+		}
+
+		NativeUno.uno_window_set_system_backdrop(_nativeWindow.Handle, material);
+	}
 }

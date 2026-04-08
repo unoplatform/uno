@@ -75,7 +75,7 @@ public class FramebufferHostBuilder : IPlatformHostBuilder
 	}
 
 	/// <summary>
-	/// Disables the usage of KMS/DRM for hardware acceleration and forces software rendering. 
+	/// Disables the usage of KMS/DRM for hardware acceleration and forces software rendering.
 	/// </summary>
 	public FramebufferHostBuilder DisableKMSDRM()
 	{
@@ -94,6 +94,19 @@ public class FramebufferHostBuilder : IPlatformHostBuilder
 		KeymapParams = keymapParams;
 		return this;
 	}
+
+	/// <summary>
+	/// Reverts the mouse wheel scroll direction to the raw libinput values without
+	/// the default inversion applied by the framebuffer host. This can be useful for
+	/// devices where the natural scrolling direction is already correct.
+	/// </summary>
+	public FramebufferHostBuilder ReverseMouseWheel(bool reverse = true)
+	{
+		IsMouseWheelReversed = reverse;
+		return this;
+	}
+
+	internal bool IsMouseWheelReversed { get; private set; }
 
 	internal XKBKeymapParams KeymapParams { get; private set; }
 
