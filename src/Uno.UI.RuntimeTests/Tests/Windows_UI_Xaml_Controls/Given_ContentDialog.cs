@@ -920,6 +920,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/10939")]
+		public async Task When_ContentDialog_Inline_In_Visual_Tree_Should_Not_Be_Visible()
+		{
+			// Issue #10939: When a ContentDialog is placed inline in XAML (as a child of a Grid/Page),
+			// it should NOT become visible automatically. It should only show when ShowAsync() is called.
+			var grid = new Grid();
+			var dialog = new ContentDialog
+			{
+				Title = "Test Dialog",
+				Content = "This should not be visible",
+				PrimaryButtonText = "OK"
+			};
+
+			grid.Children.Add(dialog);
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+			await WindowHelper.WaitForIdle();
+
+			// The ContentDialog should not be visible when placed inline in the visual tree
+			Assert.AreEqual(Visibility.Collapsed, dialog.Visibility,
+				"ContentDialog should not be visible when placed inline in XAML without calling ShowAsync().");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/10939")]
+		public async Task When_ContentDialog_Inline_Should_Not_Render()
+		{
+			// Issue #10939: Additional check - the ContentDialog should have zero actual size
+			// when placed inline (not shown via ShowAsync).
+			var grid = new Grid
+			{
+				Width = 400,
+				Height = 400
+			};
+			var dialog = new ContentDialog
+			{
+				Title = "Test Dialog",
+				Content = "This should not be visible",
+				PrimaryButtonText = "OK"
+			};
+
+			grid.Children.Add(dialog);
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+			await WindowHelper.WaitForIdle();
+
+			// The ContentDialog should not take up any space when placed inline
+			Assert.AreEqual(0, dialog.ActualHeight,
+				"ContentDialog should have zero height when placed inline without ShowAsync().");
+			Assert.AreEqual(0, dialog.ActualWidth,
+				"ContentDialog should have zero width when placed inline without ShowAsync().");
+		}
+
 		private void SetXamlRootForIslandsOrWinUI(ContentDialog dialog)
 		{
 #if !HAS_UNO_WINUI
