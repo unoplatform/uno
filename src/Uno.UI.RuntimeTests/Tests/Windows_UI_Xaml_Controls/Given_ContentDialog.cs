@@ -920,6 +920,91 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4640")]
+		public async Task When_ContentDialog_Defined_Inline_In_Page()
+		{
+			// Issue #4640: When a ContentDialog is defined inline in XAML
+			// (as a child of the page), calling ShowAsync throws
+			// IllegalStateException on Android because the dialog already
+			// has a parent in the visual tree.
+			var grid = new Grid();
+			var dialog = new ContentDialog
+			{
+				Title = "Dialog title",
+				Content = "Dialog content",
+				PrimaryButtonText = "Accept",
+				CloseButtonText = "Close",
+			};
+
+			// Simulate inline XAML: the dialog is a child of the page's content
+			grid.Children.Add(dialog);
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+
+			SetXamlRootForIslandsOrWinUI(dialog);
+
+			try
+			{
+				// This should not throw, but on Android it throws
+				// IllegalStateException: "The specified child already has a parent"
+				_ = dialog.ShowAsync();
+				await WindowHelper.WaitForIdle();
+			}
+			finally
+			{
+				dialog.Hide();
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4640")]
+		public async Task When_ContentDialog_Defined_Inline_With_Complex_Content()
+		{
+			// Issue #4640: Variant with a ContentDialog that has complex
+			// content defined inline in a page, closer to the "fully templated
+			// InPlace ContentDialog" scenario in the original report.
+			var grid = new Grid();
+			var dialog = new ContentDialog
+			{
+				Title = "Dialog title",
+				Content = new StackPanel
+				{
+					Children =
+					{
+						new TextBlock { Text = "Enter value:" },
+						new TextBox(),
+					}
+				},
+				PrimaryButtonText = "Save",
+				SecondaryButtonText = "Cancel",
+				CloseButtonText = "Close",
+			};
+
+			// Simulate inline XAML: the dialog is a child of the page
+			grid.Children.Add(dialog);
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+
+			SetXamlRootForIslandsOrWinUI(dialog);
+
+			try
+			{
+				// This should not throw, but on Android it throws
+				// IllegalStateException: "The specified child already has a parent"
+				_ = dialog.ShowAsync();
+				await WindowHelper.WaitForIdle();
+			}
+			finally
+			{
+				dialog.Hide();
+				WindowHelper.WindowContent = null;
+			}
+		}
+
 		private void SetXamlRootForIslandsOrWinUI(ContentDialog dialog)
 		{
 #if !HAS_UNO_WINUI
