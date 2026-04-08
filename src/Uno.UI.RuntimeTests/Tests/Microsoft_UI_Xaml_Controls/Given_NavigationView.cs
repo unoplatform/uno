@@ -227,5 +227,80 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var bitmap = await UITestHelper.ScreenShot(nvi);
 			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(new Point(), bitmap.Size), Color.FromArgb(0xFF, 0x1B, 0, 0));
 		}
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4691")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_HierarchicalNavigationView_Loaded_Then_NoOwnershipAssertFailure()
+		{
+			// Issue #4691: VirtualizationInfo.MoveOwnershipToLayoutFromElementFactory asserts
+			// that m_owner == ElementOwner.ElementFactory, but this fails when loading
+			// a hierarchical NavigationView. The assert was temporarily commented out in
+			// VirtualizationInfo.cs. This test verifies the scenario doesn't crash.
+
+			var navView = new MUXC.NavigationView
+			{
+				PaneDisplayMode = MUXC.NavigationViewPaneDisplayMode.Left,
+				IsSettingsVisible = false,
+				MenuItems =
+				{
+					new MUXC.NavigationViewItem
+					{
+						Content = "Menu Item 1",
+						Icon = new SymbolIcon(Symbol.Home),
+						MenuItems =
+						{
+							new MUXC.NavigationViewItem
+							{
+								Content = "Menu Item 2",
+								Icon = new SymbolIcon(Symbol.Save),
+								MenuItems =
+								{
+									new MUXC.NavigationViewItem { Content = "Menu Item 4", Icon = new SymbolIcon(Symbol.Cut) },
+									new MUXC.NavigationViewItemSeparator(),
+									new MUXC.NavigationViewItem { Content = "Menu Item 5", Icon = new SymbolIcon(Symbol.Paste) },
+								}
+							},
+							new MUXC.NavigationViewItem { Content = "Menu Item 3", Icon = new SymbolIcon(Symbol.Save) },
+						}
+					},
+					new MUXC.NavigationViewItem
+					{
+						Content = "Menu Item 6",
+						Icon = new SymbolIcon(Symbol.Play),
+						MenuItems =
+						{
+							new MUXC.NavigationViewItem { Content = "Menu Item 7" },
+							new MUXC.NavigationViewItem { Content = "Menu Item 8" },
+						}
+					},
+					new MUXC.NavigationViewItem { Content = "Menu Item 9", Icon = new SymbolIcon(Symbol.Shuffle) },
+				}
+			};
+
+			WindowHelper.WindowContent = navView;
+			await WindowHelper.WaitForLoaded(navView);
+			await WindowHelper.WaitForIdle();
+
+			// Verify the NavigationView loaded successfully with its hierarchical items.
+			// If VirtualizationInfo.MoveOwnershipToLayoutFromElementFactory assertion
+			// were still active, loading this hierarchical NavigationView would trigger it.
+			var menuItems = navView.MenuItems;
+			Assert.AreEqual(3, menuItems.Count, "Top-level menu items should be present");
+
+			// Try expanding the first item to trigger deeper element preparation
+			var firstItem = (MUXC.NavigationViewItem)menuItems[0];
+			firstItem.IsExpanded = true;
+			await WindowHelper.WaitForIdle();
+
+			// Verify nested items are accessible
+			Assert.AreEqual(2, firstItem.MenuItems.Count, "First item should have 2 sub-items");
+
+			// Expand the nested item as well (3 levels deep, like the original sample)
+			var nestedItem = (MUXC.NavigationViewItem)firstItem.MenuItems[0];
+			nestedItem.IsExpanded = true;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(3, nestedItem.MenuItems.Count, "Nested item should have 3 sub-items (including separator)");
+		}
 	}
 }
