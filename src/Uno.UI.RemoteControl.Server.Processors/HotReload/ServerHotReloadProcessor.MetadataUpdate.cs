@@ -245,20 +245,5 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				return result;
 			}
 		}
-
-		static void WriteIntArray(BinaryWriter binaryWriter, int[] values)
-		{
-			if (values is null)
-			{
-				binaryWriter.Write(0);
-				return;
-			}
-
-			binaryWriter.Write(values.Length);
-			foreach (var value in values)
-			{
-				binaryWriter.Write(value);
-			}
-		}
 	}
 }
