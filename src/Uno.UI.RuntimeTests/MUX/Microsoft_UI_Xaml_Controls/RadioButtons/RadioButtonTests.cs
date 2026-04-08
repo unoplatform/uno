@@ -120,5 +120,62 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 				Verify.AreEqual("Normal", commonStatesGroup.CurrentState.Name);
 			});
 		}
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4752")]
+		public async Task When_RadioButtons_WithNoScroller_Then_NoViewportAssertFailure()
+		{
+			// Issue #4752: RadioButtons uses an inner ItemsRepeater with a non-virtualizing
+			// layout. ViewportManagerWithPlatformFeatures.UpdateViewport() asserts
+			// !m_managingViewportDisabled, but this is true for non-virtualizing layouts
+			// without a parent scroller. The assert was commented out in the source.
+			// This test verifies RadioButtons loads and functions correctly without a
+			// ScrollViewer parent.
+
+			RadioButtons radioButtons = null;
+			RunOnUIThread.Execute(() =>
+			{
+				radioButtons = new RadioButtons
+				{
+					Header = "Options",
+					ItemsSource = new List<string>
+					{
+						"Option 1",
+						"Option 2",
+						"Option 3",
+						"Option 4",
+						"Option 5"
+					}
+				};
+
+				// Place directly in content without a ScrollViewer — this is the
+				// scenario that triggers the non-virtualizing layout path
+				Content = radioButtons;
+				Content.UpdateLayout();
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				// Verify items were created
+				var container0 = radioButtons.ContainerFromIndex(0) as RadioButton;
+				var container4 = radioButtons.ContainerFromIndex(4) as RadioButton;
+				Verify.IsNotNull(container0, "First RadioButton should be created");
+				Verify.IsNotNull(container4, "Last RadioButton should be created");
+
+				// Select an item to trigger additional viewport/layout updates
+				radioButtons.SelectedIndex = 2;
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Verify.AreEqual(2, radioButtons.SelectedIndex, "Selected index should be 2");
+				var selectedContainer = radioButtons.ContainerFromIndex(2) as RadioButton;
+				Verify.IsNotNull(selectedContainer, "Selected RadioButton should exist");
+				Verify.IsTrue(selectedContainer.IsChecked == true, "Selected RadioButton should be checked");
+			});
+		}
 	}
 }
