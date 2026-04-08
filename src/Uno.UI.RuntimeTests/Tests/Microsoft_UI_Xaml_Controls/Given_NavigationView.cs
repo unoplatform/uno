@@ -227,5 +227,67 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var bitmap = await UITestHelper.ScreenShot(nvi);
 			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(new Point(), bitmap.Size), Color.FromArgb(0xFF, 0x1B, 0, 0));
 		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/5723")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_TopMode_Overflow_ItemSelected_Then_ItemShouldNotDisappear()
+		{
+			// Issue #5723: When NavigationView is in Top mode and items overflow,
+			// selecting items from the overflow menu causes them to disappear.
+
+			var navView = new MUXC.NavigationView
+			{
+				PaneDisplayMode = MUXC.NavigationViewPaneDisplayMode.Top,
+				IsBackButtonVisible = MUXC.NavigationViewBackButtonVisible.Collapsed,
+				IsSettingsVisible = true,
+				Width = 300, // Narrow enough to trigger overflow with 7 items
+				MenuItems =
+				{
+					new MUXC.NavigationViewItem { Content = "First item" },
+					new MUXC.NavigationViewItem { Content = "Second item" },
+					new MUXC.NavigationViewItem { Content = "Third item" },
+					new MUXC.NavigationViewItem { Content = "Fourth item" },
+					new MUXC.NavigationViewItem { Content = "Fifth item" },
+					new MUXC.NavigationViewItem { Content = "Sixth item" },
+					new MUXC.NavigationViewItem { Content = "Seventh item" },
+				},
+				Content = new Frame()
+			};
+
+			navView.FooterMenuItems.Add(new MUXC.NavigationViewItem { Content = "Admin" });
+
+			WindowHelper.WindowContent = navView;
+			await WindowHelper.WaitForLoaded(navView);
+			await WindowHelper.WaitForIdle();
+
+			// All 7 menu items should still be present
+			Assert.AreEqual(7, navView.MenuItems.Count, "All 7 menu items should be in MenuItems before selection");
+
+			// Select one of the items (which may be in overflow)
+			navView.SelectedItem = navView.MenuItems[5]; // "Sixth item"
+			await WindowHelper.WaitForIdle();
+
+			// All items should still be present after selection
+			Assert.AreEqual(7, navView.MenuItems.Count, "All 7 menu items should remain after selecting an overflow item");
+
+			// Verify each item is still accessible
+			for (int i = 0; i < 7; i++)
+			{
+				var item = navView.MenuItems[i] as MUXC.NavigationViewItem;
+				Assert.IsNotNull(item, $"Menu item at index {i} should not be null");
+				Assert.IsNotNull(item.Content, $"Menu item at index {i} should have Content");
+			}
+
+			// Select another item
+			navView.SelectedItem = navView.MenuItems[6]; // "Seventh item"
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(7, navView.MenuItems.Count, "All 7 menu items should remain after selecting another overflow item");
+
+			// Verify the selected item is correctly set
+			Assert.AreEqual(navView.MenuItems[6], navView.SelectedItem, "SelectedItem should be the seventh item");
+		}
 	}
 }
