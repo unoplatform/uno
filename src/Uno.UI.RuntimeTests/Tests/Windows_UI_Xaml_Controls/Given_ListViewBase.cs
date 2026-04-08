@@ -5480,5 +5480,113 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public class SubclassOfObservableCollection : ObservableCollection<string>
 		{
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/10115")]
+		public async Task When_SelectedItem_Cleared_In_ItemClick_Handler()
+		{
+			// Issue #10115: When a ListView item is clicked (or long pressed),
+			// clearing SelectedItem in the ItemClick handler should be reflected in the UI.
+			var items = Enumerable.Range(0, 5).Select(i => $"Item {i}").ToList();
+			var listView = new ListView
+			{
+				ItemsSource = items,
+				IsItemClickEnabled = true,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			// Clear SelectedItem whenever an item is clicked
+			listView.ItemClick += (s, e) =>
+			{
+				listView.SelectedItem = null;
+			};
+
+			WindowHelper.WindowContent = listView;
+			await WindowHelper.WaitForLoaded(listView);
+			await WindowHelper.WaitForIdle();
+
+			// Simulate a click on the first item
+			var container = listView.ContainerFromIndex(0) as ListViewItem;
+			Assert.IsNotNull(container, "Container for item 0 should exist");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to create InputInjector");
+			using var mouse = injector.GetMouse();
+			mouse.Press(container.GetAbsoluteBoundsRect().GetCenter());
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			// After ItemClick clears SelectedItem, it should be null
+			Assert.IsNull(listView.SelectedItem,
+				"SelectedItem should be null after being cleared in ItemClick handler");
+			Assert.AreEqual(-1, listView.SelectedIndex,
+				"SelectedIndex should be -1 after SelectedItem is cleared");
+
+			// The visual state should reflect the deselection — the container
+			// should not be in the "Selected" visual state
+			var visualState = VisualStateManager.GetCurrentState(container, "CommonStates");
+			Assert.AreNotEqual("Selected", visualState?.Name,
+				"Container should not be in 'Selected' visual state after SelectedItem is cleared");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/10115")]
+		public async Task When_SelectedItem_Cleared_In_ItemClick_Handler_With_Holding()
+		{
+			// Issue #10115: Extended test — simulates long press (holding) followed
+			// by clearing SelectedItem in ItemClick handler.
+			var items = Enumerable.Range(0, 5).Select(i => $"Item {i}").ToList();
+			var listView = new ListView
+			{
+				ItemsSource = items,
+				IsItemClickEnabled = true,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			// Add Holding handler to items as they are prepared
+			listView.ContainerContentChanging += (s, e) =>
+			{
+				if (e.ItemContainer is ListViewItem lvi)
+				{
+					lvi.Holding += (sender, args) =>
+					{
+						// Holding event handler present — the issue reports
+						// that having this handler causes SelectedItem clearing
+						// to not be reflected in the UI.
+					};
+				}
+			};
+
+			// Clear SelectedItem whenever an item is clicked
+			listView.ItemClick += (s, e) =>
+			{
+				listView.SelectedItem = null;
+			};
+
+			WindowHelper.WindowContent = listView;
+			await WindowHelper.WaitForLoaded(listView);
+			await WindowHelper.WaitForIdle();
+
+			var container = listView.ContainerFromIndex(0) as ListViewItem;
+			Assert.IsNotNull(container, "Container for item 0 should exist");
+
+			// Simulate a long press
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to create InputInjector");
+			using var mouse = injector.GetMouse();
+			mouse.Press(container.GetAbsoluteBoundsRect().GetCenter());
+			// Hold for ~600ms to trigger Holding event
+			await Task.Delay(600);
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			// SelectedItem should be null after being cleared in ItemClick handler
+			Assert.IsNull(listView.SelectedItem,
+				"SelectedItem should be null after being cleared in ItemClick handler (long press scenario)");
+			Assert.AreEqual(-1, listView.SelectedIndex,
+				"SelectedIndex should be -1 after SelectedItem is cleared (long press scenario)");
+		}
 	}
 }
