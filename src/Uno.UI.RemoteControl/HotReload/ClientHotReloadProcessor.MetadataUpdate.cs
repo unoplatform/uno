@@ -157,13 +157,29 @@ partial class ClientHotReloadProcessor
 				return;
 			}
 
+			// Collect non-fatal exceptions from element updates and handler callbacks
+			// so the entire update runs to completion before re-throwing.
+			List<Exception>? deferredExceptions = null;
+
 			// Action: BeforeVisualTreeUpdate
 			// This is called before the visual tree is updated
 			_ = handlerActions?.Do(h =>
 			{
 				foreach (var a in h.Value)
 				{
-					a.BeforeVisualTreeUpdate(updatedTypes);
+					try
+					{
+						a.BeforeVisualTreeUpdate(updatedTypes);
+					}
+					catch (Exception ex)
+					{
+						deferredExceptions ??= [];
+						deferredExceptions.Add(ex);
+						if (_log.IsEnabled(LogLevel.Error))
+						{
+							_log.Error($"[HotReload] BeforeVisualTreeUpdate handler failed: {ex.Message}", ex);
+						}
+					}
 				}
 			}).ToArray();
 
@@ -255,7 +271,9 @@ partial class ClientHotReloadProcessor
 			var instancesToUpdate = await treeIterator.ToArrayAsync();
 
 			// Iterate through the visual tree and either invoke ElementUpdate,
-			// or replace the element with a new one
+			// or replace the element with a new one.
+			// Each element is updated in isolation so that a failure on one type
+			// does not prevent the remaining elements from being processed.
 			foreach (var (element, elementHandlers, elementMappedType) in instancesToUpdate)
 			{
 				if (element is null)
@@ -263,21 +281,49 @@ partial class ClientHotReloadProcessor
 					continue;
 				}
 
-				// Action: ElementUpdate
-				// This is invoked for each existing element that is in the tree that needs to be replaced
-				foreach (var elementHandler in elementHandlers)
+				try
 				{
-					elementHandler?.ElementUpdate(element, updatedTypes);
-				}
-
-				if (elementMappedType is not null)
-				{
-					if (_log.IsEnabled(LogLevel.Debug))
+					// Action: ElementUpdate
+					// This is invoked for each existing element that is in the tree that needs to be replaced
+					foreach (var elementHandler in elementHandlers)
 					{
-						_log.Debug($"Updating element [{element}] to [{elementMappedType}]");
+						try
+						{
+							elementHandler?.ElementUpdate(element, updatedTypes);
+						}
+						catch (Exception handlerEx)
+						{
+							deferredExceptions ??= [];
+							deferredExceptions.Add(handlerEx);
+							if (_log.IsEnabled(LogLevel.Error))
+							{
+								_log.Error($"[HotReload] ElementUpdate handler failed for [{element.GetType().Name}]: {handlerEx.Message}", handlerEx);
+							}
+						}
 					}
 
-					ReplaceViewInstance(element, elementMappedType, elementHandlers, updatedTypes);
+					if (elementMappedType is not null)
+					{
+						if (_log.IsEnabled(LogLevel.Debug))
+						{
+							_log.Debug($"Updating element [{element}] to [{elementMappedType}]");
+						}
+
+						ReplaceViewInstance(element, elementMappedType, elementHandlers, updatedTypes);
+					}
+				}
+				catch (Exception elementEx)
+				{
+					deferredExceptions ??= [];
+					deferredExceptions.Add(elementEx);
+					if (_log.IsEnabled(LogLevel.Error))
+					{
+						_log.Error(
+							$"[HotReload] Failed to update element [{element.GetType().Name}] " +
+							$"(target type: {elementMappedType?.Name ?? "same"}): {elementEx.Message}. " +
+							$"Continuing with remaining elements.",
+							elementEx);
+					}
 				}
 			}
 
@@ -299,9 +345,31 @@ partial class ClientHotReloadProcessor
 			{
 				foreach (var a in h.Value)
 				{
-					a.AfterVisualTreeUpdate(updatedTypes);
+					try
+					{
+						a.AfterVisualTreeUpdate(updatedTypes);
+					}
+					catch (Exception ex)
+					{
+						deferredExceptions ??= [];
+						deferredExceptions.Add(ex);
+						if (_log.IsEnabled(LogLevel.Error))
+						{
+							_log.Error($"[HotReload] AfterVisualTreeUpdate handler failed: {ex.Message}", ex);
+						}
+					}
 				}
 			}).ToArray();
+
+			// After all updates, state restoration, and handler callbacks have had
+			// a chance to run, re-throw collected exceptions so callers know
+			// the operation was not fully successful.
+			if (deferredExceptions is { Count: > 0 })
+			{
+				throw new AggregateException(
+					$"{deferredExceptions.Count} error(s) occurred during hot-reload UI update.",
+					deferredExceptions);
+			}
 		}
 		catch (Exception ex)
 		{
@@ -333,7 +401,17 @@ partial class ClientHotReloadProcessor
 			{
 				foreach (var a in h.Value)
 				{
-					a.ReloadCompleted(updatedTypes, uiUpdating);
+					try
+					{
+						a.ReloadCompleted(updatedTypes, uiUpdating);
+					}
+					catch (Exception ex)
+					{
+						if (_log.IsEnabled(LogLevel.Error))
+						{
+							_log.Error($"[HotReload] ReloadCompleted handler failed: {ex.Message}", ex);
+						}
+					}
 				}
 			}).ToArray();
 
