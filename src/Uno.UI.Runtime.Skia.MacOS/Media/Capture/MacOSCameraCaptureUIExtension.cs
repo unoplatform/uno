@@ -59,13 +59,16 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 
 		try
 		{
-			if (_mode == CameraCaptureUIMode.Video)
+			using (token.Register(() => NativeUno.uno_capture_cancel()))
 			{
-				nativePath = NativeUno.uno_capture_video();
-			}
-			else
-			{
-				nativePath = NativeUno.uno_capture_photo(_photoFormat == CameraCaptureUIPhotoFormat.Jpeg);
+				if (_mode == CameraCaptureUIMode.Video)
+				{
+					nativePath = NativeUno.uno_capture_video();
+				}
+				else
+				{
+					nativePath = NativeUno.uno_capture_photo(_photoFormat == CameraCaptureUIPhotoFormat.Jpeg);
+				}
 			}
 
 			token.ThrowIfCancellationRequested();

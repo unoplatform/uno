@@ -39,5 +39,6 @@ void uno_native_dispose(NSView<UNONativeElement> *element);
 
 char* _Nullable uno_capture_photo(bool useJpeg);
 char* _Nullable uno_capture_video(void);
+void uno_capture_cancel(void);
 
 NS_ASSUME_NONNULL_END
