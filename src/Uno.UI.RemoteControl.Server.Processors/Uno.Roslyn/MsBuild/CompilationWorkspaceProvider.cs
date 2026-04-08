@@ -36,6 +36,16 @@ public static class CompilationWorkspaceProvider
 				return false;
 			}
 
+			if (property.Equals("TargetFrameworks", StringComparison.OrdinalIgnoreCase))
+			{
+				// Don't set TargetFrameworks globally since it propagates to all referenced projects.
+				// Library projects may target different TFMs (e.g. net9.0) than the head project
+				// (e.g. net10.0-desktop). The head project's TFM is already passed via
+				// UnoHotReloadTargetFramework which is promoted back to TargetFramework only on
+				// the head project via the DevServer targets.
+				return false;
+			}
+
 			if (property.StartsWith("MSBuild", StringComparison.OrdinalIgnoreCase))
 			{
 				// Noticeably, don't set the "MSBuildVersion" (Forbidden, will fail workspace).
