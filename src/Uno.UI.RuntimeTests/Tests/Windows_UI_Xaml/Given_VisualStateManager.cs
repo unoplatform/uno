@@ -255,4 +255,61 @@ public partial class Given_VisualStateManager
 		}
 	}
 #endif
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11265")]
+	public async Task When_StateTrigger_Inside_DataTemplate_Without_UserControl_Should_Not_Fire()
+	{
+		// Issue #11265: On WinUI, VisualState.StateTriggers inside a DataTemplate
+		// do NOT work unless wrapped in a UserControl. On Uno they work without
+		// the UserControl wrapper, which is incorrect behavior.
+
+		// Build the DataTemplate programmatically with a StateTrigger that is always active
+		var itemsControl = new ItemsControl
+		{
+			ItemsSource = new[] { "A" },
+			ItemTemplate = (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<Grid>
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup>
+								<VisualState x:Name="ActiveState">
+									<VisualState.StateTriggers>
+										<StateTrigger IsActive="True" />
+									</VisualState.StateTriggers>
+									<VisualState.Setters>
+										<Setter Target="TestBorder.Background" Value="Green" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+						<Border x:Name="TestBorder"
+						        Background="Red"
+						        Height="50"
+						        Width="50" />
+					</Grid>
+				</DataTemplate>
+				""")
+		};
+
+		await UITestHelper.Load(itemsControl);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Find the Border inside the ItemsControl
+		var container = itemsControl.ContainerFromIndex(0) as ContentPresenter;
+		Assert.IsNotNull(container, "Container should not be null");
+
+		var border = container.FindFirstChild<Border>(b => b.Name == "TestBorder");
+		Assert.IsNotNull(border, "TestBorder should be found");
+
+		// On WinUI, the StateTrigger should NOT fire inside a DataTemplate without UserControl,
+		// so the background should remain Red.
+		var brush = border.Background as SolidColorBrush;
+		Assert.IsNotNull(brush, "Background should be a SolidColorBrush");
+		Assert.AreEqual(Microsoft.UI.Colors.Red, brush.Color,
+			"StateTrigger should NOT fire inside a DataTemplate without UserControl wrapper (WinUI parity). " +
+			"Background should remain Red, not change to Green.");
+	}
 }
