@@ -145,8 +145,13 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 
 	protected override void Initialize()
 	{
-		CoreDispatcher.DispatchOverride = Win32EventLoop.Schedule;
-		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+		// The dispatch override is process-global — only set it once from the host app.
+		// Secondary ALC apps must not overwrite it; they share the host's UI thread.
+		if (CoreDispatcher.DispatchOverride is null)
+		{
+			CoreDispatcher.DispatchOverride = Win32EventLoop.Schedule;
+			CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+		}
 	}
 
 	protected override Task RunLoop()

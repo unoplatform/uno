@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
@@ -128,51 +129,6 @@ namespace Microsoft.UI.Xaml
 			{
 				// We only need setup the app instance for non-default ALCs.
 				Current = this;
-			}
-		}
-
-		private static void SetCurrentApplication(Application app)
-		{
-			if (app is null)
-			{
-				_current = null;
-				return;
-			}
-
-			var alc = AssemblyLoadContext.GetLoadContext(app.GetType().Assembly) ?? AssemblyLoadContext.Default;
-
-			if (alc == AssemblyLoadContext.Default)
-			{
-				_current = app;
-				return;
-			}
-
-			lock (_applicationsByAlcSync)
-			{
-				// ConditionalWeakTable lacks an update helper; remove the previous entry first so re-registration succeeds when the
-				// same ALC bootstraps multiple Application instances (e.g., AlcApp runtime tests).
-				_applicationsByAlc.Remove(alc);
-				_applicationsByAlc.Add(alc, app);
-				_hasSecondaryApps = true;
-			}
-		}
-
-		internal static Application GetForInstance(object instance)
-			=> instance is null ? null : GetForType(instance.GetType());
-
-		internal static Application GetForType(Type type)
-			=> type is null ? Current : GetForAssemblyLoadContext(AssemblyLoadContext.GetLoadContext(type.Assembly));
-
-		internal static Application GetForAssemblyLoadContext(AssemblyLoadContext alc)
-		{
-			if (alc is null || alc == AssemblyLoadContext.Default)
-			{
-				return Current;
-			}
-
-			lock (_applicationsByAlcSync)
-			{
-				return _applicationsByAlc.TryGetValue(alc, out var app) ? app : null;
 			}
 		}
 
@@ -366,7 +322,17 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Shuts down the app.
 		/// </summary>
-		public void Exit() => CoreApplication.Exit();
+		public void Exit()
+		{
+			var alc = AssemblyLoadContext.GetLoadContext(GetType().Assembly);
+			if (alc is not null && alc != AssemblyLoadContext.Default)
+			{
+				ExitAlcApplication();
+				return;
+			}
+
+			CoreApplication.Exit();
+		}
 #endif
 
 		public static void Start(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)

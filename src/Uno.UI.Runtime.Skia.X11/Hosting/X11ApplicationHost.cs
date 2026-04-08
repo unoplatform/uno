@@ -205,12 +205,17 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		_eventLoop = new EventLoop();
 		_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; });
 
-		_eventLoop.Schedule(() =>
+		// The dispatch override is process-global — only set it once from the host app.
+		// Secondary ALC apps must not overwrite it; they share the host's UI thread.
+		if (CoreDispatcher.DispatchOverride is null)
 		{
-			_isDispatcherThread = true;
-		});
-		CoreDispatcher.DispatchOverride = (a, p) => _eventLoop.Schedule(a);
-		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+			_eventLoop.Schedule(() =>
+			{
+				_isDispatcherThread = true;
+			});
+			CoreDispatcher.DispatchOverride = (a, p) => _eventLoop.Schedule(a);
+			CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+		}
 	}
 
 	internal static int RenderFrameRate { get; private set; }
