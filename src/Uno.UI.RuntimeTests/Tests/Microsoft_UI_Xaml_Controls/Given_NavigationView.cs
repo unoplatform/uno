@@ -227,5 +227,66 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var bitmap = await UITestHelper.ScreenShot(nvi);
 			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(new Point(), bitmap.Size), Color.FromArgb(0xFF, 0x1B, 0, 0));
 		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/8471")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_SecondLevel_MenuItem_Added_Dynamically_Then_ShouldBeVisible()
+		{
+			// Issue #8471: When adding a NavigationViewItem dynamically to a second-level
+			// (submenu) of a NavigationView, the added item is not shown.
+
+			var parentItem = new MUXC.NavigationViewItem
+			{
+				Content = "Parent",
+				Icon = new SymbolIcon(Symbol.Repair),
+				SelectsOnInvoked = false,
+				MenuItems =
+				{
+					new MUXC.NavigationViewItem { Content = "Static Child", Icon = new SymbolIcon(Symbol.Add) }
+				}
+			};
+
+			var navView = new MUXC.NavigationView
+			{
+				PaneDisplayMode = MUXC.NavigationViewPaneDisplayMode.Left,
+				IsBackButtonVisible = MUXC.NavigationViewBackButtonVisible.Collapsed,
+				IsSettingsVisible = false,
+				MenuItems = { parentItem }
+			};
+
+			WindowHelper.WindowContent = navView;
+			await WindowHelper.WaitForLoaded(navView);
+			await WindowHelper.WaitForIdle();
+
+			// Expand the parent to see children
+			parentItem.IsExpanded = true;
+			await WindowHelper.WaitForIdle();
+
+			// Verify the static child is visible
+			Assert.AreEqual(1, parentItem.MenuItems.Count, "Parent should have 1 child initially");
+
+			// Dynamically add a second-level item
+			var dynamicChild = new MUXC.NavigationViewItem
+			{
+				Content = "Dynamic Child",
+				SelectsOnInvoked = false
+			};
+			parentItem.MenuItems.Add(dynamicChild);
+			await WindowHelper.WaitForIdle();
+
+			// Verify the dynamic child was added
+			Assert.AreEqual(2, parentItem.MenuItems.Count, "Parent should now have 2 children");
+
+			// The dynamic child should be realized in the visual tree
+			// Find all NavigationViewItems in the visual tree
+			var allNavItems = navView.GetAllChildren()
+				.OfType<MUXC.NavigationViewItem>()
+				.Where(nvi => nvi.Content as string == "Dynamic Child")
+				.ToList();
+
+			Assert.IsTrue(allNavItems.Count > 0,
+				"Dynamically added second-level NavigationViewItem should be visible in the visual tree");
+		}
 	}
 }
