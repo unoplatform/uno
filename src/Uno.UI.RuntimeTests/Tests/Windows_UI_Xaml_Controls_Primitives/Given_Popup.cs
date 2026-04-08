@@ -589,5 +589,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			// Did not hit targetElement
 			return false;
 		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/5977")]
+		public async Task When_Popup_Child_Then_MeasuredWithInfiniteConstraints()
+		{
+			// Issue #5977: Popup constrains the measure of its child to the window size.
+			// In WinUI/UWP, Popup measures its child with ∞×∞, allowing the child to
+			// be as large as it wants (e.g., larger than the window).
+
+			var measuredSize = Windows.Foundation.Size.Empty;
+			var measureSpy = new MeasureSpyPanel();
+
+			var popup = new Popup
+			{
+				Child = measureSpy
+			};
+
+			// Set a Grid as window content so the popup can be hosted
+			var host = new Grid();
+			WindowHelper.WindowContent = host;
+			await WindowHelper.WaitForIdle();
+
+			try
+			{
+				popup.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				// The MeasureSpyPanel captures the available size passed to MeasureOverride.
+				// In WinUI, this should be ∞×∞ (PositiveInfinity).
+				Assert.IsTrue(double.IsPositiveInfinity(measureSpy.LastAvailableSize.Width),
+					$"Popup child should be measured with infinite width, but got {measureSpy.LastAvailableSize.Width}");
+				Assert.IsTrue(double.IsPositiveInfinity(measureSpy.LastAvailableSize.Height),
+					$"Popup child should be measured with infinite height, but got {measureSpy.LastAvailableSize.Height}");
+			}
+			finally
+			{
+				popup.IsOpen = false;
+			}
+		}
+	}
+
+	internal class MeasureSpyPanel : Panel
+	{
+		public Windows.Foundation.Size LastAvailableSize { get; private set; }
+
+		protected override Windows.Foundation.Size MeasureOverride(Windows.Foundation.Size availableSize)
+		{
+			LastAvailableSize = availableSize;
+			return new Windows.Foundation.Size(100, 100);
+		}
+
+		protected override Windows.Foundation.Size ArrangeOverride(Windows.Foundation.Size finalSize)
+		{
+			return finalSize;
+		}
 	}
 }
