@@ -255,4 +255,69 @@ public partial class Given_VisualStateManager
 		}
 	}
 #endif
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/7033")]
+	public async Task When_VisualState_Has_Storyboard_Then_PropertyChanges_Applied()
+	{
+		// Issue #7033: Visual state is changed but Storyboard animation is not applying.
+		// The VisualStateChanging/Changed events fire, but the animated properties
+		// don't actually change (Android: stays same, GTK: jumps immediately).
+
+		// Build control tree programmatically since XamlReader has issues with Duration
+		var border = new Border
+		{
+			Name = "TestBorder",
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Windows.UI.Colors.Black)
+		};
+
+		var colorAnimation = new Microsoft.UI.Xaml.Media.Animation.ColorAnimation
+		{
+			To = Windows.UI.Colors.Red,
+			Duration = new Duration(TimeSpan.FromMilliseconds(50)),
+		};
+		Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTargetName(colorAnimation, "TestBorder");
+		Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTargetProperty(colorAnimation, "(Border.Background).(SolidColorBrush.Color)");
+
+		var storyboard = new Microsoft.UI.Xaml.Media.Animation.Storyboard();
+		storyboard.Children.Add(colorAnimation);
+
+		var redState = new VisualState { Name = "RedState" };
+		redState.Storyboard = storyboard;
+
+		var defaultState = new VisualState { Name = "DefaultState" };
+
+		var group = new VisualStateGroup();
+		group.States.Add(defaultState);
+		group.States.Add(redState);
+
+		var grid = new Grid();
+		grid.Children.Add(border);
+		VisualStateManager.GetVisualStateGroups(grid).Add(group);
+
+		var host = new ContentControl { Content = grid };
+
+		TestServices.WindowHelper.WindowContent = host;
+		await TestServices.WindowHelper.WaitForLoaded(host);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var initialBrush = border.Background as SolidColorBrush;
+		Assert.IsNotNull(initialBrush);
+		Assert.AreEqual(Windows.UI.Colors.Black, initialBrush.Color, "Initial color should be Black");
+
+		// Trigger visual state change via storyboard directly
+		storyboard.Begin();
+
+		// Wait for animation to complete
+		await Task.Delay(200);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// The color should have changed to Red
+		var finalBrush = border.Background as SolidColorBrush;
+		Assert.IsNotNull(finalBrush, "Background brush should still be a SolidColorBrush");
+		Assert.AreEqual(Windows.UI.Colors.Red, finalBrush.Color,
+			"After Storyboard animation completes, the Border background color should be Red");
+	}
 }
