@@ -5480,5 +5480,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public class SubclassOfObservableCollection : ObservableCollection<string>
 		{
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/10786")]
+		public async Task When_ItemContainerStyle_Set_In_BasedOn_Style_After_Template()
+		{
+			// Issue #10786: ItemContainerStyle is not applied when it's defined
+			// in a BasedOn style and the Template Setter comes before the
+			// ItemContainerStyle Setter.
+			var root = (Grid)XamlReader.Load("""
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Grid.Resources>
+					<Style x:Key="BaseStyle" TargetType="ItemsControl">
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="ItemsControl">
+									<Grid>
+										<ItemsPresenter />
+									</Grid>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+					<Style x:Key="ItemStyle" TargetType="ContentPresenter">
+						<Setter Property="Background" Value="Blue" />
+					</Style>
+					<Style x:Key="DerivedStyle" TargetType="ItemsControl" BasedOn="{StaticResource BaseStyle}">
+						<Setter Property="ItemContainerStyle" Value="{StaticResource ItemStyle}" />
+					</Style>
+				</Grid.Resources>
+				<ItemsControl x:Name="SUT" Style="{StaticResource DerivedStyle}">
+					<x:String>Item1</x:String>
+					<x:String>Item2</x:String>
+					<x:String>Item3</x:String>
+				</ItemsControl>
+			</Grid>
+			""");
+
+			await UITestHelper.Load(root);
+
+			var itemsControl = (ItemsControl)root.FindName("SUT");
+			Assert.IsNotNull(itemsControl);
+
+			// Verify the ItemContainerStyle was applied
+			Assert.IsNotNull(itemsControl.ItemContainerStyle,
+				"ItemContainerStyle should be set from the derived style");
+
+			// Check that the container has the style applied
+			var container = itemsControl.ContainerFromIndex(0) as ContentPresenter;
+			Assert.IsNotNull(container, "Container for item 0 should exist");
+
+			Assert.IsNotNull(container.Background,
+				"Container Background should be set from ItemContainerStyle. " +
+				"If this fails, ItemContainerStyle was not applied when Template Setter " +
+				"comes before ItemContainerStyle Setter in a BasedOn style.");
+
+			if (container.Background is SolidColorBrush brush)
+			{
+				Assert.AreEqual(Colors.Blue, brush.Color,
+					"Container Background should be Blue from ItemContainerStyle");
+			}
+		}
 	}
 }
