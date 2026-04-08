@@ -630,4 +630,32 @@ public class Given_BindingExpression
 			Assert.Fail($"Invalid expectation: [{sut.Name}]{sut.Text}");
 		}
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11377")]
+	public async Task When_xBind_Null_String_Should_Fallback_To_Empty_String()
+	{
+		// Issue #11377: When an x:Bind expression whose type is string evaluates to null,
+		// WinUI converts it to empty string. Uno passes null through instead.
+		var page = new When_xBind_Null_String();
+
+		// NullStringProperty is null by default (not initialized)
+		Assert.IsNull(page.NullStringProperty, "Property should be null initially");
+
+		TestServices.WindowHelper.WindowContent = page;
+		await TestServices.WindowHelper.WaitForLoaded(page);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var receiver = (StringReceiverControl)page.FindName("Receiver");
+		Assert.IsNotNull(receiver, "Receiver control should be found");
+
+		// On WinUI, x:Bind converts null string to empty string before setting
+		// the target property. The sentinel value proves x:Bind actually set the property.
+		Assert.AreNotEqual(StringReceiverControl.Sentinel, receiver.StringValue,
+			"x:Bind should have set the StringValue property (it still has sentinel value).");
+		Assert.AreEqual(string.Empty, receiver.StringValue,
+			"x:Bind should convert a null string value to empty string (WinUI parity). " +
+			$"Actual value was: {(receiver.StringValue == null ? "null" : $"'{receiver.StringValue}'")}.");
+	}
 }
