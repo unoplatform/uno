@@ -3,6 +3,7 @@
 //
 
 #import "UNOMediaPlayer.h"
+#import "UNOWindow.h"
 
 static uno_mediaplayer_periodic_position_update_fn_ptr uno_mediaplayer_periodic_position_update;
 inline uno_mediaplayer_periodic_position_update_fn_ptr uno_mediaplayer_get_periodic_position_update_callback(void)
@@ -294,7 +295,7 @@ void uno_mediaplayer_set_view(UNOMediaPlayer *media, UNOMediaPlayerView *view, N
     media.videoLayer.frame = view.frame;
     media.videoLayer.videoGravity = kCAGravityResizeAspect;
     [view.layer addSublayer:media.videoLayer];
-    view.originalSuperView = window.contentViewController.view;
+    view.originalSuperView = ((UNOWindow*)window).renderingView;
 }
 
 static NSMutableSet<UNOMediaPlayer*> *players;

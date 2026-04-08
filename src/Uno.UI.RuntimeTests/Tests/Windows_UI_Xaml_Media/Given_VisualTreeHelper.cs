@@ -3,21 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Appointments;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.RuntimeTests.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media.VisualTreeHelperPages;
-using Windows.Foundation;
-using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Extensions;
+using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
-using static Private.Infrastructure.TestServices;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media.VisualTreeHelperPages;
 using Uno.UI.Toolkit.DevTools.Input;
+using Windows.Foundation;
+using Windows.UI;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {
@@ -63,6 +65,80 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			CollectionAssert.Contains(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ToArray(), popup);
 			popup.IsOpen = false;
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RunsOnUIThread]
+		public async Task OpenPopups_MenuFlyout_HitTest()
+		{
+			// setup a button with menu flyout
+			var nestedItem1 = new MenuFlyoutItem() { Text = "QweQweQwe QweQweQwe" };
+			var nestedItem2 = new MenuFlyoutItem() { Text = "ZxcZxcZxc ZxcZxcZxc" };
+			var menu = new MenuFlyout() { Items = { nestedItem1, nestedItem2 } };
+			var sut = new Button() { Flyout = menu };
+			await UITestHelper.Load(sut);
+
+			// force open the menu, via button click
+			using var cleanup = Disposable.Create(() =>
+			{
+				menu.Hide();
+				UITestHelper.CloseAllPopups();
+			});
+			sut.ProgrammaticClick();
+			await UITestHelper.WaitForIdle();
+
+			// check if the flyout is opened
+			var popup = VisualTreeHelper
+				.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)
+				.FirstOrDefault(x => x.Child is MenuFlyoutPresenter);
+			Assert.IsNotNull(popup, "Expected to find the MenuFlyout's Popup in the visual tree");
+
+			// hit-test for MenuFlyoutPresenter
+			var rect = nestedItem1.GetAbsoluteBounds();
+			var center = rect.GetCenter();
+			var matches = VisualTreeHelper.FindElementsInHostCoordinates(center, popup.Child, includeAllElements: true).ToArray();
+			Assert.IsTrue(matches.Contains(popup.Child), "Expected to find the element in the FindElementsInHostCoordinates results");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Nested_Setup_HitTest()
+		{
+			var sut = new Border
+			{
+				Name = "sut",
+				Width = 10,
+				Height = 10,
+				Background = new SolidColorBrush(Colors.Blue),
+			};
+			var wrapper = new Border
+			{
+				Name = "wrapper",
+				Width = 10,
+				Height = 10,
+				HorizontalAlignment = HorizontalAlignment.Right,
+				VerticalAlignment = VerticalAlignment.Bottom,
+				Child = sut,
+				Background = new SolidColorBrush(Colors.Green),
+			};
+			var setup = new Border
+			{
+				Name = "setup",
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Colors.Red),
+				Child = wrapper,
+			};
+			await UITestHelper.Load(setup);
+
+			var rect = sut.GetAbsoluteBounds();
+			var center = rect.GetCenter();
+			var matches = VisualTreeHelper.FindElementsInHostCoordinates(center, setup, includeAllElements: true).ToArray();
+
+			Assert.IsTrue(matches.Contains(sut), "Expected to find the element in the FindElementsInHostCoordinates results");
+		}
+#endif
 
 #if !WINAPPSDK // Testing internal Uno methods
 		[TestMethod]

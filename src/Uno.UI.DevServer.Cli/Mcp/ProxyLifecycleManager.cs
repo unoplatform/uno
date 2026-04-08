@@ -105,6 +105,26 @@ internal class ProxyLifecycleManager
 		_logger.LogDebug("TIMELINE|proxy-lifecycle|{Stage}|{ElapsedMs}|{Details}", stage, elapsedMilliseconds, details);
 	}
 
+	private void UpdateHealthSelectionSnapshot(WorkspaceResolution? workspaceResolution)
+	{
+		if (workspaceResolution is null)
+		{
+			_healthService.CurrentSelection = null;
+			return;
+		}
+
+		_healthService.CurrentSelection = new WorkspaceSelectionSnapshot
+		{
+			EffectiveWorkspaceDirectory = workspaceResolution.EffectiveWorkspaceDirectory,
+			SelectedSolutionPath = workspaceResolution.SelectedSolutionPath,
+			ResolutionKind = workspaceResolution.ResolutionKind,
+			SelectionSource = workspaceResolution.SelectionSource,
+			CandidateSolutions = workspaceResolution.CandidateSolutions.Count > 0
+				? workspaceResolution.CandidateSolutions
+				: null,
+		};
+	}
+
 	public ProxyLifecycleManager(
 		ILogger<ProxyLifecycleManager> logger,
 		DevServerMonitor devServerMonitor,
@@ -153,6 +173,7 @@ internal class ProxyLifecycleManager
 		_healthService.ForceRootsFallback = forceRootsFallback;
 		_currentDirectory = currentDirectory;
 		_workspaceResolution = workspaceResolution;
+		UpdateHealthSelectionSnapshot(workspaceResolution);
 		_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 		_devServerPort = port;
 		_forwardedArgs = forwardedArgs;
@@ -448,6 +469,7 @@ internal class ProxyLifecycleManager
 						trigger,
 						_workspaceResolution?.EffectiveWorkspaceDirectory);
 					_workspaceResolution = nextResolution;
+					UpdateHealthSelectionSnapshot(nextResolution);
 					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
@@ -456,6 +478,7 @@ internal class ProxyLifecycleManager
 
 				case WorkspaceTransitionAction.Start:
 					_workspaceResolution = nextResolution;
+					UpdateHealthSelectionSnapshot(nextResolution);
 					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
@@ -470,6 +493,7 @@ internal class ProxyLifecycleManager
 						_workspaceResolution?.EffectiveWorkspaceDirectory);
 					await StopCurrentWorkspaceAsync();
 					_workspaceResolution = nextResolution;
+					UpdateHealthSelectionSnapshot(nextResolution);
 					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					SetConnectionState(ConnectionState.Degraded);
@@ -484,6 +508,7 @@ internal class ProxyLifecycleManager
 						nextResolution.EffectiveWorkspaceDirectory);
 					await StopCurrentWorkspaceAsync();
 					_workspaceResolution = nextResolution;
+					UpdateHealthSelectionSnapshot(nextResolution);
 					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
@@ -507,6 +532,7 @@ internal class ProxyLifecycleManager
 							trigger,
 							nextResolution.ResolutionKind);
 						_workspaceResolution = nextResolution;
+						UpdateHealthSelectionSnapshot(nextResolution);
 						_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 						await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					}

@@ -52,7 +52,9 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
+					)
 				;
 			}
 			)
@@ -108,59 +110,67 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
 					this.__rootInstance = 
-					new global::Microsoft.UI.Xaml.Controls.Border
-					{
-						IsParsing = true,
-						Resources = {
-						["SiblingResource"] = 
-						new global::Microsoft.UI.Xaml.Controls.FontIconSource
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.Controls.Border
 						{
-							// Source 0\RD_WNWSRAE.xaml (Line 14:22)
+							IsParsing = true,
+							Resources = {
+							["SiblingResource"] = 
+							global::MyProject.GlobalStaticResources.__PreserveProperties(
+								new global::Microsoft.UI.Xaml.Controls.FontIconSource
+								{
+									// Source 0\RD_WNWSRAE.xaml (Line 14:22)
+								}
+							)
+							,
+							["FailingResource"] = 
+							new global::Uno.UI.Xaml.WeakResourceInitializer(__ResourceOwner_1, __ResourceOwner_2 => 
+							{
+								return 
+									global::MyProject.GlobalStaticResources.__PreserveProperties(
+										new global::Microsoft.UI.Xaml.Controls.SwipeItems
+										{
+											// Source 0\RD_WNWSRAE.xaml (Line 15:22)
+										}
+										.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+										{
+										__p1.Add(
+											global::MyProject.GlobalStaticResources.__PreserveProperties(
+												new global::Microsoft.UI.Xaml.Controls.SwipeItem
+												{
+													// Source 0\RD_WNWSRAE.xaml (Line 16:26)
+												}
+												.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+												{
+												/* _isTopLevelDictionary:False */
+												__that._component_0 = __p1;
+												global::Microsoft.UI.Xaml.NameScope.SetNameScope(__that._component_0, __nameScope);
+												global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.SwipeItem.IconSourceProperty, "SiblingResource", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+												var Invoked_Handler = new __RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7.__Pag_ResΞ0_DatTemΞ0_Bor_ResΞ1_SwiIteΞ0_SwiIte_Inv_Invoked_Handler((__ResourceOwner_2 as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
+												/* second level */ __p1.Invoked += Invoked_Handler.Invoke;
+												}
+												))
+											)
+										);
+										}
+										))
+									)
+								;
+							}
+							)
+							,
+							},
+							// Source 0\RD_WNWSRAE.xaml (Line 12:14)
 						}
-						,
-						["FailingResource"] = 
-						new global::Uno.UI.Xaml.WeakResourceInitializer(__ResourceOwner_1, __ResourceOwner_2 => 
+						.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 						{
-							return 
-								new global::Microsoft.UI.Xaml.Controls.SwipeItems
-								{
-									// Source 0\RD_WNWSRAE.xaml (Line 15:22)
-								}
-								.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-								{
-								__p1.Add(
-									new global::Microsoft.UI.Xaml.Controls.SwipeItem
-									{
-										// Source 0\RD_WNWSRAE.xaml (Line 16:26)
-									}
-									.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler2)(__p1 => 
-									{
-									/* _isTopLevelDictionary:False */
-									__that._component_0 = __p1;
-									global::Microsoft.UI.Xaml.NameScope.SetNameScope(__that._component_0, __nameScope);
-									global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.SwipeItem.IconSourceProperty, "SiblingResource", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-									var Invoked_Handler = new __RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7.__Pag_ResΞ0_DatTemΞ0_Bor_ResΞ1_SwiIteΞ0_SwiIte_Inv_Invoked_Handler((__ResourceOwner_2 as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
-									/* second level */ __p1.Invoked += Invoked_Handler.Invoke;
-									}
-									))
-								);
-								}
-								))
-							;
+						/* _isTopLevelDictionary:False */
+						__that._component_1 = __p1;
+						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7);
+						__p1.CreationComplete();
 						}
-						)
-						,
-						},
-						// Source 0\RD_WNWSRAE.xaml (Line 12:14)
-					}
-					.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler3)(__p1 => 
-					{
-					/* _isTopLevelDictionary:False */
-					__that._component_1 = __p1;
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7);
-					__p1.CreationComplete();
-					}
-					))
+						))
+					)
 					;
 					if (__rootInstance is FrameworkElement __fe)
 					{

@@ -10,7 +10,6 @@ public partial class MicaController
 	/// <summary>
 	/// Determines whether the mica material is supported on the current operating system.
 	/// </summary>
-	/// <remarks>Currently returns false on all targets except for WinUI.</remarks>
 	/// <returns>True if the mica material is supported on the current operating system; otherwise, false.</returns>
-	public static bool IsSupported() => false;
+	public static bool IsSupported() => OperatingSystem.IsMacOS();
 }

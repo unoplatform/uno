@@ -114,6 +114,7 @@ IEnumUnknown
 IFileOpenDialog
 IFileSaveDialog
 IGlobalInterfaceTable
+ITaskbarList3
 MINMAXINFO
 MONITORINFOEXW
 PIXELFORMATDESCRIPTOR

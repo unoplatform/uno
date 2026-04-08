@@ -50,25 +50,27 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.TextBlock
-			{
-				IsParsing = true,
-				// Source 0\MainPage.xaml (Line 7:3)
-			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-			{
-			__p1.SetBinding(
-				global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-				new Microsoft.UI.Xaml.Data.Binding()
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.TextBlock
 				{
-					Path = @"ThePath",
-					RelativeSource = new RelativeSource(default),
+					IsParsing = true,
+					// Source 0\MainPage.xaml (Line 7:3)
 				}
-			);
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-			__p1.CreationComplete();
-			}
-			))
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+				{
+				__p1.SetBinding(
+					global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+					new Microsoft.UI.Xaml.Data.Binding()
+					{
+						Path = @"ThePath",
+						RelativeSource = new RelativeSource(default),
+					}
+				);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this

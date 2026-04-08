@@ -118,17 +118,27 @@ NSWindow* uno_window_create(double width, double height)
     
     NSViewController *vc = [[NSViewController alloc] init];
     
+    // Create a container view that will hold both the rendering view and any backdrop effect view
+    NSView *container = [[NSView alloc] initWithFrame:size];
+    container.autoresizesSubviews = YES;
+    container.wantsLayer = YES;
+
     id device = uno_application_get_metal_device();
     if (device) {
         UNOMetalFlippedView *v = [[UNOMetalFlippedView alloc] initWithFrame:size device:device];
         v.enableSetNeedsDisplay = YES;
+        v.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
         window.metalViewDelegate = [[UNOMetalViewDelegate alloc] initWithMetalKitView:v];
         v.delegate = window.metalViewDelegate;
-        vc.view = v;
+        window.renderingView = v;
     } else {
         UNOSoftView *v = [[UNOSoftView alloc] initWithFrame:size];
-        vc.view = v;
+        v.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+        window.renderingView = v;
     }
+
+    [container addSubview:window.renderingView];
+    vc.view = container;
     
     window.contentViewController = vc;
     
@@ -183,9 +193,9 @@ void uno_window_notify_screen_change(NSWindow *window)
 void uno_window_invalidate(NSWindow *window)
 {
 #if DEBUG
-    NSLog(@"uno_window_invalidate %@ view: %p", window, window.contentViewController.view);
+    NSLog(@"uno_window_invalidate %@ view: %p", window, ((UNOWindow*)window).renderingView);
 #endif
-    window.contentViewController.view.needsDisplay = true;
+    ((UNOWindow*)window).renderingView.needsDisplay = true;
 }
 
 void uno_window_close(NSWindow *window)
@@ -235,6 +245,78 @@ void uno_window_set_max_size(NSWindow *window, double width, double height)
     NSLog (@"uno_window_set_max_size %@ %f %f", window, width, height);
 #endif
     window.maxSize = CGSizeMake(width, height);
+}
+
+bool uno_window_set_system_backdrop(NSWindow *window, int material)
+{
+#if DEBUG
+    NSLog(@"uno_window_set_system_backdrop %@ material: %d", window, material);
+#endif
+    if (!window) {
+        return false;
+    }
+
+    NSView *contentView = window.contentView;
+    if (!contentView) {
+        return false;
+    }
+
+    NSView *renderingView = ((UNOWindow*)window).renderingView;
+
+    // Remove any existing NSVisualEffectView
+    for (NSView *subview in contentView.subviews) {
+        if ([subview isKindOfClass:[NSVisualEffectView class]]) {
+            [subview removeFromSuperview];
+            break;
+        }
+    }
+
+    // material 0 = None, just remove backdrop above and restore opacity
+    if (material == 0) {
+        renderingView.layer.opaque = YES;
+        renderingView.layer.backgroundColor = nil;
+        if ([renderingView isKindOfClass:[MTKView class]]) {
+            ((MTKView*)renderingView).clearColor = MTLClearColorMake(0, 0, 0, 1);
+        }
+        window.opaque = YES;
+        window.backgroundColor = nil;
+        return true;
+    }
+
+    NSVisualEffectMaterial nsMaterial;
+    switch (material) {
+        case 1: // Mica (Base) - underWindowBackground gives a wallpaper-tinted effect
+            nsMaterial = NSVisualEffectMaterialUnderWindowBackground;
+            break;
+        case 2: // Mica (BaseAlt) - windowBackground gives stronger tinting
+            nsMaterial = NSVisualEffectMaterialWindowBackground;
+            break;
+        case 3: // Desktop Acrylic
+            nsMaterial = NSVisualEffectMaterialHUDWindow;
+            break;
+        default:
+            return false;
+    }
+
+    NSVisualEffectView *effectView = [[NSVisualEffectView alloc] initWithFrame:contentView.bounds];
+    effectView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    effectView.material = nsMaterial;
+    effectView.blendingMode = NSVisualEffectBlendingModeBehindWindow;
+    effectView.state = NSVisualEffectStateFollowsWindowActiveState;
+
+    // Make the rendering view's layer non-opaque so the backdrop shows through transparent areas
+    renderingView.layer.opaque = NO;
+    renderingView.layer.backgroundColor = CGColorGetConstantColor(kCGColorClear);
+    if ([renderingView isKindOfClass:[MTKView class]]) {
+        ((MTKView*)renderingView).clearColor = MTLClearColorMake(0, 0, 0, 0);
+    }
+    window.opaque = NO;
+    window.backgroundColor = NSColor.clearColor;
+
+    // Insert below the rendering view so the backdrop is behind the Skia content
+    [contentView addSubview:effectView positioned:NSWindowBelow relativeTo:renderingView];
+
+    return true;
 }
 
 void uno_window_get_position(NSWindow *window, double *x, double *y)
@@ -708,9 +790,9 @@ bool uno_window_clip_svg(UNOWindow* window, const char* svg)
     if (svg) {
         CGFloat scale = window.screen.backingScaleFactor;
 #if DEBUG
-        NSLog(@"uno_window_clip_svg %@ %@ %s scale: %g", window, window.contentView.layer.description, svg, scale);
+        NSLog(@"uno_window_clip_svg %@ %@ %s scale: %g", window, window.renderingView.layer.description, svg, scale);
 #endif
-        NSArray<__kindof NSView *> *subviews = window.contentViewController.view.subviews;
+        NSArray<__kindof NSView *> *subviews = window.renderingView.subviews;
         for (int i = 0; i < subviews.count; i++) {
             NSView* view = subviews[i];
             NSRect frame = view.frame;
@@ -802,9 +884,9 @@ bool uno_window_clip_svg(UNOWindow* window, const char* svg)
         }
     } else {
 #if DEBUG
-        NSLog(@"uno_window_clip_svg %@ %@ reset", window, window.contentView.layer.description);
+        NSLog(@"uno_window_clip_svg %@ %@ reset", window, window.renderingView.layer.description);
 #endif
-        NSArray<__kindof NSView *> *subviews = window.contentViewController.view.subviews;
+        NSArray<__kindof NSView *> *subviews = window.renderingView.subviews;
         for (int i = 0; i < subviews.count; i++) {
             NSView* view = subviews[i];
 #if DEBUG
@@ -1090,26 +1172,26 @@ NSOperatingSystemVersion _osVersion;
 
 - (void) windowWillStartLiveResize:(NSNotification *) notification {
     NSScreen *screen = ((NSWindow*) notification.object).screen;
-    NSView* contentView = self.contentView;
+    NSView* renderView = self.renderingView;
 #if DEBUG
-    NSLog(@"UNOWindow %p windowWillStartLiveResize scaling from %g to %g", self, contentView.layer.contentsScale, screen.backingScaleFactor);
+    NSLog(@"UNOWindow %p windowWillStartLiveResize scaling from %g to %g", self, renderView.layer.contentsScale, screen.backingScaleFactor);
 #endif
     // This does not flow automatically when moving the window from a retina screen to a normal screen
-    contentView.layer.contentsScale = screen.backingScaleFactor;
+    renderView.layer.contentsScale = screen.backingScaleFactor;
     // prevent content stretching during window resize by pinning to top-left. cf. https://github.com/unoplatform/uno/issues/22159
-    contentView.layerContentsPlacement = NSViewLayerContentsPlacementTopLeft;
+    renderView.layerContentsPlacement = NSViewLayerContentsPlacementTopLeft;
 }
 
 - (void) windowDidEndLiveResize:(NSNotification *) notification {
     NSScreen *screen = ((NSWindow*) notification.object).screen;
-    NSView* contentView = self.contentView;
+    NSView* renderView = self.renderingView;
 #if DEBUG
-    NSLog(@"UNOWindow %p windowDidEndLiveResize scaling from %g to %g", self, contentView.layer.contentsScale, screen.backingScaleFactor);
+    NSLog(@"UNOWindow %p windowDidEndLiveResize scaling from %g to %g", self, renderView.layer.contentsScale, screen.backingScaleFactor);
 #endif
     // Ensure the scale stays in sync up to the end
-    contentView.layer.contentsScale = screen.backingScaleFactor;
+    renderView.layer.contentsScale = screen.backingScaleFactor;
     // Reset the layerContentsPlacement property to its default value
-    contentView.layerContentsPlacement = NSViewLayerContentsPlacementScaleAxesIndependently;
+    renderView.layerContentsPlacement = NSViewLayerContentsPlacementScaleAxesIndependently;
 }
 
 - (void) performMiniaturize:(id) sender {

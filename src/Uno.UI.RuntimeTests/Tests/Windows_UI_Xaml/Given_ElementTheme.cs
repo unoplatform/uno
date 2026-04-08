@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
+using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
@@ -2858,6 +2859,119 @@ public class Given_ElementTheme
 			$"Foreground should be consistent before and after hover. Before={beforeHoverFg}, After={afterHoverFg}");
 	}
 
+	[TestMethod]
+	public async Task When_CheckBox_In_Dark_Theme_Foreground_Stays_Correct_After_PointerOver()
+	{
+		// Repro: CheckBox in Dark-themed container shows correct white text,
+		// keeps white text during hover, but reverts to black (Light theme value)
+		// after mouse leaves. The visual state storyboard animation for
+		// UncheckedNormal re-applies {ThemeResource CheckBoxForegroundUnchecked}
+		// but resolves it with the wrong (app-level Light) theme context.
+		var container = new Border
+		{
+			Width = 300,
+			Height = 300,
+			RequestedTheme = ElementTheme.Dark,
+		};
+		var checkBox = new CheckBox { Content = "Accept terms" };
+		container.Child = checkBox;
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(checkBox);
+		await WindowHelper.WaitForIdle();
+
+		var contentPresenter = checkBox.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		Assert.IsNotNull(contentPresenter, "CheckBox should have a ContentPresenter template child");
+
+		// Initial state: UncheckedNormal — foreground should be white in Dark theme
+		var initialFg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(initialFg, "ContentPresenter should have a SolidColorBrush foreground initially");
+		Assert.IsTrue((initialFg.Value.R + initialFg.Value.G + initialFg.Value.B) / 3 > 128,
+			$"Initial foreground in Dark theme should be light/white. Got color={initialFg}");
+
+		// Hover: UncheckedPointerOver
+		VisualStateManager.GoToState(checkBox, "UncheckedPointerOver", false);
+		await WindowHelper.WaitForIdle();
+
+		var hoverFg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(hoverFg, "ContentPresenter should have foreground during hover");
+		Assert.IsTrue((hoverFg.Value.R + hoverFg.Value.G + hoverFg.Value.B) / 3 > 128,
+			$"Hover foreground in Dark theme should be light/white. Got color={hoverFg}");
+
+		// Leave hover: back to UncheckedNormal
+		VisualStateManager.GoToState(checkBox, "UncheckedNormal", false);
+		await WindowHelper.WaitForIdle();
+
+		var afterHoverFg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(afterHoverFg, "ContentPresenter should have foreground after hover exit");
+		Assert.IsTrue((afterHoverFg.Value.R + afterHoverFg.Value.G + afterHoverFg.Value.B) / 3 > 128,
+			$"After hover exit, foreground in Dark theme should be light/white. Got color={afterHoverFg}");
+
+		// Foreground should be consistent across all states
+		Assert.AreEqual(initialFg, afterHoverFg,
+			$"Foreground should be consistent before and after hover. Before={initialFg}, After={afterHoverFg}");
+	}
+
+	[TestMethod]
+	public async Task When_Checked_CheckBox_In_Dark_Theme_Has_Correct_Fill()
+	{
+		// Repro: mirrors ElementLevelTheme.xaml — a page (default/Light theme)
+		// containing both Light and Dark themed borders with checked CheckBoxes.
+		// The Dark CheckBox's NormalRectangle.Fill should also be accent-colored,
+		// matching the Light one in intent (accent), but using its theme-specific shade.
+		var root = XamlHelper.LoadXaml<Grid>("""
+			<Grid Width="600" Height="300">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Border Grid.Column="0" RequestedTheme="Light">
+					<StackPanel>
+						<CheckBox x:Name="lightCb" Content="Light check" IsChecked="True" />
+						<Border x:Name="lightAccentRef" Background="{ThemeResource CheckBoxCheckBackgroundFillChecked}" Width="10" Height="10" />
+					</StackPanel>
+				</Border>
+				<Border Grid.Column="1" RequestedTheme="Dark">
+					<StackPanel>
+						<CheckBox x:Name="darkCb" Content="Dark check" IsChecked="True" />
+						<Border x:Name="darkAccentRef" Background="{ThemeResource CheckBoxCheckBackgroundFillChecked}" Width="10" Height="10" />
+					</StackPanel>
+				</Border>
+			</Grid>
+			""");
+
+		WindowHelper.WindowContent = root;
+		var lightCb = (CheckBox)root.FindName("lightCb");
+		var darkCb = (CheckBox)root.FindName("darkCb");
+		var lightAccentRef = (Border)root.FindName("lightAccentRef");
+		var darkAccentRef = (Border)root.FindName("darkAccentRef");
+		await WindowHelper.WaitForLoaded(darkCb);
+		await WindowHelper.WaitForIdle();
+
+		var lightRect = lightCb.FindVisualChildByName("NormalRectangle") as Microsoft.UI.Xaml.Shapes.Rectangle;
+		var darkRect = darkCb.FindVisualChildByName("NormalRectangle") as Microsoft.UI.Xaml.Shapes.Rectangle;
+		Assert.IsNotNull(lightRect, "Light CheckBox should have NormalRectangle");
+		Assert.IsNotNull(darkRect, "Dark CheckBox should have NormalRectangle");
+
+		var lightFill = (lightRect.Fill as SolidColorBrush)?.Color;
+		var darkFill = (darkRect.Fill as SolidColorBrush)?.Color;
+		var lightExpected = (lightAccentRef.Background as SolidColorBrush)?.Color;
+		var darkExpected = (darkAccentRef.Background as SolidColorBrush)?.Color;
+
+		Assert.IsNotNull(lightFill, "Light NormalRectangle.Fill should be a SolidColorBrush");
+		Assert.IsNotNull(darkFill, "Dark NormalRectangle.Fill should be a SolidColorBrush");
+		Assert.IsNotNull(lightExpected, "Light CheckBoxCheckBackgroundFillChecked should resolve to a SolidColorBrush");
+		Assert.IsNotNull(darkExpected, "Dark CheckBoxCheckBackgroundFillChecked should resolve to a SolidColorBrush");
+
+		Assert.AreEqual(lightExpected.Value, lightFill.Value,
+			$"Light CheckBox fill should match CheckBoxCheckBackgroundFillChecked. Expected={lightExpected}, Got={lightFill}");
+		Assert.AreEqual(darkExpected.Value, darkFill.Value,
+			$"Dark CheckBox fill should match CheckBoxCheckBackgroundFillChecked. Expected={darkExpected}, Got={darkFill}");
+		// Light and Dark themes use different shades of accent (e.g. #FF005A9E vs #FF76B9ED).
+		Assert.AreNotEqual(lightFill.Value, darkFill.Value,
+			$"Light and Dark fills should differ (different theme dictionaries). Light={lightFill}, Dark={darkFill}");
+	}
+
 	#endregion
 
 	#region WinUI Gap Fix Coverage
@@ -3252,6 +3366,280 @@ public class Given_ElementTheme
 		// Foreground (which drives caret color) should change with theme
 		Assert.AreNotEqual(darkColor, lightForeground.Color,
 			$"TextBox foreground should change when theme changes. Dark: {darkColor}, Light: {lightForeground.Color}");
+	}
+
+	#endregion
+
+	#region Parent Theme Change Preserves Explicit Child Theme (BasicThemeResources Repro)
+
+	/// <summary>
+	/// Full reproduction of the BasicThemeResources sample page.
+	/// Instantiates the physical XAML file with three columns (Default, Dark, Light),
+	/// each containing four Border+TextBlock rows with {ThemeResource}/{StaticResource}
+	/// combinations. Verifies every text foreground color after initial load, after
+	/// switching to Dark, and after switching back to Default.
+	///
+	/// WinUI behaviour:
+	///   Initial (app=Light):  col0=black text, col1=white text, col2=black text
+	///   After Local Dark:     col0=white,      col1=white,      col2=black  (col2 keeps Light)
+	///   After Local Default:  col0=black,      col1=white,      col2=black  (col1 keeps Dark)
+	/// </summary>
+	[TestMethod]
+	public async Task When_ParentThemeChanges_BasicThemeResources_FullRepro()
+	{
+		var page = new Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.BasicThemeResources_Test();
+
+		WindowHelper.WindowContent = page;
+		await WindowHelper.WaitForLoaded(page);
+		await WindowHelper.WaitForIdle();
+
+		// --- Grab every named element ---
+		var col0Panel = (StackPanel)page.FindName("col0Panel");
+		var col1Panel = (StackPanel)page.FindName("col1Panel");
+		var col2Panel = (StackPanel)page.FindName("col2Panel");
+
+		(Border TRThemed, Border SRThemed, Border TRStatic, Border SRStatic) GetColumnBorders(int col) => (
+			(Border)page.FindName($"col{col}_ThemeResource_Themed"),
+			(Border)page.FindName($"col{col}_StaticResource_Themed"),
+			(Border)page.FindName($"col{col}_ThemeResource_Static"),
+			(Border)page.FindName($"col{col}_StaticResource_Static")
+		);
+		TextBlock[] GetColumnTexts(int col) => new[]
+		{
+			(TextBlock)page.FindName($"col{col}_text0"),
+			(TextBlock)page.FindName($"col{col}_text1"),
+			(TextBlock)page.FindName($"col{col}_text2"),
+			(TextBlock)page.FindName($"col{col}_text3"),
+		};
+
+		var (col0_bg0, col0_bg1, col0_bg2, col0_bg3) = GetColumnBorders(0);
+		var (col1_bg0, col1_bg1, col1_bg2, col1_bg3) = GetColumnBorders(1);
+		var (col2_bg0, col2_bg1, col2_bg2, col2_bg3) = GetColumnBorders(2);
+
+		var col0_texts = GetColumnTexts(0);
+		var col1_texts = GetColumnTexts(1);
+		var col2_texts = GetColumnTexts(2);
+
+		// Helper: extract foreground color of a TextBlock
+		static Windows.UI.Color? Fg(TextBlock tb) => (tb.Foreground as SolidColorBrush)?.Color;
+		static Windows.UI.Color Bg(Border b) => ((SolidColorBrush)b.Background).Color;
+
+		var yellow = Windows.UI.Color.FromArgb(255, 255, 255, 0);
+		var blue = Windows.UI.Color.FromArgb(255, 0, 0, 255);
+		var green = Windows.UI.Color.FromArgb(255, 0, 128, 0);
+		var gray = Windows.UI.Color.FromArgb(255, 128, 128, 128);
+
+		// =====================================================================
+		// INITIAL STATE  (app is Light, page has no explicit RequestedTheme)
+		// =====================================================================
+
+		// --- Backgrounds ---
+		// Col 0 (Default→Light): ThemeResource=Yellow, StaticResource=resolved-at-parse
+		Assert.AreEqual(yellow, Bg(col0_bg0), "Init col0 row0 ThemeResource bg should be Yellow (Light)");
+		Assert.AreEqual(green, Bg(col0_bg2), "Init col0 row2 ThemeResource on static should be Green");
+		Assert.AreEqual(green, Bg(col0_bg3), "Init col0 row3 StaticResource on static should be Green");
+
+		// Col 1 (Dark): ThemeResource=Blue
+		Assert.AreEqual(blue, Bg(col1_bg0), "Init col1 row0 ThemeResource bg should be Blue (Dark)");
+		Assert.AreEqual(green, Bg(col1_bg2), "Init col1 row2 ThemeResource on static should be Green");
+		Assert.AreEqual(green, Bg(col1_bg3), "Init col1 row3 StaticResource on static should be Green");
+
+		// Col 2 (Light): ThemeResource=Yellow
+		Assert.AreEqual(yellow, Bg(col2_bg0), "Init col2 row0 ThemeResource bg should be Yellow (Light)");
+		Assert.AreEqual(green, Bg(col2_bg2), "Init col2 row2 ThemeResource on static should be Green");
+		Assert.AreEqual(green, Bg(col2_bg3), "Init col2 row3 StaticResource on static should be Green");
+
+		// --- Foregrounds (text color): the key part of the repro ---
+		// Capture a Light-theme foreground and a Dark-theme foreground as reference
+		var lightFg = Fg(col0_texts[0]);
+		var darkFg = Fg(col1_texts[0]);
+		Assert.IsNotNull(lightFg, "col0 text should have a SolidColorBrush foreground");
+		Assert.IsNotNull(darkFg, "col1 text should have a SolidColorBrush foreground");
+		Assert.AreNotEqual(lightFg, darkFg,
+			$"Light foreground ({lightFg}) and Dark foreground ({darkFg}) must differ");
+
+		// Col 0 (Default→Light): all texts should have light foreground (black-ish)
+		foreach (var tb in col0_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Init {tb.Name} should have Light foreground");
+		}
+
+		// Col 1 (Dark): all texts should have dark foreground (white-ish)
+		foreach (var tb in col1_texts)
+		{
+			Assert.AreEqual(darkFg, Fg(tb), $"Init {tb.Name} should have Dark foreground");
+		}
+
+		// Col 2 (Light): all texts should have light foreground (black-ish)
+		foreach (var tb in col2_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Init {tb.Name} should have Light foreground");
+		}
+
+		// =====================================================================
+		// SET ROOT TO DARK  (simulates clicking "Local Dark" button)
+		// =====================================================================
+		page.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// Backgrounds
+		Assert.AreEqual(blue, Bg(col0_bg0), "Dark: col0 row0 ThemeResource should switch to Blue");
+		Assert.AreEqual(blue, Bg(col1_bg0), "Dark: col1 row0 ThemeResource should stay Blue");
+		Assert.AreEqual(yellow, Bg(col2_bg0),
+			"Dark: col2 row0 ThemeResource MUST stay Yellow (explicit Light child)");
+
+		// Foregrounds — THE KEY ASSERTIONS
+		// Col 0 (Default→now Dark): white text
+		foreach (var tb in col0_texts)
+		{
+			Assert.AreEqual(darkFg, Fg(tb), $"Dark: {tb.Name} should switch to Dark foreground, got {Fg(tb)}");
+		}
+
+		// Col 1 (explicit Dark): white text (unchanged)
+		foreach (var tb in col1_texts)
+		{
+			Assert.AreEqual(darkFg, Fg(tb), $"Dark: {tb.Name} should stay Dark foreground, got {Fg(tb)}");
+		}
+
+		// Col 2 (explicit Light): MUST stay black text
+		foreach (var tb in col2_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Dark: {tb.Name} MUST keep Light foreground, got {Fg(tb)}");
+		}
+
+		// ActualTheme
+		Assert.AreEqual(ElementTheme.Dark, col0Panel.ActualTheme, "Dark: col0 ActualTheme");
+		Assert.AreEqual(ElementTheme.Dark, col1Panel.ActualTheme, "Dark: col1 ActualTheme");
+		Assert.AreEqual(ElementTheme.Light, col2Panel.ActualTheme, "Dark: col2 ActualTheme must stay Light");
+
+		// =====================================================================
+		// SET ROOT BACK TO DEFAULT  (simulates clicking "Local Default" button)
+		// =====================================================================
+		page.RequestedTheme = ElementTheme.Default;
+		await WindowHelper.WaitForIdle();
+
+		// Backgrounds
+		Assert.AreEqual(yellow, Bg(col0_bg0), "Default: col0 row0 ThemeResource should revert to Yellow");
+		Assert.AreEqual(blue, Bg(col1_bg0),
+			"Default: col1 row0 ThemeResource MUST stay Blue (explicit Dark child)");
+		Assert.AreEqual(yellow, Bg(col2_bg0), "Default: col2 row0 ThemeResource should stay Yellow");
+
+		// Foregrounds
+		// Col 0 (Default→Light): black text
+		foreach (var tb in col0_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Default: {tb.Name} should revert to Light foreground, got {Fg(tb)}");
+		}
+
+		// Col 1 (explicit Dark): MUST stay white text
+		foreach (var tb in col1_texts)
+		{
+			Assert.AreEqual(darkFg, Fg(tb), $"Default: {tb.Name} MUST keep Dark foreground, got {Fg(tb)}");
+		}
+
+		// Col 2 (explicit Light): black text
+		foreach (var tb in col2_texts)
+		{
+			Assert.AreEqual(lightFg, Fg(tb), $"Default: {tb.Name} should stay Light foreground, got {Fg(tb)}");
+		}
+	}
+
+	#endregion
+
+	#region ToolTip Theme Propagation
+
+	[TestMethod]
+	public async Task When_Slider_Tooltip_Opens_After_Dynamic_Theme_Switch_Foreground_Matches_Theme()
+	{
+		// Reproduces: Slider tooltip text stays black after switching container
+		// from Light to Dark theme, instead of turning white.
+		// The critical sequence: open tooltip in Light, close, switch to Dark, reopen.
+
+		var slider = new Slider
+		{
+			Minimum = 0,
+			Maximum = 100,
+			Value = 50,
+			Width = 300,
+			Orientation = Orientation.Horizontal,
+			IsThumbToolTipEnabled = true,
+		};
+
+		var container = new Border
+		{
+			RequestedTheme = ElementTheme.Light,
+			Width = 400,
+			Height = 200,
+			Child = slider,
+			Background = new SolidColorBrush(Colors.White),
+		};
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(container);
+		await WindowHelper.WaitForIdle();
+
+		// Get the Slider's thumb and its ToolTip
+		var thumb = MUXControlsTestApp.Utilities.VisualTreeUtils.FindVisualChildByName(slider, "HorizontalThumb");
+		Assert.IsNotNull(thumb, "HorizontalThumb should exist");
+
+		var toolTip = ToolTipService.GetToolTip(thumb) as ToolTip;
+#if HAS_UNO
+		// Uno stores Slider tooltips via GetToolTipReference (internal)
+		toolTip ??= ToolTipService.GetToolTipReference(thumb);
+#endif
+		Assert.IsNotNull(toolTip, "Slider thumb should have a ToolTip");
+
+		try
+		{
+			// Phase 1: Open tooltip in Light theme (establishes initial state)
+			toolTip.IsOpen = true;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+
+			// Verify Light theme foreground (should be dark/black text)
+			var lightForeground = toolTip.Foreground as SolidColorBrush;
+			Assert.IsNotNull(lightForeground, "ToolTip Foreground should be a SolidColorBrush in Light theme");
+			Assert.IsTrue((lightForeground.Color.R + lightForeground.Color.G + lightForeground.Color.B) / 3 < 100,
+				$"In Light theme, ToolTip Foreground should be dark, but was {lightForeground.Color}");
+
+			// Close the tooltip
+			toolTip.IsOpen = false;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(200);
+
+			// Phase 2: Switch container to Dark theme
+			container.RequestedTheme = ElementTheme.Dark;
+			await WindowHelper.WaitForIdle();
+
+			// Phase 3: Reopen tooltip - this is where the bug manifests
+			toolTip.IsOpen = true;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+
+			// Verify Dark theme foreground (should be white/light text)
+			var darkForeground = toolTip.Foreground as SolidColorBrush;
+			Assert.IsNotNull(darkForeground, "ToolTip Foreground should be a SolidColorBrush in Dark theme");
+			Assert.IsTrue((darkForeground.Color.R + darkForeground.Color.G + darkForeground.Color.B) / 3 > 200,
+				$"In Dark theme, ToolTip Foreground should be light/white, but was {darkForeground.Color}");
+
+			// Also verify the TextBlock content has the correct effective Foreground
+			var textBlock = toolTip.Content as TextBlock;
+			Assert.IsNotNull(textBlock, "ToolTip content should be a TextBlock (Slider thumb tooltip)");
+
+			var textBlockForeground = textBlock.Foreground as SolidColorBrush;
+			Assert.IsNotNull(textBlockForeground, "TextBlock Foreground should be a SolidColorBrush");
+			Assert.IsTrue((textBlockForeground.Color.R + textBlockForeground.Color.G + textBlockForeground.Color.B) / 3 > 200,
+				$"TextBlock Foreground should be light/white for Dark theme, but was {textBlockForeground.Color}");
+		}
+		finally
+		{
+			toolTip.IsOpen = false;
+#if HAS_UNO
+			VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot);
+#endif
+		}
 	}
 
 	#endregion

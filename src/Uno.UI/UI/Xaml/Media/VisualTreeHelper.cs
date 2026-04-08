@@ -98,9 +98,13 @@ namespace Microsoft.UI.Xaml.Media
 
 		private static bool IsElementIntersecting(Point intersectingPoint, UIElement uiElement)
 		{
-			GeneralTransform transformToRoot = uiElement.TransformToVisual(null);
-			var target = transformToRoot.TransformBounds(LayoutInformation.GetLayoutSlot(uiElement));
-			return target.Contains(intersectingPoint);
+			// offset from GetLayoutSlot is dropped, since it is already included in TransformToVisual
+			var transform = uiElement.TransformToVisual(null);
+			var rect = LayoutInformation.GetLayoutSlot(uiElement) with { Location = default };
+			var absRect = transform.TransformBounds(rect);
+			var result = absRect.Contains(intersectingPoint);
+
+			return result;
 		}
 
 		[Uno.NotImplemented]

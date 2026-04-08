@@ -10,6 +10,7 @@ using Windows.UI.Core;
 using Uno.Diagnostics.Eventing;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -30,6 +31,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		private KeyFrameScheduler<object> _frameScheduler;
+		private IKeyFrame<object> _currentFrame;
 		private (int count, TimeSpan time) _playStatus;
 
 		public ObjectAnimationUsingKeyFrames()
@@ -92,6 +94,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			Reset();
 
 			State = TimelineState.Active;
+
+			// MUX Reference: CAnimation::GetAnimationBaseValue / ReadBaseValuesFromTargetOrHandoff
+			// Ensure keyframe theme resources are resolved with the target element's
+			// effective theme before playback begins. This is needed because keyframe
+			// values may have been resolved with the wrong theme context during template
+			// materialization or resource binding updates outside a theme walk.
+			EnsureKeyFrameThemeResources();
 
 			_playStatus = default;
 			_frameScheduler = new KeyFrameScheduler<object>(
@@ -198,14 +207,35 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			_frameScheduler?.Dispose();
 			_frameScheduler = null;
+			_currentFrame = null;
 
 			State = TimelineState.Stopped;
 		}
 
 		private IDisposable OnFrame(object currentValue, IKeyFrame<object> frame, TimeSpan duration)
 		{
+			// MUX Reference: CAnimation::UpdateAnimationUsingKeyFrames (animation.cpp:247)
+			// WinUI reads keyframe values directly — theme resources have already been
+			// resolved during NotifyThemeChangedCore tree walk propagation (which reaches
+			// keyframes via: Element → VisualStateGroups → VisualState → Storyboard →
+			// Animation → KeyFrameCollection → ObjectKeyFrame.UpdateAllThemeReferences).
+			_currentFrame = frame;
 			SetValue(frame.Value);
 			return null;
+		}
+
+		// MUX Reference: CAnimation::NotifyThemeChangedCore (animation.cpp:1030)
+		// WinUI requests an immediate animation tick so updated keyframe values
+		// are applied to the target. In Uno, keyframe values have already been
+		// refreshed by UpdateAllThemeReferences during the theme walk (via
+		// UpdateChildResourceBindings propagation). We re-apply the current
+		// frame's value directly.
+		private protected override void OnThemeChanged()
+		{
+			if (_currentFrame is not null && State != TimelineState.Stopped)
+			{
+				SetValue(_currentFrame.Value);
+			}
 		}
 
 		private void OnFramesEnd(KeyFrameScheduler<object>.EndReason endReason)
@@ -245,6 +275,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			_frameScheduler?.Dispose();
 			_frameScheduler = null;
+			_currentFrame = lastKeyFrame;
 
 			State = TimelineState.Filling;
 			SetValue(lastKeyFrame.Value);
@@ -282,6 +313,56 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				_frameScheduler.Dispose();
 				_frameScheduler = null;
+			}
+		}
+
+		/// <summary>
+		/// Resolves all keyframe theme resources with the target element's effective theme.
+		/// Called once at Begin time to ensure keyframe values match the element-level theme.
+		/// </summary>
+		private void EnsureKeyFrameThemeResources()
+		{
+			if (PropertyInfo?.DataContext is not FrameworkElement targetElement)
+			{
+				return;
+			}
+
+			var effectiveTheme = targetElement.GetTheme();
+			if (effectiveTheme == Theme.None)
+			{
+				return;
+			}
+
+			var baseTheme = Theming.GetBaseValue(effectiveTheme);
+			if (baseTheme == Theme.None)
+			{
+				// No base Light/Dark theme (e.g. HighContrast): resolve without overriding the active theme.
+				foreach (var keyFrame in KeyFrames)
+				{
+					if (keyFrame is IDependencyObjectStoreProvider provider)
+					{
+						provider.Store.UpdateAllThemeReferences(null);
+					}
+				}
+
+				return;
+			}
+
+			var themeKey = baseTheme == Theme.Light ? "Light" : "Dark";
+			ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+			try
+			{
+				foreach (var keyFrame in KeyFrames)
+				{
+					if (keyFrame is IDependencyObjectStoreProvider provider)
+					{
+						provider.Store.UpdateAllThemeReferences(null);
+					}
+				}
+			}
+			finally
+			{
+				ResourceDictionary.PopRequestedThemeForSubTree();
 			}
 		}
 

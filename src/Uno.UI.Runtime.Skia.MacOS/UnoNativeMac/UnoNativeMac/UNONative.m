@@ -53,7 +53,7 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
 #if DEBUG
     NSLog(@"uno_native_create_sample #%p label: %@", sample, label.stringValue);
 #endif
-    sample.originalSuperView = window.contentViewController.view;
+    sample.originalSuperView = ((UNOWindow*)window).renderingView;
     return sample;
 }
 

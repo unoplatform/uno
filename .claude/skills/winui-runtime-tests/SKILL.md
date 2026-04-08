@@ -290,11 +290,7 @@ for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"Failed\".*?<m
 ```
 
 **Cleanup steps:**
-1. Uninstall the MSIX package:
-   ```bash
-   $PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/cleanup.ps1"
-   ```
-2. **Restore `crosstargeting_override.props`**: If you changed it in Phase 1c (e.g., from `net10.0` to `net9.0-windows10.0.19041.0`), **restore it to the user's previous value** so their Skia/Wasm development workflow isn't broken.
+1. **Restore `crosstargeting_override.props`**: If you changed it in Phase 1c (e.g., from `net10.0` to `net9.0-windows10.0.19041.0`), **restore it to the user's previous value** so their Skia/Wasm development workflow isn't broken.
 
 **Interpreting WinUI failures**: Tests that fail on WinUI represent the native WinUI behavior. If a test passes on Uno but fails on WinUI (or vice versa), this reveals a parity gap. Use the `[PlatformCondition]` attribute to exclude tests from WinUI:
 ```csharp
@@ -373,7 +369,6 @@ for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"(\w+)\"', con
 "
 
 # --- Cleanup ---
-$PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/cleanup.ps1"
 # IMPORTANT: Restore crosstargeting_override.props to its previous value
 ```
 

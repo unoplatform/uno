@@ -49,9 +49,9 @@ Parse the intent and determine whether this is a **full control port** or a **sn
    - Test files: Look for `*ControlName*Test*` files in nearby test directories
 
 3. **Determine the MUX reference tag/commit**:
-   - If the source files are inside a git repository, run `git log -1 --format="%H" -- <file>` to get the commit hash for each file
-   - If a tag is available (e.g., the path contains a tag-like segment such as `release/1.6`), use the tag format
-   - Otherwise use the short commit hash (first 9 characters)
+   - Run `git -C <winui-source-dir> rev-parse --short HEAD` where `<winui-source-dir>` is the root of the WinUI git repository (the directory containing the `.git` folder). Use this single commit hash for all `// MUX Reference` headers in the ported files.
+   - Run this command **before writing any files** so the correct hash is known up front.
+   - If the directory is not a git repository or the command fails, fall back to any tag embedded in the path (e.g., `release/1.6-stable`), or leave the value as `unknown` with a `TODO Uno:` note.
 
 4. **Read the IDL file** (if found) to determine the complete public API surface including:
    - All public properties and their types/defaults
@@ -109,6 +109,7 @@ Apply ALL of the following porting rules when converting C++ to C#.
 - Any Uno-specific code must be wrapped in `#if HAS_UNO` / `#endif`.
 - Any original code that cannot be represented in Uno must be wrapped in `#if !HAS_UNO` / `#endif` with a `TODO Uno:` comment explaining what is missing.
 - The conversion is a **draft**, not a verified build. It may contain unresolved symbols or unimplemented APIs — leave them visible.
+- **Line number reference comments** (e.g., `// Layout.cpp, line 237`) must only be added when porting **small snippets or individual methods** into an existing file. When porting a **whole file or large section**, do not add per-method line number comments — they clutter the code and become stale. The MUX reference header comment at the top of the file is sufficient for traceability.
 
 #### 2.2. File Headers
 
@@ -130,6 +131,22 @@ Or with commit hash:
 
 #### 2.3. File Layout Rules
 
+**MANDATORY**: Every ported C++ source pair (`ControlName.h` + `ControlName.cpp`) **MUST** be broken down into separate partial-class files. A single monolithic `.cs` file containing both field declarations and method implementations is **never acceptable** — even for small or simple types. The required split is:
+
+| File | Content |
+|------|---------|
+| `ControlName.cs` | **Declaration only** — `public partial class ControlName : BaseType { }` with the MUX reference header, XML doc `<summary>`, and nothing else |
+| `ControlName.h.mux.cs` | **From the C++ header** — private fields, constants, inline method bodies. Omit this file only if the header has zero fields and zero inline method bodies |
+| `ControlName.mux.cs` | **From the C++ implementation** — all method bodies, in the same order as the `.cpp` file |
+| `ControlName.partial.h.mux.cs` | **From `_Partial.h`** — fields and inline methods from the partial header. Only when `ControlName_Partial.h` exists. **Must be a separate file** — do not merge into `ControlName.h.mux.cs` |
+| `ControlName.partial.mux.cs` | **From `_Partial.cpp`** — method bodies from the partial implementation. Only when `ControlName_Partial.cpp` exists. **Must be a separate file** — do not merge into `ControlName.mux.cs` |
+| `ControlName.uno.cs` | **Uno-specific additions** — WeakEventHelper hooks, platform workarounds, members with `[UnoOnly]`. Omit if none exist |
+| `ControlName.Properties.cs` | **Public DependencyProperties and events** — only when the type defines DPs. Omit otherwise |
+
+Each C++ source file maps to **exactly one** C# output file. `_Partial.cpp` and `_Partial.h` are separate translation units in WinUI and must remain separate files in the port — never combine them with the main `.mux.cs` / `.h.mux.cs`.
+
+When an existing monolithic `.cs` file is encountered during porting, it **must** be refactored into the above split as part of the port.
+
 **Main class file (`ControlName.cs`)**:
 - Contains **only** the public class declaration: `public partial class ControlName : BaseType { }`
 - No fields, no methods, no properties.
@@ -143,7 +160,7 @@ Or with commit hash:
 **Header file (`ControlName.h.mux.cs` / `ControlName.partial.h.mux.cs`)**:
 - Field declarations (references to template child elements, cached control references, revokers, state variables)
 - Constants (template part names, visual state names)
-- Inline methods, simple inline getters/setters
+- **All methods that have an inline body in the C++ header** (e.g., `virtual Foo Bar() { return nullptr; }`), regardless of their access modifier or whether they are public API — the deciding factor is where the body lives in C++, not where it logically "belongs"
 - Dependency-property-related arrays/metadata
 - SerialDisposable revoker fields
 - DispatcherHelper instances
@@ -155,6 +172,24 @@ Or with commit hash:
 - Only the API surface goes here — no implementation logic.
 - All public members MUST have XML documentation comments (sourced from Microsoft Learn).
 - Uses `partial class` with **no access modifiers** on the class declaration.
+
+#### 2.3.1. Method Style
+
+For **single-line method bodies**, prefer expression-body syntax (`=>`):
+
+```csharp
+// Prefer this:
+internal int LayoutAnchorIndexDbg() => m_layoutAnchorInfoDbg.Index;
+internal IndexBasedLayoutOrientation GetForcedIndexBasedLayoutOrientationDbg() => m_forcedIndexBasedLayoutOrientationDbg;
+
+// Over this:
+internal int LayoutAnchorIndexDbg()
+{
+    return m_layoutAnchorInfoDbg.Index;
+}
+```
+
+This applies to both methods and properties. Use block-body syntax only when the body has more than one statement.
 
 #### 2.4. C++ to C# Syntax Conversions
 
@@ -342,14 +377,53 @@ Use consistent TODO formats:
 
 #### 2.11. Member Visibility
 
-- No new `public` members unless strictly necessary to match the WinUI API surface.
-- Prefer `private` for implementation details.
-- Use `internal` only when accessed by other Uno infrastructure within the same assembly.
-- Never widen visibility just to simplify testing.
+**Default to the most restrictive visibility that still compiles.** Only widen when there is explicit evidence from one of these authoritative sources:
+- The **IDL file** declares the member as public/protected
+- **Microsoft Learn** documentation lists it as part of the public API
+- The member is already declared in Uno's **Generated stub** as public/protected
+- The member is needed by **another class in the same assembly** (use `internal`)
+- The member must be **overridable by subclasses outside the assembly** (use `protected`)
+
+When none of the above apply, use `private`. When the member must be accessible to subclasses only within the assembly, use `private protected`. Specific rules:
+
+- No new `public` members unless strictly required by the API surface.
+- Prefer `private` for all implementation details, helper methods, and fields.
+- Use `private protected` for members that subclasses need to call or override, but that are not part of the published API — including debug/test-hook members guarded by `#ifdef DBG` in C++ or documented as "for testing purposes only".
+- Use `internal` only when accessed by other Uno infrastructure types within the same assembly.
+- Use `protected` only when the IDL, Microsoft Learn, or Generated stubs confirm the member is part of the public overridable API surface.
+- **Never widen visibility** based on convenience, grouping preference, or to simplify testing.
 
 #### 2.12. XML Documentation
 
-All ported **public** members must include XML documentation comments (`<summary>`, `<param>`, `<returns>`) following standard C# conventions. Source these from the Microsoft Learn documentation fetched in Phase 0.
+All ported **public or protected** members must include XML documentation comments sourced from the Microsoft Learn API reference fetched in Phase 0. This includes:
+
+- `public` properties, methods, and events
+- `protected` and `protected internal` virtual/override methods and properties (since subclasses will see them)
+
+Use `<summary>`, `<param>`, `<returns>`, and `<value>` tags as appropriate, copying the exact wording from Microsoft Learn where available:
+
+```csharp
+/// <summary>
+/// Gets the orientation, if any, in which items are laid out based on their
+/// index in the source collection.
+/// </summary>
+/// <value>
+/// A value of the enumeration that indicates the orientation. The default is
+/// <see cref="IndexBasedLayoutOrientation.None"/>.
+/// </value>
+public IndexBasedLayoutOrientation IndexBasedLayoutOrientation => ...;
+
+/// <summary>
+/// Sets the value of the <see cref="IndexBasedLayoutOrientation"/> property.
+/// </summary>
+/// <param name="orientation">
+/// A value of the enumeration that indicates the orientation, if any, in which
+/// items are laid out based on their index in the source collection.
+/// </param>
+protected void SetIndexBasedLayoutOrientation(IndexBasedLayoutOrientation orientation) => ...;
+```
+
+If Microsoft Learn has no documentation for a member (e.g., it is new or internal-only), write a brief `<summary>` that describes what the method does based on the C++ source. Do not leave public/protected members undocumented.
 
 ### Phase 3: Handle Associated Types
 

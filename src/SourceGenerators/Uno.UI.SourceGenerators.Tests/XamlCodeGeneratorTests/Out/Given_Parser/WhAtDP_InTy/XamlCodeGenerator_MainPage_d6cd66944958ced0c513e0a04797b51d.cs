@@ -50,23 +50,27 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
-			{
-				IsParsing = true,
-				// Source 0\MainPage.xaml (Line 7:3)
-			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-			{
-			global::TestRepro.MyAttached.SetMyProperty(__p1, 
-				new global::TestRepro.TestDisposable
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
-					// Source 0\MainPage.xaml (Line 9:5)
+					IsParsing = true,
+					// Source 0\MainPage.xaml (Line 7:3)
 				}
-			);
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-			__p1.CreationComplete();
-			}
-			))
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+				{
+				global::TestRepro.MyAttached.SetMyProperty(__p1, 
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::TestRepro.TestDisposable
+						{
+							// Source 0\MainPage.xaml (Line 9:5)
+						}
+					)
+				);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this

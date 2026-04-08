@@ -293,6 +293,10 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_set_max_size(nint window, double width, double height);
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_window_set_system_backdrop(nint window, int material);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_window_clip_svg(nint window, string? svg);
@@ -399,6 +403,9 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial nint uno_webview_create(nint window, string ok, string cancel);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_register_message_handler(nint webview);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string uno_webview_get_title(nint webview);
