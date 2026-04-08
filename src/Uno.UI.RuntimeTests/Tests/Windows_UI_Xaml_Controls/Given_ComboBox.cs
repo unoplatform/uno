@@ -1601,6 +1601,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public TType GetAt(int index) => this[index];
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/7494")]
+		public async Task When_YieldedIEnumerable_ItemsSource_Then_SelectionWorks()
+		{
+			IEnumerable<string> GetItems()
+			{
+				yield return "Item 1";
+				yield return "Item 2";
+				yield return "Item 3";
+			}
+
+			var comboBox = new ComboBox { ItemsSource = GetItems() };
+
+			WindowHelper.WindowContent = comboBox;
+			await WindowHelper.WaitForLoaded(comboBox);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(3, comboBox.Items.Count, "ComboBox should have 3 items");
+
+			comboBox.SelectedIndex = 1;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, comboBox.SelectedIndex, "SelectedIndex should be 1");
+			Assert.AreEqual("Item 2", comboBox.SelectedItem, "SelectedItem should be 'Item 2'");
+
+			comboBox.SelectedIndex = 2;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, comboBox.SelectedIndex, "SelectedIndex should be 2");
+			Assert.AreEqual("Item 3", comboBox.SelectedItem, "SelectedItem should be 'Item 3'");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/7494")]
+		public async Task When_YieldedIEnumerable_ReferenceTypes_Then_SelectionWorks()
+		{
+			IEnumerable<ComboBoxYieldItem> GetItems()
+			{
+				yield return new ComboBoxYieldItem("Item 1");
+				yield return new ComboBoxYieldItem("Item 2");
+				yield return new ComboBoxYieldItem("Item 3");
+			}
+
+			var comboBox = new ComboBox
+			{
+				ItemsSource = GetItems(),
+				DisplayMemberPath = "Name"
+			};
+
+			WindowHelper.WindowContent = comboBox;
+			await WindowHelper.WaitForLoaded(comboBox);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(3, comboBox.Items.Count, "ComboBox should have 3 items");
+
+			comboBox.SelectedIndex = 1;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, comboBox.SelectedIndex, "SelectedIndex should be 1");
+			Assert.IsNotNull(comboBox.SelectedItem, "SelectedItem should not be null");
+
+			var selectedItem = comboBox.SelectedItem as ComboBoxYieldItem;
+			Assert.IsNotNull(selectedItem, "SelectedItem should be a ComboBoxYieldItem");
+			Assert.AreEqual("Item 2", selectedItem.Name, "Selected item Name should be 'Item 2'");
+		}
+
+		private class ComboBoxYieldItem
+		{
+			public string Name { get; }
+			public ComboBoxYieldItem(string name) => Name = name;
+			public override string ToString() => Name;
+		}
+
 	}
 
 
