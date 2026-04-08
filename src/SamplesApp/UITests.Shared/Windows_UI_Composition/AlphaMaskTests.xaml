@@ -1,0 +1,41 @@
+<UserControl x:Class="UITests.Shared.Windows_UI_Composition.AlphaMaskTests"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d"
+			 d:DesignHeight="600"
+			 d:DesignWidth="500">
+
+	<StackPanel Orientation="Vertical" Spacing="20" VerticalAlignment="Top" HorizontalAlignment="Left" Padding="20">
+		<!-- Header -->
+		<StackPanel Orientation="Horizontal" Spacing="40">
+			<TextBlock Text="Source" FontSize="20" FontWeight="SemiBold" Width="120" TextAlignment="Center"/>
+			<TextBlock Text="Alpha Mask Result" FontSize="20" FontWeight="SemiBold" Width="120" TextAlignment="Center"/>
+		</StackPanel>
+
+		<!-- Row 1: Shape (Ellipse) with solid color mask -->
+		<StackPanel Orientation="Horizontal" Spacing="40">
+			<Ellipse x:Name="ellipse" Width="120" Height="120" Fill="Blue"/>
+			<Canvas x:Name="ellipseResultCanvas" Width="120" Height="120" Background="Transparent"/>
+		</StackPanel>
+
+		<!-- Row 2: TextBlock with solid color mask -->
+		<StackPanel Orientation="Horizontal" Spacing="40">
+			<TextBlock x:Name="textBlock" Text="AlphaMask" FontSize="36" FontWeight="Bold" Foreground="Blue"/>
+			<Canvas x:Name="textResultCanvas" Width="240" Height="50" Background="Transparent"/>
+		</StackPanel>
+
+		<!-- Row 3: Image with solid color mask -->
+		<StackPanel Orientation="Horizontal" Spacing="40">
+			<Image x:Name="img" Width="100" Height="100" Stretch="UniformToFill" Source="ms-appx:///Assets/test_image_100_100.png"/>
+			<Canvas x:Name="imageResultCanvas" Width="100" Height="100" Background="Transparent"/>
+		</StackPanel>
+
+		<!-- Row 4: Shape (Ellipse) with gradient mask -->
+		<StackPanel Orientation="Horizontal" Spacing="40">
+			<Ellipse x:Name="ellipseGradient" Width="120" Height="120" Fill="Blue"/>
+			<Canvas x:Name="gradientResultCanvas" Width="120" Height="120" Background="Transparent"/>
+		</StackPanel>
+	</StackPanel>
+</UserControl>
