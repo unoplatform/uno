@@ -6,6 +6,7 @@ using Windows.Storage;
 using Windows.Media.Capture;
 using Uno.Extensions.Media.Capture;
 using Uno.Foundation.Extensibility;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -59,17 +60,7 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 
 		try
 		{
-			using (token.Register(() => NativeUno.uno_capture_cancel()))
-			{
-				if (_mode == CameraCaptureUIMode.Video)
-				{
-					nativePath = NativeUno.uno_capture_video();
-				}
-				else
-				{
-					nativePath = NativeUno.uno_capture_photo(_photoFormat == CameraCaptureUIPhotoFormat.Jpeg);
-				}
-			}
+			nativePath = await CaptureNativeAsync(token);
 
 			token.ThrowIfCancellationRequested();
 
@@ -107,5 +98,48 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 				}
 			}
 		}
+	}
+
+	private async Task<string?> CaptureNativeAsync(CancellationToken token)
+	{
+		string? Capture() => _mode == CameraCaptureUIMode.Video
+			? NativeUno.uno_capture_video()
+			: NativeUno.uno_capture_photo(_photoFormat == CameraCaptureUIPhotoFormat.Jpeg);
+
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			using (token.Register(() => NativeUno.uno_capture_cancel()))
+			{
+				return Capture();
+			}
+		}
+
+		var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+		using var cancelRegistration = token.CanBeCanceled
+			? token.Register(() =>
+			{
+				NativeUno.uno_capture_cancel();
+				tcs.TrySetCanceled(token);
+			})
+			: default;
+
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			if (token.IsCancellationRequested)
+			{
+				tcs.TrySetCanceled(token);
+				return;
+			}
+			try
+			{
+				tcs.TrySetResult(Capture());
+			}
+			catch (Exception ex)
+			{
+				tcs.TrySetException(ex);
+			}
+		});
+
+		return await tcs.Task;
 	}
 }
