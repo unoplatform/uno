@@ -75,6 +75,12 @@ To request the necessary permissions, ensure that the `NSCameraUsageDescription`
 > [!NOTE]
 > Video capture on macOS records to MP4 format. The video capture dialog provides Record/Stop and Cancel controls.
 
+> [!NOTE]
+> Only JPEG and PNG photo formats are supported on macOS. Other `CameraCaptureUIPhotoFormat` values will throw a `NotSupportedException`. Similarly, only MP4 is supported for video capture.
+
+> [!NOTE]
+> `PhotoSettings.AllowCropping` is not supported on macOS. The captured photo is returned as-is without a cropping UI.
+
 #### WinUI
 
 On WinUI, `CameraCaptureUI` provides a unified interface for capturing photos and videos, fully leveraging the platform's APIs. WinUI support is coming with v1.7+.
