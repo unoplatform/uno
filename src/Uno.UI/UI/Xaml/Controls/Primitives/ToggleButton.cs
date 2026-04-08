@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private void OnToggleButtonLoaded(object sender, RoutedEventArgs e)
 		{
 			var isChecked = IsChecked;
-			if (isChecked == false)
+			if (isChecked != true)
 			{
 				return;
 			}
