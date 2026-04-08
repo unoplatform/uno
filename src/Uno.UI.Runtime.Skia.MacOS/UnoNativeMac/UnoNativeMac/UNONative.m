@@ -399,12 +399,12 @@ char* _Nullable uno_capture_photo(bool useJpeg)
                       styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
                         backing:NSBackingStoreBuffered
                           defer:NO];
-        window.title = @"Camera Capture";
-        [window center];
-
         // Wire window delegate so the close button / Cmd+W aborts the modal
         UNOCameraWindowDelegate *windowDelegate = [[UNOCameraWindowDelegate alloc] init];
         window.delegate = windowDelegate;
+
+        window.title = @"Camera Capture";
+        [window center];
 
         NSView *contentView = window.contentView;
 
