@@ -34,7 +34,6 @@ using Uno.Foundation.Diagnostics.CodeAnalysis;
 [assembly: InternalsVisibleTo("Uno.UI.WebView.Skia.X11")]
 
 [assembly: InternalsVisibleTo("Uno.UI.HotDesign.Client")]
-[assembly: InternalsVisibleTo("StudioLive")]
 
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics2DSK")]

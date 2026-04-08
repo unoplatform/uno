@@ -614,13 +614,29 @@ namespace Uno.UI
 		/// </summary>
 		internal static void ClearNonDefaultAlcRegistrations()
 		{
+			RemoveNonDefaultAlcEntries(_registeredDictionariesByUri);
+			RemoveNonDefaultAlcEntries(_registeredDictionariesByFilepath);
+		}
+
+		private static void RemoveNonDefaultAlcEntries(Dictionary<string, Func<ResourceDictionary>> dictionary)
+		{
 			var keysToRemove = new List<string>();
-			foreach (var kvp in _registeredDictionariesByUri)
+			foreach (var kvp in dictionary)
 			{
-				var target = kvp.Value?.Target;
-				if (target is not null)
+				if (kvp.Value is not { } func)
 				{
-					var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(target.GetType().Assembly);
+					continue;
+				}
+
+				// Check both the target instance and the method's declaring type.
+				// Static delegates (Target == null) can still reference a non-default ALC
+				// via Method.DeclaringType.
+				var assembly = func.Target?.GetType().Assembly
+					?? func.Method.DeclaringType?.Assembly;
+
+				if (assembly is not null)
+				{
+					var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly);
 					if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
 					{
 						keysToRemove.Add(kvp.Key);
@@ -630,27 +646,7 @@ namespace Uno.UI
 
 			foreach (var key in keysToRemove)
 			{
-				_registeredDictionariesByUri.Remove(key);
-			}
-
-			// Also clear filepath registrations from ALCs
-			keysToRemove.Clear();
-			foreach (var kvp in _registeredDictionariesByFilepath)
-			{
-				var target = kvp.Value?.Target;
-				if (target is not null)
-				{
-					var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(target.GetType().Assembly);
-					if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
-					{
-						keysToRemove.Add(kvp.Key);
-					}
-				}
-			}
-
-			foreach (var key in keysToRemove)
-			{
-				_registeredDictionariesByFilepath.Remove(key);
+				dictionary.Remove(key);
 			}
 		}
 

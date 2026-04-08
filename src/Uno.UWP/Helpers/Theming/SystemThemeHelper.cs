@@ -48,9 +48,15 @@ internal static partial class SystemThemeHelper
 
 		foreach (var d in handler.GetInvocationList())
 		{
-			if (d.Target is not null)
+			// Check both the target instance and the method's declaring type.
+			// Static handlers (Target == null) can still reference a non-default ALC
+			// via Method.DeclaringType.
+			var handlerAssembly = d.Target?.GetType().Assembly
+				?? d.Method.DeclaringType?.Assembly;
+
+			if (handlerAssembly is not null)
 			{
-				var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(d.Target.GetType().Assembly);
+				var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(handlerAssembly);
 				if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
 				{
 					_systemThemeChanged -= (EventHandler)d;

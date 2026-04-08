@@ -106,7 +106,7 @@ namespace Uno.UI
 		}
 
 		/// <summary>
-		/// Checks if an object or any of its instance fields (depth 2) references a type
+		/// Checks if an object or any of its direct instance fields references a type
 		/// from a non-default ALC.
 		/// </summary>
 		[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup")]
