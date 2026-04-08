@@ -1285,6 +1285,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(Colors.Red, ((SolidColorBrush)((Grid)button.FindName("Root")).Background).Color);
 			}
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/10521")]
+		public async Task When_ContentControl_Content_Available_During_First_Measure()
+		{
+			// Issue #10521: LayoutTransformControl (ContentControl subclass) finds
+			// Content is null during its first MeasureOverride, even though content
+			// was set via XAML. This test uses a custom ContentControl that tracks
+			// whether Content was null during MeasureOverride.
+			var sut = new Windows_UI_Xaml.Controls.When_ContentControl_Content_Available_During_Measure_10521();
+			await UITestHelper.Load(sut);
+
+			var trackingControl = sut.TrackingControl;
+
+			Assert.IsTrue(trackingControl.MeasureCallCount > 0,
+				"MeasureOverride should have been called at least once after loading");
+
+			Assert.IsFalse(trackingControl.WasContentNullDuringMeasure,
+				"Content should not be null during MeasureOverride when set via XAML. " +
+				"This indicates the content property is not yet assigned when the first layout pass occurs.");
+		}
 	}
 
 	public partial class ControlLoggingEventsSequence : StackPanel
@@ -1400,6 +1422,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			OnArrange?.Invoke(this, finalSize);
 			return new Size(100, 100);
+		}
+	}
+
+	/// <summary>
+	/// A ContentControl that tracks whether Content is null during MeasureOverride.
+	/// Used to reproduce issue #10521.
+	/// </summary>
+	public partial class ContentTrackingControl : ContentControl
+	{
+		public bool WasContentNullDuringMeasure { get; private set; }
+		public int MeasureCallCount { get; private set; }
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			MeasureCallCount++;
+			if (Content == null)
+			{
+				WasContentNullDuringMeasure = true;
+			}
+			return base.MeasureOverride(availableSize);
 		}
 	}
 }
