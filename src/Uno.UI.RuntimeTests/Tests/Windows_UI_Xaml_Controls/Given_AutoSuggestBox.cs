@@ -1284,5 +1284,80 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			oldPopupRect.Y.Should().BeLessThan(newPopupRect.Y);
 		}
 #endif
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6342")]
+		public async Task When_SuggestionChosen_Then_Text_Updates_And_NewSuggestions_Work()
+		{
+			// Issue #6342: After selecting a suggestion, text is not set and
+			// no new suggestions are displayed when editing text again.
+			// The AutoSuggestBox gets stuck in SuggestionChosen mode.
+
+			var catBreeds = new List<string>
+			{
+				"Siamese", "Siberian", "Sphynx",
+				"Burmese", "Burmilla", "British Shorthair",
+				"Persian", "Abyssinian"
+			};
+
+			var SUT = new AutoSuggestBox();
+			SUT.TextChanged += (s, e) =>
+			{
+				if (e.Reason == UserInput)
+				{
+					s.ItemsSource = catBreeds
+						.Where(b => b.StartsWith(s.Text, StringComparison.OrdinalIgnoreCase))
+						.ToList();
+				}
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			SUT.Focus(FocusState.Programmatic);
+
+			// Step 1: Type "Siam" — should trigger UserInput and show suggestions
+			var userInputFired = false;
+			SUT.TextChanged += (s, e) =>
+			{
+				if (e.Reason == UserInput)
+				{
+					userInputFired = true;
+				}
+			};
+#if __SKIA__
+			await KeyboardHelper.InputText("Siam");
+#else
+			textBox.ProcessTextInput("Siam");
+#endif
+			await WindowHelper.WaitFor(() => userInputFired, message: "UserInput TextChanged should fire after typing");
+
+			// Step 2: Choose "Siamese" from suggestions
+			SUT.ChoseItem("Siamese");
+			await WindowHelper.WaitForIdle();
+
+			// Text should be updated to "Siamese"
+			Assert.AreEqual("Siamese", SUT.Text,
+				"After choosing a suggestion, the Text should be updated to the chosen item");
+
+			// Step 3: Clear and type "Burm" — should trigger UserInput again
+			userInputFired = false;
+			SUT.Text = "";
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+#if __SKIA__
+			await KeyboardHelper.InputText("Burm");
+#else
+			textBox.ProcessTextInput("Burm");
+#endif
+			await WindowHelper.WaitFor(() => userInputFired,
+				message: "UserInput TextChanged should fire after typing new text (should not be stuck in SuggestionChosen mode)");
+
+			// Verify suggestions updated (KeyboardHelper inputs lowercase)
+			Assert.AreEqual("burm", SUT.Text, "Text should reflect the new user input");
+		}
 	}
 }
