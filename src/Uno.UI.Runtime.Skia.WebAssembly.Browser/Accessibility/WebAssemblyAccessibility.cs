@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 
@@ -41,6 +42,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 
 	private bool _isAccessibilityEnabled;
+	private bool _isCreatingAOM;
+	private IntPtr _rootElementHandle;
 	public override bool IsAccessibilityEnabled => _isAccessibilityEnabled;
 
 	// Subsystem managers (initialized during accessibility activation)
@@ -250,9 +253,27 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		return offset;
 	}
 
+	/// <summary>
+	/// Walks up from <paramref name="from"/> to find the ancestor UIElement whose
+	/// Visual.Handle equals <paramref name="handle"/>.
+	/// </summary>
+	private static UIElement? FindUIElementByHandle(UIElement from, IntPtr handle)
+	{
+		var current = from.GetParent() as UIElement;
+		while (current is not null)
+		{
+			if (current.Visual.Handle == handle)
+			{
+				return current;
+			}
+			current = current.GetParent() as UIElement;
+		}
+		return null;
+	}
+
 	protected override void OnChildAdded(UIElement parent, UIElement child, int? index)
 	{
-		if (!_isAccessibilityEnabled)
+		if (!_isAccessibilityEnabled || _isCreatingAOM)
 		{
 			return;
 		}
@@ -325,7 +346,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	protected override void OnChildRemoved(UIElement parent, UIElement child)
 	{
-		if (!_isAccessibilityEnabled)
+		if (!_isAccessibilityEnabled || _isCreatingAOM)
 		{
 			return;
 		}
@@ -528,47 +549,59 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	protected override void OnSizeOrOffsetChanged(Visual visual)
 	{
-		// TODO: transformations (e.g, RenderTransform) are not yet handled :/
-		if (IsAccessibilityEnabled && visual is ShapeVisual shapeVisual)
+		if (IsAccessibilityEnabled && visual is ContainerVisual containerVisual)
 		{
-			// Check both Visual.IsVisible and AutomationPeer.IsOffscreen for accurate
-			// offscreen detection (matches WinUI's IsOffscreenCore which checks visibility,
-			// opacity, size, and clipping bounds).
+			// Only use Visual.IsVisible (maps to Visibility.Collapsed) for hidden detection.
+			// We intentionally do NOT call peer.IsOffscreen() here because
+			// UIElement.GetGlobalBoundsWithOptions is currently an unimplemented stub
+			// that always returns empty Rect, causing IsOffscreen() to return true
+			// for every element with a non-null automation peer. This prevents
+			// UpdateSemanticElementPositioning from ever being called after navigation,
+			// leaving all elements at (0,0,0,0) hidden.
 			var isHidden = !visual.IsVisible;
-			if (!isHidden && (visual as ContainerVisual)?.Owner?.Target is UIElement ownerElement)
-			{
-				var peer = ownerElement.GetOrCreateAutomationPeer();
-				if (peer is not null)
-				{
-					try
-					{
-						isHidden = peer.IsOffscreen();
-					}
-					catch
-					{
-						// Some peers may not support IsOffscreen yet
-					}
-				}
-			}
 
 			if (isHidden)
 			{
-				NativeMethods.HideSemanticElement(shapeVisual.Handle);
+				NativeMethods.HideSemanticElement(containerVisual.Handle);
 			}
 			else
 			{
-				var handle = shapeVisual.Handle;
+				var handle = containerVisual.Handle;
 				if (_semanticParentMap.TryGetValue(handle, out var semanticParentHandle)
-					&& (visual as ContainerVisual)?.Owner?.Target is UIElement element)
+					&& containerVisual.Owner?.Target is UIElement element)
 				{
-					var totalOffset = GetOffsetRelativeToSemanticParent(element, semanticParentHandle);
-					NativeMethods.UpdateSemanticElementPositioning(handle, shapeVisual.Size.X, shapeVisual.Size.Y, totalOffset.X, totalOffset.Y);
+					// Use the full element-to-semantic-parent transform so that
+					// RenderTransform, Scale, etc. are reflected in the position.
+					var semanticParentElement = FindUIElementByHandle(element, semanticParentHandle);
+					var localRect = new Windows.Foundation.Rect(0, 0, visual.Size.X, visual.Size.Y);
+					if (semanticParentElement is not null)
+					{
+						var transform = UIElement.GetTransform(from: element, to: semanticParentElement);
+						var transformedRect = transform.Transform(localRect);
+						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
+					}
+					else
+					{
+						var transform = UIElement.GetTransform(from: element, to: null);
+						var transformedRect = transform.Transform(localRect);
+						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
+					}
 				}
 				else
 				{
-					// Root element or element not in semantic map — use local offset
-					var totalOffset = visual.GetTotalOffset();
-					NativeMethods.UpdateSemanticElementPositioning(handle, shapeVisual.Size.X, shapeVisual.Size.Y, totalOffset.X, totalOffset.Y);
+					// Root element or element not in semantic map — use full transform to root
+					if (containerVisual.Owner?.Target is UIElement rootElement)
+					{
+						var transform = UIElement.GetTransform(from: rootElement, to: null);
+						var localRect = new Windows.Foundation.Rect(0, 0, visual.Size.X, visual.Size.Y);
+						var transformedRect = transform.Transform(localRect);
+						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
+					}
+					else
+					{
+						var totalOffset = visual.GetTotalOffset();
+						NativeMethods.UpdateSemanticElementPositioning(handle, visual.Size.X, visual.Size.Y, totalOffset.X, totalOffset.Y);
+					}
 				}
 			}
 		}
@@ -660,7 +693,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 
 		@this._isAccessibilityEnabled = true;
-		@this.CreateAOM(rootElement);
+		@this._isCreatingAOM = true;
+		try
+		{
+			@this.CreateAOM(rootElement);
+		}
+		finally
+		{
+			@this._isCreatingAOM = false;
+		}
 		Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
 
 		// Initialize subsystems
@@ -907,6 +948,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// We build an AOM (Accessibility Object Model):
 		// https://wicg.github.io/aom/explainer.html
 		var rootHandle = rootElement.Visual.Handle;
+		_rootElementHandle = rootHandle;
 
 		// Root element is placed directly under uno-semantics-root — use its local offset
 		var rootOffset = rootElement.Visual.GetTotalOffset();
@@ -944,6 +986,36 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		var accessibilityView = AutomationProperties.GetAccessibilityView(element);
 		if (accessibilityView == AccessibilityView.Raw)
 		{
+			return false;
+		}
+
+		// TextBlock and RichTextBlock are static text elements that contribute their
+		// text content to parent elements via AriaMapper.ResolveLabel(). Including
+		// them as separate semantic elements creates:
+		// - Nested focusable elements inside buttons/list items (WCAG 4.1.2 violation)
+		// - Invalid role="label" announcements (VoiceOver reads as "group")
+		// - DOM bloat (122+ extra elements in typical pages)
+		// Skip them unless they have explicit accessibility properties set
+		// (Name, LandmarkType, LiveSetting, HeadingLevel).
+		if (element is TextBlock or RichTextBlock or RichTextBlockOverflow)
+		{
+			// Keep TextBlocks with explicit accessibility properties
+			if (!string.IsNullOrEmpty(AutomationProperties.GetName(element)))
+			{
+				return true;
+			}
+			if (AutomationProperties.GetLandmarkType(element) != AutomationLandmarkType.None)
+			{
+				return true;
+			}
+			if (AutomationProperties.GetLiveSetting(element) != AutomationLiveSetting.Off)
+			{
+				return true;
+			}
+			if (AutomationProperties.GetHeadingLevel(element) != AutomationHeadingLevel.None)
+			{
+				return true;
+			}
 			return false;
 		}
 
@@ -1012,31 +1084,26 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		var handle = visualParent.Visual.Handle;
 
 		// If the visual parent is itself in the semantic tree, use it
-		if (_semanticParentMap.ContainsKey(handle) || IsSemanticElement(visualParent))
+		if (_semanticParentMap.ContainsKey(handle))
 		{
 			return handle;
 		}
 
-		// Walk up searching for a semantic ancestor
-		if (_semanticParentMap.TryGetValue(handle, out var mappedParent))
-		{
-			return mappedParent;
-		}
-
-		// Fallback: walk the visual tree up
+		// Fallback: walk the visual tree up to find the nearest semantic ancestor
+		// that actually exists in the DOM (i.e., in _semanticParentMap or the root element).
 		var parent = visualParent.GetParent() as UIElement;
 		while (parent is not null)
 		{
 			var parentHandle = parent.Visual.Handle;
-			if (_semanticParentMap.ContainsKey(parentHandle) || IsSemanticElement(parent))
+			if (_semanticParentMap.ContainsKey(parentHandle) || parentHandle == _rootElementHandle)
 			{
 				return parentHandle;
 			}
 			parent = parent.GetParent() as UIElement;
 		}
 
-		// Ultimate fallback: use the visual parent handle
-		return handle;
+		// Ultimate fallback: use the root element handle
+		return _rootElementHandle;
 	}
 
 	internal void BuildSemanticsTreeRecursive(IntPtr parentHandle, UIElement child, int depth = 0)
@@ -1056,7 +1123,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// Determine the effective parent for children of this element
 		var effectiveParent = parentHandle;
 
-		if (isSemantic)
+		if (isSemantic && !_semanticParentMap.ContainsKey(handle))
 		{
 			var added = AddSemanticElement(parentHandle, child, null);
 			if (added)
@@ -1086,7 +1153,31 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	private bool AddSemanticElement(IntPtr parentHandle, UIElement child, int? index)
 	{
-		var totalOffset = GetOffsetRelativeToSemanticParent(child, parentHandle);
+		// Use UIElement.GetTransform for position calculation — this accounts for
+		// RenderTransform, Scale, etc. and matches the update path in OnSizeOrOffsetChanged.
+		// Falling back to manual offset accumulation only when the semantic parent element
+		// is not found (e.g., root element).
+		float x, y, width, height;
+		var localRect = new Windows.Foundation.Rect(0, 0, child.Visual.Size.X, child.Visual.Size.Y);
+		var semanticParentElement = FindUIElementByHandle(child, parentHandle);
+		if (semanticParentElement is not null)
+		{
+			var transform = UIElement.GetTransform(from: child, to: semanticParentElement);
+			var transformedRect = transform.Transform(localRect);
+			x = (float)transformedRect.X;
+			y = (float)transformedRect.Y;
+			width = (float)transformedRect.Width;
+			height = (float)transformedRect.Height;
+		}
+		else
+		{
+			var totalOffset = GetOffsetRelativeToSemanticParent(child, parentHandle);
+			x = totalOffset.X;
+			y = totalOffset.Y;
+			width = child.Visual.Size.X;
+			height = child.Visual.Size.Y;
+		}
+
 		var automationPeer = child.GetOrCreateAutomationPeer();
 
 		// Try to create type-specific semantic elements (button, slider, checkbox, etc.)
@@ -1104,10 +1195,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				child.Visual.Handle,
 				parentHandle,
 				index,
-				totalOffset.X,
-				totalOffset.Y,
-				child.Visual.Size.X,
-				child.Visual.Size.Y,
+				x,
+				y,
+				width,
+				height,
 				child);
 
 			if (created)
@@ -1195,7 +1286,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			this.Log().Trace($"[A11y] AddSemanticElement: generic path — control={child.GetType().Name} handle={child.Visual.Handle} role='{role}' automationId='{automationId}'");
 		}
 
-		var result = NativeMethods.AddSemanticElement(parentHandle, child.Visual.Handle, index, child.Visual.Size.X, child.Visual.Size.Y, totalOffset.X, totalOffset.Y, role, automationId, IsAccessibilityFocusable(child, child.IsFocusable), ariaChecked, child.Visual.IsVisible, horizontallyScrollable, verticallyScrollable, child.GetType().Name);
+		var result = NativeMethods.AddSemanticElement(parentHandle, child.Visual.Handle, index, width, height, x, y, role, automationId, IsAccessibilityFocusable(child, child.IsFocusable), ariaChecked, child.Visual.IsVisible, horizontallyScrollable, verticallyScrollable, child.GetType().Name);
 
 		if (!result && this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -1276,6 +1367,26 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			NativeMethods.AnnouncePolite(text);
 		}
+	}
+
+	// WASM overrides to unpin virtualized items on focus change.
+	public override void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
+	{
+		if (eventId == AutomationEvents.AutomationFocusChanged)
+		{
+			// When focus moves away from a virtualized item, unpin the previously-pinned
+			// item so it can be recycled normally. Without this, items accumulate in the
+			// semantic DOM forever once focused (memory/DOM leak).
+			foreach (var region in _virtualizedRegions)
+			{
+				if (region.IsFocusPinned)
+				{
+					region.UnpinFocusedItem();
+				}
+			}
+		}
+
+		base.NotifyAutomationEvent(peer, eventId);
 	}
 
 	// WASM overrides the full property change routing because it has

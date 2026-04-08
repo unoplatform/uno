@@ -34,6 +34,7 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 	private static MacOSAccessibility? _instance;
 	private nint _windowHandle;
 	private bool _accessibilityTreeInitialized;
+	private bool _isCreatingAOM;
 	private nint _activeModalHandle;
 	private nint _modalTriggerHandle;
 
@@ -321,7 +322,15 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		CreateAOM(rootElement);
+		_isCreatingAOM = true;
+		try
+		{
+			CreateAOM(rootElement);
+		}
+		finally
+		{
+			_isCreatingAOM = false;
+		}
 		Control.OnIsFocusableChangedCallback = UpdateIsFocusable;
 	}
 
@@ -349,7 +358,7 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 
 	protected override void OnChildAdded(UIElement parent, UIElement child, int? index)
 	{
-		if (_accessibilityTreeInitialized)
+		if (_accessibilityTreeInitialized && !_isCreatingAOM)
 		{
 			// Only process elements that are part of the live visual tree.
 			// ExternalOnChildAdded fires for ANY AddChild call, including during
@@ -394,7 +403,7 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 
 	protected override void OnChildRemoved(UIElement parent, UIElement child)
 	{
-		if (_accessibilityTreeInitialized)
+		if (_accessibilityTreeInitialized && !_isCreatingAOM)
 		{
 			// If the child had AccessibilityView=Raw when added, it was skipped
 			// in the native tree but its children were reparented to the semantic
@@ -642,6 +651,17 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 			NativeUno.uno_accessibility_update_is_password(handle, true);
 		}
 
+		// Non-editable ComboBox does not expose ValuePattern in WinUI, but VoiceOver still
+		// expects the current selection to be surfaced as the native accessibility value.
+		if (owner is ComboBox comboBox && peer.GetPattern(PatternInterface.Value) is not IValueProvider)
+		{
+			var selectedValue = FrameworkElement.GetStringFromObject(comboBox.SelectionBoxItem);
+			if (!string.IsNullOrEmpty(selectedValue))
+			{
+				NativeUno.uno_accessibility_update_value(handle, selectedValue);
+			}
+		}
+
 		// Read-only state for text fields (VoiceOver uses this to determine editability)
 		if (peer.GetPattern(PatternInterface.Value) is IValueProvider vp)
 		{
@@ -726,6 +746,16 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 	protected override string? ResolveRole(AutomationPeer peer, UIElement owner)
 	{
 		var controlType = peer.GetAutomationControlType();
+
+		if (owner is ContentDialog || peer.IsDialog())
+		{
+			return "dialog";
+		}
+
+		if (owner is ComboBoxItem or ListBoxItem or ListViewItem or GridViewItem)
+		{
+			return "option";
+		}
 
 		// ToggleSwitch has AutomationControlType.Button but should be "switch" for VoiceOver
 		if (controlType == AutomationControlType.Button && owner is ToggleSwitch)
@@ -872,6 +902,16 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 				NativeUno.uno_accessibility_post_layout_changed();
 				break;
 
+			case AutomationEvents.TextPatternOnTextSelectionChanged when TryGetPeerOwner(peer, out var textElement):
+				if (textElement is TextBox textBox)
+				{
+					NativeUno.uno_accessibility_update_selection(
+						textElement.Visual.Handle,
+						textBox.SelectionStart,
+						textBox.SelectionLength);
+				}
+				break;
+
 			case AutomationEvents.LiveRegionChanged when TryGetPeerOwner(peer, out var liveElement):
 				if (_activeModalHandle != nint.Zero && !IsDescendantOf(liveElement, _activeModalHandle))
 				{
@@ -922,6 +962,10 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 				// Remember what had focus before the dialog opened
 				_modalTriggerHandle = TrackedFocusedElement?.Visual.Handle ?? nint.Zero;
 				_activeModalHandle = dialog.Visual.Handle;
+
+				// ContentDialog does not currently provide a dedicated dialog peer on Uno,
+				// so ensure the native accessibility node keeps explicit dialog semantics.
+				NativeUno.uno_accessibility_update_role(dialog.Visual.Handle, "dialog");
 
 				// Mark the dialog as modal so VoiceOver restricts navigation
 				NativeUno.uno_accessibility_update_modal(dialog.Visual.Handle, true);

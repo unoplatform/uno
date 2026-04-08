@@ -368,6 +368,13 @@ namespace Uno.UI.Runtime.Skia {
 			horizontallyScrollable: boolean,
 			verticallyScrollable: boolean,
 			temporary: string): boolean {
+
+			// Remove any pre-existing element with this handle to prevent duplicates
+			const existing = document.getElementById(`uno-semantics-${handle}`);
+			if (existing) {
+				existing.remove();
+			}
+
 			let parent: HTMLElement | null = Accessibility.getSemanticElementByHandle(parentHandle);
 			if (!parent) {
 				// Fall back to the semantics root instead of failing.
@@ -420,18 +427,16 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static removeSemanticElement(parentHandle: number, childHandle: number): void {
-			const parent = Accessibility.getSemanticElementByHandle(parentHandle);
-			if (parent) {
-				const child = Accessibility.getSemanticElementByHandle(childHandle);
-				if (!child) {
-					console.warn(`[A11y] removeSemanticElement: child handle=${childHandle} not found in DOM (parent=${parentHandle})`);
-					return;
-				}
-				console.debug(`[A11y] removeSemanticElement: parent=${parentHandle} child=${childHandle}`);
-				parent.removeChild(child);
-			} else {
-				console.warn(`[A11y] removeSemanticElement: parent handle=${parentHandle} not found in DOM (child=${childHandle})`);
+			const child = Accessibility.getSemanticElementByHandle(childHandle);
+			if (!child) {
+				console.warn(`[A11y] removeSemanticElement: child handle=${childHandle} not found in DOM (parent=${parentHandle})`);
+				return;
 			}
+			console.debug(`[A11y] removeSemanticElement: parent=${parentHandle} child=${childHandle}`);
+			// Use child.remove() instead of parent.removeChild(child) to handle
+			// cases where the child's actual DOM parent differs from the semantic parent
+			// (e.g., after re-parenting or when duplicate IDs existed previously).
+			child.remove();
 		}
 
 		public static updateIsFocusable(handle: number, isFocusable: boolean): void {

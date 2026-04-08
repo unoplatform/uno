@@ -365,7 +365,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		var hasRoleOverride = dependencyObject is UIElement roleElement &&
 			!string.IsNullOrEmpty(AutomationProperties.GetRoleOverride(roleElement));
 
-		if (!isFocusable && !hasRoleOverride && dependencyObject is not (TextBlock or RichTextBlock))
+		if (!isFocusable && !hasRoleOverride)
 		{
 			return false;
 		}
@@ -680,7 +680,9 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 		if (string.Equals(content, _lastAnnouncedPoliteContent, StringComparison.Ordinal))
 		{
-			return;
+			// Append a zero-width non-breaking space so the platform sees a
+			// different string and re-announces it.
+			content += "\uFEFF";
 		}
 
 		_politeThrottleTimestamp = now;
@@ -711,7 +713,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 		if (string.Equals(content, _lastAnnouncedAssertiveContent, StringComparison.Ordinal))
 		{
-			return;
+			content += "\uFEFF";
 		}
 
 		_assertiveThrottleTimestamp = now;

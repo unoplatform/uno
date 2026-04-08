@@ -155,6 +155,10 @@ static accessibility_set_value_fn_ptr g_setValueCallback = NULL;
 		return NSAccessibilitySwitchSubrole;
 	}
 
+	if ([_unoRole isEqualToString:@"dialog"]) {
+		return NSAccessibilityDialogSubrole;
+	}
+
 	// VoiceOver heading navigation (VO+Command+H)
 	if (_unoHeadingLevel > 0 && _unoHeadingLevel <= 9) {
 		return @"AXHeading";
@@ -565,6 +569,284 @@ static accessibility_set_value_fn_ptr g_setValueCallback = NULL;
 	return NSAccessibilityActionDescription(action);
 }
 
+#pragma mark - NSAccessibilityTable protocol
+
+- (NSArray *)accessibilityRows {
+	NSAccessibilityRole role = [self accessibilityRole];
+	if (role != NSAccessibilityTableRole && role != NSAccessibilityOutlineRole && role != NSAccessibilityListRole) {
+		return @[];
+	}
+
+	NSMutableArray *rows = [NSMutableArray array];
+	for (UNOAccessibilityElement *child in _unoChildren) {
+		NSAccessibilityRole childRole = [child accessibilityRole];
+		if (childRole == NSAccessibilityRowRole && child.unoVisible) {
+			[rows addObject:child];
+		}
+	}
+	return rows;
+}
+
+- (NSArray *)accessibilityVisibleRows {
+	return [self accessibilityRows];
+}
+
+- (NSArray *)accessibilitySelectedRows {
+	NSMutableArray *selected = [NSMutableArray array];
+	for (UNOAccessibilityElement *child in [self accessibilityRows]) {
+		if (child.unoIsSelected) {
+			[selected addObject:child];
+		}
+	}
+	return selected;
+}
+
+- (NSArray *)uno_visibleCellChildren {
+	NSMutableArray *cells = [NSMutableArray array];
+	for (UNOAccessibilityElement *child in _unoChildren) {
+		if (!child.unoVisible) {
+			continue;
+		}
+
+		if ([child accessibilityRole] != NSAccessibilityRowRole) {
+			[cells addObject:child];
+		}
+	}
+	return cells;
+}
+
+- (NSArray *)uno_columnCandidates {
+	NSMutableArray *columns = [NSMutableArray array];
+
+	for (UNOAccessibilityElement *child in _unoChildren) {
+		if (!child.unoVisible) {
+			continue;
+		}
+
+		if (child.unoRole &&
+			([child.unoRole isEqualToString:@"columnheader"] || [child.unoRole isEqualToString:@"header"])) {
+			[columns addObject:child];
+		}
+	}
+
+	if (columns.count > 0) {
+		return columns;
+	}
+
+	for (UNOAccessibilityElement *row in [self accessibilityRows]) {
+		NSArray *rowCells = [row uno_visibleCellChildren];
+		if (rowCells.count > 0) {
+			return rowCells;
+		}
+	}
+
+	return @[];
+}
+
+- (NSArray *)accessibilityColumns {
+	return [self uno_columnCandidates];
+}
+
+- (NSArray *)accessibilityVisibleColumns {
+	return [self accessibilityColumns];
+	}
+
+- (NSArray *)accessibilityVisibleCells {
+	NSMutableArray *cells = [NSMutableArray array];
+	for (UNOAccessibilityElement *row in [self accessibilityVisibleRows]) {
+		[cells addObjectsFromArray:[row uno_visibleCellChildren]];
+	}
+	return cells;
+	}
+
+- (NSArray *)accessibilitySelectedCells {
+	NSMutableArray *cells = [NSMutableArray array];
+	for (UNOAccessibilityElement *row in [self accessibilitySelectedRows]) {
+		[cells addObjectsFromArray:[row uno_visibleCellChildren]];
+	}
+	return cells;
+	}
+
+- (NSArray *)accessibilityColumnHeaderUIElements {
+	return [self accessibilityColumns];
+}
+
+- (id)accessibilityHeader {
+	NSArray *columns = [self accessibilityColumns];
+	if (columns.count > 0) {
+		return columns.firstObject;
+	}
+	return nil;
+}
+
+#pragma mark - NSAccessibilityNavigableStaticText protocol
+
+- (NSString *)uno_textContent {
+	NSAccessibilityRole role = [self accessibilityRole];
+	if (role == NSAccessibilityTextFieldRole || role == NSAccessibilityTextAreaRole) {
+		return _unoValue ?: @"";
+	}
+	if (role == NSAccessibilityStaticTextRole) {
+		return _unoLabel ?: @"";
+	}
+	return @"";
+}
+
+- (NSArray<NSValue *> *)uno_lineRanges {
+	NSString *text = [self uno_textContent];
+	if (text.length == 0) {
+		return @[[NSValue valueWithRange:NSMakeRange(0, 0)]];
+	}
+
+	NSMutableArray<NSValue *> *ranges = [NSMutableArray array];
+	NSUInteger start = 0;
+	while (start <= text.length) {
+		NSRange searchRange = NSMakeRange(start, text.length - start);
+		NSRange newlineRange = [text rangeOfString:@"\n" options:0 range:searchRange];
+		NSUInteger end = newlineRange.location == NSNotFound ? text.length : newlineRange.location;
+		[ranges addObject:[NSValue valueWithRange:NSMakeRange(start, end - start)]];
+
+		if (newlineRange.location == NSNotFound) {
+			break;
+		}
+
+		start = newlineRange.location + 1;
+		if (start == text.length) {
+			[ranges addObject:[NSValue valueWithRange:NSMakeRange(start, 0)]];
+			break;
+		}
+	}
+
+	return ranges;
+}
+
+- (NSInteger)uno_lineIndexForCharacterIndex:(NSInteger)index {
+	NSArray<NSValue *> *lineRanges = [self uno_lineRanges];
+	if (lineRanges.count == 0) {
+		return 0;
+	}
+
+	NSInteger clampedIndex = MAX(0, index);
+	for (NSInteger i = 0; i < (NSInteger)lineRanges.count; i++) {
+		NSRange lineRange = [[lineRanges objectAtIndex:i] rangeValue];
+		if (clampedIndex < (NSInteger)NSMaxRange(lineRange) || (lineRange.length == 0 && clampedIndex == (NSInteger)lineRange.location)) {
+			return i;
+		}
+	}
+
+	return (NSInteger)lineRanges.count - 1;
+}
+
+- (NSRect)uno_frameForLineIndex:(NSInteger)lineIndex totalLines:(NSInteger)lineCount {
+	NSRect frame = [self accessibilityFrame];
+	if (lineCount <= 1 || NSIsEmptyRect(frame)) {
+		return frame;
+	}
+
+	CGFloat lineHeight = frame.size.height / MAX((CGFloat)lineCount, 1.0);
+	CGFloat originY = NSMaxY(frame) - ((lineIndex + 1) * lineHeight);
+	return NSMakeRect(frame.origin.x, originY, frame.size.width, lineHeight);
+}
+
+- (NSInteger)accessibilityNumberOfCharacters {
+	return (NSInteger)[[self uno_textContent] length];
+}
+
+- (NSString *)accessibilitySelectedText {
+	NSString *text = [self uno_textContent];
+	NSInteger start = _unoSelectionStart;
+	NSInteger length = _unoSelectionLength;
+	if (length <= 0 || start < 0 || (NSUInteger)(start + length) > text.length) {
+		return @"";
+	}
+	return [text substringWithRange:NSMakeRange((NSUInteger)start, (NSUInteger)length)];
+}
+
+- (NSRange)accessibilitySelectedTextRange {
+	NSInteger start = _unoSelectionStart;
+	NSInteger length = _unoSelectionLength;
+	if (start < 0) {
+		start = 0;
+	}
+	if (length < 0) {
+		length = 0;
+	}
+	return NSMakeRange((NSUInteger)start, (NSUInteger)length);
+}
+
+- (NSInteger)accessibilityInsertionPointLineNumber {
+	return [self uno_lineIndexForCharacterIndex:_unoSelectionStart];
+}
+
+- (NSString *)accessibilityStringForRange:(NSRange)range {
+	NSString *text = [self uno_textContent];
+	if (range.location + range.length <= text.length) {
+		return [text substringWithRange:range];
+	}
+	return @"";
+}
+
+- (NSRange)accessibilityRangeForLine:(NSInteger)line {
+	NSArray<NSValue *> *lineRanges = [self uno_lineRanges];
+	if (line < 0 || line >= (NSInteger)lineRanges.count) {
+		return NSMakeRange(NSNotFound, 0);
+	}
+	return [[lineRanges objectAtIndex:line] rangeValue];
+}
+
+- (NSRange)accessibilityRangeForPosition:(NSPoint)point {
+	NSString *text = [self uno_textContent];
+	if (text.length == 0) {
+		return NSMakeRange(0, 0);
+	}
+
+	NSArray<NSValue *> *lineRanges = [self uno_lineRanges];
+	if (lineRanges.count == 0) {
+		return NSMakeRange(0, text.length);
+	}
+
+	NSRect frame = [self accessibilityFrame];
+	if (NSIsEmptyRect(frame) || !NSPointInRect(point, frame)) {
+		return NSMakeRange(0, text.length);
+	}
+
+	CGFloat lineHeight = frame.size.height / MAX((CGFloat)lineRanges.count, 1.0);
+	CGFloat offsetFromTop = NSMaxY(frame) - point.y;
+	NSInteger lineIndex = (NSInteger)(offsetFromTop / MAX(lineHeight, 1.0));
+	lineIndex = MAX(0, MIN(lineIndex, (NSInteger)lineRanges.count - 1));
+	return [[lineRanges objectAtIndex:lineIndex] rangeValue];
+}
+
+- (NSRect)accessibilityFrameForRange:(NSRange)range {
+	NSString *text = [self uno_textContent];
+	if (text.length == 0) {
+		return [self accessibilityFrame];
+	}
+
+	NSRange clampedRange = NSIntersectionRange(range, NSMakeRange(0, text.length));
+	NSArray<NSValue *> *lineRanges = [self uno_lineRanges];
+	if (lineRanges.count == 0) {
+		return [self accessibilityFrame];
+	}
+
+	NSInteger startLine = [self uno_lineIndexForCharacterIndex:(NSInteger)clampedRange.location];
+	NSInteger endIndex = clampedRange.length > 0
+		? (NSInteger)NSMaxRange(clampedRange) - 1
+		: (NSInteger)clampedRange.location;
+	NSInteger endLine = [self uno_lineIndexForCharacterIndex:endIndex];
+
+	NSRect frame = [self uno_frameForLineIndex:startLine totalLines:(NSInteger)lineRanges.count];
+	for (NSInteger line = startLine + 1; line <= endLine; line++) {
+		frame = NSUnionRect(frame, [self uno_frameForLineIndex:line totalLines:(NSInteger)lineRanges.count]);
+	}
+
+	return frame;
+}
+
+- (NSInteger)accessibilityLineForIndex:(NSInteger)index {
+	return [self uno_lineIndexForCharacterIndex:index];
+}
+
 #pragma mark - NSAccessibility protocol - Hit Testing
 
 - (id)accessibilityHitTest:(NSPoint)point {
@@ -900,14 +1182,22 @@ void uno_accessibility_update_read_only(intptr_t handle, bool readOnly) {
 	}
 }
 
+void uno_accessibility_update_selection(intptr_t handle, int32_t selectionStart, int32_t selectionLength) {
+	UNOAccessibilityElement *element = findElement(handle);
+	if (element) {
+		element.unoSelectionStart = selectionStart;
+		element.unoSelectionLength = selectionLength;
+		NSAccessibilityPostNotification(element, NSAccessibilitySelectedTextChangedNotification);
+	}
+}
+
 void uno_accessibility_update_modal(intptr_t handle, bool isModal) {
 	UNOAccessibilityElement *element = findElement(handle);
 	if (element) {
 		element.unoIsModal = isModal;
 		if (isModal) {
-			// When a modal opens, VoiceOver needs the dialog role + modal flag
-			// and a layout notification so it restricts navigation to the dialog
-			element.unoRole = @"dialog";
+			// When a modal opens, VoiceOver needs the modal flag and a focus/layout refresh
+			// so it restricts navigation to the dialog subtree.
 			NSAccessibilityPostNotification(g_window, NSAccessibilityFocusedUIElementChangedNotification);
 		}
 		NSAccessibilityPostNotification(g_window, NSAccessibilityLayoutChangedNotification);
