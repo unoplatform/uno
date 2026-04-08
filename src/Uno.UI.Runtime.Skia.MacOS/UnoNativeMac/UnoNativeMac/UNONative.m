@@ -354,6 +354,19 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
 
 @end
 
+// Tracks the currently active capture modal window so that
+// uno_capture_cancel() can safely abort it from any thread.
+static NSWindow * _Nullable s_activeCaptureWindow = nil;
+
+void uno_capture_cancel(void)
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (s_activeCaptureWindow != nil) {
+            [NSApp abortModal];
+        }
+    });
+}
+
 char* _Nullable uno_capture_photo(bool useJpeg)
 {
     @autoreleasepool {
@@ -442,7 +455,9 @@ char* _Nullable uno_capture_photo(bool useJpeg)
 
         // Start camera and run modal
         [session startRunning];
+        s_activeCaptureWindow = window;
         NSModalResponse response = [NSApp runModalForWindow:window];
+        s_activeCaptureWindow = nil;
         [window orderOut:nil];
         [session stopRunning];
 
@@ -599,7 +614,9 @@ char* _Nullable uno_capture_video(void)
 
         // Start camera and run modal
         [session startRunning];
+        s_activeCaptureWindow = window;
         NSModalResponse response = [NSApp runModalForWindow:window];
+        s_activeCaptureWindow = nil;
         [window orderOut:nil];
         [session stopRunning];
 

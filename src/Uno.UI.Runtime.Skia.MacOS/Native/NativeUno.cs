@@ -637,4 +637,7 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string? /* const char* _Nullable */ uno_capture_video();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_capture_cancel();
 }
