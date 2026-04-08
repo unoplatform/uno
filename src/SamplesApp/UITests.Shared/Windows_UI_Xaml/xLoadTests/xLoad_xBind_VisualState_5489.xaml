@@ -1,0 +1,48 @@
+<UserControl
+    x:Class="UITests.Windows_UI_Xaml.xLoadTests.xLoad_xBind_VisualState_5489"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="400"
+    d:DesignWidth="400">
+
+	<!-- Issue #5489: x:Load issue resolving DependencyProperties on non-UWP platforms
+	     When an element is loaded via VisualStateManager (x:Load), DependencyProperties
+	     bound using x:Bind are not resolved on non-UWP platforms.
+
+	     Expected: After clicking "Load Element", the TextBlock should display "Hello from x:Bind"
+	     Bug: On non-UWP platforms, the TextBlock text remains empty -->
+
+	<Grid x:Name="RootGrid">
+		<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup x:Name="LoadStates">
+				<VisualState x:Name="Unloaded" />
+				<VisualState x:Name="Loaded">
+					<VisualState.Setters>
+						<Setter Target="LoadablePanel.(UIElement.Visibility)" Value="Visible" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>
+
+		<StackPanel Spacing="10" Padding="20">
+			<TextBlock Text="Issue #5489: x:Load + x:Bind + VisualStateManager" FontWeight="Bold" />
+			<TextBlock Text="Click 'Load Element' and verify the TextBlock below shows 'Hello from x:Bind'" TextWrapping="Wrap" />
+
+			<Button Content="Load Element" Click="OnLoadClick" />
+			<Button Content="Unload Element" Click="OnUnloadClick" />
+
+			<Border BorderBrush="Red" BorderThickness="2" Padding="10" MinHeight="50">
+				<StackPanel x:Name="LoadablePanel" x:Load="False">
+					<TextBlock Text="Loaded!" Foreground="Green" FontWeight="Bold" />
+					<TextBlock x:Name="BoundTextBlock" Text="{x:Bind BoundText, Mode=OneWay}" FontSize="16" />
+					<TextBlock x:Name="BoundNumberText" Text="{x:Bind BoundNumber.ToString(), Mode=OneWay}" FontSize="16" />
+				</StackPanel>
+			</Border>
+
+			<TextBlock x:Name="StatusText" Text="Status: Not loaded" Foreground="Gray" />
+		</StackPanel>
+	</Grid>
+</UserControl>
