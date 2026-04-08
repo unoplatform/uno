@@ -330,5 +330,43 @@ public class Given_CalendarView
 		await TestServices.WindowHelper.WaitForLoaded(calendarView);
 		await UITestHelper.WaitFor(() => calendarView.TemplateSettings.HeaderText == "January 2024", message: "HeaderText was not set to expected English value");
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6228")]
+	public async Task When_Width_Set_Then_DayItems_ShouldFillWidth()
+	{
+		// Issue #6228: CalendarView day items aren't correctly resized when
+		// the CalendarView has a custom Width. Day items should scale to fill
+		// the available width, but instead they remain at a fixed small size.
+
+		var calendarView = new CalendarView
+		{
+			Width = 600,
+			Language = "en-US"
+		};
+		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 6, 15)));
+
+		TestServices.WindowHelper.WindowContent = calendarView;
+		await TestServices.WindowHelper.WaitForLoaded(calendarView);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Find the day item buttons in the visual tree
+		var dayItems = calendarView
+			.GetAllChildren()
+			.OfType<CalendarViewDayItem>()
+			.ToList();
+
+		Assert.IsTrue(dayItems.Count > 0, "CalendarView should have rendered day items");
+
+		// Each day item in a 7-column grid within a 600px wide CalendarView
+		// should be significantly wider than the default (~40px).
+		// With 600px and 7 columns, each day item should be ~85px wide.
+		var firstDayItem = dayItems[0];
+		var dayItemWidth = firstDayItem.ActualWidth;
+
+		Assert.IsTrue(dayItemWidth > 60,
+			$"Day items should resize to fill the CalendarView width (600px / 7 cols ≈ 85px), " +
+			$"but actual width is {dayItemWidth}px, suggesting items are not properly resized.");
+	}
 }
 #endif
