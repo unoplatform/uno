@@ -5480,5 +5480,82 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public class SubclassOfObservableCollection : ObservableCollection<string>
 		{
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11738")]
+		public async Task When_GridView_ItemTemplate_Binding_Should_Work()
+		{
+			// Issue #11738: Binding not working inside GridView.
+			// Elements inside GridView's ItemTemplate don't display bound data.
+
+			var items = new List<GridViewBindingTestItem>
+			{
+				new() { Title = "Item 1", Description = "Desc 1" },
+				new() { Title = "Item 2", Description = "Desc 2" },
+				new() { Title = "Item 3", Description = "Desc 3" },
+			};
+
+			var gridView = new GridView
+			{
+				Width = 500,
+				Height = 300,
+				ItemsSource = items,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var sp = new StackPanel();
+					var titleTb = new TextBlock();
+					titleTb.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath("Title") });
+					var descTb = new TextBlock();
+					descTb.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath("Description") });
+					sp.Children.Add(titleTb);
+					sp.Children.Add(descTb);
+					return sp;
+				}),
+			};
+
+			WindowHelper.WindowContent = gridView;
+			await WindowHelper.WaitForLoaded(gridView);
+			await WindowHelper.WaitForIdle();
+
+			// Wait for containers to be generated
+			GridViewItem container = null;
+			await WindowHelper.WaitFor(() =>
+				(container = gridView.ContainerFromIndex(0) as GridViewItem) != null);
+
+			// Find the StackPanel inside the first container
+			var sp = container.FindFirstDescendant<StackPanel>();
+			Assert.IsNotNull(sp, "StackPanel should exist in item template");
+
+			// Get TextBlocks from StackPanel children
+			var titleTb = sp.Children[0] as TextBlock;
+			var descTb = sp.Children[1] as TextBlock;
+			Assert.IsNotNull(titleTb, "Title TextBlock should exist");
+			Assert.IsNotNull(descTb, "Description TextBlock should exist");
+
+			// The bindings should have resolved — text should match the item data
+			Assert.AreEqual("Item 1", titleTb.Text,
+				"Title binding should resolve inside GridView ItemTemplate");
+			Assert.AreEqual("Desc 1", descTb.Text,
+				"Description binding should resolve inside GridView ItemTemplate");
+
+			// Check second item too
+			var container2 = gridView.ContainerFromIndex(1) as GridViewItem;
+			if (container2 != null)
+			{
+				var sp2 = container2.FindFirstDescendant<StackPanel>();
+				Assert.IsNotNull(sp2);
+				var titleTb2 = sp2.Children[0] as TextBlock;
+				Assert.IsNotNull(titleTb2);
+				Assert.AreEqual("Item 2", titleTb2.Text,
+					"Title binding should resolve for second item");
+			}
+		}
+
+		private class GridViewBindingTestItem
+		{
+			public string Title { get; set; }
+			public string Description { get; set; }
+		}
 	}
 }
