@@ -21,6 +21,39 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public ToggleButton()
 		{
 			DefaultStyleKey = typeof(ToggleButton);
+			Loaded += OnToggleButtonLoaded;
+		}
+
+		/// <summary>
+		/// Uno workaround: When IsChecked is set via binding before the control template
+		/// is applied (e.g. inside an ItemsRepeater for initial viewport items),
+		/// VisualStateManager.GoToState silently fails because GetTemplateRoot() is null.
+		/// Later, when OnApplyTemplate/ButtonBase.OnLoaded call UpdateVisualState, the
+		/// VisualStateGroup may already track the correct target state without having
+		/// applied its setters. On Loaded (element is fully in the visual tree with
+		/// template applied), force a DP change cycle to guarantee ChangeVisualState
+		/// runs with a live template.
+		/// </summary>
+		private void OnToggleButtonLoaded(object sender, RoutedEventArgs e)
+		{
+			var isChecked = IsChecked;
+			if (isChecked == false)
+			{
+				return;
+			}
+
+			_suppressCheckedChanged = true;
+			try
+			{
+				IsChecked = false;
+				IsChecked = isChecked;
+			}
+			finally
+			{
+				_suppressCheckedChanged = false;
+			}
+
+			UpdateVisualState(useTransitions: false);
 		}
 
 		/// <summary>
