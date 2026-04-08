@@ -63,8 +63,13 @@ partial class Application
 			return;
 		}
 
+#if __SKIA__ || __WASM__
 		// Close all windows belonging to secondary ALCs.
+		// ALC app loading only happens on Skia and WASM; on native platforms
+		// (iOS, Android, macCatalyst) Window maps to the native window type
+		// which doesn't have the ALC partial.
 		Window.CloseAlcWindows();
+#endif
 
 		// Remove this app from the ALC registry and purge type-keyed caches.
 		RemoveAlcApplication(alc);
