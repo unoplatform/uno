@@ -920,6 +920,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/10537")]
+		public async Task When_ContentTemplateSelector_Is_Used()
+		{
+			// Issue #10537: ContentDialog.ContentTemplateSelector is not used
+			// on non-Windows platforms. The Content fallback is displayed instead
+			// of the template selected by the selector.
+			bool selectorWasCalled = false;
+			var selectedTemplate = new DataTemplate(() =>
+			{
+				return new TextBlock { Text = "SelectedBySelector", Name = "SelectorText" };
+			});
+
+			var selector = new LambdaDataTemplateSelector(item =>
+			{
+				selectorWasCalled = true;
+				return selectedTemplate;
+			});
+
+			var dialog = new ContentDialog
+			{
+				Title = "Test",
+				Content = "TestContent",
+				ContentTemplateSelector = selector,
+				PrimaryButtonText = "OK",
+			};
+
+			SetXamlRootForIslandsOrWinUI(dialog);
+
+			try
+			{
+				_ = dialog.ShowAsync();
+				await WindowHelper.WaitForIdle();
+
+				// The ContentTemplateSelector should have been called
+				Assert.IsTrue(selectorWasCalled,
+					"ContentTemplateSelector should have been called when ContentDialog is shown");
+
+				// Find the TextBlock created by the selected template
+				var selectorText = dialog.FindFirstDescendant<TextBlock>(tb => tb.Name == "SelectorText");
+				Assert.IsNotNull(selectorText,
+					"The template from ContentTemplateSelector should be used, " +
+					"but it appears the selector was not applied");
+
+				Assert.AreEqual("SelectedBySelector", selectorText.Text,
+					"The content should be rendered using the template from ContentTemplateSelector");
+			}
+			finally
+			{
+				dialog.Hide();
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		private class LambdaDataTemplateSelector : DataTemplateSelector
+		{
+			private readonly Func<object, DataTemplate> _selector;
+			public LambdaDataTemplateSelector(Func<object, DataTemplate> selector) => _selector = selector;
+			protected override DataTemplate SelectTemplateCore(object item) => _selector(item);
+			protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => _selector(item);
+		}
+
 		private void SetXamlRootForIslandsOrWinUI(ContentDialog dialog)
 		{
 #if !HAS_UNO_WINUI
