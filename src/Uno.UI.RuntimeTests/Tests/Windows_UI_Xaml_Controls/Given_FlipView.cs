@@ -806,4 +806,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		public IEnumerable<int> Items { get; set; } = Enumerable.Range(1, 6);
 	}
+
+#if __SKIA__
+	[TestClass]
+	[RunsOnUIThread]
+	public class Given_FlipView_Keyboard
+	{
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/9002")]
+		public async Task When_ArrowKeyPressed_Then_SelectedIndexChanges()
+		{
+			// Issue #9002: FlipView does not change selected item with keyboard arrows on Skia/WASM.
+
+			var flipView = new FlipView
+			{
+				Width = 300,
+				Height = 200,
+				ItemsSource = new[] { "Page 1", "Page 2", "Page 3", "Page 4" }
+			};
+
+			WindowHelper.WindowContent = flipView;
+			await WindowHelper.WaitForLoaded(flipView);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, flipView.SelectedIndex, "Initial SelectedIndex should be 0");
+
+			// Focus the FlipView
+			flipView.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Press Right arrow to go to next item
+			await KeyboardHelper.PressKeySequence("$d$_Right#$u$_Right");
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(500); // Allow animation to complete
+
+			Assert.AreEqual(1, flipView.SelectedIndex,
+				"After pressing Right arrow, SelectedIndex should change to 1");
+
+			// Press Right arrow again
+			await KeyboardHelper.PressKeySequence("$d$_Right#$u$_Right");
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(500);
+
+			Assert.AreEqual(2, flipView.SelectedIndex,
+				"After pressing Right arrow again, SelectedIndex should change to 2");
+
+			// Press Left arrow to go back
+			await KeyboardHelper.PressKeySequence("$d$_Left#$u$_Left");
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(500);
+
+			Assert.AreEqual(1, flipView.SelectedIndex,
+				"After pressing Left arrow, SelectedIndex should change back to 1");
+		}
+	}
+#endif
 }
