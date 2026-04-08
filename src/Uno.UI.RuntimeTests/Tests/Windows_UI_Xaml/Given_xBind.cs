@@ -44,6 +44,38 @@ public class Given_xBind
 		Assert.AreEqual("Hello", SUT.tb.Text);
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11606")]
+	public async Task When_xBind_OneWay_AttachedProperty_Updates()
+	{
+		// Issue #11606: x:Bind OneWay to attached property behaves like OneTime
+		// and is evaluated only once, not updating when the attached property changes.
+		var SUT = new When_xBind_AttachedProperty_OneWay();
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Verify initial value is bound
+		Assert.AreEqual("InitialValue", SUT.BoundTextBlock.Text,
+			"Initial attached property value should be bound");
+
+		// Change the attached property value
+		TestAttachedProperties.SetMyTag(SUT.TargetBorder, "UpdatedValue");
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// The binding should update — this is the core of the bug.
+		// With the bug, the text remains "InitialValue" (acting like OneTime).
+		Assert.AreEqual("UpdatedValue", SUT.BoundTextBlock.Text,
+			"x:Bind OneWay should update when attached property changes");
+
+		// Change again to verify it keeps updating
+		TestAttachedProperties.SetMyTag(SUT.TargetBorder, "ThirdValue");
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("ThirdValue", SUT.BoundTextBlock.Text,
+			"x:Bind OneWay should continue updating on subsequent changes");
+	}
+
 #if __ANDROID__
 	[TestMethod]
 	public async Task When_XBind_TargetDisposed_Test()
