@@ -227,5 +227,58 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var bitmap = await UITestHelper.ScreenShot(nvi);
 			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(new Point(), bitmap.Size), Color.FromArgb(0xFF, 0x1B, 0, 0));
 		}
+		[TestMethod]
+		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11660")]
+		public async Task When_AutoSuggestBox_Collapsed_Space_Should_Collapse()
+		{
+			// Issue #11660: When AutoSuggestBox in NavigationView is set to Collapsed,
+			// the space it occupies does not collapse.
+
+			var autoSuggestBox = new AutoSuggestBox();
+
+			var navView = new MUXC.NavigationView()
+			{
+				MenuItems =
+				{
+					new MUXC.NavigationViewItem { Content = "Item 1" },
+					new MUXC.NavigationViewItem { Content = "Item 2" },
+				},
+				AutoSuggestBox = autoSuggestBox,
+				PaneDisplayMode = MUXC.NavigationViewPaneDisplayMode.Left,
+				IsPaneOpen = true,
+				IsBackButtonVisible = MUXC.NavigationViewBackButtonVisible.Collapsed,
+				Width = 800,
+				Height = 600,
+			};
+
+			WindowHelper.WindowContent = navView;
+			await WindowHelper.WaitForLoaded(navView);
+			await WindowHelper.WaitForIdle();
+
+			// Find the AutoSuggestBox container in the visual tree
+			var asbInTree = navView.FindFirstDescendant<AutoSuggestBox>();
+			Assert.IsNotNull(asbInTree, "AutoSuggestBox should be in the visual tree");
+
+			// Measure height with AutoSuggestBox visible
+			var heightWithASB = asbInTree.ActualHeight;
+			Assert.IsTrue(heightWithASB > 0, "AutoSuggestBox should have non-zero height when visible");
+
+			// Collapse the AutoSuggestBox
+			autoSuggestBox.Visibility = Visibility.Collapsed;
+			await WindowHelper.WaitForIdle();
+
+			// The AutoSuggestBox should take no space when collapsed
+			Assert.AreEqual(0.0, asbInTree.ActualHeight,
+				"AutoSuggestBox should have zero height when Visibility=Collapsed");
+
+			// Also check that the parent container of AutoSuggestBox collapses
+			var parent = VisualTreeHelper.GetParent(asbInTree) as FrameworkElement;
+			if (parent != null)
+			{
+				Assert.AreEqual(0.0, parent.ActualHeight,
+					"AutoSuggestBox container should have zero height when AutoSuggestBox is Collapsed");
+			}
+		}
 	}
 }
