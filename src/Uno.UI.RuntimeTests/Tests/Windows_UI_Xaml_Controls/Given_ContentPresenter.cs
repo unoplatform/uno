@@ -502,6 +502,48 @@ public partial class Given_ContentPresenter
 		SUT.ActualHeight.Should().BeLessThanOrEqualTo(200); // WPf returns 200, everywhere else returns 0
 	}
 #endif
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/9056")]
+	public async Task When_Content_Set_Again_Then_ShouldNotReload()
+	{
+		// Issue #9056: ContentPresenter's Content is reloaded when set even when
+		// it's the same content. On UWP/WinUI, setting the same content again
+		// does not trigger a reload (Loaded event doesn't fire again).
+
+		var content = new Border
+		{
+			Width = 50,
+			Height = 50,
+			Background = new SolidColorBrush(Windows.UI.Colors.Blue)
+		};
+
+		var presenter = new ContentPresenter();
+
+		var panel = new StackPanel();
+		panel.Children.Add(presenter);
+
+		await UITestHelper.Load(panel);
+
+		// Set content first time
+		var loadedCount = 0;
+		content.Loaded += (s, e) => loadedCount++;
+
+		presenter.Content = content;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Loaded should fire once
+		Assert.AreEqual(1, loadedCount, "Content should be loaded once on first assignment");
+
+		// Set the same content again
+		presenter.Content = content;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// In WinUI, setting the same content again should NOT trigger another Loaded
+		Assert.AreEqual(1, loadedCount,
+			"Setting the same Content again should not trigger another Loaded event. " +
+			"If Loaded fires again, it means the content was unnecessarily unloaded and reloaded.");
+	}
 }
 public partial class Given_ContentPresenter
 {
