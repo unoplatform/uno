@@ -202,19 +202,26 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		}
 		RenderFrameRate = renderFrameRate;
 
-		_eventLoop = new EventLoop();
-		_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; });
-
-		// The dispatch override is process-global — only set it once from the host app.
-		// Secondary ALC apps must not overwrite it; they share the host's UI thread.
 		if (CoreDispatcher.DispatchOverride is null)
 		{
+			// First host initialization — create the event loop and set up dispatch.
+			_eventLoop = new EventLoop();
+			_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; });
+
 			_eventLoop.Schedule(() =>
 			{
 				_isDispatcherThread = true;
 			});
 			CoreDispatcher.DispatchOverride = (a, p) => _eventLoop.Schedule(a);
 			CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+		}
+		else
+		{
+			// A dispatcher is already running (secondary ALC app reusing the host's UI thread).
+			// Schedule work on the existing dispatcher instead of creating a new event loop.
+			CoreDispatcher.DispatchOverride(
+				() => _isDispatcherThread = true,
+				Uno.UI.Dispatching.NativeDispatcherPriority.Normal);
 		}
 	}
 
