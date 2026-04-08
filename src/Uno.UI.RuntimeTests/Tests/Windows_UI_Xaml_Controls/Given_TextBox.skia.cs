@@ -222,6 +222,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_End_And_Shift_End_At_Position_Zero()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await KeyboardHelper.InputText("hello world", SUT);
+
+			// Move cursor to position 0
+			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart, "Cursor should be at position 0 after Home");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Press End at position 0 - should move to end of line
+			await KeyboardHelper.PressKeySequence("$d$_end#$u$_end", SUT);
+			Assert.AreEqual(11, SUT.SelectionStart, "End key at position 0 should move cursor to end of text");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Move back to position 0
+			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Press Shift+End at position 0 - should select all text
+			await KeyboardHelper.PressKeySequence("$d$_shift#$d$_end#$u$_end#$u$_shift", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart, "Shift+End at position 0 should keep SelectionStart at 0");
+			Assert.AreEqual(11, SUT.SelectionLength, "Shift+End at position 0 should select all text");
+		}
+
+		[TestMethod]
 		public async Task When_Home_Empty_TextBox()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -5031,6 +5069,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			try
 			{
+				if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+				{
+					Assert.Inconclusive("Clipboard is not available on this platform.");
+				}
 				var SUT = new PasswordBox { Password = "secret pass", Width = 200 };
 				CopyPlaceholderTextToClipboard();
 				WindowHelper.WindowContent = SUT;
@@ -5061,6 +5103,111 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_OuterScrollViewer_BringIntoView_Scrolls_To_Caret()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// Build enough text so the TextBox is taller than the ScrollViewer viewport.
+			var sb = new System.Text.StringBuilder();
+			for (int i = 0; i < 40; i++)
+			{
+				sb.AppendLine($"Line {i}");
+			}
+
+			var textBox = new TextBox
+			{
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				Text = sb.ToString(),
+				// Disable internal scrolling so the outer ScrollViewer handles it.
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			// Disable internal ScrollViewer scrolling via attached properties.
+			ScrollViewer.SetVerticalScrollMode(textBox, ScrollMode.Disabled);
+			ScrollViewer.SetVerticalScrollBarVisibility(textBox, ScrollBarVisibility.Disabled);
+
+			var outerScrollViewer = new ScrollViewer
+			{
+				Height = 300,
+				Content = textBox,
+			};
+
+			await UITestHelper.Load(outerScrollViewer);
+
+			// Place cursor at the end (bottom of the TextBox).
+			textBox.Focus(FocusState.Programmatic);
+			textBox.SelectionStart = textBox.Text.Length;
+			await WindowHelper.WaitForIdle();
+
+			// The outer ScrollViewer should have scrolled down to bring the caret into view.
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset > 0,
+				timeoutMS: 2000,
+				message: "Outer ScrollViewer should scroll to bring the caret at the end into view.");
+
+			var offsetAfterFocus = outerScrollViewer.VerticalOffset;
+
+			// Now type an Enter to add a new line — the caret moves further down.
+			textBox.SafeRaiseEvent(UIElement.KeyDownEvent,
+				new KeyRoutedEventArgs(textBox, VirtualKey.Enter, VirtualKeyModifiers.None, unicodeKey: '\r'));
+			await WindowHelper.WaitForIdle();
+
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset > offsetAfterFocus,
+				timeoutMS: 2000,
+				message: "Outer ScrollViewer should scroll further after adding a new line.");
+		}
+
+		[TestMethod]
+		public async Task When_OuterScrollViewer_Caret_Middle_Does_Not_Scroll_To_Bottom()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// Build enough text so the TextBox is taller than the ScrollViewer viewport.
+			var sb = new System.Text.StringBuilder();
+			for (int i = 0; i < 60; i++)
+			{
+				sb.AppendLine($"Line {i}");
+			}
+
+			var textBox = new TextBox
+			{
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				Text = sb.ToString(),
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			ScrollViewer.SetVerticalScrollMode(textBox, ScrollMode.Disabled);
+			ScrollViewer.SetVerticalScrollBarVisibility(textBox, ScrollBarVisibility.Disabled);
+
+			var outerScrollViewer = new ScrollViewer
+			{
+				Height = 300,
+				Content = textBox,
+			};
+
+			await UITestHelper.Load(outerScrollViewer);
+
+			// Place cursor at roughly the middle of the text.
+			textBox.Focus(FocusState.Programmatic);
+			textBox.SelectionStart = textBox.Text.Length / 2;
+			await WindowHelper.WaitForIdle();
+
+			// Wait for the ScrollViewer to scroll to the caret.
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset > 0,
+				timeoutMS: 2000,
+				message: "Outer ScrollViewer should scroll to bring the caret into view.");
+
+			// The scroll offset for cursor at the middle should be less than
+			// the maximum scrollable height (it should NOT scroll to the bottom).
+			Assert.IsTrue(outerScrollViewer.VerticalOffset < outerScrollViewer.ScrollableHeight,
+				"Outer ScrollViewer should scroll to the caret at the middle, not to the bottom.");
+		}
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{

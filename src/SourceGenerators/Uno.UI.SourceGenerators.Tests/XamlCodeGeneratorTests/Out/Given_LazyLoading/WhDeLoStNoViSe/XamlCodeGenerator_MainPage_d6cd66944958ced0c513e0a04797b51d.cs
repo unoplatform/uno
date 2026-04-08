@@ -50,69 +50,77 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.StackPanel
-			{
-				IsParsing = true,
-				// Source 0\MainPage.xaml (Line 9:3)
-				Children = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.StackPanel
 				{
-					new global::Microsoft.UI.Xaml.Controls.TextBlock
+					IsParsing = true,
+					// Source 0\MainPage.xaml (Line 9:3)
+					Children = 
 					{
-						IsParsing = true,
-						Text = "Immediate content",
-						// Source 0\MainPage.xaml (Line 10:4)
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.TextBlock
+							{
+								IsParsing = true,
+								Text = "Immediate content",
+								// Source 0\MainPage.xaml (Line 10:4)
+							}
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							{
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							__p1.CreationComplete();
+							}
+							))
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new Microsoft.UI.Xaml.ElementStub( () => 
+							new global::Microsoft.UI.Xaml.Controls.Border
+							{
+								IsParsing = true,
+								Name = "LazyLoadedBorder",
+								// Source 0\MainPage.xaml (Line 11:4)
+								Child = 
+								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.Controls.TextBlock
+									{
+										IsParsing = true,
+										Text = "Lazy Content",
+										// Source 0\MainPage.xaml (Line 12:5)
+									}
+									.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+									{
+									global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+									__p1.CreationComplete();
+									}
+									))
+								)
+							}
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+							{
+							__nameScope.RegisterName("LazyLoadedBorder", __p1);
+							__that.LazyLoadedBorder = __p1;
+							// DeferLoadStrategy Lazy
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							__p1.CreationComplete();
+							}
+							))
+							)							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+							{
+							__p1.Name = "LazyLoadedBorder";
+							_LazyLoadedBorderSubject.ElementInstance = __p1;
+							}
+							))
+						)
+						,
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-					{
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
-					,
-					new Microsoft.UI.Xaml.ElementStub( () => 
-					new global::Microsoft.UI.Xaml.Controls.Border
-					{
-						IsParsing = true,
-						Name = "LazyLoadedBorder",
-						// Source 0\MainPage.xaml (Line 11:4)
-						Child = 
-						new global::Microsoft.UI.Xaml.Controls.TextBlock
-						{
-							IsParsing = true,
-							Text = "Lazy Content",
-							// Source 0\MainPage.xaml (Line 12:5)
-						}
-						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-						{
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-						__p1.CreationComplete();
-						}
-						))
-					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-					{
-					__nameScope.RegisterName("LazyLoadedBorder", __p1);
-					__that.LazyLoadedBorder = __p1;
-					// DeferLoadStrategy Lazy
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
-					)					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
-					{
-					__p1.Name = "LazyLoadedBorder";
-					_LazyLoadedBorderSubject.ElementInstance = __p1;
-					}
-					))
-					,
 				}
-			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
-			{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-			__p1.CreationComplete();
-			}
-			))
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+				{
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this

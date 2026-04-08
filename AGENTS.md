@@ -255,8 +255,9 @@ Run these after making changes:
 
 1. **Build**: `dotnet build Uno.UI-UnitTests-only.slnf --no-restore`
 2. **Unit tests**: `dotnet test Uno.UI/Uno.UI.Tests.csproj --no-build`
-3. **Runtime tests** (UI changes): See [runtime tests agent](.github/agents/runtime-tests-agent.md)
-4. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Wasm && dotnet run`
+3. **Runtime tests** (UI changes): Use `/runtime-tests` skill (Skia Desktop default, pass test class/method name as argument)
+4. **WinUI parity** (validate against native WinUI): Use `/winui-runtime-tests` skill
+5. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Wasm && dotnet run`
 
 ### SamplesApp: Register XAML files (CRITICAL)
 
@@ -291,12 +292,7 @@ Add tests to `Uno.UI.RuntimeTests`. Key helpers:
 - `await WindowHelper.WaitForLoaded(element)` - Wait for load
 - `await WindowHelper.WaitForIdle()` - Wait for UI to settle
 
-**Run tests headlessly:**
-```bash
-dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0
-cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
-```
+**To build and run tests, use the `/runtime-tests` skill.** It handles build, filter encoding, execution, and result parsing for both Skia Desktop and WASM.
 
 See `.github/agents/runtime-tests-agent.md` for detailed patterns.
 

@@ -128,7 +128,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		// only start listening to events after we're done setting everything up
 		InitializeX11EventsThread();
-		_renderTimer = CreateRenderTimer();
+		_renderThread = InitRenderThread();
 
 		var windowBackgroundDisposable = _window.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
 		UpdateRendererBackground();
@@ -142,7 +142,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
 				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 				windowBackgroundDisposable.Dispose();
-				_renderTimer.Dispose();
+				_renderRequested.Dispose();
 				_renderer?.Dispose();
 			}
 		});
@@ -169,6 +169,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
 			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
+
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.Id.Name))
+		{
+			SetWMClass(Windows.ApplicationModel.Package.Current.Id.Name);
 		}
 	}
 
@@ -261,6 +266,30 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 	}
 
+	private void SetWMClass(string name)
+	{
+		var resName = Marshal.StringToHGlobalAnsi(name);
+		var resClass = Marshal.StringToHGlobalAnsi(name);
+		try
+		{
+			var classHint = new XClassHint
+			{
+				res_name = resName,
+				res_class = resClass,
+			};
+
+			var display = RootX11Window.Display;
+			using var lockDisposable = X11Helper.XLock(display);
+			_ = XLib.XSetClassHint(display, RootX11Window.Window, ref classHint);
+			_ = XLib.XFlush(display);
+		}
+		finally
+		{
+			Marshal.FreeHGlobal(resName);
+			Marshal.FreeHGlobal(resClass);
+		}
+	}
+
 	public static X11XamlRootHost? GetXamlRootHostFromX11Window(X11Window window)
 	{
 		lock (_x11WindowToXamlRootHostMutex)
@@ -291,20 +320,23 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	{
 		lock (_x11WindowToXamlRootHostMutex)
 		{
-			if (_x11WindowToXamlRootHost.Remove(x11window, out var host))
-			{
-				using (X11Helper.XLock(x11window.Display))
-				{
-					host._closed.SetResult();
-				}
-			}
-			else
+			if (!_x11WindowToXamlRootHost.Remove(x11window, out var host))
 			{
 				if (typeof(X11XamlRootHost).Log().IsEnabled(LogLevel.Error))
 				{
 					typeof(X11XamlRootHost).Log().Error($"{nameof(Close)} could not find X11Window {x11window}");
 				}
+				return;
 			}
+
+			// The rendering thread needs to be stopped before we destroy the window,
+			// otherwise we might end up in a situation where the render thread is
+			// trying to render on a destroyed window.
+			host._renderLoopRunning = false;
+			host._renderRequested.Set(); // wake up the render loop so it can see that it needs to exit
+			host._renderThread.Join();
+
+			host._closed.SetResult();
 		}
 	}
 

@@ -50,17 +50,19 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\ThirdPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
-			{
-				IsParsing = true,
-				// Source 0\ThirdPage.xaml (Line 6:3)
-			}
-			.ThirdPage_517995d35b0b0df00d3ee33235026515_XamlApply((ThirdPage_517995d35b0b0df00d3ee33235026515XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-			{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_ThirdPage_517995d35b0b0df00d3ee33235026515);
-			__p1.CreationComplete();
-			}
-			))
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.Grid
+				{
+					IsParsing = true,
+					// Source 0\ThirdPage.xaml (Line 6:3)
+				}
+				.ThirdPage_517995d35b0b0df00d3ee33235026515_XamlApply((ThirdPage_517995d35b0b0df00d3ee33235026515XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+				{
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_ThirdPage_517995d35b0b0df00d3ee33235026515);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this

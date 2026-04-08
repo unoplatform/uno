@@ -507,11 +507,12 @@ namespace Microsoft.UI.Xaml
 						// entering the tree (via OnLoadingPartial) to inherit stale themes from
 						// their parent.
 #if UNO_HAS_ENHANCED_LIFECYCLE
-						if (updateReason == ResourceUpdateReason.ThemeResource)
+						if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
 						{
 							var theme = InternalRequestedTheme == ApplicationTheme.Dark ? Theme.Dark : Theme.Light;
+							var forceRefresh = (updateReason & ResourceUpdateReason.HotReload) != 0;
 							var rootFe = root as FrameworkElement ?? contentRoot.XamlRoot.Content as FrameworkElement;
-							rootFe?.NotifyThemeChanged(theme);
+							rootFe?.NotifyThemeChanged(theme, forceRefresh);
 						}
 #endif
 
@@ -550,7 +551,7 @@ namespace Microsoft.UI.Xaml
 				// If element has explicit RequestedTheme and this is a theme change,
 				// skip it - its subtree is managed by its own theme context and
 				// will be updated via NotifyThemeChanged, not by propagation.
-				if (updateReason == ResourceUpdateReason.ThemeResource &&
+				if ((updateReason & ResourceUpdateReason.ThemeResource) != 0 &&
 					fe.RequestedTheme != ElementTheme.Default)
 				{
 					return;

@@ -4,26 +4,26 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Logging;
+using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Runtime.Versioning;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Uno.Extensions;
+using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Host.Extensibility;
-using Uno.UI.RemoteControl.Host.IdeChannel;
-using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Host.Helpers;
+using Uno.UI.RemoteControl.Host.IdeChannel;
+using Uno.UI.RemoteControl.Host.Mcp;
+using Uno.UI.RemoteControl.Server.AppLaunch;
+using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
-using Uno.UI.RemoteControl.Helpers;
-using Uno.UI.RemoteControl.Server.AppLaunch;
-using Uno.UI.RemoteControl.Host.Mcp;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -122,7 +122,11 @@ namespace Uno.UI.RemoteControl.Host
 					{
 						opts.ChannelId = configuration.GetOptionalString("ideChannel");
 					});
-				globalServices.AddSingleton<IIdeChannel, IdeChannelServer>();
+				globalServices.AddSingleton<IdeChannelServer>();
+				globalServices.AddSingleton<IIdeChannel>(sp => sp.GetRequiredService<IdeChannelServer>());
+				globalServices.AddSingleton<IIdeChannelManager>(sp => sp.GetRequiredService<IdeChannelServer>());
+				globalServices.AddSingleton(sp =>
+					new AmbientRegistry(sp.GetRequiredService<ILoggerFactory>().CreateLogger<AmbientRegistry>()));
 
 #pragma warning disable ASP0000 // Do not call ConfigureServices after calling UseKestrel.
 				var globalServiceProvider = globalServices.BuildServiceProvider();
@@ -168,7 +172,11 @@ namespace Uno.UI.RemoteControl.Host
 
 				builder.Services.AddSingleton<IIdeChannel>(_ =>
 					globalServiceProvider.GetRequiredService<IIdeChannel>());
+				builder.Services.AddSingleton<IIdeChannelManager>(_ =>
+					globalServiceProvider.GetRequiredService<IIdeChannelManager>());
 				builder.Services.AddSingleton<UnoDevEnvironmentService>();
+				builder.Services.AddSingleton(_ =>
+					globalServiceProvider.GetRequiredService<AmbientRegistry>());
 
 				builder.Services.AddSingleton<ApplicationLaunchMonitor>(_ =>
 					globalServiceProvider.GetRequiredService<ApplicationLaunchMonitor>());
@@ -220,9 +228,8 @@ namespace Uno.UI.RemoteControl.Host
 					.StartAsync(ct.Token); // Background services are not supported by WebHostBuilder
 
 				// Display DevServer version banner
-				var ideChannelOptions = host.Services.GetRequiredService<IOptionsMonitor<IdeChannelServerOptions>>();
-				var ideChannelId = ideChannelOptions.CurrentValue.ChannelId;
-				DisplayVersionBanner(httpPort, ideChannelId);
+				var ideChannelManager = host.Services.GetRequiredService<IIdeChannelManager>();
+				DisplayVersionBanner(httpPort, ideChannelManager.ChannelId, ideChannelManager.IsConnected);
 
 				// STEP 3: Use global telemetry for server-wide events
 				// Track devserver startup using global telemetry service
@@ -235,8 +242,8 @@ namespace Uno.UI.RemoteControl.Host
 
 				_ = ParentProcessObserver.ObserveAsync(parentPID, ct.Cancel, telemetry, ct.Token);
 
-				ambientRegistry = new AmbientRegistry(host.Services.GetRequiredService<ILogger<AmbientRegistry>>());
-				ambientRegistry.Register(solution, parentPID, httpPort, ideChannelId);
+				ambientRegistry = host.Services.GetRequiredService<AmbientRegistry>();
+				ambientRegistry.Register(solution, parentPID, httpPort, ideChannelManager.ChannelId);
 
 				await host.StartAsync(ct.Token);
 				try
@@ -291,7 +298,7 @@ namespace Uno.UI.RemoteControl.Host
 		/// <summary>
 		/// Displays a banner with the DevServer version information when it starts up.
 		/// </summary>
-		private static void DisplayVersionBanner(int httpPort, string? ideChannelId)
+		private static void DisplayVersionBanner(int httpPort, string? ideChannelId, bool ideChannelConnected)
 		{
 			try
 			{
@@ -319,7 +326,7 @@ namespace Uno.UI.RemoteControl.Host
 					("Assembly", assemblyName),
 					("Location", Path.GetDirectoryName(location) ?? location, Helpers.BannerHelper.ClipMode.Start),
 					("HTTP Port", httpPort.ToString(DateTimeFormatInfo.InvariantInfo)),
-					("IDE Channel", string.IsNullOrWhiteSpace(ideChannelId) ? "Disabled" : $@"\\.\pipe\{ideChannelId}"),
+					("IDE Channel", FormatIdeChannelStatus(ideChannelId, ideChannelConnected)),
 				};
 
 				Helpers.BannerHelper.Write("Uno Platform DevServer", entries);
@@ -329,6 +336,19 @@ namespace Uno.UI.RemoteControl.Host
 				// Log the error for debugging purposes
 				Console.WriteLine($"Warning: Could not extract version information: {ex.Message}");
 			}
+		}
+
+		internal static string FormatIdeChannelStatus(string? ideChannelId, bool ideChannelConnected)
+		{
+			if (string.IsNullOrWhiteSpace(ideChannelId))
+			{
+				return "Not configured";
+			}
+
+			var pipePath = $@"\\.\pipe\{ideChannelId}";
+			return ideChannelConnected
+				? $"Connected: {pipePath}"
+				: $"Configured: {pipePath}";
 		}
 	}
 }

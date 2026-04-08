@@ -50,39 +50,45 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			base.IsParsing = true;
 			// Source 0\Binding_ElementName_In_Template.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
-			{
-				IsParsing = true,
-				// Source 0\Binding_ElementName_In_Template.xaml (Line 10:3)
-				Children = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
-					new global::Microsoft.UI.Xaml.Controls.ContentControl
+					IsParsing = true,
+					// Source 0\Binding_ElementName_In_Template.xaml (Line 10:3)
+					Children = 
 					{
-						IsParsing = true,
-						Name = "topLevel",
-						Tag = @"42",
-						ContentTemplate = 						new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem)
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.ContentControl
+							{
+								IsParsing = true,
+								Name = "topLevel",
+								Tag = @"42",
+								ContentTemplate = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem)
+								)
+								,
+								// Source 0\Binding_ElementName_In_Template.xaml (Line 11:4)
+							}
+							.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							{
+							__nameScope.RegisterName("topLevel", __p1);
+							__that.topLevel = __p1;
+							// FieldModifier public
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
+							__p1.CreationComplete();
+							}
+							))
+						)
 						,
-						// Source 0\Binding_ElementName_In_Template.xaml (Line 11:4)
 					}
-					.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-					{
-					__nameScope.RegisterName("topLevel", __p1);
-					__that.topLevel = __p1;
-					// FieldModifier public
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
-					__p1.CreationComplete();
-					}
-					))
-					,
 				}
-			}
-			.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-			{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
-			__p1.CreationComplete();
-			}
-			))
+				.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+				{
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this
@@ -139,30 +145,32 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
 					this.__rootInstance = 
-					new global::Microsoft.UI.Xaml.Controls.TextBlock
-					{
-						IsParsing = true,
-						Name = "innerTextBlock",
-						// Source 0\Binding_ElementName_In_Template.xaml (Line 14:7)
-					}
-					.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
-					{
-					/* _isTopLevelDictionary:False */
-					__that._component_0 = __p1;
-					__nameScope.RegisterName("innerTextBlock", __p1);
-					__that.innerTextBlock = __p1;
-					__p1.SetBinding(
-						global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-						new Microsoft.UI.Xaml.Data.Binding()
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.Controls.TextBlock
 						{
-							Path = @"Tag",
-							ElementName = _topLevelSubject,
+							IsParsing = true,
+							Name = "innerTextBlock",
+							// Source 0\Binding_ElementName_In_Template.xaml (Line 14:7)
 						}
-					);
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
-					__p1.CreationComplete();
-					}
-					))
+						.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+						{
+						/* _isTopLevelDictionary:False */
+						__that._component_0 = __p1;
+						__nameScope.RegisterName("innerTextBlock", __p1);
+						__that.innerTextBlock = __p1;
+						__p1.SetBinding(
+							global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+							new Microsoft.UI.Xaml.Data.Binding()
+							{
+								Path = @"Tag",
+								ElementName = _topLevelSubject,
+							}
+						);
+						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
+						__p1.CreationComplete();
+						}
+						))
+					)
 					;
 					if (__rootInstance is FrameworkElement __fe)
 					{

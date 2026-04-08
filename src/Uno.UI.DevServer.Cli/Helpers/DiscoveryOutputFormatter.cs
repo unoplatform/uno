@@ -77,6 +77,7 @@ internal static class DiscoveryOutputFormatter
 				AddRow(table, "parentProcessId", server.ParentProcessId.ToString(CultureInfo.InvariantCulture));
 				AddRow(table, "startTime", server.StartTime.ToString("yyyy-MM-dd HH:mm:ss UTC", CultureInfo.InvariantCulture));
 				AddRow(table, "ideChannelId", server.IdeChannelId);
+				AddRow(table, "processChain", FormatProcessChain(server.ProcessChain));
 				if (server != info.ActiveServers[^1])
 				{
 					table.AddEmptyRow();
@@ -142,6 +143,9 @@ internal static class DiscoveryOutputFormatter
 
 	private static string Escape(string value)
 		=> Markup.Escape(value);
+
+	private static string? FormatProcessChain(IReadOnlyList<ProcessChainEntry> processChain)
+		=> processChain.Count == 0 ? null : ProcessChainEntry.FormatChain(processChain);
 
 	private static string? GetMissingHint(string key)
 	{

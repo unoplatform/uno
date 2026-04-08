@@ -49,6 +49,8 @@ void uno_set_webview_new_window_requested_callback(uno_webview_new_window_reques
 
 const char* uno_webview_get_title(WKWebView *webview);
 
+void uno_webview_register_message_handler(WKWebView *webview);
+
 bool uno_webview_can_go_back(WKWebView *webview);
 bool uno_webview_can_go_forward(WKWebView *webview);
 
