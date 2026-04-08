@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Data;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Helpers;
+using Microsoft.UI.Xaml.Navigation;
 
 #if HAS_UNO && !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;
@@ -635,5 +636,134 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			}
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11626")]
+		public async Task When_NavigatedBack_ItemsRepeater_Still_Lays_Out_Items()
+		{
+			// Issue #11626: ItemsRepeater stops laying out items when navigated
+			// back to a cached page, especially items that were outside the viewport.
+
+			var items = Enumerable.Range(0, 50).Select(i => $"Item {i}").ToList();
+
+			var frame = new Frame
+			{
+				Width = 300,
+				Height = 400,
+			};
+
+			TestServices.WindowHelper.WindowContent = frame;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Navigate to the page with ItemsRepeater
+			frame.Navigate(typeof(ItemsRepeaterNavigationTestPage), items);
+			await TestServices.WindowHelper.WaitForIdle();
+			await Task.Delay(200);
+
+			var page1 = frame.Content as ItemsRepeaterNavigationTestPage;
+			Assert.IsNotNull(page1, "Should have navigated to ItemsRepeaterNavigationTestPage");
+
+			// Verify items are laid out initially
+			var repeater = page1.TestRepeater;
+			Assert.IsNotNull(repeater);
+
+			var firstElement = repeater.TryGetElement(0) as FrameworkElement;
+			Assert.IsNotNull(firstElement, "First element should be realized initially");
+			Assert.IsTrue(firstElement.ActualHeight > 0, "First element should have non-zero height");
+
+			// Navigate away to another page
+			frame.Navigate(typeof(Page));
+			await TestServices.WindowHelper.WaitForIdle();
+			await Task.Delay(200);
+
+			// Navigate back
+			frame.GoBack();
+			await TestServices.WindowHelper.WaitForIdle();
+			await Task.Delay(200);
+
+			// The page should be the same cached instance
+			var returnedPage = frame.Content as ItemsRepeaterNavigationTestPage;
+			Assert.IsNotNull(returnedPage, "Should have navigated back to cached page");
+
+			var returnedRepeater = returnedPage.TestRepeater;
+
+			// Verify items are still laid out after navigation back
+			var firstElementAfterNav = returnedRepeater.TryGetElement(0) as FrameworkElement;
+			Assert.IsNotNull(firstElementAfterNav,
+				"First element should be realized after navigating back");
+			Assert.IsTrue(firstElementAfterNav.ActualHeight > 0,
+				"First element should have non-zero height after navigating back");
+
+			// Scroll down and verify items beyond the initial viewport are laid out
+			var scrollViewer = returnedPage.TestScrollViewer;
+			if (scrollViewer != null)
+			{
+				scrollViewer.ChangeView(null, 500, null, disableAnimation: true);
+				await Task.Delay(200);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				// Check that items further down the list are realized and laid out
+				bool anyRealized = false;
+				for (int i = 10; i < 30; i++)
+				{
+					var element = returnedRepeater.TryGetElement(i) as FrameworkElement;
+					if (element != null && element.ActualHeight > 0)
+					{
+						anyRealized = true;
+						break;
+					}
+				}
+
+				Assert.IsTrue(anyRealized,
+					"Items beyond initial viewport should be laid out after scrolling on a cached page");
+			}
+		}
+	}
+
+	/// <summary>
+	/// Test page for ItemsRepeater navigation caching test (issue #11626).
+	/// </summary>
+	public partial class ItemsRepeaterNavigationTestPage : Page
+	{
+		public ItemsRepeater TestRepeater { get; }
+		public ScrollViewer TestScrollViewer { get; }
+
+		public ItemsRepeaterNavigationTestPage()
+		{
+			NavigationCacheMode = NavigationCacheMode.Required;
+
+			TestRepeater = new ItemsRepeater
+			{
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding());
+					var border = new Border
+					{
+						Child = tb,
+						Height = 40,
+						BorderThickness = new Thickness(1),
+					};
+					return border;
+				}),
+			};
+
+			TestScrollViewer = new ScrollViewer
+			{
+				Content = TestRepeater,
+			};
+
+			Content = TestScrollViewer;
+		}
+
+		protected internal override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			base.OnNavigatedTo(e);
+			if (e.Parameter is System.Collections.Generic.List<string> items)
+			{
+				TestRepeater.ItemsSource = items;
+			}
+		}
 	}
 }
