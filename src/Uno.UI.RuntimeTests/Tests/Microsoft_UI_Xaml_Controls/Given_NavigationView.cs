@@ -7,6 +7,7 @@ using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using MUXC = Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using Microsoft.UI.Xaml.Markup;
@@ -226,6 +227,61 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var nvi = uc.FindFirstDescendant<NavigationViewItem>();
 			var bitmap = await UITestHelper.ScreenShot(nvi);
 			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(new Point(), bitmap.Size), Color.FromArgb(0xFF, 0x1B, 0, 0));
+		}
+		[TestMethod]
+		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11716")]
+		public async Task When_DataContext_Set_On_NavigationViewItem_Bindings_Work()
+		{
+			// Issue #11716: Assigning the DataContext at the root of NavigationViewItem
+			// breaks bindings. The Content binding should resolve from the DataContext.
+
+			var vm1 = new NavItemViewModel { Label = "Home" };
+			var vm2 = new NavItemViewModel { Label = "Settings" };
+			var vm3 = new NavItemViewModel { Label = "About" };
+
+			var nvi1 = new MUXC.NavigationViewItem { DataContext = vm1 };
+			nvi1.SetBinding(ContentControl.ContentProperty,
+				new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath("Label") });
+
+			var nvi2 = new MUXC.NavigationViewItem { DataContext = vm2 };
+			nvi2.SetBinding(ContentControl.ContentProperty,
+				new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath("Label") });
+
+			var nvi3 = new MUXC.NavigationViewItem { DataContext = vm3 };
+			nvi3.SetBinding(ContentControl.ContentProperty,
+				new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath("Label") });
+
+			var navView = new MUXC.NavigationView()
+			{
+				MenuItems = { nvi1, nvi2, nvi3 },
+				PaneDisplayMode = MUXC.NavigationViewPaneDisplayMode.Left,
+				IsPaneOpen = true,
+				IsBackButtonVisible = MUXC.NavigationViewBackButtonVisible.Collapsed,
+				Width = 800,
+				Height = 600,
+			};
+
+			WindowHelper.WindowContent = navView;
+			await WindowHelper.WaitForLoaded(navView);
+			await WindowHelper.WaitForIdle();
+
+			// Verify bindings resolved from DataContext
+			Assert.AreEqual("Home", nvi1.Content,
+				"NavigationViewItem Content should be bound from DataContext.Label");
+			Assert.AreEqual("Settings", nvi2.Content,
+				"NavigationViewItem Content should be bound from DataContext.Label");
+			Assert.AreEqual("About", nvi3.Content,
+				"NavigationViewItem Content should be bound from DataContext.Label");
+
+			// Verify the items are visible in the NavigationView by checking the visual tree
+			var firstNvi = navView.FindFirstDescendant<MUXC.NavigationViewItem>();
+			Assert.IsNotNull(firstNvi, "NavigationViewItem should be in the visual tree");
+		}
+
+		private class NavItemViewModel
+		{
+			public string Label { get; set; }
 		}
 	}
 }
