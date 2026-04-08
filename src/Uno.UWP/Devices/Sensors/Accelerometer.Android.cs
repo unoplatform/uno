@@ -15,7 +15,7 @@ namespace Windows.Devices.Sensors
 		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
 		/// <summary>
-		/// Gets or sets the current report interval for the accelerometer.
+		/// Gets or sets the current report interval for accelerometer.
 		/// </summary>
 		public uint ReportInterval
 		{
