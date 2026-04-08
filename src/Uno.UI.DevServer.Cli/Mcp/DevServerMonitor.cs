@@ -79,6 +79,8 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 		_forwardedArgs = forwardedArgs;
 		_currentDirectory = currentDirectory;
 		_workspaceResolution = workspaceResolution;
+		_noHostDiscoveryCount = 0;
+		NotAnUnoWorkspace = false;
 
 		var forwardedArgsDisplay = string.Join(" ", _forwardedArgs);
 		_logger.LogTrace(

@@ -45,9 +45,12 @@ internal static class SolutionFileFinder
 	/// Cached result of the last <c>git check-ignore</c> call. The cache key is the
 	/// sorted set of paths that were checked; the value is the set of ignored paths.
 	/// This avoids re-spawning git every 10 seconds when the input hasn't changed.
+	/// The cache expires after <see cref="GitIgnoreCacheTtl"/> to pick up .gitignore changes.
 	/// </summary>
 	private static string? _cachedGitIgnoreCacheKey;
 	private static HashSet<string>? _cachedGitIgnoreResult;
+	private static DateTime _cachedGitIgnoreTimestamp;
+	private static readonly TimeSpan GitIgnoreCacheTtl = TimeSpan.FromSeconds(60);
 
 	private static bool ShouldAlwaysSkipDirectory(string directoryName)
 	{
@@ -125,7 +128,9 @@ internal static class SolutionFileFinder
 		// Build a cache key from the sorted paths + git root so we don't
 		// re-spawn git check-ignore every 10 seconds for the same input.
 		var cacheKey = gitRoot + "|" + string.Join("|", paths.OrderBy(p => p, StringComparer.OrdinalIgnoreCase));
-		if (cacheKey == _cachedGitIgnoreCacheKey && _cachedGitIgnoreResult is not null)
+		if (cacheKey == _cachedGitIgnoreCacheKey
+			&& _cachedGitIgnoreResult is not null
+			&& DateTime.UtcNow - _cachedGitIgnoreTimestamp < GitIgnoreCacheTtl)
 		{
 			return _cachedGitIgnoreResult;
 		}
@@ -189,8 +194,9 @@ internal static class SolutionFileFinder
 			}
 
 			_cachedGitIgnoreCacheKey = cacheKey;
-			_cachedGitIgnoreResult = ignored;
-			return ignored;
+			_cachedGitIgnoreResult = new HashSet<string>(ignored, StringComparer.OrdinalIgnoreCase);
+			_cachedGitIgnoreTimestamp = DateTime.UtcNow;
+			return _cachedGitIgnoreResult;
 		}
 		catch
 		{

@@ -489,8 +489,9 @@ public class Given_DevServerMonitor
 
 			result1.Should().NotBeNull();
 			result2.Should().NotBeNull();
-			// The second call should return the same cached instance
-			ReferenceEquals(result1, result2).Should().BeTrue(
+			result1!.Should().Contain(ignoredDir);
+			// The second call should return the same cached result
+			result2.Should().BeEquivalentTo(result1,
 				"the second call with identical input should return the cached result without spawning git again");
 		}
 		finally
