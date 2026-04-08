@@ -1114,6 +1114,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			}
 		}
 #endif
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/10651")]
+		public async Task When_Polyline_Points_Changed_Dynamically()
+		{
+			// Issue #10651: Polyline not displaying when Points collection is
+			// changed dynamically, especially with negative coordinates and Stretch.None.
+			var polyline = new Polyline
+			{
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 2,
+				Stretch = Stretch.None,
+				Width = 200,
+				Height = 200,
+			};
+
+			var container = new Grid
+			{
+				Width = 300,
+				Height = 300,
+				Children = { polyline },
+			};
+
+			await UITestHelper.Load(container);
+
+			// Initially set some points
+			var points = new PointCollection
+			{
+				new Windows.Foundation.Point(0, 100),
+				new Windows.Foundation.Point(50, 50),
+				new Windows.Foundation.Point(100, 75),
+				new Windows.Foundation.Point(150, 25),
+				new Windows.Foundation.Point(200, 100),
+			};
+			polyline.Points = points;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Verify the polyline has been rendered with non-zero actual size
+			Assert.IsTrue(polyline.ActualWidth > 0,
+				$"Polyline should have non-zero width after setting Points, but was {polyline.ActualWidth}");
+			Assert.IsTrue(polyline.ActualHeight > 0,
+				$"Polyline should have non-zero height after setting Points, but was {polyline.ActualHeight}");
+
+			// Now dynamically change the points (simulating ViewModel update)
+			var newPoints = new PointCollection
+			{
+				new Windows.Foundation.Point(0, 150),
+				new Windows.Foundation.Point(50, -20),  // negative Y coordinate
+				new Windows.Foundation.Point(100, 100),
+				new Windows.Foundation.Point(150, -50), // negative Y coordinate
+				new Windows.Foundation.Point(200, 80),
+			};
+			polyline.Points = newPoints;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// After dynamic update with negative coordinates, the polyline should still render
+			Assert.IsTrue(polyline.ActualWidth > 0,
+				$"Polyline should have non-zero width after dynamically changing Points with negative coords, " +
+				$"but was {polyline.ActualWidth}");
+			Assert.IsTrue(polyline.ActualHeight > 0,
+				$"Polyline should have non-zero height after dynamically changing Points with negative coords, " +
+				$"but was {polyline.ActualHeight}");
+		}
 	}
 }
 #endif
