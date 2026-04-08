@@ -274,7 +274,7 @@ namespace Uno.UWPSyncGenerator
 					"IWeakReference" or
 					"IWeakReferenceSource" or
 					"IActivationFactory" or
-					"IAgileOBject" ||
+					"IAgileObject" ||
 					namedTypeSymbol.Name[0] == '_';
 			}
 
