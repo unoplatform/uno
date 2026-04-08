@@ -1285,6 +1285,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(Colors.Red, ((SolidColorBrush)((Grid)button.FindName("Root")).Background).Color);
 			}
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/10595")]
+		public async Task When_CommandBar_SecondaryCommands_Visible_On_First_Open()
+		{
+			// Issue #10595: CommandBar secondary options not visible on first open.
+			var cmdBar = new CommandBar();
+			cmdBar.SecondaryCommands.Add(new AppBarButton { Label = "Option1" });
+			cmdBar.SecondaryCommands.Add(new AppBarButton { Label = "Option2" });
+			cmdBar.SecondaryCommands.Add(new AppBarButton { Label = "Option3" });
+
+			await UITestHelper.Load(cmdBar);
+
+			// Open the overflow menu for the first time
+			cmdBar.IsOpen = true;
+			await TestServices.WindowHelper.WaitForIdle();
+			await Task.Delay(300);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// The overflow popup should be open
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(cmdBar.XamlRoot);
+			Assert.IsTrue(popups.Count > 0,
+				"Overflow popup should be open after setting IsOpen = true");
+
+			// Find AppBarButton items in the overflow popup
+			var buttons = new List<AppBarButton>();
+			foreach (var popup in popups)
+			{
+				FindDescendants<AppBarButton>(popup.Child, buttons);
+			}
+
+			Assert.IsTrue(buttons.Count >= 3,
+				$"Expected at least 3 AppBarButtons in the overflow on first open, " +
+				$"found {buttons.Count}. Secondary commands are not visible on first open.");
+
+			// Close
+			cmdBar.IsOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		private static void FindDescendants<T>(DependencyObject parent, List<T> results) where T : DependencyObject
+		{
+			if (parent is T match)
+			{
+				results.Add(match);
+			}
+			var count = VisualTreeHelper.GetChildrenCount(parent);
+			for (int i = 0; i < count; i++)
+			{
+				FindDescendants(VisualTreeHelper.GetChild(parent, i), results);
+			}
+		}
 	}
 
 	public partial class ControlLoggingEventsSequence : StackPanel
