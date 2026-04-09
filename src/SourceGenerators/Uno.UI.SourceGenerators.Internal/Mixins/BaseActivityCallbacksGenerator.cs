@@ -120,14 +120,14 @@ public sealed class BaseActivityCallbacksGenerator : IIncrementalGenerator
 				sb.AppendLine("\t\t\t{");
 				foreach (var p in parameters)
 				{
-					var propName = char.ToUpper(p.ParamName[0]) + p.ParamName.Substring(1);
+					var propName = char.ToUpper(p.ParamName[0], System.Globalization.CultureInfo.InvariantCulture) + p.ParamName.Substring(1);
 					sb.AppendLine($"\t\t\t\t{propName} = {p.ParamName}; ");
 				}
 				sb.AppendLine("\t\t\t}");
 				sb.AppendLine();
 				foreach (var p in parameters)
 				{
-					var propName = char.ToUpper(p.ParamName[0]) + p.ParamName.Substring(1);
+					var propName = char.ToUpper(p.ParamName[0], System.Globalization.CultureInfo.InvariantCulture) + p.ParamName.Substring(1);
 					sb.AppendLine($"\t\t\tpublic {p.Type} {propName} {{ get; }} ");
 				}
 				sb.AppendLine("\t\t}");
