@@ -4,23 +4,16 @@
 
 #if __SKIA__
 using System;
-using System.Globalization;
+using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-	public partial class DoubleAnimation
+	public partial class ColorAnimation
 	{
 		private bool _isTimeManagerDriven;
-		private float _tmFromValue;
-		private float _tmToValue;
+		private ColorOffset _tmFromValue;
+		private ColorOffset _tmToValue;
 
-		/// <summary>
-		/// Called by Storyboard.ComputeState via child propagation.
-		/// For From/To/By animations: computes timing (base), eases progress,
-		/// interpolates value, applies.
-		///
-		/// MUX: CAnimation::UpdateAnimation (non-keyframe path, lines 153-173)
-		/// </summary>
 		internal override void ComputeState(ComputeStateParams parentParams)
 		{
 			if (!_isTimeManagerDriven)
@@ -35,20 +28,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				case InternalClockState.Active:
 				case InternalClockState.Filling:
 					{
-						// MUX: XFLOAT rEasedProgress = CEasingFunctionBase::EaseValue(m_pEasingFunction, m_rCurrentProgress)
 						var progress = TimeManagerProgress;
-						var easing = EasingFunction;
 
-						double value;
-						if (easing != null)
-						{
-							value = easing.Ease(progress, _tmFromValue, _tmToValue, 1.0);
-						}
-						else
-						{
-							value = _tmFromValue + (_tmToValue - _tmFromValue) * progress;
-						}
-
+						// Linear color interpolation (ColorAnimation doesn't support EasingFunction in WinUI).
+						var value = _tmFromValue + (float)progress * (_tmToValue - _tmFromValue);
 						SetValue(value);
 
 						if (TimeManagerClockState == InternalClockState.Filling && !_tmCompletedEventFired)
@@ -78,8 +61,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			if (_isTimeManagerDriven)
 			{
-				// Read From/To values at first Active tick (after layout).
-				// MUX: CAnimation::OnBegin → ReadBaseValuesFromTargetOrHandoff
 				PropertyInfo?.CloneShareableObjectsInPath();
 
 				_tmFromValue = ComputeFromValueForTimeManager();
@@ -87,48 +68,54 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 
-		private float ComputeFromValueForTimeManager()
+		private ColorOffset ComputeFromValueForTimeManager()
 		{
 			if (From.HasValue)
 			{
-				return (float)From.Value;
+				return (ColorOffset)From.Value;
 			}
 
 			if (By.HasValue && To.HasValue)
 			{
-				return (float)(To.Value - By.Value);
+				return (ColorOffset)To.Value - (ColorOffset)By.Value;
 			}
 
-			// Read current property value.
 			var value = GetNonAnimatedValue();
-			if (value != null)
+			if (value is Color c)
 			{
-				return Convert.ToSingle(value, CultureInfo.InvariantCulture);
+				return (ColorOffset)c;
+			}
+			if (value is ColorOffset co)
+			{
+				return co;
 			}
 
-			return 0f;
+			return default;
 		}
 
-		private float ComputeToValueForTimeManager()
+		private ColorOffset ComputeToValueForTimeManager()
 		{
 			if (To.HasValue)
 			{
-				return (float)To.Value;
+				return (ColorOffset)To.Value;
 			}
 
 			if (By.HasValue)
 			{
-				return _tmFromValue + (float)By.Value;
+				return _tmFromValue + (ColorOffset)By.Value;
 			}
 
-			// No To or By: animate to current property value.
 			var value = GetNonAnimatedValue();
-			if (value != null)
+			if (value is Color c)
 			{
-				return Convert.ToSingle(value, CultureInfo.InvariantCulture);
+				return (ColorOffset)c;
+			}
+			if (value is ColorOffset co)
+			{
+				return co;
 			}
 
-			return 0f;
+			return default;
 		}
 
 		private bool IsParentStoryboardRegistered()
