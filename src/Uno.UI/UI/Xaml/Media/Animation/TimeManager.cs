@@ -300,11 +300,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// VSync-driven tick callback. Ticks all animations.
-		/// Animated property changes (SetValue) automatically invalidate the visual tree,
-		/// which triggers layout via the standard invalidation → RequestAdditionalFrame path.
-		/// We don't call RequestAdditionalFrame explicitly to avoid starving the Idle queue
-		/// (matching WinUI where animations tick on the frame scheduler, not the dispatcher).
+		/// VSync-driven tick callback. Ticks all animations and requests the next render
+		/// frame to keep the loop alive. In WinUI, the frame scheduler fires continuously
+		/// at VSync rate while there are active timelines. In Uno, we must explicitly request
+		/// the next render frame because not all animated property changes trigger visual
+		/// invalidation (e.g., Opacity changes on Skia don't call InvalidateRender).
 		/// </summary>
 		private void OnRendering(object sender, object e)
 		{
@@ -315,8 +315,30 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			// Tick all animations — compute values and apply to properties.
-			// Property changes will automatically invalidate layout.
 			Tick();
+
+			// Request the next render frame to keep the VSync loop alive.
+			// This is the render pipeline (not dispatcher Normal queue), so it
+			// doesn't prevent WaitForIdle/RunIdleAsync from completing.
+			RequestRenderFrame();
+		}
+
+		/// <summary>
+		/// Requests the next render frame via CompositionTarget.RequestNewFrame.
+		/// This ensures the VSync callback continues firing while animations are active.
+		/// </summary>
+		private static void RequestRenderFrame()
+		{
+			// Find any active CompositionTarget and request a frame.
+			foreach (var window in Uno.UI.ApplicationHelper.WindowsInternal)
+			{
+				if (window.RootElement?.XamlRoot?.Content?.Visual.CompositionTarget
+					is Microsoft.UI.Xaml.Media.CompositionTarget ct)
+				{
+					((Uno.UI.Composition.ICompositionTarget)ct).RequestNewFrame();
+					break;
+				}
+			}
 		}
 
 		#endregion
