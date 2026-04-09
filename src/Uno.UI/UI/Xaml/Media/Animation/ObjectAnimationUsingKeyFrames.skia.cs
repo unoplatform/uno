@@ -5,47 +5,26 @@
 #if __SKIA__
 using System;
 using System.Linq;
-using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class ObjectAnimationUsingKeyFrames
 	{
-		// Whether ComputeState-driven playback is active (vs. the old KeyFrameScheduler path).
-		// True when this animation is a child of a Storyboard registered with TimeManager.
+		// Whether this animation is driven by the TimeManager (via parent Storyboard).
 		private bool _isTimeManagerDriven;
-
-		// Whether OnCompleted has been fired for the current iteration.
-		private bool _completedFired;
+		private bool _deferredPlayPending;
 
 		/// <summary>
-		/// On Skia, when driven by TimeManager (parent Storyboard registered),
-		/// Begin() just sets state to Active and resolves theme resources.
-		/// The actual value computation is done by ComputeState() each tick.
-		///
-		/// MUX: CAnimation::OnBegin() — sets up target, reads base values,
-		/// but does NOT apply first frame value (that happens at first Tick).
-		/// </summary>
-		private void BeginViaTimeManager()
-		{
-			_isTimeManagerDriven = true;
-			_completedFired = false;
-
-			// MUX: CAnimation::OnBegin() → EnsureKeyFrameThemeResources equivalent
-			EnsureKeyFrameThemeResources();
-		}
-
-		/// <summary>
-		/// Falls back to the old deferred play mechanism for standalone Begin()
-		/// (not through a TimeManager-registered Storyboard).
+		/// Detect if this animation is a child of a TimeManager-registered Storyboard
+		/// and use the ComputeState/UpdateAnimation path if so.
 		/// </summary>
 		private void PlayDeferred()
 		{
-			// If this animation is a child of a TimeManager-registered Storyboard,
-			// use the ComputeState path instead.
-			if (this.GetParent()?.GetParent() is Storyboard sb && sb._isRegisteredWithTimeManager)
+			if (IsParentStoryboardRegistered())
 			{
-				BeginViaTimeManager();
+				_isTimeManagerDriven = true;
+				// Resolve theme resources now (MUX: CAnimation::OnBegin).
+				EnsureKeyFrameThemeResources();
 				return;
 			}
 
@@ -70,95 +49,97 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			});
 		}
 
-		private bool _deferredPlayPending;
-
 		private void CancelDeferredPlay()
 		{
 			_deferredPlayPending = false;
 		}
 
 		/// <summary>
-		/// Called by TimeManager via Storyboard.ComputeState() → child.ComputeState().
-		/// Computes the current keyframe from parent time and applies its value.
-		///
-		/// MUX: CAnimation::UpdateAnimationUsingKeyFrames (animation.cpp lines 247-369)
-		/// — finds current keyframe segment from progress, reads value fresh, applies.
+		/// Called by Storyboard.ComputeState via child propagation.
+		/// Computes timing (base class) then applies keyframe values.
 		/// </summary>
 		internal override void ComputeState(ComputeStateParams parentParams)
 		{
 			if (!_isTimeManagerDriven)
 			{
-				// Not driven by TimeManager — using old mechanism.
 				return;
 			}
 
-			if (State == TimelineState.Stopped)
+			// Base timing computation: clock state, progress, iteration.
+			ComputeStateBase(parentParams);
+
+			// Apply values based on computed state.
+			UpdateAnimationCore();
+		}
+
+		/// <summary>
+		/// Applies the appropriate keyframe value based on computed clock state.
+		///
+		/// MUX: CAnimation::UpdateAnimation → UpdateAnimationUsingKeyFrames
+		/// </summary>
+		private void UpdateAnimationCore()
+		{
+			if (!_isTimeManagerDriven)
 			{
 				return;
 			}
 
-			if (!parentParams.HasTime)
+			switch (TimeManagerClockState)
 			{
-				return;
+				case InternalClockState.Active:
+					UpdateUsingKeyFrames();
+					break;
+
+				case InternalClockState.Filling:
+					// Apply final keyframe and fire completion.
+					UpdateUsingKeyFrames();
+					if (!_tmCompletedEventFired)
+					{
+						_tmCompletedEventFired = true;
+						State = TimelineState.Filling;
+						OnCompleted();
+					}
+					break;
+
+				case InternalClockState.Stopped:
+					if (_tmInitialized && !_tmCompletedEventFired)
+					{
+						_tmCompletedEventFired = true;
+						ClearValue();
+						State = TimelineState.Stopped;
+						OnCompleted();
+					}
+					FinalizeAnimationIteration();
+					break;
 			}
+		}
 
-			var beginTime = BeginTime?.TotalSeconds ?? 0.0;
-			var parentTime = parentParams.Time;
-
-			// Not started yet (before begin time).
-			if (parentTime < beginTime)
-			{
-				return;
-			}
-
-			// Compute local time and duration.
-			var localTime = parentTime - beginTime;
-			var duration = GetCalculatedDuration();
-			var durationSeconds = duration.TotalSeconds;
-
-			// Sort keyframes by KeyTime for segment lookup.
-			// MUX: m_pKeyFrames->GetSortedCollection()
+		/// <summary>
+		/// Finds the current keyframe from progress and applies its value.
+		/// MUX: CAnimation::UpdateAnimationUsingKeyFrames (animation.cpp lines 247-369)
+		/// </summary>
+		private void UpdateUsingKeyFrames()
+		{
 			var sortedFrames = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).ToList();
 			if (sortedFrames.Count == 0)
 			{
 				return;
 			}
 
-			// Check expiration.
-			if (durationSeconds > 0 && localTime >= durationSeconds - 0.0005)
-			{
-				// Animation has expired.
-				if (!_completedFired)
-				{
-					if (FillBehavior == FillBehavior.HoldEnd)
-					{
-						// Apply the last keyframe value and hold.
-						var lastFrame = sortedFrames[^1];
-						_currentFrame = lastFrame;
-						SetValue(lastFrame.Value);
-						State = TimelineState.Filling;
-					}
-					else
-					{
-						// FillBehavior.Stop: clear animated value.
-						_currentFrame = null;
-						ClearValue();
-						State = TimelineState.Stopped;
-					}
+			var progress = TimeManagerProgress;
+			var duration = GetCalculatedDuration();
+			var durationSeconds = duration.TotalSeconds;
 
-					_completedFired = true;
-					OnCompleted();
-				}
-
-				return;
-			}
-
-			// Active: find the current keyframe from local time.
-			// MUX: UpdateAnimationUsingKeyFrames — linearly search sorted keyframes.
+			// Find the keyframe at or before the current progress.
+			// MUX: while loop at line 298
 			IKeyFrame<object> targetFrame = sortedFrames[0];
 			for (int i = 0; i < sortedFrames.Count; i++)
 			{
-				if (localTime < sortedFrames[i].KeyTime.TimeSpan.TotalSeconds)
+				var frameProgress = durationSeconds > 0
+					? sortedFrames[i].KeyTime.TimeSpan.TotalSeconds / durationSeconds
+					: 1.0;
+
+				if (progress < frameProgress)
 				{
 					break;
 				}
@@ -166,19 +147,31 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				targetFrame = sortedFrames[i];
 			}
 
-			// Apply the keyframe value (read fresh each tick).
-			// MUX: pKeyFrame->GetValue() called each tick, not cached.
+			// Apply the keyframe value (read FRESH each tick).
+			// MUX: pKeyFrame->GetValue() called each tick.
 			_currentFrame = targetFrame;
 			SetValue(targetFrame.Value);
 		}
 
-		/// <summary>
-		/// Cleanup when stopping a TimeManager-driven animation.
-		/// </summary>
 		private void StopTimeManagerDriven()
 		{
 			_isTimeManagerDriven = false;
-			_completedFired = false;
+			ResetTimeManagerState();
+		}
+
+		private bool IsParentStoryboardRegistered()
+		{
+			// Walk up to find the parent Storyboard.
+			object current = this;
+			while ((current = (current as DependencyObject)?.GetParent()) != null)
+			{
+				if (current is Storyboard sb)
+				{
+					return sb._isRegisteredWithTimeManager;
+				}
+			}
+
+			return false;
 		}
 	}
 }
