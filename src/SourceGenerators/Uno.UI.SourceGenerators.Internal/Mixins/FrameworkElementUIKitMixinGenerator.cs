@@ -523,7 +523,7 @@ public sealed class FrameworkElementUIKitMixinGenerator : IIncrementalGenerator
 		// VerticalAlignment DP
 		sb.AppendLine("\t\t#region VerticalAlignment Dependency Property");
 		sb.AppendLine();
-		sb.AppendLine("\t\t[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, Options = FrameworkPropertyMetadataOptions.AffectsArrange, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]");
+		sb.AppendLine("\t\t[GeneratedDependencyProperty(DefaultValue = VerticalAlignment.Stretch, Options = FrameworkPropertyMetadataOptions.AffectsArrange, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]");
 		sb.AppendLine($"\t\tpublic static DependencyProperty VerticalAlignmentProperty {{ get ; }} = CreateVerticalAlignmentProperty();");
 		sb.AppendLine();
 		sb.Append("\t\tpublic");
