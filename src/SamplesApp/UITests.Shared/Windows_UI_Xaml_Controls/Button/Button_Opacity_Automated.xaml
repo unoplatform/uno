@@ -2,54 +2,58 @@
     x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.Button_Opacity_Automated"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Uno.UI.Samples.Content.UITests.ButtonTestsControl"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Uno.UI.Samples.Content.UITests.ButtonTestsControl"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignWidth="400"
+    mc:Ignorable="d">
 
-	<Grid>
-		<StackPanel VerticalAlignment="Center"
-								HorizontalAlignment="Center">
+    <Grid>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 
-			<!-- Click Count value -->
-			<TextBlock x:Name="TotalClicks"
-					   Text="0"
-					   FontSize="20"
-					   HorizontalAlignment="Center" />
+            <!--  Click Count value  -->
+            <TextBlock
+                x:Name="TotalClicks"
+                HorizontalAlignment="Center"
+                FontSize="20"
+                Text="0" />
 
-			<!-- Add button -->
-			<Button x:Name="ButtonToChangeOpacity"
-							Content="Add"
-							Click="AddButtonClick"
-							Background="Black"
-							Foreground="Blue"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center"
-							IsEnabled="True"
-							Margin="0,32,0,0"/>
+            <!--  Add button  -->
+            <Button
+                x:Name="ButtonToChangeOpacity"
+                Margin="0,32,0,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="Black"
+                Click="AddButtonClick"
+                Content="Add"
+                Foreground="Blue"
+                IsEnabled="True" />
 
-			<!-- Label : Enter a number -->
-			<TextBlock Text="Enter an opacity value :"
-					   FontSize="20"
-					   HorizontalAlignment="Center" />
+            <!--  Label : Enter a number  -->
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="20"
+                Text="Enter an opacity value :" />
 
-			<!-- TextBox Value of opacity  -->
-			<TextBox x:Name="ValueOfOpacity"
-					   Text="1"
-						 Width="200"
-					   FontSize="20"
-					   HorizontalAlignment="Center"/>
+            <!--  TextBox Value of opacity  -->
+            <TextBox
+                x:Name="ValueOfOpacity"
+                Width="200"
+                HorizontalAlignment="Center"
+                FontSize="20"
+                Text="1" />
 
-			<!-- Apply button -->
-			<Button x:Name="ApplyOpacityButton"
-					Content="Apply"
-					Click="ApplyButtonClick"
-					HorizontalAlignment="Center"
-					IsEnabled="True"
-					Margin="0,32,0,0" />
+            <!--  Apply button  -->
+            <Button
+                x:Name="ApplyOpacityButton"
+                Margin="0,32,0,0"
+                HorizontalAlignment="Center"
+                Click="ApplyButtonClick"
+                Content="Apply"
+                IsEnabled="True" />
 
-		</StackPanel>
-	</Grid>
+        </StackPanel>
+    </Grid>
 </UserControl>

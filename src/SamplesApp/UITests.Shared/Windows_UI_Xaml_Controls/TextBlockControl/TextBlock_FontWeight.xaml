@@ -1,41 +1,118 @@
 ﻿<UserControl
-	x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_FontWeight"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	d:DesignHeight="300"
-	d:DesignWidth="400">
+    x:Class="Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_FontWeight"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
 
-	<StackPanel>
+    <StackPanel>
 
-		<TextBlock Text="Normal:" />
-		<TextBlock FontSize="20" Text="ExtraBlack" FontWeight="ExtraBlack" />
-		<TextBlock FontSize="20" Text="Black" FontWeight="Black" />
-		<TextBlock FontSize="20" Text="ExtraBold" FontWeight="ExtraBold" />
-		<TextBlock FontSize="20" Text="Bold" FontWeight="Bold" />
-		<TextBlock FontSize="20" Text="SemiBold" FontWeight="SemiBold" />
-		<TextBlock FontSize="20" Text="Medium" FontWeight="Medium" />
-		<TextBlock FontSize="20" Text="Normal" FontWeight="Normal" />
-		<TextBlock FontSize="20" Text="Light" FontWeight="Light" />
-		<TextBlock FontSize="20" Text="SemiLight" FontWeight="SemiLight" />
-		<TextBlock FontSize="20" Text="ExtraLight" FontWeight="ExtraLight" />
-		<TextBlock FontSize="20" Text="Thin" FontWeight="Thin" />
+        <TextBlock Text="Normal:" />
+        <TextBlock
+            FontSize="20"
+            FontWeight="ExtraBlack"
+            Text="ExtraBlack" />
+        <TextBlock
+            FontSize="20"
+            FontWeight="Black"
+            Text="Black" />
+        <TextBlock
+            FontSize="20"
+            FontWeight="ExtraBold"
+            Text="ExtraBold" />
+        <TextBlock
+            FontSize="20"
+            FontWeight="Bold"
+            Text="Bold" />
+        <TextBlock
+            FontSize="20"
+            FontWeight="SemiBold"
+            Text="SemiBold" />
+        <TextBlock
+            FontSize="20"
+            FontWeight="Medium"
+            Text="Medium" />
+        <TextBlock
+            FontSize="20"
+            FontWeight="Normal"
+            Text="Normal" />
+        <TextBlock
+            FontSize="20"
+            FontWeight="Light"
+            Text="Light" />
+        <TextBlock
+            FontSize="20"
+            FontWeight="SemiLight"
+            Text="SemiLight" />
+        <TextBlock
+            FontSize="20"
+            FontWeight="ExtraLight"
+            Text="ExtraLight" />
+        <TextBlock
+            FontSize="20"
+            FontWeight="Thin"
+            Text="Thin" />
 
-		<TextBlock Text="Italic:" />
-		<TextBlock FontStyle="Italic" FontSize="20" Text="ExtraBlack" FontWeight="ExtraBlack" />
-		<TextBlock FontStyle="Italic" FontSize="20" Text="Black" FontWeight="Black" />
-		<TextBlock FontStyle="Italic" FontSize="20" Text="ExtraBold" FontWeight="ExtraBold" />
-		<TextBlock FontStyle="Italic" FontSize="20" Text="Bold" FontWeight="Bold" />
-		<TextBlock FontStyle="Italic" FontSize="20" Text="SemiBold" FontWeight="SemiBold" />
-		<TextBlock FontStyle="Italic" FontSize="20" Text="Medium" FontWeight="Medium" />
-		<TextBlock FontStyle="Italic" FontSize="20" Text="Normal" FontWeight="Normal" />
-		<TextBlock FontStyle="Italic" FontSize="20" Text="Light" FontWeight="Light" />
-		<TextBlock FontStyle="Italic" FontSize="20" Text="SemiLight" FontWeight="SemiLight" />
-		<TextBlock FontStyle="Italic" FontSize="20" Text="ExtraLight" FontWeight="ExtraLight" />
-		<TextBlock FontStyle="Italic" FontSize="20" Text="Thin" FontWeight="Thin" />
+        <TextBlock Text="Italic:" />
+        <TextBlock
+            FontSize="20"
+            FontStyle="Italic"
+            FontWeight="ExtraBlack"
+            Text="ExtraBlack" />
+        <TextBlock
+            FontSize="20"
+            FontStyle="Italic"
+            FontWeight="Black"
+            Text="Black" />
+        <TextBlock
+            FontSize="20"
+            FontStyle="Italic"
+            FontWeight="ExtraBold"
+            Text="ExtraBold" />
+        <TextBlock
+            FontSize="20"
+            FontStyle="Italic"
+            FontWeight="Bold"
+            Text="Bold" />
+        <TextBlock
+            FontSize="20"
+            FontStyle="Italic"
+            FontWeight="SemiBold"
+            Text="SemiBold" />
+        <TextBlock
+            FontSize="20"
+            FontStyle="Italic"
+            FontWeight="Medium"
+            Text="Medium" />
+        <TextBlock
+            FontSize="20"
+            FontStyle="Italic"
+            FontWeight="Normal"
+            Text="Normal" />
+        <TextBlock
+            FontSize="20"
+            FontStyle="Italic"
+            FontWeight="Light"
+            Text="Light" />
+        <TextBlock
+            FontSize="20"
+            FontStyle="Italic"
+            FontWeight="SemiLight"
+            Text="SemiLight" />
+        <TextBlock
+            FontSize="20"
+            FontStyle="Italic"
+            FontWeight="ExtraLight"
+            Text="ExtraLight" />
+        <TextBlock
+            FontSize="20"
+            FontStyle="Italic"
+            FontWeight="Thin"
+            Text="Thin" />
 
-	</StackPanel>
+    </StackPanel>
 
 </UserControl>

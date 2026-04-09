@@ -1,142 +1,204 @@
 ﻿<Page
-	x:Name="ThePage"
-	x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_OverlayInputPassThroughElement"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_OverlayInputPassThroughElement"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="ThePage"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<Grid Background="Chartreuse" x:Name="PageRoot" Loaded="SubscribeToPointerPressed" Tapped="OnElementTapped">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
-			<ColumnDefinition Width="100" />
-		</Grid.ColumnDefinitions>
+    <Grid
+        x:Name="PageRoot"
+        Background="Chartreuse"
+        Loaded="SubscribeToPointerPressed"
+        Tapped="OnElementTapped">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="100" />
+        </Grid.ColumnDefinitions>
 
-		<Grid Background="DeepSkyBlue" x:Name="ButtonsRoot" Loaded="SubscribeToPointerPressed" Grid.Column="0" ColumnSpacing="20" Padding="20">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="150" />
-				<ColumnDefinition Width="100" />
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
+        <Grid
+            x:Name="ButtonsRoot"
+            Grid.Column="0"
+            Padding="20"
+            Background="DeepSkyBlue"
+            ColumnSpacing="20"
+            Loaded="SubscribeToPointerPressed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-			<StackPanel Spacing="20">
-				<Button
-					x:Name="woOn"
-					Content="PTElt: No | Ov: On"
-					HorizontalAlignment="Stretch">
-					<Button.Flyout>
-						<Flyout LightDismissOverlayMode="On" Opened="OnFlyoutOpened" Closed="OnFlyoutClosed">
-							<Grid Background="Red" Width="150" Height="50">
-								<TextBlock Text="Bonjour le monde" />
-							</Grid>
-						</Flyout>
-					</Button.Flyout>
-				</Button>
-				<Button
-					x:Name="woOff"
-					Content="PTElt: No | Ov: Off"
-					HorizontalAlignment="Stretch">
-					<Button.Flyout>
-						<Flyout LightDismissOverlayMode="Off" Opened="OnFlyoutOpened" Closed="OnFlyoutClosed">
-							<Grid Background="Red" Width="150" Height="50">
-								<TextBlock Text="Bonjour le monde" />
-							</Grid>
-						</Flyout>
-					</Button.Flyout>
-				</Button>
-				<Button
-					x:Name="woAuto"
-					Content="PTElt: No | Ov: Auto"
-					HorizontalAlignment="Stretch">
-					<Button.Flyout>
-						<Flyout LightDismissOverlayMode="Auto" Opened="OnFlyoutOpened" Closed="OnFlyoutClosed">
-							<Grid Background="Red" Width="150" Height="50">
-								<TextBlock Text="Bonjour le monde" />
-							</Grid>
-						</Flyout>
-					</Button.Flyout>
-				</Button>
-				<Button
-					x:Name="withOn"
-					Content="PTElt: Yes | Ov: On"
-					HorizontalAlignment="Stretch">
-					<Button.Flyout>
-						<Flyout LightDismissOverlayMode="On" Opened="OnFlyoutOpened" Closed="OnFlyoutClosed" OverlayInputPassThroughElement="{Binding ElementName=ButtonsRoot}">
-							<Grid Background="Red" Width="150" Height="50">
-								<TextBlock Text="Bonjour le monde" />
-							</Grid>
-						</Flyout>
-					</Button.Flyout>
-				</Button>
-				<Button
-					x:Name="withOff"
-					Content="PTElt: Yes | Ov: Off"
-					HorizontalAlignment="Stretch">
-					<Button.Flyout>
-						<Flyout LightDismissOverlayMode="Off" Opened="OnFlyoutOpened" Closed="OnFlyoutClosed" OverlayInputPassThroughElement="{Binding ElementName=ButtonsRoot}">
-							<Grid Background="Red" Width="150" Height="50">
-								<TextBlock Text="Bonjour le monde" />
-							</Grid>
-						</Flyout>
-					</Button.Flyout>
-				</Button>
-				<Button
-					x:Name="withAuto"
-					Content="PTElt: Yes | Ov: Auto"
-					HorizontalAlignment="Stretch">
-					<Button.Flyout>
-						<Flyout LightDismissOverlayMode="Auto" Opened="OnFlyoutOpened" Closed="OnFlyoutClosed" OverlayInputPassThroughElement="{Binding ElementName=ButtonsRoot}">
-							<Grid Background="Red" Width="150" Height="50">
-								<TextBlock Text="Bonjour le monde" />
-							</Grid>
-						</Flyout>
-					</Button.Flyout>
-				</Button>
-			</StackPanel>
+            <StackPanel Spacing="20">
+                <Button
+                    x:Name="woOn"
+                    HorizontalAlignment="Stretch"
+                    Content="PTElt: No | Ov: On">
+                    <Button.Flyout>
+                        <Flyout
+                            Closed="OnFlyoutClosed"
+                            LightDismissOverlayMode="On"
+                            Opened="OnFlyoutOpened">
+                            <Grid
+                                Width="150"
+                                Height="50"
+                                Background="Red">
+                                <TextBlock Text="Bonjour le monde" />
+                            </Grid>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+                <Button
+                    x:Name="woOff"
+                    HorizontalAlignment="Stretch"
+                    Content="PTElt: No | Ov: Off">
+                    <Button.Flyout>
+                        <Flyout
+                            Closed="OnFlyoutClosed"
+                            LightDismissOverlayMode="Off"
+                            Opened="OnFlyoutOpened">
+                            <Grid
+                                Width="150"
+                                Height="50"
+                                Background="Red">
+                                <TextBlock Text="Bonjour le monde" />
+                            </Grid>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+                <Button
+                    x:Name="woAuto"
+                    HorizontalAlignment="Stretch"
+                    Content="PTElt: No | Ov: Auto">
+                    <Button.Flyout>
+                        <Flyout
+                            Closed="OnFlyoutClosed"
+                            LightDismissOverlayMode="Auto"
+                            Opened="OnFlyoutOpened">
+                            <Grid
+                                Width="150"
+                                Height="50"
+                                Background="Red">
+                                <TextBlock Text="Bonjour le monde" />
+                            </Grid>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+                <Button
+                    x:Name="withOn"
+                    HorizontalAlignment="Stretch"
+                    Content="PTElt: Yes | Ov: On">
+                    <Button.Flyout>
+                        <Flyout
+                            Closed="OnFlyoutClosed"
+                            LightDismissOverlayMode="On"
+                            Opened="OnFlyoutOpened"
+                            OverlayInputPassThroughElement="{Binding ElementName=ButtonsRoot}">
+                            <Grid
+                                Width="150"
+                                Height="50"
+                                Background="Red">
+                                <TextBlock Text="Bonjour le monde" />
+                            </Grid>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+                <Button
+                    x:Name="withOff"
+                    HorizontalAlignment="Stretch"
+                    Content="PTElt: Yes | Ov: Off">
+                    <Button.Flyout>
+                        <Flyout
+                            Closed="OnFlyoutClosed"
+                            LightDismissOverlayMode="Off"
+                            Opened="OnFlyoutOpened"
+                            OverlayInputPassThroughElement="{Binding ElementName=ButtonsRoot}">
+                            <Grid
+                                Width="150"
+                                Height="50"
+                                Background="Red">
+                                <TextBlock Text="Bonjour le monde" />
+                            </Grid>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+                <Button
+                    x:Name="withAuto"
+                    HorizontalAlignment="Stretch"
+                    Content="PTElt: Yes | Ov: Auto">
+                    <Button.Flyout>
+                        <Flyout
+                            Closed="OnFlyoutClosed"
+                            LightDismissOverlayMode="Auto"
+                            Opened="OnFlyoutOpened"
+                            OverlayInputPassThroughElement="{Binding ElementName=ButtonsRoot}">
+                            <Grid
+                                Width="150"
+                                Height="50"
+                                Background="Red">
+                                <TextBlock Text="Bonjour le monde" />
+                            </Grid>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+            </StackPanel>
 
-			<StackPanel Grid.Column="1" Spacing="20">
-				<Border 
-					x:Name="PinkBorder"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center"
-					Background="DeepPink"
-					Width="100"
-					Height="200"
-					Tapped="OnElementTapped"
-					Loaded="SubscribeToPointerPressed" />
+            <StackPanel Grid.Column="1" Spacing="20">
+                <Border
+                    x:Name="PinkBorder"
+                    Width="100"
+                    Height="200"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="DeepPink"
+                    Loaded="SubscribeToPointerPressed"
+                    Tapped="OnElementTapped" />
 
-				<Button 
-					x:Name="OrangeButton"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center"
-					Background="Orange"
-					Width="100"
-					Height="200"
-					Click="OnButtonClicked"
-					Loaded="SubscribeToPointerPressed"
-					Content="Click me!" />
-			</StackPanel>
+                <Button
+                    x:Name="OrangeButton"
+                    Width="100"
+                    Height="200"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="Orange"
+                    Click="OnButtonClicked"
+                    Content="Click me!"
+                    Loaded="SubscribeToPointerPressed" />
+            </StackPanel>
 
-			<ScrollViewer Grid.Column="2">
-				<StackPanel>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="Flyout opened: " />
-						<TextBlock x:Name="IsFlyoutOpened" Text="False" />
-					</StackPanel>
-					<TextBlock Text="Pressed:" />
-					<TextBlock x:Name="PressedOutput" />
-					<TextBlock Text="Pressed unhandled:" />
-					<TextBlock x:Name="PressedUnhandledOutput" />
-					<TextBlock Text="Tapped:" />
-					<TextBlock x:Name="TappedOutput"/>
-				</StackPanel>
-			</ScrollViewer>
-			
-			<Button Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,20,0" x:Name="ClearLogButton" Content="Clear" Click="ClearLog" />
-		</Grid>
+            <ScrollViewer Grid.Column="2">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Flyout opened: " />
+                        <TextBlock x:Name="IsFlyoutOpened" Text="False" />
+                    </StackPanel>
+                    <TextBlock Text="Pressed:" />
+                    <TextBlock x:Name="PressedOutput" />
+                    <TextBlock Text="Pressed unhandled:" />
+                    <TextBlock x:Name="PressedUnhandledOutput" />
+                    <TextBlock Text="Tapped:" />
+                    <TextBlock x:Name="TappedOutput" />
+                </StackPanel>
+            </ScrollViewer>
 
-		<Border x:Name="BlockingLayer" Background="DarkRed" HorizontalAlignment="Left" Height="1024" Width="25" Margin="260,0,0, 0" />
-	</Grid>
+            <Button
+                x:Name="ClearLogButton"
+                Grid.Column="2"
+                Margin="0,0,20,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Click="ClearLog"
+                Content="Clear" />
+        </Grid>
+
+        <Border
+            x:Name="BlockingLayer"
+            Width="25"
+            Height="1024"
+            Margin="260,0,0,0"
+            HorizontalAlignment="Left"
+            Background="DarkRed" />
+    </Grid>
 </Page>

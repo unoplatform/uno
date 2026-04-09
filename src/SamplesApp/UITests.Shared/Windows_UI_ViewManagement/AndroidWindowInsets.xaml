@@ -9,7 +9,7 @@
     mc:Ignorable="d">
 
     <TextBlock>
-	On an Android phone with a notch, try rotating to landscape mode and click the top-right "..." button to open a popup.
-	The popup should be fully visible and not be clipped.
-	</TextBlock>
+        On an Android phone with a notch, try rotating to landscape mode and click the top-right "..." button to open a popup.
+        The popup should be fully visible and not be clipped.
+    </TextBlock>
 </Page>

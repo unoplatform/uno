@@ -543,8 +543,7 @@
                             FontSize="24"
                             FontWeight="SemiBold"
                             Foreground="{ThemeResource AccentFillColorDefaultBrush}"
-                            Style="{StaticResource IconButtonStyle}"
-                            >
+                            Style="{StaticResource IconButtonStyle}">
                             <Button.Content>
                                 <SymbolIcon Symbol="Help" />
                             </Button.Content>

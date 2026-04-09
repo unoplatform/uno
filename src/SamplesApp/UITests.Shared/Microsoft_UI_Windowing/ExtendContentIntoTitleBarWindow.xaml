@@ -76,7 +76,9 @@
                 </StackPanel>
             </Border>
 
-            <Button HorizontalAlignment="Center" Click="CloseClick">Close Window</Button>
+            <Button HorizontalAlignment="Center" Click="CloseClick">
+                Close Window
+            </Button>
         </StackPanel>
     </Grid>
 </Window>
