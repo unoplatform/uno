@@ -4,9 +4,15 @@
 	<!--
 		Mixin code generation is handled by source generators in
 		Uno.UI.SourceGenerators.Internal (Mixins/ namespace).
-		This file provides the AdditionalFiles entry needed by the
-		EffectiveViewport partial-class generators.
+
+		UNO_MIXIN_GENERATION gates the PostInitializationOutput so it
+		is only active in Uno.UI library compilations, not in consumer
+		test projects that also reference the Internal analyzer.
 	-->
+
+	<PropertyGroup>
+		<DefineConstants>$(DefineConstants);UNO_MIXIN_GENERATION</DefineConstants>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)UI\Xaml\FrameworkElement.EffectiveViewport.cs"
