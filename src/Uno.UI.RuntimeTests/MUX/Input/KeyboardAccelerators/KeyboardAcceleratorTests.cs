@@ -23,7 +23,7 @@ using Microsoft.UI.Xaml.Tests.Common;
 namespace Uno.UI.RuntimeTests.MUX.Input.KeyboardAccelerators;
 
 [TestClass]
-[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMobile)]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeMobile)]
 public partial class KeyboardAcceleratorTests : MUXApiTestBase
 {
 	#region BasicKeyboardAcceleratorToolTipVerification
