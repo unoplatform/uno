@@ -14,6 +14,17 @@ public class Given_ImplicitXamlNamespaces
 	{
 		// Two different CLR namespaces both registered to the global URI,
 		// each containing a type named "SharedControl".
+		var xmlnsDefinitionAttr = """
+			namespace System.Windows.Markup
+			{
+				[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
+				public sealed class XmlnsDefinitionAttribute : Attribute
+				{
+					public XmlnsDefinitionAttribute(string xmlNamespace, string clrNamespace) { }
+				}
+			}
+			""";
+
 		var assemblyAttributes = $$"""
 			using System.Windows.Markup;
 			[assembly: XmlnsDefinition("{{GlobalUri}}", "TestRepro.NsA")]
@@ -68,7 +79,7 @@ public class Given_ImplicitXamlNamespaces
 		{
 			TestState =
 			{
-				Sources = { codeBehind, controlsSource, assemblyAttributes },
+				Sources = { codeBehind, controlsSource, assemblyAttributes, xmlnsDefinitionAttr },
 			},
 			GlobalConfigOverride = new()
 			{
@@ -85,6 +96,9 @@ public class Given_ImplicitXamlNamespaces
 		[
 			DiagnosticResult.CompilerError("UXAML0005")
 				.WithArguments("The type 'SharedControl' was found in multiple global XAML namespaces: 'TestRepro.NsA', 'TestRepro.NsB'. Use an explicit xmlns prefix to disambiguate."),
+			DiagnosticResult.CompilerError("CS0246")
+				.WithSpan("Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 54, 9, 54, 22)
+				.WithArguments("SharedControl"),
 		]);
 
 		await test.RunAsync();
