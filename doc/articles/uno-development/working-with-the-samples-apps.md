@@ -88,8 +88,9 @@ To add a new sample to the SamplesApp:
      ```
 
    * **Without this step, your sample will NOT be visible in SamplesApp**
-6. Double-check that the category name matches other samples for the control.
-7. Run the `SamplesApp` to check that your sample appears in the browser and works as expected.
+6. Format your XAML file: `dotnet xstyler -f src/SamplesApp/UITests.Shared/YourFolder/YourSample.xaml` (requires `dotnet tool restore` first, see [Code style](../contributing/guidelines/code-style.md#xaml-formatting-samplesapp)).
+7. Double-check that the category name matches other samples for the control.
+8. Run the `SamplesApp` to check that your sample appears in the browser and works as expected.
 
 ## Adding a manual test sample
 

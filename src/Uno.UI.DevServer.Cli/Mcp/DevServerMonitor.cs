@@ -57,6 +57,16 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 	/// </summary>
 	public IReadOnlyList<string> DiscoveredSolutions { get; private set; } = [];
 
+	/// <summary>
+	/// Set to true when the monitor has determined that this workspace is not
+	/// an Uno Platform project (no host found after <see cref="MaxNoHostRetries"/>
+	/// discovery attempts). The monitor stops scanning to avoid wasting resources.
+	/// </summary>
+	public bool NotAnUnoWorkspace { get; private set; }
+
+	private int _noHostDiscoveryCount;
+	private const int MaxNoHostRetries = 3;
+
 	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs,
 		WorkspaceResolution? workspaceResolution = null)
 	{
@@ -69,6 +79,8 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 		_forwardedArgs = forwardedArgs;
 		_currentDirectory = currentDirectory;
 		_workspaceResolution = workspaceResolution;
+		_noHostDiscoveryCount = 0;
+		NotAnUnoWorkspace = false;
 
 		var forwardedArgsDisplay = string.Join(" ", _forwardedArgs);
 		_logger.LogTrace(
@@ -156,11 +168,24 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 
 					if (hostPath is null)
 					{
-						_logger.LogTrace("DevServerMonitor could not resolve a host executable in {Directory}",
-							_currentDirectory);
+						_noHostDiscoveryCount++;
+						_logger.LogTrace(
+							"DevServerMonitor could not resolve a host executable in {Directory} (attempt {Count})",
+							_currentDirectory, _noHostDiscoveryCount);
+
+						if (_noHostDiscoveryCount >= MaxNoHostRetries)
+						{
+							_logger.LogInformation(
+								"No Uno SDK host found after {Count} attempts in {Directory} — stopping monitor. "
+								+ "This workspace does not appear to be an Uno Platform project.",
+								_noHostDiscoveryCount, _currentDirectory);
+							NotAnUnoWorkspace = true;
+							break;
+						}
 					}
 					else
 					{
+						_noHostDiscoveryCount = 0; // Reset on success
 						_logger.LogTrace("DevServerMonitor resolved host executable {HostPath}", hostPath);
 					}
 

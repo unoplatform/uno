@@ -9,30 +9,30 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<Page.Resources>
-		<Style x:Key="FileExplorerTreeViewItemStyle"
-			TargetType="muxc:TreeViewItem" />
+    <Page.Resources>
+        <Style x:Key="FileExplorerTreeViewItemStyle" TargetType="muxc:TreeViewItem" />
 
-		<local:FSObjectTemplateSelector x:Key="FSObjectTemplateSelector"
-											 DirectoryTemplate="{StaticResource DirectoryTemplate}" />
+        <local:FSObjectTemplateSelector x:Key="FSObjectTemplateSelector" DirectoryTemplate="{StaticResource DirectoryTemplate}" />
 
-		<DataTemplate x:Key="DirectoryTemplate">
-			<muxc:TreeViewItem>
-				<Grid>
-					<TextBlock Text="MyText"
-							   Margin="16,0,0,0" />
-				</Grid>
-			</muxc:TreeViewItem>
-		</DataTemplate>
+        <DataTemplate x:Key="DirectoryTemplate">
+            <muxc:TreeViewItem>
+                <Grid>
+                    <TextBlock Margin="16,0,0,0" Text="MyText" />
+                </Grid>
+            </muxc:TreeViewItem>
+        </DataTemplate>
 
 
-	</Page.Resources>
+    </Page.Resources>
     <StackPanel>
-		<TextBlock Text="The following tree view should be left-aligned, not centered" />
-		<TextBlock Text="MAKE SURE that SamplesApp is using Fluent Styles BEFORE opening this sample." />
-		<muxc:TreeView ItemTemplateSelector="{StaticResource FSObjectTemplateSelector}" ItemContainerStyle="{StaticResource FileExplorerTreeViewItemStyle}">
+        <TextBlock Text="The following tree view should be left-aligned, not centered" />
+        <TextBlock Text="MAKE SURE that SamplesApp is using Fluent Styles BEFORE opening this sample." />
+        <muxc:TreeView ItemContainerStyle="{StaticResource FileExplorerTreeViewItemStyle}" ItemTemplateSelector="{StaticResource FSObjectTemplateSelector}">
             <muxc:TreeView.RootNodes>
-                <muxc:TreeViewNode x:Name="RootNode" Content="Flavors" IsExpanded="True">
+                <muxc:TreeViewNode
+                    x:Name="RootNode"
+                    Content="Flavors"
+                    IsExpanded="True">
                     <muxc:TreeViewNode.Children>
                         <muxc:TreeViewNode Content="Vanilla" />
                         <muxc:TreeViewNode Content="Strawberry" />

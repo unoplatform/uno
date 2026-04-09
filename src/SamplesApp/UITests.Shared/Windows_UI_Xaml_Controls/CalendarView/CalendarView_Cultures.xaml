@@ -20,7 +20,9 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.ColumnSpan="4" VerticalAlignment="Top">CalendarView with different Cultures</TextBlock>
+        <TextBlock Grid.ColumnSpan="4" VerticalAlignment="Top">
+            CalendarView with different Cultures
+        </TextBlock>
         <CalendarView Grid.Row="1" HorizontalAlignment="Center" />
         <CalendarView
             Grid.Row="1"

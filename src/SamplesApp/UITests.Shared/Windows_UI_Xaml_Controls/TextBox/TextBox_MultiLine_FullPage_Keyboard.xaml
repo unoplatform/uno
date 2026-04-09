@@ -1,55 +1,75 @@
-<UserControl
-	x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_MultiLine_FullPage_Keyboard"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	d:DesignHeight="800"
-	d:DesignWidth="400">
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_MultiLine_FullPage_Keyboard"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="800"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
 
-	<!-- Reproduces: keyboard covers multiline TextBox when it fills the entire page.
-		 The user's scenario is a modal "Session Narrative" editor where the TextBox
-		 contains many lines of text. When the soft keyboard opens, it covers the lower
-		 portion of the TextBox and the view does not scroll to keep the cursor visible.
-		 Expected: content should scroll/push up so the cursor stays visible above the keyboard. -->
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
+    <!--
+        Reproduces: keyboard covers multiline TextBox when it fills the entire page.
+        The user's scenario is a modal "Session Narrative" editor where the TextBox
+        contains many lines of text. When the soft keyboard opens, it covers the lower
+        portion of the TextBox and the view does not scroll to keep the cursor visible.
+        Expected: content should scroll/push up so the cursor stays visible above the keyboard.
+    -->
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-		<!-- Header bar simulating a modal navigation bar -->
-		<Grid Grid.Row="0" Background="#6A1B9A" Padding="16,8">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="Auto" />
-			</Grid.ColumnDefinitions>
+        <!--  Header bar simulating a modal navigation bar  -->
+        <Grid
+            Grid.Row="0"
+            Padding="16,8"
+            Background="#6A1B9A">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-			<Button Grid.Column="0" Content="Cancel"
-					Foreground="White" Background="Transparent"
-					BorderThickness="0" VerticalAlignment="Center" />
+            <Button
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Background="Transparent"
+                BorderThickness="0"
+                Content="Cancel"
+                Foreground="White" />
 
-			<TextBlock Grid.Column="1" Text="Session Narrative"
-					   Foreground="White" FontSize="18" FontWeight="SemiBold"
-					   HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <TextBlock
+                Grid.Column="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="18"
+                FontWeight="SemiBold"
+                Foreground="White"
+                Text="Session Narrative" />
 
-			<Button Grid.Column="2" Content="OK"
-					Foreground="White" Background="Transparent"
-					BorderThickness="0" VerticalAlignment="Center" />
-		</Grid>
+            <Button
+                Grid.Column="2"
+                VerticalAlignment="Center"
+                Background="Transparent"
+                BorderThickness="0"
+                Content="OK"
+                Foreground="White" />
+        </Grid>
 
-		<!-- Full-page multiline TextBox pre-populated with enough text to exceed
-			 the visible area when the keyboard is open -->
-		<TextBox
-			x:Name="FullPageTextBox"
-			Grid.Row="1"
-			AcceptsReturn="True"
-			TextWrapping="Wrap"
-			VerticalAlignment="Stretch"
-			HorizontalAlignment="Stretch"
-			BorderThickness="0"
-			Margin="8,0,8,8" />
-	</Grid>
+        <!--
+            Full-page multiline TextBox pre-populated with enough text to exceed
+            the visible area when the keyboard is open
+        -->
+        <TextBox
+            x:Name="FullPageTextBox"
+            Grid.Row="1"
+            Margin="8,0,8,8"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            AcceptsReturn="True"
+            BorderThickness="0"
+            TextWrapping="Wrap" />
+    </Grid>
 </UserControl>

@@ -2,14 +2,14 @@
     x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_Focus"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ListView"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ListView"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400">
-	<UserControl.Resources>
-		<Style x:Key="NavigationListViewItemStyle" TargetType="ListViewItem">
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style x:Key="NavigationListViewItemStyle" TargetType="ListViewItem">
             <Setter Property="AllowDrop" Value="False" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
@@ -109,9 +109,9 @@
                 </Setter.Value>
             </Setter>
         </Style>
-	</UserControl.Resources>
-	<Grid>
-		<ListView ItemContainerStyle="{StaticResource NavigationListViewItemStyle}" TabNavigation="Local">
+    </UserControl.Resources>
+    <Grid>
+        <ListView ItemContainerStyle="{StaticResource NavigationListViewItemStyle}" TabNavigation="Local">
             <ListViewItem>Test1</ListViewItem>
             <ListViewItem>Test2</ListViewItem>
             <ListViewItem>Test3</ListViewItem>
@@ -128,5 +128,5 @@
             <ListViewItem>Test14</ListViewItem>
             <ListViewItem>Test15</ListViewItem>
         </ListView>
-	</Grid>
+    </Grid>
 </UserControl>
