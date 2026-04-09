@@ -81,6 +81,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			if (IsParentStoryboardRegistered())
 			{
 				_isTimeManagerDriven = true;
+				// Reset timing state so the animation can complete and fire events again.
+				// MUX: CTimeline::OnBegin resets m_IsCompletedEventFired.
+				_tmCompletedEventFired = false;
+				_tmInitialized = false;
 				State = TimelineState.Active;
 				return;
 			}
