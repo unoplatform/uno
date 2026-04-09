@@ -14,9 +14,19 @@ public sealed class BaseActivityCallbacksGenerator : IIncrementalGenerator
 {
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
-		// Static output wrapped in #if __ANDROID__ — preprocessor handles platform filtering.
-		context.RegisterPostInitializationOutput(static ctx =>
+		var platformProvider = context.AnalyzerConfigOptionsProvider.Select(static (options, ct) =>
 		{
+			options.GlobalOptions.TryGetValue("build_property.DefineConstantsProperty", out var constants);
+			return constants?.Contains("__ANDROID__") == true;
+		});
+
+		context.RegisterSourceOutput(platformProvider, static (ctx, isAndroid) =>
+		{
+			if (!isAndroid)
+			{
+				return;
+			}
+
 			ctx.AddSource("BaseActivity.Callbacks.g.cs", Generate());
 		});
 	}

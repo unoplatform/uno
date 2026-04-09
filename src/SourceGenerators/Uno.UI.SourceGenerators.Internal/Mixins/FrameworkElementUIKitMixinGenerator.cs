@@ -15,16 +15,14 @@ public sealed class FrameworkElementUIKitMixinGenerator : IIncrementalGenerator
 {
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
-		// Use PostInitializationOutput so that DependencyPropertyGenerator can see
-		// the [GeneratedDependencyProperty] attributes and generate the Create/Get/Set helpers.
-		// Platform filtering is handled by #if __APPLE_UIKIT__ in the generated code.
+		// PostInitializationOutput makes code visible to both the XAML generator
+		// and DependencyPropertyGenerator. Platform filtering via #if __APPLE_UIKIT__.
 		context.RegisterPostInitializationOutput(static ctx =>
 		{
 			ctx.AddSource("FrameworkElementMixins.UIKit.g.cs", GenerateFrameworkElementMixins());
 		});
 
 		// EffectiveViewport partials need AdditionalFiles, so they use RegisterSourceOutput.
-		// They don't use [GeneratedDependencyProperty] so the ordering doesn't matter.
 		var platformProvider = context.AnalyzerConfigOptionsProvider.Select(static (options, ct) =>
 		{
 			options.GlobalOptions.TryGetValue("build_property.DefineConstantsProperty", out var constants);
