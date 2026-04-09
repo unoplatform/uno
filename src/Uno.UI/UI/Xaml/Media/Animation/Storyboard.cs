@@ -465,6 +465,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		public TimeSpan GetCurrentTime()
 		{
+#if __SKIA__
+			if (_isRegisteredWithTimeManager)
+			{
+				return TimeSpan.FromSeconds(_computedCurrentTime);
+			}
+#endif
 			throw new NotImplementedException();
 		}
 
