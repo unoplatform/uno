@@ -159,7 +159,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_computedCurrentTime = localTime;
 
 			// Determine clock state from duration.
-			if (durationSeconds > 0 && localTime >= durationSeconds - 0.0005)
+			// MUX: Zero-duration timelines expire immediately (progress=1.0).
+			// The check uses >= 0 (not > 0) so that zero-duration storyboards
+			// transition to Filling/Stopped on the first tick.
+			if (durationSeconds >= 0 && localTime >= durationSeconds - 0.0005)
 			{
 				// Expired.
 				_computedCurrentTime = durationSeconds;
