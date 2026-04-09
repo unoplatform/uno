@@ -121,8 +121,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia)]
-		public async Task When_RepeatForever_ShouldLoop() // Flaky - #9080
+		public async Task When_RepeatForever_ShouldLoop() // Previously flaky on Skia due to RepeatBehavior.Forever bug, now fixed
 		{
 			async Task Do()
 			{
