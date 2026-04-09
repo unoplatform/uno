@@ -325,7 +325,7 @@ CONTROL REPLACEMENTS:
 - MediaElement -> MediaPlayerElement
 
 PROPERTY REPLACEMENTS:
-- Visibility="Hidden" -> Visibility="Collapsed"
+- Visibility="Hidden" -> use `Opacity="0"` with `Visibility="Visible"` when layout must be preserved; use `Visibility="Collapsed"` only when removing the element from layout is acceptable
 - TextWrapping="WrapWithOverflow" -> TextWrapping="Wrap"
 - Focusable -> IsTabStop
 
