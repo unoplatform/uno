@@ -513,6 +513,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					State = _hasFillingChildren ? TimelineState.Filling : TimelineState.Stopped;
 				}
 
+#if __SKIA__
+				// Prevent the TimeManager path from firing Completed again for the same run.
+				_completedEventFiredByTimeManager = true;
+#endif
 				OnCompleted();
 			}
 		}
