@@ -1164,10 +1164,6 @@ public sealed class FrameworkElementUIKitMixinGenerator : IIncrementalGenerator
 			sb.AppendLine("\t\tprotected virtual bool IsViewHit()");
 			sb.AppendLine("\t\t{");
 			sb.AppendLine("\t\t\tvar hitCheck =");
-			if (cn == "FrameworkElement")
-			{
-				sb.AppendLine("\t\t\t\tBackground != null &&");
-			}
 			sb.AppendLine("\t\t\t\ttrue;");
 			sb.AppendLine("\t\t\tHitCheckOverridePartial(ref hitCheck);");
 			sb.AppendLine();
