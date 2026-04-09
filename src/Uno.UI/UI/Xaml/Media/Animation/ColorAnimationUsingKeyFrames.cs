@@ -170,6 +170,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 #if __SKIA__
 			CancelDeferredPlay();
+			StopTimeManagerDriven();
 #endif
 			if (_currentAnimator is { IsRunning: true })
 			{
@@ -191,6 +192,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 #if __SKIA__
 			CancelDeferredPlay();
+			StopTimeManagerDriven();
 #endif
 			if (_currentAnimator is { IsRunning: true })
 			{
@@ -205,6 +207,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 #if __SKIA__
 			CancelDeferredPlay();
+			StopTimeManagerDriven();
 #endif
 			_currentAnimator?.Cancel(); // stop could be called before the initialization
 			_startingValue = null;
@@ -419,42 +422,5 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 
 		IEnumerable IKeyFramesProvider.GetKeyFrames() => KeyFrames;
-
-		private bool ReportEachFrame() => true;
-
-		private bool _deferredPlayPending;
-
-		partial void OnFrame(IValueAnimator currentAnimator)
-		{
-			SetValue(currentAnimator.AnimatedValue);
-		}
-
-		private void PlayDeferred()
-		{
-			if (_deferredPlayPending)
-			{
-				return;
-			}
-
-			_deferredPlayPending = true;
-			State = TimelineState.Active;
-
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-			{
-				_deferredPlayPending = false;
-
-				if (State != TimelineState.Active)
-				{
-					return;
-				}
-
-				PlayImmediate();
-			});
-		}
-
-		private void CancelDeferredPlay()
-		{
-			_deferredPlayPending = false;
-		}
 	}
 }
