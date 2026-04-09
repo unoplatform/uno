@@ -145,8 +145,11 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 
 	protected override void Initialize()
 	{
-		CoreDispatcher.DispatchOverride = Win32EventLoop.Schedule;
-		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+		if (CoreDispatcher.DispatchOverride is null)
+		{
+			CoreDispatcher.DispatchOverride = Win32EventLoop.Schedule;
+			CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+		}
 	}
 
 	protected override Task RunLoop()

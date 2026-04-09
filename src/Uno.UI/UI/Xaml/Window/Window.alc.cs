@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -249,7 +250,42 @@ partial class Window
 		UnmarkSecondaryAlcContent(_secondaryAlcContent);
 		_secondaryAlcContent = null;
 
+		// Remove from the static window map so the Window object can be collected.
+		// The native window was already closed during InitializeAlcWindowMode().
+		_appWindowMap.TryRemove(AppWindow, out _);
+
+		// Purge Type-keyed caches (DependencyProperty registry, Style caches, etc.)
+		// that hold references to types from the ALC being torn down. Without this,
+		// these statics prevent the GC from collecting the ALC after Unload().
+		try
+		{
+			Application.CleanupNonDefaultAlcCaches();
+		}
+		catch (Exception ex)
+		{
+			if (typeof(Window).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				typeof(Window).Log().Debug($"[ALC-CLEANUP] CleanupNonDefaultAlcCaches error in CloseAlcWindow: {ex.GetType().Name}: {ex.Message}");
+			}
+		}
+
 		return true;
+	}
+
+	/// <summary>
+	/// Closes all <see cref="Window"/> instances that belong to a non-default (secondary) ALC.
+	/// This replaces reflection-based window cleanup with a proper internal API.
+	/// </summary>
+	internal static void CloseAlcWindows()
+	{
+		foreach (var kvp in _appWindowMap)
+		{
+			var window = kvp.Value;
+			if (window._alcState is not null)
+			{
+				window.CloseAlcWindow();
+			}
+		}
 	}
 
 	/// <summary>

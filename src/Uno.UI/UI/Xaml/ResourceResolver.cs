@@ -609,6 +609,48 @@ namespace Uno.UI
 		}
 
 		/// <summary>
+		/// Removes entries from global resource registrations whose Func delegate targets
+		/// belong to non-default ALCs. Called during ALC teardown.
+		/// </summary>
+		internal static void ClearNonDefaultAlcRegistrations()
+		{
+			RemoveNonDefaultAlcEntries(_registeredDictionariesByUri);
+			RemoveNonDefaultAlcEntries(_registeredDictionariesByFilepath);
+		}
+
+		private static void RemoveNonDefaultAlcEntries(Dictionary<string, Func<ResourceDictionary>> dictionary)
+		{
+			var keysToRemove = new List<string>();
+			foreach (var kvp in dictionary)
+			{
+				if (kvp.Value is not { } func)
+				{
+					continue;
+				}
+
+				// Check both the target instance and the method's declaring type.
+				// Static delegates (Target == null) can still reference a non-default ALC
+				// via Method.DeclaringType.
+				var assembly = func.Target?.GetType().Assembly
+					?? func.Method.DeclaringType?.Assembly;
+
+				if (assembly is not null)
+				{
+					var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly);
+					if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+					{
+						keysToRemove.Add(kvp.Key);
+					}
+				}
+			}
+
+			foreach (var key in keysToRemove)
+			{
+				dictionary.Remove(key);
+			}
+		}
+
+		/// <summary>
 		/// Register a dictionary for a given source with ALC awareness.
 		/// When called from a non-default AssemblyLoadContext, the registration is scoped to that ALC.
 		/// </summary>

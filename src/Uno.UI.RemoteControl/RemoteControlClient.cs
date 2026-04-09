@@ -1110,8 +1110,9 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 		_processors.Clear();
 
-		// Stop the keep alive timer
+		// Stop the keep alive timer and status monitoring
 		Interlocked.Exchange(ref _keepAliveTimer, null)?.Dispose();
+		_status.Dispose();
 
 		// Remove from the active clients list
 		lock (_clientsLock)

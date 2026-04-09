@@ -100,6 +100,27 @@ namespace Microsoft.UI.Xaml
 				table = null;
 				return false;
 			}
+
+			/// <summary>
+			/// Removes all entries whose Type key belongs to a non-default (collectible) ALC.
+			/// </summary>
+			internal void RemoveNonDefaultAlcEntries()
+			{
+				var keysToRemove = new List<Type>();
+				foreach (Type key in _entries.Keys)
+				{
+					var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
+					if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+					{
+						keysToRemove.Add(key);
+					}
+				}
+
+				foreach (var key in keysToRemove)
+				{
+					_entries.Remove(key);
+				}
+			}
 		}
 	}
 }
