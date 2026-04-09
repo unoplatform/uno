@@ -12,9 +12,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		private bool ReportEachFrame() => true;
 
-		// Whether ComputeState-driven playback is active.
 		private bool _isTimeManagerDriven;
-		private bool _completedFired;
 		private bool _deferredPlayPending;
 
 		partial void OnFrame(IValueAnimator currentAnimator)
@@ -23,35 +21,23 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// On Skia, when driven by TimeManager (parent Storyboard registered),
-		/// Begin() just sets state to Active and resolves theme resources.
-		/// MUX: CAnimation::OnBegin()
-		/// </summary>
-		private void BeginViaTimeManager()
-		{
-			_isTimeManagerDriven = true;
-			_completedFired = false;
-			_startingValue = ComputeFromValue();
-
-			// Pre-compute final value for HoldValue/SkipToFill.
-			// MUX: In WinUI, OnBegin reads base values; the final keyframe value
-			// is read at tick time but we cache it here for the HoldValue path.
-			var lastFrame = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault();
-			if (lastFrame != null)
-			{
-				_finalValue = lastFrame.Value;
-			}
-		}
-
-		/// <summary>
-		/// Defers animator initialization to the next dispatcher tick.
-		/// Falls back to ComputeState path if driven by TimeManager.
+		/// Detect if this animation is a child of a TimeManager-registered Storyboard
+		/// and use the ComputeState/UpdateAnimation path if so.
 		/// </summary>
 		private void PlayDeferred()
 		{
-			if (this.GetParent()?.GetParent() is Storyboard sb && sb._isRegisteredWithTimeManager)
+			if (IsParentStoryboardRegistered())
 			{
-				BeginViaTimeManager();
+				_isTimeManagerDriven = true;
+				_startingValue = ComputeFromValue();
+
+				// Pre-compute final value for HoldValue/SkipToFill.
+				var lastFrame = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault();
+				if (lastFrame != null)
+				{
+					_finalValue = lastFrame.Value;
+				}
+
 				return;
 			}
 
@@ -83,11 +69,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// Called by TimeManager via Storyboard.ComputeState() → child.ComputeState().
-		/// Computes the current keyframe segment from parent time, interpolates with
-		/// easing, and applies the value.
-		///
-		/// MUX: CAnimation::UpdateAnimationUsingKeyFrames (animation.cpp lines 247-369)
+		/// Called by Storyboard.ComputeState via child propagation.
+		/// Computes timing (base class) then interpolates keyframe values.
 		/// </summary>
 		internal override void ComputeState(ComputeStateParams parentParams)
 		{
@@ -96,114 +79,164 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
-			if (State == TimelineState.Stopped)
+			// Base timing computation: clock state, progress, iteration.
+			ComputeStateBase(parentParams);
+
+			// Apply values based on computed state.
+			UpdateAnimationCore();
+		}
+
+		/// <summary>
+		/// Applies interpolated keyframe value based on computed clock state.
+		///
+		/// MUX: CAnimation::UpdateAnimation → UpdateAnimationUsingKeyFrames
+		/// </summary>
+		private void UpdateAnimationCore()
+		{
+			if (!_isTimeManagerDriven)
 			{
 				return;
 			}
 
-			if (!parentParams.HasTime)
+			switch (TimeManagerClockState)
 			{
-				return;
+				case InternalClockState.Active:
+					UpdateUsingKeyFrames();
+					break;
+
+				case InternalClockState.Filling:
+					// Apply final interpolated value and fire completion.
+					UpdateUsingKeyFrames();
+					if (!_tmCompletedEventFired)
+					{
+						_tmCompletedEventFired = true;
+						State = TimelineState.Filling;
+						OnCompleted();
+					}
+					break;
+
+				case InternalClockState.Stopped:
+					if (_tmInitialized && !_tmCompletedEventFired)
+					{
+						_tmCompletedEventFired = true;
+						ClearValue();
+						State = TimelineState.Stopped;
+						OnCompleted();
+					}
+					FinalizeAnimationIteration();
+					break;
 			}
+		}
 
-			var beginTime = BeginTime?.TotalSeconds ?? 0.0;
-			var parentTime = parentParams.Time;
-
-			if (parentTime < beginTime)
-			{
-				return;
-			}
-
-			// Compute local time and duration.
-			var localTime = parentTime - beginTime;
-			var duration = GetCalculatedDuration();
-			var durationSeconds = duration.TotalSeconds;
-
-			// Sort keyframes by KeyTime.
-			// MUX: m_pKeyFrames->GetSortedCollection()
+		/// <summary>
+		/// Finds the current keyframe segment from progress, interpolates
+		/// with easing, and applies the value.
+		///
+		/// MUX: CAnimation::UpdateAnimationUsingKeyFrames (animation.cpp lines 247-369)
+		/// </summary>
+		private void UpdateUsingKeyFrames()
+		{
 			var sortedFrames = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).ToList();
 			if (sortedFrames.Count == 0)
 			{
 				return;
 			}
 
-			// Check expiration.
-			if (durationSeconds > 0 && localTime >= durationSeconds - 0.0005)
-			{
-				if (!_completedFired)
-				{
-					if (FillBehavior == FillBehavior.HoldEnd)
-					{
-						// Apply the last keyframe value and hold.
-						// MUX: progress=1.0 → last keyframe value
-						var lastFrame = sortedFrames[^1];
-						SetValue(lastFrame.Value);
-						State = TimelineState.Filling;
-					}
-					else
-					{
-						ClearValue();
-						State = TimelineState.Stopped;
-					}
+			var progress = TimeManagerProgress;
+			var duration = GetCalculatedDuration();
+			var durationSeconds = duration.TotalSeconds;
 
-					_completedFired = true;
-					OnCompleted();
+			// Walk through sorted keyframes to find the current segment.
+			// MUX: while loop at line 298 — finds segment where progress falls.
+			var fromValue = _startingValue ?? 0.0;
+			double cumulativePercent = 0;
+			double segmentPercent = 0;
+			int currentSegment = 0;
+
+			// Set initial From/To to base value (MUX: lines 275-276).
+			double toValue = fromValue;
+
+			if (sortedFrames.Count > 0)
+			{
+				var firstFrame = sortedFrames[0];
+				var firstPercent = durationSeconds > 0
+					? firstFrame.KeyTime.TimeSpan.TotalSeconds / durationSeconds
+					: 0;
+
+				if (firstPercent > 0)
+				{
+					// First keyframe not at time 0: interpolate from base value.
+					segmentPercent = firstPercent;
 				}
 
-				return;
+				toValue = firstFrame.Value;
 			}
 
-			// Active: find current keyframe segment and interpolate.
-			// MUX: UpdateAnimationUsingKeyFrames — find segment from progress.
-			var fromValue = _startingValue ?? 0.0;
-			var previousKeyTime = 0.0;
-
-			for (int i = 0; i < sortedFrames.Count; i++)
+			// Advance through segments until we find the one containing current progress.
+			// MUX: while (nCurrentSegment < frameCount && keyframe.percent <= progress)
+			while (currentSegment < sortedFrames.Count)
 			{
-				var frame = sortedFrames[i];
-				var frameTime = frame.KeyTime.TimeSpan.TotalSeconds;
+				var frame = sortedFrames[currentSegment];
+				var framePercent = durationSeconds > 0
+					? frame.KeyTime.TimeSpan.TotalSeconds / durationSeconds
+					: 1.0;
 
-				if (localTime < frameTime || i == sortedFrames.Count - 1)
+				if (framePercent > progress)
 				{
-					// This is the target segment.
-					// MUX: Read keyframe value FRESH (animation.cpp line 289)
-					var toValue = frame.Value;
-					var segmentDuration = frameTime - previousKeyTime;
-
-					if (segmentDuration <= 0)
-					{
-						// Zero-duration segment: apply target value immediately.
-						// MUX: DiscreteKeyFrame or time-0 keyframe
-						SetValue(toValue);
-					}
-					else
-					{
-						// Compute segment-local time and apply easing.
-						var segmentLocalTime = localTime - previousKeyTime;
-						var easing = frame.GetEasingFunction();
-
-						double value;
-						if (easing != null)
-						{
-							value = easing.Ease(segmentLocalTime, fromValue, toValue, segmentDuration);
-						}
-						else
-						{
-							// Linear interpolation (no easing).
-							var t = segmentLocalTime / segmentDuration;
-							value = fromValue + (toValue - fromValue) * t;
-						}
-
-						SetValue(value);
-					}
-
 					break;
 				}
 
 				// Move to next segment.
-				fromValue = frame.Value;
-				previousKeyTime = frameTime;
+				// MUX: lines 301-312
+				currentSegment++;
+				fromValue = toValue;
+				cumulativePercent += segmentPercent;
+
+				if (currentSegment < sortedFrames.Count)
+				{
+					var nextFrame = sortedFrames[currentSegment];
+					toValue = nextFrame.Value;
+					segmentPercent = (durationSeconds > 0
+						? nextFrame.KeyTime.TimeSpan.TotalSeconds / durationSeconds
+						: 1.0) - cumulativePercent;
+				}
+				else
+				{
+					// Past last keyframe: hold last value.
+					// MUX: lines 316-332
+					var lastFrame = sortedFrames[^1];
+					toValue = lastFrame.Value;
+					segmentPercent = cumulativePercent < 1.0
+						? 1.0 - cumulativePercent
+						: 1.0;
+				}
 			}
+
+			// Compute segment-local progress.
+			// MUX: rSegmentProgress = (m_rCurrentProgress - rCumulativePercentSpan) / rSegmentPercentSpan (line 339)
+			var segmentProgress = segmentPercent > 0
+				? (progress - cumulativePercent) / segmentPercent
+				: 1.0;
+			segmentProgress = Math.Clamp(segmentProgress, 0.0, 1.0);
+
+			// Apply per-keyframe easing.
+			// MUX: GetEffectiveProgress (line 343)
+			var targetFrameIndex = Math.Min(currentSegment, sortedFrames.Count - 1);
+			var easing = sortedFrames[targetFrameIndex].GetEasingFunction();
+
+			double value;
+			if (easing != null)
+			{
+				// IEasingFunction.Ease takes (currentTime, startValue, finalValue, duration).
+				value = easing.Ease(segmentProgress, fromValue, toValue, 1.0);
+			}
+			else
+			{
+				// Linear interpolation.
+				value = fromValue + (toValue - fromValue) * segmentProgress;
+			}
+
+			SetValue(value);
 		}
 
 		partial void DisposePartial()
@@ -213,7 +246,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		partial void UseHardware()
 		{
-			// No-op on Skia — no GPU acceleration for keyframe animations.
+			// No-op on Skia.
 		}
 
 		// HoldValue is intentionally left as a no-op on Skia (no partial body).
@@ -224,7 +257,21 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private void StopTimeManagerDriven()
 		{
 			_isTimeManagerDriven = false;
-			_completedFired = false;
+			ResetTimeManagerState();
+		}
+
+		private bool IsParentStoryboardRegistered()
+		{
+			object current = this;
+			while ((current = (current as DependencyObject)?.GetParent()) != null)
+			{
+				if (current is Storyboard sb)
+				{
+					return sb._isRegisteredWithTimeManager;
+				}
+			}
+
+			return false;
 		}
 	}
 }

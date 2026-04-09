@@ -436,15 +436,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			State == TimelineState.Active || State == TimelineState.Filling || State == TimelineState.Paused;
 
 		/// <summary>
-		/// Called by TimeManager.Tick() to advance the timeline's state.
-		/// Subclasses override to compute local progress from parent time,
-		/// apply animation values, and propagate to children.
+		/// Called by TimeManager.Tick() or parent Storyboard to advance state.
+		/// Animation types override to call ComputeStateBase() (timing) + UpdateAnimation() (values).
+		/// Storyboard overrides for timing delta management and child propagation.
 		/// MUX: CTimeline::ComputeState(parentParams, hasNoExternalReferences)
 		/// </summary>
 		internal virtual void ComputeState(ComputeStateParams parentParams)
 		{
-			// Base implementation is a no-op. Concrete timeline types
-			// override this in Phase 2+ to implement the WinUI state machine.
 		}
 
 		/// <summary>
