@@ -60,10 +60,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// MUX: GetNaturalDuration (line 205)
 			var duration = GetCalculatedDuration();
 			var durationSeconds = duration.TotalSeconds;
-			var hasDuration = durationSeconds > 0 && durationSeconds < double.MaxValue;
+			var hasDuration = durationSeconds >= 0 && durationSeconds < double.MaxValue;
 
 			// Compute expiration time.
 			// MUX: ComputeExpirationTime (line 209)
+			// Zero-duration animations expire at beginTime (WinUI: rDurationValue <= 0 → progress=1.0).
 			double? expirationTime = null;
 			if (hasDuration)
 			{
@@ -237,13 +238,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return repeat.Duration.TotalSeconds;
 			}
 
-			if (repeat.HasCount)
+			if (repeat.HasCount && repeat.Count > 0)
 			{
 				scalingFactor = repeat.Count;
 			}
 			else
 			{
-				// Default: 1 iteration.
+				// Default RepeatBehavior (Count=0 in Uno's struct default) means "play once".
+				// WinUI's default RepeatBehavior has Count=1.
 				scalingFactor = 1.0;
 			}
 
