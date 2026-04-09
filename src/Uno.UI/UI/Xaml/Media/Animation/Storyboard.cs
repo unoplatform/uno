@@ -130,20 +130,24 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #if __SKIA__
 			// MUX: CStoryboard::BeginPrivate — register with TimeManager and set timing flags.
 			// The TimeManager will call ComputeState() on the next tick (before layout).
-			_isStopped = false;
-			_isBeginning = true;
-			_lastParentTime = double.MaxValue;
-			_isPausedForTimeManager = false;
-			_isResuming = false;
-			_isSeeking = false;
-
-			if (!_isRegisteredWithTimeManager)
+			// Only register if there are children — empty storyboards complete via dispatcher callback.
+			if (Children is { Count: > 0 } && Uno.UI.FeatureConfiguration.Timeline.UseTimeManager)
 			{
-				TimeManager.Instance.AddTimeline(this);
-			}
+				_isStopped = false;
+				_isBeginning = true;
+				_lastParentTime = double.MaxValue;
+				_isPausedForTimeManager = false;
+				_isResuming = false;
+				_isSeeking = false;
 
-			// Request an immediate tick so the first ComputeState happens before the next layout.
-			Uno.UI.Xaml.Core.CoreServices.RequestAdditionalFrame();
+				if (!_isRegisteredWithTimeManager)
+				{
+					TimeManager.Instance.AddTimeline(this);
+				}
+
+				// Request an immediate tick so the first ComputeState happens before the next layout.
+				Uno.UI.Xaml.Core.CoreServices.RequestAdditionalFrame();
+			}
 #endif
 
 			Play();
@@ -440,6 +444,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				{
 					State = _hasFillingChildren ? TimelineState.Filling : TimelineState.Stopped;
 				}
+
+#if __SKIA__
+				// All children completed — remove from TimeManager so we stop ticking.
+				_isStopped = true;
+				if (_isRegisteredWithTimeManager)
+				{
+					TimeManager.Instance.RemoveTimeline(this);
+				}
+#endif
 
 				OnCompleted();
 			}

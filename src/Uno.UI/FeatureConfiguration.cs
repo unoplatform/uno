@@ -491,6 +491,21 @@ namespace Uno.UI
 			public static bool FailOnUnknownProperties { get; set; }
 		}
 
+		public static class Timeline
+		{
+			/// <summary>
+			/// When true, animations are driven by the central TimeManager (ported from WinUI)
+			/// which ticks all animations before layout. When false, animations use the legacy
+			/// per-animation timer mechanism.
+			/// </summary>
+			/// <remarks>
+			/// This is a transitional flag. The TimeManager path is being incrementally ported
+			/// from WinUI's CTimeManager. Set to true to enable the new timing infrastructure.
+			/// Default: false (opt-in during development).
+			/// </remarks>
+			public static bool UseTimeManager { get; set; }
+		}
+
 		public static class Rendering
 		{
 			/// <summary>
