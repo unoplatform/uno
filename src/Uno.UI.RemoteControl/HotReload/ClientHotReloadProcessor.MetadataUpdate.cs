@@ -95,9 +95,12 @@ partial class ClientHotReloadProcessor
 #endif
 
 	/// <summary>
-	/// Run on UI thread to reload the visual tree with updated types
+	/// Run on UI thread to reload the visual tree with updated types.
+	/// Called by HotDesign via reflection — do not remove.
 	/// </summary>
+#pragma warning disable IDE0051 // Invoked by HotDesign via reflection (ReflectionExtensions.ReloadUI)
 	private static async Task ReloadWithUpdatedTypes(HotReloadClientOperation? hrOp, Window window, Type[] updatedTypes)
+#pragma warning restore IDE0051
 	{
 		// Invoked by hot-design (... until we expose real API)
 		if (Instance is { } instance)
