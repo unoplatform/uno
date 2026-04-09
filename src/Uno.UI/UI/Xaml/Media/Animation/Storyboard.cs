@@ -320,6 +320,37 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		public void SeekAlignedToLastTick(TimeSpan offset)
 		{
+#if __SKIA__
+			if (_isRegisteredWithTimeManager)
+			{
+				// MUX: CStoryboard::SeekAlignedToLastTick (storyboard.cpp lines 625-697)
+				// Synchronously applies animation values at the seeked time.
+				// Uses m_lastParentTime (snapped) instead of current global time.
+
+				// Set the pending seek.
+				_pendingSeekTime = offset.TotalSeconds;
+				_isSeeking = true;
+
+				// Synchronously compute state at the last known parent time.
+				// This immediately updates animation values so they're readable
+				// right after this call returns (required by VSM SkipToFill pattern).
+				var syncParams = new ComputeStateParams()
+				{
+					HasTime = true,
+					Time = _lastParentTime != double.MaxValue ? _lastParentTime : 0.0,
+					IsPaused = _isPausedForTimeManager,
+				};
+				ComputeState(syncParams);
+
+				// Queue another seek for the next real tick to correct the time delta
+				// with the actual global clock.
+				// MUX: storyboard.cpp line 691
+				_pendingSeekTime = offset.TotalSeconds;
+				_isSeeking = true;
+
+				return;
+			}
+#endif
 			if (Children != null)
 			{
 				for (int i = 0; i < Children.Count; i++)
@@ -332,6 +363,16 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 		public void SkipToFill()
 		{
+#if __SKIA__
+			if (_isRegisteredWithTimeManager)
+			{
+				// MUX: SkipToFill uses SeekAlignedToLastTick to seek to the end.
+				// This synchronously applies the final animation values.
+				var duration = GetNaturalDurationFromChildren();
+				SeekAlignedToLastTick(duration);
+				return;
+			}
+#endif
 			if (Children != null)
 			{
 				for (int i = 0; i < Children.Count; i++)
