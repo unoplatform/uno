@@ -282,29 +282,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// and _tmCurrentProgress.
 		///
 		/// MUX: CAnimation::UpdateAnimation (animation.cpp lines 41-245)
+		///
+		/// IMPORTANT: The base implementation intentionally does NOT fire OnCompleted
+		/// or apply animated values. Each concrete animation type (DoubleAnimation,
+		/// ColorAnimation, *UsingKeyFrames) handles value application and event firing
+		/// in its own ComputeState, AFTER ComputeStateBase returns, so that SetValue()
+		/// is always called before OnCompleted() fires (RunAsync continuation correctness).
 		/// </summary>
 		internal virtual void UpdateAnimation(ComputeStateParams parentParams)
 		{
-			// Base implementation handles common state transitions.
-			switch (_tmClockState)
-			{
-				case InternalClockState.Stopped:
-					if (_tmInitialized && !_tmCompletedEventFired)
-					{
-						_tmCompletedEventFired = true;
-						OnCompleted();
-					}
-					FinalizeAnimationIteration();
-					break;
-
-				case InternalClockState.Filling:
-					if (_tmInitialized && !_tmCompletedEventFired)
-					{
-						_tmCompletedEventFired = true;
-						OnCompleted();
-					}
-					break;
-			}
 		}
 
 		/// <summary>

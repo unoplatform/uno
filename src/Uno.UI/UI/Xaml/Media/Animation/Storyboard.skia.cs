@@ -35,7 +35,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		/// <summary>
 		/// Computes the natural duration of this Storyboard from its children.
-		/// MUX: CParallelTimeline resolves Duration.Automatic to max of children.
+		/// MUX: CParallelTimeline resolves Duration.Automatic to max of children's
+		/// effective durations (accounting for RepeatBehavior and AutoReverse).
 		/// </summary>
 		private TimeSpan GetNaturalDurationFromChildren()
 		{
@@ -44,15 +45,46 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return Duration.TimeSpan;
 			}
 
-			// Duration.Automatic: max of children's calculated durations.
+			// Duration.Automatic: max of children's effective durations.
 			var maxDuration = TimeSpan.Zero;
 			if (Children is { Count: > 0 })
 			{
 				for (int i = 0; i < Children.Count; i++)
 				{
-					var childDuration = Children[i].GetCalculatedDuration();
-					var childBeginTime = Children[i].BeginTime ?? TimeSpan.Zero;
-					var childTotal = childBeginTime + childDuration;
+					var child = Children[i];
+
+					// A child with RepeatBehavior.Forever makes the storyboard infinite.
+					// MUX: CParallelTimeline::GetNaturalDuration considers effective duration.
+					if (child.RepeatBehavior.Type == RepeatBehaviorType.Forever)
+					{
+						return TimeSpan.MaxValue;
+					}
+
+					var childSingleDuration = child.GetCalculatedDuration();
+					var childBeginTime = child.BeginTime ?? TimeSpan.Zero;
+
+					// Compute effective duration considering RepeatBehavior and AutoReverse.
+					TimeSpan effectiveDuration;
+					var repeat = child.RepeatBehavior;
+					if (repeat.HasDuration)
+					{
+						effectiveDuration = repeat.Duration;
+					}
+					else if (repeat.HasCount && repeat.Count > 0)
+					{
+						var scale = repeat.Count;
+						if (child.AutoReverse) { scale *= 2.0; }
+						effectiveDuration = TimeSpan.FromSeconds(childSingleDuration.TotalSeconds * scale);
+					}
+					else
+					{
+						// Default (play once): scale by 2 if AutoReverse, else single duration.
+						effectiveDuration = child.AutoReverse
+							? TimeSpan.FromSeconds(childSingleDuration.TotalSeconds * 2.0)
+							: childSingleDuration;
+					}
+
+					var childTotal = childBeginTime + effectiveDuration;
 					if (childTotal > maxDuration)
 					{
 						maxDuration = childTotal;
