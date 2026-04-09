@@ -443,6 +443,7 @@ public partial class ClientHotReloadProcessor
 
 		private void SendEvent()
 		{
+#if HAS_UNO_WINUI
 			try
 			{
 				var client = RemoteControlClient.Instance;
@@ -467,6 +468,7 @@ public partial class ClientHotReloadProcessor
 			{
 				// Best-effort — never fail the operation because of a notification error.
 			}
+#endif
 		}
 	}
 }
