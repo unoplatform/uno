@@ -19,7 +19,7 @@ public partial class RemoteControlClient
 
 	private class StatusSink : DevServerDiagnostics.ISink, IDisposable
 	{
-		private readonly RemoteControlClient _owner;
+		private RemoteControlClient? _owner;
 		private ConnectionState _state = ConnectionState.Idle;
 		private ConnectionError? _error;
 
@@ -46,7 +46,7 @@ public partial class RemoteControlClient
 		}
 
 		private void NotifyStatusChanged()
-			=> _owner.StatusChanged?.Invoke(_owner, BuildStatus());
+			=> _owner?.StatusChanged?.Invoke(_owner, BuildStatus());
 
 		#region Connection status
 		public void ReportActiveConnection(Connection? connection)
@@ -149,6 +149,12 @@ public partial class RemoteControlClient
 		{
 			Interlocked.Exchange(ref _pongTimeout, null)?.Dispose();
 			_sinceLastPing?.Stop();
+
+			// Break the StatusSink → RemoteControlClient → HotDesign → ALC reference chain.
+			// StatusSink instances are captured in AsyncLocal (via DevServerDiagnostics.Current)
+			// and persist in thread ExecutionContext even after disposal. Nulling _owner ensures
+			// the captured StatusSink no longer roots the RemoteControlClient object graph.
+			_owner = null;
 		}
 		#endregion
 

@@ -134,6 +134,12 @@ partial class Application
 		// ResourceResolver — remove Func delegates whose Target is from a non-default ALC
 		ResourceResolver.ClearNonDefaultAlcRegistrations();
 
+		// ResourceDictionary — invalidate _keyNotFoundCache on the host Application.
+		// The cache accumulates ResourceKey entries with TypeKey referencing ALC types.
+		// These entries pin RuntimeType → LoaderAllocator → ALC.
+		// Clearing is cheap — entries are re-cached on demand.
+		_current?.Resources.InvalidateNotFoundCache(propagate: false);
+
 		// SystemThemeHelper — unsubscribe event handlers from non-default ALCs
 		Uno.Helpers.Theming.SystemThemeHelper.ClearNonDefaultAlcHandlers();
 

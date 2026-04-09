@@ -1114,6 +1114,12 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		Interlocked.Exchange(ref _keepAliveTimer, null)?.Dispose();
 		_status.Dispose();
 
+		// Clear the AsyncLocal diagnostic sink for the current execution context.
+		// StatusSink is captured in thread ExecutionContext via DevServerDiagnostics.Current
+		// (set in Connection.EnsureActive). Without clearing, the StatusSink → owner → HotDesign
+		// chain persists in any ExecutionContext that flowed from the connection thread.
+		DevServerDiagnostics.ResetCurrent();
+
 		// Remove from the active clients list
 		lock (_clientsLock)
 		{
