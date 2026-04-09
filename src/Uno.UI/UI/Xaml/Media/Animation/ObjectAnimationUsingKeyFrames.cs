@@ -135,6 +135,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 #if __SKIA__
 			CancelDeferredPlay();
+			StopTimeManagerDriven();
 #endif
 			// We explicitly call the Stop of the _frameScheduler before the Reset dispose it,
 			// so the EndReason will be Stopped instead of Aborted.
@@ -199,6 +200,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 #if __SKIA__
 			CancelDeferredPlay();
+			StopTimeManagerDriven();
 #endif
 			// Set value to last keytime and set state to filling
 			_frameScheduler?.Dispose();
@@ -217,6 +219,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 #if __SKIA__
 			CancelDeferredPlay();
+			StopTimeManagerDriven();
 #endif
 			Reset();
 		}

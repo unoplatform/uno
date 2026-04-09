@@ -424,6 +424,48 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		private protected virtual void OnThemeChanged() { }
 
+#if __SKIA__
+		#region TimeManager integration (WinUI CTimeline)
+
+		/// <summary>
+		/// Whether this timeline is in an active state (Active or NotStarted).
+		/// Used by TimeManager to determine when to remove a timeline from the active list.
+		/// MUX: CTimeline::IsInActiveState()
+		/// </summary>
+		internal virtual bool IsInActiveState =>
+			State == TimelineState.Active || State == TimelineState.Filling || State == TimelineState.Paused;
+
+		/// <summary>
+		/// Called by TimeManager.Tick() to advance the timeline's state.
+		/// Subclasses override to compute local progress from parent time,
+		/// apply animation values, and propagate to children.
+		/// MUX: CTimeline::ComputeState(parentParams, hasNoExternalReferences)
+		/// </summary>
+		internal virtual void ComputeState(ComputeStateParams parentParams)
+		{
+			// Base implementation is a no-op. Concrete timeline types
+			// override this in Phase 2+ to implement the WinUI state machine.
+		}
+
+		/// <summary>
+		/// Called when this timeline is added to the TimeManager's active list.
+		/// MUX: CTimeline::OnAddToTimeManager()
+		/// </summary>
+		internal virtual void OnAddToTimeManager()
+		{
+		}
+
+		/// <summary>
+		/// Called when this timeline is removed from the TimeManager's active list.
+		/// MUX: CTimeline::OnRemoveFromTimeManager()
+		/// </summary>
+		internal virtual void OnRemoveFromTimeManager()
+		{
+		}
+
+		#endregion
+#endif
+
 		~Timeline()
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Dispose(false));

@@ -127,6 +127,25 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_replayCount = 1;
 			_activeDuration.Restart();
 
+#if __SKIA__
+			// MUX: CStoryboard::BeginPrivate — register with TimeManager and set timing flags.
+			// The TimeManager will call ComputeState() on the next tick (before layout).
+			_isStopped = false;
+			_isBeginning = true;
+			_lastParentTime = double.MaxValue;
+			_isPausedForTimeManager = false;
+			_isResuming = false;
+			_isSeeking = false;
+
+			if (!_isRegisteredWithTimeManager)
+			{
+				TimeManager.Instance.AddTimeline(this);
+			}
+
+			// Request an immediate tick so the first ComputeState happens before the next layout.
+			Uno.UI.Xaml.Core.CoreServices.RequestAdditionalFrame();
+#endif
+
 			Play();
 		}
 
@@ -178,6 +197,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				);
 			}
 
+#if __SKIA__
+			_isStopped = true;
+			_isPausedForTimeManager = false;
+			_isResuming = false;
+			_isBeginning = false;
+			_isSeeking = false;
+
+			if (_isRegisteredWithTimeManager)
+			{
+				TimeManager.Instance.RemoveTimeline(this);
+			}
+#endif
+
 			State = TimelineState.Stopped;
 			_hasFillingChildren = false;
 
@@ -211,6 +243,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
+#if __SKIA__
+			// MUX: CStoryboard::Resume — set resuming flag for next ComputeState tick.
+			_isPausedForTimeManager = false;
+			_isResuming = true;
+			Uno.UI.Xaml.Core.CoreServices.RequestAdditionalFrame();
+#endif
+
 			if (Children != null && Children.Count > 0)
 			{
 				State = TimelineState.Active;
@@ -240,6 +279,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				return;
 			}
+
+#if __SKIA__
+			// MUX: CStoryboard::Pause — set paused flag for ComputeState.
+			// m_lastParentTime is already snapped and will serve as the pause start time.
+			_isPausedForTimeManager = true;
+#endif
 
 			State = TimelineState.Paused;
 
@@ -294,6 +339,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		internal void Deactivate()
 		{
+#if __SKIA__
+			_isStopped = true;
+			_isPausedForTimeManager = false;
+			_isResuming = false;
+			_isBeginning = false;
+			_isSeeking = false;
+
+			if (_isRegisteredWithTimeManager)
+			{
+				TimeManager.Instance.RemoveTimeline(this);
+			}
+#endif
+
 			State = TimelineState.Stopped;
 			_hasFillingChildren = false;
 
