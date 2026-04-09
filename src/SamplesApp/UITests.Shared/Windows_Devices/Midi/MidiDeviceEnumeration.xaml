@@ -89,7 +89,7 @@
                         Style="{StaticResource DeviceListStyle}" />
                     <ListView
                         x:Name="inputDeviceProperties"
-							  ItemsSource="{x:Bind InputDeviceProperties}"
+                        ItemsSource="{x:Bind InputDeviceProperties}"
                         Style="{StaticResource DevicePropertiesStyle}" />
 
                     <!--  List output MIDI devices  -->
@@ -106,12 +106,12 @@
                     <!--  Output MIDI device details  -->
                     <ListView
                         x:Name="outputDevices"
-							  ItemsSource="{x:Bind OutputDevices}"
+                        ItemsSource="{x:Bind OutputDevices}"
                         SelectionChanged="outputDevices_SelectionChanged"
                         Style="{StaticResource DeviceListStyle}" />
                     <ListView
                         x:Name="outputDeviceProperties"
-							  ItemsSource="{x:Bind OutputDeviceProperties}"
+                        ItemsSource="{x:Bind OutputDeviceProperties}"
                         Style="{StaticResource DevicePropertiesStyle}" />
                 </RelativePanel>
             </ScrollViewer>

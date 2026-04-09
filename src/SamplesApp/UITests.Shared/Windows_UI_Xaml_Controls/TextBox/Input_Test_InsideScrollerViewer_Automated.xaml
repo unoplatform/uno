@@ -1,103 +1,117 @@
 ﻿<UserControl
-	x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_InsideScrollerViewer_Automated"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_InsideScrollerViewer_Automated"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<ScrollViewer>
-		<StackPanel Padding="16,8,16,16">
-			<Button x:Name="UnfocusButton">Unfocus</Button>			
-			
-			<!-- Normal Label -->
-			<TextBlock Text="Normal"
-								 FontSize="16" />
+    <ScrollViewer>
+        <StackPanel Padding="16,8,16,16">
+            <Button x:Name="UnfocusButton">Unfocus</Button>
 
-			<!-- Normal TextBox -->
-			<Border BorderBrush="Black"
-							BorderThickness="2"
-							Margin="0,8,0,0"
-							Padding="4">
-				<TextBox x:Name="NormalTextBox"
-								 FontSize="16"/>
-			</Border>
+            <!--  Normal Label  -->
+            <TextBlock FontSize="16" Text="Normal" />
 
-			<!-- Filled Label -->
-			<TextBlock Text="Filled"
-								 FontSize="16"
-								 Margin="0,16,0,0" />
+            <!--  Normal TextBox  -->
+            <Border
+                Margin="0,8,0,0"
+                Padding="4"
+                BorderBrush="Black"
+                BorderThickness="2">
+                <TextBox x:Name="NormalTextBox" FontSize="16" />
+            </Border>
 
-			<!-- Filled TextBox -->
-			<Border BorderBrush="Black"
-							BorderThickness="2"
-							Margin="0,8,0,0"
-							Padding="4">
-				<TextBox x:Name="FilledTextBox"
-								 Text="Text"
-								 FontSize="16" />
-			</Border>
+            <!--  Filled Label  -->
+            <TextBlock
+                Margin="0,16,0,0"
+                FontSize="16"
+                Text="Filled" />
 
-			<!-- PlaceholderText Label -->
-			<TextBlock Text="PlaceholderText"
-								 FontSize="16"
-								 Margin="0,16,0,0"/>
+            <!--  Filled TextBox  -->
+            <Border
+                Margin="0,8,0,0"
+                Padding="4"
+                BorderBrush="Black"
+                BorderThickness="2">
+                <TextBox
+                    x:Name="FilledTextBox"
+                    FontSize="16"
+                    Text="Text" />
+            </Border>
 
-			<!-- PlaceholderText TextBox -->
-			<Border BorderBrush="Black"
-							BorderThickness="2"
-							Margin="0,8,0,0"
-							Padding="4">
-				<TextBox x:Name="PlaceholderTextTextBox"
-								 PlaceholderText="PlaceholderText"
-								 FontSize="16" />
-			</Border>
+            <!--  PlaceholderText Label  -->
+            <TextBlock
+                Margin="0,16,0,0"
+                FontSize="16"
+                Text="PlaceholderText" />
 
-			<!-- Disabled Label -->
-			<TextBlock Text="Disabled"
-								 FontSize="16"
-								 Margin="0,16,0,0" />
+            <!--  PlaceholderText TextBox  -->
+            <Border
+                Margin="0,8,0,0"
+                Padding="4"
+                BorderBrush="Black"
+                BorderThickness="2">
+                <TextBox
+                    x:Name="PlaceholderTextTextBox"
+                    FontSize="16"
+                    PlaceholderText="PlaceholderText" />
+            </Border>
 
-			<!-- Disabled TextBox -->
-			<Border BorderBrush="Black"
-							BorderThickness="2"
-							Margin="0,8,0,0"
-							Padding="4">
-				<TextBox x:Name="DisabledTextBox"
-								 PlaceholderText="Disabled"
-								 IsEnabled="False"
-								 FontSize="16" />
-			</Border>
+            <!--  Disabled Label  -->
+            <TextBlock
+                Margin="0,16,0,0"
+                FontSize="16"
+                Text="Disabled" />
 
-			<!-- Multiline Label -->
-			<TextBlock Text="Multiline"
-								 FontSize="16"
-								 Margin="0,16,0,0"  />
+            <!--  Disabled TextBox  -->
+            <Border
+                Margin="0,8,0,0"
+                Padding="4"
+                BorderBrush="Black"
+                BorderThickness="2">
+                <TextBox
+                    x:Name="DisabledTextBox"
+                    FontSize="16"
+                    IsEnabled="False"
+                    PlaceholderText="Disabled" />
+            </Border>
 
-			<!-- Multiline TextBox -->
-			<Border BorderBrush="Black"
-							BorderThickness="2"
-							Margin="0,8,0,0"
-							Padding="4">
-				<TextBox x:Name="MultilineTextBox"
-								 PlaceholderText="Multiline"
-								 AcceptsReturn="True"
-								 Height="100"
-								 FontSize="16" />
-			</Border>
+            <!--  Multiline Label  -->
+            <TextBlock
+                Margin="0,16,0,0"
+                FontSize="16"
+                Text="Multiline" />
 
-			<!--  Number Label -->
-			<TextBlock Text="Number"
-								 FontSize="16"
-								 Margin="0,16,0,0"  />
+            <!--  Multiline TextBox  -->
+            <Border
+                Margin="0,8,0,0"
+                Padding="4"
+                BorderBrush="Black"
+                BorderThickness="2">
+                <TextBox
+                    x:Name="MultilineTextBox"
+                    Height="100"
+                    AcceptsReturn="True"
+                    FontSize="16"
+                    PlaceholderText="Multiline" />
+            </Border>
 
-			<!-- Number TextBox -->
-			<Border BorderBrush="Black"
-							BorderThickness="2"
-							Margin="0,8,0,0"
-							Padding="4">
-				<TextBox x:Name="NumberTextBox"
-								 PlaceholderText="Number"
-								 InputScope="Number"
-								 FontSize="16" />
-			</Border>
-		</StackPanel>
-	</ScrollViewer>
+            <!--  Number Label  -->
+            <TextBlock
+                Margin="0,16,0,0"
+                FontSize="16"
+                Text="Number" />
+
+            <!--  Number TextBox  -->
+            <Border
+                Margin="0,8,0,0"
+                Padding="4"
+                BorderBrush="Black"
+                BorderThickness="2">
+                <TextBox
+                    x:Name="NumberTextBox"
+                    FontSize="16"
+                    InputScope="Number"
+                    PlaceholderText="Number" />
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

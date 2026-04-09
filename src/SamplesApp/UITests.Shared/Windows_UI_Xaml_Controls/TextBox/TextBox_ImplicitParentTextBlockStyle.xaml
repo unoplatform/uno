@@ -7,10 +7,10 @@
     <StackPanel>
         <StackPanel.Resources>
             <Style TargetType="TextBlock">
-                <Setter Property="Margin" Value="0,100,0,0"/>
+                <Setter Property="Margin" Value="0,100,0,0" />
             </Style>
         </StackPanel.Resources>
 
-        <TextBox x:Name="textbox" Text="This text content should not have the TextBlock style's top margin applied."/>
+        <TextBox x:Name="textbox" Text="This text content should not have the TextBlock style's top margin applied." />
     </StackPanel>
 </UserControl>

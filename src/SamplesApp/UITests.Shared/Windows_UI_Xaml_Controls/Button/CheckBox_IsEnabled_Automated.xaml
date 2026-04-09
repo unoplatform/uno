@@ -1,37 +1,40 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.CheckBox_IsEnabled_Automated"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:local="using:Uno.UI.Samples.Content.UITests.ButtonTestsControl"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+﻿<UserControl
+    x:Class="Uno.UI.Samples.Content.UITests.ButtonTestsControl.CheckBox_IsEnabled_Automated"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Uno.UI.Samples.Content.UITests.ButtonTestsControl"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
 
-	<StackPanel VerticalAlignment="Center"
-			HorizontalAlignment="Center"
-			Width="280">
+    <StackPanel
+        Width="280"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
 
-		<!-- Checkbox State -->
-		<StackPanel Orientation="Horizontal"
-					HorizontalAlignment="Left">
+        <!--  Checkbox State  -->
+        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 
-			<!-- Label -->
-			<TextBlock Text="MyCheckBox.IsChecked ="
-					   FontSize="20" />
+            <!--  Label  -->
+            <TextBlock FontSize="20" Text="MyCheckBox.IsChecked =" />
 
-			<!-- Value -->
-			<TextBlock x:Name="CheckBoxIsCheckedState"
-					   FontSize="20"
-					   Margin="4,0,0,0" />
-		</StackPanel>
+            <!--  Value  -->
+            <TextBlock
+                x:Name="CheckBoxIsCheckedState"
+                Margin="4,0,0,0"
+                FontSize="20" />
+        </StackPanel>
 
-		<!-- My Checkbox -->
-		<CheckBox x:Name="MyCheckBox"
-				  Content="My Checkbox"
-				  Margin="0,24,0,8"
-				  Click="MyCheckBox_Click"/>
+        <!--  My Checkbox  -->
+        <CheckBox
+            x:Name="MyCheckBox"
+            Margin="0,24,0,8"
+            Click="MyCheckBox_Click"
+            Content="My Checkbox" />
 
-		<!-- My Checkbox Disabler -->
-		<CheckBox x:Name="MyCheckBoxDisabler"
-				  Content="Disable My Checkbox"
-				  Click="MyCheckBoxDisabler_Click"/>
+        <!--  My Checkbox Disabler  -->
+        <CheckBox
+            x:Name="MyCheckBoxDisabler"
+            Click="MyCheckBoxDisabler_Click"
+            Content="Disable My Checkbox" />
 
-	</StackPanel>
+    </StackPanel>
 </UserControl>
