@@ -1,8 +1,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference: dxaml/xcp/core/animation/storyboard.cpp — CStoryboard::ComputeStateImpl
+//                dxaml/xcp/core/animation/ParallelTimeline.cpp — CParallelTimeline::UpdateAnimation
+//                dxaml/xcp/core/animation/TimelineGroup.cpp — CTimelineGroup::ComputeStateImpl
 
 #if __SKIA__
+using System;
+using System.Linq;
 using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Media.Animation
@@ -10,36 +14,59 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	public partial class Storyboard
 	{
 		// MUX: m_rTimeDelta — Offset from parent time to local time.
-		// Set on first tick so this storyboard's local time starts at 0.
 		private double _timeDelta;
 
-		// MUX: m_lastParentTime — Snapped parent time, used for pause and SeekAlignedToLastTick.
-		// Initialized to double.MaxValue (== XDOUBLE_MAX) meaning "not yet ticked".
+		// MUX: m_lastParentTime — Snapped parent time for pause/seek.
 		private double _lastParentTime = double.MaxValue;
 
-		// MUX: m_fIsBeginning — True from Begin() until the first ComputeState tick.
-		// Signals that the timing delta should be snapped on the next tick.
+		// MUX: m_fIsBeginning, m_fIsPaused, m_fIsResuming, m_fIsSeeking, m_fIsStopped
 		private bool _isBeginning;
-
-		// MUX: m_fIsPaused, m_fIsResuming
 		private bool _isPausedForTimeManager;
 		private bool _isResuming;
-
-		// MUX: m_fIsSeeking, m_rPendingSeekTime
 		private bool _isSeeking;
 		private double _pendingSeekTime = double.MaxValue;
-
-		// MUX: m_fIsStopped — Set by Stop(), checked in ComputeState to skip processing.
 		private bool _isStopped;
 
 		// Whether this storyboard is registered with the TimeManager.
 		internal bool _isRegisteredWithTimeManager;
 
+		// Whether the Completed event has been fired for this run.
+		private bool _completedEventFiredByTimeManager;
+
 		/// <summary>
-		/// Ported from CStoryboard::ComputeStateImpl (storyboard.cpp lines 94-292).
-		///
-		/// Manages the timing delta from parent clock to local clock, handles
-		/// pause/resume/seek state, and propagates timing to child timelines.
+		/// Computes the natural duration of this Storyboard from its children.
+		/// MUX: CParallelTimeline resolves Duration.Automatic to max of children.
+		/// </summary>
+		private TimeSpan GetNaturalDurationFromChildren()
+		{
+			if (Duration.Type == DurationType.TimeSpan)
+			{
+				return Duration.TimeSpan;
+			}
+
+			// Duration.Automatic: max of children's calculated durations.
+			var maxDuration = TimeSpan.Zero;
+			if (Children is { Count: > 0 })
+			{
+				for (int i = 0; i < Children.Count; i++)
+				{
+					var childDuration = Children[i].GetCalculatedDuration();
+					var childBeginTime = Children[i].BeginTime ?? TimeSpan.Zero;
+					var childTotal = childBeginTime + childDuration;
+					if (childTotal > maxDuration)
+					{
+						maxDuration = childTotal;
+					}
+				}
+			}
+
+			return maxDuration;
+		}
+
+		/// <summary>
+		/// Ported from CStoryboard::ComputeStateImpl (storyboard.cpp lines 94-292)
+		/// + CTimelineGroup::ComputeStateImpl (TimelineGroup.cpp lines 137-214)
+		/// + CParallelTimeline::UpdateAnimation (ParallelTimeline.cpp lines 45-158).
 		/// </summary>
 		internal override void ComputeState(ComputeStateParams parentParams)
 		{
@@ -50,22 +77,20 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			if (!parentParams.HasTime)
 			{
-				// No valid time from parent — nothing to compute.
-				// MUX: nested storyboards with parent not started.
 				return;
 			}
 
 			var effectiveParentParams = parentParams;
 
+			// --- CStoryboard::ComputeStateImpl: timing delta management ---
+
 			// Snap initial parent time on first tick.
-			// MUX: storyboard.cpp line 127-131
 			if (_lastParentTime == double.MaxValue)
 			{
 				_lastParentTime = parentParams.Time;
 			}
 
 			// Snap timing delta on first tick after Begin().
-			// MUX: storyboard.cpp lines 135-143
 			if (_isBeginning)
 			{
 				_timeDelta = -parentParams.Time;
@@ -73,13 +98,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			// Pause/resume/seek handling.
-			// MUX: storyboard.cpp lines 145-232
 			var pauseStartTime = _lastParentTime;
 
 			if (_isPausedForTimeManager)
 			{
-				// Use the pause start time instead of the current parent time.
-				// MUX: storyboard.cpp line 162
 				effectiveParentParams.Time = pauseStartTime;
 			}
 			else
@@ -89,8 +111,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			if (_isResuming)
 			{
-				// Increase time delta by the pause duration.
-				// MUX: storyboard.cpp lines 173-184
 				_timeDelta += pauseStartTime - parentParams.Time;
 				_isResuming = false;
 			}
@@ -99,19 +119,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				if (_lastParentTime != double.MaxValue)
 				{
-					// Adjust time delta to achieve the seek target.
-					// MUX: storyboard.cpp lines 192-200
 					_timeDelta = _pendingSeekTime - effectiveParentParams.Time;
 					_isSeeking = false;
 				}
 			}
 
 			// Apply the timing delta.
-			// MUX: storyboard.cpp line 240
 			if (_isSeeking)
 			{
-				// SeekAlignedToLastTick before first tick — use seek time directly.
-				// MUX: storyboard.cpp lines 227-233
 				effectiveParentParams.Time = _pendingSeekTime;
 			}
 			else
@@ -120,7 +135,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			// Floating point tolerance: snap to begin time if very close.
-			// MUX: storyboard.cpp lines 249-258 (s_timeTolerance = 0.0005)
 			var beginTime = BeginTime?.TotalSeconds ?? 0.0;
 			var secondsToBeginTime = beginTime - effectiveParentParams.Time;
 			if (secondsToBeginTime > 0.0 && secondsToBeginTime < 0.0005)
@@ -128,71 +142,31 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				effectiveParentParams.Time = beginTime;
 			}
 
-			// --- CTimelineGroup::ComputeStateImpl equivalent ---
-			// First compute this storyboard's own state (progress, clock state).
-			// MUX: CTimeline::ComputeStateImpl called from CTimelineGroup::ComputeStateImpl line 149
+			// --- CTimeline::ComputeStateImpl: compute own clock state ---
 
-			// Compute the storyboard's own clock state from effective parent time.
-			ComputeClockStateFromParentTime(effectiveParentParams);
-
-			// Propagate to children.
-			// MUX: CTimelineGroup::ComputeStateImpl lines 171-206
-			if (Children is { Count: > 0 })
-			{
-				// Pass our current time as the children's parent time.
-				// MUX: myParams.time = m_rCurrentTime (line 191)
-				var childParams = effectiveParentParams;
-				childParams.HasTime = _computedClockState != InternalClockState.NotStarted;
-				if (childParams.HasTime)
-				{
-					childParams.Time = _computedCurrentTime;
-				}
-
-				for (int i = 0; i < Children.Count; i++)
-				{
-					Children[i].ComputeState(childParams);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Computes this storyboard's clock state from the effective parent time.
-		/// Simplified port of CTimeline::ComputeStateImpl timing logic.
-		/// </summary>
-		private void ComputeClockStateFromParentTime(ComputeStateParams parentParams)
-		{
-			var beginTime = BeginTime?.TotalSeconds ?? 0.0;
-
-			if (!parentParams.HasTime || parentParams.Time < beginTime)
+			var localTime = effectiveParentParams.Time - beginTime;
+			if (localTime < 0)
 			{
 				_computedClockState = InternalClockState.NotStarted;
-				_computedCurrentProgress = 0.0;
-				_computedCurrentTime = 0.0;
+				_computedCurrentTime = 0;
+				RequestAdditionalFrameIfNeeded();
 				return;
 			}
 
-			var duration = GetCalculatedDuration();
-			var durationSeconds = duration.TotalSeconds;
+			var naturalDuration = GetNaturalDurationFromChildren();
+			var durationSeconds = naturalDuration.TotalSeconds;
 
-			// Compute expiration time.
-			// For Storyboard (ParallelTimeline), duration is the maximum of children.
-			// For simplicity, use the explicit Duration if set, otherwise "forever".
-			double? expirationTime = null;
-			if (durationSeconds > 0)
-			{
-				expirationTime = beginTime + durationSeconds;
-			}
+			_computedCurrentTime = localTime;
 
-			// Compute local time relative to begin time.
-			_computedCurrentTime = parentParams.Time - beginTime;
-
-			if (expirationTime.HasValue && parentParams.Time >= expirationTime.Value - 0.0005)
+			// Determine clock state from duration.
+			if (durationSeconds > 0 && localTime >= durationSeconds - 0.0005)
 			{
 				// Expired.
+				_computedCurrentTime = durationSeconds;
+
 				if (FillBehavior == FillBehavior.HoldEnd)
 				{
 					_computedClockState = InternalClockState.Filling;
-					_computedCurrentTime = expirationTime.Value - beginTime;
 				}
 				else
 				{
@@ -204,25 +178,76 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				_computedClockState = InternalClockState.Active;
 			}
 
-			// Compute progress (for Storyboard this is mainly informational).
-			if (durationSeconds > 0)
+			// --- CTimelineGroup::ComputeStateImpl: propagate to children ---
+
+			if (Children is { Count: > 0 })
 			{
-				_computedCurrentProgress = _computedCurrentTime / durationSeconds;
-				_computedCurrentProgress = System.Math.Clamp(_computedCurrentProgress, 0.0, 1.0);
+				// MUX: myParams.hasTime = m_clockState != NotStarted && root not Stopped
+				// MUX: myParams.time = m_rCurrentTime
+				var childParams = new ComputeStateParams
+				{
+					HasTime = _computedClockState != InternalClockState.NotStarted,
+					Time = _computedCurrentTime,
+					IsPaused = _isPausedForTimeManager,
+				};
+
+				for (int i = 0; i < Children.Count; i++)
+				{
+					Children[i].ComputeState(childParams);
+				}
 			}
-			else
+
+			// --- CParallelTimeline::UpdateAnimation: handle state transitions ---
+
+			switch (_computedClockState)
 			{
-				_computedCurrentProgress = 1.0;
+				case InternalClockState.Active:
+					// Continuous ticking is driven by TimeManager.EnsureTicking() which
+					// subscribes to CompositionTarget.Rendering (VSync-driven). This avoids
+					// flooding the dispatcher Normal queue which would block WaitForIdle.
+					TimeManager.Instance.EnsureTicking();
+					break;
+
+				case InternalClockState.Filling:
+					if (!_completedEventFiredByTimeManager)
+					{
+						_completedEventFiredByTimeManager = true;
+
+						// Tick children one last time at the fill boundary.
+						// Then fire the Completed event.
+						// MUX: FireCompletedEvent() (ParallelTimeline.cpp line 143)
+						State = TimelineState.Filling;
+						OnCompleted();
+					}
+					break;
+
+				case InternalClockState.Stopped:
+					if (!_completedEventFiredByTimeManager)
+					{
+						_completedEventFiredByTimeManager = true;
+						State = TimelineState.Stopped;
+						OnCompleted();
+					}
+					break;
+			}
+		}
+
+		private void RequestAdditionalFrameIfNeeded()
+		{
+			// If still not started but has a future begin time, request a frame.
+			if (_computedClockState == InternalClockState.NotStarted && !_isStopped)
+			{
+				CoreServices.RequestAdditionalFrame();
 			}
 		}
 
 		// Computed state from the latest ComputeState call.
 		private InternalClockState _computedClockState = InternalClockState.NotStarted;
 		private double _computedCurrentTime;
-		private double _computedCurrentProgress;
 
 		/// <summary>
 		/// Override to include computed state in the active check.
+		/// MUX: CTimeline::IsInActiveState
 		/// </summary>
 		internal override bool IsInActiveState =>
 			base.IsInActiveState

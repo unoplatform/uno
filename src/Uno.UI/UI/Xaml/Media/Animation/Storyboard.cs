@@ -139,6 +139,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				_isPausedForTimeManager = false;
 				_isResuming = false;
 				_isSeeking = false;
+				_completedEventFiredByTimeManager = false;
+				_computedClockState = InternalClockState.NotStarted;
 
 				if (!_isRegisteredWithTimeManager)
 				{
@@ -444,15 +446,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				{
 					State = _hasFillingChildren ? TimelineState.Filling : TimelineState.Stopped;
 				}
-
-#if __SKIA__
-				// All children completed — remove from TimeManager so we stop ticking.
-				_isStopped = true;
-				if (_isRegisteredWithTimeManager)
-				{
-					TimeManager.Instance.RemoveTimeline(this);
-				}
-#endif
 
 				OnCompleted();
 			}
