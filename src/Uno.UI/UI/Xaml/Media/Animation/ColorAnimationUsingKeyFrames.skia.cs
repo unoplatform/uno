@@ -26,6 +26,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			if (IsParentStoryboardRegistered())
 			{
 				_isTimeManagerDriven = true;
+				_tmCompletedEventFired = false;
+				_tmInitialized = false;
 				PropertyInfo?.CloneShareableObjectsInPath();
 				_startingValue = ComputeFromValue();
 

@@ -29,6 +29,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			if (IsParentStoryboardRegistered())
 			{
 				_isTimeManagerDriven = true;
+				_tmCompletedEventFired = false;
+				_tmInitialized = false;
 				_startingValue = ComputeFromValue();
 
 				// Pre-compute final value for HoldValue/SkipToFill.

@@ -1,6 +1,12 @@
-﻿using System.Threading.Tasks;
-using Private.Infrastructure;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation;
 
@@ -49,5 +55,50 @@ public class Given_Storyboard
 		storyboard.Pause();
 		Assert.AreEqual(ClockState.Active, storyboard.GetCurrentState());
 		await TestServices.WindowHelper.WaitFor(() => completed);
+	}
+
+	[TestMethod]
+	public async Task When_Restarted_After_Natural_Completion_Fires_Completed_Again()
+	{
+		var translate = new TranslateTransform();
+		var border = new Border
+		{
+			Width = 50,
+			Height = 50,
+			RenderTransform = translate,
+		};
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var animation = new DoubleAnimation
+		{
+			To = 100,
+			Duration = new Duration(TimeSpan.FromMilliseconds(300)),
+		};
+		Storyboard.SetTarget(animation, translate);
+		Storyboard.SetTargetProperty(animation, nameof(translate.Y));
+
+		var storyboard = new Storyboard();
+		storyboard.Children.Add(animation);
+
+		int run1Completed = 0;
+		int run2Completed = 0;
+		storyboard.Completed += (s, e) => run1Completed = 1;
+
+		// First run
+		storyboard.Begin();
+		await TestServices.WindowHelper.WaitFor(() => run1Completed > 0, timeoutMS: 3000);
+
+		Assert.AreEqual(1, run1Completed, "First run should fire Completed once");
+		Assert.AreEqual(100.0, translate.Y, 1.0, "Fill value should be 100 after first run");
+
+		// Second run without explicit Stop - should also complete
+		storyboard.Completed += (s, e) => run2Completed = 1;
+		storyboard.Begin();
+		await TestServices.WindowHelper.WaitFor(() => run2Completed > 0, timeoutMS: 3000);
+
+		Assert.AreEqual(1, run2Completed, "Second run should fire Completed again");
+		Assert.AreEqual(100.0, translate.Y, 1.0, "Fill value should be 100 after second run");
 	}
 }

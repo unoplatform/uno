@@ -23,6 +23,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			if (IsParentStoryboardRegistered())
 			{
 				_isTimeManagerDriven = true;
+				_tmCompletedEventFired = false;
+				_tmInitialized = false;
 				// Resolve theme resources now (MUX: CAnimation::OnBegin).
 				EnsureKeyFrameThemeResources();
 				return;
