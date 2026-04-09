@@ -53,8 +53,21 @@ namespace Uno.UI.Xaml.Core
 			return null;
 		}
 
+		// When true, OnTick is currently executing. RequestAdditionalFrame is suppressed
+		// because layout will run within the same OnTick. This prevents animated property
+		// changes (which invalidate layout) from re-enqueuing OnTick to the Normal queue,
+		// which would starve the Idle queue and block WaitForIdle/RunIdleAsync.
+		// In WinUI, SetAnimatedValue is within the frame pipeline and never touches the dispatcher.
+		private static bool _isInTick;
+
 		internal static void RequestAdditionalFrame()
 		{
+			if (_isInTick)
+			{
+				// We're already inside OnTick — layout will run shortly. No need to enqueue.
+				return;
+			}
+
 			if (GetXamlRoot() is { Bounds: { Width: not 0, Height: not 0 } } &&
 				Interlocked.CompareExchange(ref _isAdditionalFrameRequested, 1, 0) == 0)
 			{
@@ -66,6 +79,7 @@ namespace Uno.UI.Xaml.Core
 		private static void OnTick()
 		{
 			_isAdditionalFrameRequested = 0;
+			_isInTick = true;
 
 #if __SKIA__
 			// MUX Reference: CCoreServices::Tick() (xcpcore.cpp line 4106)
@@ -132,6 +146,8 @@ namespace Uno.UI.Xaml.Core
 				TimeManager.Instance.Tick(newTimelinesOnly: true);
 			}
 #endif
+
+			_isInTick = false;
 		}
 #endif
 
