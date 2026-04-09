@@ -139,6 +139,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 #if __SKIA__
 			CancelDeferredPlay();
+			StopTimeManagerDriven();
 #endif
 			if (_currentAnimator is { IsRunning: true })
 			{
@@ -158,6 +159,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 #if __SKIA__
 			CancelDeferredPlay();
+			StopTimeManagerDriven();
 #endif
 			if (_currentAnimator is { IsRunning: true })
 			{
@@ -172,6 +174,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 #if __SKIA__
 			CancelDeferredPlay();
+			StopTimeManagerDriven();
 #endif
 			_currentAnimator?.Cancel(); // stop could be called before the initialization
 			_startingValue = null;
@@ -362,52 +365,5 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 
 		IEnumerable IKeyFramesProvider.GetKeyFrames() => KeyFrames;
-
-		private bool ReportEachFrame() => true;
-
-		private bool _deferredPlayPending;
-
-		partial void OnFrame(IValueAnimator currentAnimator)
-		{
-			SetValue(currentAnimator.AnimatedValue);
-		}
-
-		/// <summary>
-		/// On Skia, defers animator initialization to the next dispatcher tick.
-		/// This ensures keyframe binding values (e.g., TemplateSettings.MinimalVerticalDelta)
-		/// are read after layout has completed, matching WinUI's tick-based value reading.
-		/// </summary>
-		private void PlayDeferred()
-		{
-			if (_deferredPlayPending)
-			{
-				return; // Already waiting for tick
-			}
-
-			_deferredPlayPending = true;
-			State = TimelineState.Active;
-
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-			{
-				_deferredPlayPending = false;
-
-				if (State != TimelineState.Active)
-				{
-					// Animation was stopped/deactivated before the tick
-					return;
-				}
-
-				// Now initialize and start animators — keyframe bindings have settled after layout
-				PlayImmediate();
-			});
-		}
-
-		/// <summary>
-		/// Cancels a pending deferred play if one is scheduled.
-		/// </summary>
-		private void CancelDeferredPlay()
-		{
-			_deferredPlayPending = false;
-		}
 	}
 }
