@@ -307,6 +307,16 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		public void Seek(TimeSpan offset)
 		{
+#if __SKIA__
+			if (_isRegisteredWithTimeManager)
+			{
+				// MUX: CStoryboard::SeekInternal — queue asynchronous seek (takes effect on next tick).
+				_pendingSeekTime = offset.TotalSeconds;
+				_isSeeking = true;
+				Uno.UI.Xaml.Core.CoreServices.RequestAdditionalFrame();
+				return;
+			}
+#endif
 			if (Children != null)
 			{
 				for (int i = 0; i < Children.Count; i++)
