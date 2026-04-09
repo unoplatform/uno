@@ -503,7 +503,7 @@ namespace Uno.UI
 			/// from WinUI's CTimeManager. Set to true to enable the new timing infrastructure.
 			/// Default: false (opt-in during development).
 			/// </remarks>
-			public static bool UseTimeManager { get; set; }
+			public static bool UseTimeManager { get; set; } = true;
 		}
 
 		public static class Rendering
