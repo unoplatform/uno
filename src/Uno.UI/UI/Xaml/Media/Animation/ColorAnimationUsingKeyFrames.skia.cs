@@ -5,10 +5,11 @@
 #if __SKIA__
 using System;
 using System.Linq;
+using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-	public partial class DoubleAnimationUsingKeyFrames
+	partial class ColorAnimationUsingKeyFrames
 	{
 		private bool ReportEachFrame() => true;
 
@@ -20,28 +21,23 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			SetValue(currentAnimator.AnimatedValue);
 		}
 
-		/// <summary>
-		/// Detect if this animation is a child of a TimeManager-registered Storyboard
-		/// and use the ComputeState/UpdateAnimation path if so.
-		/// </summary>
 		private void PlayDeferred()
 		{
 			if (IsParentStoryboardRegistered())
 			{
 				_isTimeManagerDriven = true;
+				PropertyInfo?.CloneShareableObjectsInPath();
 				_startingValue = ComputeFromValue();
 
-				// Pre-compute final value for HoldValue/SkipToFill.
 				var lastFrame = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault();
 				if (lastFrame != null)
 				{
-					_finalValue = lastFrame.Value;
+					_finalValue = (ColorOffset)lastFrame.Value;
 				}
 
 				return;
 			}
 
-			// Fallback: old deferred play for standalone animations.
 			if (_deferredPlayPending)
 			{
 				return;
@@ -68,10 +64,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_deferredPlayPending = false;
 		}
 
-		/// <summary>
-		/// Called by Storyboard.ComputeState via child propagation.
-		/// Computes timing (base class) then interpolates keyframe values.
-		/// </summary>
 		internal override void ComputeState(ComputeStateParams parentParams)
 		{
 			if (!_isTimeManagerDriven)
@@ -79,25 +71,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
-			// Base timing computation: clock state, progress, iteration.
 			ComputeStateBase(parentParams);
-
-			// Apply values based on computed state.
 			UpdateAnimationCore();
 		}
 
-		/// <summary>
-		/// Applies interpolated keyframe value based on computed clock state.
-		///
-		/// MUX: CAnimation::UpdateAnimation → UpdateAnimationUsingKeyFrames
-		/// </summary>
 		private void UpdateAnimationCore()
 		{
-			if (!_isTimeManagerDriven)
-			{
-				return;
-			}
-
 			switch (TimeManagerClockState)
 			{
 				case InternalClockState.Active:
@@ -105,7 +84,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					break;
 
 				case InternalClockState.Filling:
-					// Apply final interpolated value and fire completion.
 					UpdateUsingKeyFrames();
 					if (!_tmCompletedEventFired)
 					{
@@ -128,12 +106,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 
-		/// <summary>
-		/// Finds the current keyframe segment from progress, interpolates
-		/// with easing, and applies the value.
-		///
-		/// MUX: CAnimation::UpdateAnimationUsingKeyFrames (animation.cpp lines 247-369)
-		/// </summary>
 		private void UpdateUsingKeyFrames()
 		{
 			var sortedFrames = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).ToList();
@@ -146,15 +118,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			var duration = GetCalculatedDuration();
 			var durationSeconds = duration.TotalSeconds;
 
-			// Walk through sorted keyframes to find the current segment.
-			// MUX: while loop at line 298 — finds segment where progress falls.
-			var fromValue = _startingValue ?? 0.0;
+			var fromValue = _startingValue ?? default(ColorOffset);
 			double cumulativePercent = 0;
 			double segmentPercent = 0;
 			int currentSegment = 0;
-
-			// Set initial From/To to base value (MUX: lines 275-276).
-			double toValue = fromValue;
+			var toValue = fromValue;
 
 			if (sortedFrames.Count > 0)
 			{
@@ -165,15 +133,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				if (firstPercent > 0)
 				{
-					// First keyframe not at time 0: interpolate from base value.
 					segmentPercent = firstPercent;
 				}
 
-				toValue = firstFrame.Value;
+				toValue = (ColorOffset)firstFrame.Value;
 			}
 
-			// Advance through segments until we find the one containing current progress.
-			// MUX: while (nCurrentSegment < frameCount && keyframe.percent <= progress)
 			while (currentSegment < sortedFrames.Count)
 			{
 				var frame = sortedFrames[currentSegment];
@@ -186,8 +151,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					break;
 				}
 
-				// Move to next segment.
-				// MUX: lines 301-312
 				currentSegment++;
 				fromValue = toValue;
 				cumulativePercent += segmentPercent;
@@ -195,45 +158,40 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				if (currentSegment < sortedFrames.Count)
 				{
 					var nextFrame = sortedFrames[currentSegment];
-					toValue = nextFrame.Value;
+					toValue = (ColorOffset)nextFrame.Value;
 					segmentPercent = (durationSeconds > 0
 						? nextFrame.KeyTime.TimeSpan.TotalSeconds / durationSeconds
 						: 1.0) - cumulativePercent;
 				}
 				else
 				{
-					// Past last keyframe: hold last value.
-					// MUX: lines 316-332
 					var lastFrame = sortedFrames[^1];
-					toValue = lastFrame.Value;
+					toValue = (ColorOffset)lastFrame.Value;
 					segmentPercent = cumulativePercent < 1.0
 						? 1.0 - cumulativePercent
 						: 1.0;
 				}
 			}
 
-			// Compute segment-local progress.
-			// MUX: rSegmentProgress = (m_rCurrentProgress - rCumulativePercentSpan) / rSegmentPercentSpan (line 339)
 			var segmentProgress = segmentPercent > 0
 				? (progress - cumulativePercent) / segmentPercent
 				: 1.0;
 			segmentProgress = Math.Clamp(segmentProgress, 0.0, 1.0);
 
 			// Apply per-keyframe easing.
-			// MUX: GetEffectiveProgress (line 343)
 			var targetFrameIndex = Math.Min(currentSegment, sortedFrames.Count - 1);
 			var easing = sortedFrames[targetFrameIndex].GetEasingFunction();
 
-			double value;
+			ColorOffset value;
 			if (easing != null)
 			{
-				// IEasingFunction.Ease takes (currentTime, startValue, finalValue, duration).
-				value = easing.Ease(segmentProgress, fromValue, toValue, 1.0);
+				// Color interpolation: apply easing to get normalized progress, then lerp.
+				var t = easing.Ease(segmentProgress, 0.0, 1.0, 1.0);
+				value = fromValue + (float)t * (toValue - fromValue);
 			}
 			else
 			{
-				// Linear interpolation.
-				value = fromValue + (toValue - fromValue) * segmentProgress;
+				value = fromValue + (float)segmentProgress * (toValue - fromValue);
 			}
 
 			SetValue(value);
@@ -244,15 +202,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_isTimeManagerDriven = false;
 		}
 
-		partial void UseHardware()
-		{
-			// No-op on Skia.
-		}
-
-		// HoldValue is intentionally left as a no-op on Skia (no partial body).
-		// For the TimeManager path, ComputeState holds the fill value.
-		// For the old deferred play path, SkipToFill/OnEnd handles it
-		// by reading the last keyframe value directly.
+		partial void UseHardware() { }
 
 		private void StopTimeManagerDriven()
 		{
