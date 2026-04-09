@@ -498,6 +498,76 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
+		public async Task When_By_AnimatesRelativeToCurrentValue()
+		{
+			var translate = new TranslateTransform();
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			translate.Y = 30.0;
+			await WindowHelper.WaitForIdle();
+
+			// By = 70 means animate from current value (30) by 70 → to 100
+			var animation = new DoubleAnimation
+			{
+				By = 70,
+				Duration = new Duration(TimeSpan.FromMilliseconds(500)),
+				FillBehavior = FillBehavior.HoldEnd,
+			}.BindTo(translate, nameof(translate.Y));
+
+			await animation.ToStoryboard().RunAsync();
+
+			Assert.AreEqual(100.0, translate.Y, 1.0,
+				$"By animation should animate to From+By = 30+70 = 100, was {translate.Y}");
+		}
+
+		[TestMethod]
+		public async Task When_Stop_While_Filling_ClearsValue()
+		{
+			var translate = new TranslateTransform();
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			translate.Y = 20.0;
+
+			var animation = new DoubleAnimation
+			{
+				To = 100,
+				Duration = new Duration(TimeSpan.FromMilliseconds(200)),
+				FillBehavior = FillBehavior.HoldEnd,
+			}.BindTo(translate, nameof(translate.Y));
+
+			var storyboard = animation.ToStoryboard();
+			await storyboard.RunAsync();
+
+			// Animation is now filling at 100
+			Assert.AreEqual(100.0, translate.Y, 1.0, $"Fill value should be 100, was {translate.Y}");
+
+			// Stop the storyboard - should clear the animated value and return to local
+			storyboard.Stop();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(20.0, translate.Y, 1.0,
+				$"After Stop, property should return to local value (20), was {translate.Y}");
+		}
+
+		[TestMethod]
 		public async Task When_RepeatBehavior_Count_CompletesAtExpectedTime()
 		{
 			var translate = new TranslateTransform();
