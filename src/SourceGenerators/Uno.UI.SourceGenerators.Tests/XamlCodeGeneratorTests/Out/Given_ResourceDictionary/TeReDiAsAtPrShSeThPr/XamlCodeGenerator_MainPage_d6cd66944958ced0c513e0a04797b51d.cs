@@ -50,48 +50,58 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.StackPanel
-			{
-				IsParsing = true,
-				// Source 0\MainPage.xaml (Line 11:3)
-				Children = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.StackPanel
 				{
-					new global::Microsoft.UI.Xaml.Controls.Button
+					IsParsing = true,
+					// Source 0\MainPage.xaml (Line 11:3)
+					Children = 
 					{
-						IsParsing = true,
-						Content = @"Button",
-						// Source 0\MainPage.xaml (Line 12:4)
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.Button
+							{
+								IsParsing = true,
+								Content = @"Button",
+								// Source 0\MainPage.xaml (Line 12:4)
+							}
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							{
+							global::TestRepro.MyClass.SetX(__p1, 
+								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.ResourceDictionary
+									{
+										IsParsing = true,
+										["PrimaryColor"] = 
+										global::MyProject.GlobalStaticResources.__PreserveProperties(
+											global::Microsoft.UI.Colors.Yellow										)
+										,
+										["SecondaryColor"] = 
+										global::MyProject.GlobalStaticResources.__PreserveProperties(
+											global::Microsoft.UI.Colors.Red										)
+										,
+									}
+									.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+									{
+									__p1.CreationComplete();
+									}
+									))
+								)
+							);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							__p1.CreationComplete();
+							}
+							))
+						)
+						,
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-					{
-					global::TestRepro.MyClass.SetX(__p1, 
-						new global::Microsoft.UI.Xaml.ResourceDictionary
-						{
-							IsParsing = true,
-							["PrimaryColor"] = 
-							global::Microsoft.UI.Colors.Yellow							,
-							["SecondaryColor"] = 
-							global::Microsoft.UI.Colors.Red							,
-						}
-						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-						{
-						__p1.CreationComplete();
-						}
-						))
-					);
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
-					,
 				}
-			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
-			{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-			__p1.CreationComplete();
-			}
-			))
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+				{
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this

@@ -1,3 +1,5 @@
+using System;
+
 namespace Uno.UI.DevServer.Cli.Helpers;
 
 public sealed class DiscoveryInfo
@@ -170,6 +172,7 @@ public sealed class ActiveServerInfo
 	public DateTime StartTime { get; init; }
 	public string? IdeChannelId { get; init; }
 	public string? SolutionPath { get; init; }
+	public IReadOnlyList<ProcessChainEntry> ProcessChain { get; init; } = Array.Empty<ProcessChainEntry>();
 
 	/// <summary>
 	/// True when this server's solution matches one of the working directory's

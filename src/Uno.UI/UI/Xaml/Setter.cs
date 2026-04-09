@@ -168,15 +168,13 @@ namespace Microsoft.UI.Xaml
 					// Applied as theme binding, no need to do more
 					return;
 				}
-				else
-				{
-					path.Value = Value;
-				}
+
+				path.Value = Value;
 			}
 		}
 
 		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
-		internal override bool TryGetSetterValue(out object? value, DependencyObject _)
+		internal override bool TryGetSetterValue(out object? value, DependencyObject owner)
 		{
 			if (ThemeResourceKey.HasValue)
 			{

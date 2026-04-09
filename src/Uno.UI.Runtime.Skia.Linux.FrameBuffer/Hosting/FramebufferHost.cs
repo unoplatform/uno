@@ -140,6 +140,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
+			FrameBufferPointerInputSource.Instance.IsMouseWheelReversed = _hostBuilder.IsMouseWheelReversed;
 			FrameBufferInputProvider.Instance.Initialize();
 
 			var drmInitOptions = new DRMRenderer.DRMInitOptions(_hostBuilder.DRMCardPath, _hostBuilder.DRMConnectorChooser, _hostBuilder.GBMSurfaceColorFormat);
@@ -156,13 +157,29 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				}
 				catch (Exception e)
 				{
-					this.LogError()?.Error($"Failed to create an OpenGLES context with error '{e.Message}', falling back to software rendering");
-					_renderer = new SoftwareRenderer(this, mouseIndicatorOptions);
+					this.LogError()?.Error("Failed to create an OpenGLES context, falling back to software rendering", e);
+					try
+					{
+						_renderer = new SoftwareRenderer(this, mouseIndicatorOptions);
+					}
+					catch (Exception e2)
+					{
+						this.LogError()?.Error("Failed to create software renderer, falling back to headless rendering", e2);
+						_renderer = new HeadlessRenderer(this, 1920, 1080, mouseIndicatorOptions);
+					}
 				}
 			}
 			else
 			{
-				_renderer = new SoftwareRenderer(this, mouseIndicatorOptions);
+				try
+				{
+					_renderer = new SoftwareRenderer(this, mouseIndicatorOptions);
+				}
+				catch (Exception e)
+				{
+					this.LogError()?.Error("Failed to create software renderer, falling back to headless rendering", e);
+					_renderer = new HeadlessRenderer(this, 1920, 1080, mouseIndicatorOptions);
+				}
 			}
 
 			WUX.Application.Start(CreateApp);

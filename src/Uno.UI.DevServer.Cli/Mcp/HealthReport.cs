@@ -26,6 +26,15 @@ internal sealed record HealthReport
 	public DiscoverySummary? Discovery { get; init; }
 }
 
+internal sealed record WorkspaceSelectionSnapshot
+{
+	public string? EffectiveWorkspaceDirectory { get; init; }
+	public string? SelectedSolutionPath { get; init; }
+	public WorkspaceResolutionKind? ResolutionKind { get; init; }
+	public WorkspaceSelectionSource? SelectionSource { get; init; }
+	public IReadOnlyList<string>? CandidateSolutions { get; init; }
+}
+
 internal sealed record DiscoverySummary
 {
 	public string? RequestedWorkingDirectory { get; init; }
@@ -55,6 +64,7 @@ internal sealed record ActiveServerSummary
 	public string? IdeChannelId { get; init; }
 	public string? SolutionPath { get; init; }
 	public bool IsInWorkspace { get; init; }
+	public IReadOnlyList<ProcessChainEntry>? ProcessChain { get; init; }
 }
 
 internal sealed record AddInSummary

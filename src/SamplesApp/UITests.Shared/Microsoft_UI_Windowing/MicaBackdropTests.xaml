@@ -1,0 +1,31 @@
+<Page
+    x:Class="UITests.Microsoft_UI_Windowing.MicaBackdropTests"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:DefaultBindMode="OneWay"
+    Background="Transparent"
+    mc:Ignorable="d">
+
+    <StackPanel Spacing="8" Padding="16">
+        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Window.SystemBackdrop" />
+        <TextBlock TextWrapping="Wrap"
+            Text="Sets the system backdrop material on the current window. On macOS this uses NSVisualEffectView with the corresponding vibrancy material. On Windows 11 this uses the native Mica API. Set the page Background to Transparent to see the effect." />
+
+        <TextBlock FontWeight="SemiBold">
+            <Run Text="IsSupported: " />
+            <Run Text="{x:Bind ViewModel.IsMicaSupported}" />
+        </TextBlock>
+
+        <TextBlock FontWeight="SemiBold">
+            <Run Text="Current backdrop: " />
+            <Run Text="{x:Bind ViewModel.CurrentBackdrop}" />
+        </TextBlock>
+
+        <Button Content="Mica (Base)" Click="{x:Bind ViewModel.SetMicaBase}" />
+        <Button Content="Mica (BaseAlt)" Click="{x:Bind ViewModel.SetMicaBaseAlt}" />
+        <Button Content="Desktop Acrylic" Click="{x:Bind ViewModel.SetDesktopAcrylic}" />
+        <Button Content="None (clear backdrop)" Click="{x:Bind ViewModel.ClearBackdrop}" />
+    </StackPanel>
+</Page>

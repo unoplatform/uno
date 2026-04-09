@@ -39,6 +39,10 @@ If the user provides partial names, search `src/Uno.UI.RuntimeTests/Tests/` to r
 
 Default: **Skia Desktop** (fastest build and execution).
 
+Choose **Skia WASM** only when:
+- The user explicitly asks for WASM/browser testing, OR
+- The bug or behavior is WASM-specific (e.g., DOM interaction, browser rendering, JS interop)
+
 ### Phase 1: Build the Test App
 
 **CRITICAL**: Set timeout to 15+ minutes. **NEVER cancel builds.**
@@ -160,18 +164,24 @@ FILTER_ENCODED=$(rawurlencode "$FILTER_B64_ESCAPED")
 URL="http://localhost:8000/?--runtime-tests=${RESULTS_ENCODED}&--runtime-test-filter=${FILTER_ENCODED}"
 ```
 
-**Step 4: Open in a browser**
+**Step 4: Open the URL in a browser**
+
+**If the Playwright MCP tool is available** (`mcp__playwright__browser_navigate`), use it — no manual browser needed:
+```
+mcp__playwright__browser_navigate(url: "<the constructed URL>")
+```
+Keep the tab open until tests complete. If the results file does not appear within 10 minutes, use `mcp__playwright__browser_take_screenshot` to inspect the state.
+
+**If Playwright is not available**, open the URL with the OS default browser and instruct the user to keep it open:
 
 On Windows (Git Bash):
 ```bash
 start "" "$URL"
 ```
-
 On Linux:
 ```bash
 google-chrome --no-sandbox "$URL" &
 ```
-
 On macOS:
 ```bash
 open "$URL"
@@ -179,10 +189,10 @@ open "$URL"
 
 **Step 5: Wait for results**
 
-The test runner writes a canary file (`$RESULTS_FILE.canary`) when it starts and the actual results file when complete:
+The test runner writes a canary file (`$RESULTS_FILE.canary`) when it starts and the actual results file when complete. Poll from bash:
 ```bash
-# Wait for the results file (poll every 10 seconds)
-while [ ! -f "$RESULTS_FILE" ]; do sleep 10; done
+# Wait for the results file (poll every 10 seconds, timeout 10 minutes)
+for i in $(seq 1 60); do [ -f "$RESULTS_FILE" ] && break; sleep 10; done
 ```
 
 **Step 6: Cleanup**

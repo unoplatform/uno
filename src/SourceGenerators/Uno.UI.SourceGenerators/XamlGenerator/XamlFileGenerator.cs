@@ -153,6 +153,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private readonly bool _isWasm;
 
+		private readonly string _preserveProperties;
+
 		/// <summary>
 		/// If set, code generated from XAML will be annotated with the source method and line # in this file, for easier debugging.
 		/// </summary>
@@ -257,6 +259,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_isUnoAssembly = isUnoAssembly;
 			_isUnoFluentAssembly = isUnoFluentAssembly;
+
+			_preserveProperties = $"{GlobalPrefix}{_defaultNamespace}.GlobalStaticResources.__PreserveProperties";
 		}
 
 		private void TryGenerateWarningForInconsistentBaseType(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
@@ -4876,6 +4880,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case XamlConstants.Types.DependencyProperty:
 						return BuildDependencyProperty(GetMemberValue(), owner);
 
+					case XamlConstants.Types.RoutedEvent:
+						return BuildRoutedEvent(GetMemberValue(), owner);
+
 					case XamlConstants.Types.Brush:
 					case XamlConstants.Types.SolidColorBrush:
 						return BuildBrush(GetMemberValue());
@@ -5363,6 +5370,63 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			throw new XamlGenerationException($"'{property}' is not a DependencyProperty in type '{currentStyleTargetType.GetFullyQualifiedTypeExcludingGlobal()}'", location);
+		}
+
+		private string BuildRoutedEvent(string routedEventValue, IXamlLocation location)
+		{
+			// Parse RoutedEvent values in the format "TypeName.EventName" (e.g., "FrameworkElement.Loaded")
+			// The actual validation of which events are supported is done by the property setter (e.g., EventTrigger.RoutedEvent)
+			var normalizedValue = routedEventValue?.Trim();
+			if (string.IsNullOrEmpty(normalizedValue))
+			{
+				throw new XamlGenerationException("RoutedEvent value cannot be empty.", location);
+			}
+
+			var dotIndex = normalizedValue!.LastIndexOf('.');
+			if (dotIndex <= 0 || dotIndex >= normalizedValue.Length - 1)
+			{
+				throw new XamlGenerationException(
+					$"Invalid RoutedEvent format '{routedEventValue}'. Expected format is 'TypeName.EventName' (e.g., 'FrameworkElement.Loaded').",
+					location);
+			}
+
+			var typeName = normalizedValue.Substring(0, dotIndex);
+			var eventName = normalizedValue.Substring(dotIndex + 1);
+
+			// Find the type
+			var type = FindType(typeName);
+			if (type == null)
+			{
+				throw new XamlGenerationException(
+					$"Could not find type '{typeName}' for RoutedEvent '{routedEventValue}'.",
+					location);
+			}
+
+			// Look for a static RoutedEvent property/field named "{eventName}Event"
+			var routedEventPropertyName = eventName + "Event";
+			var routedEventSymbol = type.GetMembers(routedEventPropertyName)
+				.FirstOrDefault(m => m.IsStatic && (m is IPropertySymbol || m is IFieldSymbol));
+
+			if (routedEventSymbol != null && routedEventSymbol.DeclaredAccessibility == Accessibility.Public)
+			{
+				return $"{type.GetFullyQualifiedTypeIncludingGlobal()}.{routedEventPropertyName}";
+			}
+
+			// Fallback: the member is not found or not publicly accessible.
+			// Validate that this is the Loaded event on a FrameworkElement-derived type,
+			// which is the only event EventTrigger supports. In WinUI the RoutedEvent
+			// property is essentially a string placeholder; the actual firing logic is
+			// hard-coded to the Loaded event. We create a new RoutedEvent instance
+			// via the public constructor so the generated code compiles without
+			// referencing internal members.
+			if (eventName == "Loaded" && IsType(type, Generation.FrameworkElementSymbol.Value))
+			{
+				return $"new global::Microsoft.UI.Xaml.RoutedEvent(\"{eventName}\")";
+			}
+
+			throw new XamlGenerationException(
+				$"Could not find a publicly accessible RoutedEvent '{routedEventPropertyName}' on type '{type.GetFullyQualifiedTypeExcludingGlobal()}'.",
+				location);
 		}
 
 		private string BuildBrush(string memberValue)
@@ -6039,6 +6103,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Override the using with the type that was found in the list of loaded assemblies
 				fullTypeName = knownType.GetFullyQualifiedTypeExcludingGlobal();
 			}
+
+			IDisposable? endPreservePropertiesIndent = null;
+			if (typeName != "NullExtension")
+			{
+				writer.AppendLineIndented($"{_preserveProperties}(");
+				endPreservePropertiesIndent = writer.Indent();
+			}
+			using var endPreserveProperties = (typeName == "NullExtension") ? null : new DisposableAction(() =>
+			{
+				endPreservePropertiesIndent?.Dispose();
+				writer.AppendLineIndented(")");
+			});
 
 			using (TrySetDefaultBindMode(xamlObjectDefinition))
 			{

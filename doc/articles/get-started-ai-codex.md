@@ -41,3 +41,8 @@ This guide will walk you through the setup process for getting started with Code
 ## Next Steps
 
 Now that you are set up, let's [create your first app](xref:Uno.GettingStarted.CreateAnApp.AI.Codex).
+
+## Uno TechBite
+
+Getting Started with Uno Platform & Codex CLI - Video Walkthrough:
+> [!Video https://www.youtube-nocookie.com/embed/FFEWMrp-Aq4]
