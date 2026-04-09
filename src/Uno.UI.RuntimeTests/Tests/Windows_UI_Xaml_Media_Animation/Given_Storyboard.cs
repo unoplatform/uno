@@ -101,4 +101,47 @@ public class Given_Storyboard
 		Assert.AreEqual(1, run2Completed, "Second run should fire Completed again");
 		Assert.AreEqual(100.0, translate.Y, 1.0, "Fill value should be 100 after second run");
 	}
+
+	[TestMethod]
+	public async Task When_Pause_Resume_Preserves_Progress()
+	{
+		var translate = new TranslateTransform();
+		var border = new Border
+		{
+			Width = 50,
+			Height = 50,
+			RenderTransform = translate,
+		};
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var animation = new DoubleAnimation
+		{
+			From = 0,
+			To = 100,
+			Duration = new Duration(TimeSpan.FromMilliseconds(1000)),
+		};
+		Storyboard.SetTarget(animation, translate);
+		Storyboard.SetTargetProperty(animation, nameof(translate.Y));
+
+		var storyboard = new Storyboard();
+		storyboard.Children.Add(animation);
+
+		storyboard.Begin();
+		await Task.Delay(300); // 300ms into 1000ms = ~30% done = ~30
+
+		storyboard.Pause();
+		var pausedValue = translate.Y;
+		await Task.Delay(200); // Wait while paused - value should not change
+
+		var afterPauseValue = translate.Y;
+		Assert.AreEqual(pausedValue, afterPauseValue, 2.0, "Value should not change while paused");
+
+		storyboard.Resume();
+		await storyboard.RunAsync(timeout: TimeSpan.FromSeconds(2));
+
+		// After animation completes, fill value should be 100
+		Assert.AreEqual(100.0, translate.Y, 2.0, "Fill value should be 100 after resume+complete");
+	}
 }

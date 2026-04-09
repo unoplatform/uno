@@ -107,9 +107,29 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_animationImplementation.Stop();
 		}
 
-		void ITimeline.Resume() => _animationImplementation.Resume();
+		void ITimeline.Resume()
+		{
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				State = TimelineState.Active;
+				return;
+			}
+#endif
+			_animationImplementation.Resume();
+		}
 
-		void ITimeline.Pause() => _animationImplementation.Pause();
+		void ITimeline.Pause()
+		{
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				State = TimelineState.Paused;
+				return;
+			}
+#endif
+			_animationImplementation.Pause();
+		}
 
 		void ITimeline.Seek(TimeSpan offset) => _animationImplementation.Seek(offset);
 
