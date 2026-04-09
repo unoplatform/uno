@@ -100,6 +100,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			if (IsParentStoryboardRegistered())
 			{
 				_isTimeManagerDriven = true;
+				_tmCompletedEventFired = false;
+				_tmInitialized = false;
 				State = TimelineState.Active;
 				return;
 			}
