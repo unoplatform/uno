@@ -25,6 +25,7 @@ internal partial class FrameBufferPointerInputSource
 {
 	private Point _mousePosition;
 	private bool _receivedMouseEvent;
+	private bool _isMouseWheelReversed;
 
 	public Point MousePosition
 	{
@@ -44,6 +45,12 @@ internal partial class FrameBufferPointerInputSource
 	{
 		get => _receivedMouseEvent;
 		private set => _receivedMouseEvent = value;
+	}
+
+	internal bool IsMouseWheelReversed
+	{
+		get => _isMouseWheelReversed;
+		set => _isMouseWheelReversed = value;
 	}
 
 	public event Action? MouseEventReceived;
@@ -84,16 +91,18 @@ internal partial class FrameBufferPointerInputSource
 					: libinput_event_pointer_get_axis_value(rawPointerEvent, axis);
 			}
 
+			var wheelMultiplier = _isMouseWheelReversed ? 1 : -1;
+
 			if (libinput_event_pointer_has_axis(rawPointerEvent, libinput_pointer_axis.ScrollHorizontal) != 0)
 			{
 				properties.IsHorizontalMouseWheel = true;
-				properties.MouseWheelDelta = (int)(GetAxisValue(libinput_pointer_axis.ScrollHorizontal) * ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
+				properties.MouseWheelDelta = wheelMultiplier * (int)(GetAxisValue(libinput_pointer_axis.ScrollHorizontal) * ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
 				raisePointerEvent = RaisePointerWheelChanged;
 			}
 			else if (libinput_event_pointer_has_axis(rawPointerEvent, libinput_pointer_axis.ScrollVertical) != 0)
 			{
 				properties.IsHorizontalMouseWheel = false;
-				properties.MouseWheelDelta = (int)(GetAxisValue(libinput_pointer_axis.ScrollVertical) * ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
+				properties.MouseWheelDelta = wheelMultiplier * (int)(GetAxisValue(libinput_pointer_axis.ScrollVertical) * ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
 				raisePointerEvent = RaisePointerWheelChanged;
 			}
 		}

@@ -39,6 +39,9 @@ typedef NS_ENUM(sint32, OverlappedPresenterState) {
 
 @property (strong) UNOMetalViewDelegate* metalViewDelegate;
 
+/// The Skia rendering view (MTKView or UNOSoftView) inside the container content view.
+@property (strong) NSView* renderingView;
+
 @property OverlappedPresenterState overlappedPresenterState;
 
 - (void)sendEvent:(NSEvent *)event;
@@ -93,6 +96,10 @@ bool uno_window_set_modal(NSWindow *window, bool isModal);
 void uno_window_set_resizable(NSWindow *window, bool isResizable);
 void uno_window_set_min_size(NSWindow* window, double width, double height);
 void uno_window_set_max_size(NSWindow* window, double width, double height);
+
+// System backdrop material support (Mica/Acrylic)
+// material: 0 = None, 1 = Mica (Base), 2 = Mica (BaseAlt), 3 = Acrylic
+bool uno_window_set_system_backdrop(NSWindow* window, int material);
 
 // https://learn.microsoft.com/en-us/uwp/api/windows.system.virtualkey?view=winrt-22621
 typedef NS_ENUM(sint32, VirtualKey) {

@@ -1,3 +1,44 @@
+<#
+.SYNOPSIS
+Packs a local Uno.DevServer tool and runs the closest local repro flows for the DevServer CLI test suite.
+
+.DESCRIPTION
+This wrapper exists to reproduce DevServer CLI, MCP, and Codex validation failures locally without waiting on CI.
+It can run the source-backed and package-backed E2E tests, then execute the same PowerShell CLI validation script
+used by automation from a temporary snapshot.
+
+Use this script when you want a reusable local repro harness for:
+- DevServer CLI packaging issues
+- MCP startup and selection-flow failures
+- Codex-driven validation failures
+
+Codex-only investigations typically use:
+-SkipSourceE2E
+-SkipPackageE2E
+
+Required environment variables for Codex validation:
+- OPENAI_API_KEY or CODEX_API_KEY
+
+Useful optional environment variables:
+- UNO_DEVSERVER_CODEX_MODEL
+- UNO_DEVSERVER_SKIP_LEGACY_STARTUP_TESTS
+- UNO_SKIP_CODEX_INTEGRATION
+
+When the CLI validation fails, check the logged artifact paths for Codex stdout/stderr, unoapp MCP logs,
+and any generated JSON snapshots preserved by run-devserver-cli-tests.ps1.
+
+.EXAMPLE
+pwsh -File build/test-scripts/run-devserver-cli-local.ps1 -Configuration Release
+
+.EXAMPLE
+pwsh -File build/test-scripts/run-devserver-cli-local.ps1 -Configuration Release -SkipSourceE2E -SkipPackageE2E
+
+.EXAMPLE
+$env:OPENAI_API_KEY='...'
+$env:CODEX_API_KEY=$env:OPENAI_API_KEY
+$env:UNO_DEVSERVER_CODEX_MODEL='gpt-5.3-codex'
+pwsh -File build/test-scripts/run-devserver-cli-local.ps1 -SkipSourceE2E -SkipPackageE2E
+#>
 [CmdletBinding()]
 param(
     [ValidateSet('Debug', 'Release')]

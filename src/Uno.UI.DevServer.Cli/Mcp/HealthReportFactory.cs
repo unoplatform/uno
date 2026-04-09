@@ -12,6 +12,7 @@ internal static class HealthReportFactory
 		int toolCount,
 		ConnectionState? connectionState,
 		IReadOnlyList<string>? discoveredSolutions,
+		WorkspaceSelectionSnapshot? currentSelection = null,
 		int? hostProcessId = null,
 		string? hostEndpoint = null,
 		string? upstreamError = null,
@@ -91,6 +92,14 @@ internal static class HealthReportFactory
 				? HealthStatus.Degraded
 				: HealthStatus.Healthy;
 
+		var effectiveWorkspaceDirectory = discovery?.EffectiveWorkspaceDirectory ?? currentSelection?.EffectiveWorkspaceDirectory;
+		var selectedSolutionPath = discovery?.SelectedSolutionPath ?? currentSelection?.SelectedSolutionPath;
+		var resolutionKind = discovery?.ResolutionKind ?? currentSelection?.ResolutionKind;
+		var selectionSource = discovery?.SelectionSource ?? currentSelection?.SelectionSource;
+		var candidateSolutions = discovery?.CandidateSolutions.Count > 0
+			? discovery.CandidateSolutions
+			: currentSelection?.CandidateSolutions;
+
 		return new HealthReport
 		{
 			Status = status,
@@ -103,33 +112,47 @@ internal static class HealthReportFactory
 			DiscoveryDurationMs = discovery?.DiscoveryDurationMs ?? 0,
 			ConnectionState = connectionState,
 			DiscoveredSolutions = discoveredSolutions,
-			EffectiveWorkspaceDirectory = discovery?.EffectiveWorkspaceDirectory,
-			SelectedSolutionPath = discovery?.SelectedSolutionPath,
-			ResolutionKind = discovery?.ResolutionKind,
-			SelectionSource = discovery?.SelectionSource,
-			CandidateSolutions = discovery?.CandidateSolutions,
+			EffectiveWorkspaceDirectory = effectiveWorkspaceDirectory,
+			SelectedSolutionPath = selectedSolutionPath,
+			ResolutionKind = resolutionKind,
+			SelectionSource = selectionSource,
+			CandidateSolutions = candidateSolutions,
 			Issues = issues,
-			Discovery = MapDiscovery(discovery),
+			Discovery = MapDiscovery(discovery, currentSelection),
 		};
 	}
 
-	private static DiscoverySummary? MapDiscovery(DiscoveryInfo? info)
+	private static DiscoverySummary? MapDiscovery(DiscoveryInfo? info, WorkspaceSelectionSnapshot? currentSelection)
 	{
 		if (info is null)
 		{
-			return null;
+			if (currentSelection is null)
+			{
+				return null;
+			}
+
+			return new DiscoverySummary
+			{
+				EffectiveWorkspaceDirectory = currentSelection.EffectiveWorkspaceDirectory,
+				SelectedSolutionPath = currentSelection.SelectedSolutionPath,
+				ResolutionKind = currentSelection.ResolutionKind,
+				SelectionSource = currentSelection.SelectionSource,
+				CandidateSolutions = currentSelection.CandidateSolutions,
+			};
 		}
 
 		return new DiscoverySummary
 		{
 			RequestedWorkingDirectory = info.RequestedWorkingDirectory,
 			WorkingDirectory = info.WorkingDirectory,
-			EffectiveWorkspaceDirectory = info.EffectiveWorkspaceDirectory,
-			SelectedSolutionPath = info.SelectedSolutionPath,
+			EffectiveWorkspaceDirectory = info.EffectiveWorkspaceDirectory ?? currentSelection?.EffectiveWorkspaceDirectory,
+			SelectedSolutionPath = info.SelectedSolutionPath ?? currentSelection?.SelectedSolutionPath,
 			SelectedGlobalJsonPath = info.SelectedGlobalJsonPath,
-			ResolutionKind = info.ResolutionKind,
-			SelectionSource = info.SelectionSource,
-			CandidateSolutions = info.CandidateSolutions.Count > 0 ? info.CandidateSolutions : null,
+			ResolutionKind = info.ResolutionKind ?? currentSelection?.ResolutionKind,
+			SelectionSource = info.SelectionSource ?? currentSelection?.SelectionSource,
+			CandidateSolutions = info.CandidateSolutions.Count > 0
+				? info.CandidateSolutions
+				: currentSelection?.CandidateSolutions,
 			DotNetVersion = info.DotNetVersion,
 			UnoSdkVersion = info.UnoSdkVersion,
 			UnoSdkPath = info.UnoSdkPath,

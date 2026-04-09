@@ -202,5 +202,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnRightTapped(e);
 		}
+
+		protected override void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs e)
+		{
+			base.OnBringIntoViewRequested(e);
+		}
 	}
 }

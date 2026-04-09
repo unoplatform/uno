@@ -52,22 +52,26 @@ namespace TestRepro
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.Style
-					{
-						TargetType = typeof(global::Microsoft.UI.Xaml.Controls.TextBlock),
-						// Source 0\MainPage.xaml (Line 7:6)
-						Setters = 
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.Style
 						{
-							new global::Microsoft.UI.Xaml.Setter
+							TargetType = typeof(global::Microsoft.UI.Xaml.Controls.TextBlock),
+							// Source 0\MainPage.xaml (Line 7:6)
+							Setters = 
 							{
-								Property = global::Microsoft.UI.Xaml.Controls.TextBlock.ForegroundProperty,
-								Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Red),
-								// Source 0\MainPage.xaml (Line 8:8)
+								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.Setter
+									{
+										Property = global::Microsoft.UI.Xaml.Controls.TextBlock.ForegroundProperty,
+										Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Red),
+										// Source 0\MainPage.xaml (Line 8:8)
+									}
+								)
+								,
 							}
-							,
 						}
-					}
-					.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ0_Sty)
+						.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ0_Sty)
+					)
 				;
 			}
 			)
@@ -76,22 +80,26 @@ namespace TestRepro
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.Style
-					{
-						TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Button),
-						// Source 0\MainPage.xaml (Line 10:6)
-						Setters = 
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.Style
 						{
-							new global::Microsoft.UI.Xaml.Setter
+							TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Button),
+							// Source 0\MainPage.xaml (Line 10:6)
+							Setters = 
 							{
-								Property = global::Microsoft.UI.Xaml.Controls.Button.BackgroundProperty,
-								Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Azure),
-								// Source 0\MainPage.xaml (Line 11:8)
+								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.Setter
+									{
+										Property = global::Microsoft.UI.Xaml.Controls.Button.BackgroundProperty,
+										Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Azure),
+										// Source 0\MainPage.xaml (Line 11:8)
+									}
+								)
+								,
 							}
-							,
 						}
-					}
-					.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ1_Sty)
+						.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ1_Sty)
+					)
 				;
 			}
 			)
@@ -100,20 +108,24 @@ namespace TestRepro
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_Pag_ResΞ2_DatTem)
-					.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ2_DatTem)
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_Pag_ResΞ2_DatTem)
+						.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ2_DatTem)
+					)
 				;
 			}
 			)
 			;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.ListView
-			{
-				IsParsing = true,
-				// Source 0\MainPage.xaml (Line 20:4)
-			}
-			.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_LisVie)
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.ListView
+				{
+					IsParsing = true,
+					// Source 0\MainPage.xaml (Line 20:4)
+				}
+				.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_LisVie)
+			)
 			;
 			
 			this
@@ -219,30 +231,36 @@ namespace TestRepro
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
 					this.__rootInstance = 
-					new global::Microsoft.UI.Xaml.Controls.StackPanel
-					{
-						IsParsing = true,
-						// Source 0\MainPage.xaml (Line 14:8)
-						Children = 
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.Controls.StackPanel
 						{
-							new global::Microsoft.UI.Xaml.Controls.TextBlock
+							IsParsing = true,
+							// Source 0\MainPage.xaml (Line 14:8)
+							Children = 
 							{
-								IsParsing = true,
-								// Source 0\MainPage.xaml (Line 15:10)
+								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.Controls.TextBlock
+									{
+										IsParsing = true,
+										// Source 0\MainPage.xaml (Line 15:10)
+									}
+									.GenericApply(__that, __nameScope, ApplyTo_Ξ0_StaPanΞ0_TexBlo)
+								)
+								,
+								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.Controls.Button
+									{
+										IsParsing = true,
+										Content = @"DoSomething",
+										// Source 0\MainPage.xaml (Line 16:10)
+									}
+									.GenericApply(__that, __nameScope, ApplyTo_Ξ0_StaPanΞ1_But)
+								)
+								,
 							}
-							.GenericApply(__that, __nameScope, ApplyTo_Ξ0_StaPanΞ0_TexBlo)
-							,
-							new global::Microsoft.UI.Xaml.Controls.Button
-							{
-								IsParsing = true,
-								Content = @"DoSomething",
-								// Source 0\MainPage.xaml (Line 16:10)
-							}
-							.GenericApply(__that, __nameScope, ApplyTo_Ξ0_StaPanΞ1_But)
-							,
 						}
-					}
-					.GenericApply(__that, __nameScope, ApplyTo_Ξ0_StaPan)
+						.GenericApply(__that, __nameScope, ApplyTo_Ξ0_StaPan)
+					)
 					;
 					if (__rootInstance is FrameworkElement __fe)
 					{

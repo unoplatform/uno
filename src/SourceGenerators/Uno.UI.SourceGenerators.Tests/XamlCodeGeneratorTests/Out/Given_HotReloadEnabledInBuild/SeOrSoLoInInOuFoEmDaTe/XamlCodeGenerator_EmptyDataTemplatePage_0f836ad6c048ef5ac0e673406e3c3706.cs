@@ -52,41 +52,51 @@ namespace TestRepro
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
-					.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ0_DatTem)
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
+						.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ0_DatTem)
+					)
 				;
 			}
 			)
 			;
 			// Source 0\EmptyDataTemplatePage.xaml (Line 1:3)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.StackPanel
-			{
-				IsParsing = true,
-				// Source 0\EmptyDataTemplatePage.xaml (Line 11:3)
-				Children = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.StackPanel
 				{
-					new global::Microsoft.UI.Xaml.Controls.ListView
+					IsParsing = true,
+					// Source 0\EmptyDataTemplatePage.xaml (Line 11:3)
+					Children = 
 					{
-						IsParsing = true,
-						// Source 0\EmptyDataTemplatePage.xaml (Line 12:4)
-					}
-					.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPanΞ0_LisVie)
-					,
-					new global::Microsoft.UI.Xaml.Controls.Button
-					{
-						IsParsing = true,
-						Name = "ButtonWithEmptyDataTemplate",
-						ContentTemplate = 						new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem)
-						.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem)
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.ListView
+							{
+								IsParsing = true,
+								// Source 0\EmptyDataTemplatePage.xaml (Line 12:4)
+							}
+							.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPanΞ0_LisVie)
+						)
 						,
-						// Source 0\EmptyDataTemplatePage.xaml (Line 13:4)
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.Button
+							{
+								IsParsing = true,
+								Name = "ButtonWithEmptyDataTemplate",
+								ContentTemplate = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem)
+									.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem)
+								)
+								,
+								// Source 0\EmptyDataTemplatePage.xaml (Line 13:4)
+							}
+							.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPanΞ1_But)
+						)
+						,
 					}
-					.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPanΞ1_But)
-					,
 				}
-			}
-			.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPan)
+				.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPan)
+			)
 			;
 			
 			this

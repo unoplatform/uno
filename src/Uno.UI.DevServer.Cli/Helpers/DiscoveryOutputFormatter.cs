@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using Spectre.Console;
 
 namespace Uno.UI.DevServer.Cli.Helpers;

@@ -5,6 +5,7 @@ using Windows.Storage.Pickers;
 
 using Uno.Foundation.Extensibility;
 using Uno.Extensions.Storage.Pickers;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -46,7 +47,39 @@ internal class MacOSFileOpenPickerExtension : IFileOpenPickerExtension
 
 	public async Task<IReadOnlyList<StorageFile>> PickMultipleFilesAsync(CancellationToken token)
 	{
-		var array = NativeUno.uno_pick_multiple_files(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length);
+		IntPtr array;
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			array = NativeUno.uno_pick_multiple_files(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length);
+		}
+		else
+		{
+			var tcs = new TaskCompletionSource<IntPtr>(TaskCreationOptions.RunContinuationsAsynchronously);
+			using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				if (token.IsCancellationRequested)
+				{
+					tcs.TrySetCanceled(token);
+					return;
+				}
+				try
+				{
+					tcs.TrySetResult(NativeUno.uno_pick_multiple_files(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length));
+				}
+				catch (Exception ex)
+				{
+					tcs.TrySetException(ex);
+				}
+			});
+			array = await tcs.Task;
+		}
+
+		if (array == IntPtr.Zero)
+		{
+			return Array.Empty<StorageFile>();
+		}
+
 		var files = new List<StorageFile>();
 		var ptr = Marshal.ReadIntPtr(array);
 		while (ptr != IntPtr.Zero)
@@ -64,7 +97,34 @@ internal class MacOSFileOpenPickerExtension : IFileOpenPickerExtension
 
 	public async Task<StorageFile?> PickSingleFileAsync(CancellationToken token)
 	{
-		var file = NativeUno.uno_pick_single_file(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length);
+		string? file;
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			file = NativeUno.uno_pick_single_file(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length);
+		}
+		else
+		{
+			var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+			using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				if (token.IsCancellationRequested)
+				{
+					tcs.TrySetCanceled(token);
+					return;
+				}
+				try
+				{
+					tcs.TrySetResult(NativeUno.uno_pick_single_file(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length));
+				}
+				catch (Exception ex)
+				{
+					tcs.TrySetException(ex);
+				}
+			});
+			file = await tcs.Task;
+		}
+
 		return file is null ? null : await StorageFile.GetFileFromPathAsync(file);
 	}
 }

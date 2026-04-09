@@ -19,6 +19,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_UniformGridLayout);
 			LayoutId = "UniformGridLayout";
+
+			UpdateIndexBasedLayoutOrientation(Orientation.Horizontal);
 		}
 
 		#endregion
@@ -290,6 +292,8 @@ namespace Microsoft.UI.Xaml.Controls
 					? ScrollOrientation.Vertical
 					: ScrollOrientation.Horizontal;
 				ScrollOrientation = scrollOrientation;
+
+				UpdateIndexBasedLayoutOrientation(orientation);
 			}
 			else if (property == MinColumnSpacingProperty)
 			{
@@ -321,6 +325,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			InvalidateLayout();
+		}
+
+		private void UpdateIndexBasedLayoutOrientation(Orientation orientation)
+		{
+			SetIndexBasedLayoutOrientation(orientation == Orientation.Horizontal ?
+				IndexBasedLayoutOrientation.LeftToRight : IndexBasedLayoutOrientation.TopToBottom);
 		}
 
 		#region private helpers

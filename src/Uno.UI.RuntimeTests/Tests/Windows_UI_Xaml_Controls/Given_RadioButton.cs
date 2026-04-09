@@ -1,11 +1,18 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Tests.Common;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Tests.Common;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -355,6 +362,156 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_RadioButtons_Unload_SelectedIndex()
+		{
+			var vm = new When_RadioButtons_Unload_VM
+			{
+				Items = ["QweQwe", "AsdAsd", "ZxcZxc"],
+				CurrentIndex = 1,
+			};
+
+			var sut = new RadioButtons
+			{
+				ItemsSource = vm.Items,
+			};
+#if DEBUG
+			// note: remember that with #22479 resetting data-bound properties on flyout closing,
+			// observing with a breakpoint will have a side-effect: bp hit > app lost focus > flyout is closed > bug resetting radio dp
+			vm.PropertyChangingEx += (s, e) =>
+			{
+				System.Diagnostics.Debug.WriteLine($"VM::{e.Property}: {e.OldValue} -> {e.NewValue}");
+
+				if (e is { Property: nameof(When_RadioButtons_Unload_VM.CurrentIndex), NewValue: -1 }) { }
+			};
+#endif
+			sut.SetBinding(RadioButtons.SelectedIndexProperty, new Binding
+			{
+				Path = new PropertyPath(nameof(When_RadioButtons_Unload_VM.CurrentIndex)),
+				Mode = BindingMode.TwoWay,
+				Source = vm,
+			});
+			var flyout = new Flyout
+			{
+				Content = new Grid { Children = { sut } }
+			};
+			var dropdown = new DropDownButton
+			{
+				Content = "sadsadasd",
+				Flyout = flyout,
+			};
+
+			WindowHelper.WindowContent = dropdown;
+			await WindowHelper.WaitForLoaded(dropdown);
+
+			try
+			{
+				// 0. Open the flyout —- initial selection should be @1
+				flyout.ShowAt(dropdown);
+				await WindowHelper.WaitForLoaded(sut);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(1, sut.SelectedIndex, "0. Initial 'sut.SelectedIndex' should be 1");
+				Assert.AreEqual(1, vm.CurrentIndex, "0. Initial 'vm.CurrentIndex' should be 1");
+
+				// 1. Select the last item @2 programmatically -- ...
+				sut.SelectedIndex = 2;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(2, vm.CurrentIndex, "1. 'vm.CurrentIndex' should've been changed to 2");
+
+				// 2. Close the flyout —- selection should be preserved
+				flyout.Hide();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(2, vm.CurrentIndex, "2. 'vm.CurrentIndex' should be preserved as 2");
+
+				// 3. Re-open the flyout —- selection should remain unchanged
+				flyout.ShowAt(dropdown);
+				await WindowHelper.WaitForLoaded(sut);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(2, sut.SelectedIndex, "3. 'sut.SelectedIndex' should remain unchanged as 2");
+				Assert.AreEqual(2, vm.CurrentIndex, "3. 'vm.CurrentIndex' should remain unchanged as 2");
+			}
+			finally
+			{
+				UITestHelper.CloseAllPopups();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_RadioButtons_Unload_SelectedItem()
+		{
+			var vm = new When_RadioButtons_Unload_VM();
+			{
+				vm.Items = ["QweQwe", "AsdAsd", "ZxcZxc"];
+				vm.CurrentItem = vm.Items[1];
+			}
+
+			var sut = new RadioButtons
+			{
+				ItemsSource = vm.Items,
+			};
+#if DEBUG
+			// note: remember that with #22479 resetting data-bound properties on flyout closing,
+			// observing with a breakpoint will have a side-effect: bp hit > app lost focus > flyout is closed > bug resetting radio dp
+			vm.PropertyChangingEx += (s, e) =>
+			{
+				System.Diagnostics.Debug.WriteLine($"VM::{e.Property}: {e.OldValue} -> {e.NewValue}");
+
+				if (e is { Property: nameof(When_RadioButtons_Unload_VM.CurrentItem), NewValue: null }) { }
+			};
+#endif
+			sut.SetBinding(RadioButtons.SelectedItemProperty, new Binding
+			{
+				Path = new PropertyPath(nameof(When_RadioButtons_Unload_VM.CurrentItem)),
+				Mode = BindingMode.TwoWay,
+				Source = vm,
+			});
+			var flyout = new Flyout
+			{
+				Content = new Grid { Children = { sut } }
+			};
+			var dropdown = new DropDownButton
+			{
+				Content = "sadsadasd",
+				Flyout = flyout,
+			};
+
+			WindowHelper.WindowContent = dropdown;
+			await WindowHelper.WaitForLoaded(dropdown);
+
+			try
+			{
+				// 0. Open the flyout —- initial selection should be Items@1
+				flyout.ShowAt(dropdown);
+				await WindowHelper.WaitForLoaded(sut);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(vm.Items[1], sut.SelectedItem, $"0. Initial 'sut.SelectedItem' should be '{vm.Items[1]}'");
+				Assert.AreEqual(vm.Items[1], vm.CurrentItem, $"0. Initial 'vm.CurrentItem' should be '{vm.Items[1]}'");
+
+				// 1. Select the last item @2 programmatically --- ...
+				sut.SelectedItem = vm.Items[2];
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(vm.Items[2], vm.CurrentItem, $"1. 'vm.CurrentItem' should've been changed to '{vm.Items[2]}'");
+
+				// 2. Close the flyout —- selection should be preserved
+				flyout.Hide();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(vm.Items[2], vm.CurrentItem, $"2. 'vm.CurrentItem' should be preserved as '{vm.Items[2]}'");
+
+				// 3. Re-open the flyout —- selection should remain unchanged
+				flyout.ShowAt(dropdown);
+				await WindowHelper.WaitForLoaded(sut);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(vm.Items[2], sut.SelectedItem, $"3. 'sut.SelectedItem' should remain unchanged as '{vm.Items[2]}'");
+				Assert.AreEqual(vm.Items[2], vm.CurrentItem, $"3. 'vm.CurrentItem' should remain unchanged as '{vm.Items[2]}'");
+			}
+			finally
+			{
+				UITestHelper.CloseAllPopups();
+			}
+		}
+
+		[TestMethod]
 		public async Task When_AutomationPeer_Toggle()
 		{
 			RadioButton radioButton = null;
@@ -408,6 +565,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 					Assert.IsTrue(await commandFired.WaitAsync(TimeSpan.FromSeconds(3)));
 				});
+			}
+		}
+	}
+
+	public class When_RadioButtons_Unload_VM : INotifyPropertyChanged//, INotifyPropertyChanging
+	{
+		public event PropertyChangedEventHandler PropertyChanged;
+		public event TypedEventHandler<object, (string Property, object OldValue, object NewValue)> PropertyChangingEx;
+
+		private int _currentIndex;
+		private object _currentItem;
+		private ObservableCollection<string> _items;
+
+		public int CurrentIndex
+		{
+			get => _currentIndex;
+			set
+			{
+				PropertyChangingEx?.Invoke(this, (nameof(CurrentIndex), _currentIndex, value));
+				_currentIndex = value;
+				PropertyChanged?.Invoke(this, new(nameof(CurrentIndex)));
+			}
+		}
+		public object CurrentItem
+		{
+			get => _currentItem;
+			set
+			{
+				PropertyChangingEx?.Invoke(this, (nameof(CurrentItem), _currentItem, value));
+				_currentItem = value;
+				PropertyChanged?.Invoke(this, new(nameof(CurrentItem)));
+			}
+		}
+		public ObservableCollection<string> Items
+		{
+			get => _items;
+			set
+			{
+				PropertyChangingEx?.Invoke(this, (nameof(Items), _items, value));
+				_items = value;
+				PropertyChanged?.Invoke(this, new(nameof(Items)));
 			}
 		}
 	}

@@ -19,6 +19,11 @@ namespace MyProject
 		}
 		;
 
+		internal static T __PreserveProperties<
+			[global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties)]
+			T
+		>(T value) => value;
+
 		static GlobalStaticResources()
 		{
 			Initialize();

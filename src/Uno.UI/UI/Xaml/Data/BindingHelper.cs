@@ -56,10 +56,13 @@ namespace Uno.UI.Xaml
 			if (instance is IDependencyObjectStoreProvider provider)
 			{
 #if UNO_HAS_ENHANCED_LIFECYCLE
-				// Push the element's theme context for resource resolution.
-				// This ensures ThemeResource bindings resolve with the correct theme
-				// when called from event handlers (like Loading) that don't have
-				// the theme context already pushed.
+				// Push the element's theme context for INITIAL resource resolution.
+				// This is needed because deferred ThemeResourceReferences (those that
+				// couldn't be resolved at parse time) don't yet have a pinned dictionary.
+				// Their RefreshValue() falls back to tree-walk, which depends on the
+				// global theme context to select the correct theme sub-dictionary.
+				// Once pinned, subsequent theme change re-resolution goes directly to
+				// the pinned dictionary and doesn't need this push.
 				// Try the instance first, then fall back to resourceContextProvider.
 				var needsPush = false;
 				var effectiveTheme = Theme.None;
