@@ -23,7 +23,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Tmds.DBus.Protocol" Version="0.92.0" />
-		<PackageReference Include="Tmds.DBus.Generator" Version="0.90.2" />
+		<PackageReference Include="Tmds.DBus.Generator" Version="0.92.0" />
 	</ItemGroup>
 
 	<ItemGroup>
