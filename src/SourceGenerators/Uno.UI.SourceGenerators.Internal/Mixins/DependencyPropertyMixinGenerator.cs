@@ -20,6 +20,8 @@ public sealed class DependencyPropertyMixinGenerator : IIncrementalGenerator
 	{
 		var sb = new StringBuilder();
 		sb.AppendLine(Header);
+		sb.AppendLine();
+		sb.AppendLine("#if UNO_MIXIN_GENERATION");
 
 		foreach (var ns in Namespaces)
 		{
@@ -100,6 +102,9 @@ public sealed class DependencyPropertyMixinGenerator : IIncrementalGenerator
 
 			sb.AppendLine("}");
 		}
+
+		sb.AppendLine();
+		sb.AppendLine("#endif // UNO_MIXIN_GENERATION");
 
 		return sb.ToString();
 	}
