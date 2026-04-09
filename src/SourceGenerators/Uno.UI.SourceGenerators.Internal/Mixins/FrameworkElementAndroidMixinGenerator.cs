@@ -15,16 +15,15 @@ public sealed class FrameworkElementAndroidMixinGenerator : IIncrementalGenerato
 {
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
-		// PostInitializationOutput makes code visible to both the XAML generator
-		// (which needs to see property types) and DependencyPropertyGenerator
-		// (which processes [GeneratedDependencyProperty] attributes).
-		// Platform filtering is handled by #if __ANDROID__ in the generated code.
+		// PostInitializationOutput: visible to XAML generator and DependencyPropertyGenerator.
+		// Output is wrapped in #if __ANDROID__ so it compiles only on Android.
+		// Projects that don't define __ANDROID__ simply ignore the inactive block.
 		context.RegisterPostInitializationOutput(static ctx =>
 		{
 			ctx.AddSource("FrameworkElementMixins.Android.g.cs", GenerateFrameworkElementMixins());
 		});
 
-		// EffectiveViewport partials need AdditionalFiles, so they use RegisterSourceOutput.
+		// EffectiveViewport partials need AdditionalFiles + platform gating.
 		var platformProvider = context.AnalyzerConfigOptionsProvider.Select(static (options, ct) =>
 		{
 			options.GlobalOptions.TryGetValue("build_property.DefineConstantsProperty", out var constants);
