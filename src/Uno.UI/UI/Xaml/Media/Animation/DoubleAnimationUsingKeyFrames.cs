@@ -77,6 +77,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				State = TimelineState.Paused;
+				return;
+			}
+#endif
+
 			_currentAnimator.Pause();
 
 			State = TimelineState.Paused;
@@ -88,6 +96,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				return;
 			}
+
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				State = TimelineState.Active;
+				return;
+			}
+#endif
 
 			_currentAnimator.Resume();
 
