@@ -391,4 +391,45 @@ public class Given_DoubleAnimationUsingKeyFrames
 		// After the final Begin, the value should be applied on the first tick
 		await WindowHelper.WaitFor(() => Math.Abs(border.Opacity - 0.5) < 0.01, message: "Opacity should be 0.5 after Begin/Stop/Begin");
 	}
+
+	[TestMethod]
+	public async Task When_ObjectKeyFrame_At_Time0_Value_Applied()
+	{
+		// ObjectAnimationUsingKeyFrames should also apply time-0 values promptly
+		// (same deferred-play mechanism as DAUKF/CAUKF on Skia).
+		var border = new Border { Width = 50, Height = 50, Tag = "Initial" };
+		WindowHelper.WindowContent = border;
+		await WindowHelper.WaitForLoaded(border);
+
+		var animation = new ObjectAnimationUsingKeyFrames();
+		Storyboard.SetTarget(animation, border);
+		Storyboard.SetTargetProperty(animation, "Tag");
+		animation.KeyFrames.Add(new DiscreteObjectKeyFrame { KeyTime = KeyTime.FromTimeSpan(TimeSpan.Zero), Value = "Updated" });
+
+		var storyboard = new Storyboard();
+		storyboard.Children.Add(animation);
+
+		storyboard.Begin();
+
+		await WindowHelper.WaitFor(() => (string)border.Tag == "Updated", message: "Tag should be 'Updated' after time-0 object keyframe");
+	}
+
+	[TestMethod]
+	public async Task When_VisualState_OAKF_Applies_After_WaitForIdle()
+	{
+		// VisualState with OAKF should apply values and be settled after WaitForIdle.
+		var page = new TestPages.VisualStateDaukfOakfPage();
+		WindowHelper.WindowContent = page;
+		await WindowHelper.WaitForLoaded(page);
+		await WindowHelper.WaitForIdle();
+
+		var border = page.TestBorder;
+		Assert.AreEqual(Visibility.Visible, border.Visibility, "Initial visibility should be Visible");
+
+		VisualStateManager.GoToState(page, "HiddenState", useTransitions: false);
+		await WindowHelper.WaitForIdle();
+
+		// OAKF (Visibility=Collapsed) should be applied after WaitForIdle
+		Assert.AreEqual(Visibility.Collapsed, border.Visibility, "OAKF should set Visibility=Collapsed after WaitForIdle");
+	}
 }
