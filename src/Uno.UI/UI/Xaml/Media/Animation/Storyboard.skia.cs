@@ -202,9 +202,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			switch (_computedClockState)
 			{
 				case InternalClockState.Active:
-					// Continuous ticking is driven by TimeManager.EnsureTicking() which
-					// subscribes to CompositionTarget.Rendering (VSync-driven). This avoids
-					// flooding the dispatcher Normal queue which would block WaitForIdle.
+					// Ensure continuous VSync-driven ticking while any animation is Active.
+					// MUX: CParallelTimeline::UpdateAnimation calls RequestAdditionalFrame via
+					// the frame scheduler. In Uno, TimeManager.EnsureTicking subscribes to
+					// CompositionTarget.Rendering (VSync-driven, not dispatcher Normal queue)
+					// to avoid blocking WaitForIdle/RunIdleAsync.
 					TimeManager.Instance.EnsureTicking();
 					break;
 

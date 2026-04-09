@@ -395,6 +395,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				}
 			}
 
+#if __SKIA__
+			// Remove from TimeManager — this storyboard is being replaced by another.
+			_isStopped = true;
+			if (_isRegisteredWithTimeManager)
+			{
+				TimeManager.Instance.RemoveTimeline(this);
+			}
+#endif
+
 			State = TimelineState.Stopped;
 		}
 
