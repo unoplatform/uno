@@ -182,10 +182,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 					// Boundary precision handling.
 					// MUX: lines 992-1006
+					// Use parentTime directly (not parentTime + beginTime) — expirationTime is already
+					// expressed in parent-time space (beginTime + effectiveDuration).
 					if ((iterations >= 1.0 && _tmCurrentProgress <= 0.001)
 						|| (_tmCurrentProgress >= 0.999))
 					{
-						if (IsExpired(expirationTime, parentTime + beginTime))
+						if (IsExpired(expirationTime, parentTime))
 						{
 							// AutoReverse: at expiration, even iterations hold at start.
 							if (AutoReverse && (_tmIteration % 2) == 0)
