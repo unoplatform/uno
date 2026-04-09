@@ -265,6 +265,48 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		#endregion
 
+		#region Continuous ticking
+
+		private bool _isTicking;
+
+		/// <summary>
+		/// Ensures the TimeManager is continuously ticking via CompositionTarget.Rendering.
+		/// Called when there are active animations. Uses the VSync-driven render loop instead
+		/// of the dispatcher Normal queue to avoid blocking WaitForIdle.
+		/// </summary>
+		internal void EnsureTicking()
+		{
+			if (!_isTicking)
+			{
+				_isTicking = true;
+				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += OnRendering;
+			}
+		}
+
+		private void StopTicking()
+		{
+			if (_isTicking)
+			{
+				_isTicking = false;
+				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= OnRendering;
+			}
+		}
+
+		private void OnRendering(object sender, object e)
+		{
+			if (!HasActiveTimelines)
+			{
+				StopTicking();
+				return;
+			}
+
+			// Enqueue a single OnTick at Normal priority so TimeManager.Tick()
+			// runs BEFORE layout in the next frame cycle.
+			Uno.UI.Xaml.Core.CoreServices.RequestAdditionalFrame();
+		}
+
+		#endregion
+
 		#region Private helpers
 
 		/// <summary>
