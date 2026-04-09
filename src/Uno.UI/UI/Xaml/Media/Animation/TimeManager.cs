@@ -271,8 +271,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		/// <summary>
 		/// Ensures the TimeManager is continuously ticking via CompositionTarget.Rendering.
-		/// Called when there are active animations. Uses the VSync-driven render loop instead
-		/// of the dispatcher Normal queue to avoid blocking WaitForIdle.
+		/// Called when there are active animations.
+		///
+		/// In WinUI, the TimeManager ticks from the frame scheduler (VSync-driven, separate
+		/// from the dispatcher). In Uno, we use CompositionTarget.Rendering as the closest
+		/// equivalent. This fires at VSync rate from the render pipeline, NOT from the
+		/// dispatcher Normal queue, so it doesn't prevent WaitForIdle/RunIdleAsync.
+		///
+		/// After ticking animations, we call RequestAdditionalFrame() once to ensure layout
+		/// picks up the new animated property values.
 		/// </summary>
 		internal void EnsureTicking()
 		{
@@ -292,6 +299,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 
+		/// <summary>
+		/// VSync-driven tick callback. Ticks all animations.
+		/// Animated property changes (SetValue) automatically invalidate the visual tree,
+		/// which triggers layout via the standard invalidation → RequestAdditionalFrame path.
+		/// We don't call RequestAdditionalFrame explicitly to avoid starving the Idle queue
+		/// (matching WinUI where animations tick on the frame scheduler, not the dispatcher).
+		/// </summary>
 		private void OnRendering(object sender, object e)
 		{
 			if (!HasActiveTimelines)
@@ -300,9 +314,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
-			// Enqueue a single OnTick at Normal priority so TimeManager.Tick()
-			// runs BEFORE layout in the next frame cycle.
-			Uno.UI.Xaml.Core.CoreServices.RequestAdditionalFrame();
+			// Tick all animations — compute values and apply to properties.
+			// Property changes will automatically invalidate layout.
+			Tick();
 		}
 
 		#endregion
