@@ -15,6 +15,16 @@ public sealed class FrameworkElementAndroidMixinGenerator : IIncrementalGenerato
 {
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
+		// Use PostInitializationOutput so that DependencyPropertyGenerator can see
+		// the [GeneratedDependencyProperty] attributes and generate the Create/Get/Set helpers.
+		// Platform filtering is handled by #if __ANDROID__ in the generated code.
+		context.RegisterPostInitializationOutput(static ctx =>
+		{
+			ctx.AddSource("FrameworkElementMixins.Android.g.cs", GenerateFrameworkElementMixins());
+		});
+
+		// EffectiveViewport partials need AdditionalFiles, so they use RegisterSourceOutput.
+		// They don't use [GeneratedDependencyProperty] so the ordering doesn't matter.
 		var platformProvider = context.AnalyzerConfigOptionsProvider.Select(static (options, ct) =>
 		{
 			options.GlobalOptions.TryGetValue("build_property.DefineConstantsProperty", out var constants);
@@ -36,10 +46,6 @@ public sealed class FrameworkElementAndroidMixinGenerator : IIncrementalGenerato
 				return;
 			}
 
-			// Part A: IFrameworkElement implementation for each class
-			ctx.AddSource("FrameworkElementMixins.Android.g.cs", GenerateFrameworkElementMixins());
-
-			// Part B: EffectiveViewport partials
 			var evpContent = evpFiles.FirstOrDefault(f => f != null);
 			if (evpContent != null)
 			{
