@@ -185,7 +185,7 @@ internal class LinuxFilePickerExtension(IFilePicker picker) : IFileOpenPickerExt
 				return ImmutableList<string>.Empty;
 			}
 
-			return results["uris"].GetArray<string>().Select(s => new Uri(s).AbsolutePath).ToImmutableList();
+			return results["uris"].GetArray<string>().Select(s => new Uri(s).LocalPath).ToImmutableList();
 		}
 		catch (Exception e)
 		{
