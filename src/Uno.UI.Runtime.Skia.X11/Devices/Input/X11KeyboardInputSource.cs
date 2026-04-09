@@ -41,8 +41,10 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 			var virtualKey = X11KeyTransform.VirtualKeyFromKeySym(keySym);
 			if (virtualKey == VirtualKey.None)
 			{
+				// XKeyEvent is a struct, so this copy is safe to mutate independently of keyEvent.
 				var unshiftedKeyEvent = keyEvent;
 				unshiftedKeyEvent.state &= ~XModifierMask.ShiftMask;
+				// Pass num_bytes=0 because we only need the keySym output, not the translated string.
 				XLib.XLookupString(ref unshiftedKeyEvent, buffer, 0, out var baseKeySym, IntPtr.Zero);
 				virtualKey = X11KeyTransform.VirtualKeyFromKeySym(baseKeySym);
 			}
