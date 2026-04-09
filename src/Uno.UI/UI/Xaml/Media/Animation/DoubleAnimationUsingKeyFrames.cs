@@ -137,19 +137,28 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.SkipToFill()
 		{
+#if __SKIA__
+			CancelDeferredPlay();
+#endif
 			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
 				_startingValue = null;
 			}
 
-			SetValue(KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault()?.Value);//Set property to its final value
+			// Read the final value directly from the last keyframe (not cached).
+			// This matches WinUI's CAnimation::UpdateAnimationUsingKeyFrames which reads
+			// keyframe values at tick time via pKeyFrame->GetValue().
+			SetValue(KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault()?.Value);
 
 			OnEnd();
 		}
 
 		void ITimeline.Deactivate()
 		{
+#if __SKIA__
+			CancelDeferredPlay();
+#endif
 			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
@@ -161,6 +170,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.Stop()
 		{
+#if __SKIA__
+			CancelDeferredPlay();
+#endif
 			_currentAnimator?.Cancel(); // stop could be called before the initialization
 			_startingValue = null;
 			ClearValue();
@@ -169,9 +181,23 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// Creates a new animator and animates the view
+		/// Starts the animation. On Skia, defers animator initialization to the first
+		/// rendering tick so keyframe binding values are read after layout (matching WinUI
+		/// where keyframe values are read at tick time, not at Begin time).
 		/// </summary>
 		private void Play()
+		{
+#if __SKIA__
+			PlayDeferred();
+#else
+			PlayImmediate();
+#endif
+		}
+
+		/// <summary>
+		/// Creates animators and starts the animation immediately.
+		/// </summary>
+		private void PlayImmediate()
 		{
 			_subscriptions.Clear(); // Dispose all current animators
 			InitializeAnimators(); // Create the animator
@@ -215,8 +241,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				{
 					_finalValue = toValue;
 				}
-				var animator = AnimatorFactory.Create(this, fromValue, toValue);
 				var duration = keyFrame.KeyTime.TimeSpan - previousKeyTime;
+				var animator = AnimatorFactory.Create(this, fromValue, toValue, duration);
 				animator.SetDuration((long)duration.TotalMilliseconds);
 				animator.SetEasingFunction(keyFrame.GetEasingFunction());
 				animator.DisposeWith(_subscriptions);
