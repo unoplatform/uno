@@ -139,6 +139,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 #if __SKIA__
 			CancelDeferredPlay();
+			StopTimeManagerDriven();
 #endif
 			if (_currentAnimator is { IsRunning: true })
 			{
@@ -158,6 +159,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 #if __SKIA__
 			CancelDeferredPlay();
+			StopTimeManagerDriven();
 #endif
 			if (_currentAnimator is { IsRunning: true })
 			{
@@ -172,6 +174,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 #if __SKIA__
 			CancelDeferredPlay();
+			StopTimeManagerDriven();
 #endif
 			_currentAnimator?.Cancel(); // stop could be called before the initialization
 			_startingValue = null;
