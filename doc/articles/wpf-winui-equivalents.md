@@ -278,7 +278,8 @@ Always use `BasedOn` when overriding default control styles. Without it, your st
 | `Focusable="True"` | `IsTabStop="True"` |
 | `TextWrapping="WrapWithOverflow"` | `TextWrapping="Wrap"` |
 | `MediaElement` | `MediaPlayerElement` |
-
+| `InputBindings` | `KeyboardAccelerators` |
+| `KeyBinding` | `KeyboardAccelerator` |
 ### Code-Behind Replacements
 
 | Find | Replace With |
