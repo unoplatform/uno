@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Media.Animation
@@ -61,6 +62,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return CreateColor(timeline, startingColor, targetColor);
 			}
 
+			if (startingValue is Point startingPoint && targetValue is Point targetPoint)
+			{
+				return CreatePoint(timeline, startingPoint, targetPoint);
+			}
+
 			throw new NotSupportedException();
 		}
 
@@ -69,5 +75,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		private static IValueAnimator CreateColor(Timeline timeline, ColorOffset startingValue, ColorOffset targetValue)
 			=> new DispatcherColorAnimator(startingValue, targetValue);
+
+		private static IValueAnimator CreatePoint(Timeline timeline, Point startingValue, Point targetValue)
+			=> new DispatcherPointAnimator(startingValue, targetValue);
 	}
 }
