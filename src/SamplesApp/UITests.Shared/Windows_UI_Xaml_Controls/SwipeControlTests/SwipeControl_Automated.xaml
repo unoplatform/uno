@@ -2,50 +2,69 @@
     x:Class="UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_Automated"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.SwipeControlTests"
-	xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.SwipeControlTests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<Page.Resources>
-		<muxc:FontIconSource x:Name="Icon" Glyph="&#xE710;"/>
-	</Page.Resources>
+    <Page.Resources>
+        <muxc:FontIconSource x:Name="Icon" Glyph="&#xE710;" />
+    </Page.Resources>
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition />
-		</Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
 
-		<StackPanel HorizontalAlignment="Center">
-			<muxc:SwipeControl Width="400" Height="75" x:Name="SUT">
-				<muxc:SwipeControl.LeftItems>
-					<muxc:SwipeItems Mode="Execute">
-						<muxc:SwipeItem Text="Left_1" IconSource="{StaticResource Icon}" Invoked="ItemInvoked" />
-					</muxc:SwipeItems>
-				</muxc:SwipeControl.LeftItems>
-				<muxc:SwipeControl.RightItems>
-					<muxc:SwipeItems Mode="Reveal">
-						<muxc:SwipeItem Text="Right_1" IconSource="{StaticResource Icon}" Invoked="ItemInvoked" />
-						<muxc:SwipeItem Text="Right_2" IconSource="{StaticResource Icon}" Invoked="ItemInvoked" />
-						<muxc:SwipeItem Text="Right_3" IconSource="{StaticResource Icon}" Invoked="ItemInvoked" />
-					</muxc:SwipeItems>
-				</muxc:SwipeControl.RightItems>
-				<Border Background="OrangeRed">
-					<TextBlock
-						Text="Swipe control"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center"/>
-				</Border>
-			</muxc:SwipeControl>
-		</StackPanel>
+        <StackPanel HorizontalAlignment="Center">
+            <muxc:SwipeControl
+                x:Name="SUT"
+                Width="400"
+                Height="75">
+                <muxc:SwipeControl.LeftItems>
+                    <muxc:SwipeItems Mode="Execute">
+                        <muxc:SwipeItem
+                            IconSource="{StaticResource Icon}"
+                            Invoked="ItemInvoked"
+                            Text="Left_1" />
+                    </muxc:SwipeItems>
+                </muxc:SwipeControl.LeftItems>
+                <muxc:SwipeControl.RightItems>
+                    <muxc:SwipeItems Mode="Reveal">
+                        <muxc:SwipeItem
+                            IconSource="{StaticResource Icon}"
+                            Invoked="ItemInvoked"
+                            Text="Right_1" />
+                        <muxc:SwipeItem
+                            IconSource="{StaticResource Icon}"
+                            Invoked="ItemInvoked"
+                            Text="Right_2" />
+                        <muxc:SwipeItem
+                            IconSource="{StaticResource Icon}"
+                            Invoked="ItemInvoked"
+                            Text="Right_3" />
+                    </muxc:SwipeItems>
+                </muxc:SwipeControl.RightItems>
+                <Border Background="OrangeRed">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="Swipe control" />
+                </Border>
+            </muxc:SwipeControl>
+        </StackPanel>
 
-		<StackPanel Orientation="Horizontal" Margin="0,20"  VerticalAlignment="Top" Grid.Row="1">
-			<TextBlock Text="Last invoked: " />
-			<TextBlock x:Name="Output" Text="** none **" />
-		</StackPanel>
+        <StackPanel
+            Grid.Row="1"
+            Margin="0,20"
+            VerticalAlignment="Top"
+            Orientation="Horizontal">
+            <TextBlock Text="Last invoked: " />
+            <TextBlock x:Name="Output" Text="** none **" />
+        </StackPanel>
 
-	</Grid>
+    </Grid>
 </Page>

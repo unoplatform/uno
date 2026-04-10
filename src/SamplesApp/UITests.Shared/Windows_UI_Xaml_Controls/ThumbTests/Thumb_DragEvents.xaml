@@ -1,46 +1,44 @@
 ﻿<Page
-	x:Class="UITests.Windows_UI_Xaml_Controls.ThumbTests.Thumb_DragEvents"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:local="using:UITests.Windows_UI_Xaml_Controls.ThumbTests"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    x:Class="UITests.Windows_UI_Xaml_Controls.ThumbTests.Thumb_DragEvents"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.ThumbTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<Grid>
-		<StackPanel
-			VerticalAlignment="Top"
-			HorizontalAlignment="Left">
-			<TextBlock Text="Start:" />
-			<TextBlock x:Name="DragStartedOutput" />
-			<TextBlock Text="Delta:" />
-			<TextBlock x:Name="DragDeltaOutput" />
-			<TextBlock Text="End:" />
-			<TextBlock x:Name="DragCompletedOutput" />
-		</StackPanel>
+    <Grid>
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+            <TextBlock Text="Start:" />
+            <TextBlock x:Name="DragStartedOutput" />
+            <TextBlock Text="Delta:" />
+            <TextBlock x:Name="DragDeltaOutput" />
+            <TextBlock Text="End:" />
+            <TextBlock x:Name="DragCompletedOutput" />
+        </StackPanel>
 
-		<Grid
-			Width="100"
-			Height="100"
-			VerticalAlignment="Center"
-			HorizontalAlignment="Center"
-			Background="Red">
-			<Thumb
-				x:Name="TheThumb"
-				Width="20"
-				Height="20"
-				VerticalAlignment="Center"
-				HorizontalAlignment="Center"
-				DragStarted="OnThumbDragStarted"
-				DragDelta="OnThumbDragDelta"
-				DragCompleted="OnThumbDragCompleted">
-				<Thumb.Template>
-					<ControlTemplate>
-						<Border Background="Blue" />
-					</ControlTemplate>
-				</Thumb.Template>
-			</Thumb>
-		</Grid>
-	</Grid>
+        <Grid
+            Width="100"
+            Height="100"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="Red">
+            <Thumb
+                x:Name="TheThumb"
+                Width="20"
+                Height="20"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                DragCompleted="OnThumbDragCompleted"
+                DragDelta="OnThumbDragDelta"
+                DragStarted="OnThumbDragStarted">
+                <Thumb.Template>
+                    <ControlTemplate>
+                        <Border Background="Blue" />
+                    </ControlTemplate>
+                </Thumb.Template>
+            </Thumb>
+        </Grid>
+    </Grid>
 </Page>

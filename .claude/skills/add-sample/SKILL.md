@@ -123,7 +123,14 @@ This step is **MANDATORY** — `EnableAutomaticXamlPageInclusion` is `false`, so
 
 4. **Verify** the entries are correctly placed by checking nearby entries in the projitems file.
 
-### Phase 4: Verification
+### Phase 4: Format XAML
+
+Run XamlStyler on the new XAML file to ensure it matches the project's formatting standards:
+```bash
+dotnet xstyler -f src/SamplesApp/UITests.Shared/FolderName/SampleName.xaml
+```
+
+### Phase 5: Verification
 
 1. **Build** to verify compilation:
    ```bash

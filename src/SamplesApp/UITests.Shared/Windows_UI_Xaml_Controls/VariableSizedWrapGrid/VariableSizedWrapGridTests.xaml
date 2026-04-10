@@ -2,19 +2,35 @@
     x:Class="UITests.Windows_UI_Xaml_Controls.VariableSizedWrapGridTests"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Windows_UI_Xaml_Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
     <StackPanel>
-		<Button Click="SwitchOrientationClick">Switch orientation</Button>
-		<VariableSizedWrapGrid x:Name="SUT" Orientation="Horizontal" MaximumRowsOrColumns="3" ItemHeight="44" ItemWidth="44">
-			<Rectangle Fill="Red"/>
-			<Rectangle Fill="Blue" Height="80" VariableSizedWrapGrid.RowSpan="2"/>
-			<Rectangle Fill="Green" Width="80" VariableSizedWrapGrid.ColumnSpan="2"/>
-			<Rectangle Fill="Yellow" Height="80" Width="80" VariableSizedWrapGrid.RowSpan="2" VariableSizedWrapGrid.ColumnSpan="2"/>
-		</VariableSizedWrapGrid>
-	</StackPanel>
+        <Button Click="SwitchOrientationClick">Switch orientation</Button>
+        <VariableSizedWrapGrid
+            x:Name="SUT"
+            ItemHeight="44"
+            ItemWidth="44"
+            MaximumRowsOrColumns="3"
+            Orientation="Horizontal">
+            <Rectangle Fill="Red" />
+            <Rectangle
+                Height="80"
+                Fill="Blue"
+                VariableSizedWrapGrid.RowSpan="2" />
+            <Rectangle
+                Width="80"
+                Fill="Green"
+                VariableSizedWrapGrid.ColumnSpan="2" />
+            <Rectangle
+                Width="80"
+                Height="80"
+                Fill="Yellow"
+                VariableSizedWrapGrid.ColumnSpan="2"
+                VariableSizedWrapGrid.RowSpan="2" />
+        </VariableSizedWrapGrid>
+    </StackPanel>
 </Page>
