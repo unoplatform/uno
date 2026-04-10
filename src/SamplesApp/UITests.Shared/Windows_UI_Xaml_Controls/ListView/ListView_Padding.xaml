@@ -1,49 +1,53 @@
-<UserControl
-	x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Padding"
-	xmlns:controls="using:Uno.UI.Samples.Controls"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:u="using:Uno.UI.Samples.Controls"
-	xmlns:uBehaviors="using:Uno.UI.Samples.Behaviors"
-	xmlns:ios="http://uno.ui/ios"
-	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:android="http://uno.ui/android"
-	mc:Ignorable="d ios android"
-	d:DesignHeight="2000"
-	d:DesignWidth="400">
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Padding"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:android="http://uno.ui/android"
+    xmlns:controls="using:Uno.UI.Samples.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ios="http://uno.ui/ios"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:u="using:Uno.UI.Samples.Controls"
+    xmlns:uBehaviors="using:Uno.UI.Samples.Behaviors"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    d:DesignHeight="2000"
+    d:DesignWidth="400"
+    mc:Ignorable="d ios android">
 
-	<controls:SampleControl SampleDescription="Sample of a ListView with padding">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<Grid>
-					<ListView VerticalAlignment="Top"
-							  ItemsSource="{Binding [SampleItems]}"
-							  Padding="50"
-							  Background="LightGreen"
-							  Height="200">						
-						<ListView.ItemTemplate>
-							<DataTemplate>
-								<Border Background="LightBlue">
-									<TextBlock Text="{Binding}"
-											   HorizontalAlignment="Stretch"
-											   Height="25" />
-								</Border>
-							</DataTemplate>
-						</ListView.ItemTemplate>
-					</ListView>
-					<Rectangle VerticalAlignment="Top"
-							   HorizontalAlignment="Left"
-							   Height="50"
-							   Width="50"
-							   Fill="Aqua" />
-					<TextBlock VerticalAlignment="Center"
-							   Text="Rectangle set to Height=50 to validate Padding of ListView. First ListViewItem will be shown after rectangle."
-							   TextWrapping="Wrap"
-							   FontWeight="Bold" />
-				</Grid>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+    <controls:SampleControl SampleDescription="Sample of a ListView with padding">
+        <controls:SampleControl.SampleContent>
+            <DataTemplate>
+                <Grid>
+                    <ListView
+                        Height="200"
+                        Padding="50"
+                        VerticalAlignment="Top"
+                        Background="LightGreen"
+                        ItemsSource="{Binding [SampleItems]}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="LightBlue">
+                                    <TextBlock
+                                        Height="25"
+                                        HorizontalAlignment="Stretch"
+                                        Text="{Binding}" />
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Rectangle
+                        Width="50"
+                        Height="50"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Fill="Aqua" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontWeight="Bold"
+                        Text="Rectangle set to Height=50 to validate Padding of ListView. First ListViewItem will be shown after rectangle."
+                        TextWrapping="Wrap" />
+                </Grid>
+            </DataTemplate>
+        </controls:SampleControl.SampleContent>
+    </controls:SampleControl>
 </UserControl>

@@ -2,81 +2,71 @@
     x:Class="UITests.Windows_UI_Xaml_Controls.DatePicker.DatePicker_VisualStates"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.DatePicker"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.DatePicker"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
 
-	<Page.Resources>
-		<local:StringFormatConverter x:Key="StringFormatConverter" />
+    <Page.Resources>
+        <local:StringFormatConverter x:Key="StringFormatConverter" />
 
-		<Style TargetType="DatePicker"
-			   x:Key="DefaultDatePickerStyle">
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="DatePicker">
-						<Grid>
-							<VisualStateManager.VisualStateGroups>
-								<VisualStateGroup x:Name="CommonStates">
-									<VisualState x:Name="Normal" />
-									<VisualState x:Name="Disabled" />
-								</VisualStateGroup>
-								<VisualStateGroup x:Name="HasDateStates">
-									<VisualState x:Name="HasDate">
-										<VisualState.Setters>
-											<Setter Target="PlaceholderText.Visibility"
-													Value="Collapsed" />
-											<Setter Target="DateText.Visibility"
-													Value="Visible" />
-											<Setter Target="RootGrid.Background"
-													Value="Green" />
-										</VisualState.Setters>
-									</VisualState>
-									<VisualState x:Name="HasNoDate">
-										<VisualState.Setters>
-											<Setter Target="PlaceholderText.Visibility"
-													Value="Visible" />
-											<Setter Target="DateText.Visibility"
-													Value="Collapsed" />
-											<Setter Target="RootGrid.Background"
-													Value="Red" />
-										</VisualState.Setters>
-									</VisualState>
-								</VisualStateGroup>
-							</VisualStateManager.VisualStateGroups>
+        <Style x:Key="DefaultDatePickerStyle" TargetType="DatePicker">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DatePicker">
+                        <Grid>
+                            <Button
+                                x:Name="FlyoutButton"
+                                Padding="0"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                IsEnabled="{TemplateBinding IsEnabled}"
+                                UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}">
+                                <Grid x:Name="RootGrid" Height="{TemplateBinding Height}">
 
-							<Button x:Name="FlyoutButton"
-									IsEnabled="{TemplateBinding IsEnabled}"
-									UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}"
-									Padding="0"
-									HorizontalAlignment="Stretch"
-									HorizontalContentAlignment="Stretch">
-								<Grid x:Name="RootGrid"
-									  Height="{TemplateBinding Height}">
+                                    <TextBlock x:Name="DateText" Text="{Binding SelectedDate, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:d}'}" />
 
-									<TextBlock x:Name="DateText"
-											   Text="{Binding SelectedDate, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:d}'}" />
+                                    <TextBlock x:Name="PlaceholderText" Text="{TemplateBinding Header}" />
 
-									<TextBlock x:Name="PlaceholderText"
-											   Text="{TemplateBinding Header}" />
+                                    <!--  Removing this cause trouble with the DatePicker code  -->
+                                    <TextBlock x:Name="DayTextBlock" Opacity="0" />
+                                </Grid>
+                            </Button>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="Disabled" />
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="HasDateStates">
+                                    <VisualState x:Name="HasDate">
+                                        <VisualState.Setters>
+                                            <Setter Target="PlaceholderText.Visibility" Value="Collapsed" />
+                                            <Setter Target="DateText.Visibility" Value="Visible" />
+                                            <Setter Target="RootGrid.Background" Value="Green" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="HasNoDate">
+                                        <VisualState.Setters>
+                                            <Setter Target="PlaceholderText.Visibility" Value="Visible" />
+                                            <Setter Target="DateText.Visibility" Value="Collapsed" />
+                                            <Setter Target="RootGrid.Background" Value="Red" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
 
-									<!-- Removing this cause trouble with the DatePicker code -->
-									<TextBlock x:Name="DayTextBlock"
-											   Opacity="0" />
-								</Grid>
-							</Button>
-						</Grid>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-	</Page.Resources>
-
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<DatePicker Style="{StaticResource DefaultDatePickerStyle}"
-					Width="300"
-					Header="Test" />
-	</Grid>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <DatePicker
+            Width="300"
+            Header="Test"
+            Style="{StaticResource DefaultDatePickerStyle}" />
+    </Grid>
 </Page>

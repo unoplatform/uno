@@ -12,7 +12,10 @@
     <Grid>
         <muxc:TreeView>
             <muxc:TreeView.RootNodes>
-                <muxc:TreeViewNode x:Name="RootNode" Content="Flavors" IsExpanded="True">
+                <muxc:TreeViewNode
+                    x:Name="RootNode"
+                    Content="Flavors"
+                    IsExpanded="True">
                     <muxc:TreeViewNode.Children>
                         <muxc:TreeViewNode Content="Vanilla" />
                         <muxc:TreeViewNode Content="Strawberry" />

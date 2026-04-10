@@ -4,19 +4,22 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<ScrollViewer Width="400" Height="400" Background="Yellow">
-		<StackPanel Padding="20" Spacing="10">
-			<Border Background="Blue" Height="200" />
-			<ScrollViewer Height="200" Background="Red">
-				<StackPanel Padding="20" Spacing="10">
-					<Border Background="Green" Height="150" />
-					<Border Background="Green" Height="150" />
-				</StackPanel>
-			</ScrollViewer>
-			<Border Background="Blue" Height="200" />
-		</StackPanel>
-	</ScrollViewer>
+    <ScrollViewer
+        Width="400"
+        Height="400"
+        Background="Yellow">
+        <StackPanel Padding="20" Spacing="10">
+            <Border Height="200" Background="Blue" />
+            <ScrollViewer Height="200" Background="Red">
+                <StackPanel Padding="20" Spacing="10">
+                    <Border Height="150" Background="Green" />
+                    <Border Height="150" Background="Green" />
+                </StackPanel>
+            </ScrollViewer>
+            <Border Height="200" Background="Blue" />
+        </StackPanel>
+    </ScrollViewer>
 </Page>

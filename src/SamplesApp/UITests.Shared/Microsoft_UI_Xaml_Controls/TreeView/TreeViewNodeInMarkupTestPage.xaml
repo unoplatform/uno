@@ -1,5 +1,5 @@
 ﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
-<!--  MUX commit reference 02cb2ab -->
+<!--  MUX commit reference 02cb2ab  -->
 <utilities:MUXTestPage
     x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests.TreeViewNodeInMarkupTestPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -11,15 +11,15 @@
     xmlns:utilities="using:MUXControlsTestApp.Utilities"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
-	<Grid>
-		<mux:TreeView x:Name="TestTreeView">
-			<mux:TreeView.RootNodes>
-				<mux:TreeViewNode Content="Root">
-					<mux:TreeViewNode.Children>
-						<mux:TreeViewNode Content="Root.0"/>
-					</mux:TreeViewNode.Children>
-				</mux:TreeViewNode>
-			</mux:TreeView.RootNodes>
-		</mux:TreeView>
-	</Grid>
+    <Grid>
+        <mux:TreeView x:Name="TestTreeView">
+            <mux:TreeView.RootNodes>
+                <mux:TreeViewNode Content="Root">
+                    <mux:TreeViewNode.Children>
+                        <mux:TreeViewNode Content="Root.0" />
+                    </mux:TreeViewNode.Children>
+                </mux:TreeViewNode>
+            </mux:TreeView.RootNodes>
+        </mux:TreeView>
+    </Grid>
 </utilities:MUXTestPage>

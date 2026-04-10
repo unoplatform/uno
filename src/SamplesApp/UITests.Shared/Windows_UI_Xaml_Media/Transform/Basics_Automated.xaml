@@ -2,176 +2,271 @@
     x:Class="UITests.Shared.Windows_UI_Xaml_Media.Transform.Basics_Automated"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Media.Transform"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Media.Transform"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<Grid Background="White">
-		<Grid.RowDefinitions>
-			<RowDefinition />
-			<RowDefinition />
-			<RowDefinition />
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition />
-			<ColumnDefinition />
-		</Grid.ColumnDefinitions>
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
-		<Grid BorderThickness="5" BorderBrush="#FF0000" Grid.Row="0" Grid.Column="0">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition />
-			</Grid.RowDefinitions>
+        <Grid
+            Grid.Row="0"
+            Grid.Column="0"
+            BorderBrush="#FF0000"
+            BorderThickness="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-			<Border Background="#FF0000" Padding="5,5,5,10" HorizontalAlignment="Stretch">
-				<TextBlock Text="Rotate" FontSize="24" Foreground="White" />
-			</Border>
+            <Border
+                Padding="5,5,5,10"
+                HorizontalAlignment="Stretch"
+                Background="#FF0000">
+                <TextBlock
+                    FontSize="24"
+                    Foreground="White"
+                    Text="Rotate" />
+            </Border>
 
-			<Border Grid.Row="1" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="RotateHost">
-				<Rectangle Fill="#FF0000" Width="100" Height="100" RenderTransformOrigin="0,0">
-					<Rectangle.RenderTransform>
-						<RotateTransform
-							CenterX="50"
-							CenterY="50"
-							Angle="30" />
-					</Rectangle.RenderTransform>
-				</Rectangle>
-			</Border>
-		</Grid>
+            <Border
+                x:Name="RotateHost"
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                BorderBrush="Black"
+                BorderThickness="3">
+                <Rectangle
+                    Width="100"
+                    Height="100"
+                    Fill="#FF0000"
+                    RenderTransformOrigin="0,0">
+                    <Rectangle.RenderTransform>
+                        <RotateTransform Angle="30" CenterX="50" CenterY="50" />
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+            </Border>
+        </Grid>
 
-		<Grid BorderThickness="5" BorderBrush="#FF8000" Grid.Row="0" Grid.Column="1">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition />
-			</Grid.RowDefinitions>
+        <Grid
+            Grid.Row="0"
+            Grid.Column="1"
+            BorderBrush="#FF8000"
+            BorderThickness="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-			<Border Background="#FF8000" Padding="5,5,5,10" HorizontalAlignment="Stretch">
-				<TextBlock Text="Translate" FontSize="24" Foreground="White" />
-			</Border>
+            <Border
+                Padding="5,5,5,10"
+                HorizontalAlignment="Stretch"
+                Background="#FF8000">
+                <TextBlock
+                    FontSize="24"
+                    Foreground="White"
+                    Text="Translate" />
+            </Border>
 
-			<Border Grid.RowSpan="3" Grid.Column="2" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="TranslateHost">
-				<Rectangle Fill="#FF8000" Width="100" Height="100" RenderTransformOrigin="0,0">
-					<Rectangle.RenderTransform>
-						<TranslateTransform
-							X="15"
-							Y="15" />
-					</Rectangle.RenderTransform>
-				</Rectangle>
-			</Border>
-		</Grid>
+            <Border
+                x:Name="TranslateHost"
+                Grid.RowSpan="3"
+                Grid.Column="2"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                BorderBrush="Black"
+                BorderThickness="3">
+                <Rectangle
+                    Width="100"
+                    Height="100"
+                    Fill="#FF8000"
+                    RenderTransformOrigin="0,0">
+                    <Rectangle.RenderTransform>
+                        <TranslateTransform X="15" Y="15" />
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+            </Border>
+        </Grid>
 
-		<Grid BorderThickness="5" BorderBrush="#FFFF00" Grid.Row="1" Grid.Column="0">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition />
-			</Grid.RowDefinitions>
+        <Grid
+            Grid.Row="1"
+            Grid.Column="0"
+            BorderBrush="#FFFF00"
+            BorderThickness="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-			<Border Background="#FFFF00" Padding="5,5,5,10" HorizontalAlignment="Stretch">
-				<TextBlock Text="Skew" FontSize="24" Foreground="White" />
-			</Border>
-			
-			<Border Grid.Row="1" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="SkewHost">
-				<Rectangle Fill="#FFFF00" Width="100" Height="100" RenderTransformOrigin="0,0">
-					<Rectangle.RenderTransform>
-						<SkewTransform
-							CenterX="50"
-							CenterY="50"
-							AngleX="30"
-							AngleY="30" />
-					</Rectangle.RenderTransform>
-				</Rectangle>
-			</Border>
-		</Grid>
+            <Border
+                Padding="5,5,5,10"
+                HorizontalAlignment="Stretch"
+                Background="#FFFF00">
+                <TextBlock
+                    FontSize="24"
+                    Foreground="White"
+                    Text="Skew" />
+            </Border>
 
-		<Grid BorderThickness="5" BorderBrush="#008000" Grid.Row="1" Grid.Column="1">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition />
-			</Grid.RowDefinitions>
+            <Border
+                x:Name="SkewHost"
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                BorderBrush="Black"
+                BorderThickness="3">
+                <Rectangle
+                    Width="100"
+                    Height="100"
+                    Fill="#FFFF00"
+                    RenderTransformOrigin="0,0">
+                    <Rectangle.RenderTransform>
+                        <SkewTransform AngleX="30" AngleY="30" CenterX="50" CenterY="50" />
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+            </Border>
+        </Grid>
 
-			<Border Background="#008000" Padding="5,5,5,10" HorizontalAlignment="Stretch">
-				<TextBlock Text="Scale" FontSize="24" Foreground="White" />
-			</Border>
+        <Grid
+            Grid.Row="1"
+            Grid.Column="1"
+            BorderBrush="#008000"
+            BorderThickness="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-			<Border Grid.Row="1" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="ScaleHost">
-				<Rectangle Fill="#008000" Width="100" Height="100" RenderTransformOrigin="0,0">
-					<Rectangle.RenderTransform>
-						<ScaleTransform
-							CenterX="50"
-							CenterY="50"
-							ScaleX=".8"
-							ScaleY=".8" />
-					</Rectangle.RenderTransform>
-				</Rectangle>
-			</Border>
-		</Grid>
+            <Border
+                Padding="5,5,5,10"
+                HorizontalAlignment="Stretch"
+                Background="#008000">
+                <TextBlock
+                    FontSize="24"
+                    Foreground="White"
+                    Text="Scale" />
+            </Border>
 
-		<Grid BorderThickness="5" BorderBrush="#0000FF" Grid.Row="2" Grid.Column="0">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition />
-			</Grid.RowDefinitions>
+            <Border
+                x:Name="ScaleHost"
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                BorderBrush="Black"
+                BorderThickness="3">
+                <Rectangle
+                    Width="100"
+                    Height="100"
+                    Fill="#008000"
+                    RenderTransformOrigin="0,0">
+                    <Rectangle.RenderTransform>
+                        <ScaleTransform CenterX="50" CenterY="50" ScaleX=".8" ScaleY=".8" />
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+            </Border>
+        </Grid>
 
-			<Border Background="#0000FF" Padding="5,5,5,10" HorizontalAlignment="Stretch">
-				<TextBlock Text="Composite" FontSize="24" Foreground="White" />
-			</Border>
+        <Grid
+            Grid.Row="2"
+            Grid.Column="0"
+            BorderBrush="#0000FF"
+            BorderThickness="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-			<Border Grid.Row="1" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="CompositeHost">
-				<Rectangle Fill="#0000FF" Width="100" Height="100" RenderTransformOrigin="0,0">
-					<Rectangle.RenderTransform>
-						<CompositeTransform
-							CenterX="50"
-							CenterY="50"
-							ScaleX=".8"
-							ScaleY=".8"
-							SkewX="30"
-							SkewY="30"
-							TranslateX="15"
-							TranslateY="15"
-							Rotation="30" />
-					</Rectangle.RenderTransform>
-				</Rectangle>
-			</Border>
-		</Grid>
+            <Border
+                Padding="5,5,5,10"
+                HorizontalAlignment="Stretch"
+                Background="#0000FF">
+                <TextBlock
+                    FontSize="24"
+                    Foreground="White"
+                    Text="Composite" />
+            </Border>
 
-		<Grid BorderThickness="5" BorderBrush="#A000C0" Grid.Row="2" Grid.Column="1">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition />
-			</Grid.RowDefinitions>
+            <Border
+                x:Name="CompositeHost"
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                BorderBrush="Black"
+                BorderThickness="3">
+                <Rectangle
+                    Width="100"
+                    Height="100"
+                    Fill="#0000FF"
+                    RenderTransformOrigin="0,0">
+                    <Rectangle.RenderTransform>
+                        <CompositeTransform
+                            CenterX="50"
+                            CenterY="50"
+                            Rotation="30"
+                            ScaleX=".8"
+                            ScaleY=".8"
+                            SkewX="30"
+                            SkewY="30"
+                            TranslateX="15"
+                            TranslateY="15" />
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+            </Border>
+        </Grid>
 
-			<Border Background="#A000C0" Padding="5,5,5,10" HorizontalAlignment="Stretch">
-				<TextBlock Text="Group" FontSize="24" Foreground="White" />
-			</Border>
+        <Grid
+            Grid.Row="2"
+            Grid.Column="1"
+            BorderBrush="#A000C0"
+            BorderThickness="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-			<Border Grid.Row="1" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="GroupHost">
-				<Rectangle Fill="#A000C0" Width="100" Height="100" RenderTransformOrigin=".5,.5">
-					<Rectangle.RenderTransform>
-						<TransformGroup>
-							<ScaleTransform
-									CenterX="0"
-									CenterY="0"
-									ScaleX=".8"
-									ScaleY=".8"/>
-							<SkewTransform
-									CenterX="0"
-									CenterY="0"
-									AngleX="30"
-									AngleY="30"/>
-							<RotateTransform
-									CenterX="0"
-									CenterY="0"
-									Angle="30" />
-							<TranslateTransform
-									X="15"
-									Y="15" />
-						</TransformGroup>
+            <Border
+                Padding="5,5,5,10"
+                HorizontalAlignment="Stretch"
+                Background="#A000C0">
+                <TextBlock
+                    FontSize="24"
+                    Foreground="White"
+                    Text="Group" />
+            </Border>
 
-					</Rectangle.RenderTransform>
-				</Rectangle>
-			</Border>
-		</Grid>
-	</Grid>
+            <Border
+                x:Name="GroupHost"
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                BorderBrush="Black"
+                BorderThickness="3">
+                <Rectangle
+                    Width="100"
+                    Height="100"
+                    Fill="#A000C0"
+                    RenderTransformOrigin=".5,.5">
+                    <Rectangle.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterX="0" CenterY="0" ScaleX=".8" ScaleY=".8" />
+                            <SkewTransform AngleX="30" AngleY="30" CenterX="0" CenterY="0" />
+                            <RotateTransform Angle="30" CenterX="0" CenterY="0" />
+                            <TranslateTransform X="15" Y="15" />
+                        </TransformGroup>
+
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+            </Border>
+        </Grid>
+    </Grid>
 </Page>
