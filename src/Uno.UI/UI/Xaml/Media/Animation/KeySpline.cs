@@ -127,6 +127,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			Build();
 
+			// Clamp input to [0, 1] to handle floating-point edge cases.
+			// MUX: KeySpline uses a lookup table with clamping.
+			linearProgress = Math.Clamp(linearProgress, 0.0, 1.0);
+
 			for (int i = _positions.Length - 2; i >= 0; i--)
 			{
 				var currentPos = _positions[i];
@@ -138,6 +142,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					var deltaX = nextPos.X - currentPos.X;
 					var deltaY = nextPos.Y - currentPos.Y;
 
+					if (deltaX <= 0)
+					{
+						return currentPos.Y;
+					}
+
 					var innerLinearProgress = (linearProgress - currentPos.X) / deltaX;
 
 					var ret = currentPos.Y + deltaY * innerLinearProgress;
@@ -146,7 +155,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				}
 			}
 
-			return -1;
+			// Fallback: should not be reached for well-formed splines.
+			return linearProgress;
 		}
 
 
