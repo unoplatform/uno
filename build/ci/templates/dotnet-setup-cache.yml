@@ -5,7 +5,7 @@ steps:
   - task: Cache@2
     condition: eq(variables['enable_dotnet_cache'], 'true')
     inputs:
-      key: dotnet | "$(Agent.OS)" | "$(Agent.JobName)" | "$(GlobalUnoCheckVersion)" | "${{ parameters.UnoCheckParameters }}"
+      key: dotnet | "$(Agent.OS)" | "$(Agent.JobName)" | "$(GlobalUnoCheckVersion)" | "${{ parameters.UnoCheckParameters }}" | build/ci/net10/_global.json
       path: $(DOTNET_INSTALL_DIR)
     displayName: Set Cache for dotnet install
 
