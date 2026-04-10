@@ -144,4 +144,42 @@ public class Given_Storyboard
 		// After animation completes, fill value should be 100
 		Assert.AreEqual(100.0, translate.Y, 2.0, "Fill value should be 100 after resume+complete");
 	}
+
+	[TestMethod]
+	public async Task When_Seek_Applies_Value_At_Offset()
+	{
+		var translate = new TranslateTransform();
+		var border = new Border
+		{
+			Width = 50,
+			Height = 50,
+			RenderTransform = translate,
+		};
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var animation = new DoubleAnimation
+		{
+			From = 0,
+			To = 100,
+			Duration = new Duration(TimeSpan.FromMilliseconds(1000)),
+		};
+		Storyboard.SetTarget(animation, translate);
+		Storyboard.SetTargetProperty(animation, nameof(translate.Y));
+
+		var storyboard = new Storyboard();
+		storyboard.Children.Add(animation);
+
+		storyboard.Begin();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Seek to 50% of the animation (500ms out of 1000ms)
+		storyboard.SeekAlignedToLastTick(TimeSpan.FromMilliseconds(500));
+
+		// Value should be approximately 50 (50% of 0-100)
+		Assert.AreEqual(50.0, translate.Y, 5.0, $"After seek to 50%, value should be ~50, was {translate.Y}");
+
+		storyboard.Stop();
+	}
 }
