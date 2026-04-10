@@ -13,6 +13,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_animationImplementation = new AnimationImplementation<ColorOffset>(this);
 		}
 
+		/// <summary>
+		/// Returns 1 second for Automatic duration (WinUI NULL_DURATION_DEFAULT).
+		/// MUX: CAnimation::GetNaturalDuration returns 1.0f when Duration is not set.
+		/// </summary>
+		internal override TimeSpan GetCalculatedDuration()
+		{
+			if (Duration.Type == DurationType.Automatic)
+			{
+				return TimeSpan.FromSeconds(1);
+			}
+			return base.GetCalculatedDuration();
+		}
+
 		public Color? To
 		{
 			get => (Color?)this.GetValue(ToProperty);
