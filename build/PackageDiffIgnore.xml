@@ -2233,8 +2233,6 @@
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.SizeHelper.Equals(Windows.Foundation.Size target, Windows.Foundation.Size value)" reason="WinUI sync: not in WinAppSDK 1.8" />
 		  <Member fullName="Microsoft.UI.Xaml.Documents.Block Microsoft.UI.Xaml.Documents.BlockCollection.get_Item(System.Int32 index)" reason="WinUI sync: indexer provided by base class" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.BlockCollection.set_Item(System.Int32 index, Microsoft.UI.Xaml.Documents.Block value)" reason="WinUI sync: indexer provided by base class" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemCollection.add_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;System.Object&gt; value)" reason="WinUI sync: event still present, binary-level interface change" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemCollection.remove_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;System.Object&gt; value)" reason="WinUI sync: event still present, binary-level interface change" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.OnCleanUpVirtualizedItem(Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs e)" reason="WinUI sync: not in WinAppSDK 1.8" />
 		  <!-- END WinUI sync: other removed methods -->
 	  </Methods>
