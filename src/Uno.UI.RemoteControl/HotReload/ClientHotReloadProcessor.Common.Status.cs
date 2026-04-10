@@ -129,17 +129,46 @@ public partial class ClientHotReloadProcessor
 		public void ConfigureSourceForNextOperation(HotReloadSource source)
 			=> _source = source;
 
-		public HotReloadClientOperation ReportLocalStarting(Type[] types)
+		public HotReloadClientOperation StartLocal(Type[] types)
 		{
 			var op = new HotReloadClientOperation(_source, types, NotifyStatusChanged);
-			ImmutableInterlocked.Update(ref _localOperations, static (history, op) => history.Add(op).Sort(Compare), op);
+			ImmutableInterlocked.Update(ref _localOperations, static (history, op) => history.Add(op).Sort(CompareBySequenceId), op);
 			NotifyStatusChanged();
 
 			return op;
-
-			static int Compare(HotReloadClientOperation left, HotReloadClientOperation right)
-				=> Comparer<long>.Default.Compare(left.Id, right.Id);
 		}
+
+		public HotReloadClientOperation ContinueOrStartLocal(HotReloadSource source, Type[] types)
+		{
+			// Fast path: re-use the last operation if it's still in-progress or was ignored.
+			if (_localOperations is [.., { Result: null or HotReloadClientResult.Ignored } last])
+			{
+				return last;
+			}
+
+			// Slow path: atomically create a new operation if the fast-path check
+			// lost a race (another thread completed the last op between the check and here).
+			ImmutableInterlocked.Update(ref _localOperations, CreateIfNeeded, (source, types, callback: (Action)NotifyStatusChanged));
+			NotifyStatusChanged();
+			return _localOperations.Last();
+
+			static ImmutableList<HotReloadClientOperation> CreateIfNeeded(
+				ImmutableList<HotReloadClientOperation> history,
+				(HotReloadSource source, Type[] types, Action callback) args)
+			{
+				if (history is [.., { Result: null or HotReloadClientResult.Ignored }])
+				{
+					return history; // Re-use — no mutation needed.
+				}
+
+				return history
+					.Add(new HotReloadClientOperation(args.source, args.types, args.callback))
+					.Sort(CompareBySequenceId);
+			}
+		}
+
+		private static int CompareBySequenceId(HotReloadClientOperation left, HotReloadClientOperation right)
+			=> Comparer<long>.Default.Compare(left.Id, right.Id);
 
 		private void NotifyStatusChanged()
 		{
@@ -188,6 +217,12 @@ public partial class ClientHotReloadProcessor
 
 	public class HotReloadClientOperation
 	{
+		/// <summary>
+		/// No-op sentinel used when no real operation is available.
+		/// All lifecycle methods are safe to call but do nothing.
+		/// </summary>
+		internal static readonly HotReloadClientOperation Empty = new();
+
 		#region Current
 		[ThreadStatic]
 		private static HotReloadClientOperation? _opForCurrentUiThread;
@@ -197,12 +232,14 @@ public partial class ClientHotReloadProcessor
 
 		internal void SetCurrent()
 		{
+			if (this == Empty) return;
 			Debug.Assert(_opForCurrentUiThread == null, "Only one operation should be active at once for a given UI thread.");
 			_opForCurrentUiThread = this;
 		}
 
 		internal void ResignCurrent()
 		{
+			if (this == Empty) return;
 			Debug.Assert(_opForCurrentUiThread == this, "Another operation has been started for the current UI thread.");
 			_opForCurrentUiThread = null;
 		}
@@ -210,17 +247,27 @@ public partial class ClientHotReloadProcessor
 
 		private static int _count;
 
-		private readonly Action _onUpdated;
+		private readonly Action? _onUpdated;
+		private readonly bool _isEmpty;
 		private string[]? _curatedTypes;
 		private ImmutableList<Exception> _exceptions = ImmutableList<Exception>.Empty;
 		private int _result = -1;
+
+		/// <summary>Private constructor for the <see cref="Empty"/> sentinel.</summary>
+		private HotReloadClientOperation()
+		{
+			_isEmpty = true;
+			Source = default;
+			Types = [];
+		}
 
 		internal HotReloadClientOperation(HotReloadSource source, Type[] types, Action onUpdated)
 		{
 			Source = source;
 			Types = types;
-
 			_onUpdated = onUpdated;
+
+			SendEvent();
 		}
 
 		public int Id { get; } = Interlocked.Increment(ref _count);
@@ -303,14 +350,26 @@ public partial class ClientHotReloadProcessor
 
 		public DateTimeOffset? EndTime { get; private set; }
 
+		public DateTimeOffset? IgnoreTime { get; private set; }
+
 		public HotReloadClientResult? Result => _result is -1 ? null : (HotReloadClientResult)_result;
 
 		public ImmutableList<Exception> Exceptions => _exceptions;
 
 		public string? IgnoreReason { get; private set; }
 
+		private int _elementsReplaced;
+		private int _elementErrors;
+
+		/// <summary>Number of elements successfully replaced during the UI update.</summary>
+		public int ElementsReplaced => _elementsReplaced;
+
+		/// <summary>Number of elements that failed to replace during the UI update.</summary>
+		public int ElementErrors => _elementErrors;
+
 		internal void AddType(Type type)
 		{
+			if (_isEmpty) return;
 			if (Types.Contains(type))
 			{
 				return;
@@ -318,7 +377,7 @@ public partial class ClientHotReloadProcessor
 
 			_curatedTypes = null;
 			Types = Types.Append(type).ToArray();
-			_onUpdated();
+			_onUpdated?.Invoke();
 		}
 
 		internal void ReportError(MethodInfo source, Exception error)
@@ -326,8 +385,9 @@ public partial class ClientHotReloadProcessor
 
 		internal void ReportError(Exception error)
 		{
+			if (_isEmpty) return;
 			ImmutableInterlocked.Update(ref _exceptions, static (errors, error) => errors.Add(error), error);
-			_onUpdated();
+			_onUpdated?.Invoke();
 		}
 
 		internal void ReportWarning(Exception exception)
@@ -336,8 +396,23 @@ public partial class ClientHotReloadProcessor
 			// For now, we don't even surface it to the user in any way other than logs (by caller).
 		}
 
+		internal void ReportElementReplaced()
+		{
+			if (_isEmpty) return;
+			Interlocked.Increment(ref _elementsReplaced);
+		}
+
+		internal void ReportElementError(Exception error)
+		{
+			if (_isEmpty) return;
+			Interlocked.Increment(ref _elementErrors);
+			ReportError(error);
+		}
+
 		internal void ReportCompleted()
 		{
+			if (_isEmpty) return;
+
 			var result = (_exceptions, IgnoreReason) switch
 			{
 				({ Count: > 0 }, _) => HotReloadClientResult.Failed,
@@ -348,7 +423,8 @@ public partial class ClientHotReloadProcessor
 			if (Interlocked.CompareExchange(ref _result, (int)result, -1) is -1)
 			{
 				EndTime = DateTimeOffset.Now;
-				_onUpdated();
+				_onUpdated?.Invoke();
+				SendEvent();
 			}
 			else if (_result != (int)HotReloadClientResult.Ignored) // ReportIgnored auto completes but caller usually does not expect it (use ReportCompleted in finally)
 			{
@@ -358,8 +434,41 @@ public partial class ClientHotReloadProcessor
 
 		internal void ReportIgnored(string reason)
 		{
+			if (_isEmpty) return;
+
 			IgnoreReason = reason;
+			IgnoreTime = DateTimeOffset.Now;
 			ReportCompleted();
+		}
+
+		private void SendEvent()
+		{
+#if HAS_UNO_WINUI
+			try
+			{
+				var client = RemoteControlClient.Instance;
+				if (client is null) return;
+
+				var errorMessage = _exceptions.Count > 0
+					? string.Join("\r\n", _exceptions.Select(e => e.Message))
+					: null;
+
+				_ = client.SendMessage(new Messages.HotReloadClientOperationEvent
+				{
+					OperationSequenceId = Id,
+					StartTime = StartTime,
+					IgnoreTime = IgnoreTime,
+					EndTime = EndTime,
+					ErrorMessage = errorMessage,
+					FailedElementCount = _elementErrors,
+					TotalElementCount = _elementsReplaced + _elementErrors,
+				});
+			}
+			catch
+			{
+				// Best-effort — never fail the operation because of a notification error.
+			}
+#endif
 		}
 	}
 }

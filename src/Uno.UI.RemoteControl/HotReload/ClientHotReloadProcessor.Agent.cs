@@ -183,7 +183,7 @@ namespace Uno.UI.RemoteControl.HotReload
 						{
 							this.Log().Error("Hot Reload is not supported when the debugger is attached.");
 						}
-						_status.ReportLocalStarting([]).ReportIgnored("Hot Reload is not supported when the debugger is attached");
+						_status.StartLocal([]).ReportIgnored("Hot Reload is not supported when the debugger is attached");
 						return;
 					}
 				}
