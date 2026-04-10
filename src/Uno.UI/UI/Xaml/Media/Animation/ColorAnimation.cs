@@ -61,6 +61,18 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		bool IAnimation<ColorOffset>.EnableDependentAnimation => EnableDependentAnimation;
 
+		public EasingFunctionBase EasingFunction
+		{
+			get => (EasingFunctionBase)GetValue(EasingFunctionProperty);
+			set => SetValue(EasingFunctionProperty, value);
+		}
+
+		public static DependencyProperty EasingFunctionProperty { get; } =
+			DependencyProperty.Register(
+				nameof(EasingFunction), typeof(EasingFunctionBase),
+				typeof(ColorAnimation),
+				new FrameworkPropertyMetadata(default(EasingFunctionBase)));
+
 		public Color? By
 		{
 			get
@@ -103,8 +115,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		ColorOffset? IAnimation<ColorOffset>.By => (ColorOffset?)By;
 
-		[NotImplemented]
-		IEasingFunction IAnimation<ColorOffset>.EasingFunction => null;
+		IEasingFunction IAnimation<ColorOffset>.EasingFunction => EasingFunction;
 
 		void ITimeline.Begin()
 		{
