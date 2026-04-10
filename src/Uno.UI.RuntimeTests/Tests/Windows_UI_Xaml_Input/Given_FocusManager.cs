@@ -690,5 +690,151 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			focused.Should().BeSameAs(control, "must be same element");
 			control.FocusState.Should().NotBe(FocusState.Unfocused);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11955")]
+		public async Task When_Tab_Key_Event_Order_Matches_WinUI()
+		{
+			// WinUI event order for Tab key (on the element losing focus):
+			// PreviewKeyDown(Handled=false) → KeyDown(Handled=false) → GettingFocus → PreviewKeyUp(Handled=false) → KeyUp(Handled=false)
+			// The critical part: KeyDown fires BEFORE GettingFocus (system processes Tab between KeyDown and GettingFocus)
+
+			var button1 = new Button { Content = "Button 1", Name = "B1" };
+			var button2 = new Button { Content = "Button 2", Name = "B2" };
+			var panel = new StackPanel();
+			panel.Children.Add(button1);
+			panel.Children.Add(button2);
+
+			TestServices.WindowHelper.WindowContent = panel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var events = new List<string>();
+
+			void OnPreviewKeyDown(object sender, KeyRoutedEventArgs e) => events.Add($"PreviewKeyDown");
+			void OnKeyDown(object sender, KeyRoutedEventArgs e) => events.Add($"KeyDown");
+			void OnPreviewKeyUp(object sender, KeyRoutedEventArgs e) => events.Add($"PreviewKeyUp");
+			void OnKeyUp(object sender, KeyRoutedEventArgs e) => events.Add($"KeyUp");
+			void OnGettingFocus(object sender, GettingFocusEventArgs e) => events.Add("GettingFocus");
+
+			button1.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			button1.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			button1.AddHandler(UIElement.PreviewKeyUpEvent, new KeyEventHandler(OnPreviewKeyUp), true);
+			button1.AddHandler(UIElement.KeyUpEvent, new KeyEventHandler(OnKeyUp), true);
+			FocusManager.GettingFocus += OnGettingFocus;
+
+			try
+			{
+				button1.Focus(FocusState.Programmatic);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				// Clear any events from the initial Focus() call
+				events.Clear();
+
+				await TestServices.KeyboardHelper.Tab();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var previewKeyDownIdx = events.IndexOf("PreviewKeyDown");
+				var keyDownIdx = events.IndexOf("KeyDown");
+				var gettingFocusIdx = events.IndexOf("GettingFocus");
+				var previewKeyUpIdx = events.IndexOf("PreviewKeyUp");
+				var keyUpIdx = events.IndexOf("KeyUp");
+
+				var eventsStr = $"[{string.Join(", ", events)}]";
+
+				Assert.IsTrue(previewKeyDownIdx >= 0, $"PreviewKeyDown should have fired. Events: {eventsStr}");
+				Assert.IsTrue(keyDownIdx >= 0, $"KeyDown should have fired. Events: {eventsStr}");
+				Assert.IsTrue(gettingFocusIdx >= 0, $"GettingFocus should have fired. Events: {eventsStr}");
+
+				// PreviewKeyDown must come before KeyDown
+				Assert.IsTrue(previewKeyDownIdx < keyDownIdx,
+					$"PreviewKeyDown must come before KeyDown. Events: {eventsStr}");
+
+				// KeyDown must come before GettingFocus (Tab is handled by the system after KeyDown)
+				Assert.IsTrue(keyDownIdx < gettingFocusIdx,
+					$"KeyDown must come before GettingFocus. Events: {eventsStr}");
+			}
+			finally
+			{
+				button1.RemoveHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown));
+				button1.RemoveHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown));
+				button1.RemoveHandler(UIElement.PreviewKeyUpEvent, new KeyEventHandler(OnPreviewKeyUp));
+				button1.RemoveHandler(UIElement.KeyUpEvent, new KeyEventHandler(OnKeyUp));
+				FocusManager.GettingFocus -= OnGettingFocus;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11955")]
+		public async Task When_XYFocus_Arrow_Key_Event_Order_Matches_WinUI()
+		{
+			// WinUI event order for directional navigation (XYFocusKeyboardNavigation=Enabled):
+			// PreviewKeyDown(Handled=false) → GettingFocus → KeyDown(Handled=true) → PreviewKeyUp(Handled=false) → KeyUp(Handled=false)
+			// The critical part: GettingFocus fires BEFORE KeyDown, and KeyDown has Handled=true
+
+			var button1 = new Button { Content = "Top", Name = "TopBtn" };
+			var button2 = new Button { Content = "Bottom", Name = "BottomBtn" };
+			var panel = new StackPanel
+			{
+				XYFocusKeyboardNavigation = XYFocusKeyboardNavigationMode.Enabled,
+			};
+			panel.Children.Add(button1);
+			panel.Children.Add(button2);
+
+			TestServices.WindowHelper.WindowContent = panel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var events = new List<string>();
+
+			void OnPreviewKeyDown(object sender, KeyRoutedEventArgs e) => events.Add($"PreviewKeyDown(Handled={e.Handled})");
+			void OnKeyDown(object sender, KeyRoutedEventArgs e) => events.Add($"KeyDown(Handled={e.Handled})");
+			void OnPreviewKeyUp(object sender, KeyRoutedEventArgs e) => events.Add($"PreviewKeyUp(Handled={e.Handled})");
+			void OnKeyUp(object sender, KeyRoutedEventArgs e) => events.Add($"KeyUp(Handled={e.Handled})");
+			void OnGettingFocus(object sender, GettingFocusEventArgs e) => events.Add("GettingFocus");
+
+			button1.AddHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown), true);
+			button1.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			button1.AddHandler(UIElement.PreviewKeyUpEvent, new KeyEventHandler(OnPreviewKeyUp), true);
+			button1.AddHandler(UIElement.KeyUpEvent, new KeyEventHandler(OnKeyUp), true);
+			FocusManager.GettingFocus += OnGettingFocus;
+
+			try
+			{
+				button1.Focus(FocusState.Programmatic);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				// Clear any events from the initial Focus() call
+				events.Clear();
+
+				await TestServices.KeyboardHelper.Down();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var eventsStr = $"[{string.Join(", ", events)}]";
+
+				var previewKeyDownIdx = events.FindIndex(e => e.StartsWith("PreviewKeyDown"));
+				var gettingFocusIdx = events.IndexOf("GettingFocus");
+				var keyDownHandledIdx = events.FindIndex(e => e.StartsWith("KeyDown(Handled=True)") || e.StartsWith("KeyDown(Handled=true)"));
+
+				Assert.IsTrue(previewKeyDownIdx >= 0, $"PreviewKeyDown should have fired. Events: {eventsStr}");
+				Assert.IsTrue(gettingFocusIdx >= 0, $"GettingFocus should have fired. Events: {eventsStr}");
+
+				// PreviewKeyDown must come before GettingFocus
+				Assert.IsTrue(previewKeyDownIdx < gettingFocusIdx,
+					$"PreviewKeyDown must come before GettingFocus. Events: {eventsStr}");
+
+				// KeyDown(Handled=true) must come after GettingFocus
+				Assert.IsTrue(keyDownHandledIdx >= 0 && keyDownHandledIdx > gettingFocusIdx,
+					$"KeyDown with Handled=true must come after GettingFocus. Events: {eventsStr}");
+			}
+			finally
+			{
+				button1.RemoveHandler(UIElement.PreviewKeyDownEvent, new KeyEventHandler(OnPreviewKeyDown));
+				button1.RemoveHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown));
+				button1.RemoveHandler(UIElement.PreviewKeyUpEvent, new KeyEventHandler(OnPreviewKeyUp));
+				button1.RemoveHandler(UIElement.KeyUpEvent, new KeyEventHandler(OnKeyUp));
+				FocusManager.GettingFocus -= OnGettingFocus;
+			}
+		}
 	}
 }
