@@ -143,6 +143,9 @@ partial class Application
 		// SystemThemeHelper — unsubscribe event handlers from non-default ALCs
 		Uno.Helpers.Theming.SystemThemeHelper.ClearNonDefaultAlcHandlers();
 
+		// DiagnosticViewRegistry — remove views registered by ALC-loaded types
+		Uno.Diagnostics.UI.DiagnosticViewRegistry.ClearNonDefaultAlcRegistrations();
+
 		// Diagnostic: deep scan is expensive — only run when trace logging is enabled
 		if (typeof(Application).Log().IsEnabled(LogLevel.Trace))
 		{
