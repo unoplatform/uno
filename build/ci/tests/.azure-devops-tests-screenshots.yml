@@ -9,7 +9,7 @@ jobs:
   timeoutInMinutes: 90
   cancelTimeoutInMinutes: 0
   
-  condition: or(succeeded(), and(failed(), ge(variables['System.StageAttempt'], 5)))
+  condition: eq(variables['System.StageAttempt'], 1)
 
   pool: ${{ parameters.poolName }}
 
