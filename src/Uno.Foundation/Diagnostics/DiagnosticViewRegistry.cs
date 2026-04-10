@@ -33,6 +33,24 @@ internal static class DiagnosticViewRegistry
 
 		Added?.Invoke(null, _registrations);
 	}
+
+	/// <summary>
+	/// Removes registrations whose <see cref="IDiagnosticView"/> implementation type
+	/// is from a non-default (collectible) <see cref="System.Runtime.Loader.AssemblyLoadContext"/>.
+	/// Called during ALC teardown to release delegates that pin the ALC's LoaderAllocator.
+	/// </summary>
+	internal static void ClearNonDefaultAlcRegistrations()
+	{
+		var defaultAlc = System.Runtime.Loader.AssemblyLoadContext.Default;
+		ImmutableInterlocked.Update(
+			ref _registrations,
+			static (regs, defAlc) => regs.RemoveAll(r =>
+			{
+				var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(r.View.GetType().Assembly);
+				return alc is not null && alc != defAlc;
+			}),
+			defaultAlc);
+	}
 }
 
 internal sealed record DiagnosticViewRegistration(
