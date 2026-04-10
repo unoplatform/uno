@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Media.Animation
@@ -59,6 +60,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			if (startingValue is ColorOffset startingColor && targetValue is ColorOffset targetColor)
 			{
 				return CreateColor(timeline, startingColor, targetColor);
+			}
+
+			if (startingValue is Point startingPoint && targetValue is Point targetPoint)
+			{
+				return CreatePoint(timeline, startingPoint, targetPoint);
 			}
 
 			throw new NotSupportedException();

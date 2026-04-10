@@ -28,6 +28,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 
+		private static IValueAnimator CreatePoint(Timeline timeline, Windows.Foundation.Point startingValue, Windows.Foundation.Point targetValue)
+		{
+			return new NativeValueAnimatorAdapter(ValueAnimator.OfFloat(0f, 1f));
+		}
+
 		/// <summary>
 		/// Creates the actual animator instance
 		/// </summary>

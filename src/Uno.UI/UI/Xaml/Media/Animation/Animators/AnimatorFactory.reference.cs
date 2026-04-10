@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Windows.Foundation;
 using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Media.Animation
@@ -19,6 +20,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		private static IValueAnimator CreateColor(Timeline timeline, ColorOffset startingValue, ColorOffset targetValue)
+		{
+			return new NotSupportedAnimator();
+		}
+
+		private static IValueAnimator CreatePoint(Timeline timeline, Point startingValue, Point targetValue)
 		{
 			return new NotSupportedAnimator();
 		}
