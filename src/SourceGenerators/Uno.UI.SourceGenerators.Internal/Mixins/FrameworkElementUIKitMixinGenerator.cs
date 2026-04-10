@@ -539,8 +539,8 @@ public sealed class FrameworkElementUIKitMixinGenerator : IIncrementalGenerator
 		GenerateSizeDependencyProperty(sb, "Height");
 		GenerateSizeDependencyProperty(sb, "MinWidth", "0.0");
 		GenerateSizeDependencyProperty(sb, "MinHeight", "0.0");
-		GenerateSizeDependencyProperty(sb, "MaxWidth");
-		GenerateSizeDependencyProperty(sb, "MaxHeight");
+		GenerateSizeDependencyProperty(sb, "MaxWidth", "double.PositiveInfinity");
+		GenerateSizeDependencyProperty(sb, "MaxHeight", "double.PositiveInfinity");
 
 		// ActualWidth/Height
 		sb.AppendLine("\t\tpublic double ActualWidth => GetActualWidth();");
