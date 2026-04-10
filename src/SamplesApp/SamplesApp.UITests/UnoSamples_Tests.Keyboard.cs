@@ -336,6 +336,7 @@ namespace SamplesApp.UITests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Flaky on iOS Native https://github.com/unoplatform/uno/issues/9080")]
 		public void TextBox_TextChanging_Limit()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_TextChanging");
