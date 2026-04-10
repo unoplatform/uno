@@ -225,4 +225,44 @@ public class Given_Storyboard
 		Assert.AreEqual(100.0, translate.Y, 2.0,
 			$"After 2 repetitions, fill value should be 100, was {translate.Y}");
 	}
+
+	[TestMethod]
+	public async Task When_Storyboard_AutoReverse_Doubles_Duration()
+	{
+		// Verify that AutoReverse on the STORYBOARD causes the total duration
+		// to be doubled (forward + backward).
+		var translate = new TranslateTransform();
+		var border = new Border
+		{
+			Width = 50,
+			Height = 50,
+			RenderTransform = translate,
+		};
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var animation = new DoubleAnimation
+		{
+			From = 0,
+			To = 100,
+			Duration = new Duration(TimeSpan.FromMilliseconds(300)),
+		};
+		Storyboard.SetTarget(animation, translate);
+		Storyboard.SetTargetProperty(animation, nameof(translate.Y));
+
+		var storyboard = new Storyboard
+		{
+			AutoReverse = true,
+		};
+		storyboard.Children.Add(animation);
+
+		// Total duration: 300ms forward + 300ms backward = 600ms
+		var sw = System.Diagnostics.Stopwatch.StartNew();
+		await storyboard.RunAsync(timeout: TimeSpan.FromSeconds(3));
+		sw.Stop();
+
+		Assert.IsTrue(sw.ElapsedMilliseconds >= 500,
+			$"AutoReverse storyboard should take ~600ms, took {sw.ElapsedMilliseconds}ms");
+	}
 }
