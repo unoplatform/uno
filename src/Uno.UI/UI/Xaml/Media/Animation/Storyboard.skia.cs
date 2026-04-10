@@ -177,6 +177,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// --- CTimeline::ComputeStateImpl: compute own clock state ---
 
 			var localTime = effectiveParentParams.Time - beginTime;
+
+			// Apply SpeedRatio to scale the storyboard's own time.
+			// MUX: m_rCurrentTime = (rParentTime - rBeginTime) * m_rSpeedRatio
+			var speedRatio = SpeedRatio;
+			if (speedRatio > 0 && speedRatio != 1.0)
+			{
+				localTime *= speedRatio;
+			}
+
 			if (localTime < 0)
 			{
 				_computedClockState = InternalClockState.NotStarted;
