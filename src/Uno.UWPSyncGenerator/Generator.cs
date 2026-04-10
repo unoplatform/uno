@@ -29,8 +29,9 @@ namespace Uno.UWPSyncGenerator
 		private const string BaseXamlNamespace = "Microsoft.UI.Xaml";
 
 		/// <summary>
-		/// Types whose hand-written partial class inherits from DependencyObjectCollection&lt;T&gt;,
-		/// which already provides IList&lt;T&gt;/ICollection&lt;T&gt;/IEnumerable&lt;T&gt; implementations.
+		/// Types whose hand-written partial class inherits from a collection base class
+		/// (DependencyObjectCollection&lt;T&gt; or List&lt;T&gt;), which already provides
+		/// IList&lt;T&gt;/ICollection&lt;T&gt;/IEnumerable&lt;T&gt; implementations.
 		/// The generator must not emit NotImplemented stubs for these collection interfaces
 		/// or their member methods/properties, as they would hide the working base class methods.
 		/// The generator's FindMatchingMethod fails to match inherited generic methods
@@ -50,6 +51,8 @@ namespace Uno.UWPSyncGenerator
 			BaseXamlNamespace + ".Media.GradientStopCollection",
 			BaseXamlNamespace + ".Media.PathFigureCollection",
 			BaseXamlNamespace + ".Media.PathSegmentCollection",
+			BaseXamlNamespace + ".Media.Animation.TransitionCollection",
+			BaseXamlNamespace + ".Media.DoubleCollection",
 		};
 
 		private static readonly string[] _skipBaseTypes = new[]
