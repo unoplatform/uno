@@ -381,6 +381,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 #endif
 
 		[TestMethod]
+		public async Task When_Default_Duration_Is_One_Second()
+		{
+			// WinUI: DoubleAnimation without explicit Duration defaults to 1 second (NULL_DURATION_DEFAULT).
+			var translate = new TranslateTransform();
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			// DoubleAnimation with no Duration property set
+			var animation = new DoubleAnimation
+			{
+				From = 0,
+				To = 100,
+				FillBehavior = FillBehavior.HoldEnd,
+			}.BindTo(translate, nameof(translate.Y));
+
+			var sw = System.Diagnostics.Stopwatch.StartNew();
+			await animation.ToStoryboard().RunAsync(timeout: TimeSpan.FromSeconds(3));
+			sw.Stop();
+
+			// Should have taken approximately 1 second (WinUI default)
+			Assert.IsTrue(sw.ElapsedMilliseconds >= 800,
+				$"Default 1s animation should take at least 800ms, took {sw.ElapsedMilliseconds}ms");
+			Assert.AreEqual(100.0, translate.Y, 1.0, "Fill value should be 100");
+		}
+
+		[TestMethod]
 		public async Task When_FillBehavior_Stop_ClearsValue()
 		{
 			var translate = new TranslateTransform();
