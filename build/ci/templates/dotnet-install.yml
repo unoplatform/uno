@@ -1,5 +1,5 @@
 parameters:
-  defaultDotNetSdkVersion: "10.0.101"
+  defaultDotNetSdkVersion: "10.0.105"
   haveCheckout: true
 
 steps:
