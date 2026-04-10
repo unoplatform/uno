@@ -80,74 +80,78 @@ namespace Uno.UI.Xaml.Core
 		{
 			_isAdditionalFrameRequested = 0;
 			_isInTick = true;
-
+			try
+			{
 #if __SKIA__
-			// MUX Reference: CCoreServices::Tick() (xcpcore.cpp line 4106)
-			// Tick all active animations BEFORE layout so animated property values
-			// are applied before Measure/Arrange. This matches WinUI's frame cycle:
-			// TimeManager.Tick() → Layout → Render.
-			TimeManager.Instance.Tick(newTimelinesOnly: false);
+				// MUX Reference: CCoreServices::Tick() (xcpcore.cpp line 4106)
+				// Tick all active animations BEFORE layout so animated property values
+				// are applied before Measure/Arrange. This matches WinUI's frame cycle:
+				// TimeManager.Tick() → Layout → Render.
+				TimeManager.Instance.Tick(newTimelinesOnly: false);
 #endif
 
-			// NOTE: The below code should really be replaced with just this:
-			// ----------------------------
-			//if (GetXamlRoot()?.VisualTree?.RootElement is { } root)
-			//{
-			//	root.UpdateLayout();
-			//
-			//	if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
-			//	{
-			//		CoreServices.Instance.EventManager.RaiseLoadedEvent();
-			//		root.UpdateLayout();
-			//	}
-			//}
-			// -----------------------------
-			// However, as we don't yet have XamlIslandRootCollection, we will need to enumerate the windows through ApplicationHelper.Windows.
+				// NOTE: The below code should really be replaced with just this:
+				// ----------------------------
+				//if (GetXamlRoot()?.VisualTree?.RootElement is { } root)
+				//{
+				//	root.UpdateLayout();
+				//
+				//	if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+				//	{
+				//		CoreServices.Instance.EventManager.RaiseLoadedEvent();
+				//		root.UpdateLayout();
+				//	}
+				//}
+				// -----------------------------
+				// However, as we don't yet have XamlIslandRootCollection, we will need to enumerate the windows through ApplicationHelper.Windows.
 
-			// This happens for Islands.
-			if (GetXamlRoot() is { HostWindow: null, VisualTree.RootElement: { } xamlIsland })
-			{
-				xamlIsland.UpdateLayout();
-
-				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+				// This happens for Islands.
+				if (GetXamlRoot() is { HostWindow: null, VisualTree.RootElement: { } xamlIsland })
 				{
-					CoreServices.Instance.EventManager.RaiseLoadedEvent();
 					xamlIsland.UpdateLayout();
-				}
-			}
 
-			foreach (var window in ApplicationHelper.WindowsInternal)
-			{
-				if (window.RootElement is not { } root)
-				{
-					continue;
+					if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+					{
+						CoreServices.Instance.EventManager.RaiseLoadedEvent();
+						xamlIsland.UpdateLayout();
+					}
 				}
 
-				root.UpdateLayout();
-
-				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+				foreach (var window in ApplicationHelper.WindowsInternal)
 				{
-					CoreServices.Instance.EventManager.RaiseLoadedEvent();
+					if (window.RootElement is not { } root)
+					{
+						continue;
+					}
+
 					root.UpdateLayout();
+
+					if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+					{
+						CoreServices.Instance.EventManager.RaiseLoadedEvent();
+						root.UpdateLayout();
+					}
+
+#if __SKIA__
+					(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
+#endif
 				}
 
 #if __SKIA__
-				(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
+				// MUX Reference: Second tick pass in CCoreServices::Tick()
+				// Tick only timelines added during layout (e.g., animations started by
+				// Loaded event handlers or layout-triggered VisualState transitions).
+				// These are at the head of the list, before the snapped previous-head marker.
+				if (TimeManager.Instance.HasActiveTimelines)
+				{
+					TimeManager.Instance.Tick(newTimelinesOnly: true);
+				}
 #endif
 			}
-
-#if __SKIA__
-			// MUX Reference: Second tick pass in CCoreServices::Tick()
-			// Tick only timelines added during layout (e.g., animations started by
-			// Loaded event handlers or layout-triggered VisualState transitions).
-			// These are at the head of the list, before the snapped previous-head marker.
-			if (TimeManager.Instance.HasActiveTimelines)
+			finally
 			{
-				TimeManager.Instance.Tick(newTimelinesOnly: true);
+				_isInTick = false;
 			}
-#endif
-
-			_isInTick = false;
 		}
 #endif
 

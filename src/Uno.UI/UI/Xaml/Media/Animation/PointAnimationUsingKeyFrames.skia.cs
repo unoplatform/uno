@@ -4,6 +4,7 @@
 
 #if __SKIA__
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation;
 
@@ -15,6 +16,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		private bool _isTimeManagerDriven;
 		private bool _deferredPlayPending;
+		private List<PointKeyFrame> _sortedKeyFramesCache;
 
 		partial void OnFrame(IValueAnimator currentAnimator)
 		{
@@ -139,7 +141,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// </summary>
 		private void UpdateUsingKeyFrames()
 		{
-			var sortedFrames = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).ToList();
+			var sortedFrames = _sortedKeyFramesCache ??= KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).ToList();
 			if (sortedFrames.Count == 0)
 			{
 				return;
@@ -258,6 +260,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			if (_isTimeManagerDriven)
 			{
 				_startingValue = ComputeFromValue();
+				_sortedKeyFramesCache = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).ToList();
 			}
 		}
 
@@ -279,6 +282,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private void StopTimeManagerDriven()
 		{
 			_isTimeManagerDriven = false;
+			_sortedKeyFramesCache = null;
 			ResetTimeManagerState();
 		}
 
