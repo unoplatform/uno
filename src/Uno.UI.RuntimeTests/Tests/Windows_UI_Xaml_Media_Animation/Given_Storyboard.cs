@@ -182,4 +182,47 @@ public class Given_Storyboard
 
 		storyboard.Stop();
 	}
+
+	[TestMethod]
+	public async Task When_Storyboard_RepeatBehavior_Count_Loops_Children()
+	{
+		// Verify that RepeatBehavior.Count on the STORYBOARD (not on the animation)
+		// causes children to repeat. Children should see time wrapped back to 0
+		// at each iteration boundary.
+		var translate = new TranslateTransform();
+		var border = new Border
+		{
+			Width = 50,
+			Height = 50,
+			RenderTransform = translate,
+		};
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var animation = new DoubleAnimation
+		{
+			From = 0,
+			To = 100,
+			Duration = new Duration(TimeSpan.FromMilliseconds(200)),
+		};
+		Storyboard.SetTarget(animation, translate);
+		Storyboard.SetTargetProperty(animation, nameof(translate.Y));
+
+		var storyboard = new Storyboard
+		{
+			RepeatBehavior = new RepeatBehavior(2),
+		};
+		storyboard.Children.Add(animation);
+
+		// Total duration should be 2 * 200ms = 400ms
+		var sw = System.Diagnostics.Stopwatch.StartNew();
+		await storyboard.RunAsync(timeout: TimeSpan.FromSeconds(3));
+		sw.Stop();
+
+		Assert.IsTrue(sw.ElapsedMilliseconds >= 350,
+			$"2 repetitions of 200ms each should take ~400ms, took {sw.ElapsedMilliseconds}ms");
+		Assert.AreEqual(100.0, translate.Y, 2.0,
+			$"After 2 repetitions, fill value should be 100, was {translate.Y}");
+	}
 }
