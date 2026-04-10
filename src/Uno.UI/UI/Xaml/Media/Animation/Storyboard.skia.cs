@@ -285,6 +285,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// <summary>
 		/// Override to include computed state in the active check.
 		/// MUX: CTimeline::IsInActiveState
+		///
+		/// Filling storyboards must stay active in the TimeManager to re-apply
+		/// fill values on every tick. This ensures that if multiple concurrent
+		/// animations target the same property, the last one to tick wins
+		/// (matching WinUI's behavior where older animations tick last and hold
+		/// their fill values over newer animations until handoff occurs).
 		/// </summary>
 		internal override bool IsInActiveState =>
 			base.IsInActiveState
