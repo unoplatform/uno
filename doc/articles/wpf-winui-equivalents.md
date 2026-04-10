@@ -64,13 +64,16 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 | `DocumentViewer` | `WebView2` | Render PDFs/XPS inside WebView2 |
 | `FlowDocument` | `RichTextBlock` | Partial replacement only |
 | `RichTextBox` | `RichEditBox` | Rich text editing |
-| `WrapPanel` | Community Toolkit `WrapPanel` | Not in WinUI by default |
+| `WrapPanel` | `WrapPanel` (built-in on Uno Platform) or Community Toolkit `WrapPanel` | Built-in on Uno Platform; in WinUI 3 (Windows App SDK only), use `CommunityToolkit.WinUI.UI.Controls` |
 | `UniformGrid` | Community Toolkit `UniformGrid` | Not in WinUI by default |
 | `DockPanel` | Community Toolkit `DockPanel` | Not in WinUI by default |
 | `GroupBox` | `Expander` or custom `HeaderedContentControl` | No GroupBox in WinUI |
 | `Label` | `TextBlock` | Use `TextBlock` + `AccessKey` property |
 | `MediaElement` | `MediaPlayerElement` | Different API surface |
 | `Window` (standalone) | `Window` | Window host; content is typically a `Page`/root `UIElement`. Use `ContentDialog` for modal windows. |
+| `GridSplitter` | Community Toolkit `GridSplitter` | Requires `CommunityToolkit.WinUI.UI.Controls` |
+| `Calendar` | `CalendarView` | Similar functionality with updated API |
+| `ListBox` | `ListView` | `ListView` is the WinUI equivalent |
 
 ### Useful NuGet Packages
 
@@ -102,11 +105,22 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 | `MouseLeave` | `PointerExited` | `PointerRoutedEventArgs` |
 | `MouseWheel` | `PointerWheelChanged` | `PointerRoutedEventArgs` |
 | `MouseDoubleClick` | `DoubleTapped` | `DoubleTappedRoutedEventArgs` |
-| `PreviewMouseDown` | `PointerPressed` | No tunneling/preview events in WinUI |
-| `PreviewKeyDown` | `KeyDown` | No tunneling/preview events in WinUI |
+| `PreviewMouseDown` | `PointerPressed` | No direct WPF-style tunneling/preview pointer event in WinUI |
 
 > [!NOTE]
-> WinUI does not support tunneling (preview) events. Routed events are bubbling-only, so if you need to listen for an event even after a child marks it handled, use `AddHandler` with `handledEventsToo: true`. This does not reproduce WPF-style preview ordering (parent before child).
+> WinUI does not provide WPF-style `PreviewMouse*` tunneling events for pointer/mouse input. If you need to listen for a bubbling event even after a child marks it handled, use `AddHandler` with `handledEventsToo: true`. This does not reproduce WPF-style preview ordering (parent before child).
+
+### Keyboard Events
+
+| WPF Event | WinUI Event | Args Type |
+|---|---|---|
+| `KeyDown` | `KeyDown` | `KeyRoutedEventArgs` |
+| `KeyUp` | `KeyUp` | `KeyRoutedEventArgs` |
+| `PreviewKeyDown` | `PreviewKeyDown` | `KeyRoutedEventArgs` |
+| `PreviewKeyUp` | `PreviewKeyUp` | `KeyRoutedEventArgs` |
+
+> [!NOTE]
+> Unlike pointer/mouse input, WinUI/Uno supports preview keyboard events via `PreviewKeyDown` and `PreviewKeyUp` on `UIElement`. If you are migrating from WPF, use those events for keyboard tunneling scenarios. Platform-specific behavior can still vary, so validate event ordering on your target platforms when the distinction matters.
 
 ### Mouse Capture
 
@@ -126,6 +140,7 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 | `{DynamicResource Key}` | `{ThemeResource Key}` | Re-evaluated on theme changes (Light/Dark) |
 | `{x:Static ns:Type.Member}` | `{x:Bind ns:Type.Member}` | Common option for static member references; enums/values can often use direct `ns:Type.Member` or literals |
 | `{Binding Path=X}` | `{x:Bind ViewModel.X, Mode=OneWay}` | See [binding comparison](#binding-technology-comparison) below |
+| `{Binding RelativeSource={RelativeSource AncestorType=...}}` | Uno Toolkit `AncestorSource` | See [Ancestor/ItemsControl binding](https://github.com/unoplatform/uno.toolkit.ui/blob/main/doc/helpers/ancestor-itemscontrol-binding.md) |
 
 ### Binding Technology Comparison
 
@@ -254,7 +269,7 @@ Always use `BasedOn` when overriding default control styles. Without it, your st
 
 | WPF Code | WinUI Replacement | Notes |
 |---|---|---|
-| `Application.Current.Dispatcher.Invoke(...)` | `App.MainWindow.DispatcherQueue.TryEnqueue(...)` | Async only; no synchronous `Invoke` |
+| `Application.Current.Dispatcher.Invoke(...)` | `App.MainWindow.DispatcherQueue.TryEnqueue(...)` | Fire-and-forget; no synchronous `Invoke`. For awaitable dispatch, wrap with a `TaskCompletionSource`: `var tcs = new TaskCompletionSource(); App.MainWindow.DispatcherQueue.TryEnqueue(() => { /* work */ tcs.SetResult(); }); await tcs.Task;` |
 | `Window.Current` | `App.MainWindow` (captured at startup) | Not supported in Windows App SDK |
 | `Clipboard` (System.Windows) | `Windows.ApplicationModel.DataTransfer.Clipboard` | Different API surface |
 | `MessageBox.Show()` | `ContentDialog` with `XamlRoot` | No MessageBox in WinUI |
@@ -268,7 +283,8 @@ Always use `BasedOn` when overriding default control styles. Without it, your st
 | `ContextMenu=` | `ContextFlyout=` |
 | `{DynamicResource` | `{ThemeResource` |
 | `{x:Static` | `{x:Bind` |
-| `Visibility="Hidden"` | `Visibility="Collapsed"` (or `Opacity="0"`) |
+| `Visibility="Hidden"` (layout-preserving) | `Opacity="0"` with `IsHitTestVisible="False"` | Keeps layout space; combine with `IsTabStop="False"` for focusable controls |
+| `Visibility="Hidden"` (remove from layout) | `Visibility="Collapsed"` | Collapses space like WPF `Visibility="Collapsed"` |
 | `MouseLeftButtonDown` | `PointerPressed` |
 | `MouseLeftButtonUp` | `PointerReleased` |
 | `MouseEnter` | `PointerEntered` |
