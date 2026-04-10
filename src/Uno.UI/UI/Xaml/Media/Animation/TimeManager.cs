@@ -301,10 +301,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		/// <summary>
 		/// VSync-driven tick callback. Ticks all animations and requests the next render
-		/// frame to keep the loop alive. In WinUI, the frame scheduler fires continuously
-		/// at VSync rate while there are active timelines. In Uno, we must explicitly request
-		/// the next render frame because not all animated property changes trigger visual
-		/// invalidation (e.g., Opacity changes on Skia don't call InvalidateRender).
+		/// frame to keep the loop alive only if animations are actively changing values.
+		///
+		/// MUX: CParallelTimeline::UpdateAnimation calls RequestAdditionalFrame only when
+		/// the clock state is Active. In Uno, we mirror this: no frame request is made when
+		/// all timelines are Filling/Stopped, preventing idle apps from rendering at max FPS.
+		/// When a new animation starts, EnsureTicking() resubscribes to CompositionTarget.Rendering.
 		/// </summary>
 		private void OnRendering(object sender, object e)
 		{
@@ -317,10 +319,37 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// Tick all animations — compute values and apply to properties.
 			Tick();
 
-			// Request the next render frame to keep the VSync loop alive.
-			// This is the render pipeline (not dispatcher Normal queue), so it
-			// doesn't prevent WaitForIdle/RunIdleAsync from completing.
+			// Only request the next render frame if there are actively animating
+			// timelines (not just filling). Filling timelines hold their value but
+			// don't need continuous ticking. When a new animation starts,
+			// EnsureTicking() will re-subscribe to CompositionTarget.Rendering.
+			if (!HasActivelyAnimatingTimelines())
+			{
+				StopTicking();
+				return;
+			}
+
 			RequestRenderFrame();
+		}
+
+		/// <summary>
+		/// Returns true if any registered timeline is actively animating (not just filling).
+		/// MUX: Active timelines call RequestAdditionalFrame; filling timelines do not.
+		/// </summary>
+		private bool HasActivelyAnimatingTimelines()
+		{
+			var current = _head;
+			while (current is not null)
+			{
+				if (current.Timeline is { State: Timeline.TimelineState.Active or Timeline.TimelineState.Paused })
+				{
+					return true;
+				}
+
+				current = current.Next;
+			}
+
+			return false;
 		}
 
 		/// <summary>
