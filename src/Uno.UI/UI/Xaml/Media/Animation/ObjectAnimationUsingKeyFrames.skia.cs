@@ -155,6 +155,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			SetValue(targetFrame.Value);
 		}
 
+		/// <summary>
+		/// Re-resolves theme resources on each iteration start, matching WinUI's
+		/// behavior where keyframe values are refreshed from the current theme.
+		/// MUX: CAnimation::OnBegin calls EnsureKeyFrameThemeResources().
+		/// </summary>
+		internal override void InitializeIteration()
+		{
+			if (_isTimeManagerDriven)
+			{
+				EnsureKeyFrameThemeResources();
+			}
+		}
+
 		private void StopTimeManagerDriven()
 		{
 			_isTimeManagerDriven = false;
