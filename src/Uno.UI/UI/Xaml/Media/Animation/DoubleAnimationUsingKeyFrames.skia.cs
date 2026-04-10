@@ -241,6 +241,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			SetValue(value);
 		}
 
+		/// <summary>
+		/// Re-reads the base value for interpolation on each iteration start.
+		/// MUX: CAnimation::UpdateAnimationUsingKeyFrames reads BaseValue on each
+		/// tick (line 276: ValueAssign(AssignmentOperand::BaseValue)).
+		/// </summary>
+		internal override void InitializeIteration()
+		{
+			if (_isTimeManagerDriven)
+			{
+				_startingValue = ComputeFromValue();
+			}
+		}
+
 		partial void DisposePartial()
 		{
 			_isTimeManagerDriven = false;
