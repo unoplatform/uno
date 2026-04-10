@@ -53,6 +53,30 @@ namespace Microsoft.UI.Xaml
 			internal int Count => _entries.Count;
 
 			internal void Clear() => _entries.Clear();
+
+			/// <summary>
+			/// Removes entries whose <see cref="PropertyCacheEntry.CachedType"/> belongs to
+			/// a non-default (collectible) <see cref="System.Runtime.Loader.AssemblyLoadContext"/>.
+			/// </summary>
+			internal void RemoveNonDefaultAlcEntries()
+			{
+				var defaultAlc = System.Runtime.Loader.AssemblyLoadContext.Default;
+				var keysToRemove = new System.Collections.Generic.List<PropertyCacheEntry>();
+
+				foreach (PropertyCacheEntry key in _entries.Keys)
+				{
+					var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.CachedType.Assembly);
+					if (alc is not null && alc != defaultAlc)
+					{
+						keysToRemove.Add(key);
+					}
+				}
+
+				foreach (var key in keysToRemove)
+				{
+					_entries.Remove(key);
+				}
+			}
 		}
 	}
 }

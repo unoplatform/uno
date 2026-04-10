@@ -60,6 +60,7 @@ namespace Microsoft.UI.Xaml
 		{
 			_registry.RemoveNonDefaultAlcEntries();
 			_getInheritedPropertiesForType.RemoveNonDefaultAlcEntries();
+			_getPropertyCache.RemoveNonDefaultAlcEntries();
 		}
 
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
