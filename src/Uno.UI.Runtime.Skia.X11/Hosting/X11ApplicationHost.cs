@@ -75,6 +75,10 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 			}
 		}
 
+		// Register ALC window cleanup callback so CloseAlcWindows() can
+		// remove entries from X11XamlRootHost._windowToHost.
+		Window.AlcWindowCleanupCallback = X11XamlRootHost.RemoveSecondaryAlcWindowEntries;
+
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), _ => new X11CoreApplicationExtension());
 		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new X11ApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => new X11DisplayInformationExtension(o));

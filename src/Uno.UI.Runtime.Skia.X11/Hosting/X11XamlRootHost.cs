@@ -324,6 +324,27 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 	}
 
+	/// <summary>
+	/// Removes entries from <see cref="_windowToHost"/> whose Window is marked as a secondary ALC window.
+	/// Called during ALC teardown from <see cref="Window.CloseAlcWindows"/>.
+	/// </summary>
+	internal static void RemoveSecondaryAlcWindowEntries()
+	{
+		var keysToRemove = new List<Window>();
+		foreach (var kvp in _windowToHost)
+		{
+			if (kvp.Key.IsAlcWindow)
+			{
+				keysToRemove.Add(kvp.Key);
+			}
+		}
+
+		foreach (var key in keysToRemove)
+		{
+			_windowToHost.TryRemove(key, out _);
+		}
+	}
+
 	public static bool AllWindowsDone()
 	{
 		// This probably doesn't need a lock, since it doesn't modify anything and reading outdated values is fine,

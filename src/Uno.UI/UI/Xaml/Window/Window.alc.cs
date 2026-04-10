@@ -276,6 +276,13 @@ partial class Window
 	/// Closes all <see cref="Window"/> instances that belong to a non-default (secondary) ALC.
 	/// This replaces reflection-based window cleanup with a proper internal API.
 	/// </summary>
+	/// <summary>
+	/// Optional callback invoked during <see cref="CloseAlcWindows"/> so that platform hosts
+	/// (e.g. X11XamlRootHost) can remove their own static entries for ALC windows.
+	/// Set by the platform host at startup.
+	/// </summary>
+	internal static Action? AlcWindowCleanupCallback { get; set; }
+
 	internal static void CloseAlcWindows()
 	{
 		foreach (var kvp in _appWindowMap)
@@ -286,6 +293,9 @@ partial class Window
 				window.CloseAlcWindow();
 			}
 		}
+
+		// Allow platform hosts to clean their own static window maps.
+		AlcWindowCleanupCallback?.Invoke();
 	}
 
 	/// <summary>
