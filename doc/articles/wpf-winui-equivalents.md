@@ -362,7 +362,7 @@ WinUI only has `Visible` and `Collapsed`. For invisible-but-layout-occupying beh
 
 **How do I handle preview/tunneling events?**
 
-WinUI does not support tunneling events. Replace `PreviewMouseDown`, `PreviewKeyDown`, etc. with their bubbling equivalents. Use the `Handled` property or `AddHandler` with `handledEventsToo: true` if you need to intercept events.
+WinUI/Uno supports some preview/tunneling events for keyboard input, including `PreviewKeyDown` and `PreviewKeyUp`, so you do not need to replace those with `KeyDown`/`KeyUp`. However, WPF-style preview mouse/pointer events such as `PreviewMouseDown` do not generally have direct equivalents. In those cases, use the corresponding bubbling event (for example, `PointerPressed`) and, if you need to observe events that were already marked handled, register with `AddHandler(..., handledEventsToo: true)`.
 
 **How do I migrate the Dispatcher pattern?**
 
