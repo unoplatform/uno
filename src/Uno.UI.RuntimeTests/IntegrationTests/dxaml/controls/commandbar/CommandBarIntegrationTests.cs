@@ -1315,7 +1315,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS)] // Flaky on iOS native https://github.com/unoplatform/uno/issues/9080
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.SkiaIOS)] // Flaky on iOS native and iOS Skia https://github.com/unoplatform/uno/issues/9080
 		[Description("Validates that the overflow menu's scrollviewer does not scroll with arrow keys.")]
 		public async Task ValidateOverflowScrollViewerDoesNotScrollWithArrowKeys()
 		{

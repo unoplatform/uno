@@ -134,8 +134,8 @@ namespace Windows.Devices.Lights
 					// _brightness ranges from 0 to 1
 					var nativeLevel = minLevel + _brightness * ((int)maxLevel - minLevel);
 					_cameraManager.TurnOnTorchWithStrengthLevel(_defaultCameraId, (int)Math.Round(nativeLevel));
+					return;
 				}
-				else
 #endif
 				if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.M)
 				{
