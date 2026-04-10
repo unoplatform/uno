@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class LinearPointKeyFrame : global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public LinearPointKeyFrame() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame", "LinearPointKeyFrame.LinearPointKeyFrame()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame.LinearPointKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame.LinearPointKeyFrame()
 	}
 }
