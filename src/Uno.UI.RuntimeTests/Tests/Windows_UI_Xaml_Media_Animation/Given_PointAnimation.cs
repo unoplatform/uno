@@ -317,4 +317,153 @@ public class Given_PointAnimation
 		Assert.IsTrue(sw.ElapsedMilliseconds >= 550,
 			$"3 iterations of 200ms should take ~600ms, took {sw.ElapsedMilliseconds}ms");
 	}
+
+	[TestMethod]
+	public async Task When_KeyFrames_LinearAndDiscrete()
+	{
+		var ellipse = new EllipseGeometry { Center = new Point(0, 0), RadiusX = 20, RadiusY = 20 };
+		var path = new Path
+		{
+			Data = ellipse,
+			Fill = new SolidColorBrush(Microsoft.UI.Colors.Teal),
+			Width = 200,
+			Height = 200,
+		};
+		WindowHelper.WindowContent = path;
+		await WindowHelper.WaitForLoaded(path);
+		await WindowHelper.WaitForIdle();
+
+		var animation = new PointAnimationUsingKeyFrames
+		{
+			EnableDependentAnimation = true,
+		};
+		animation.KeyFrames.Add(new DiscretePointKeyFrame
+		{
+			KeyTime = KeyTime.FromTimeSpan(TimeSpan.Zero),
+			Value = new Point(10, 20),
+		});
+		animation.KeyFrames.Add(new LinearPointKeyFrame
+		{
+			KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(300)),
+			Value = new Point(100, 200),
+		});
+		Storyboard.SetTarget(animation, ellipse);
+		Storyboard.SetTargetProperty(animation, nameof(EllipseGeometry.Center));
+
+		var storyboard = animation.ToStoryboard();
+		await storyboard.RunAsync(timeout: TimeSpan.FromSeconds(3));
+
+		Assert.AreEqual(100.0, ellipse.Center.X, 1.0, $"Final X should be 100, was {ellipse.Center.X}");
+		Assert.AreEqual(200.0, ellipse.Center.Y, 1.0, $"Final Y should be 200, was {ellipse.Center.Y}");
+	}
+
+	[TestMethod]
+	public async Task When_KeyFrames_DiscreteAtTime0_AppliedImmediately()
+	{
+		var ellipse = new EllipseGeometry { Center = new Point(0, 0), RadiusX = 20, RadiusY = 20 };
+		var path = new Path
+		{
+			Data = ellipse,
+			Fill = new SolidColorBrush(Microsoft.UI.Colors.Coral),
+			Width = 200,
+			Height = 200,
+		};
+		WindowHelper.WindowContent = path;
+		await WindowHelper.WaitForLoaded(path);
+		await WindowHelper.WaitForIdle();
+
+		var animation = new PointAnimationUsingKeyFrames
+		{
+			EnableDependentAnimation = true,
+		};
+		animation.KeyFrames.Add(new DiscretePointKeyFrame
+		{
+			KeyTime = KeyTime.FromTimeSpan(TimeSpan.Zero),
+			Value = new Point(50, 75),
+		});
+		Storyboard.SetTarget(animation, ellipse);
+		Storyboard.SetTargetProperty(animation, nameof(EllipseGeometry.Center));
+
+		await animation.ToStoryboard().RunAsync(timeout: TimeSpan.FromSeconds(3));
+
+		Assert.AreEqual(50.0, ellipse.Center.X, 1.0, $"X should be 50, was {ellipse.Center.X}");
+		Assert.AreEqual(75.0, ellipse.Center.Y, 1.0, $"Y should be 75, was {ellipse.Center.Y}");
+	}
+
+	[TestMethod]
+	public async Task When_KeyFrames_SplineInterpolation()
+	{
+		var ellipse = new EllipseGeometry { Center = new Point(0, 0), RadiusX = 20, RadiusY = 20 };
+		var path = new Path
+		{
+			Data = ellipse,
+			Fill = new SolidColorBrush(Microsoft.UI.Colors.Violet),
+			Width = 200,
+			Height = 200,
+		};
+		WindowHelper.WindowContent = path;
+		await WindowHelper.WaitForLoaded(path);
+		await WindowHelper.WaitForIdle();
+
+		var animation = new PointAnimationUsingKeyFrames
+		{
+			EnableDependentAnimation = true,
+		};
+		animation.KeyFrames.Add(new SplinePointKeyFrame
+		{
+			KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(300)),
+			Value = new Point(100, 100),
+			KeySpline = new KeySpline { ControlPoint1 = new Point(0.0, 0.0), ControlPoint2 = new Point(1.0, 1.0) },
+		});
+		Storyboard.SetTarget(animation, ellipse);
+		Storyboard.SetTargetProperty(animation, nameof(EllipseGeometry.Center));
+
+		await animation.ToStoryboard().RunAsync(timeout: TimeSpan.FromSeconds(3));
+
+		// With linear key spline (0,0)-(1,1), the result is the same as linear.
+		Assert.AreEqual(100.0, ellipse.Center.X, 1.0, $"Final X should be 100, was {ellipse.Center.X}");
+		Assert.AreEqual(100.0, ellipse.Center.Y, 1.0, $"Final Y should be 100, was {ellipse.Center.Y}");
+	}
+
+	[TestMethod]
+	public async Task When_KeyFrames_EasingFunction()
+	{
+		var ellipse = new EllipseGeometry { Center = new Point(0, 0), RadiusX = 20, RadiusY = 20 };
+		var path = new Path
+		{
+			Data = ellipse,
+			Fill = new SolidColorBrush(Microsoft.UI.Colors.Gold),
+			Width = 200,
+			Height = 200,
+		};
+		WindowHelper.WindowContent = path;
+		await WindowHelper.WaitForLoaded(path);
+		await WindowHelper.WaitForIdle();
+
+		var animation = new PointAnimationUsingKeyFrames
+		{
+			EnableDependentAnimation = true,
+		};
+		animation.KeyFrames.Add(new EasingPointKeyFrame
+		{
+			KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(300)),
+			Value = new Point(100, 100),
+			EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn },
+		});
+		Storyboard.SetTarget(animation, ellipse);
+		Storyboard.SetTargetProperty(animation, nameof(EllipseGeometry.Center));
+
+		var storyboard = animation.ToStoryboard();
+		storyboard.Begin();
+
+		// EaseIn starts slow
+		await Task.Delay(90);
+		var midPoint = ellipse.Center;
+
+		await storyboard.RunAsync(timeout: TimeSpan.FromSeconds(3));
+
+		Assert.IsTrue(midPoint.X < 40.0,
+			$"With EaseIn, mid-point X should be less than 40, was {midPoint.X}");
+		Assert.AreEqual(100.0, ellipse.Center.X, 1.0, $"Final X should be 100, was {ellipse.Center.X}");
+	}
 }
