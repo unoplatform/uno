@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TreeViewListAutomationPeer.cpp, tag winui3/release/1.8.4
+// MUX Reference ToggleSwitchAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 
 using DirectUI;
 using Microsoft.UI.Xaml.Controls;
@@ -63,9 +63,11 @@ public partial class ToggleSwitchAutomationPeer : FrameworkElementAutomationPeer
 			if (owner.IsOn)
 			{
 				// We only want to include the OnContent if custom content has been provided.
-				// The default value of OnContent is the string "On", but including this in the UIA Name adds no value, since this information is
-				// already included in the ToggleState. Narrator reads out both the ToggleState and the Name (We don't want it to read "On On ToggleSwitch").
-				if (owner.OnContent is { } onContent)
+				// The default value of OnContent is the localized string "On", but including
+				// this in the UIA Name adds no value, since this information is already
+				// included in the ToggleState. Narrator reads both the ToggleState and the
+				// Name (We don't want it to read "On On ToggleSwitch").
+				if (owner.OnContent is { } onContent && !IsDefaultOnOffContent(onContent, isOn: true))
 				{
 					onOffContentText = onContent.ToString() ?? string.Empty;
 				}
@@ -73,7 +75,7 @@ public partial class ToggleSwitchAutomationPeer : FrameworkElementAutomationPeer
 			else
 			{
 				// As above, we only include custom OffContent.
-				if (owner.OffContent is { } offContent)
+				if (owner.OffContent is { } offContent && !IsDefaultOnOffContent(offContent, isOn: false))
 				{
 					onOffContentText = offContent.ToString() ?? string.Empty;
 				}
@@ -81,7 +83,6 @@ public partial class ToggleSwitchAutomationPeer : FrameworkElementAutomationPeer
 
 			if (!string.IsNullOrEmpty(headerText) && !string.IsNullOrEmpty(onOffContentText))
 			{
-				// Return the header text followed by the on/off content separated by a space:
 				return $"{headerText} {onOffContentText}";
 			}
 			else if (!string.IsNullOrEmpty(headerText))
@@ -90,7 +91,6 @@ public partial class ToggleSwitchAutomationPeer : FrameworkElementAutomationPeer
 			}
 			else
 			{
-				// onOffContentText might be empty, but that's ok.
 				return onOffContentText;
 			}
 		}
@@ -130,5 +130,31 @@ public partial class ToggleSwitchAutomationPeer : FrameworkElementAutomationPeer
 		{
 			RaisePropertyChangedEvent(TogglePatternIdentifiers.ToggleStateProperty, oldValue, newValue);
 		}
+	}
+
+	/// <summary>
+	/// Checks whether the given On/Off content is the default localized string
+	/// ("On" or "Off") rather than custom content provided by the developer.
+	/// Default content should not be included in the accessible name because
+	/// Narrator already announces the ToggleState.
+	/// </summary>
+	private static bool IsDefaultOnOffContent(object content, bool isOn)
+	{
+		if (content is not string text)
+		{
+			return false;
+		}
+
+		var core = DXamlCore.GetCurrentNoCreate();
+		if (core is null)
+		{
+			return false;
+		}
+
+		var defaultText = isOn
+			? core.GetLocalizedResourceString("TEXT_TOGGLESWITCH_ON")
+			: core.GetLocalizedResourceString("TEXT_TOGGLESWITCH_OFF");
+
+		return string.Equals(text, defaultText, System.StringComparison.Ordinal);
 	}
 }

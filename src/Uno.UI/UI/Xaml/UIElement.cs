@@ -654,12 +654,12 @@ namespace Microsoft.UI.Xaml
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 
-		[NotImplemented]
-		protected virtual AutomationPeer OnCreateAutomationPeer() => new AutomationPeer();
-
-		internal AutomationPeer OnCreateAutomationPeerInternal() => OnCreateAutomationPeer();
-
 #nullable enable
+		protected virtual AutomationPeer? OnCreateAutomationPeer() => null;
+
+		internal AutomationPeer? OnCreateAutomationPeerInternal() => OnCreateAutomationPeer();
+
+
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement? to)
 		{
 			if (from == to || !from.IsInLiveTree || (to is { IsVisualTreeRoot: false, IsInLiveTree: false }))

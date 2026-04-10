@@ -21,6 +21,7 @@ using Windows.Foundation;
 using Windows.UI.Input;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Foundation.Logging;
@@ -328,6 +329,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnTextChangedPartial();
 			InvalidateTextBlock();
+
+			// When a TextBlock with LiveSetting (Polite/Assertive) has its text changed,
+			// raise LiveRegionChanged so screen readers announce the new content.
+			// In WinUI3, the OS UIA framework monitors content changes on live region
+			// elements automatically. We replicate that behavior here.
+			if (AutomationProperties.GetLiveSetting(this) != AutomationLiveSetting.Off)
+			{
+				AutomationHelper.RaiseEventIfListener(this, AutomationEvents.LiveRegionChanged);
+			}
 		}
 
 		partial void OnTextChangedPartial();

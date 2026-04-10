@@ -1,517 +1,687 @@
-<Page x:Class="UITests.Shared.Windows_UI_Xaml.ThemeResources.ElementLevelTheme"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml.ThemeResources.ElementLevelTheme"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-  <Page.Resources>
-    <!-- Shared styles for the showcase cards -->
-    <Style x:Key="SectionCard" TargetType="Border">
-      <Setter Property="CornerRadius" Value="12" />
-      <Setter Property="Padding" Value="20" />
-      <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
-      <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
-      <Setter Property="BorderThickness" Value="1" />
-    </Style>
+    <Page.Resources>
+        <!--  Shared styles for the showcase cards  -->
+        <Style x:Key="SectionCard" TargetType="Border">
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Padding" Value="20" />
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
 
-    <Style x:Key="NestedCard" TargetType="Border">
-      <Setter Property="CornerRadius" Value="8" />
-      <Setter Property="Padding" Value="16" />
-      <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
-      <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
-      <Setter Property="BorderThickness" Value="1" />
-    </Style>
+        <Style x:Key="NestedCard" TargetType="Border">
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
 
-    <Style x:Key="SectionHeader" TargetType="TextBlock">
-      <Setter Property="FontSize" Value="16" />
-      <Setter Property="FontWeight" Value="SemiBold" />
-      <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
-      <Setter Property="Margin" Value="0,0,0,12" />
-    </Style>
+        <Style x:Key="SectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
 
-    <Style x:Key="CaptionText" TargetType="TextBlock">
-      <Setter Property="FontSize" Value="12" />
-      <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
-      <Setter Property="TextWrapping" Value="Wrap" />
-    </Style>
-  </Page.Resources>
+        <Style x:Key="CaptionText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+    </Page.Resources>
 
-  <ScrollViewer>
-    <StackPanel Spacing="24" Padding="32" MaxWidth="1600"
-                HorizontalAlignment="Center">
+    <ScrollViewer>
+        <StackPanel
+            MaxWidth="1600"
+            Padding="32"
+            HorizontalAlignment="Center"
+            Spacing="24">
 
-      <!-- HERO HEADER + PAGE THEME TOGGLE -->
-      <Grid>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+            <!--  HERO HEADER + PAGE THEME TOGGLE  -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-        <StackPanel Spacing="4" VerticalAlignment="Center">
-          <TextBlock Text="Element-Level Theming"
-                     FontSize="36" FontWeight="Bold"
-                     Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-          <TextBlock Text="Each subtree can declare its own RequestedTheme — Light, Dark, or Default — and all theme resources resolve locally."
-                     FontSize="15" TextWrapping="Wrap" MaxWidth="720"
-                     Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-        </StackPanel>
-
-        <!-- Page-level theme toggle -->
-        <Border Grid.Column="1" CornerRadius="12" Padding="16,12"
-                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="1" VerticalAlignment="Center">
-          <StackPanel Spacing="8" HorizontalAlignment="Center">
-            <TextBlock Text="Page Theme" FontSize="13" FontWeight="SemiBold"
-                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                       HorizontalAlignment="Center" />
-            <SelectorBar x:Name="PageThemeSelectorBar"
-                         SelectionChanged="PageThemeSelectorBar_SelectionChanged">
-              <SelectorBarItem x:Name="PageThemeDefaultItem" Text="Default" IsSelected="True" />
-              <SelectorBarItem x:Name="PageThemeLightItem" Text="Light" />
-              <SelectorBarItem x:Name="PageThemeDarkItem" Text="Dark" />
-            </SelectorBar>
-            <TextBlock x:Name="PageThemeLabel" Text="The &quot;Default&quot; column follows this setting"
-                       FontSize="11" TextWrapping="Wrap" MaxWidth="200"
-                       Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                       HorizontalAlignment="Center" TextAlignment="Center" />
-          </StackPanel>
-        </Border>
-      </Grid>
-
-      <!-- SIDE-BY-SIDE: LIGHT vs DARK vs DEFAULT COLUMNS -->
-      <Grid ColumnSpacing="24" RowSpacing="24">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-
-        <!-- LIGHT COLUMN -->
-        <Border Grid.Column="0" RequestedTheme="Light"
-                CornerRadius="16" Padding="24"
-                Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="1">
-          <StackPanel Spacing="20">
-
-            <StackPanel Spacing="2">
-              <TextBlock Text="Light Theme" FontSize="22" FontWeight="Bold"
-                         Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-              <TextBlock Style="{StaticResource CaptionText}"
-                         Text="RequestedTheme=&quot;Light&quot;" />
-            </StackPanel>
-
-            <!-- Controls card -->
-            <Border Style="{StaticResource SectionCard}">
-              <StackPanel Spacing="14">
-                <TextBlock Style="{StaticResource SectionHeader}" Text="Controls" />
-                <Button Content="Primary Action" HorizontalAlignment="Stretch"
-                        Style="{StaticResource AccentButtonStyle}" />
-                <Button Content="Standard Button" HorizontalAlignment="Stretch" />
-                <ToggleSwitch Header="Wi-Fi" IsOn="True" />
-                <ToggleSwitch Header="Bluetooth" />
-                <Slider Header="Brightness" Value="75" Minimum="0" Maximum="100" />
-                <TextBox Header="Username" PlaceholderText="Enter your name" />
-                <PasswordBox Header="Password" PlaceholderText="********" />
-                <CheckBox Content="Remember me" IsChecked="True" />
-                <CheckBox Content="Accept terms" />
-              </StackPanel>
-            </Border>
-
-            <!-- Progress card -->
-            <Border Style="{StaticResource SectionCard}">
-              <StackPanel Spacing="12">
-                <TextBlock Style="{StaticResource SectionHeader}" Text="Progress" />
-                <ProgressBar Value="65" Maximum="100" />
-                <StackPanel Orientation="Horizontal" Spacing="12"
-                            HorizontalAlignment="Center">
-                  <ProgressRing IsActive="True" Width="32" Height="32" />
-                  <TextBlock Text="Loading..." VerticalAlignment="Center"
-                             Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <StackPanel VerticalAlignment="Center" Spacing="4">
+                    <TextBlock
+                        FontSize="36"
+                        FontWeight="Bold"
+                        Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                        Text="Element-Level Theming" />
+                    <TextBlock
+                        MaxWidth="720"
+                        FontSize="15"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="Each subtree can declare its own RequestedTheme — Light, Dark, or Default — and all theme resources resolve locally."
+                        TextWrapping="Wrap" />
                 </StackPanel>
-              </StackPanel>
-            </Border>
 
-            <!-- Selection card -->
-            <Border Style="{StaticResource SectionCard}">
-              <StackPanel Spacing="12">
-                <TextBlock Style="{StaticResource SectionHeader}" Text="Selection" />
-                <RadioButton Content="Option Alpha" IsChecked="True" GroupName="LightGroup" />
-                <RadioButton Content="Option Beta" GroupName="LightGroup" />
-                <RadioButton Content="Option Gamma" GroupName="LightGroup" />
-                <ComboBox Header="Favorite Color" SelectedIndex="0"
-                          HorizontalAlignment="Stretch">
-                  <ComboBoxItem Content="Red" />
-                  <ComboBoxItem Content="Green" />
-                  <ComboBoxItem Content="Blue" />
-                </ComboBox>
-              </StackPanel>
-            </Border>
-
-            <!-- NESTED DARK INSIDE LIGHT -->
-            <Border RequestedTheme="Dark"
-                    CornerRadius="12" Padding="20"
-                    Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                <!--  Page-level theme toggle  -->
+                <Border
+                    Grid.Column="1"
+                    Padding="16,12"
+                    VerticalAlignment="Center"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1">
-              <StackPanel Spacing="14">
-                <StackPanel Spacing="2">
-                  <TextBlock Text="Nested Dark" FontSize="18" FontWeight="SemiBold"
-                             Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-                  <TextBlock Style="{StaticResource CaptionText}"
-                             Text="A Dark island inside the Light column" />
-                </StackPanel>
-                <Button Content="Dark Accent Button" HorizontalAlignment="Stretch"
-                        Style="{StaticResource AccentButtonStyle}" />
-                <Button Content="Dark Standard" HorizontalAlignment="Stretch" />
-                <ToggleSwitch Header="Night Mode" IsOn="True" />
-                <Slider Header="Volume" Value="40" />
-                <TextBox PlaceholderText="Search..." />
-
-                <!-- TRIPLE NEST: Light inside Dark inside Light -->
-                <Border RequestedTheme="Light"
-                        CornerRadius="8" Padding="16"
-                        Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                        BorderThickness="1">
-                  <StackPanel Spacing="10">
-                    <TextBlock Text="Triple-Nested Light" FontSize="14" FontWeight="SemiBold"
-                               Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-                    <TextBlock Style="{StaticResource CaptionText}"
-                               Text="Light - Dark - Light: three levels deep!" />
-                    <Button Content="I'm Light again!" HorizontalAlignment="Stretch"
-                            Style="{StaticResource AccentButtonStyle}" />
-                    <CheckBox Content="Deeply nested checkbox" IsChecked="True" />
-                  </StackPanel>
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <StackPanel HorizontalAlignment="Center" Spacing="8">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            FontSize="13"
+                            FontWeight="SemiBold"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="Page Theme" />
+                        <SelectorBar x:Name="PageThemeSelectorBar" SelectionChanged="PageThemeSelectorBar_SelectionChanged">
+                            <SelectorBarItem
+                                x:Name="PageThemeDefaultItem"
+                                IsSelected="True"
+                                Text="Default" />
+                            <SelectorBarItem x:Name="PageThemeLightItem" Text="Light" />
+                            <SelectorBarItem x:Name="PageThemeDarkItem" Text="Dark" />
+                        </SelectorBar>
+                        <TextBlock
+                            x:Name="PageThemeLabel"
+                            MaxWidth="200"
+                            HorizontalAlignment="Center"
+                            FontSize="11"
+                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                            Text="The &quot;Default&quot; column follows this setting"
+                            TextAlignment="Center"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
                 </Border>
-              </StackPanel>
-            </Border>
+            </Grid>
 
-          </StackPanel>
-        </Border>
+            <!--  SIDE-BY-SIDE: LIGHT vs DARK vs DEFAULT COLUMNS  -->
+            <Grid ColumnSpacing="24" RowSpacing="24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-        <!-- DARK COLUMN -->
-        <Border Grid.Column="1" RequestedTheme="Dark"
-                CornerRadius="16" Padding="24"
-                Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="1">
-          <StackPanel Spacing="20">
-
-            <StackPanel Spacing="2">
-              <TextBlock Text="Dark Theme" FontSize="22" FontWeight="Bold"
-                         Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-              <TextBlock Style="{StaticResource CaptionText}"
-                         Text="RequestedTheme=&quot;Dark&quot;" />
-            </StackPanel>
-
-            <!-- Controls card -->
-            <Border Style="{StaticResource SectionCard}">
-              <StackPanel Spacing="14">
-                <TextBlock Style="{StaticResource SectionHeader}" Text="Controls" />
-                <Button Content="Primary Action" HorizontalAlignment="Stretch"
-                        Style="{StaticResource AccentButtonStyle}" />
-                <Button Content="Standard Button" HorizontalAlignment="Stretch" />
-                <ToggleSwitch Header="Wi-Fi" IsOn="True" />
-                <ToggleSwitch Header="Bluetooth" />
-                <Slider Header="Brightness" Value="75" Minimum="0" Maximum="100" />
-                <TextBox Header="Username" PlaceholderText="Enter your name" />
-                <PasswordBox Header="Password" PlaceholderText="********" />
-                <CheckBox Content="Remember me" IsChecked="True" />
-                <CheckBox Content="Accept terms" />
-              </StackPanel>
-            </Border>
-
-            <!-- Progress card -->
-            <Border Style="{StaticResource SectionCard}">
-              <StackPanel Spacing="12">
-                <TextBlock Style="{StaticResource SectionHeader}" Text="Progress" />
-                <ProgressBar Value="65" Maximum="100" />
-                <StackPanel Orientation="Horizontal" Spacing="12"
-                            HorizontalAlignment="Center">
-                  <ProgressRing IsActive="True" Width="32" Height="32" />
-                  <TextBlock Text="Loading..." VerticalAlignment="Center"
-                             Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                </StackPanel>
-              </StackPanel>
-            </Border>
-
-            <!-- Selection card -->
-            <Border Style="{StaticResource SectionCard}">
-              <StackPanel Spacing="12">
-                <TextBlock Style="{StaticResource SectionHeader}" Text="Selection" />
-                <RadioButton Content="Option Alpha" IsChecked="True" GroupName="DarkGroup" />
-                <RadioButton Content="Option Beta" GroupName="DarkGroup" />
-                <RadioButton Content="Option Gamma" GroupName="DarkGroup" />
-                <ComboBox Header="Favorite Color" SelectedIndex="2"
-                          HorizontalAlignment="Stretch">
-                  <ComboBoxItem Content="Red" />
-                  <ComboBoxItem Content="Green" />
-                  <ComboBoxItem Content="Blue" />
-                </ComboBox>
-              </StackPanel>
-            </Border>
-
-            <!-- NESTED LIGHT INSIDE DARK -->
-            <Border RequestedTheme="Light"
-                    CornerRadius="12" Padding="20"
+                <!--  LIGHT COLUMN  -->
+                <Border
+                    Grid.Column="0"
+                    Padding="24"
                     Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1">
-              <StackPanel Spacing="14">
-                <StackPanel Spacing="2">
-                  <TextBlock Text="Nested Light" FontSize="18" FontWeight="SemiBold"
-                             Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-                  <TextBlock Style="{StaticResource CaptionText}"
-                             Text="A Light island inside the Dark column" />
-                </StackPanel>
-                <Button Content="Light Accent Button" HorizontalAlignment="Stretch"
-                        Style="{StaticResource AccentButtonStyle}" />
-                <Button Content="Light Standard" HorizontalAlignment="Stretch" />
-                <ToggleSwitch Header="Day Mode" IsOn="True" />
-                <Slider Header="Volume" Value="60" />
-                <TextBox PlaceholderText="Search..." />
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    RequestedTheme="Light">
+                    <StackPanel Spacing="20">
 
-                <!-- TRIPLE NEST: Dark inside Light inside Dark -->
-                <Border RequestedTheme="Dark"
-                        CornerRadius="8" Padding="16"
-                        Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                        BorderThickness="1">
-                  <StackPanel Spacing="10">
-                    <TextBlock Text="Triple-Nested Dark" FontSize="14" FontWeight="SemiBold"
-                               Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-                    <TextBlock Style="{StaticResource CaptionText}"
-                               Text="Dark - Light - Dark: three levels deep!" />
-                    <Button Content="I'm Dark again!" HorizontalAlignment="Stretch"
-                            Style="{StaticResource AccentButtonStyle}" />
-                    <CheckBox Content="Deeply nested checkbox" IsChecked="True" />
-                  </StackPanel>
-                </Border>
-              </StackPanel>
-            </Border>
-
-          </StackPanel>
-        </Border>
-
-        <!-- DEFAULT COLUMN -->
-        <Border Grid.Column="2" RequestedTheme="Default"
-                CornerRadius="16" Padding="24"
-                Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="1">
-          <StackPanel Spacing="20">
-
-            <StackPanel Spacing="2">
-              <TextBlock x:Name="DefaultColumnIcon"
-                         Text="Default Theme" FontSize="22" FontWeight="Bold"
-                         Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-              <TextBlock Style="{StaticResource CaptionText}"
-                         Text="RequestedTheme=&quot;Default&quot; — inherits the page theme" />
-            </StackPanel>
-
-            <!-- Controls card -->
-            <Border Style="{StaticResource SectionCard}">
-              <StackPanel Spacing="14">
-                <TextBlock Style="{StaticResource SectionHeader}" Text="Controls" />
-                <Button Content="Primary Action" HorizontalAlignment="Stretch"
-                        Style="{StaticResource AccentButtonStyle}" />
-                <Button Content="Standard Button" HorizontalAlignment="Stretch" />
-                <ToggleSwitch Header="Wi-Fi" IsOn="True" />
-                <ToggleSwitch Header="Bluetooth" />
-                <Slider Header="Brightness" Value="75" Minimum="0" Maximum="100" />
-                <TextBox Header="Username" PlaceholderText="Enter your name" />
-                <PasswordBox Header="Password" PlaceholderText="********" />
-                <CheckBox Content="Remember me" IsChecked="True" />
-                <CheckBox Content="Accept terms" />
-              </StackPanel>
-            </Border>
-
-            <!-- Progress card -->
-            <Border Style="{StaticResource SectionCard}">
-              <StackPanel Spacing="12">
-                <TextBlock Style="{StaticResource SectionHeader}" Text="Progress" />
-                <ProgressBar Value="65" Maximum="100" />
-                <StackPanel Orientation="Horizontal" Spacing="12"
-                            HorizontalAlignment="Center">
-                  <ProgressRing IsActive="True" Width="32" Height="32" />
-                  <TextBlock Text="Loading..." VerticalAlignment="Center"
-                             Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                </StackPanel>
-              </StackPanel>
-            </Border>
-
-            <!-- Selection card -->
-            <Border Style="{StaticResource SectionCard}">
-              <StackPanel Spacing="12">
-                <TextBlock Style="{StaticResource SectionHeader}" Text="Selection" />
-                <RadioButton Content="Option Alpha" IsChecked="True" GroupName="DefaultGroup" />
-                <RadioButton Content="Option Beta" GroupName="DefaultGroup" />
-                <RadioButton Content="Option Gamma" GroupName="DefaultGroup" />
-                <ComboBox Header="Favorite Color" SelectedIndex="1"
-                          HorizontalAlignment="Stretch">
-                  <ComboBoxItem Content="Red" />
-                  <ComboBoxItem Content="Green" />
-                  <ComboBoxItem Content="Blue" />
-                </ComboBox>
-              </StackPanel>
-            </Border>
-
-            <!-- NESTED: OPPOSITE OF CURRENT PAGE THEME -->
-            <Border x:Name="DefaultColumnNestedBorder"
-                    RequestedTheme="Dark"
-                    CornerRadius="12" Padding="20"
-                    Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="1">
-              <StackPanel Spacing="14">
-                <StackPanel Spacing="2">
-                  <TextBlock x:Name="DefaultColumnNestedLabel"
-                             Text="Nested Opposite" FontSize="18" FontWeight="SemiBold"
-                             Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-                  <TextBlock Style="{StaticResource CaptionText}"
-                             Text="Always the opposite of the page theme — switches when you toggle!" />
-                </StackPanel>
-                <Button Content="Accent Button" HorizontalAlignment="Stretch"
-                        Style="{StaticResource AccentButtonStyle}" />
-                <Button Content="Standard Button" HorizontalAlignment="Stretch" />
-                <ToggleSwitch Header="Adaptive Toggle" IsOn="True" />
-                <Slider Header="Volume" Value="55" />
-                <TextBox PlaceholderText="Search..." />
-              </StackPanel>
-            </Border>
-
-          </StackPanel>
-        </Border>
-      </Grid>
-
-      <!-- DYNAMIC THEME SWITCH DEMO -->
-      <Border CornerRadius="16" Padding="24"
-              Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-              BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-              BorderThickness="1">
-        <StackPanel Spacing="16">
-          <TextBlock Text="Dynamic Theme Switching" FontSize="22" FontWeight="Bold"
-                     Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-          <TextBlock Style="{StaticResource CaptionText}"
-                     Text="Toggle the switch to change the RequestedTheme of the card below at runtime." />
-          <ToggleSwitch x:Name="ThemeToggle" Header="Use Dark Theme"
-                        IsOn="False" Toggled="ThemeToggle_Toggled" />
-
-          <Border x:Name="DynamicThemeCard"
-                  RequestedTheme="Light"
-                  CornerRadius="12" Padding="20"
-                  Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                  BorderThickness="1">
-            <StackPanel Spacing="14">
-              <TextBlock x:Name="DynamicThemeLabel"
-                         Text="Currently: Light" FontSize="18" FontWeight="SemiBold"
-                         Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-              <Button Content="Themed Button" HorizontalAlignment="Stretch"
-                      Style="{StaticResource AccentButtonStyle}" />
-              <Button Content="Standard Button" HorizontalAlignment="Stretch" />
-              <Slider Header="Opacity" Value="50" />
-              <TextBox PlaceholderText="Type something..." />
-              <ProgressBar Value="42" Maximum="100" />
-              <StackPanel Orientation="Horizontal" Spacing="8">
-                <CheckBox Content="A" IsChecked="True" />
-                <CheckBox Content="B" />
-                <CheckBox Content="C" IsChecked="True" />
-              </StackPanel>
-            </StackPanel>
-          </Border>
-        </StackPanel>
-      </Border>
-
-      <!-- GRADIENT NESTING SHOWCASE -->
-      <Border CornerRadius="16" Padding="24"
-              Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-              BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-              BorderThickness="1">
-        <StackPanel Spacing="16">
-          <TextBlock Text="Nested Theme Matryoshka" FontSize="22" FontWeight="Bold"
-                     Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-          <TextBlock Style="{StaticResource CaptionText}"
-                     Text="Themes nest like Russian dolls — each boundary overrides its parent for the entire subtree." />
-
-          <!-- Level 1: Dark -->
-          <Border RequestedTheme="Dark"
-                  CornerRadius="12" Padding="20"
-                  Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                  BorderThickness="1">
-            <StackPanel Spacing="12">
-              <TextBlock Text="Level 1 — Dark" FontSize="16" FontWeight="SemiBold"
-                         Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-              <Button Content="Dark Button" Style="{StaticResource AccentButtonStyle}" />
-
-              <!-- Level 2: Light -->
-              <Border RequestedTheme="Light"
-                      CornerRadius="10" Padding="16"
-                      Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                      BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                      BorderThickness="1">
-                <StackPanel Spacing="10">
-                  <TextBlock Text="Level 2 — Light" FontSize="15" FontWeight="SemiBold"
-                             Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-                  <Button Content="Light Button" Style="{StaticResource AccentButtonStyle}" />
-
-                  <!-- Level 3: Dark -->
-                  <Border RequestedTheme="Dark"
-                          CornerRadius="8" Padding="14"
-                          Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                          BorderThickness="1">
-                    <StackPanel Spacing="8">
-                      <TextBlock Text="Level 3 — Dark" FontSize="14" FontWeight="SemiBold"
-                                 Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-                      <Button Content="Dark Button" Style="{StaticResource AccentButtonStyle}" />
-
-                      <!-- Level 4: Light -->
-                      <Border RequestedTheme="Light"
-                              CornerRadius="6" Padding="12"
-                              Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                              BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                              BorderThickness="1">
-                        <StackPanel Spacing="6">
-                          <TextBlock Text="Level 4 — Light" FontSize="13" FontWeight="SemiBold"
-                                     Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-                          <Button Content="Light Button" Style="{StaticResource AccentButtonStyle}" />
-
-                          <!-- Level 5: Dark -->
-                          <Border RequestedTheme="Dark"
-                                  CornerRadius="4" Padding="10"
-                                  Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                  BorderThickness="1">
-                            <StackPanel Spacing="4">
-                              <TextBlock Text="Level 5 — Dark" FontSize="12" FontWeight="SemiBold"
-                                         Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
-                              <Button Content="Deepest!"  FontSize="11"
-                                      Style="{StaticResource AccentButtonStyle}" />
-                            </StackPanel>
-                          </Border>
-
+                        <StackPanel Spacing="2">
+                            <TextBlock
+                                FontSize="22"
+                                FontWeight="Bold"
+                                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                Text="Light Theme" />
+                            <TextBlock Style="{StaticResource CaptionText}" Text="RequestedTheme=&quot;Light&quot;" />
                         </StackPanel>
-                      </Border>
+
+                        <!--  Controls card  -->
+                        <Border Style="{StaticResource SectionCard}">
+                            <StackPanel Spacing="14">
+                                <TextBlock Style="{StaticResource SectionHeader}" Text="Controls" />
+                                <Button
+                                    HorizontalAlignment="Stretch"
+                                    Content="Primary Action"
+                                    Style="{StaticResource AccentButtonStyle}" />
+                                <Button HorizontalAlignment="Stretch" Content="Standard Button" />
+                                <ToggleSwitch Header="Wi-Fi" IsOn="True" />
+                                <ToggleSwitch Header="Bluetooth" />
+                                <Slider
+                                    Header="Brightness"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    Value="75" />
+                                <TextBox Header="Username" PlaceholderText="Enter your name" />
+                                <PasswordBox Header="Password" PlaceholderText="********" />
+                                <CheckBox Content="Remember me" IsChecked="True" />
+                                <CheckBox Content="Accept terms" />
+                            </StackPanel>
+                        </Border>
+
+                        <!--  Progress card  -->
+                        <Border Style="{StaticResource SectionCard}">
+                            <StackPanel Spacing="12">
+                                <TextBlock Style="{StaticResource SectionHeader}" Text="Progress" />
+                                <ProgressBar Maximum="100" Value="65" />
+                                <StackPanel
+                                    HorizontalAlignment="Center"
+                                    Orientation="Horizontal"
+                                    Spacing="12">
+                                    <ProgressRing
+                                        Width="32"
+                                        Height="32"
+                                        IsActive="True" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="Loading..." />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!--  Selection card  -->
+                        <Border Style="{StaticResource SectionCard}">
+                            <StackPanel Spacing="12">
+                                <TextBlock Style="{StaticResource SectionHeader}" Text="Selection" />
+                                <RadioButton
+                                    Content="Option Alpha"
+                                    GroupName="LightGroup"
+                                    IsChecked="True" />
+                                <RadioButton Content="Option Beta" GroupName="LightGroup" />
+                                <RadioButton Content="Option Gamma" GroupName="LightGroup" />
+                                <ComboBox
+                                    HorizontalAlignment="Stretch"
+                                    Header="Favorite Color"
+                                    SelectedIndex="0">
+                                    <ComboBoxItem Content="Red" />
+                                    <ComboBoxItem Content="Green" />
+                                    <ComboBoxItem Content="Blue" />
+                                </ComboBox>
+                            </StackPanel>
+                        </Border>
+
+                        <!--  NESTED DARK INSIDE LIGHT  -->
+                        <Border
+                            Padding="20"
+                            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            RequestedTheme="Dark">
+                            <StackPanel Spacing="14">
+                                <StackPanel Spacing="2">
+                                    <TextBlock
+                                        FontSize="18"
+                                        FontWeight="SemiBold"
+                                        Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                        Text="Nested Dark" />
+                                    <TextBlock Style="{StaticResource CaptionText}" Text="A Dark island inside the Light column" />
+                                </StackPanel>
+                                <Button
+                                    HorizontalAlignment="Stretch"
+                                    Content="Dark Accent Button"
+                                    Style="{StaticResource AccentButtonStyle}" />
+                                <Button HorizontalAlignment="Stretch" Content="Dark Standard" />
+                                <ToggleSwitch Header="Night Mode" IsOn="True" />
+                                <Slider Header="Volume" Value="40" />
+                                <TextBox PlaceholderText="Search..." />
+
+                                <!--  TRIPLE NEST: Light inside Dark inside Light  -->
+                                <Border
+                                    Padding="16"
+                                    Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    RequestedTheme="Light">
+                                    <StackPanel Spacing="10">
+                                        <TextBlock
+                                            FontSize="14"
+                                            FontWeight="SemiBold"
+                                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                            Text="Triple-Nested Light" />
+                                        <TextBlock Style="{StaticResource CaptionText}" Text="Light - Dark - Light: three levels deep!" />
+                                        <Button
+                                            HorizontalAlignment="Stretch"
+                                            Content="I'm Light again!"
+                                            Style="{StaticResource AccentButtonStyle}" />
+                                        <CheckBox Content="Deeply nested checkbox" IsChecked="True" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Border>
 
                     </StackPanel>
-                  </Border>
+                </Border>
 
+                <!--  DARK COLUMN  -->
+                <Border
+                    Grid.Column="1"
+                    Padding="24"
+                    Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    RequestedTheme="Dark">
+                    <StackPanel Spacing="20">
+
+                        <StackPanel Spacing="2">
+                            <TextBlock
+                                FontSize="22"
+                                FontWeight="Bold"
+                                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                Text="Dark Theme" />
+                            <TextBlock Style="{StaticResource CaptionText}" Text="RequestedTheme=&quot;Dark&quot;" />
+                        </StackPanel>
+
+                        <!--  Controls card  -->
+                        <Border Style="{StaticResource SectionCard}">
+                            <StackPanel Spacing="14">
+                                <TextBlock Style="{StaticResource SectionHeader}" Text="Controls" />
+                                <Button
+                                    HorizontalAlignment="Stretch"
+                                    Content="Primary Action"
+                                    Style="{StaticResource AccentButtonStyle}" />
+                                <Button HorizontalAlignment="Stretch" Content="Standard Button" />
+                                <ToggleSwitch Header="Wi-Fi" IsOn="True" />
+                                <ToggleSwitch Header="Bluetooth" />
+                                <Slider
+                                    Header="Brightness"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    Value="75" />
+                                <TextBox Header="Username" PlaceholderText="Enter your name" />
+                                <PasswordBox Header="Password" PlaceholderText="********" />
+                                <CheckBox Content="Remember me" IsChecked="True" />
+                                <CheckBox Content="Accept terms" />
+                            </StackPanel>
+                        </Border>
+
+                        <!--  Progress card  -->
+                        <Border Style="{StaticResource SectionCard}">
+                            <StackPanel Spacing="12">
+                                <TextBlock Style="{StaticResource SectionHeader}" Text="Progress" />
+                                <ProgressBar Maximum="100" Value="65" />
+                                <StackPanel
+                                    HorizontalAlignment="Center"
+                                    Orientation="Horizontal"
+                                    Spacing="12">
+                                    <ProgressRing
+                                        Width="32"
+                                        Height="32"
+                                        IsActive="True" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="Loading..." />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!--  Selection card  -->
+                        <Border Style="{StaticResource SectionCard}">
+                            <StackPanel Spacing="12">
+                                <TextBlock Style="{StaticResource SectionHeader}" Text="Selection" />
+                                <RadioButton
+                                    Content="Option Alpha"
+                                    GroupName="DarkGroup"
+                                    IsChecked="True" />
+                                <RadioButton Content="Option Beta" GroupName="DarkGroup" />
+                                <RadioButton Content="Option Gamma" GroupName="DarkGroup" />
+                                <ComboBox
+                                    HorizontalAlignment="Stretch"
+                                    Header="Favorite Color"
+                                    SelectedIndex="2">
+                                    <ComboBoxItem Content="Red" />
+                                    <ComboBoxItem Content="Green" />
+                                    <ComboBoxItem Content="Blue" />
+                                </ComboBox>
+                            </StackPanel>
+                        </Border>
+
+                        <!--  NESTED LIGHT INSIDE DARK  -->
+                        <Border
+                            Padding="20"
+                            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            RequestedTheme="Light">
+                            <StackPanel Spacing="14">
+                                <StackPanel Spacing="2">
+                                    <TextBlock
+                                        FontSize="18"
+                                        FontWeight="SemiBold"
+                                        Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                        Text="Nested Light" />
+                                    <TextBlock Style="{StaticResource CaptionText}" Text="A Light island inside the Dark column" />
+                                </StackPanel>
+                                <Button
+                                    HorizontalAlignment="Stretch"
+                                    Content="Light Accent Button"
+                                    Style="{StaticResource AccentButtonStyle}" />
+                                <Button HorizontalAlignment="Stretch" Content="Light Standard" />
+                                <ToggleSwitch Header="Day Mode" IsOn="True" />
+                                <Slider Header="Volume" Value="60" />
+                                <TextBox PlaceholderText="Search..." />
+
+                                <!--  TRIPLE NEST: Dark inside Light inside Dark  -->
+                                <Border
+                                    Padding="16"
+                                    Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    RequestedTheme="Dark">
+                                    <StackPanel Spacing="10">
+                                        <TextBlock
+                                            FontSize="14"
+                                            FontWeight="SemiBold"
+                                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                            Text="Triple-Nested Dark" />
+                                        <TextBlock Style="{StaticResource CaptionText}" Text="Dark - Light - Dark: three levels deep!" />
+                                        <Button
+                                            HorizontalAlignment="Stretch"
+                                            Content="I'm Dark again!"
+                                            Style="{StaticResource AccentButtonStyle}" />
+                                        <CheckBox Content="Deeply nested checkbox" IsChecked="True" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </Border>
+
+                <!--  DEFAULT COLUMN  -->
+                <Border
+                    Grid.Column="2"
+                    Padding="24"
+                    Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    RequestedTheme="Default">
+                    <StackPanel Spacing="20">
+
+                        <StackPanel Spacing="2">
+                            <TextBlock
+                                x:Name="DefaultColumnIcon"
+                                FontSize="22"
+                                FontWeight="Bold"
+                                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                Text="Default Theme" />
+                            <TextBlock Style="{StaticResource CaptionText}" Text="RequestedTheme=&quot;Default&quot; — inherits the page theme" />
+                        </StackPanel>
+
+                        <!--  Controls card  -->
+                        <Border Style="{StaticResource SectionCard}">
+                            <StackPanel Spacing="14">
+                                <TextBlock Style="{StaticResource SectionHeader}" Text="Controls" />
+                                <Button
+                                    HorizontalAlignment="Stretch"
+                                    Content="Primary Action"
+                                    Style="{StaticResource AccentButtonStyle}" />
+                                <Button HorizontalAlignment="Stretch" Content="Standard Button" />
+                                <ToggleSwitch Header="Wi-Fi" IsOn="True" />
+                                <ToggleSwitch Header="Bluetooth" />
+                                <Slider
+                                    Header="Brightness"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    Value="75" />
+                                <TextBox Header="Username" PlaceholderText="Enter your name" />
+                                <PasswordBox Header="Password" PlaceholderText="********" />
+                                <CheckBox Content="Remember me" IsChecked="True" />
+                                <CheckBox Content="Accept terms" />
+                            </StackPanel>
+                        </Border>
+
+                        <!--  Progress card  -->
+                        <Border Style="{StaticResource SectionCard}">
+                            <StackPanel Spacing="12">
+                                <TextBlock Style="{StaticResource SectionHeader}" Text="Progress" />
+                                <ProgressBar Maximum="100" Value="65" />
+                                <StackPanel
+                                    HorizontalAlignment="Center"
+                                    Orientation="Horizontal"
+                                    Spacing="12">
+                                    <ProgressRing
+                                        Width="32"
+                                        Height="32"
+                                        IsActive="True" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="Loading..." />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!--  Selection card  -->
+                        <Border Style="{StaticResource SectionCard}">
+                            <StackPanel Spacing="12">
+                                <TextBlock Style="{StaticResource SectionHeader}" Text="Selection" />
+                                <RadioButton
+                                    Content="Option Alpha"
+                                    GroupName="DefaultGroup"
+                                    IsChecked="True" />
+                                <RadioButton Content="Option Beta" GroupName="DefaultGroup" />
+                                <RadioButton Content="Option Gamma" GroupName="DefaultGroup" />
+                                <ComboBox
+                                    HorizontalAlignment="Stretch"
+                                    Header="Favorite Color"
+                                    SelectedIndex="1">
+                                    <ComboBoxItem Content="Red" />
+                                    <ComboBoxItem Content="Green" />
+                                    <ComboBoxItem Content="Blue" />
+                                </ComboBox>
+                            </StackPanel>
+                        </Border>
+
+                        <!--  NESTED: OPPOSITE OF CURRENT PAGE THEME  -->
+                        <Border
+                            x:Name="DefaultColumnNestedBorder"
+                            Padding="20"
+                            Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            RequestedTheme="Dark">
+                            <StackPanel Spacing="14">
+                                <StackPanel Spacing="2">
+                                    <TextBlock
+                                        x:Name="DefaultColumnNestedLabel"
+                                        FontSize="18"
+                                        FontWeight="SemiBold"
+                                        Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                        Text="Nested Opposite" />
+                                    <TextBlock Style="{StaticResource CaptionText}" Text="Always the opposite of the page theme — switches when you toggle!" />
+                                </StackPanel>
+                                <Button
+                                    HorizontalAlignment="Stretch"
+                                    Content="Accent Button"
+                                    Style="{StaticResource AccentButtonStyle}" />
+                                <Button HorizontalAlignment="Stretch" Content="Standard Button" />
+                                <ToggleSwitch Header="Adaptive Toggle" IsOn="True" />
+                                <Slider Header="Volume" Value="55" />
+                                <TextBox PlaceholderText="Search..." />
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!--  DYNAMIC THEME SWITCH DEMO  -->
+            <Border
+                Padding="24"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="16">
+                <StackPanel Spacing="16">
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                        Text="Dynamic Theme Switching" />
+                    <TextBlock Style="{StaticResource CaptionText}" Text="Toggle the switch to change the RequestedTheme of the card below at runtime." />
+                    <ToggleSwitch
+                        x:Name="ThemeToggle"
+                        Header="Use Dark Theme"
+                        IsOn="False"
+                        Toggled="ThemeToggle_Toggled" />
+
+                    <Border
+                        x:Name="DynamicThemeCard"
+                        Padding="20"
+                        Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        RequestedTheme="Light">
+                        <StackPanel Spacing="14">
+                            <TextBlock
+                                x:Name="DynamicThemeLabel"
+                                FontSize="18"
+                                FontWeight="SemiBold"
+                                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                Text="Currently: Light" />
+                            <Button
+                                HorizontalAlignment="Stretch"
+                                Content="Themed Button"
+                                Style="{StaticResource AccentButtonStyle}" />
+                            <Button HorizontalAlignment="Stretch" Content="Standard Button" />
+                            <Slider Header="Opacity" Value="50" />
+                            <TextBox PlaceholderText="Type something..." />
+                            <ProgressBar Maximum="100" Value="42" />
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <CheckBox Content="A" IsChecked="True" />
+                                <CheckBox Content="B" />
+                                <CheckBox Content="C" IsChecked="True" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
-              </Border>
+            </Border>
 
-            </StackPanel>
-          </Border>
+            <!--  GRADIENT NESTING SHOWCASE  -->
+            <Border
+                Padding="24"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="16">
+                <StackPanel Spacing="16">
+                    <TextBlock
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                        Text="Nested Theme Matryoshka" />
+                    <TextBlock Style="{StaticResource CaptionText}" Text="Themes nest like Russian dolls — each boundary overrides its parent for the entire subtree." />
+
+                    <!--  Level 1: Dark  -->
+                    <Border
+                        Padding="20"
+                        Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        RequestedTheme="Dark">
+                        <StackPanel Spacing="12">
+                            <TextBlock
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                Text="Level 1 — Dark" />
+                            <Button Content="Dark Button" Style="{StaticResource AccentButtonStyle}" />
+
+                            <!--  Level 2: Light  -->
+                            <Border
+                                Padding="16"
+                                Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                RequestedTheme="Light">
+                                <StackPanel Spacing="10">
+                                    <TextBlock
+                                        FontSize="15"
+                                        FontWeight="SemiBold"
+                                        Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                        Text="Level 2 — Light" />
+                                    <Button Content="Light Button" Style="{StaticResource AccentButtonStyle}" />
+
+                                    <!--  Level 3: Dark  -->
+                                    <Border
+                                        Padding="14"
+                                        Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        RequestedTheme="Dark">
+                                        <StackPanel Spacing="8">
+                                            <TextBlock
+                                                FontSize="14"
+                                                FontWeight="SemiBold"
+                                                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                                Text="Level 3 — Dark" />
+                                            <Button Content="Dark Button" Style="{StaticResource AccentButtonStyle}" />
+
+                                            <!--  Level 4: Light  -->
+                                            <Border
+                                                Padding="12"
+                                                Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="6"
+                                                RequestedTheme="Light">
+                                                <StackPanel Spacing="6">
+                                                    <TextBlock
+                                                        FontSize="13"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                                        Text="Level 4 — Light" />
+                                                    <Button Content="Light Button" Style="{StaticResource AccentButtonStyle}" />
+
+                                                    <!--  Level 5: Dark  -->
+                                                    <Border
+                                                        Padding="10"
+                                                        Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="4"
+                                                        RequestedTheme="Dark">
+                                                        <StackPanel Spacing="4">
+                                                            <TextBlock
+                                                                FontSize="12"
+                                                                FontWeight="SemiBold"
+                                                                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                                                Text="Level 5 — Dark" />
+                                                            <Button
+                                                                Content="Deepest!"
+                                                                FontSize="11"
+                                                                Style="{StaticResource AccentButtonStyle}" />
+                                                        </StackPanel>
+                                                    </Border>
+
+                                                </StackPanel>
+                                            </Border>
+
+                                        </StackPanel>
+                                    </Border>
+
+                                </StackPanel>
+                            </Border>
+
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!--  Footer  -->
+            <TextBlock
+                Margin="0,0,0,16"
+                HorizontalAlignment="Center"
+                FontSize="12"
+                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                Text="Powered by Uno Platform — Element-Level RequestedTheme" />
+
         </StackPanel>
-      </Border>
-
-      <!-- Footer -->
-      <TextBlock Text="Powered by Uno Platform — Element-Level RequestedTheme"
-                 FontSize="12" HorizontalAlignment="Center" Margin="0,0,0,16"
-                 Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
-
-    </StackPanel>
-  </ScrollViewer>
+    </ScrollViewer>
 </Page>

@@ -9,15 +9,27 @@ namespace Microsoft.UI.Xaml.Input;
 
 public partial class FocusManager
 {
-	private void FocusNative(UIElement? control)
+	/// <summary>
+	/// When true, FocusNative will not call into JS.
+	/// Set by FocusSynchronizer when it takes over focus management,
+	/// to avoid duplicate and unresolved focusSemanticElement calls.
+	/// The FocusSynchronizer handles focus sync via the GotFocus event
+	/// and resolves handles to the nearest semantic DOM element first.
+	/// </summary>
+	internal static bool SuppressNativeFocus;
+
+	private static void FocusNative(UIElement? control)
 	{
 		// Resign native first responder so keyboard events return to the managed layer and are properly processed by the focused element.
-		if (_contentRoot.XamlRoot is { } xamlRoot)
+		// Use control's XamlRoot if available, otherwise try the current window's root
+		// to ensure ResignNativeFocus is called even when clearing focus (control == null).
+		var xamlRoot = control?.XamlRoot ?? Window.CurrentSafe?.RootElement?.XamlRoot;
+		if (xamlRoot is not null)
 		{
 			XamlRootMap.GetHostForRoot(xamlRoot)?.ResignNativeFocus();
 		}
 
-		if (OperatingSystem.IsBrowser() && control is not null && (control as Control)?.IsDelegatingFocusToTemplateChild() != true)
+		if (OperatingSystem.IsBrowser() && !SuppressNativeFocus && control is not null && (control as Control)?.IsDelegatingFocusToTemplateChild() != true)
 		{
 			NativeMethods.FocusSemanticElement(control.Visual.Handle);
 		}
