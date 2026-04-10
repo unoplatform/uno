@@ -186,18 +186,26 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			var naturalDuration = GetNaturalDurationFromChildren();
-			var durationSeconds = naturalDuration.TotalSeconds;
+			var singleIterationSeconds = naturalDuration.TotalSeconds;
 
-			_computedCurrentTime = localTime;
+			// Apply the storyboard's own AutoReverse and RepeatBehavior to compute
+			// its effective (total) duration. MUX: CStoryboard::GetDuration().
+			var effectiveDurationSeconds = ComputeStoryboardEffectiveDuration(singleIterationSeconds);
 
-			// Determine clock state from duration.
+			// Compute the iteration-wrapped current time to pass to children.
+			// When RepeatBehavior.Count > 1, localTime advances past singleIterationSeconds
+			// but children should receive a time in [0, singleIterationSeconds].
+			// MUX: CTimeline::ComputeLocalProgressAndTime — iteration wrapping.
+			_computedCurrentTime = ComputeWrappedChildTime(localTime, singleIterationSeconds);
+
+			// Determine clock state from effective duration.
 			// MUX: Zero-duration timelines expire immediately (progress=1.0).
 			// The check uses >= 0 (not > 0) so that zero-duration storyboards
 			// transition to Filling/Stopped on the first tick.
-			if (durationSeconds >= 0 && localTime >= durationSeconds - 0.0005)
+			if (effectiveDurationSeconds >= 0 && localTime >= effectiveDurationSeconds - 0.0005)
 			{
-				// Expired.
-				_computedCurrentTime = durationSeconds;
+				// Expired — clamp child time to end of the last iteration.
+				_computedCurrentTime = singleIterationSeconds;
 
 				if (FillBehavior == FillBehavior.HoldEnd)
 				{
@@ -296,6 +304,84 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			base.IsInActiveState
 			|| _computedClockState == InternalClockState.Active
 			|| _computedClockState == InternalClockState.Filling;
+
+		/// <summary>
+		/// Computes the storyboard's effective total duration by applying its own
+		/// AutoReverse and RepeatBehavior to the single-iteration natural duration.
+		/// MUX: CStoryboard::GetDuration (storyboard.cpp lines 1087-1157).
+		/// </summary>
+		private double ComputeStoryboardEffectiveDuration(double singleIterationSeconds)
+		{
+			var scalingFactor = 1.0;
+
+			// Apply own AutoReverse (doubles the single iteration).
+			if (AutoReverse)
+			{
+				scalingFactor *= 2.0;
+			}
+
+			// Apply own RepeatBehavior.
+			var repeat = RepeatBehavior;
+			if (repeat.Type == RepeatBehaviorType.Forever)
+			{
+				return double.MaxValue;
+			}
+			if (repeat.HasDuration)
+			{
+				return repeat.Duration.TotalSeconds;
+			}
+			if (repeat.HasCount && repeat.Count > 0)
+			{
+				scalingFactor *= repeat.Count;
+			}
+			// Default (Count=0): play once → scalingFactor stays 1.0 (or 2.0 for AutoReverse).
+
+			return singleIterationSeconds * scalingFactor;
+		}
+
+		/// <summary>
+		/// Wraps the storyboard's local time back into [0, singleIterationSeconds]
+		/// for repeating and AutoReverse storyboards.
+		/// MUX: CTimeline::ComputeLocalProgressAndTime — iteration/AutoReverse logic.
+		/// </summary>
+		private double ComputeWrappedChildTime(double localTime, double singleIterationSeconds)
+		{
+			if (singleIterationSeconds <= 0)
+			{
+				return 0.0;
+			}
+
+			// AutoReverse: each full cycle = forward + reverse = 2 * singleIteration.
+			var iterDuration = AutoReverse ? 2.0 * singleIterationSeconds : singleIterationSeconds;
+			var iterations = localTime / iterDuration;
+			var iterIndex = (int)Math.Floor(iterations);
+			var progress = iterations - iterIndex;
+
+			// Position within the forward half (0 to singleIterationSeconds).
+			double wrappedSeconds;
+			if (AutoReverse)
+			{
+				// forward half: progress in [0, 0.5) → time in [0, singleIteration)
+				// reverse half: progress in [0.5, 1) → time in (singleIteration, 0]
+				var halfProgress = progress * 2.0;
+				if (halfProgress > 1.0)
+				{
+					// Reverse phase.
+					wrappedSeconds = (2.0 - halfProgress) * singleIterationSeconds;
+				}
+				else
+				{
+					// Forward phase.
+					wrappedSeconds = halfProgress * singleIterationSeconds;
+				}
+			}
+			else
+			{
+				wrappedSeconds = progress * singleIterationSeconds;
+			}
+
+			return wrappedSeconds;
+		}
 
 		internal override void OnAddToTimeManager()
 		{
