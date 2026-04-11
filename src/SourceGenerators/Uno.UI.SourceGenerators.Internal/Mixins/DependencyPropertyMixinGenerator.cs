@@ -16,12 +16,12 @@ public sealed class DependencyPropertyMixinGenerator : IIncrementalGenerator
 		});
 	}
 
-	private static string Generate()
+	internal static string Generate()
 	{
 		var sb = new StringBuilder();
+		sb.AppendLine("#if UNO_MIXIN_GENERATION");
 		sb.AppendLine(Header);
 		sb.AppendLine();
-		sb.AppendLine("#if UNO_MIXIN_GENERATION");
 
 		foreach (var ns in Namespaces)
 		{
