@@ -1,3 +1,4 @@
+#if __SKIA__
 using System;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -313,3 +314,4 @@ public class Given_AlphaMask
 		ImageAssert.HasColorAt(screenshot, 97, 97, Colors.Yellow, tolerance: 25);
 	}
 }
+#endif

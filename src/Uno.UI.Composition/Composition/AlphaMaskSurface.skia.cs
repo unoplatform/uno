@@ -18,7 +18,7 @@ internal class AlphaMaskSurface : CompositionObject, ICompositionSurface, ISkiaS
 
 	// Color filter that converts any color to white while preserving alpha.
 	// This is the matrix for: output.rgb = white (1,1,1), output.a = input.a
-	// The color matrix is a 5x4 matrix in row-major order.
+	// The color matrix is a 4x5 matrix in row-major order.
 	private static readonly float[] AlphaMaskColorMatrix = new float[]
 	{
 		0, 0, 0, 0, 1,    // R: output = 1 (white)
