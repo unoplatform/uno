@@ -27,6 +27,7 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 	private bool _accessibilityTreeInitialized;
 	private Win32RawElementProvider? _rootProvider;
 	private readonly ConditionalWeakTable<UIElement, Win32RawElementProvider> _providers = new();
+	private readonly ConditionalWeakTable<AutomationPeer, Win32RawElementProvider> _peerProviders = new();
 	private DispatcherQueue? _dispatcherQueue;
 	private readonly HashSet<Win32RawElementProvider> _pendingStructureChanges = new();
 
@@ -100,12 +101,16 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 		}
 
 		// Create root provider only; child providers are created lazily during navigation.
-		_rootProvider = new Win32RawElementProvider(rootElement, _hwnd, isRoot: true, this);
+		var rootPeer = rootElement.GetOrCreateAutomationPeer()?.ResolveProviderPeer(resolveEventsSource: true);
+		_rootProvider = new Win32RawElementProvider(rootElement, _hwnd, isRoot: true, this, rootPeer);
 		_providers.AddOrUpdate(rootElement, _rootProvider);
+		if (rootPeer is not null)
+		{
+			_peerProviders.AddOrUpdate(rootPeer, _rootProvider);
+		}
 		_dispatcherQueue = rootElement.DispatcherQueue;
 		_accessibilityTreeInitialized = true;
 
-		var rootPeer = rootElement.GetOrCreateAutomationPeer();
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{
 			this.Log().Info(
@@ -172,7 +177,6 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 			return null;
 		}
 
-		// Only create providers for elements with automation peers
 		var peer = element.GetOrCreateAutomationPeer();
 		if (peer is null)
 		{
@@ -183,15 +187,7 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 			return null;
 		}
 
-		var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this);
-		_providers.AddOrUpdate(element, provider);
-
-		if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"[UIA] Created provider for {provider.DescribeElement()} (peer={peer.GetType().Name})");
-		}
-
-		return provider;
+		return GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource: true));
 	}
 
 	/// <summary>
@@ -202,32 +198,65 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 	/// </summary>
 	internal Win32RawElementProvider? GetProviderForPeer(AutomationPeer peer, bool resolveEventsSource = false)
 	{
-		var resolvedPeer = peer;
-
-		if (resolveEventsSource)
-		{
-			var eventsSource = peer.GetAPEventsSource();
-			if (eventsSource is not null)
-			{
-				resolvedPeer = eventsSource;
-			}
-		}
-
-		if (TryGetPeerOwner(resolvedPeer, out var element))
-		{
-			return GetOrCreateProvider(element);
-		}
-
-		if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"[UIA] GetProviderForPeer: Could not resolve owner for {resolvedPeer.GetType().Name}");
-		}
-		return null;
+		return GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource));
 	}
 
 	internal Win32RawElementProvider? GetProvider(UIElement element)
 	{
-		_providers.TryGetValue(element, out var provider);
+		if (_providers.TryGetValue(element, out var provider))
+		{
+			return provider;
+		}
+
+		var peer = element.GetOrCreateAutomationPeer();
+		return peer is null
+			? null
+			: GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource: true));
+	}
+
+	private Win32RawElementProvider? GetOrCreateProviderForResolvedPeer(AutomationPeer resolvedPeer)
+	{
+		if (!resolvedPeer.TryGetProviderOwner(out var element))
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[UIA] GetProviderForPeer: Could not resolve owner for {resolvedPeer.GetType().Name}");
+			}
+			return null;
+		}
+
+		var canonicalPeer = element.GetOrCreateAutomationPeer()?.ResolveProviderPeer(resolveEventsSource: true) ?? resolvedPeer;
+		if (!canonicalPeer.TryGetProviderOwner(out element))
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[UIA] GetProviderForPeer: Canonical owner resolution failed for {canonicalPeer.GetType().Name}");
+			}
+			return null;
+		}
+
+		if (_providers.TryGetValue(element, out var existingByElement)
+			&& existingByElement.RepresentsPeer(canonicalPeer))
+		{
+			_peerProviders.AddOrUpdate(canonicalPeer, existingByElement);
+			return existingByElement;
+		}
+
+		if (_peerProviders.TryGetValue(canonicalPeer, out var existingByPeer))
+		{
+			_providers.AddOrUpdate(element, existingByPeer);
+			return existingByPeer;
+		}
+
+		var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, canonicalPeer);
+		_providers.AddOrUpdate(element, provider);
+		_peerProviders.AddOrUpdate(canonicalPeer, provider);
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"[UIA] Created provider for {provider.DescribeElement()} (peer={canonicalPeer.GetType().Name})");
+		}
+
 		return provider;
 	}
 
@@ -272,6 +301,10 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 		if (_providers.TryGetValue(element, out var provider))
 		{
 			_providers.Remove(element);
+			if (provider.RepresentedPeer is { } representedPeer)
+			{
+				_peerProviders.Remove(representedPeer);
+			}
 
 			// Disconnect the provider from UIA so stale COM references are released.
 			// This matches WinUI3's CUIAWrapper::Invalidate() which calls
@@ -395,37 +428,19 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 	// Helpers
 
 	internal static bool TryGetPeerOwner(AutomationPeer peer, [NotNullWhen(true)] out UIElement? owner)
-	{
-		if (peer is FrameworkElementAutomationPeer { Owner: { } element })
-		{
-			owner = element;
-			return true;
-		}
-
-		if (peer is ItemAutomationPeer itemPeer)
-		{
-			var parent = itemPeer.GetParent();
-			if (parent is FrameworkElementAutomationPeer { Owner: { } parentElement })
-			{
-				owner = parentElement;
-				return true;
-			}
-		}
-
-		owner = null;
-		return false;
-	}
+		=> peer.TryGetProviderOwner(out owner);
 
 	// IAutomationPeerListener
 
 	public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
 	{
-		if (!IsAccessibilityEnabled || !TryGetPeerOwner(peer, out var owner))
+		if (!IsAccessibilityEnabled)
 		{
 			return;
 		}
 
-		if (!_providers.TryGetValue(owner, out var provider))
+		var provider = GetProviderForPeer(peer, resolveEventsSource: true);
+		if (provider is null)
 		{
 			return;
 		}
@@ -452,25 +467,15 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 
 	public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 	{
-		if (!IsAccessibilityEnabled || !TryGetPeerOwner(peer, out var owner))
+		if (!IsAccessibilityEnabled)
 		{
 			return;
 		}
 
-		// For focus and live region changes, ensure a provider exists so Narrator
-		// can track focus or announce the live region content. Non-focusable
-		// elements like TextBlocks won't have a provider created until needed.
-		if (!_providers.TryGetValue(owner, out var provider))
+		var provider = GetProviderForPeer(peer, resolveEventsSource: true);
+		if (provider is null)
 		{
-			if (eventId is AutomationEvents.AutomationFocusChanged or AutomationEvents.LiveRegionChanged)
-			{
-				provider = GetOrCreateProvider(owner);
-			}
-
-			if (provider is null)
-			{
-				return;
-			}
+			return;
 		}
 
 		try
@@ -536,7 +541,7 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 					var label = peer.GetName();
 					if (!string.IsNullOrEmpty(label))
 					{
-						var liveSetting = AutomationProperties.GetLiveSetting(owner);
+						var liveSetting = AutomationProperties.GetLiveSetting(provider.Owner);
 						if (liveSetting == AutomationLiveSetting.Assertive)
 						{
 							AnnounceAssertive(label);
@@ -567,7 +572,7 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 
 		// Use specific provider if available, otherwise fall back to root
 		IRawElementProviderSimple? target = _rootProvider;
-		if (TryGetPeerOwner(peer, out var owner) && _providers.TryGetValue(owner, out var elementProvider))
+		if (GetProviderForPeer(peer, resolveEventsSource: true) is { } elementProvider)
 		{
 			target = elementProvider;
 		}
