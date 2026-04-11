@@ -21,11 +21,17 @@ partial class Image
 		get => _monochromeColor;
 		set
 		{
+			if (_monochromeColor == value)
+			{
+				return;
+			}
+
 			_monochromeColor = value;
-			// Force loading the image.
-			OnSourceChanged(Source, forceReload: true);
+			OnMonochromeColorChanged();
 		}
 	}
+
+	partial void OnMonochromeColorChanged();
 
 	/// <summary>
 	/// Returns an Empty string as the Description for the Image.

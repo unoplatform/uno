@@ -136,6 +136,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		partial void OnMonochromeColorChanged()
+		{
+			OnSourceChanged(Source, forceReload: true);
+		}
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			_lastMeasuredSize = _htmlImage.MeasureView(new Size(double.PositiveInfinity, double.PositiveInfinity));
