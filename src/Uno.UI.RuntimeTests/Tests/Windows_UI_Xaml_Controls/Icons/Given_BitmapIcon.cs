@@ -97,4 +97,34 @@ public class Given_BitmapIcon
 		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Windows.UI.Color.FromArgb(255, 240, 28, 36));
 		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Windows.UI.Color.FromArgb(255, 255, 255, 255));
 	}
+
+	[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+	[Ignore("Cannot take screenshot on this platform.")]
+#endif
+	public async Task When_Foreground_Changed_With_ShowAsMonochrome_True()
+	{
+		var bitmapIcon = new BitmapIcon
+		{
+			Width = 50,
+			Height = 50,
+			ShowAsMonochrome = true,
+			UriSource = new System.Uri("ms-appx:///Assets/image.png"),
+			Foreground = new SolidColorBrush(Colors.Red)
+		};
+
+		await UITestHelper.Load(bitmapIcon);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Change the foreground color - this should update the monochrome tint
+		// without causing a full image reload (no flicker).
+		bitmapIcon.Foreground = new SolidColorBrush(Colors.Blue);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var sc = await UITestHelper.ScreenShot(bitmapIcon);
+
+		// The image should be visible and rendered in blue (not red, not the original colors).
+		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Colors.Red);
+		ImageAssert.HasColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Colors.Blue);
+	}
 }
