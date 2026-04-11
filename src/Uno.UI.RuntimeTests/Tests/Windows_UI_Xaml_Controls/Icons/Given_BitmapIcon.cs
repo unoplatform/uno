@@ -1,5 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
@@ -126,5 +128,37 @@ public class Given_BitmapIcon
 		// The image should be visible and rendered in blue (not red, not the original colors).
 		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Colors.Red);
 		ImageAssert.HasColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Colors.Blue);
+	}
+
+	[TestMethod]
+	public async Task When_ShowAsMonochrome_False_Foreground_Change_Does_Not_Reload_Image()
+	{
+		var bitmapIcon = new BitmapIcon
+		{
+			Width = 50,
+			Height = 50,
+			ShowAsMonochrome = false,
+			UriSource = new Uri("ms-appx:///Assets/Icons/search.png"),
+			Foreground = new SolidColorBrush(Colors.Red)
+		};
+
+		await UITestHelper.Load(bitmapIcon);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Navigate the visual tree to find the internal Image control.
+		// BitmapIcon → Grid (_rootGrid) → Image (_image)
+		var rootGrid = VisualTreeHelper.GetChild(bitmapIcon, 0);
+		var image = VisualTreeHelper.GetChild(rootGrid, 0) as Image;
+		Assert.IsNotNull(image, "Expected Image child in BitmapIcon visual tree");
+
+		// Track whether the image gets reloaded after our foreground change.
+		int imageOpenedCount = 0;
+		image.ImageOpened += (s, e) => imageOpenedCount++;
+
+		// Change the foreground — should NOT trigger image reload when ShowAsMonochrome is false.
+		bitmapIcon.Foreground = new SolidColorBrush(Colors.Blue);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(0, imageOpenedCount, "Image should not be reloaded when foreground changes with ShowAsMonochrome=false");
 	}
 }
