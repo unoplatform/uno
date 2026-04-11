@@ -79,7 +79,7 @@ public class Given_MixinGenerators
 	{
 		var output = FrameworkElementAndroidMixinGenerator.GenerateFrameworkElementMixins();
 
-		output.Should().Contain("#if __ANDROID__");
+		output.Should().Contain("#if UNO_MIXIN_GENERATION && __ANDROID__");
 		output.Should().Contain("partial class FrameworkElement");
 		output.Should().Contain("IFrameworkElement");
 	}
@@ -89,7 +89,7 @@ public class Given_MixinGenerators
 	{
 		var output = FrameworkElementUIKitMixinGenerator.GenerateFrameworkElementMixins();
 
-		output.Should().Contain("#if __APPLE_UIKIT__");
+		output.Should().Contain("#if UNO_MIXIN_GENERATION && __APPLE_UIKIT__");
 		output.Should().Contain("partial class FrameworkElement");
 		output.Should().Contain("IFrameworkElement");
 	}

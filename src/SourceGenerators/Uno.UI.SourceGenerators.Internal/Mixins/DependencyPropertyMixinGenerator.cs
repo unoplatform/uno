@@ -16,7 +16,7 @@ public sealed class DependencyPropertyMixinGenerator : IIncrementalGenerator
 		});
 	}
 
-	internal static string Generate()
+	public static string Generate()
 	{
 		var sb = new StringBuilder();
 		sb.AppendLine("#if UNO_MIXIN_GENERATION");
