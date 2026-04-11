@@ -74,9 +74,8 @@ public class Given_BackgroundSizing
 	[TestMethod]
 	public async Task When_Button_Style_Sets_BackgroundSizing()
 	{
-		// The default Button style (AccentButtonStyle) sets BackgroundSizing=OuterBorderEdge,
-		// but the default XamlDefaultButton style does not. Let's test that
-		// setting via style works.
+		// Verify that an explicitly applied style can set BackgroundSizing.
+		// AccentButtonStyle is used here as a concrete style that sets OuterBorderEdge.
 		var button = new Button
 		{
 			Style = (Style)Application.Current.Resources["AccentButtonStyle"],
@@ -176,18 +175,27 @@ public class Given_BackgroundSizing
 			Width = 100,
 			Height = 100,
 			Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
-			BorderBrush = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0)),
+			BorderBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0)),
 			BorderThickness = new Thickness(20),
 			BackgroundSizing = BackgroundSizing.InnerBorderEdge
 		};
 
-		await UITestHelper.Load(border);
+		var root = new Grid
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+			Children = { border }
+		};
 
-		var screenshot = await UITestHelper.ScreenShot(border);
+		await UITestHelper.Load(root);
 
-		// Pixel at (5,50) is inside the border area — should be red, NOT green
-		ImageAssert.HasColorAt(screenshot, 5, 50, Microsoft.UI.Colors.Red, tolerance: 20);
-		ImageAssert.DoesNotHaveColorAt(screenshot, 5, 50, Microsoft.UI.Colors.Green, tolerance: 20);
+		var screenshot = await UITestHelper.ScreenShot(root);
+
+		// With InnerBorderEdge, the green background does not extend under the border.
+		// The semi-transparent red border blends with the blue parent background,
+		// producing a pixel with no green component: ~(255, 128, 0, 127).
+		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 0, 127), tolerance: 20);
 	}
 
 	[TestMethod]
@@ -203,13 +211,22 @@ public class Given_BackgroundSizing
 			BackgroundSizing = BackgroundSizing.OuterBorderEdge
 		};
 
-		await UITestHelper.Load(border);
+		var root = new Grid
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+			Children = { border }
+		};
 
-		var screenshot = await UITestHelper.ScreenShot(border);
+		await UITestHelper.Load(root);
 
-		// Pixel at (5,50) is inside the border area — green should bleed through semi-transparent red
-		// So it should NOT be pure red (green is under it)
-		ImageAssert.DoesNotHaveColorAt(screenshot, 5, 50, Microsoft.UI.Colors.Red, tolerance: 20);
+		var screenshot = await UITestHelper.ScreenShot(root);
+
+		// With OuterBorderEdge, the green background extends under the border.
+		// The semi-transparent red border blends with the green background,
+		// producing a pixel with a meaningful green component: ~(255, 128, 127, 0).
+		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 127, 0), tolerance: 20);
 	}
 
 	[TestMethod]
@@ -225,12 +242,22 @@ public class Given_BackgroundSizing
 			BackgroundSizing = BackgroundSizing.OuterBorderEdge
 		};
 
-		await UITestHelper.Load(cp);
+		var root = new Grid
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+			Children = { cp }
+		};
 
-		var screenshot = await UITestHelper.ScreenShot(cp);
+		await UITestHelper.Load(root);
 
-		// Green bleeds through semi-transparent red border when OuterBorderEdge
-		ImageAssert.DoesNotHaveColorAt(screenshot, 5, 50, Microsoft.UI.Colors.Red, tolerance: 20);
+		var screenshot = await UITestHelper.ScreenShot(root);
+
+		// With OuterBorderEdge, the green background extends under the border.
+		// The semi-transparent red border blends with the green background,
+		// producing a pixel with a meaningful green component: ~(255, 128, 127, 0).
+		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 127, 0), tolerance: 20);
 	}
 
 	[TestMethod]
@@ -246,11 +273,22 @@ public class Given_BackgroundSizing
 			BackgroundSizing = BackgroundSizing.OuterBorderEdge
 		};
 
-		await UITestHelper.Load(grid);
+		var root = new Grid
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+			Children = { grid }
+		};
 
-		var screenshot = await UITestHelper.ScreenShot(grid);
+		await UITestHelper.Load(root);
 
-		ImageAssert.DoesNotHaveColorAt(screenshot, 5, 50, Microsoft.UI.Colors.Red, tolerance: 20);
+		var screenshot = await UITestHelper.ScreenShot(root);
+
+		// With OuterBorderEdge, the green background extends under the border.
+		// The semi-transparent red border blends with the green background,
+		// producing a pixel with a meaningful green component: ~(255, 128, 127, 0).
+		ImageAssert.HasColorAt(screenshot, 5, 50, Color.FromArgb(255, 128, 127, 0), tolerance: 20);
 	}
 
 	[TestMethod]
@@ -283,27 +321,38 @@ public class Given_BackgroundSizing
 			Width = 100,
 			Height = 100,
 			Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
-			BorderBrush = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0)),
+			BorderBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0)),
 			BorderThickness = new Thickness(20),
 			BackgroundSizing = BackgroundSizing.InnerBorderEdge
 		};
 
-		await UITestHelper.Load(border);
+		var root = new Grid
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+			Children = { border }
+		};
 
-		var screenshotBefore = await UITestHelper.ScreenShot(border);
+		await UITestHelper.Load(root);
 
-		// Border area should be pure red (no green underneath)
-		ImageAssert.HasColorAt(screenshotBefore, 5, 50, Microsoft.UI.Colors.Red, tolerance: 20);
+		var screenshotBefore = await UITestHelper.ScreenShot(root);
 
-		// Switch to OuterBorderEdge — now use semi-transparent border to see the difference
-		border.BorderBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0));
+		// With InnerBorderEdge, the green background does not extend under the border.
+		// The semi-transparent red border blends with the blue parent background,
+		// producing a pixel with no green component: ~(255, 128, 0, 127).
+		ImageAssert.HasColorAt(screenshotBefore, 5, 50, Color.FromArgb(255, 128, 0, 127), tolerance: 20);
+
+		// Switch to OuterBorderEdge — green background now extends under the border
 		border.BackgroundSizing = BackgroundSizing.OuterBorderEdge;
 		await TestServices.WindowHelper.WaitForIdle();
 
-		var screenshotAfter = await UITestHelper.ScreenShot(border);
+		var screenshotAfter = await UITestHelper.ScreenShot(root);
 
-		// Green should now bleed through, so it should NOT be pure red anymore
-		ImageAssert.DoesNotHaveColorAt(screenshotAfter, 5, 50, Microsoft.UI.Colors.Red, tolerance: 20);
+		// With OuterBorderEdge, the green background extends under the border.
+		// The semi-transparent red border blends with the green background,
+		// producing a pixel with a meaningful green component: ~(255, 128, 127, 0).
+		ImageAssert.HasColorAt(screenshotAfter, 5, 50, Color.FromArgb(255, 128, 127, 0), tolerance: 20);
 	}
 #endif
 
