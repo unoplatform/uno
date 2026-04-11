@@ -26,7 +26,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="System.Reactive" Version="6.0.0" />
-		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Threading" Version="4.0.1" />

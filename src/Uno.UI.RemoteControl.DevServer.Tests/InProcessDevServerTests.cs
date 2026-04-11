@@ -1,6 +1,5 @@
 extern alias RemoteServerCore;
 
-using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using Uno.UI.RemoteControl.Host;
@@ -57,7 +56,7 @@ public sealed class InProcessDevServerTests
 			static frame => frame is { Scope: WellKnownScopes.DevServerChannel, Name: ProcessorsDiscoveryResponse.Name },
 			cts.Token);
 
-		var response = JsonConvert.DeserializeObject<ProcessorsDiscoveryResponse>(responseFrame.Content);
+		var response = responseFrame.TryGetContent<ProcessorsDiscoveryResponse>(out var r) ? r : null;
 		response.Should().NotBeNull("devserver must answer discovery requests");
 		response!.Assemblies.Should().Contain(assemblyPath);
 		response.Processors.Should().ContainSingle(p => p.Type.Contains(nameof(InProcessInternalTestProcessor)));

@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Host;
 using Uno.UI.RemoteControl.HotReload.Messages;
@@ -310,8 +309,7 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 
 		try
 		{
-			var msg = JsonConvert.DeserializeObject<ProcessorsDiscovery>(frame.Content)
-				?? throw new InvalidOperationException("Unable to deserialize processor discovery payload.");
+			var msg = frame.GetContent<ProcessorsDiscovery>();
 
 			var discoveryProperties = new Dictionary<string, string>
 			{

@@ -16,7 +16,6 @@
 		<PackageReference Include="ModelContextProtocol" Version="1.1.0" />
 		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="1.1.0" />
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
-		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="System.Reactive" Version="6.0.0" />
 		<PackageReference Include="Unity" Version="5.11.10" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />

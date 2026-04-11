@@ -10,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.UI.RemoteControl;
 using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
@@ -120,7 +119,7 @@ public class RemoteControlServerBehaviorTests
 		});
 
 		transport.SentFrames.Should().ContainSingle();
-		var pong = JsonConvert.DeserializeObject<KeepAliveMessage>(transport.SentFrames[0].Content);
+		var pong = transport.SentFrames[0].GetContent<KeepAliveMessage>();
 		pong.Should().NotBeNull();
 		pong!.SequenceId.Should().Be(sequence);
 		pong.AssemblyVersion.Should().NotBeNull();
@@ -501,9 +500,7 @@ public class RemoteControlServerBehaviorTests
 	private static T DeserializeSentMessage<T>(ScriptedFrameTransport transport, string messageName)
 	{
 		var frame = transport.SentFrames.Single(f => f.Name == messageName);
-		var payload = JsonConvert.DeserializeObject<T>(frame.Content);
-		payload.Should().NotBeNull();
-		return payload!;
+		return frame.GetContent<T>();
 	}
 
 	public sealed class DiagnosticsAwareProcessor : IServerProcessor

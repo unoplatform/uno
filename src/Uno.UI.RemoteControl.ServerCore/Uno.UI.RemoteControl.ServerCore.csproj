@@ -10,7 +10,6 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
-		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 	</ItemGroup>
 

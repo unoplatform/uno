@@ -214,6 +214,8 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		string? additionalServerProcessorsDiscoveryPath,
 		RemoteControlClientOptions options)
 	{
+		Messaging.RemoteControlJsonOptions.SetSourceGeneratedContext(RemoteControlJsonContext.Default);
+
 		var client = new RemoteControlClient(
 			appType,
 			endpoints,
