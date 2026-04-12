@@ -2158,7 +2158,7 @@
 		  <Member fullName="Microsoft.UI.Xaml.Interop.NotifyCollectionChangedEventHandler" reason="WinUI sync: replaced by System.Collections.Specialized.NotifyCollectionChangedEventHandler" />
 		  <Member fullName="Microsoft.UI.Xaml.Data.DataErrorsChangedEventArgs" reason="WinUI sync: replaced by System.ComponentModel.DataErrorsChangedEventArgs" />
 		  <Member fullName="Microsoft.UI.Xaml.Data.INotifyDataErrorInfo" reason="WinUI sync: replaced by System.ComponentModel.INotifyDataErrorInfo" />
-		  <!-- END WinUI sync: WinRT interop projections -->
+		  <!-- END WinUI sync: WinRT interop projections replaced by BCL equivalents -->
 		  <!-- BEGIN WinUI sync: NotImplemented helper stubs not present in WinAppSDK 1.8 -->
 		  <Member fullName="Microsoft.UI.Xaml.Media.MatrixHelper" reason="WinUI sync: not in WinAppSDK 1.8" />
 		  <Member fullName="Microsoft.UI.Xaml.Media.Media3D.Matrix3DHelper" reason="WinUI sync: not in WinAppSDK 1.8" />
