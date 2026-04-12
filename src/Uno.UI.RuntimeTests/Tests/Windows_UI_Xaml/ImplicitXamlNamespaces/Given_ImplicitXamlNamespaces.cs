@@ -68,6 +68,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public async Task When_Custom_MarkupExtension_Resolves_Via_Implicit_Prefix()
+		{
+			// Verify that a MarkupExtension from an XmlnsPrefix-registered namespace
+			// (e.g. {tc:PrefixedTest ...}) resolves without an explicit xmlns:tc declaration.
+			var control = new ImplicitXamlNamespaces_XBind();
+			TestServices.WindowHelper.WindowContent = control;
+			await TestServices.WindowHelper.WaitForLoaded(control);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(control.MarkupExtensionTextBlock,
+				"TextBlock using {tc:PrefixedTest ...} should exist");
+			Assert.AreEqual("ImplicitPrefixValue", control.MarkupExtensionTextBlock.Text,
+				"Custom MarkupExtension should resolve through an implicit XmlnsPrefix-registered prefix");
+		}
+
+		[TestMethod]
 		public async Task When_Explicit_Xmlns_Still_Works()
 		{
 			// T014: Verify XAML with explicit xmlns declarations continues

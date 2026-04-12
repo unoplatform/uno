@@ -8,11 +8,10 @@
 
 **Behavior change in `RewriteForXBind` / XmlReader creation**:
 - When `enableImplicitNamespaces == true`:
-  - Create `XmlNamespaceManager` with pre-populated namespace mappings
-  - Set `ConformanceLevel.Fragment` in `XmlReaderSettings`
-  - Pass `XmlParserContext` to `XmlReader.Create()`
+  - Rewrite the XAML text with `InjectImplicitXmlns` to add any missing `xmlns` declarations on the root element before parsing
+  - Create the reader using the normal `XmlReader.Create(new StringReader(content))`
 - When `enableImplicitNamespaces == false`:
-  - Current behavior (no change)
+  - Current behavior (no change; no implicit `xmlns` injection)
 
 **Implicit namespace mappings injected**:
 ```

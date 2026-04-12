@@ -5,5 +5,8 @@
 		<TextBlock x:Name="BoundTextBlock"
 				   x:FieldModifier="public"
 				   Text="{x:Bind TestText, Mode=OneWay}" />
+		<TextBlock x:Name="MarkupExtensionTextBlock"
+				   x:FieldModifier="public"
+				   Text="{tc:PrefixedTest Value=ImplicitPrefixValue}" />
 	</StackPanel>
 </UserControl>

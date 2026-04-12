@@ -5,7 +5,7 @@
 
 ## Summary
 
-Add support for global/implicit XAML namespaces to Uno Platform, allowing developers to write XAML without boilerplate `xmlns` declarations. The feature is enabled by default via the Uno.Sdk. The XAML source generator is modified to pre-populate namespace mappings using `XmlParserContext` with `ConformanceLevel.Fragment`. Developers register custom namespaces to a dedicated global URI via `[assembly: XmlnsDefinition]` attributes.
+Add support for global/implicit XAML namespaces to Uno Platform, allowing developers to write XAML without boilerplate `xmlns` declarations. The feature is enabled by default via the Uno.Sdk. The XAML source generator is modified to inject the implicit namespace declarations into the XAML text via `XamlFileParser.InjectImplicitXmlns` before parsing. Developers register custom namespaces to a dedicated global URI via `[assembly: XmlnsDefinition]` attributes.
 
 ## Technical Context
 
@@ -87,27 +87,13 @@ src/Uno.UI.RuntimeTests/
 
 **File**: `XamlFileParser.cs`
 
-The `RewriteForXBind` method (line 173) creates an `XmlReader` via:
-```csharp
-return XmlReader.Create(new StringReader(originalString));
-```
+When `UnoEnableImplicitXamlNamespaces` is true, the XAML text is rewritten before parsing so the root element carries the required `xmlns` declarations. The parser locates the root element's opening tag and, if missing, inserts:
 
-When `UnoEnableImplicitXamlNamespaces` is true, change this to:
-```csharp
-var nsmgr = new XmlNamespaceManager(new NameTable());
-nsmgr.AddNamespace("", XamlConstants.PresentationXamlXmlNamespace);
-nsmgr.AddNamespace("x", XamlConstants.XamlXmlNamespace);
-// Add any XmlnsPrefix-registered prefixes
-foreach (var prefix in _implicitPrefixes)
-    nsmgr.AddNamespace(prefix.Prefix, prefix.Uri);
+- `xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"` (the default WinUI presentation namespace)
+- `xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"`
+- any `xmlns:{prefix}="{uri}"` declarations discovered from `XmlnsPrefix` attributes (skipping reserved prefixes `x`, `xml`, `xmlns`)
 
-var parserContext = new XmlParserContext(nsmgr.NameTable, nsmgr, null, XmlSpace.None);
-return XmlReader.Create(new StringReader(originalString),
-    new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment },
-    parserContext);
-```
-
-This mirrors MAUI's approach in `XamlLoader.cs` (line 60-84).
+The rewrite is implemented by `InjectImplicitXmlns(string content)` and applied via the normal `XmlReader.Create(new StringReader(content))` path — no `XmlParserContext` / `ConformanceLevel.Fragment` is needed. Existing declarations on the root tag are preserved and take precedence.
 
 ### Component 2: Source Generator - Global Namespace Type Resolution
 

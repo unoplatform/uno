@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 
 // Register a custom namespace with an XmlnsPrefix so it's implicitly available as "tc:" in XAML
 [assembly: System.Windows.Markup.XmlnsDefinition(
@@ -26,5 +27,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CustomPrefixed
 		public static readonly DependencyProperty PrefixedLabelProperty =
 			DependencyProperty.Register(nameof(PrefixedLabel), typeof(string), typeof(PrefixedControl),
 				new PropertyMetadata("Default Prefixed"));
+	}
+
+	/// <summary>
+	/// A custom markup extension in a prefixed namespace used to verify that
+	/// markup extensions resolve through an implicit XmlnsPrefix-registered prefix
+	/// (e.g. <c>{tc:PrefixedTest Value=...}</c>) without an explicit xmlns:tc declaration.
+	/// </summary>
+	public class PrefixedTestExtension : MarkupExtension
+	{
+		public string Value { get; set; } = string.Empty;
+
+		protected override object ProvideValue() => Value;
 	}
 }

@@ -336,9 +336,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				injections.Append('"');
 			}
 
-			// Inject any XmlnsPrefix-registered prefixes if missing from root tag
+			// Inject any XmlnsPrefix-registered prefixes if missing from root tag.
+			// Skip reserved/built-in prefixes ("x", "xml", "xmlns") to avoid producing invalid XML
+			// or clashing with the xmlns:x we already inject above.
 			foreach (var (prefix, uri) in _implicitPrefixes)
 			{
+				if (string.Equals(prefix, "x", StringComparison.Ordinal)
+					|| string.Equals(prefix, "xml", StringComparison.Ordinal)
+					|| string.Equals(prefix, "xmlns", StringComparison.Ordinal))
+				{
+					continue;
+				}
+
 				var prefixDeclDouble = $"xmlns:{prefix}=\"";
 				var prefixDeclSingle = $"xmlns:{prefix}='";
 				if (rootTag.IndexOf(prefixDeclDouble.AsSpan(), StringComparison.Ordinal) < 0
