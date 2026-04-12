@@ -111,17 +111,6 @@
 		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Build" />
 		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj" Targets="Build" />
 
-		<ItemGroup>
-			<MixinTargetFrameworks Include="net9.0-ios18.0" />
-			<MixinTargetFrameworks Include="net9.0-android" />
-		</ItemGroup>
-
-		<MSBuild
-			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;TargetFramework=%(MixinTargetFrameworks.Identity)"
-			Projects="..\src\Uno.UI\Uno.UI.netcoremobile.csproj"
-			Targets="GenerateMixins"
-			RebaseOutputs="false"
-			BuildInParallel="true" />
 	</Target>
 
 	<Target Name="GenerateDoc" DependsOnTargets="BuildSyncGenerator">

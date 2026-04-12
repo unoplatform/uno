@@ -1,5 +1,0 @@
-﻿<Project>
-	<Target Name="_InnerGenerateMixins" Inputs="$(InputFile)" Outputs="$(OutputPath)">
-		<Exec Command="dotnet &quot;$(_t4Path)&quot; $(InputFile) -o $(OutputPath)" />
-	</Target>
-</Project>
