@@ -11,6 +11,26 @@ public partial class ResourceQualifier
 {
 	private static readonly char[] _dashArray = new[] { '-' };
 
+	// MRT resource qualifier names (and their aliases). Used to short-circuit
+	// the BCP-47 fallback in IsLanguageTag so non-language qualifier segments
+	// like "contrast-high" or "scale-200" don't hit the CultureInfo constructor
+	// and throw CultureNotFoundException during resource scanning.
+	private static readonly HashSet<string> _knownQualifierNames =
+		new(StringComparer.OrdinalIgnoreCase)
+		{
+			"alternateform", "altform",
+			"configuration", "config",
+			"contrast",
+			"custom",
+			"dxfeaturelevel",
+			"homeregion",
+			"language", "lang",
+			"layoutdirection",
+			"scale",
+			"targetsize",
+			"theme",
+		};
+
 	internal ResourceQualifier(string name, string value)
 	{
 		QualifierName = name;
@@ -84,24 +104,35 @@ public partial class ResourceQualifier
 			return true;
 		}
 
-		// Fallback for language tags with region/script subtags (e.g., quz-PE,
-		// ca-Es-VALENCIA) that may not be enumerated by GetCultures() on all
-		// platforms. Only attempt this for strings containing a dash, to avoid
-		// false positives on file extensions like "png" (ISO 639-3 Pangwa).
-		if (str.IndexOf('-') >= 0)
+		var dashIndex = str.IndexOf('-');
+		if (dashIndex < 0)
 		{
-			try
-			{
-				var culture = new CultureInfo(str);
-				return !string.IsNullOrEmpty(culture.Name);
-			}
-			catch (CultureNotFoundException)
-			{
-				return false;
-			}
+			// Avoid false positives on file extensions like "png" (ISO 639-3 Pangwa).
+			return false;
 		}
 
-		return false;
+		// Known qualifier prefixes (including "language" / "lang" aliases): skip
+		// the CultureInfo fallback to avoid CultureNotFoundException during
+		// resource/asset scanning. Parse's second block produces the language
+		// qualifier from an explicitly-prefixed string like "language-ca-Es-VALENCIA",
+		// so returning false here for prefixed strings is both correct and cheaper.
+		if (_knownQualifierNames.Contains(str.Substring(0, dashIndex)))
+		{
+			return false;
+		}
+
+		// Fallback for language tags with region/script subtags (e.g., quz-PE,
+		// ca-Es-VALENCIA) that may not be enumerated by GetCultures() on all
+		// platforms.
+		try
+		{
+			var culture = new CultureInfo(str);
+			return !string.IsNullOrEmpty(culture.Name);
+		}
+		catch (CultureNotFoundException)
+		{
+			return false;
+		}
 	}
 
 	#endregion
