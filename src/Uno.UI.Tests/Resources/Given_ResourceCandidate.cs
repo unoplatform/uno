@@ -65,6 +65,11 @@ namespace Uno.UI.Tests.Resources
 		[DataRow(@"Strings\pa-IN\Resources.resw", @"Strings\Resources.resw", null, "pa-IN", null)]
 		[DataRow(@"Strings\zh-Hans\Resources.resw", @"Strings\Resources.resw", null, "zh-Hans", null)]
 		[DataRow(@"Strings\zh-Hant\Resources.resw", @"Strings\Resources.resw", null, "zh-Hant", null)]
+		// Long-form "language-" prefix with complex subtags — exercises the
+		// known-qualifier short-circuit in IsLanguageTag.
+		[DataRow(@"Strings\language-ca-Es-VALENCIA\Resources.resw", @"Strings\Resources.resw", null, "ca-Es-VALENCIA", null)]
+		[DataRow(@"Strings\language-zh-Hans\Resources.resw", @"Strings\Resources.resw", null, "zh-Hans", null)]
+		[DataRow(@"Strings\language-quz-PE\Resources.resw", @"Strings\Resources.resw", null, "quz-PE", null)]
 		[TestMethod]
 		public void When_Parse(string relativePath, string logicalPath, string scale, string language, string custom)
 		{
