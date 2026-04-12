@@ -3192,8 +3192,17 @@ public class MenuFlyoutIntegrationTests
 
 		await RunOnUIThread(() =>
 		   {
+			   // TODO: Replace the inline MaxHeight style with a test-level window size override
+			   // once SetWindowSizeOverride is implemented for the runtime test harness (#23018).
+			   // The explicit MaxHeight is required so ScrollableHeight > 0 is deterministic on
+			   // SkiaWasm / SkiaIOS, where VisibleBounds is otherwise unbounded.
 			   menuFlyout = (MenuFlyout)(XamlReader.Load(
 				   "<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >" +
+				   "    <MenuFlyout.MenuFlyoutPresenterStyle>" +
+				   "        <Style TargetType='MenuFlyoutPresenter'>" +
+				   "            <Setter Property='MaxHeight' Value='400' />" +
+				   "        </Style>" +
+				   "    </MenuFlyout.MenuFlyoutPresenterStyle>" +
 				   "    <MenuFlyoutItem>Menu item 0</MenuFlyoutItem>" +
 				   "    <MenuFlyoutSeparator/>" +
 				   "    <MenuFlyoutSubItem x:Name='subItem1' Text='Menu sub item 1'>" +
