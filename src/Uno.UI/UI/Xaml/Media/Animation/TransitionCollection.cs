@@ -13,5 +13,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	/// </summary>
 	public partial class TransitionCollection : List<Transition>, IList<Transition>, IEnumerable<Transition>
 	{
+		public bool IsReadOnly => false;
 	}
 }
