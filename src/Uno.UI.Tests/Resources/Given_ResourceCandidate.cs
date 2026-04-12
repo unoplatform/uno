@@ -35,6 +35,11 @@ namespace Uno.UI.Tests.Resources
 		[DataRow(@"Assets\scale-400\logo.png", @"Assets\logo.png", "400", null, null)]
 		[DataRow(@"Assets\SCALE-400\logo.png", @"Assets\logo.png", "400", null, null)]
 		[DataRow(@"Assets\scale-400\logo-2.png", @"Assets\logo-2.png", "400", null, null)]
+		// Hyphenated filenames — exercise the BCP-47 shape pre-check that
+		// short-circuits the CultureInfo fallback in IsLanguageTag.
+		[DataRow(@"Assets\scale-200\logo-3.png", @"Assets\logo-3.png", "200", null, null)]
+		[DataRow(@"Assets\asset-v2.png", @"Assets\asset-v2.png", null, null, null)]
+		[DataRow(@"Assets\v2-beta.png", @"Assets\v2-beta.png", null, null, null)]
 		[DataRow(@"Assets\scale-400\logo.9.png", @"Assets\logo.9.png", "400", null, null)]
 		[DataRow(@"Assets\logo.scale-400.9.png", @"Assets\logo.9.png", "400", null, null)]
 		[DataRow(@"Assets\folder\scale-400\logo.png", @"Assets\folder\logo.png", "400", null, null)]

@@ -121,6 +121,23 @@ public partial class ResourceQualifier
 			return false;
 		}
 
+		// BCP-47 primary language subtags are 2–3 letters (ISO 639-1/2/3).
+		// Skip the CultureInfo fallback for anything else (e.g. "logo-2",
+		// "asset-v2") to avoid CultureNotFoundException throws during
+		// resource/asset scanning.
+		if (dashIndex < 2 || dashIndex > 3)
+		{
+			return false;
+		}
+
+		for (var i = 0; i < dashIndex; i++)
+		{
+			if (!char.IsLetter(str[i]))
+			{
+				return false;
+			}
+		}
+
 		// Fallback for language tags with region/script subtags (e.g., quz-PE,
 		// ca-Es-VALENCIA) that may not be enumerated by GetCultures() on all
 		// platforms.
