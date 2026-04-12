@@ -33,3 +33,7 @@ To get started with GitHub Copilot CLI:
 ## Next Steps
 
 Now that you are set up, let's [create your first app](xref:Uno.GettingStarted.CreateAnApp.AI.CopilotCli).
+
+## Uno TechBite
+Getting Started with Uno Platform & GitHub Copilot CLI - Complete Setup Guide:
+> [!Video https://www.youtube-nocookie.com/embed/H-oe26m97MPgM]
