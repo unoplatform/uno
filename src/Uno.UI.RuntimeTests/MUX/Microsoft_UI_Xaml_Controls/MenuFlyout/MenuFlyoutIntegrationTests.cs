@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Common;
 using Microsoft.UI.Xaml.Tests.Enterprise;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 #if HAS_UNO
 using Uno.UI.Xaml.Input;
@@ -5882,6 +5883,10 @@ public class MenuFlyoutIntegrationTests
 	[TestMethod]
 	public async Task VerifyLargeNonWindowedMenuIsPositionedCorrectly()
 	{
+		using var visibleBoundsOverride = ScreenHelper.OverrideVisibleBounds(
+			new Thickness(0),
+			skipIfHasNativeUnsafeArea: false);
+
 		MenuFlyout flyout = null;
 		MenuFlyoutSubItem subItem = null;
 		Button flyoutTarget = null;
