@@ -9,16 +9,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	public partial class TransitionCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Animation.Transition>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Media.Animation.Transition>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Animation.Transition>, global::System.Collections.IEnumerable
 	{
 		// Skipping already declared property Count
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool TransitionCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TransitionCollection.IsReadOnly");
-			}
-		}
-#endif
+		// Skipping collection property provided by base class: IsReadOnly
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.TransitionCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.TransitionCollection()
@@ -34,13 +25,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.Contains(Microsoft.UI.Xaml.Media.Animation.Transition)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.CopyTo(Microsoft.UI.Xaml.Media.Animation.Transition[], int)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.Remove(Microsoft.UI.Xaml.Media.Animation.Transition)
-		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.GetEnumerator()
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.TransitionCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Transition>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Transition>.set_Item(int, Microsoft.UI.Xaml.Media.Animation.Transition)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Transition>
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.Transition>
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.Transition>
+		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.Transition>
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.Transition>
+		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.Transition>
+		// Processing: System.Collections.IEnumerable
 		// Processing: System.Collections.IEnumerable
 	}
 }

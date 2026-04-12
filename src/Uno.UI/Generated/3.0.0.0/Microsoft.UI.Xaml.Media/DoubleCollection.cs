@@ -9,16 +9,7 @@ namespace Microsoft.UI.Xaml.Media
 	public partial class DoubleCollection : global::System.Collections.Generic.IList<double>, global::System.Collections.Generic.ICollection<double>, global::System.Collections.Generic.IEnumerable<double>, global::System.Collections.IEnumerable
 	{
 		// Skipping already declared property Count
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DoubleCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DoubleCollection.IsReadOnly");
-			}
-		}
-#endif
+		// Skipping collection property provided by base class: IsReadOnly
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.DoubleCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.DoubleCollection()
@@ -34,13 +25,19 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.Contains(double)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.CopyTo(double[], int)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.Remove(double)
-		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.GetEnumerator()
+		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.DoubleCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.System.Collections.Generic.IList<double>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.System.Collections.Generic.IList<double>.set_Item(int, double)
 		// Processing: System.Collections.Generic.IList<double>
 		// Processing: System.Collections.Generic.ICollection<double>
 		// Processing: System.Collections.Generic.IEnumerable<double>
+		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.Generic.ICollection<double>
+		// Processing: System.Collections.Generic.IEnumerable<double>
+		// Processing: System.Collections.IEnumerable
+		// Processing: System.Collections.Generic.IEnumerable<double>
+		// Processing: System.Collections.IEnumerable
 		// Processing: System.Collections.IEnumerable
 	}
 }
