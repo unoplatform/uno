@@ -23,13 +23,7 @@ namespace Windows.UI
 		// Forced skipping of method Windows.UI.Color.B.get
 		// Forced skipping of method Windows.UI.Color.B.set
 		// Skipping already declared method Windows.UI.Color.ToString()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ToString(global::System.IFormatProvider provider)
-		{
-			throw new global::System.NotImplementedException("The member string Color.ToString(IFormatProvider provider) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Color.ToString%28IFormatProvider%20provider%29");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Color.ToString(System.IFormatProvider)
 		// Forced skipping of method Windows.UI.Color.System.IFormattable.ToString(string, System.IFormatProvider)
 	}
 }
