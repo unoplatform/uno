@@ -5109,9 +5109,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
 
-			// Text with spaces that can produce cluster boundaries at exact
-			// integer coordinates, which previously caused 1-pixel gaps in
-			// the selection background due to rounding/antialiasing issues.
 			var SUT = new TextBox
 			{
 				Text = "____",
@@ -5132,7 +5129,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				screenshot.GetPixel(i, screenshot.Height / 2).Should().Be(Colors.Red, $"Selection background should have no gaps at x={i}");
 			}
-    }
+		}
 
 		[TestMethod]
 		public async Task When_OuterScrollViewer_BringIntoView_Scrolls_To_Caret()
