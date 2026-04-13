@@ -28,6 +28,17 @@ namespace Uno.UI.Xaml
 			return binding;
 		}
 
+		/// <summary>
+		/// Registers a static-rooted observation source for x:Bind property paths.
+		/// Used by generated code to monitor INPC changes on objects accessed through static members.
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Binding SetXBindStaticPropertyPaths(Binding binding, object source, string[] paths)
+		{
+			binding.SetXBindStaticPropertyPaths(source, paths);
+			return binding;
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static AttachedDependencyObject GetDependencyObjectForXBind(this object instance)
 			=> DependencyObjectExtensions.GetAttachedDependencyObject(instance);
