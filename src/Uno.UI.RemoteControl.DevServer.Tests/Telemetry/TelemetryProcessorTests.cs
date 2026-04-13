@@ -305,10 +305,10 @@ public class TelemetryProcessorTests : TelemetryTestBase
 			string? stashedDependencyPath = null;
 
 			// Create an isolated directory structure to reproduce the issue
-			// The processor will be in tempDir/net10.0/ but the dependency won't be copied
+			// The processor will be in tempDir/net11.0/ but the dependency won't be copied
 			// This reproduces the conditions where the dependency is not resolved
 			var tempDir = Path.Combine(Path.GetTempPath(), $"uno-processor-test-{Guid.NewGuid():N}");
-			var processorsDir = Path.Combine(tempDir, "net10.0");
+			var processorsDir = Path.Combine(tempDir, "net11.0");
 			Directory.CreateDirectory(processorsDir);
 
 			try
@@ -360,7 +360,7 @@ public class TelemetryProcessorTests : TelemetryTestBase
 						}
 					}
 
-					// Send the parent directory as BasePath - server will discover processor in net10.0 subfolder
+					// Send the parent directory as BasePath - server will discover processor in net11.0 subfolder
 					await client.SendMessage(new ProcessorsDiscovery(tempDir, appInstanceId));
 					using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(CT);
 					timeoutCts.CancelAfter(TimeSpan.FromSeconds(10));
@@ -485,7 +485,7 @@ public class TelemetryProcessorTests : TelemetryTestBase
 
 			try
 			{
-				// Copy processor and dependency directly to BasePath (no net10.0 subfolder)
+				// Copy processor and dependency directly to BasePath (no net11.0 subfolder)
 				var isolatedProcessorPath = Path.Combine(tempDir, testProcessorName);
 				File.Copy(testProcessorPath, isolatedProcessorPath, overwrite: true);
 				var isolatedDependencyPath = Path.Combine(tempDir, testDependencyName);

@@ -84,7 +84,7 @@
 			</ItemGroup>
 
 			<PropertyGroup>
-				<SupportedOSPlatformVersion>12.2</SupportedOSPlatformVersion>
+				<SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
 
 				<!-- iOS 17 compatibility -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
@@ -179,7 +179,7 @@
 
 			<PropertyGroup>
 				<MtouchUseLlvm>true</MtouchUseLlvm>
-				<SupportedOSPlatformVersion>12.2</SupportedOSPlatformVersion>
+				<SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
 
 				<!-- iOS 17 compatibility -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
@@ -227,13 +227,13 @@
 				<RuntimeIdentifiers>android-x64;android-arm64</RuntimeIdentifiers>
 			</PropertyGroup>
 
-			<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
-				<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.0.0" />
-				<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.14" />
-				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
+			<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
+				<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.8.0.10" />
+				<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.16" />
+				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.4" />
 			</ItemGroup>
 
-			<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
+			<ItemGroup Condition=" '$(TargetFramework)' == 'net11.0-android'">
 				<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.8.0.10" />
 				<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.16" />
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.4" />
@@ -339,7 +339,7 @@
 
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios18.0'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='$(NetPrevious)-ios$(NetPreviousAppleOSVersion)'">
 	  <CodesignKey>Apple Development: Created via API (L89KS38JH3)</CodesignKey>
 	  <CodesignProvision>VS: WildCard Development</CodesignProvision>
 	</PropertyGroup>

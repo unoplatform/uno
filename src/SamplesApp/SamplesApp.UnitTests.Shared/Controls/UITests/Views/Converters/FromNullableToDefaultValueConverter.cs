@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text;
 using Microsoft.UI.Xaml;
@@ -10,6 +11,8 @@ namespace Uno.UI.Samples.Converters
 {
 	public class FromNullableToDefaultValueConverter : IValueConverter
 	{
+		private const DynamicallyAccessedMemberTypes ActivatorRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
+
 		public FromNullableToDefaultValueConverter()
 		{
 			ValueIfNull = null;
@@ -19,6 +22,8 @@ namespace Uno.UI.Samples.Converters
 		public object ValueIfNull { get; set; }
 
 		public object ValueIfNotNull { get; set; }
+
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "TODO(GetDefaultValue() > Activator.CreateInstance())")]
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			if (parameter != null)
@@ -36,7 +41,7 @@ namespace Uno.UI.Samples.Converters
 			}
 		}
 
-		private static object GetDefaultValue(Type targetType)
+		private static object GetDefaultValue([DynamicallyAccessedMembers(ActivatorRequirements)] Type targetType)
 		{
 #if SILVERLIGHT
 			return targetType.IsValueType ?

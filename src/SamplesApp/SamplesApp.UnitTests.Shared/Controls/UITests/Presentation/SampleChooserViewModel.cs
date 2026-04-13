@@ -41,6 +41,7 @@ using System.Text;
 using UITests.Playground;
 using SamplesApp.Samples.Help;
 using MUXControlsTestApp.Utilities;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SampleControl.Presentation
 {
@@ -826,6 +827,7 @@ namespace SampleControl.Presentation
 		private static SampleChooserContent GetContent(TypeInfo type)
 			=> GetContent(type, FindSampleAttribute(type));
 
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "TODO (ControlType = type.AsType()); need to remove TypeInfo, use Type instead, update SamplesListGenerator to preserve info…")]
 		private static SampleChooserContent GetContent(TypeInfo type, SampleAttribute attribute)
 			=> new SampleChooserContent
 			{
@@ -842,18 +844,6 @@ namespace SampleControl.Presentation
 				DisableKeyboardShortcuts = attribute.DisableKeyboardShortcuts,
 				SourceFilePath = _allSamplePaths.GetValueOrDefault(type.AsType())
 			};
-
-		private static IEnumerable<TypeInfo> FindDefinedAssemblies(Assembly assembly)
-		{
-			try
-			{
-				return assembly.DefinedTypes.ToArray();
-			}
-			catch (Exception)
-			{
-				return Array.Empty<TypeInfo>();
-			}
-		}
 
 		private static SampleAttribute FindSampleAttribute(TypeInfo type)
 		{

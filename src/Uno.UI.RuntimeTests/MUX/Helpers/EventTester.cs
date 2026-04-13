@@ -7,6 +7,7 @@ using Private.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -41,9 +42,20 @@ namespace Microsoft.UI.Xaml.Tests.Common
 		public static TimeSpan Timeout = Default_Timeout;
 	}
 
-	public class EventTester<TSender, TEventArgs> : IDisposable
+	public class EventTester<
+		[DynamicallyAccessedMembers(SenderTypeRequirements)] TSender,
+		TEventArgs
+	> : IDisposable
 	{
+		internal const DynamicallyAccessedMemberTypes SenderTypeRequirements =
+			  DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents
+			| DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields
+			| DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods
+			| DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties
+			;
+
 		protected readonly TSender sender;
+		[DynamicallyAccessedMembers(SenderTypeRequirements)]
 		protected readonly Type senderType;
 		protected readonly String eventName;
 		protected readonly Delegate handlerInvocationDelegate;
@@ -54,7 +66,14 @@ namespace Microsoft.UI.Xaml.Tests.Common
 		private readonly EventTesterOptions options;
 
 
-		protected EventTester(TSender sender, Type senderType, string eventName, Action<object, TEventArgs> action, EventTesterOptions options, bool setBVTflags)
+		protected EventTester(
+			TSender sender,
+			[DynamicallyAccessedMembers(SenderTypeRequirements)]
+			Type senderType,
+			string eventName,
+			Action<object, TEventArgs> action,
+			EventTesterOptions options,
+			bool setBVTflags)
 		{
 			this.eventName = eventName;
 			this.eventData = new List<Tuple<object, TEventArgs>>();
@@ -70,7 +89,13 @@ namespace Microsoft.UI.Xaml.Tests.Common
 			this.senderType = senderType;
 			var delegateType = GetDelegateType(eventName);
 
+#pragma warning disable IL2075
+			// In local testing, given `class Example { public event MyDelegateType E; }`, where EventTester<Example, …>` is used --
+			// thus adding `Example.E` to reflection metadata -- then `MyDelegateType.Invoke` is *also* present in reflection metadata.
+			//
+			// So ignoring this appears to be "fine", SO LONG AS `senderType` is properly recorded.
 			Type eventArgType = delegateType.GetTypeInfo().GetDeclaredMethod("Invoke").GetParameters()[1].ParameterType;
+#pragma warning restore IL2075
 
 			// Check to ensure that the caller passed in the correct event args.
 			if (typeof(TEventArgs) != eventArgType)
@@ -102,7 +127,13 @@ namespace Microsoft.UI.Xaml.Tests.Common
 #endif
 		}
 
-		protected EventTester(TSender sender, Type senderType, string eventName, Action<object, TEventArgs> action, EventTesterOptions options)
+		protected EventTester(
+			TSender sender,
+			[DynamicallyAccessedMembers(SenderTypeRequirements)]
+			Type senderType,
+			string eventName,
+			Action<object, TEventArgs> action,
+			EventTesterOptions options)
 			: this(sender, senderType, eventName, action, options, true)
 		{
 		}
@@ -120,8 +151,23 @@ namespace Microsoft.UI.Xaml.Tests.Common
 		}
 
 		public EventTester(TSender sender, string eventName, Action<object, TEventArgs> action)
-			: this(sender, sender.GetType(), eventName, action, EventTesterOptions.Default)
+			: this(sender, GetSenderType(sender), eventName, action, EventTesterOptions.Default)
 		{
+		}
+
+		[return: DynamicallyAccessedMembers(SenderTypeRequirements)]
+		private static Type GetSenderType(TSender sender)
+		{
+			if (sender is null)
+			{
+				return typeof(TSender);
+			}
+			else if (sender.GetType() is var t && t != typeof(TSender))
+			{
+				throw new Exception($"sender.GetType() expected to be `{typeof(TSender).FullName}` but was `{t.FullName}`.");
+			}
+
+			return typeof(TSender);
 		}
 
 		public EventTester(TSender sender, string eventName)
@@ -130,21 +176,26 @@ namespace Microsoft.UI.Xaml.Tests.Common
 		}
 
 		public EventTester(TSender sender, string eventName, EventTesterOptions options)
-			: this(sender, sender.GetType(), eventName, (s, e) => { }, options)
+			: this(sender, GetSenderType(sender), eventName, (s, e) => { }, options)
 		{
 		}
 
 		public EventTester(TSender sender, string eventName, EventTesterOptions options, bool setBVTflags)
-			: this(sender, sender.GetType(), eventName, (s, e) => { }, options, setBVTflags)
+			: this(sender, GetSenderType(sender), eventName, (s, e) => { }, options, setBVTflags)
 		{
 		}
 
-		protected EventTester(TSender sender, Type senderType, string eventName)
+		protected EventTester(
+			TSender sender,
+			[DynamicallyAccessedMembers(SenderTypeRequirements)] Type senderType,
+			string eventName)
 			: this(sender, senderType, eventName, (s, e) => { }, EventTesterOptions.Default)
 		{
 		}
 
-		public static EventTester<object, TEventArgs> FromStaticEvent<T>(string eventName)
+		public static EventTester<object, TEventArgs> FromStaticEvent<
+			[DynamicallyAccessedMembers(SenderTypeRequirements)] T
+		>(string eventName)
 		{
 			return new EventTester<object, TEventArgs>(null, typeof(T), eventName, (s, e) => { }, EventTesterOptions.Default);
 		}
@@ -494,12 +545,23 @@ namespace Microsoft.UI.Xaml.Tests.Common
 
 	public class AttachedEventTester<TEventArgs> : EventTester<UIElement, TEventArgs>
 	{
-		public AttachedEventTester(UIElement sender, Type attachedOn, string eventName) : base(sender, attachedOn, eventName)
+		public AttachedEventTester(
+			UIElement sender,
+			[DynamicallyAccessedMembers(SenderTypeRequirements)]
+			Type attachedOn,
+			string eventName)
+			: base(sender, attachedOn, eventName)
 		{
 		}
 
 
-		public AttachedEventTester(UIElement sender, Type attachedOn, string eventName, Action<object, TEventArgs> action) : base(sender, attachedOn, eventName, action, EventTesterOptions.Default)
+		public AttachedEventTester(
+			UIElement sender,
+			[DynamicallyAccessedMembers(SenderTypeRequirements)]
+			Type attachedOn,
+			string eventName,
+			Action<object, TEventArgs> action)
+			: base(sender, attachedOn, eventName, action, EventTesterOptions.Default)
 		{
 		}
 
@@ -527,7 +589,12 @@ namespace Microsoft.UI.Xaml.Tests.Common
 
 	public class AttachedRoutedEventTester<TEventArgs> : AttachedEventTester<TEventArgs>
 	{
-		public AttachedRoutedEventTester(UIElement sender, Type attachedOn, string eventName) : base(sender, attachedOn, eventName)
+		public AttachedRoutedEventTester(
+			UIElement sender,
+			[DynamicallyAccessedMembers(SenderTypeRequirements)]
+			Type attachedOn,
+			string eventName)
+			: base(sender, attachedOn, eventName)
 		{
 		}
 

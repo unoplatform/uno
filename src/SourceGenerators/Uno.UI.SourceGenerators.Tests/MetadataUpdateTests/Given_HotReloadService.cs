@@ -13,7 +13,7 @@ public class Given_HotReloadService
 	[DynamicData(nameof(GetScenarios))]
 	public async Task HR(string name, Scenario? scenario, Project[]? projects)
 	{
-		// Generated C# files can be found in the bin\Debug\net10.0\work sub dir.
+		// Generated C# files can be found in the bin\Debug\net11.0\work sub dir.
 
 		if (scenario != null)
 		{

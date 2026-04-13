@@ -186,11 +186,11 @@
 				<RuntimeIdentifiers>android-x64;android-arm64</RuntimeIdentifiers>
 			</PropertyGroup>
 			
-			<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
-				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
+			<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
+				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.4" />
 			</ItemGroup>
 
-			<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
+			<ItemGroup Condition=" '$(TargetFramework)' == 'net11.0-android'">
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.4" />
 			</ItemGroup>
 

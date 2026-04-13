@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -98,6 +99,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 		{
 			// This is a hack to adapt samples to an old way to build viewmodels.
 			// You don't need to use this for new samples.
+			[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Subclasses should be [Bindable], and `Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the property exists.")]
 			get
 			{
 				var type = GetType();
@@ -106,6 +108,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 				var value = pi?.GetValue(this);
 				return value;
 			}
+			[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Subclasses should be [Bindable], and `Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the property exists.")]
 			set
 			{
 				var type = GetType();
