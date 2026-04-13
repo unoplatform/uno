@@ -267,10 +267,6 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	}
 
 	/// <summary>
-	/// Ensure the cached Skia surface is created. Call while holding the device lock.
-	/// Used by platforms (Win32) that use a split StartPaint/EndPaint pattern.
-	/// </summary>
-	/// <summary>
 	/// Invalidate the cached surface reference without disposing it.
 	/// Call when the caller has already disposed the SKSurface externally
 	/// (e.g., X11Renderer base class disposes _surface before calling UpdateSize).
@@ -282,6 +278,10 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		_cachedRenderTarget = null;
 	}
 
+	/// <summary>
+	/// Ensure the cached Skia surface is created. Call while holding the device lock.
+	/// Used by platforms (Win32) that use a split StartPaint/EndPaint pattern.
+	/// </summary>
 	public void EnsureCachedSurface()
 	{
 		EnsureCachedSkiaSurface();

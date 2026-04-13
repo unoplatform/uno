@@ -89,7 +89,7 @@ internal class VulkanImageBase : IDisposable
 	{
 		if (Handle.Handle != 0)
 			return;
-		MipLevels = MipLevels != 0 ? MipLevels : (uint)Math.Floor(Math.Log(Math.Max(Size.Width, Size.Height), 2));
+		MipLevels = MipLevels != 0 ? MipLevels : (uint)Math.Max(1, Math.Floor(Math.Log(Math.Max(Size.Width, Size.Height), 2)));
 		var createInfo = new VkImageCreateInfo
 		{
 			pNext = pNext,

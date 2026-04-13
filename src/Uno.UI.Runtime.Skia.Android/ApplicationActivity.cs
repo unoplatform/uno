@@ -299,15 +299,22 @@ namespace Microsoft.UI.Xaml
 		{
 			if (FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid)
 			{
-				try
+				if (!PackageManager?.HasSystemFeature(PackageManager.FeatureVulkanHardwareLevel) ?? true)
 				{
-					return new UnoSKVulkanView(this);
+					typeof(ApplicationActivity).Log().Warn($"Device does not support Vulkan. Falling back to OpenGL ES.");
 				}
-				catch (Exception ex)
+				else
 				{
-					if (typeof(ApplicationActivity).Log().IsEnabled(LogLevel.Warning))
+					try
 					{
-						typeof(ApplicationActivity).Log().Warn($"Vulkan rendering not available: {ex.Message}. Falling back to OpenGL ES.");
+						return new UnoSKVulkanView(this);
+					}
+					catch (Exception ex)
+					{
+						if (typeof(ApplicationActivity).Log().IsEnabled(LogLevel.Warning))
+						{
+							typeof(ApplicationActivity).Log().Warn($"Vulkan rendering not available: {ex.Message}. Falling back to OpenGL ES.");
+						}
 					}
 				}
 			}
