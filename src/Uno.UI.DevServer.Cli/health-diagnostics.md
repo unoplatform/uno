@@ -69,6 +69,7 @@ These are added directly by `HealthService.BuildHealthReport()`:
 | `NoSolutionFound` | Warning | No `.sln` or `.slnx` file found in working directory tree |
 | `HostCrashed` | Warning/Fatal | Connection state `Reconnecting` / `Degraded` |
 | `HostUnreachable` | Warning | Started but not yet connected |
+| `HostMcpEndpointNotAvailable` | Warning | Host responds to HTTP but `/mcp` returns 404/400 (pre-MCP host or MCP transport failed to register). Remediation suggests upgrading the DevServer package. |
 | `UpstreamError` | Fatal | Upstream task faulted |
 
 ## Non-Mapped `IssueCode` Values
