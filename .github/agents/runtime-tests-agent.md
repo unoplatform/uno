@@ -23,12 +23,12 @@ Runtime tests can be executed headlessly without the interactive UI.
 
 ### Build the console app:
 ```bash
-dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0
+dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net11.0
 ```
 
 ### Run all runtime tests:
 ```bash
-cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0
+cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net11.0
 dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
 ```
 
@@ -206,7 +206,7 @@ public async Task When_Something()
 
 When adding new runtime tests for desktop (Skia):
 1. Write the test following patterns above
-2. Build: `dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0`
+2. Build: `dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net11.0`
 3. Run: `dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml`
 4. Verify test passes before committing
 

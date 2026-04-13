@@ -157,7 +157,7 @@ When both fast paths fail, the Host falls back to `dotnet build` evaluation. The
 
 The `Uno.WinUI.DevServer` package (`build/nuget/Uno.WinUI.DevServer.nuspec`) ships:
 
-- Host binaries for `net9.0` and `net10.0`
+- Host binaries for `net10.0` and `net11.0`
 - Processor DLLs
 - BuildTransitive targets for MCP and Settings add-ins
 
