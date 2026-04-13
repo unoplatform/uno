@@ -3200,7 +3200,7 @@ public class MenuFlyoutIntegrationTests
 				   "<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >" +
 				   "    <MenuFlyout.MenuFlyoutPresenterStyle>" +
 				   "        <Style TargetType='MenuFlyoutPresenter'>" +
-				   "            <Setter Property='MaxHeight' Value='200' />" +
+				   "            <Setter Property='MaxHeight' Value='400' />" +
 				   "        </Style>" +
 				   "    </MenuFlyout.MenuFlyoutPresenterStyle>" +
 				   "    <MenuFlyoutItem>Menu item 0</MenuFlyoutItem>" +
@@ -3284,6 +3284,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIOS)] // Cascading sub-menu closes on mouse move past the sub-item boundary https://github.com/unoplatform/uno/issues/23032
 	public async Task ValidateSubMenuItemWithLongItems()
 	{
 		Rect subItemBounds = default;
@@ -3317,7 +3318,7 @@ public class MenuFlyoutIntegrationTests
 			LOG_OUTPUT("Scrollable Height=%f", scrollViewer.ScrollableHeight);
 		});
 
-		VERIFY_IS_TRUE(scrollViewer.ScrollableHeight > 0, "Outer presenter ScrollableHeight");
+		VERIFY_IS_TRUE(scrollViewer.ScrollableHeight > 0);
 
 		await RunOnUIThread(() =>
 		{
@@ -3370,7 +3371,7 @@ public class MenuFlyoutIntegrationTests
 			scrollViewer = (ScrollViewer)(TreeHelper.GetVisualChildByName(subPresenter2, "MenuFlyoutPresenterScrollViewer"));
 			LOG_OUTPUT("Scrollable Height=%f", scrollViewer.ScrollableHeight);
 		});
-		VERIFY_IS_TRUE(scrollViewer.ScrollableHeight > 0, "Sub-sub presenter ScrollableHeight");
+		VERIFY_IS_TRUE(scrollViewer.ScrollableHeight > 0);
 
 		await FlyoutHelper.HideFlyout(menuFlyout);
 	}
