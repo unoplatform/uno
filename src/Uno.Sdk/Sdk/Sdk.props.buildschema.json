@@ -577,6 +577,9 @@
 				},
 				"GLCanvas": {
 					"description": "Adds support for 3D graphics APIs based on OpenGL."
+				},
+				"SpellChecking": {
+					"description": "Adds support for spell checking."
 				}
 			}
 		}

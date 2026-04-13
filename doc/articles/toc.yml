@@ -616,6 +616,8 @@
           href: features/routed-events.md
         - name: Shapes & Brushes
           href: features/shapes-and-brushes.md
+        - name: Spell checking
+          href: features/spellchecking.md
         - name: String resources and localization
           href: features/working-with-strings.md
         - name: Succinct syntax

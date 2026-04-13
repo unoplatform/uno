@@ -4,7 +4,7 @@ uid: Uno.Features.SpellChecking
 
 # Spell Checking
 
-Uno Platform provides optional spell-checking support for `TextBox` controls on all Skia-based targets. When enabled, misspelled words are underlined in red and right-clicking a misspelled word presents spelling suggestions.
+Uno Platform provides optional spell-checking support for `TextBox` controls on all Skia-based targets. When enabled, misspelled words are underlined in red and opening the context menu (secondary click or long-press) on a misspelled word presents spelling suggestions.
 
 ## Enabling Spell Checking
 

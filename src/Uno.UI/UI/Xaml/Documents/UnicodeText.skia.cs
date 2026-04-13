@@ -85,7 +85,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else
 		{
-			typeof(UnicodeText).LogWarn()?.Warn($"No implementation of {nameof(ISpellCheckingService)} was found. Spell checking will be disabled.");
+			typeof(UnicodeText).LogInfo()?.Info($"No implementation of {nameof(ISpellCheckingService)} was found. Spell checking will be disabled. To enable spell checking, add the '{{nameof(SpellChecking)}}' UnoFeature.");
 			return null;
 		}
 	});
