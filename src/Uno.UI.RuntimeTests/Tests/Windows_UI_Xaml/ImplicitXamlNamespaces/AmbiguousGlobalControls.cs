@@ -15,7 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.AmbiguousA
 	/// <summary>
 	/// A unique control in namespace A for disambiguation testing.
 	/// </summary>
-	public class UniqueControlA : ContentControl
+	public partial class UniqueControlA : ContentControl
 	{
 		public string LabelA
 		{
@@ -32,7 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.AmbiguousA
 	/// A control with the same name as one in namespace B, to test
 	/// that explicit prefixes can disambiguate same-named types.
 	/// </summary>
-	public class SharedControl : ContentControl
+	public partial class SharedControl : ContentControl
 	{
 		public string Origin
 		{
@@ -51,7 +51,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.AmbiguousB
 	/// <summary>
 	/// A unique control in namespace B for disambiguation testing.
 	/// </summary>
-	public class UniqueControlB : ContentControl
+	public partial class UniqueControlB : ContentControl
 	{
 		public string LabelB
 		{
@@ -68,7 +68,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.AmbiguousB
 	/// A control with the same name as one in namespace A, to test
 	/// that explicit prefixes can disambiguate same-named types.
 	/// </summary>
-	public class SharedControl : ContentControl
+	public partial class SharedControl : ContentControl
 	{
 		public string Origin
 		{
