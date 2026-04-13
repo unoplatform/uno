@@ -185,4 +185,60 @@ public class Given_ResourceDictionary
 
 		await Verify.AssertXamlGenerator(test);
 	}
+
+	// Reproduction for https://github.com/unoplatform/uno/issues/13373
+	// Custom Dictionary subclass declared in XAML produces invalid Add(...) calls
+	// because the generator picks the IDictionary base method that requires
+	// (key, value) but emits only the value, surfacing as CS7036.
+	[TestMethod]
+	public async Task When_Custom_Dictionary_Class_Used_In_XAML_13373()
+	{
+		var xamlFile = new XamlFile(
+			"MainPage.xaml",
+			"""
+			<Page
+				x:Class="TestRepro.MainPage"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:local="using:TestRepro">
+
+				<Page.Resources>
+					<local:MyDictionary x:Key="MyDict">
+						<x:String x:Key="One">One</x:String>
+						<x:String x:Key="Two">Two</x:String>
+					</local:MyDictionary>
+				</Page.Resources>
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System.Collections.Generic;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+
+						public class MyDictionary : Dictionary<string, string> { }
+					}
+					"""
+				}
+			}
+		};
+		test.TestBehaviors |= TestBehaviors.SkipGeneratedSourcesCheck;
+
+		await test.RunAsync();
+	}
 }
