@@ -7,6 +7,8 @@ using Uno.UI.SourceGenerators.Tests.Verifiers;
 
 namespace Uno.UI.SourceGenerators.Tests;
 
+// https://github.com/unoplatform/uno/issues/12073
+
 
 [TestClass]
 public class Given_MvvmGeneratedMembers
@@ -273,6 +275,157 @@ public class Given_MvvmGeneratedMembers
 			// Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs(124,252): error CS1061: 'MyViewModel' does not contain a definition for 'Name' and no accessible extension method 'Name' accepting a first argument of type 'MyViewModel' could be found (are you missing a using directive or an assembly reference?)
 			DiagnosticResult.CompilerError("CS1061").WithSpan(Path.Combine("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_d6cd66944958ced0c513e0a04797b51d.cs"), 124, 254, 124, 258).WithArguments("TestRepro.MyViewModel", "Name"),
 		});
+
+		await test.RunAsync();
+	}
+
+	// Reproduction for https://github.com/unoplatform/uno/issues/12073
+	// x:Bind TwoWay failed to compile when the target property on the page class
+	// was produced by a separate (external) source generator — OneWay worked but
+	// TwoWay could not find the generated property. This simulates that scenario
+	// by using a small custom source generator that adds the ViewModel property
+	// to MainPage as a second partial, then verifies both OneWay and TwoWay
+	// compile cleanly against it.
+	private class ExternalViewModelPropertyGeneratorTest : XamlSourceGeneratorVerifier.TestBase
+	{
+		public ExternalViewModelPropertyGeneratorTest(XamlFile xamlFile, string testMethodName, [CallerFilePath] string testFilePath = "")
+			: base(xamlFile, testFilePath, testMethodName)
+		{
+		}
+
+		protected override IEnumerable<Type> GetSourceGenerators()
+		{
+			foreach (var generatorType in base.GetSourceGenerators())
+			{
+				yield return generatorType;
+			}
+
+			yield return typeof(ExternalViewModelPropertyGenerator);
+		}
+	}
+
+#pragma warning disable RS1036, RS1038, RS1041, RS1042
+	[Generator]
+	private sealed class ExternalViewModelPropertyGenerator : ISourceGenerator
+	{
+		public void Initialize(GeneratorInitializationContext context) { }
+
+		public void Execute(GeneratorExecutionContext context)
+		{
+			const string source = """
+				namespace TestRepro
+				{
+					public partial class MyViewModel
+					{
+						public string Name { get; set; }
+					}
+
+					public sealed partial class MainPage
+					{
+						public MyViewModel ViewModel { get; set; } = new MyViewModel();
+					}
+				}
+				""";
+
+			context.AddSource("ExternalViewModelProperty.g.cs", source);
+		}
+	}
+#pragma warning restore RS1036, RS1038, RS1041, RS1042
+
+	[TestMethod]
+	public async Task When_Page_Has_External_Source_Generated_ViewModel_Property_TwoWay_12073()
+	{
+		var xamlFile = new XamlFile(
+			"MainPage.xaml",
+			"""
+			<Page x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+				<StackPanel>
+					<TextBox Text="{x:Bind ViewModel.Name, Mode=TwoWay}" />
+				</StackPanel>
+			</Page>
+			""");
+
+		var test = new ExternalViewModelPropertyGeneratorTest(xamlFile, "WPHESGVMPT12073")
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+
+						public partial class MyViewModel
+						{
+						}
+					}
+					"""
+				}
+			}
+		};
+		test.TestBehaviors |= Microsoft.CodeAnalysis.Testing.TestBehaviors.SkipGeneratedSourcesCheck;
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Page_Has_External_Source_Generated_ViewModel_Property_OneWay_12073()
+	{
+		var xamlFile = new XamlFile(
+			"MainPage.xaml",
+			"""
+			<Page x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+				<StackPanel>
+					<TextBox Text="{x:Bind ViewModel.Name, Mode=OneWay}" />
+				</StackPanel>
+			</Page>
+			""");
+
+		var test = new ExternalViewModelPropertyGeneratorTest(xamlFile, "WPHESGVMPO12073")
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+
+						public partial class MyViewModel
+						{
+						}
+					}
+					"""
+				}
+			}
+		};
+		test.TestBehaviors |= Microsoft.CodeAnalysis.Testing.TestBehaviors.SkipGeneratedSourcesCheck;
 
 		await test.RunAsync();
 	}
