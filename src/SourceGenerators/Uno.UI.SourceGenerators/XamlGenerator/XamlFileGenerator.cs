@@ -35,6 +35,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private static readonly char[] _dotArray = new[] { '.' };
 		private static readonly char[] _parenthesesArray = new[] { '(', ')' };
+		private static readonly char[] _complexExpressionChars = new[] { '(', '[', '?', ')' };
 
 		private static readonly Dictionary<string, string[]> _knownNamespaces = new Dictionary<string, string[]>
 		{
@@ -4428,8 +4429,87 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
 
+				// For static-rooted x:Bind paths (e.g., local:StaticClass.MyObj.Value),
+				// generate additional static observation sources so that INPC changes on
+				// the static instance's properties are properly observed.
+				var staticObservationSuffix = "";
+				if (modeMember != "OneTime"
+					&& !string.IsNullOrEmpty(rawFunction)
+					&& TryGetStaticRootAndInstancePath(rawFunction, out var staticRoot, out var instancePath))
+				{
+					staticObservationSuffix = $", {staticRoot}, new string[] {{\"{instancePath.Replace("\"", "\\\"")}\"}}";
+				}
+
+				if (staticObservationSuffix.Length > 0)
+				{
+					return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetXBindStaticPropertyPaths(global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}){staticObservationSuffix}))";
+				}
+
 				return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
 			}
+		}
+
+		/// <summary>
+		/// For a static-rooted x:Bind path (e.g., "global::Namespace.StaticClass.MyObj.Value"),
+		/// determines the static root expression and the instance property path.
+		/// </summary>
+		/// <param name="rawFunction">The namespace-rewritten x:Bind expression</param>
+		/// <param name="staticRoot">Output: the static root expression (e.g., "global::Namespace.StaticClass.MyObj")</param>
+		/// <param name="instancePath">Output: the instance property path (e.g., "Value")</param>
+		/// <returns>True if the path was successfully split</returns>
+		private bool TryGetStaticRootAndInstancePath(string rawFunction, out string staticRoot, out string instancePath)
+		{
+			staticRoot = "";
+			instancePath = "";
+
+			if (!rawFunction.StartsWith("global::", StringComparison.Ordinal))
+			{
+				return false;
+			}
+
+			// Don't handle complex expressions (function calls, indexers, casts, null-conditionals)
+			if (rawFunction.IndexOfAny(_complexExpressionChars) != -1)
+			{
+				return false;
+			}
+
+			var withoutGlobal = rawFunction.Substring("global::".Length);
+
+			// Try progressively longer type name candidates to find the static type
+			var lastDotPos = -1;
+			while (true)
+			{
+				var nextDotPos = withoutGlobal.IndexOf('.', lastDotPos + 1);
+				if (nextDotPos == -1)
+				{
+					break;
+				}
+
+				var candidateName = withoutGlobal.Substring(0, nextDotPos);
+				if (_metadataHelper.FindTypeByFullName(candidateName) is INamedTypeSymbol)
+				{
+					// Found the type. The rest after the type is the member path.
+					var restAfterType = withoutGlobal.Substring(nextDotPos + 1);
+					var firstDotInRest = restAfterType.IndexOf('.');
+
+					if (firstDotInRest == -1)
+					{
+						// Path is just "global::Type.Member" with no instance path to observe
+						return false;
+					}
+					else
+					{
+						var firstMember = restAfterType.Substring(0, firstDotInRest);
+						staticRoot = "global::" + candidateName + "." + firstMember;
+						instancePath = restAfterType.Substring(firstDotInRest + 1);
+						return true;
+					}
+				}
+
+				lastDotPos = nextDotPos;
+			}
+
+			return false;
 		}
 
 		private ITypeSymbol GetXBindPropertyPathType(string propertyPath, INamedTypeSymbol? rootType, IXamlLocation location)
