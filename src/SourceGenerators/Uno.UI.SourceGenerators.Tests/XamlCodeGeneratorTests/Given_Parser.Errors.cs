@@ -481,4 +481,38 @@ public partial class Given_Parser
 
 		await test.RunAsync();
 	}
+
+	// Reproduction for https://github.com/unoplatform/uno/issues/12116
+	// An empty event handler value (e.g. Click="") currently emits an opaque
+	// C# compiler error (CS1001 "Identifier expected") from the generated
+	// x:Bind/event wiring instead of a clear XAML-level diagnostic.
+	// WinUI reports `WMC0125: Invalid value for 'Click'. Event values must be text`.
+	[TestMethod]
+	public async Task When_Event_Handler_Has_Empty_Value_12116()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+					<Button x:Name="myButton" Click="">Click Me</Button>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } };
+		test.TestBehaviors |= TestBehaviors.SkipGeneratedSourcesCheck;
+
+		// Current (unhelpful) behavior: CS1001 "Identifier expected" surfaces from generated code
+		// rather than a XAML-level diagnostic. No expected diagnostics are asserted here — the
+		// test fails today and documents the surfaced diagnostics. Expected long-term: a XAML-level
+		// diagnostic such as UXAML0001 pointing at the attribute in the .xaml file.
+
+		await test.RunAsync();
+	}
 }
