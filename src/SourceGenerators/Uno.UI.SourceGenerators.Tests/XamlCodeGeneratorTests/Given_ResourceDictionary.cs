@@ -185,4 +185,57 @@ public class Given_ResourceDictionary
 
 		await Verify.AssertXamlGenerator(test);
 	}
+
+	// Reproduction for https://github.com/unoplatform/uno/issues/12495
+	// A ResourceDictionary with x:Class and a code-behind event handler on a
+	// nested MenuFlyoutItem.Click fails XAML code generation with:
+	//   "Unable to find x:Class on the top level element"
+	[TestMethod]
+	public async Task When_ResourceDictionary_With_CodeBehind_Event_Handler_12495()
+	{
+		var xamlFile = new XamlFile(
+			"ResourceDictionaryWithCodeBehind.xaml",
+			"""
+			<ResourceDictionary
+				x:Class="TestRepro.ResourceDictionaryWithCodeBehind"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+				<MenuFlyout x:Key="someFlyout">
+					<MenuFlyoutItem Click="MenuFlyoutItem_Click" Text="Some text" />
+				</MenuFlyout>
+
+			</ResourceDictionary>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class ResourceDictionaryWithCodeBehind : ResourceDictionary
+						{
+							public ResourceDictionaryWithCodeBehind()
+							{
+								this.InitializeComponent();
+							}
+
+							private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e) { }
+						}
+					}
+					"""
+				}
+			}
+		};
+		test.TestBehaviors |= TestBehaviors.SkipGeneratedSourcesCheck;
+
+		await test.RunAsync();
+	}
 }
