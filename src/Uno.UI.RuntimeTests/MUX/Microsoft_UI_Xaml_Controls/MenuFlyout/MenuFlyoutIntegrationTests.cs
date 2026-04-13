@@ -3200,7 +3200,7 @@ public class MenuFlyoutIntegrationTests
 				   "<MenuFlyout x:Name='menuFlyout' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >" +
 				   "    <MenuFlyout.MenuFlyoutPresenterStyle>" +
 				   "        <Style TargetType='MenuFlyoutPresenter'>" +
-				   "            <Setter Property='MaxHeight' Value='400' />" +
+				   "            <Setter Property='MaxHeight' Value='200' />" +
 				   "        </Style>" +
 				   "    </MenuFlyout.MenuFlyoutPresenterStyle>" +
 				   "    <MenuFlyoutItem>Menu item 0</MenuFlyoutItem>" +
@@ -3317,7 +3317,7 @@ public class MenuFlyoutIntegrationTests
 			LOG_OUTPUT("Scrollable Height=%f", scrollViewer.ScrollableHeight);
 		});
 
-		VERIFY_IS_TRUE(scrollViewer.ScrollableHeight > 0);
+		VERIFY_IS_TRUE(scrollViewer.ScrollableHeight > 0, "Outer presenter ScrollableHeight");
 
 		await RunOnUIThread(() =>
 		{
@@ -3370,7 +3370,7 @@ public class MenuFlyoutIntegrationTests
 			scrollViewer = (ScrollViewer)(TreeHelper.GetVisualChildByName(subPresenter2, "MenuFlyoutPresenterScrollViewer"));
 			LOG_OUTPUT("Scrollable Height=%f", scrollViewer.ScrollableHeight);
 		});
-		VERIFY_IS_TRUE(scrollViewer.ScrollableHeight > 0);
+		VERIFY_IS_TRUE(scrollViewer.ScrollableHeight > 0, "Sub-sub presenter ScrollableHeight");
 
 		await FlyoutHelper.HideFlyout(menuFlyout);
 	}
