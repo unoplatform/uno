@@ -220,6 +220,12 @@ namespace Microsoft.UI.Xaml.Data
 		/// </summary>
 		internal string[] XBindPropertyPaths { get; private set; }
 
+		/// <summary>
+		/// List of static-rooted observation sources for x:Bind expressions.
+		/// Each entry contains the static root object and the instance property paths to observe on it.
+		/// </summary>
+		internal (object Source, string[] Paths)[] XBindStaticPropertyPaths { get; private set; }
+
 		// Each of these values could be null and the Binding could still be an x:Bind, but they can't all be null
 		internal bool IsXBind => XBindSelector is not null || XBindPropertyPaths is not null || CompiledSource is not null || XBindBack is not null;
 
@@ -229,6 +235,21 @@ namespace Microsoft.UI.Xaml.Data
 			XBindSelector = xBindSelector;
 			XBindPropertyPaths = propertyPaths;
 			XBindBack = xBindBack;
+		}
+
+		internal void SetXBindStaticPropertyPaths(object source, string[] paths)
+		{
+			if (XBindStaticPropertyPaths is null)
+			{
+				XBindStaticPropertyPaths = new[] { (source, paths) };
+			}
+			else
+			{
+				var newArray = new (object Source, string[] Paths)[XBindStaticPropertyPaths.Length + 1];
+				Array.Copy(XBindStaticPropertyPaths, newArray, XBindStaticPropertyPaths.Length);
+				newArray[XBindStaticPropertyPaths.Length] = (source, paths);
+				XBindStaticPropertyPaths = newArray;
+			}
 		}
 
 		/// <summary>
