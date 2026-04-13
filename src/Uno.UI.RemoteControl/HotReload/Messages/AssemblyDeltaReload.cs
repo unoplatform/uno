@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Uno.UI.RemoteControl.HotReload.Messages
 {
@@ -8,22 +8,16 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 	{
 		public const string Name = nameof(AssemblyDeltaReload);
 
-		[JsonProperty]
 		public ImmutableHashSet<string> FilePaths { get; set; } = [];
 
-		[JsonProperty]
 		public string? ModuleId { get; set; }
 
-		[JsonProperty]
 		public string? ILDelta { get; set; }
 
-		[JsonProperty]
 		public string? MetadataDelta { get; set; }
 
-		[JsonProperty]
 		public string? PdbDelta { get; set; }
 
-		[JsonProperty]
 		public string? UpdatedTypes { get; set; }
 
 		[JsonIgnore]

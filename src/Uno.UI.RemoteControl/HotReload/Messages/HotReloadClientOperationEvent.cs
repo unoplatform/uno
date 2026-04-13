@@ -1,5 +1,5 @@
 using System;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Uno.UI.RemoteControl.HotReload.Messages;
 
@@ -37,31 +37,24 @@ public class HotReloadClientOperationEvent : IMessage
 	/// <summary>
 	/// The sequential <c>HotReloadClientOperation.Id</c> for correlation.
 	/// </summary>
-	[JsonProperty]
 	public int OperationSequenceId { get; init; }
 
 	/// <summary>When the operation was created.</summary>
-	[JsonProperty]
 	public DateTimeOffset StartTime { get; init; }
 
 	/// <summary>When the operation was ignored (skipped). Null if not ignored.</summary>
-	[JsonProperty]
 	public DateTimeOffset? IgnoreTime { get; init; }
 
 	/// <summary>When the UI update completed (success or failure). Null while in progress.</summary>
-	[JsonProperty]
 	public DateTimeOffset? EndTime { get; init; }
 
 	/// <summary>Error details. Null on success or when still in progress.</summary>
-	[JsonProperty]
 	public string? ErrorMessage { get; init; }
 
 	/// <summary>Number of elements that failed individually (per-element isolation).</summary>
-	[JsonProperty]
 	public int FailedElementCount { get; init; }
 
 	/// <summary>Total number of elements that were candidates for update.</summary>
-	[JsonProperty]
 	public int TotalElementCount { get; init; }
 
 	/// <summary>

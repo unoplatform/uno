@@ -46,7 +46,6 @@
 		<PackageReference Include="Microsoft.Bcl.TimeProvider" Version="9.0.9" />
 
 		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196" />
-		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="17.0.1313-pre" />
 		<PackageReference Include="MessagePack" Version="3.1.4" />
