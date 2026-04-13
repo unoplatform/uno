@@ -12,7 +12,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CustomGlobal
 	/// A custom control registered to the global namespace URI for testing
 	/// that custom types resolve unprefixed in XAML.
 	/// </summary>
-	public class CustomGlobalControl : ContentControl
+	public partial class CustomGlobalControl : ContentControl
 	{
 		public string CustomLabel
 		{
@@ -29,7 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CustomGlobal
 	/// A second custom control in a different sub-namespace, also registered globally,
 	/// to test that multiple types from the same global namespace resolve.
 	/// </summary>
-	public class AnotherGlobalControl : ContentControl
+	public partial class AnotherGlobalControl : ContentControl
 	{
 		public int CustomValue
 		{

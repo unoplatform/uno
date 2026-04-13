@@ -16,7 +16,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CustomPrefixed
 	/// A custom control in a prefixed namespace for testing that XmlnsPrefix
 	/// makes the prefix implicitly available in XAML without explicit xmlns:tc declaration.
 	/// </summary>
-	public class PrefixedControl : ContentControl
+	public partial class PrefixedControl : ContentControl
 	{
 		public string PrefixedLabel
 		{
