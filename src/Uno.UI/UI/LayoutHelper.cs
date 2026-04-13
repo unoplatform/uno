@@ -425,5 +425,13 @@ namespace Uno.UI
 			var root = (element.XamlRoot?.VisualTree.RootElement ?? Window.CurrentSafe?.RootElement) as FrameworkElement;
 			return GetBoundsRectRelativeTo(element, root);
 		}
+
+		/// <summary>
+		/// Rounds a logical-pixel value to the nearest physical pixel boundary.
+		/// </summary>
+		/// <param name="value">The logical-pixel value to round.</param>
+		/// <param name="scale">The display scale factor (physical pixels per logical pixel, <see cref="XamlRoot.RasterizationScale"/>).</param>
+		/// <returns>The value snapped to the nearest 1/<paramref name="scale"/> boundary.</returns>
+		internal static double LayoutRound(double value, double scale) => Math.Round(value * scale) / scale;
 	}
 }
