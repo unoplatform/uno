@@ -101,6 +101,12 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	private unsafe void OnRenderingNegativePathReevaluated(object? sender, SKPath path)
 	{
+		if (!ReferenceEquals(path, _lastClipPath))
+		{
+			_lastClipPath.Rewind();
+			_lastClipPath.AddPath(path);
+		}
+
 		_tempPath.Rewind();
 		_tempPath.AddRect(_lastArrangeRect.ToSKRect());
 		path.Op(_tempPath, SKPathOp.Intersect, _tempPath);
