@@ -136,14 +136,6 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented]
 		public StatusBarProgressIndicator ProgressIndicator
 			=> throw new global::System.NotImplementedException("The member StatusBarProgressIndicator StatusBar.ProgressIndicator is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StatusBarProgressIndicator%20StatusBar.ProgressIndicator");
-
-		[global::Uno.NotImplemented]
-		public IAsyncAction ShowAsync()
-			=> throw new global::System.NotImplementedException("The member IAsyncAction StatusBar.ShowAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StatusBar.ShowAsync%28%29");
-
-		[global::Uno.NotImplemented]
-		public IAsyncAction HideAsync()
-			=> throw new global::System.NotImplementedException("The member IAsyncAction StatusBar.HideAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StatusBar.HideAsync%28%29");
 	}
 }
 #endif
