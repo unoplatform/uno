@@ -263,7 +263,7 @@ If you have Xamarin bindings for native libraries, you'll need to adapt them for
 The same Xamarin.Android binding can often be used directly. Reference the binding library in your Android head project:
 
 ```xml
-<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
+<ItemGroup Condition="'$(TargetFramework)' == 'net11.0-android'">
     <ProjectReference Include="..\MyAndroidBinding\MyAndroidBinding.csproj" />
 </ItemGroup>
 ```

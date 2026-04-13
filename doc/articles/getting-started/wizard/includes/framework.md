@@ -9,7 +9,7 @@ This setting lets you choose the .NET version to target. The default is .NET 9.0
     > For **mobile workloads**, there is **no change yet**, support remains at **18 months**. See [MAUI support policy](https://dotnet.microsoft.com/en-us/platform/support/policy/maui) for more details.
 
     ```dotnetcli
-    dotnet new unoapp -tfm net9.0
+    dotnet new unoapp -tfm net10.0
     ```
 
 - #### .NET 10.0
@@ -19,5 +19,5 @@ This setting lets you choose the .NET version to target. The default is .NET 9.0
     At the moment, it is in preview and the least stable option for new projects.
 
     ```dotnetcli
-    dotnet new unoapp -tfm net10.0
+    dotnet new unoapp -tfm net11.0
     ```
