@@ -2166,6 +2166,14 @@
 		  <!-- END AutomationPeer API alignment -->
 
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Layout.InvalidateMeasure()" reason="protected to protected internal" />
+
+		  <!-- Replaced generic App<TApplication>(Func<TApplication>) with non-generic App(Func<Application>)
+		       to prevent CoreCLR shared-generic policy from placing Func<TApp> instantiations in the default
+		       ALC's LoaderAllocator, which otherwise creates a permanent cross-LA reference into the inner
+		       app's MethodTable and prevents collectible AssemblyLoadContext unload.
+		       Callers using .App<App>(...) need to drop the explicit type argument to resolve to the new
+		       non-generic overload. UnoPlatformHostBuilderExtensions is source-rebuilt per consuming app. -->
+		  <Member fullName="Uno.UI.Hosting.IUnoPlatformHostBuilder Uno.UI.Hosting.UnoPlatformHostBuilderExtensions.App(Uno.UI.Hosting.IUnoPlatformHostBuilder builder, System.Func`1&lt;TApplication&gt; appBuilder)" reason="Replaced by non-generic App(Func&lt;Application&gt;) to allow collectible ALC collection on CoreCLR" />
 	  </Methods>
 	</IgnoreSet>
 	<![CDATA[
