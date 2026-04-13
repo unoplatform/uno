@@ -1,0 +1,7 @@
+<Page x:Class="Uno.UI.RuntimeTests.Tests.XBindStaticInpcPage_12608"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Uno.UI.RuntimeTests.Tests">
+    <TextBlock x:Name="BoundText"
+               Text="{x:Bind local:XBindStaticInpcApp_12608.MyObj.Value, Mode=OneWay}" />
+</Page>
