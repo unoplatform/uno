@@ -5890,6 +5890,7 @@ public class MenuFlyoutIntegrationTests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS)] // MenuFlyout does not honor ScreenHelper.OverrideVisibleBounds on iOS Skia https://github.com/unoplatform/uno/issues/23031
 	public async Task VerifyLargeNonWindowedMenuIsPositionedCorrectly()
 	{
 		using var visibleBoundsOverride = ScreenHelper.OverrideVisibleBounds(
