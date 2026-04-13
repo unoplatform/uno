@@ -340,7 +340,7 @@ namespace Microsoft.UI.Xaml.Controls
 						// Only reset selection if the item was actually removed from the source.
 						// When the repeater unloads, Uno sends a fake Reset to mark containers as recyclable,
 						// but the source is unchanged and selection should be preserved.
-						if (IsInLiveTree)
+						if (IsLoaded && IsInLiveTree)
 #endif
 						{
 							Select(-1);
