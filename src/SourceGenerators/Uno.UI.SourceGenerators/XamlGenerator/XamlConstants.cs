@@ -11,6 +11,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public const string XamlXmlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
 		public const string PresentationXamlXmlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
 		public const string XmlXmlNamespace = "http://www.w3.org/XML/1998/namespace";
+		public const string GlobalNamespaceUri = "http://schemas.microsoft.com/winfx/2006/xaml/presentation/global";
 		public const string BundleResourcePrefix = "ms-appx:///";
 
 		public const string RootFoundationNamespace = "Windows.Foundation";

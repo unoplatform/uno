@@ -143,6 +143,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private readonly bool _disableBindableTypeProvidersGeneration;
 
+		private readonly bool _enableImplicitXamlNamespaces;
+		private readonly string[] _globalClrNamespaces;
+		private readonly Dictionary<string, string[]>? _allXmlnsDefinitions;
+
 		/// <summary>
 		/// Information about types used in .Apply() scenarios
 		/// </summary>
@@ -225,7 +229,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			GeneratorExecutionContext generatorContext,
 			bool xamlResourcesTrimming,
 			IDictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap,
-			string[] includeXamlNamespaces)
+			string[] includeXamlNamespaces,
+			bool enableImplicitXamlNamespaces = false,
+			string[]? globalClrNamespaces = null,
+			Dictionary<string, string[]>? allXmlnsDefinitions = null)
 		{
 			Generation = generation;
 			_fileDefinition = file;
@@ -249,6 +256,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_xamlTypeToXamlTypeBaseMap = xamlTypeToXamlTypeBaseMap;
 			_includeXamlNamespaces = includeXamlNamespaces;
 			_disableBindableTypeProvidersGeneration = disableBindableTypeProvidersGeneration;
+			_enableImplicitXamlNamespaces = enableImplicitXamlNamespaces;
+			_globalClrNamespaces = globalClrNamespaces ?? Array.Empty<string>();
+			_allXmlnsDefinitions = allXmlnsDefinitions;
 
 			InitCaches();
 
@@ -2025,26 +2035,117 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			var ns = GetTrimmedNamespace(xamlType.PreferredXamlNamespace); // No MarkupExtensions are defined in the framework, so we expect a user-defined namespace
-			if (ns == xamlType.PreferredXamlNamespace)
+			if (ns != xamlType.PreferredXamlNamespace)
 			{
-				// It looks like FindType always returns null in this code path.
-				// So, we avoid the costly call here.
-				return null;
+				// If GetTrimmedNamespace returned a different string, it's a "using:"-prefixed namespace.
+				// In this case, we'll have `baseTypeString` as
+				// the fully qualified type name.
+				// In this case, we go through this code path as it's much more efficient than FindType.
+				var baseTypeString = $"{ns}.{xamlType.Name}";
+
+				// Try finding the type with "Extension" suffix first, then without
+				return FindMarkupExtensionType(baseTypeString + "Extension") ?? FindMarkupExtensionType(baseTypeString);
 			}
 
-			// If GetTrimmedNamespace returned a different string, it's a "using:"-prefixed namespace.
-			// In this case, we'll have `baseTypeString` as
-			// the fully qualified type name.
-			// In this case, we go through this code path as it's much more efficient than FindType.
-			var baseTypeString = $"{ns}.{xamlType.Name}";
+			// When implicit XAML namespaces are enabled, mirror the element-type resolution
+			// performed by SourceFindTypeByXamlType so that markup extensions declared via
+			// [assembly: XmlnsDefinition]/[assembly: XmlnsPrefix] resolve through their URI.
+			if (_enableImplicitXamlNamespaces)
+			{
+				var trimmedNamespace = xamlType.PreferredXamlNamespace.Split('?')[0];
 
-			// Try finding the type with "Extension" suffix first, then without
-			return FindMarkupExtensionType(baseTypeString + "Extension") ?? FindMarkupExtensionType(baseTypeString);
+				// Global URI (or no namespace) — search the globally registered CLR namespaces,
+				// reporting ambiguity with the same UXAML0005 diagnostic used for elements.
+				if (_globalClrNamespaces.Length > 0
+					&& (trimmedNamespace == XamlConstants.PresentationXamlXmlNamespace || string.IsNullOrEmpty(trimmedNamespace)))
+				{
+					if (FindMarkupExtensionTypeInNamespacesWithAmbiguityCheck(xamlType.Name, _globalClrNamespaces) is INamedTypeSymbol globalResult)
+					{
+						return globalResult;
+					}
+				}
+
+				// XmlnsDefinition URI not otherwise known to the generator — resolve through the
+				// CLR namespaces registered for that URI.
+				if (_allXmlnsDefinitions != null
+					&& !_knownNamespaces.ContainsKey(trimmedNamespace)
+					&& _allXmlnsDefinitions.TryGetValue(trimmedNamespace, out var xmlnsDefNamespaces)
+					&& FindMarkupExtensionTypeInNamespaces(xamlType.Name, xmlnsDefNamespaces) is INamedTypeSymbol xmlnsDefResult)
+				{
+					return xmlnsDefResult;
+				}
+			}
+
+			// It looks like FindType always returns null in this code path.
+			// So, we avoid the costly call here.
+			return null;
 		}
 
 		private INamedTypeSymbol? FindMarkupExtensionType(string fullTypeName)
 		{
 			return _metadataHelper.FindTypeByFullName(fullTypeName) is INamedTypeSymbol type && type.Is(Generation.MarkupExtensionSymbol.Value) ? type : null;
+		}
+
+		private INamedTypeSymbol? FindMarkupExtensionTypeInNamespaces(string name, string[] namespaces)
+		{
+			foreach (var @namespace in namespaces)
+			{
+				if (FindMarkupExtensionType($"{@namespace}.{name}Extension") is INamedTypeSymbol withSuffix)
+				{
+					return withSuffix;
+				}
+
+				if (FindMarkupExtensionType($"{@namespace}.{name}") is INamedTypeSymbol withoutSuffix)
+				{
+					return withoutSuffix;
+				}
+			}
+
+			return null;
+		}
+
+		private INamedTypeSymbol? FindMarkupExtensionTypeInNamespacesWithAmbiguityCheck(string name, string[] namespaces)
+		{
+			INamedTypeSymbol? firstMatch = null;
+			string? firstNamespace = null;
+			List<(string Namespace, INamedTypeSymbol Symbol)>? additionalMatches = null;
+
+			foreach (var @namespace in namespaces)
+			{
+				var match = FindMarkupExtensionType($"{@namespace}.{name}Extension")
+					?? FindMarkupExtensionType($"{@namespace}.{name}");
+
+				if (match is not null)
+				{
+					if (firstMatch is null)
+					{
+						firstMatch = match;
+						firstNamespace = @namespace;
+					}
+					else
+					{
+						additionalMatches ??= new();
+						additionalMatches.Add((@namespace, match));
+					}
+				}
+			}
+
+			if (firstMatch is not null && additionalMatches is not null)
+			{
+				var allNamespaces = new[] { firstNamespace! }
+					.Concat(additionalMatches.Select(m => m.Namespace));
+				var namespacesText = string.Join(", ", allNamespaces.Select(n => $"'{n}'"));
+
+				_generatorContext.ReportDiagnostic(
+					Diagnostic.Create(
+						XamlCodeGenerationDiagnostics.AmbiguousGlobalTypeRule,
+						Location.None,
+						$"The markup extension '{name}' was found in multiple global XAML namespaces: {namespacesText}. Use an explicit xmlns prefix to disambiguate."));
+
+				return null;
+			}
+
+			return firstMatch;
 		}
 
 		private bool IsCustomMarkupExtensionType(XamlType? xamlType) =>
