@@ -174,7 +174,7 @@ public class Given_BackgroundSizing
 		{
 			Width = 100,
 			Height = 100,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Lime),
 			BorderBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0)),
 			BorderThickness = new Thickness(20),
 			BackgroundSizing = BackgroundSizing.InnerBorderEdge
@@ -205,7 +205,7 @@ public class Given_BackgroundSizing
 		{
 			Width = 100,
 			Height = 100,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Lime),
 			BorderBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0)),
 			BorderThickness = new Thickness(20),
 			BackgroundSizing = BackgroundSizing.OuterBorderEdge
@@ -236,7 +236,7 @@ public class Given_BackgroundSizing
 		{
 			Width = 100,
 			Height = 100,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Lime),
 			BorderBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0)),
 			BorderThickness = new Thickness(20),
 			BackgroundSizing = BackgroundSizing.OuterBorderEdge
@@ -267,7 +267,7 @@ public class Given_BackgroundSizing
 		{
 			Width = 100,
 			Height = 100,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Lime),
 			BorderBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0)),
 			BorderThickness = new Thickness(20),
 			BackgroundSizing = BackgroundSizing.OuterBorderEdge
@@ -298,7 +298,7 @@ public class Given_BackgroundSizing
 		{
 			Width = 100,
 			Height = 100,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Lime),
 			BorderBrush = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0)),
 			BorderThickness = new Thickness(20),
 			CornerRadius = new CornerRadius(15),
@@ -310,7 +310,7 @@ public class Given_BackgroundSizing
 		var screenshot = await UITestHelper.ScreenShot(border);
 
 		// Center should be green (inner content area)
-		ImageAssert.HasColorAt(screenshot, 50, 50, Microsoft.UI.Colors.Green, tolerance: 20);
+		ImageAssert.HasColorAt(screenshot, 50, 50, Microsoft.UI.Colors.Lime, tolerance: 20);
 	}
 
 	[TestMethod]
@@ -320,7 +320,7 @@ public class Given_BackgroundSizing
 		{
 			Width = 100,
 			Height = 100,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Lime),
 			BorderBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0)),
 			BorderThickness = new Thickness(20),
 			BackgroundSizing = BackgroundSizing.InnerBorderEdge
