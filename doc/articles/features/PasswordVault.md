@@ -12,10 +12,26 @@ uid: Uno.Features.PasswordVault
 
 ## Supported features
 
-| Feature              | Windows | Android | iOS     | Web (WASM)  Linux (Skia) | Win 7 (Skia) | Tizen |
-|----------------------|---------|---------|---------|--------------------------|--------------|-------|
-| `PasswordVault`      | ✔       | ✔       | ✔       | ✖           | ✖            | ✖            | ✖     |
-| `PasswordCredential` | ✔       | Partial | Partial | Partial   | ✖            | ✖            | ✖     |
+| Feature              | Windows | Android | iOS     | Skia Windows | Skia macOS | Skia Linux (X11) | Web (WASM) | Tizen |
+|----------------------|---------|---------|---------|--------------|------------|------------------|------------|-------|
+| `PasswordVault`      | ✔       | ✔       | ✔       | ✔            | ✔          | ✔ (*)            | ✖          | ✖     |
+| `PasswordCredential` | ✔       | Partial | Partial | Partial      | Partial    | Partial          | Partial    | ✖     |
+
+> (*) Skia Linux support requires the `secret-tool` command from the `libsecret-tools` package. Use `Uno.Security.Credentials.PasswordVaultHelper.IsSupported()` to probe availability at runtime.
+
+## Checking runtime availability
+
+Because `PasswordVault` throws when no secure store is available on the platform (e.g. WebAssembly, or a Linux system without `libsecret`), Uno Platform provides a helper to check support at runtime:
+
+```csharp
+if (Uno.Security.Credentials.PasswordVaultHelper.IsSupported())
+{
+    var vault = new Windows.Security.Credentials.PasswordVault();
+    // ...
+}
+```
+
+This helper is a Uno-specific extension and is not part of the WinRT `PasswordVault` API.
 
 ## `PasswordVault`
 
@@ -39,6 +55,24 @@ The `PasswordVault` is directly stored in the iOS `KeyChain` which is the recomm
 It's backed by hardware components that ensure that the data is almost impossible to retrieve if not granted.
 
 For more information, see [Storing Keys in the Keychain](https://developer.apple.com/documentation/security/certificate_key_and_trust_services/keys/storing_keys_in_the_keychain).
+
+### [**Skia Windows**](#tab/SkiaWindows)
+
+On Skia Desktop for Windows (Win32 and WPF hosts), the vault is stored in the Windows [Credential Manager](https://learn.microsoft.com/windows/win32/api/wincred/) as a user-scoped generic credential.
+
+### [**Skia macOS**](#tab/SkiaMacOS)
+
+On Skia Desktop for macOS, the vault is stored in the system Keychain as a generic password item, via the Security.framework native APIs.
+
+### [**Skia Linux**](#tab/SkiaLinux)
+
+On Skia Desktop for Linux (X11 host), the vault is stored in the system Secret Service (GNOME Keyring / KWallet) via the `secret-tool` command that ships with the `libsecret-tools` package.
+
+If `secret-tool` is not installed, `PasswordVault` will not be registered and `Uno.Security.Credentials.PasswordVaultHelper.IsSupported()` will return `false`. Install the package on Debian/Ubuntu with:
+
+```bash
+sudo apt install libsecret-tools
+```
 
 ### [**WebAssembly**](#tab/WebAssembly)
 

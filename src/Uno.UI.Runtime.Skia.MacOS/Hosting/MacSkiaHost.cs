@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Runtime.Skia.MacOS.Security.Credentials;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -30,6 +31,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		MacOSFolderPickerExtension.Register();
 		MacOSLauncherExtension.Register();
 		MacOSNativeElementHostingExtension.Register();
+		MacOSPasswordVaultExtension.Register();
 		MacOSNativeWindowFactoryExtension.Register();
 		MacOSSystemThemeHelperExtension.Register();
 		MacOSNativeOpenGLWrapper.Register();

@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.ApplicationModel.DataTransfer;
+using Uno.Extensions.Security.Credentials;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Extensions.System;
 using Uno.Foundation.Extensibility;
@@ -19,6 +20,7 @@ using Uno.Helpers.Theming;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Extensions.System;
+using Uno.UI.Runtime.Skia.X11.Security.Credentials;
 using Uno.UI.Xaml.Controls;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
@@ -62,6 +64,17 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), _ => new X11NativeWindowFactoryExtension());
 
 		ApiExtensibility.Register(typeof(ILauncherExtension), o => new LinuxLauncherExtension(o));
+
+		if (LinuxPasswordVaultExtension.IsAvailable())
+		{
+			ApiExtensibility.Register(typeof(IPasswordVaultExtension), _ => new LinuxPasswordVaultExtension());
+		}
+		else if (typeof(X11ApplicationHost).Log().IsEnabled(LogLevel.Information))
+		{
+			typeof(X11ApplicationHost).Log().Info(
+				"PasswordVault is disabled: the 'secret-tool' command was not found. " +
+				"Install the 'libsecret-tools' package to enable secure credential storage.");
+		}
 
 		ApiExtensibility.Register(typeof(IClipboardExtension), _ => X11ClipboardExtension.Instance);
 
