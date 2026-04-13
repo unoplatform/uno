@@ -14,7 +14,7 @@ namespace Uno.UI.Runtime.Skia.Hosting;
 /// to schedule the callback after the corrected interval.
 /// Call <see cref="OnFrameStart"/> at the beginning of each frame.
 /// </remarks>
-internal class FramePacer
+internal class FramePacer : IDisposable
 {
 	private readonly Timer _timer;
 	private long _nextTargetTick;
@@ -35,14 +35,14 @@ internal class FramePacer
 	/// <summary>
 	/// The target interval in milliseconds (read-only snapshot; thread-safe).
 	/// </summary>
-	public double TargetIntervalMs => Volatile.Read(ref _targetIntervalTicks) / (double)Stopwatch.Frequency * 1000;
+	public double TargetIntervalMs => Interlocked.Read(ref _targetIntervalTicks) / (double)Stopwatch.Frequency * 1000;
 
 	/// <summary>
 	/// Update the target frame rate (e.g. when the display refresh rate changes).
 	/// </summary>
 	public void UpdateTargetFps(double fps)
 	{
-		Volatile.Write(ref _targetIntervalTicks, FpsToTicks(fps));
+		Interlocked.Exchange(ref _targetIntervalTicks, FpsToTicks(fps));
 	}
 
 	/// <summary>
@@ -51,7 +51,7 @@ internal class FramePacer
 	public void RequestFrame()
 	{
 		var now = Stopwatch.GetTimestamp();
-		var remainingMs = (_nextTargetTick - now) / (double)Stopwatch.Frequency * 1000;
+		var remainingMs = (Interlocked.Read(ref _nextTargetTick) - now) / (double)Stopwatch.Frequency * 1000;
 		_timer.Interval = Math.Clamp(remainingMs, 1, TargetIntervalMs);
 		_timer.Enabled = true;
 	}
@@ -65,16 +65,19 @@ internal class FramePacer
 	public void OnFrameStart()
 	{
 		var now = Stopwatch.GetTimestamp();
-		var interval = Volatile.Read(ref _targetIntervalTicks);
-		_nextTargetTick += interval;
-		if (_nextTargetTick <= now)
+		var interval = Interlocked.Read(ref _targetIntervalTicks);
+		var nextTargetTick = Interlocked.Read(ref _nextTargetTick) + interval;
+		if (nextTargetTick <= now)
 		{
-			_nextTargetTick = now + interval;
+			nextTargetTick = now + interval;
 		}
+		Interlocked.Exchange(ref _nextTargetTick, nextTargetTick);
 	}
 
 	private static long FpsToTicks(double fps)
 	{
 		return (long)(Stopwatch.Frequency / fps);
 	}
+
+	public void Dispose() => _timer.Dispose();
 }
