@@ -4,7 +4,9 @@ uid: Uno.Features.ImplicitXamlNamespaces
 
 # Implicit XAML Namespaces
 
-Uno Platform supports implicit XAML namespaces, allowing you to write XAML files without repetitive `xmlns` boilerplate declarations. This feature is inspired by .NET MAUI's global usings for XAML and is enabled by default in Uno.Sdk projects.
+Uno Platform supports implicit XAML namespaces (also known as XAML namespace mapping), allowing you to write XAML files without repetitive `xmlns` boilerplate declarations. This feature is inspired by .NET MAUI's global usings for XAML and is enabled by default in Uno.Sdk projects.
+
+Conceptually, this is the same mechanism WPF has long exposed through the `XmlnsDefinition` and `XmlnsPrefix` assembly attributes in `System.Windows.Markup`, described in [XAML Namespaces and Namespace Mapping for WPF XAML](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/xaml-namespaces-and-namespace-mapping-for-wpf-xaml). Uno Platform uses the same attributes, the same `System.Windows.Markup` namespace, and the same well-known URIs, and extends the model so that the default presentation namespace can be opted into from application and library assemblies across all Uno targets.
 
 ## Overview
 
@@ -46,9 +48,24 @@ The following namespaces are implicitly available:
 | WinUI Presentation | *(default)* | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` |
 | XAML Language | `x:` | `http://schemas.microsoft.com/winfx/2006/xaml` |
 
+## Relationship to WPF XAML Namespace Mapping
+
+If you are familiar with WPF's [XAML namespaces and namespace mapping](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/xaml-namespaces-and-namespace-mapping-for-wpf-xaml), the model used by Uno Platform will feel identical — the attribute names, the assembly namespace (`System.Windows.Markup`), and the well-known URIs are the same:
+
+| Concept | WPF | Uno Platform |
+|---------|-----|--------------|
+| Map an XML namespace URI to one or more CLR namespaces | `[assembly: XmlnsDefinition("…", "CLR.Namespace")]` | Same attribute, same usage |
+| Recommend a prefix for an XML namespace URI | `[assembly: XmlnsPrefix("…", "prefix")]` | Same attribute, same usage |
+| Default presentation namespace URI | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` (maps to WPF controls) | Same URI (maps to WinUI controls) |
+| XAML language namespace URI | `http://schemas.microsoft.com/winfx/2006/xaml` | Same URI |
+
+Developers porting from WPF, or using WPF as a mental model, can apply the same knowledge directly: assembly-level `XmlnsDefinition` and `XmlnsPrefix` attributes declare mappings, and Uno Platform honors those mappings for every Uno target (WebAssembly, Skia Desktop, Android, iOS).
+
+Uno Platform additionally defines a *global* namespace URI — `http://schemas.microsoft.com/winfx/2006/xaml/presentation/global` — which extends the WPF model. CLR namespaces mapped to this URI become part of the implicit default namespace, so their types are available unprefixed in XAML. WPF has no direct equivalent: in WPF, user assemblies cannot extend the default presentation namespace this way.
+
 ## Registering Custom Namespaces
 
-You can register your own CLR namespaces to be available globally (unprefixed) in XAML by using the `XmlnsDefinition` attribute targeting the global namespace URI:
+You can register your own CLR namespaces to be available globally (unprefixed) in XAML by using the `XmlnsDefinition` attribute targeting the global namespace URI. This is the same attribute WPF uses for [XAML namespace mapping](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/xaml-namespaces-and-namespace-mapping-for-wpf-xaml) — the difference is only the target URI:
 
 ```csharp
 [assembly: System.Windows.Markup.XmlnsDefinition(
