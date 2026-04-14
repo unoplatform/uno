@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
@@ -37,7 +38,7 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
 	public event EventHandler? CompositionEnded;
 
-	private static TextInputPlugin? Plugin => UnoSKCanvasView.Instance?.TextInputPlugin;
+	private static TextInputPlugin? Plugin => ApplicationActivity.RenderView?.TextInputPlugin;
 
 	public void StartImeSession(TextBox textBox)
 	{

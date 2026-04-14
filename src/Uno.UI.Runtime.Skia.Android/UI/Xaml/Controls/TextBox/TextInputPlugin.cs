@@ -37,7 +37,7 @@ internal sealed class TextInputPlugin
 	/// </summary>
 	internal event Action<TextInputConnection>? InputConnectionCreated;
 
-	internal TextInputPlugin(UnoSKCanvasView view)
+	internal TextInputPlugin(View view)
 	{
 		_view = view;
 		_imm = (InputMethodManager?)view.Context!.GetSystemService(Context.InputMethodService);
