@@ -35,12 +35,12 @@ internal class Win32RawElementProvider :
 	private readonly int _runtimeId;
 	private readonly bool _isRoot;
 	private readonly Win32Accessibility _accessibility;
-	private readonly AutomationPeer? _representedPeer;
+	private readonly WeakReference<AutomationPeer>? _representedPeer;
 	private IList<AutomationPeer>? _cachedAutomationChildren;
 	private const int MaxHitTestDepth = 1024;
 
 	internal UIElement Owner => _owner;
-	internal AutomationPeer? RepresentedPeer => _representedPeer;
+	internal AutomationPeer? RepresentedPeer => _representedPeer is not null && _representedPeer.TryGetTarget(out var peer) ? peer : null;
 
 	internal Win32RawElementProvider(
 		UIElement owner,
@@ -53,7 +53,7 @@ internal class Win32RawElementProvider :
 		_hwnd = hwnd;
 		_isRoot = isRoot;
 		_accessibility = accessibility;
-		_representedPeer = representedPeer;
+		_representedPeer = representedPeer is not null ? new WeakReference<AutomationPeer>(representedPeer) : null;
 		_runtimeId = _nextRuntimeId++;
 	}
 
@@ -995,8 +995,9 @@ internal class Win32RawElementProvider :
 
 	internal string DescribeElement()
 	{
-		var typeName = _representedPeer is not null && _representedPeer is not FrameworkElementAutomationPeer
-			? $"{_representedPeer.GetType().Name}->{_owner.GetType().Name}"
+		var resolvedPeer = _representedPeer is not null && _representedPeer.TryGetTarget(out var rp) ? rp : null;
+		var typeName = resolvedPeer is not null && resolvedPeer is not FrameworkElementAutomationPeer
+			? $"{resolvedPeer.GetType().Name}->{_owner.GetType().Name}"
 			: _owner.GetType().Name;
 		var automationId = AutomationProperties.GetAutomationId(_owner);
 		var name = AutomationProperties.GetName(_owner);
@@ -1111,7 +1112,8 @@ internal class Win32RawElementProvider :
 	}
 
 	private AutomationPeer? GetAutomationPeer()
-		=> _representedPeer ?? _owner.GetOrCreateAutomationPeer();
+		=> (_representedPeer is not null && _representedPeer.TryGetTarget(out var peer) ? peer : null)
+			?? _owner.GetOrCreateAutomationPeer();
 
 	private bool ContainsPoint(double screenX, double screenY)
 	{
