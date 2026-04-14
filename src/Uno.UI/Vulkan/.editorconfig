@@ -1,0 +1,7 @@
+# Ported from Avalonia - suppress code style enforcement for Vulkan interop definitions
+[*.cs]
+dotnet_diagnostic.IDE0055.severity = none
+dotnet_diagnostic.IDE0051.severity = none
+dotnet_diagnostic.IDE0044.severity = none
+dotnet_diagnostic.IDE0052.severity = none
+dotnet_diagnostic.CS0649.severity = none

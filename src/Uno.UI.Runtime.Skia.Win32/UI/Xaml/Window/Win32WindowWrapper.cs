@@ -104,9 +104,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		Win32Host.RegisterWindow(_hwnd);
 
 		_framePacer = CreateFramePacer();
-		_renderer = FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
-			? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
-			: new SoftwareRenderer(_hwnd);
+		_renderer = FeatureConfiguration.Rendering.UseVulkanOnWin32
+			? (IRenderer?)VulkanRenderer.TryCreateVulkanRenderer(_hwnd)
+				?? (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
+					? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
+					: new SoftwareRenderer(_hwnd))
+			: FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
+				? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
+				: new SoftwareRenderer(_hwnd);
 
 		RegisterForBackgroundColor();
 

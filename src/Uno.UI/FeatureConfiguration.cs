@@ -926,9 +926,30 @@ namespace Uno.UI
 			public static bool? UseOpenGLOnWin32 { get; set; }
 
 			/// <summary>
+			/// Determines if Vulkan rendering should be enabled on the X11 target.
+			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to
+			/// OpenGL (or software rendering) if Vulkan is unavailable.
+			/// </summary>
+			public static bool UseVulkanOnX11 { get; set; }
+
+			/// <summary>
+			/// Determines if Vulkan rendering should be enabled on the Win32 target.
+			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to
+			/// OpenGL (or software rendering) if Vulkan is unavailable.
+			/// </summary>
+			public static bool UseVulkanOnWin32 { get; set; }
+
+			/// <summary>
 			/// Determines if OpenGL rendering should be enabled on the Android target when using the skia renderer.
 			/// </summary>
 			public static bool UseOpenGLOnSkiaAndroid { get; set; } = true;
+
+			/// <summary>
+			/// Determines if Vulkan rendering should be enabled on the Android target when using the skia renderer.
+			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to OpenGL ES
+			/// (or software rendering) if Vulkan is unavailable.
+			/// </summary>
+			public static bool UseVulkanOnSkiaAndroid { get; set; }
 
 			/// <summary>
 			/// Enables certain optimizations that skip rendering some subtrees

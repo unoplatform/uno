@@ -227,6 +227,8 @@
         href: features/using-linux-framebuffer.md
       - name: Using Skia Desktop (macOS)
         href: xref:Uno.Skia.macOS
+      - name: Vulkan Rendering Backend
+        href: xref:Uno.Skia.Vulkan
       - name: Getting Started With Tests
         href: xref:Uno.Authoring.Tests
       - name: Logging
