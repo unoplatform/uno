@@ -75,13 +75,21 @@ internal class Program
 			return 1;
 		}
 
+		// In MCP mode, stdout is reserved for MCP protocol messages (JSON-RPC),
+		// so all diagnostic logging must go to stderr.
+		// For non-MCP commands, use the default behavior (only errors to stderr).
+		var isMcpMode = IsMcpMode(args);
+
 		var services = new ServiceCollection();
 		services.AddLogging(builder =>
 		{
 			builder.AddConsole(options =>
 			{
 				options.FormatterName = "clean";
-				options.LogToStandardErrorThreshold = LogLevel.Trace;
+				if (isMcpMode)
+				{
+					options.LogToStandardErrorThreshold = LogLevel.Trace;
+				}
 			});
 			builder.AddConsoleFormatter<CleanConsoleFormatter, ConsoleFormatterOptions>();
 
@@ -168,6 +176,12 @@ internal class Program
 		}
 		return null;
 	}
+
+	private static bool IsMcpMode(string[] args)
+		=> args.Contains("--mcp-app")
+		|| (args.Length >= 2
+			&& string.Equals(args[0], "mcp", StringComparison.OrdinalIgnoreCase)
+			&& string.Equals(args[1], "serve", StringComparison.OrdinalIgnoreCase));
 
 	private static void WriteOption(string option, string description)
 	{
