@@ -53,6 +53,11 @@ public partial class CompositionTarget
 	private bool _frameTickScheduled;
 
 	/// <summary>
+	/// Cached delegate for FrameTick scheduling to avoid per-call lambda allocation.
+	/// </summary>
+	private Action? _frameTickCallback;
+
+	/// <summary>
 	/// Re-entrancy guard for FrameTick. FrameTick can be called re-entrantly when loaded
 	/// event handlers trigger SynchronousRenderAndDraw (e.g., during Window.Show on Win32).
 	/// </summary>
@@ -118,11 +123,21 @@ public partial class CompositionTarget
 
 		if (!Interlocked.Exchange(ref _frameTickScheduled, true))
 		{
-			NativeDispatcher.Main.Enqueue(() =>
+			_frameTickCallback ??= () =>
 			{
 				Interlocked.Exchange(ref _frameTickScheduled, false);
 				FrameTick();
-			}, NativeDispatcherPriority.Render);
+			};
+
+			if (ContentRoot.XamlRoot is { } xamlRoot
+				&& XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
+			{
+				host.ScheduleFrameCallback(_frameTickCallback);
+			}
+			else
+			{
+				NativeDispatcher.Main.Enqueue(_frameTickCallback, NativeDispatcherPriority.Render);
+			}
 		}
 	}
 

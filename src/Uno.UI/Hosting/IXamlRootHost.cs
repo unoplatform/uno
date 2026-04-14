@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
+using System;
 using Microsoft.UI.Xaml;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Hosting;
 
@@ -18,7 +20,7 @@ internal interface IXamlRootHost
 	/// <summary>
 	/// When true, CompositionTarget throttles FrameTick scheduling until the host
 	/// signals that the previous frame has been presented (via OnFramePresented).
-	/// Only Win32 returns true (it has a dedicated render thread for presentation).
+	/// Platforms that return true post OnFramePresented after each present.
 	/// </summary>
 	bool SupportsRenderThrottle => false;
 
@@ -31,4 +33,12 @@ internal interface IXamlRootHost
 	/// same CLOCK_MONOTONIC source as <see cref="System.Diagnostics.Stopwatch.GetTimestamp"/>.
 	/// </summary>
 	long FrameVsyncTimestamp => 0;
+
+	/// <summary>
+	/// Schedules a callback for the next frame. Platforms can override to provide
+	/// vsync-aligned scheduling (e.g. Android Choreographer). The default dispatches
+	/// at Render priority on the main dispatcher.
+	/// </summary>
+	void ScheduleFrameCallback(Action callback)
+		=> NativeDispatcher.Main.Enqueue(callback, NativeDispatcherPriority.Render);
 }

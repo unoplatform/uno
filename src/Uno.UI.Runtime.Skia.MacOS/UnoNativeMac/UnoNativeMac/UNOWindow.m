@@ -100,11 +100,28 @@ NSWindow* uno_app_get_main_window(void)
     return YES;
 }
 
+// Safety net: suppress the system alert sound for printable character keys
+// that reach the view. The managed side (OnRawKeyDown) handles text-input
+// suppression for focused TextBox/PasswordBox controls, but if a character
+// key somehow reaches the view unhandled, we swallow it here to avoid the
+// NSResponder default keyDown: → interpretKeyEvents: → alert sound path.
+// Non-printable keys (function keys, arrows, etc.) are forwarded to super
+// so standard AppKit behavior (including the alert sound) is preserved.
+-(void) keyDown:(NSEvent *)event {
+    // Only suppress for events that produce printable characters.
+    // Non-character keys (function keys, etc.) get default handling.
+    if (event.characters.length > 0) {
+        unichar ch = [event.characters characterAtIndex:0];
+        // ASCII control characters (< 0x20) and DEL (0x7F) are non-printable
+        if (ch >= 0x20 && ch != 0x7F) {
+            return; // suppress sound for printable characters
+        }
+    }
+    [super keyDown:event];
+}
+
 -(instancetype) initWithFrame:(CGRect)frameRect device:(id<MTLDevice>)device {
     self = [super initWithFrame:frameRect device:device];
-    if (self) {
-        // TODO
-    }
     return self;
 }
 
@@ -127,8 +144,17 @@ NSWindow* uno_window_create(double width, double height)
     id device = uno_application_get_metal_device();
     if (device) {
         UNOMetalFlippedView *v = [[UNOMetalFlippedView alloc] initWithFrame:size device:device];
-        v.enableSetNeedsDisplay = YES;
+        // Disable MTKView auto-draw. Frame rendering is driven by the managed
+        // render thread via uno_window_acquire_next_frame / uno_window_present_frame.
+        v.paused = YES;
+        v.enableSetNeedsDisplay = NO;
         v.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+
+        // Double-buffering (2 drawables) instead of the default triple-buffering (3).
+        // Reduces frame latency by one VSync interval while the render thread is
+        // already throttled by the UI thread's FrameTick scheduling.
+        CAMetalLayer* metalLayer = (CAMetalLayer*)v.layer;
+        metalLayer.maximumDrawableCount = 2;
         window.metalViewDelegate = [[UNOMetalViewDelegate alloc] initWithMetalKitView:v];
         v.delegate = window.metalViewDelegate;
         window.renderingView = v;

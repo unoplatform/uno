@@ -45,7 +45,6 @@ typedef NS_ENUM(sint32, OverlappedPresenterState) {
 @property OverlappedPresenterState overlappedPresenterState;
 
 - (void)sendEvent:(NSEvent *)event;
-- (BOOL)performKeyEquivalent:(NSEvent *)event;
 
 - (void)windowWillMiniaturize:(NSNotification *)notification;
 - (void)windowDidMiniaturize:(NSNotification *)notification;
@@ -344,6 +343,14 @@ window_close_fn_ptr uno_get_window_close_callback(void);
 void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, window_close_fn_ptr close);
 
 void uno_window_get_metal_handles(UNOWindow* window, void*_Nonnull* _Nonnull device, void*_Nonnull* _Nonnull queue);
+
+/// Acquires the next drawable from the MTKView and returns its texture handle and size.
+/// Called from the managed render thread.
+bool uno_window_acquire_next_frame(NSWindow* window, void* _Nullable * _Nonnull texture, double* width, double* height);
+
+/// Presents the previously acquired drawable via a Metal command buffer.
+/// Called from the managed render thread after drawing is complete.
+void uno_window_present_frame(NSWindow* window);
 
 typedef void (*window_did_change_screen_fn_ptr)(NSWindow* window, uint32 width, uint32 height, CGFloat backingScaleFactor);
 window_did_change_screen_fn_ptr uno_get_window_did_change_screen_callback(void);
