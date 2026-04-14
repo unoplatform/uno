@@ -13,13 +13,13 @@ How each launcher interacts with the Host, and what changes when `--addins` is i
 
 | Launcher | Launches Host Via | Uses `--command start` | Passes `--addins` | AmbientRegistry Check | `.csproj.user` Write | Status |
 |----------|-------------------|:----------------------:|:------------------:|:---------------------:|:--------------------:|--------|
-| CLI `start` | Controller → Server | Yes | **Phase 0** | Yes (controller) | Yes (controller: `Program.Command.cs:101`) | Changing |
+| CLI `start` | CLI → Direct | **No** (direct launch) | Yes (`StartCommandHandler`) | Yes (CLI: `StartCommandHandler`) | Yes (CLI-side, pending) | **Implemented** |
 | CLI MCP (`--mcp-app`) | Controller (Phase 0); Direct (Phase 1b) | Phase 0: Yes; Phase 1b: No | **Phase 0** | **Must add** (1g-bis) | Phase 0: controller writes it; Phase 1b: **must re-implement** CLI-side | Changing |
 | VS (`uno.studio`) | `DevServerLauncher` → Direct | No | No (future) | **None today** | Yes (VS extension: `DevServerLauncher.cs:187`) | Unchanged |
 | Rider (`uno.rider`) | `DevServerService` → Direct | No | No (future) | **None today** | Yes (Rider extension: `DevServerService.cs:79`) | Unchanged |
 | VS Code (`uno.vscode`) | `extension.ts` → Direct | No | No (future) | **None today** | Yes (VS Code extension: `unoDebugConfigurationProvider.ts:226`) | Unchanged |
 
-> **Note**: The Host server-mode process (`Program.cs`) does **NOT** write `.csproj.user`. It only registers in AmbientRegistry (`Program.cs:221`). Each launcher is responsible for writing `.csproj.user` independently: the controller does it for CLI `start`, and each IDE extension does it for their own launch path.
+> **Note**: The Host server-mode process (`Program.cs`) does **NOT** write `.csproj.user`. It only registers in AmbientRegistry (`Program.cs:221`). Each launcher is responsible for writing `.csproj.user` independently: the CLI `StartCommandHandler` does it for CLI `start` (previously the controller), and each IDE extension does it for their own launch path.
 
 ### Risks
 
@@ -36,7 +36,7 @@ How each launcher interacts with the Host, and what changes when `--addins` is i
 - [ ] Host launched **with** `--addins` → MSBuild discovery skipped, provided paths used
 - [ ] Host launched **with** `--addins ""` (empty) → no add-ins loaded, no discovery
 - [ ] Host launched with both `--addins` and `--solution` → `--addins` for add-ins, `--solution` for Hot Reload
-- [ ] Controller launched with `--addins` → forwards `--addins` to child server process (Phase 0 requirement)
+- [ ] CLI `start` passes `--addins` directly to host in direct mode (no controller involved)
 - [ ] AmbientRegistry: controller pre-checks before starting (existing behavior preserved)
 - [ ] AmbientRegistry: server-mode Host only registers, does NOT pre-check (known limitation)
 
