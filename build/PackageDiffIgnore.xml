@@ -2166,6 +2166,7 @@
 		  <!-- END AutomationPeer API alignment -->
 
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Layout.InvalidateMeasure()" reason="protected to protected internal" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.OnBackgroundSizingChanged(Microsoft.UI.Xaml.Controls.BackgroundSizing oldBackgroundSizing, Microsoft.UI.Xaml.Controls.BackgroundSizing newBackgroundSizing)" reason="BackgroundSizing support" />
 	  </Methods>
 	</IgnoreSet>
 	<![CDATA[
