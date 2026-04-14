@@ -200,7 +200,10 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 		var wasComposing = AppleUIKitImeTextBoxExtension.Instance.IsComposing;
 		base.InsertText(text);
 
-		if (wasComposing || !_settingTextFromManaged)
+		// Only fire composition events when completing an active IME composition
+		// (SetMarkedText was called first). Regular native keystrokes and
+		// BecomeFirstResponder's silent text restore should not trigger composition.
+		if (wasComposing)
 		{
 			AppleUIKitImeTextBoxExtension.Instance.OnInsertText(text);
 		}
