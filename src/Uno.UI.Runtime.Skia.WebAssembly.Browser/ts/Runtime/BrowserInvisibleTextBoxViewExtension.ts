@@ -160,7 +160,13 @@
 			});
 
 			input.addEventListener("compositionupdate", (ev: CompositionEvent) => {
-				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(ev.data, ev.data.length);
+				// Use input.selectionStart for cursor position when available,
+				// as the IME may place the caret within the preedit string.
+				const selectionStart = input.selectionStart;
+				const cursorPosition = selectionStart === null
+					? ev.data.length
+					: Math.max(0, Math.min(selectionStart, ev.data.length));
+				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(ev.data, cursorPosition);
 			});
 
 			input.addEventListener("compositionend", (ev: CompositionEvent) => {
