@@ -2444,6 +2444,7 @@
 
 		  <!-- AppExtensions / AppInfo / AppListEntry / AppInstallerInfo: heavy preview restructure -->
 		  <Member fullName="System.String Windows.ApplicationModel.AppExtensions.AppExtension::AppUserModelId()" reason="WinUI sync: AppExtension.AppUserModelId removed by WinAppSDK 1.8" />
+		  <Member fullName="System.String[] Windows.ApplicationModel.AppInfo::SupportedFileExtensions()" reason="WinUI sync: AppInfo.SupportedFileExtensions removed by WinAppSDK 1.8" />
 		  <Member fullName="Windows.ApplicationModel.AppInfo Windows.ApplicationModel.Core.AppListEntry::AppInfo()" reason="WinUI sync: AppListEntry.AppInfo removed by WinAppSDK 1.8 (use Package.Current.Id)" />
 		  <!-- AppInstallerInfo: 15 properties trimmed in WinAppSDK 1.8 (preview install-policy/auto-update surface restructured). -->
 		  <Member fullName="System.Boolean Windows.ApplicationModel.AppInstallerInfo::AutomaticBackgroundTask()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
@@ -2704,6 +2705,7 @@
 
 		  <!-- AppExtension / AppListEntry / AppInstallerInfo accessors (paired with Cat C properties) -->
 		  <Member fullName="System.String Windows.ApplicationModel.AppExtensions.AppExtension.get_AppUserModelId()" reason="WinUI sync: AppExtension.AppUserModelId removed by WinAppSDK 1.8" />
+		  <Member fullName="System.String[] Windows.ApplicationModel.AppInfo.get_SupportedFileExtensions()" reason="WinUI sync: AppInfo.SupportedFileExtensions removed by WinAppSDK 1.8" />
 		  <Member fullName="Windows.ApplicationModel.AppInfo Windows.ApplicationModel.Core.AppListEntry.get_AppInfo()" reason="WinUI sync: AppListEntry.AppInfo removed by WinAppSDK 1.8" />
 		  <Member fullName="System\.Boolean Windows\.ApplicationModel\.AppInstallerInfo\.get_(AutomaticBackgroundTask|ForceUpdateFromAnyVersion|IsAutoRepairEnabled|OnLaunch|ShowPrompt|UpdateBlocksActivation)\(\)" reason="WinUI sync: AppInstallerInfo bool getter trim (preview)" isRegex="true" />
 		  <Member fullName="System\.Collections\.Generic\.IReadOnlyList`1&lt;System\.Uri&gt; Windows\.ApplicationModel\.AppInstallerInfo\.get_(DependencyPackage|OptionalPackage|Repair|Update)Uris\(\)" reason="WinUI sync: AppInstallerInfo URI list getter trim (preview)" isRegex="true" />
