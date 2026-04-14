@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Media
 	public partial class DoubleCollection : global::System.Collections.Generic.IList<double>, global::System.Collections.Generic.ICollection<double>, global::System.Collections.Generic.IEnumerable<double>, global::System.Collections.IEnumerable
 	{
 		// Skipping already declared property Count
-		// Skipping collection property provided by base class: IsReadOnly
+		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.DoubleCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.DoubleCollection()

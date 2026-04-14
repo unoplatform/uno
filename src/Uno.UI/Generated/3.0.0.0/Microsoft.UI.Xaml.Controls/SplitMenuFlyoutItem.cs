@@ -3,73 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-	[global::Microsoft.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Items")]
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SplitMenuFlyoutItem : global::Microsoft.UI.Xaml.Controls.MenuFlyoutItem
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SubMenuItemStyleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(SubMenuItemStyle), typeof(global::Microsoft.UI.Xaml.Style),
-			typeof(global::Microsoft.UI.Xaml.Controls.SplitMenuFlyoutItem),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Style)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SubMenuPresenterStyleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(SubMenuPresenterStyle), typeof(global::Microsoft.UI.Xaml.Style),
-			typeof(global::Microsoft.UI.Xaml.Controls.SplitMenuFlyoutItem),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Style)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase> Items
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<MenuFlyoutItemBase> SplitMenuFlyoutItem.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CMenuFlyoutItemBase%3E%20SplitMenuFlyoutItem.Items");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Style SubMenuItemStyle
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Style)this.GetValue(SubMenuItemStyleProperty);
-			}
-			set
-			{
-				this.SetValue(SubMenuItemStyleProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Style SubMenuPresenterStyle
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Style)this.GetValue(SubMenuPresenterStyleProperty);
-			}
-			set
-			{
-				this.SetValue(SubMenuPresenterStyleProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public SplitMenuFlyoutItem() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.SplitMenuFlyoutItem", "SplitMenuFlyoutItem.SplitMenuFlyoutItem()");
-		}
-#endif
+		// Skipping already declared property SubMenuItemStyleProperty
+		// Skipping already declared property SubMenuPresenterStyleProperty
+		// Skipping already declared property Items
+		// Skipping already declared property SubMenuItemStyle
+		// Skipping already declared property SubMenuPresenterStyle
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.SplitMenuFlyoutItem.SplitMenuFlyoutItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitMenuFlyoutItem.SplitMenuFlyoutItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitMenuFlyoutItem.SubMenuItemStyleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitMenuFlyoutItem.SubMenuPresenterStyleProperty.get

@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	public partial class TransitionCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Animation.Transition>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Media.Animation.Transition>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Animation.Transition>, global::System.Collections.IEnumerable
 	{
 		// Skipping already declared property Count
-		// Skipping collection property provided by base class: IsReadOnly
+		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.TransitionCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.TransitionCollection()
