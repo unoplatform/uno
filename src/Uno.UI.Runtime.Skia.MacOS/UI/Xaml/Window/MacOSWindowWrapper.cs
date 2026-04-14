@@ -5,6 +5,7 @@ using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
+using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -21,6 +22,9 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		nativeWindow.Host.SizeChanged += (_, s) => OnHostSizeChanged(s);
 		OnHostSizeChanged(initialSize);
 		nativeWindow.Host.PositionChanged += (_, s) => OnHostPositionChanged(s.X, s.Y);
+		nativeWindow.Host.ActivationChanged += (_, isKey) =>
+			ActivationState = isKey ? CoreWindowActivationState.PointerActivated : CoreWindowActivationState.Deactivated;
+		nativeWindow.Host.VisibilityChanged += (_, isVisible) => IsVisible = isVisible;
 		// the initial event occurred before the managed side was ready to handle it
 		NativeUno.uno_window_get_position(nativeWindow.Handle, out var x, out var y);
 		OnHostPositionChanged(x, y);
