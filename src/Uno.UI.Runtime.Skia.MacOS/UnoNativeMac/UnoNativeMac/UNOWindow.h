@@ -51,6 +51,9 @@ typedef NS_ENUM(sint32, OverlappedPresenterState) {
 - (void)windowDidMiniaturize:(NSNotification *)notification;
 - (void)windowDidDeminiaturize:(NSNotification *)notification;
 
+- (void)windowDidBecomeKey:(NSNotification *)notification;
+- (void)windowDidResignKey:(NSNotification *)notification;
+
 - (BOOL)windowShouldZoom:(NSWindow *)window toFrame:(NSRect)newFrame;
 - (void)windowDidMove:(NSNotification *)notification;
 - (bool)windowShouldClose:(NSWindow *)sender;
@@ -342,6 +345,14 @@ typedef void (*window_close_fn_ptr)(UNOWindow* window);
 window_close_fn_ptr uno_get_window_close_callback(void);
 
 void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, window_close_fn_ptr close);
+
+typedef void (*window_activation_fn_ptr)(UNOWindow* window, bool isKey);
+window_activation_fn_ptr uno_get_window_activation_callback(void);
+
+typedef void (*window_visibility_fn_ptr)(UNOWindow* window, bool isVisible);
+window_visibility_fn_ptr uno_get_window_visibility_callback(void);
+
+void uno_set_window_state_callbacks(window_activation_fn_ptr activation, window_visibility_fn_ptr visibility);
 
 void uno_window_get_metal_handles(UNOWindow* window, void*_Nonnull* _Nonnull device, void*_Nonnull* _Nonnull queue);
 

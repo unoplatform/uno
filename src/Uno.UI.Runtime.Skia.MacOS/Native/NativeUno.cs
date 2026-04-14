@@ -236,6 +236,11 @@ internal static partial class NativeUno
 		delegate* unmanaged[Cdecl]<nint, void> closeCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_window_state_callbacks(
+		delegate* unmanaged[Cdecl]<nint, byte, void> activationCallback,
+		delegate* unmanaged[Cdecl]<nint, byte, void> visibilityCallback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_window_enter_full_screen(nint window);
 

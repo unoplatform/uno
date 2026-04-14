@@ -262,6 +262,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SIZE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
+				UpdateVisibilityFromWmSize(wParam);
 				UpdateWindowState(wParam);
 				return new LRESULT(0);
 			case PInvoke.WM_MOVE:
@@ -474,15 +475,26 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private void OnWmActivate(WPARAM wParam)
 	{
+		// HIWORD(wParam) is non-zero when the window is minimized. WinUI suppresses non-Deactivated
+		// activation events while minimized so consumers don't observe the window as "activated"
+		// when it is not visible (see microsoft-ui-xaml DesktopWindowImpl::OnActivate).
+		var isWindowMinimized = Win32Helper.HIWORD(wParam) != 0;
+
 		switch ((uint)Win32Helper.LOWORD(wParam))
 		{
 			case PInvoke.WA_ACTIVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_ACTIVE)}");
-				ActivationState = CoreWindowActivationState.CodeActivated;
+				if (!isWindowMinimized)
+				{
+					ActivationState = CoreWindowActivationState.CodeActivated;
+				}
 				break;
 			case PInvoke.WA_CLICKACTIVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_CLICKACTIVE)}");
-				ActivationState = CoreWindowActivationState.PointerActivated;
+				if (!isWindowMinimized)
+				{
+					ActivationState = CoreWindowActivationState.PointerActivated;
+				}
 				break;
 			case PInvoke.WA_INACTIVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_INACTIVE)}");
@@ -490,6 +502,22 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				break;
 			default:
 				this.LogError()?.Error($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message but LOWORD(wParam) is {Win32Helper.LOWORD(wParam)}, not {nameof(PInvoke.WA_ACTIVE)}, {nameof(PInvoke.WA_CLICKACTIVE)} or {nameof(PInvoke.WA_INACTIVE)}.");
+				break;
+		}
+	}
+
+	private void UpdateVisibilityFromWmSize(WPARAM wParam)
+	{
+		// WM_SIZE wParam values are documented at https://learn.microsoft.com/windows/win32/winmsg/wm-size.
+		// SIZE_MINIMIZED -> window is no longer visible; SIZE_RESTORED / SIZE_MAXIMIZED -> window becomes visible.
+		switch ((uint)wParam.Value)
+		{
+			case PInvoke.SIZE_MINIMIZED:
+				IsVisible = false;
+				break;
+			case PInvoke.SIZE_RESTORED:
+			case PInvoke.SIZE_MAXIMIZED:
+				IsVisible = true;
 				break;
 		}
 	}

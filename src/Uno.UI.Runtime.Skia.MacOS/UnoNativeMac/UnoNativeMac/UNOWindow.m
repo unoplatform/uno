@@ -761,6 +761,26 @@ void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, wind
     window_close = close;
 }
 
+static window_activation_fn_ptr window_activation;
+
+inline window_activation_fn_ptr uno_get_window_activation_callback(void)
+{
+    return window_activation;
+}
+
+static window_visibility_fn_ptr window_visibility;
+
+inline window_visibility_fn_ptr uno_get_window_visibility_callback(void)
+{
+    return window_visibility;
+}
+
+void uno_set_window_state_callbacks(window_activation_fn_ptr activation, window_visibility_fn_ptr visibility)
+{
+    window_activation = activation;
+    window_visibility = visibility;
+}
+
 void uno_window_get_metal_handles(UNOWindow* window, void** device, void** queue)
 {
     *device = (__bridge void *)(uno_application_get_metal_device());
@@ -1212,6 +1232,10 @@ NSOperatingSystemVersion _osVersion;
     NSLog(@"UNOWindow %p windowDidMiniaturize %@", self, notification);
 #endif
     self.overlappedPresenterState = OverlappedPresenterStateMinimized;
+    window_visibility_fn_ptr visibilityCallback = uno_get_window_visibility_callback();
+    if (visibilityCallback != NULL) {
+        visibilityCallback(self, false);
+    }
 }
 
 - (void)windowDidDeminiaturize:(NSNotification *)notification {
@@ -1219,6 +1243,30 @@ NSOperatingSystemVersion _osVersion;
     NSLog(@"UNOWindow %p windowDidDeminiaturize %@", self, notification);
 #endif
     self.overlappedPresenterState = OverlappedPresenterStateRestored;
+    window_visibility_fn_ptr visibilityCallback = uno_get_window_visibility_callback();
+    if (visibilityCallback != NULL) {
+        visibilityCallback(self, true);
+    }
+}
+
+- (void)windowDidBecomeKey:(NSNotification *)notification {
+#if DEBUG
+    NSLog(@"UNOWindow %p windowDidBecomeKey %@", self, notification);
+#endif
+    window_activation_fn_ptr activationCallback = uno_get_window_activation_callback();
+    if (activationCallback != NULL) {
+        activationCallback(self, true);
+    }
+}
+
+- (void)windowDidResignKey:(NSNotification *)notification {
+#if DEBUG
+    NSLog(@"UNOWindow %p windowDidResignKey %@", self, notification);
+#endif
+    window_activation_fn_ptr activationCallback = uno_get_window_activation_callback();
+    if (activationCallback != NULL) {
+        activationCallback(self, false);
+    }
 }
 
 - (BOOL)windowShouldZoom:(NSWindow *)window toFrame:(NSRect)newFrame {

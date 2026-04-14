@@ -196,6 +196,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		NativeUno.uno_set_window_close_callbacks(&WindowShouldClose, &WindowClose);
 
+		NativeUno.uno_set_window_state_callbacks(&WindowActivationChanged, &WindowVisibilityChanged);
+
 		NativeUno.uno_set_window_screen_change_callbacks(&ScreenChanged, &ScreenParametersChanged);
 		ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new MacOSDisplayInformationExtension(o));
 	}
@@ -551,6 +553,40 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				window._nativeWindow.Destroyed();
 				window.Closed?.Invoke(window, EventArgs.Empty);
 			}
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	// Activation / visibility
+
+	internal event EventHandler<bool>? ActivationChanged;
+
+	internal event EventHandler<bool>? VisibilityChanged;
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	internal static void WindowActivationChanged(nint handle, byte isKey)
+	{
+		try
+		{
+			var window = GetWindowHost(handle);
+			window?.ActivationChanged?.Invoke(window, isKey != 0);
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	internal static void WindowVisibilityChanged(nint handle, byte isVisible)
+	{
+		try
+		{
+			var window = GetWindowHost(handle);
+			window?.VisibilityChanged?.Invoke(window, isVisible != 0);
 		}
 		catch (Exception e)
 		{
