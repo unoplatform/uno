@@ -111,11 +111,7 @@ public partial class TextBox
 		}
 
 		TrySetCurrentlyTyping(true);
-		if (textAlreadyApplied)
-		{
-			_platformTextApplyInProgress = true;
-		}
-		else
+		if (!textAlreadyApplied)
 		{
 			ReplaceCompositionText(committedText);
 		}
