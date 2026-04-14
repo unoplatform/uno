@@ -51,31 +51,58 @@ public partial class ResourceQualifier
 	#region Language helpers
 
 	private static HashSet<string> _languageTags;
+	private static readonly object _languageTagsLock = new();
 	private static HashSet<string> LanguageTags
 	{
 		get
 		{
-			if (_languageTags == null)
+			lock (_languageTagsLock)
 			{
-				var cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
-				var ietfLanguageTags = cultures.Select(c => c.IetfLanguageTag);
-				var ietfLanguageParentTags = cultures.Select(c => c.Parent.IetfLanguageTag);
-				var twoLetterLanguageTags = cultures.Select(c => c.TwoLetterISOLanguageName);
+				if (_languageTags == null)
+				{
+					var cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
+					var ietfLanguageTags = cultures.Select(c => c.IetfLanguageTag);
+					var ietfLanguageParentTags = cultures.Select(c => c.Parent.IetfLanguageTag);
+					var twoLetterLanguageTags = cultures.Select(c => c.TwoLetterISOLanguageName);
 
-				var allCulture = Enumerable.Concat(
-					ietfLanguageTags,
-					twoLetterLanguageTags.Concat(ietfLanguageParentTags));
+					var allCulture = Enumerable.Concat(
+						ietfLanguageTags,
+						twoLetterLanguageTags.Concat(ietfLanguageParentTags));
 
-				_languageTags = new HashSet<string>(allCulture.Distinct(), StringComparer.InvariantCultureIgnoreCase);
+					_languageTags = new HashSet<string>(allCulture.Distinct(), StringComparer.InvariantCultureIgnoreCase);
+				}
+
+				return _languageTags;
 			}
-
-			return _languageTags;
 		}
 	}
 
 	private static bool IsLanguageTag(string str)
 	{
-		return LanguageTags.Contains(str);
+		if (LanguageTags.Contains(str))
+		{
+			return true;
+		}
+
+		// Fallback: CultureInfo.GetCultures may not enumerate all valid cultures
+		// on all platforms (e.g., macOS/Linux ICU may use different IETF tags like
+		// zh-Hans-CN instead of zh-CN, or may omit cultures like kok-IN, quz-PE).
+		// Try to create the culture directly as a fallback.
+		try
+		{
+			_ = CultureInfo.GetCultureInfo(str);
+
+			lock (_languageTagsLock)
+			{
+				LanguageTags.Add(str);
+			}
+
+			return true;
+		}
+		catch (CultureNotFoundException)
+		{
+			return false;
+		}
 	}
 
 	#endregion
