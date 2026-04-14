@@ -252,7 +252,7 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 		var point = transform.TransformPoint(new Windows.Foundation.Point(rect.Left, rect.Top + rect.Height));
 		var scale = textBox.XamlRoot.RasterizationScale;
 
-		UpdateSpotLocation((short)(point.X * scale), (short)(point.Y * scale));
+		UpdateSpotLocation((int)(point.X * scale), (int)(point.Y * scale));
 	}
 
 	/// <summary>
