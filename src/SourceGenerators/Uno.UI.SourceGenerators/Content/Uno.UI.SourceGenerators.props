@@ -62,6 +62,8 @@
 		<CompilerVisibleProperty Include="BuildingProject" />
 		<CompilerVisibleProperty Include="DesignTimeBuild" />
 		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
+		<CompilerVisibleProperty Include="UnoXamlCSharpExpressionsEnabled" />
+		<CompilerVisibleProperty Include="IsWinAppSdk" />
 		<CompilerVisibleProperty Include="BuildingInsideVisualStudio" />
 		<CompilerVisibleProperty Include="UnoPlatformIDE" />
 		<CompilerVisibleProperty Include="IsHotReloadHost" />

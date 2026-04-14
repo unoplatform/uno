@@ -21,6 +21,7 @@ using Uno.MsBuildTasks.Utils;
 using Uno.Roslyn;
 using Uno.UI.SourceGenerators.BindableTypeProviders;
 using Uno.UI.SourceGenerators.Helpers;
+using Uno.UI.SourceGenerators.XamlGenerator.CSharpExpressions;
 using Uno.UI.SourceGenerators.Utils;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
@@ -131,6 +132,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Context to report diagnostics to
 		/// </summary>
 		private readonly GeneratorExecutionContext _generatorContext;
+
+		/// <summary>
+		/// Cached value of the <c>UnoXamlCSharpExpressionsEnabled</c> MSBuild opt-in property.
+		/// </summary>
+		private readonly bool _isCSharpExpressionsFeatureEnabled;
+
+		/// <summary>
+		/// Cached value of <see cref="PlatformHelper.IsWinAppSdk"/>.
+		/// Used to short-circuit the XAML C# expressions feature with UNO2099 on WinAppSDK targets.
+		/// </summary>
+		private readonly bool _isWinAppSdk;
 
 		/// <summary>
 		/// The current DefaultBindMode for x:Bind bindings, as set by app code for the current Xaml subtree.
@@ -252,6 +264,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
 			_enableFuzzyMatching = enableFuzzyMatching;
 			_generatorContext = generatorContext;
+			_isCSharpExpressionsFeatureEnabled = CSharpExpressionOptions.IsEnabled(generatorContext);
+			_isWinAppSdk = PlatformHelper.IsWinAppSdk(generatorContext);
 			_xamlResourcesTrimming = xamlResourcesTrimming;
 			_xamlTypeToXamlTypeBaseMap = xamlTypeToXamlTypeBaseMap;
 			_includeXamlNamespaces = includeXamlNamespaces;
@@ -1919,6 +1933,34 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Is <paramref name="valueNode"/> the kind of thing that involves squiggly brackets?
 		/// </summary>
+		/// <summary>
+		/// Feature 004 (XAML C# expressions) entry point. Invoked before the legacy
+		/// <see cref="HasMarkupExtension"/> branch so opt-in directive forms
+		/// (<c>{= ...}</c>, <c>{.Member}</c>, <c>{this.Member}</c>) are gated by
+		/// <c>UnoXamlCSharpExpressionsEnabled</c> and by the WinAppSDK exclusion.
+		/// Returns <c>true</c> if the classifier emitted a diagnostic or handled the
+		/// attribute; callers must skip further processing in that case.
+		/// </summary>
+		private bool TryHandleCSharpExpression(XamlMemberDefinition member)
+		{
+			if (member.Value is not string rawText)
+			{
+				return false;
+			}
+
+			var outcome = CSharpExpressionClassifier.TryClassify(
+				rawText,
+				member.Member.Name,
+				member.FilePath,
+				member.LineNumber,
+				member.LinePosition,
+				_isCSharpExpressionsFeatureEnabled,
+				_isWinAppSdk,
+				_generatorContext);
+
+			return outcome != ClassificationOutcome.FallThrough;
+		}
+
 		private bool HasMarkupExtension(XamlMemberDefinition? valueNode)
 		{
 			// Return false if the Owner is a custom markup extension
@@ -3225,7 +3267,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							TryExtractAutomationId(member, extractionTargetMembers, ref uiAutomationId);
 						}
 
-						if (HasMarkupExtension(member))
+						if (TryHandleCSharpExpression(member))
+						{
+							// Feature 004: classifier emitted a diagnostic (UNO2020 / UNO2099) or lowered the
+							// expression into the existing binding pipeline. Skip the legacy branches below.
+						}
+						else if (HasMarkupExtension(member))
 						{
 							if (!IsXLoadMember(member))
 							{

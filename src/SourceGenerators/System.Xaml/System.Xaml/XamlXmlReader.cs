@@ -394,7 +394,14 @@ namespace Uno.Xaml
 					// Try markup extension
 					// FIXME: is this rule correct?
 					var v = pair.Value;
-					if (!string.IsNullOrEmpty(v) && v[0] == '{' && v.ElementAtOrDefault(1) != '}')
+					// Uno feature 004 (XAML C# expressions): unambiguous opt-in directive forms
+					// ({= ...}, {.Member}, {this.Member}) are NEVER valid markup extensions. Bypass
+					// the markup-extension parser so the classifier downstream receives the raw
+					// attribute text and can emit UNO2020 / UNO2099. The classifier itself is gated
+					// by the UnoXamlCSharpExpressionsEnabled MSBuild property; here we only
+					// suppress the parse that would otherwise turn into a misleading XAML error.
+					var isUnoCSharpExpressionDirective = IsUnoCSharpExpressionDirective(v);
+					if (!string.IsNullOrEmpty(v) && v[0] == '{' && v.ElementAtOrDefault(1) != '}' && !isUnoCSharpExpressionDirective)
 					{
 						IEnumerable<XamlXmlNodeInfo> ProcessArgs(ParsedMarkupExtensionInfo info)
 						{
@@ -461,6 +468,45 @@ namespace Uno.Xaml
 
 		private static string CleanupBindingEscape(string value)
 			=> value.StartsWith("{}", StringComparison.Ordinal) ? value.Substring(2) : value;
+
+		/// <summary>
+		/// Uno feature 004 (XAML C# expressions): detects the unambiguous opt-in directive prefixes
+		/// — <c>{= ...}</c>, <c>{.Member...}</c>, <c>{this.Member...}</c>. These never resolve as
+		/// markup extensions. Recognising them here lets Uno's downstream classifier receive the
+		/// raw attribute text and emit the appropriate UNO2xxx diagnostic.
+		/// </summary>
+		private static bool IsUnoCSharpExpressionDirective(string value)
+		{
+			if (string.IsNullOrEmpty(value) || value.Length < 3 || value[0] != '{' || value[value.Length - 1] != '}')
+			{
+				return false;
+			}
+
+			// {= ...}
+			if (value[1] == '=')
+			{
+				return true;
+			}
+
+			// {.Member...}
+			if (value[1] == '.' && value.Length > 2 && IsCSharpIdentifierStart(value[2]))
+			{
+				return true;
+			}
+
+			// {this.Member...}
+			const string ThisPrefix = "{this.";
+			if (value.Length > ThisPrefix.Length
+				&& value.StartsWith(ThisPrefix, StringComparison.Ordinal)
+				&& IsCSharpIdentifierStart(value[ThisPrefix.Length]))
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		private static bool IsCSharpIdentifierStart(char c) => char.IsLetter(c) || c == '_';
 
 		IEnumerable<XamlXmlNodeInfo> ReadMembers (XamlType parentType, XamlType xt)
 		{
