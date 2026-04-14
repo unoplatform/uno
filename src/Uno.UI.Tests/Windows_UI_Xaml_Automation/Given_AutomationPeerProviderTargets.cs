@@ -17,6 +17,12 @@ public class Given_AutomationPeerProviderTargets
 	{
 		var listView = CreateListView("One");
 		var container = (ListViewItem)listView.ContainerFromIndex(0);
+
+		// Drive the automation tree so EventsSource is wired on container peers.
+		// ListView lacks an OnCreateAutomationPeer override, so construct directly.
+		var listPeer = new ListViewAutomationPeer(listView);
+		listPeer.GetChildren();
+
 		var containerPeer = FrameworkElementAutomationPeer.CreatePeerForElement(container);
 
 		Assert.IsNotNull(containerPeer, "Container peer should exist for the realized ListViewItem.");
@@ -33,7 +39,9 @@ public class Given_AutomationPeerProviderTargets
 	public void When_ListViewChildren_Are_Resolved_Then_ProviderOwners_Are_DistinctContainers()
 	{
 		var listView = CreateListView("One", "Two");
-		var listPeer = FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+
+		// ListView lacks an OnCreateAutomationPeer override, so construct directly.
+		var listPeer = new ListViewAutomationPeer(listView);
 
 		Assert.IsNotNull(listPeer, "ListView peer should exist after loading the control.");
 
