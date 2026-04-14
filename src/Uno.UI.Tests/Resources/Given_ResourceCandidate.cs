@@ -75,6 +75,16 @@ namespace Uno.UI.Tests.Resources
 		[DataRow(@"Strings\language-ca-Es-VALENCIA\Resources.resw", @"Strings\Resources.resw", null, "ca-Es-VALENCIA", null)]
 		[DataRow(@"Strings\language-zh-Hans\Resources.resw", @"Strings\Resources.resw", null, "zh-Hans", null)]
 		[DataRow(@"Strings\language-quz-PE\Resources.resw", @"Strings\Resources.resw", null, "quz-PE", null)]
+		// MRT: bare BCP-47 language tags are only allowed as folder names.
+		// File-name segments must carry the explicit `lang-` / `language-`
+		// prefix — otherwise arbitrary filenames whose first subtag happens
+		// to be a valid ISO 639 code (e.g. `uno` = Quechua, `eng` = English)
+		// would be misclassified as language qualifiers.
+		[DataRow(@"Assets\Formats\uno-overalls.png", @"Assets\Formats\uno-overalls.png", null, null, null)]
+		[DataRow(@"Assets\Formats\uno-overalls.gif", @"Assets\Formats\uno-overalls.gif", null, null, null)]
+		[DataRow(@"Assets\Formats\uno-overalls.jpg", @"Assets\Formats\uno-overalls.jpg", null, null, null)]
+		[DataRow(@"Assets\eng-extension.png", @"Assets\eng-extension.png", null, null, null)]
+		[DataRow(@"Assets\logo.en.png", @"Assets\logo.en.png", null, null, null)]
 		[TestMethod]
 		public void When_Parse(string relativePath, string logicalPath, string scale, string language, string custom)
 		{

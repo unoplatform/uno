@@ -41,9 +41,17 @@ public partial class ResourceQualifier
 
 	public string QualifierValue { get; }
 
-	internal static ResourceQualifier Parse(string str)
+	internal static ResourceQualifier Parse(string str) => Parse(str, allowBareLanguageTag: true);
+
+	// `allowBareLanguageTag` mirrors the MRT rule: you may omit the
+	// `language-` qualifier name, but only in a folder name. File-name
+	// segments must carry the explicit `lang-` / `language-` prefix, so
+	// we skip the bare-BCP-47 detection for them to avoid misclassifying
+	// filenames like `uno-overalls.png` (where `uno` is a valid ISO 639-3
+	// code for Quechua).
+	internal static ResourceQualifier Parse(string str, bool allowBareLanguageTag)
 	{
-		if (IsLanguageTag(str))
+		if (allowBareLanguageTag && IsLanguageTag(str))
 		{
 			str = $"language-{str}";
 		}
