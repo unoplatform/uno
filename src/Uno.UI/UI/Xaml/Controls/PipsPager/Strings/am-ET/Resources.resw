@@ -122,11 +122,11 @@
     <comment>It's a control that is used with a window that does not have enough display area to show all of its content. The pager allows the user to navigate to content that is not currently in view.</comment>
   </data>
   <data name="PipsPagerNextPageButtonText" xml:space="preserve">
-    <value>ቀጣይ ገጽ</value>
+    <value>ቀጣይ ገፅ</value>
     <comment>Automation name and tooltip text for the next page button</comment>
   </data>
   <data name="PipsPagerPreviousPageButtonText" xml:space="preserve">
-    <value>የቀድሞው ገጽ</value>
+    <value>ቀዳሚ ገፅ</value>
     <comment>Automation name and tooltip text for the previous page button</comment>
   </data>
   <data name="PipsPagerPageText" xml:space="preserve">

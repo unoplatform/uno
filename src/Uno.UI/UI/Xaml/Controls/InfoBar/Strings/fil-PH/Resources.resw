@@ -138,7 +138,7 @@
     <comment>Automation name used to announce the severity error icon.</comment>
   </data>
   <data name="InfoBarIconSeverityInformationalName" xml:space="preserve">
-    <value>Maimpormasyong icon</value>
+    <value>Nagbibigay ng impormasyong icon</value>
     <comment>Automation name used to announce the severity informational icon.</comment>
   </data>
   <data name="InfoBarIconSeveritySuccessName" xml:space="preserve">
@@ -158,7 +158,7 @@
     <comment>Name used to announce severity error to users.</comment>
   </data>
   <data name="InfoBarSeverityInformationalName" xml:space="preserve">
-    <value>Mensahe ng impormasyon, maimpormasyon sa kalalaan</value>
+    <value>Mensahe ng impormasyon, nagbibigay ng impormasyon sa kalalaan</value>
     <comment>Name used to announce severity informational to users.</comment>
   </data>
   <data name="InfoBarSeveritySuccessName" xml:space="preserve">

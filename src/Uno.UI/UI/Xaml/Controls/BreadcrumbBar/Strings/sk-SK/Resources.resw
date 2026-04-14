@@ -122,7 +122,7 @@
     <comment>The automation name for the BreadcrumbBar ellipsis button.</comment>
   </data>
   <data name="BreadcrumbBarItemLocalizedControlType" xml:space="preserve">
-    <value>Položka panela s adresou</value>
+    <value>položka panela s adresou</value>
     <comment>A simple description of the control for UIA</comment>
   </data>
 </root>

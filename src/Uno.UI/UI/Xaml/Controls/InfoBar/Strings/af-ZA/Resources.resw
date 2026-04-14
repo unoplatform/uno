@@ -118,11 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="InfoBarCloseButtonName" xml:space="preserve">
-    <value>Sluit</value>
+    <value>Maak toe</value>
     <comment>Automation name of the close button.</comment>
   </data>
   <data name="InfoBarCloseButtonTooltip" xml:space="preserve">
-    <value>Sluit</value>
+    <value>Maak toe</value>
     <comment>The tooltip that appears on the Close button in InfoBar.</comment>
   </data>
   <data name="InfoBarClosedNotification" xml:space="preserve">
@@ -138,15 +138,15 @@
     <comment>Automation name used to announce the severity error icon.</comment>
   </data>
   <data name="InfoBarIconSeverityInformationalName" xml:space="preserve">
-    <value>Inligtingsikoon</value>
+    <value>Inligting-ikoon</value>
     <comment>Automation name used to announce the severity informational icon.</comment>
   </data>
   <data name="InfoBarIconSeveritySuccessName" xml:space="preserve">
-    <value>Suksesikoon</value>
+    <value>Sukses-ikoon</value>
     <comment>Automation name used to announce the severity success icon.</comment>
   </data>
   <data name="InfoBarIconSeverityWarningName" xml:space="preserve">
-    <value>Waarskuwingsikoon</value>
+    <value>Waarskuwing-ikoon</value>
     <comment>Automation name used to announce the severity warning icon.</comment>
   </data>
   <data name="InfoBarOpenedNotification" xml:space="preserve">

@@ -126,15 +126,15 @@
     <comment>The tooltip that appears on the Close button in InfoBar.</comment>
   </data>
   <data name="InfoBarClosedNotification" xml:space="preserve">
-    <value>വിവരബാർ നിരാകരിച്ചു</value>
+    <value>ഇന്‍‌ഫോബാര്‍ നിരാകരിച്ചു</value>
     <comment>The string read by narrator when the InfoBar closes.</comment>
   </data>
   <data name="InfoBarCustomLandmarkName" xml:space="preserve">
-    <value>വിവരബാർ</value>
+    <value>ഇന്‍‌ഫോബാര്‍</value>
     <comment>This is the custom landmark used to denote an InfoBar to narrator.</comment>
   </data>
   <data name="InfoBarIconSeverityErrorName" xml:space="preserve">
-    <value>പിശക് ഐക്കൺ</value>
+    <value>തെറ്റ് ഐക്കൺ</value>
     <comment>Automation name used to announce the severity error icon.</comment>
   </data>
   <data name="InfoBarIconSeverityInformationalName" xml:space="preserve">
@@ -154,7 +154,7 @@
     <comment>The formatted string read by narrator when the InfoBar opens: "{Severity level}, {Title} {Message}"</comment>
   </data>
   <data name="InfoBarSeverityErrorName" xml:space="preserve">
-    <value>വിവര സന്ദേശം, തീവ്രത പിശക്</value>
+    <value>വിവര സന്ദേശം, തീവ്രത തെറ്റ്</value>
     <comment>Name used to announce severity error to users.</comment>
   </data>
   <data name="InfoBarSeverityInformationalName" xml:space="preserve">

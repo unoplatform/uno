@@ -145,4 +145,8 @@
     <value>ట్యాబ్ జాబితాను ముందుకు స్క్రోల్ చేయండి</value>
     <comment>Tooltip for the tab list scroll increase button.</comment>
   </data>
+  <data name="TabViewNewTabAddedNotification" xml:space="preserve">
+    <value>కొత్త ట్యాబ్ జోడించబడింది.</value>
+    <comment>String read by Narrator when a new tab is added.</comment>
+  </data>
 </root>
