@@ -145,4 +145,8 @@
     <value>탭 목록 앞으로 스크롤</value>
     <comment>Tooltip for the tab list scroll increase button.</comment>
   </data>
+  <data name="TabViewNewTabAddedNotification" xml:space="preserve">
+    <value>새 탭이 추가되었습니다.</value>
+    <comment>String read by Narrator when a new tab is added.</comment>
+  </data>
 </root>

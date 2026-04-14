@@ -153,6 +153,10 @@
     <value>Rangli maket</value>
     <comment>The automation name for the color model selection combo box.</comment>
   </data>
+  <data name="AutomationNameColorSpectrum" xml:space="preserve">
+    <value>Palitra</value>
+    <comment>The automation name for the ColorSpectrum control.</comment>
+  </data>
   <data name="TextGreenLabel" xml:space="preserve">
     <value>Yashil</value>
     <comment>The label for the text box to edit the green component of the current RGB color.</comment>
@@ -161,7 +165,11 @@
     <value>Yashil</value>
     <comment>The automation name for the text box to edit the green component of the current RGB color.</comment>
   </data>
-  <data name="AutomationNameHexTextBox" xml:space="preserve">
+  <data name="HelpTextColorSpectrum" xml:space="preserve">
+    <value>Mil tugmalari yordamida 2D navigatsiya</value>
+    <comment>The help text associated with ColorSpectrum.</comment>
+  </data>
+  <data name="AutomationNameRGBHexTextBox" xml:space="preserve">
     <value>RGB oltiburchak</value>
     <comment>The automation name for the text box to edit the current RGB color as a hex value.</comment>
   </data>
@@ -177,12 +185,16 @@
     <value>Rangi</value>
     <comment>The automation name for the text box to edit the hue component of the current HSV color.</comment>
   </data>
+  <data name="LocalizedControlTypeColorSpectrum" xml:space="preserve">
+    <value>2D slayder</value>
+    <comment>The string to provide as the localized control type of the ColorSpectrum.</comment>
+  </data>
   <data name="TextRedLabel" xml:space="preserve">
-    <value>Qizil</value>
+    <value>Red</value>
     <comment>The label for the text box to edit the red component of the current RGB color.</comment>
   </data>
   <data name="AutomationNameRedTextBox" xml:space="preserve">
-    <value>Qizil</value>
+    <value>Red</value>
     <comment>The automation name for the text box to edit the red component of the current RGB color.</comment>
   </data>
   <data name="ContentRGBComboBoxItem" xml:space="preserve">
@@ -200,6 +212,14 @@
   <data name="TextValueLabel" xml:space="preserve">
     <value>Qiymat</value>
     <comment>The label for the text box to edit the value component of the current HSV color.</comment>
+  </data>
+  <data name="ValueStringColorSpectrumWithColorName" xml:space="preserve">
+    <value>%1!s!, rangi: %2!u!, toʻyinganligi: %3!u!, qiymati: %4!u!</value>
+    <comment>The string to provide as the UIA value of the ColorSpectrum when we're including the friendly color name. %1 is the friendly name of the color; %2, %3, and %4 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
+  </data>
+  <data name="ValueStringColorSpectrumWithoutColorName" xml:space="preserve">
+    <value>Rangi: %1!u!, toʻyinganligi: %2!u!, qiymati: %3!u!</value>
+    <comment>The string to provide as the UIA value of the ColorSpectrum when we aren't including the friendly color name. %1, %2, and %3 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
   </data>
   <data name="ValueStringHueSliderWithColorName" xml:space="preserve">
     <value>%1!u!, %2!s!</value>
@@ -276,5 +296,9 @@
   <data name="TextMoreButtonLabelExpanded" xml:space="preserve">
     <value>Kamroq</value>
     <comment>The string to display in the "more" button when it's expanded.</comment>
+  </data>
+  <data name="AutomationNameHSVHexTextBox" xml:space="preserve">
+    <value>HSV oʻn oltilik qiymat</value>
+    <comment>The automation name for the text box to edit the current HSV color as a hex value.</comment>
   </data>
 </root>

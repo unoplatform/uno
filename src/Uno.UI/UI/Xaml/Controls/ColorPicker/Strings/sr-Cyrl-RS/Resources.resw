@@ -153,6 +153,10 @@
     <value>Модел боје</value>
     <comment>The automation name for the color model selection combo box.</comment>
   </data>
+  <data name="AutomationNameColorSpectrum" xml:space="preserve">
+    <value>Бирач боја</value>
+    <comment>The automation name for the ColorSpectrum control.</comment>
+  </data>
   <data name="TextGreenLabel" xml:space="preserve">
     <value>Зелена</value>
     <comment>The label for the text box to edit the green component of the current RGB color.</comment>
@@ -161,7 +165,11 @@
     <value>Зелена</value>
     <comment>The automation name for the text box to edit the green component of the current RGB color.</comment>
   </data>
-  <data name="AutomationNameHexTextBox" xml:space="preserve">
+  <data name="HelpTextColorSpectrum" xml:space="preserve">
+    <value>2D навигација помоћу тастера са стрелицама</value>
+    <comment>The help text associated with ColorSpectrum.</comment>
+  </data>
+  <data name="AutomationNameRGBHexTextBox" xml:space="preserve">
     <value>RGB хексадецимална вредност</value>
     <comment>The automation name for the text box to edit the current RGB color as a hex value.</comment>
   </data>
@@ -177,12 +185,16 @@
     <value>Нијанса</value>
     <comment>The automation name for the text box to edit the hue component of the current HSV color.</comment>
   </data>
+  <data name="LocalizedControlTypeColorSpectrum" xml:space="preserve">
+    <value>2D клизач</value>
+    <comment>The string to provide as the localized control type of the ColorSpectrum.</comment>
+  </data>
   <data name="TextRedLabel" xml:space="preserve">
-    <value>црвена</value>
+    <value>Црвена</value>
     <comment>The label for the text box to edit the red component of the current RGB color.</comment>
   </data>
   <data name="AutomationNameRedTextBox" xml:space="preserve">
-    <value>црвена</value>
+    <value>Црвена</value>
     <comment>The automation name for the text box to edit the red component of the current RGB color.</comment>
   </data>
   <data name="ContentRGBComboBoxItem" xml:space="preserve">
@@ -200,6 +212,14 @@
   <data name="TextValueLabel" xml:space="preserve">
     <value>Вредност</value>
     <comment>The label for the text box to edit the value component of the current HSV color.</comment>
+  </data>
+  <data name="ValueStringColorSpectrumWithColorName" xml:space="preserve">
+    <value>%1!s!, нијанса: %2!u!, засићење: %3!u!, вредност: %4!u!</value>
+    <comment>The string to provide as the UIA value of the ColorSpectrum when we're including the friendly color name. %1 is the friendly name of the color; %2, %3, and %4 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
+  </data>
+  <data name="ValueStringColorSpectrumWithoutColorName" xml:space="preserve">
+    <value>Нијанса: %1!u!, засићење: %2!u!, вредност: %3!u!</value>
+    <comment>The string to provide as the UIA value of the ColorSpectrum when we aren't including the friendly color name. %1, %2, and %3 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
   </data>
   <data name="ValueStringHueSliderWithColorName" xml:space="preserve">
     <value>%1!u!, %2!s!</value>
@@ -230,7 +250,7 @@
     <comment>The automation name for the text box to edit the value component of the current HSV color.</comment>
   </data>
   <data name="ToolTipStringAlphaSlider" xml:space="preserve">
-    <value>%1!u!%% непрозирности</value>
+    <value>%1!u!%% непрозирност</value>
     <comment>The string to display in the tool tip for the alpha slider. %1 is the alpha value between 0 and 100.</comment>
   </data>
   <data name="ToolTipStringHueSliderWithColorName" xml:space="preserve">
@@ -276,5 +296,9 @@
   <data name="TextMoreButtonLabelExpanded" xml:space="preserve">
     <value>Мање</value>
     <comment>The string to display in the "more" button when it's expanded.</comment>
+  </data>
+  <data name="AutomationNameHSVHexTextBox" xml:space="preserve">
+    <value>HSV хексадецимална вредност</value>
+    <comment>The automation name for the text box to edit the current HSV color as a hex value.</comment>
   </data>
 </root>

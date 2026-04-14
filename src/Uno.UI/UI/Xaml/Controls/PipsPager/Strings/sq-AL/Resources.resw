@@ -130,7 +130,7 @@
     <comment>Automation name and tooltip text for the previous page button</comment>
   </data>
   <data name="PipsPagerPageText" xml:space="preserve">
-    <value>Faqe</value>
+    <value>Faqja</value>
     <comment>Name used for UIA to announce controls, e.g. "Page 5"</comment>
   </data>
 </root>

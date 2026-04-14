@@ -126,7 +126,7 @@
     <comment>Automation name and tooltip text for the next page button</comment>
   </data>
   <data name="PipsPagerPreviousPageButtonText" xml:space="preserve">
-    <value>Página Anterior</value>
+    <value>Página anterior</value>
     <comment>Automation name and tooltip text for the previous page button</comment>
   </data>
   <data name="PipsPagerPageText" xml:space="preserve">

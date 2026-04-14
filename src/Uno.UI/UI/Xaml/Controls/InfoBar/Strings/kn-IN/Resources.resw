@@ -118,11 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="InfoBarCloseButtonName" xml:space="preserve">
-    <value>ಮುಚ್ಚು</value>
+    <value>ಮುಚ್ಚಿ</value>
     <comment>Automation name of the close button.</comment>
   </data>
   <data name="InfoBarCloseButtonTooltip" xml:space="preserve">
-    <value>ಮುಚ್ಚು</value>
+    <value>ಮುಚ್ಚಿ</value>
     <comment>The tooltip that appears on the Close button in InfoBar.</comment>
   </data>
   <data name="InfoBarClosedNotification" xml:space="preserve">

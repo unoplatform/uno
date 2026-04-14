@@ -145,4 +145,8 @@
     <value>Fletta áfram í flipalista</value>
     <comment>Tooltip for the tab list scroll increase button.</comment>
   </data>
+  <data name="TabViewNewTabAddedNotification" xml:space="preserve">
+    <value>Nýjum flipa bætt við.</value>
+    <comment>String read by Narrator when a new tab is added.</comment>
+  </data>
 </root>
