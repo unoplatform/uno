@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using Uno.UI.DevServer.Cli.Helpers;
+using Uno.UI.RemoteControl.Host.Helpers;
 
 namespace Uno.UI.DevServer.Cli;
 
@@ -201,6 +202,11 @@ internal sealed class StartCommandHandler
 						existing.Value.ProcessId, existing.Value.Port);
 
 					var rebound = await _rebindIdeChannel(existing.Value.Port, parsed.IdeChannel);
+					if (rebound)
+					{
+						await TryUpdateCsprojUserAsync(parsed.Solution, existing.Value.Port);
+					}
+
 					return rebound ? 0 : 1;
 				}
 
@@ -224,6 +230,11 @@ internal sealed class StartCommandHandler
 						parsed.HttpPort, existing.Value.ProcessId);
 
 					var rebound = await _rebindIdeChannel(parsed.HttpPort, parsed.IdeChannel);
+					if (rebound && !string.IsNullOrWhiteSpace(existing.Value.SolutionPath))
+					{
+						await TryUpdateCsprojUserAsync(existing.Value.SolutionPath, parsed.HttpPort);
+					}
+
 					return rebound ? 0 : 1;
 				}
 
@@ -244,6 +255,12 @@ internal sealed class StartCommandHandler
 
 		var effectiveParsed = parsed with { HttpPort = effectivePort };
 
+		// Update .csproj.user so the running app can discover the DevServer port
+		if (!string.IsNullOrWhiteSpace(effectiveParsed.Solution))
+		{
+			await TryUpdateCsprojUserAsync(effectiveParsed.Solution, effectivePort);
+		}
+
 		// Build direct-mode args and spawn
 		var startInfo = BuildDirectLaunchArgs(hostPath, effectiveParsed, addins, workingDirectory);
 
@@ -251,6 +268,23 @@ internal sealed class StartCommandHandler
 			startInfo.FileName, startInfo.Arguments);
 
 		return await _spawnProcess(startInfo);
+	}
+
+	private async Task TryUpdateCsprojUserAsync(string? solution, int port)
+	{
+		if (string.IsNullOrWhiteSpace(solution))
+		{
+			return;
+		}
+
+		try
+		{
+			await CsprojUserGenerator.SetCsprojUserPort(solution, port);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Failed to update .csproj.user for solution {Solution}: {Message}", solution, ex.Message);
+		}
 	}
 
 	private static int AllocateTcpPort()

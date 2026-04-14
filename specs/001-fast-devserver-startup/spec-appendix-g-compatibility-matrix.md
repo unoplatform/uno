@@ -13,7 +13,7 @@ How each launcher interacts with the Host, and what changes when `--addins` is i
 
 | Launcher | Launches Host Via | Uses `--command start` | Passes `--addins` | AmbientRegistry Check | `.csproj.user` Write | Status |
 |----------|-------------------|:----------------------:|:------------------:|:---------------------:|:--------------------:|--------|
-| CLI `start` | CLI → Direct | **No** (direct launch) | Yes (`StartCommandHandler`) | Yes (CLI: `StartCommandHandler`) | Yes (CLI-side, pending) | **Implemented** |
+| CLI `start` | CLI → Direct | **No** (direct launch) | Yes (`StartCommandHandler`) | Yes (CLI: `StartCommandHandler`) | Yes (CLI: `StartCommandHandler`) | **Implemented** |
 | CLI MCP (`--mcp-app`) | Controller (Phase 0); Direct (Phase 1b) | Phase 0: Yes; Phase 1b: No | **Phase 0** | **Must add** (1g-bis) | Phase 0: controller writes it; Phase 1b: **must re-implement** CLI-side | Changing |
 | VS (`uno.studio`) | `DevServerLauncher` → Direct | No | No (future) | **None today** | Yes (VS extension: `DevServerLauncher.cs:187`) | Unchanged |
 | Rider (`uno.rider`) | `DevServerService` → Direct | No | No (future) | **None today** | Yes (Rider extension: `DevServerService.cs:79`) | Unchanged |

@@ -20,7 +20,7 @@ public class Given_StartCommandHandler
 		var args = handler.BuildDirectLaunchArgs(
 			"/path/to/host.dll", parsed, addins: null, workingDirectory: "/app");
 
-		var joinedArgs = string.Join(" ", args.Arguments);
+		var joinedArgs = args.Arguments;
 		joinedArgs.Should().NotContain("--command");
 	}
 
@@ -35,7 +35,7 @@ public class Given_StartCommandHandler
 		var args = handler.BuildDirectLaunchArgs(
 			"/path/to/host.dll", parsed, addins: null, workingDirectory: "/app");
 
-		var joinedArgs = string.Join(" ", args.Arguments);
+		var joinedArgs = args.Arguments;
 		joinedArgs.Should().Contain("--ideChannel");
 		joinedArgs.Should().Contain("test-guid");
 	}
@@ -51,7 +51,7 @@ public class Given_StartCommandHandler
 		var args = handler.BuildDirectLaunchArgs(
 			"/path/to/host.dll", parsed, addins: "/path/to/addin.dll", workingDirectory: "/app");
 
-		var joinedArgs = string.Join(" ", args.Arguments);
+		var joinedArgs = args.Arguments;
 		joinedArgs.Should().Contain("--addins");
 		joinedArgs.Should().Contain("/path/to/addin.dll");
 	}
@@ -67,7 +67,7 @@ public class Given_StartCommandHandler
 		var args = handler.BuildDirectLaunchArgs(
 			"/path/to/host.dll", parsed, addins: null, workingDirectory: "/app");
 
-		var joinedArgs = string.Join(" ", args.Arguments);
+		var joinedArgs = args.Arguments;
 		joinedArgs.Should().Contain("--metadata-updates");
 		joinedArgs.Should().Contain("true");
 	}
@@ -83,7 +83,7 @@ public class Given_StartCommandHandler
 		var args = handler.BuildDirectLaunchArgs(
 			"/path/to/host.dll", parsed, addins: null, workingDirectory: "/app");
 
-		var joinedArgs = string.Join(" ", args.Arguments);
+		var joinedArgs = args.Arguments;
 		joinedArgs.Should().Contain("--httpPort");
 		joinedArgs.Should().Contain("50000");
 		joinedArgs.Should().Contain("--solution");
@@ -175,7 +175,7 @@ public class Given_StartCommandHandler
 		var args = handler.BuildControllerModeArgs(
 			"/path/to/host.dll", ["list"], workingDirectory: "/app", addins: null);
 
-		var joinedArgs = string.Join(" ", args.Arguments);
+		var joinedArgs = args.Arguments;
 		joinedArgs.Should().Contain("--command=list");
 	}
 

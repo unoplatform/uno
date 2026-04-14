@@ -1216,7 +1216,7 @@ This refactoring is a **prerequisite** for the state machine (Phase 1c). All ser
 
 ### Phase 1b: Background Discovery + Direct Server Launch ✅ **IMPLEMENTED**
 - CLI `start` now bypasses the controller and launches the Host directly via `StartCommandHandler`
-- CLI-side: AmbientRegistry check, IDE channel rebind, port allocation, `.csproj.user` generation (partially — pending full implementation)
+- CLI-side: AmbientRegistry check, IDE channel rebind, port allocation, `.csproj.user` generation
 - All arguments (`--ideChannel`, `--addins`, `--metadata-updates`) forwarded to Host in direct mode
 - Fixes backward compatibility with older Host binaries (SDK ≤ 6.5.x) that dropped `--ideChannel` in the two-process launcher
 - See `StartCommandHandler.cs`, tests in `Given_StartCommandHandler.cs` and `Given_StartCommandHandler_Integration.cs`
