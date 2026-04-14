@@ -46,10 +46,12 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 						}
 					});
 
-					await Task.Delay(100);
-					//eventTester.WaitForNoThrow(TimeSpan.FromMilliseconds(4000));
-					//eventTesterFocusMgr.WaitForNoThrow(TimeSpan.FromMilliseconds(4000));
-					gotFocus = gotFocus == false ? eventTester.HasFired : true;
+					if (!gotFocus)
+					{
+						// Wait for GotFocus to be raised (may be delayed on cold WASM runtimes).
+						await TestServices.WindowHelper.WaitFor(() => eventTester.HasFired, timeoutMS: 2000);
+						gotFocus = eventTester.HasFired;
+					}
 				}
 
 				await TestServices.WindowHelper.WaitForIdle();
@@ -90,10 +92,12 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 						}
 					});
 
-					await Task.Delay(100);
-					//eventTester.WaitForNoThrow(TimeSpan.FromMilliseconds(4000));
-					//eventTesterFocusMgr.WaitForNoThrow(TimeSpan.FromMilliseconds(4000));
-					gotFocus = gotFocus == false ? eventTester.HasFired : true;
+					if (!gotFocus)
+					{
+						// Wait for GotFocus to be raised (may be delayed on cold WASM runtimes).
+						await TestServices.WindowHelper.WaitFor(() => eventTester.HasFired, timeoutMS: 2000);
+						gotFocus = eventTester.HasFired;
+					}
 				}
 
 				await TestServices.WindowHelper.WaitForIdle();

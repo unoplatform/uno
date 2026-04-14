@@ -43,11 +43,10 @@ public partial class Given_UIElement_ContextFlyoutParentChain
 		args.SetGlobalPoint(new Point(50, 50));
 		childButton.RaiseEvent(UIElement.ContextRequestedEvent, args);
 
-		// Allow flyout to open
-		await Task.Delay(100);
-
 		Assert.IsTrue(args.Handled, "ContextRequested should be handled when parent has ContextFlyout");
-		Assert.IsTrue(flyoutOpened, "Parent's ContextFlyout should open when child has none");
+
+		// Wait for the flyout Opened event (dispatched at Idle priority)
+		await TestServices.WindowHelper.WaitFor(() => flyoutOpened, message: "Parent's ContextFlyout should open when child has none");
 
 		// Close the flyout
 		flyout.Hide();
@@ -89,11 +88,10 @@ public partial class Given_UIElement_ContextFlyoutParentChain
 		args.SetGlobalPoint(new Point(50, 50));
 		childButton.RaiseEvent(UIElement.ContextRequestedEvent, args);
 
-		// Allow flyout to open
-		await Task.Delay(100);
-
 		Assert.IsTrue(args.Handled, "ContextRequested should be handled");
-		Assert.IsTrue(childFlyoutOpened, "Child's own ContextFlyout should open");
+
+		// Wait for the flyout Opened event (dispatched at Idle priority)
+		await TestServices.WindowHelper.WaitFor(() => childFlyoutOpened, message: "Child's own ContextFlyout should open");
 		Assert.IsFalse(parentFlyoutOpened, "Parent's ContextFlyout should NOT open when child has one");
 
 		// Close the flyout
@@ -149,11 +147,10 @@ public partial class Given_UIElement_ContextFlyoutParentChain
 		args.SetGlobalPoint(new Point(50, 50));
 		childButton.RaiseEvent(UIElement.ContextRequestedEvent, args);
 
-		// Allow flyout to open
-		await Task.Delay(100);
-
 		Assert.IsTrue(args.Handled, "ContextRequested should be handled by grandparent's ContextFlyout");
-		Assert.IsTrue(flyoutOpened, "Grandparent's ContextFlyout should open");
+
+		// Wait for the flyout Opened event (dispatched at Idle priority)
+		await TestServices.WindowHelper.WaitFor(() => flyoutOpened, message: "Grandparent's ContextFlyout should open");
 
 		// Close the flyout
 		flyout.Hide();
@@ -190,8 +187,8 @@ public partial class Given_UIElement_ContextFlyoutParentChain
 		args.SetGlobalPoint(new Point(50, 50));
 		childButton.RaiseEvent(UIElement.ContextRequestedEvent, args);
 
-		// Allow time for any flyout
-		await Task.Delay(100);
+		// Allow dispatcher to process any pending callbacks
+		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.IsTrue(args.Handled, "ContextRequested should be handled by the handler");
 		Assert.IsFalse(flyoutOpened, "ContextFlyout should NOT open when handler sets Handled=true");
