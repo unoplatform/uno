@@ -300,6 +300,12 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 	{
 		if (_providers.TryGetValue(element, out var provider))
 		{
+			// A provider can briefly remain alive after removal (e.g. pending structure
+			// notifications or external UIA/COM references). Clear any cached peer lists
+			// first so a stale provider cannot keep the removed subtree alive.
+			provider.InvalidateChildrenCache();
+			_pendingStructureChanges.Remove(provider);
+
 			_providers.Remove(element);
 			if (provider.RepresentedPeer is { } representedPeer)
 			{
