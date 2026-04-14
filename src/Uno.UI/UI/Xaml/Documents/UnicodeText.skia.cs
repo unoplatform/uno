@@ -888,12 +888,13 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 			}
 
-			// The rounding is to avoid 1-pixel gaps between adjacent clusters that have a background, even with antialiasing.
+			// Floor every edge and +1 the trailing edges so adjacent background
+			// rects always overlap by 1 px, preventing antialiased-edge seams.
 			var backgroundRect = new SKRect(
-				MathF.Round(unalignedX + alignmentOffset, MidpointRounding.AwayFromZero),
-				y,
-				(float)Math.Round(unalignedX + alignmentOffset + cluster.Value.width),
-				y + line.lineHeight);
+				MathF.Floor(unalignedX + alignmentOffset),
+				MathF.Floor(y),
+				MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1,
+				MathF.Floor(y + line.lineHeight) + 1);
 			highlighter.Value.background?.Paint(session.Canvas, session.Opacity, backgroundRect);
 
 			if (_corrections?[wordBoundariesIndex] is { } correction)
