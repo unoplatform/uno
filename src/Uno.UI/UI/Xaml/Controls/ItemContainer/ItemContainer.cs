@@ -416,6 +416,7 @@ partial class ItemContainer : Control
 		if (!m_pointerInfo.IsTrackingPointer())
 		{
 			m_pointerInfo.TrackPointerId(pointerId);
+			CapturePointer(pointer);
 		}
 		else if (!m_pointerInfo.IsPointerIdTracked(pointerId))
 		{
@@ -464,6 +465,7 @@ partial class ItemContainer : Control
 		}
 
 		m_pointerInfo.ResetTrackedPointerId();
+		ReleasePointerCapture(args.Pointer);
 
 		bool canRaiseItemInvoked = CanRaiseItemInvoked();
 		var pointerDeviceType = args.Pointer.PointerDeviceType;
@@ -505,6 +507,7 @@ partial class ItemContainer : Control
 
 		base.OnPointerCanceled(args);
 
+		ReleasePointerCapture(args.Pointer);
 		ProcessPointerCanceled(args);
 	}
 
