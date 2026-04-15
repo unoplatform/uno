@@ -117,8 +117,8 @@ How different SDK versions affect add-in discovery.
 
 | .NET SDK | TFM | Host Binary Location | `dotnet tool` R2R Support | Notes |
 |----------|-----|---------------------|:-------------------------:|-------|
-| 9.0 | `net9.0` | `tools/rc/host/net9.0/` | No | Current |
-| 10.0 | `net10.0` | `tools/rc/host/net10.0/` | **Yes** (RID-specific tools) | Target for Phase 2 |
+| 9.0 | `net10.0` | `tools/rc/host/net10.0/` | No | Current |
+| 10.0 | `net11.0` | `tools/rc/host/net11.0/` | **Yes** (RID-specific tools) | Target for Phase 2 |
 | Preview | `net{x}.0` | May not match installed SDKs | Varies | Edge case |
 | Multiple installed | Depends on `global.json` | Must match pinned SDK | N/A | See section 13 |
 
@@ -126,16 +126,16 @@ How different SDK versions affect add-in discovery.
 
 | Risk | Scenario | Impact | Mitigation |
 |------|----------|--------|------------|
-| TFM mismatch | `dotnet --version` reports 10.0 but Host only has `net9.0` binary | Host not found | Scan available TFMs, pick best match (section 13 Phase 3) |
+| TFM mismatch | `dotnet --version` reports 10.0 but Host only has `net10.0` binary | Host not found | Scan available TFMs, pick best match (section 13 Phase 3) |
 | `global.json` pins older SDK | Project uses 9.0 but system default is 10.0 | Wrong TFM selected | Respect `global.json` SDK version, not `dotnet --version` |
 | Preview SDK version string | `10.0.100-preview.1` | Parser fails | Robust version parsing, ignore preview suffix for TFM |
 
 ### Validation
 
-- [ ] .NET 9.0 installed → `net9.0` TFM, Host found
-- [ ] .NET 10.0 installed → `net10.0` TFM, Host found
-- [ ] `global.json` pins 9.0 with 10.0 installed → `net9.0` TFM used
-- [ ] Host package only has `net9.0` but SDK is 10.0 → fallback to `net9.0` with warning
+- [ ] .NET 9.0 installed → `net10.0` TFM, Host found
+- [ ] .NET 10.0 installed → `net11.0` TFM, Host found
+- [ ] `global.json` pins 9.0 with 10.0 installed → `net10.0` TFM used
+- [ ] Host package only has `net10.0` but SDK is 10.0 → fallback to `net10.0` with warning
 - [ ] Cache invalidated when `global.json` changes
 
 ---

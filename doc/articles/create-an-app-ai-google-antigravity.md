@@ -9,7 +9,7 @@ uid: Uno.GettingStarted.CreateAnApp.AI.GoogleAntigravity
 1. Create a new project using the [Uno Platform Live Wizard](https://aka.platform.uno/app-wizard), or [`dotnet new`](xref:Uno.GetStarted.dotnet-new). For example:
 
     ```bash
-    dotnet new unoapp --tfm net10.0 -o MyApp
+    dotnet new unoapp --tfm net11.0 -o MyApp
     ```
 
 1. Open the project you just created inside Google Antigravity (for example, `MyApp`).

@@ -44,13 +44,13 @@ These are real issues encountered in practice — not theoretical:
 
 7. **Existing package conflict**: If a SamplesApp is already installed with the same version, `Add-AppxPackage` fails with `0x80073CFB`. **Always remove existing packages first** — `install-msix.ps1` handles this.
 
-8. **crosstargeting_override.props MUST be set**: The SamplesApp.Windows project targets `$(NetPreviousWinAppSDK)` = `net9.0-windows10.0.19041.0`. **You MUST create/set `src/crosstargeting_override.props`** with `<UnoTargetFrameworkOverride>net9.0-windows10.0.19041.0</UnoTargetFrameworkOverride>`. If the file is missing or set to a different value (e.g., `net10.0`), the build will pull in Skia/Wasm projects as transitive dependencies — those projects require source generators to have already run and will fail with hundreds of `CS0535: does not implement interface member 'DependencyObject.XXX'` errors. **"File not found" is NOT acceptable** — always create it.
+8. **crosstargeting_override.props MUST be set**: The SamplesApp.Windows project targets `$(NetPreviousWinAppSDK)` = `net10.0-windows10.0.19041.0`. **You MUST create/set `src/crosstargeting_override.props`** with `<UnoTargetFrameworkOverride>net10.0-windows10.0.19041.0</UnoTargetFrameworkOverride>`. If the file is missing or set to a different value (e.g., `net11.0`), the build will pull in Skia/Wasm projects as transitive dependencies — those projects require source generators to have already run and will fail with hundreds of `CS0535: does not implement interface member 'DependencyObject.XXX'` errors. **"File not found" is NOT acceptable** — always create it.
 
 9. **MAX_PATH (260 chars)**: The PRI resource generator uses Win32 APIs with the 260-char path limit. If you see `PRI175`/`PRI252` errors, shorten the repo path or use `subst` drive mapping.
 
 10. **Results file is UTF-16 encoded XML**: The NUnit XML results file is written in UTF-16 encoding. The `Read` tool will often fail with token limits on this file, and `head`/`cat` will show garbled double-spaced output. **Always use the python parsing snippet** from Phase 6 instead of the Read tool.
 
-11. **Graphics3DGL Windows TFM**: `Uno.WinUI.Graphics3DGL.csproj` only builds Skia TFMs by default. SamplesApp.Windows references it but MSBuild picks the Skia `net9.0` build, causing `CS0012: The type 'Grid' is defined in an assembly that is not referenced` errors. **Fix**: Before building SamplesApp.Windows, restore Graphics3DGL with the Windows TFM enabled:
+11. **Graphics3DGL Windows TFM**: `Uno.WinUI.Graphics3DGL.csproj` only builds Skia TFMs by default. SamplesApp.Windows references it but MSBuild picks the Skia `net10.0` build, causing `CS0012: The type 'Grid' is defined in an assembly that is not referenced` errors. **Fix**: Before building SamplesApp.Windows, restore Graphics3DGL with the Windows TFM enabled:
     ```bash
     "$MSBUILD" "src/AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj" \
         -restore -v:m -p:BuildGraphics3DGLForWindows=true \
@@ -104,7 +104,7 @@ If `vswhere` returns nothing even with `-prerelease -all`, verify Visual Studio 
 
 #### 1c. Set crosstargeting_override.props (MANDATORY)
 
-The file `src/crosstargeting_override.props` **MUST exist** and contain `net9.0-windows10.0.19041.0`. Without it, MSBuild resolves all target frameworks and pulls in Skia/Wasm projects that fail to build.
+The file `src/crosstargeting_override.props` **MUST exist** and contain `net10.0-windows10.0.19041.0`. Without it, MSBuild resolves all target frameworks and pulls in Skia/Wasm projects that fail to build.
 
 **Check and fix:**
 ```bash
@@ -116,15 +116,15 @@ fi
 
 Then ensure it contains:
 ```xml
-<UnoTargetFrameworkOverride>net9.0-windows10.0.19041.0</UnoTargetFrameworkOverride>
+<UnoTargetFrameworkOverride>net10.0-windows10.0.19041.0</UnoTargetFrameworkOverride>
 ```
 
-If it's set to anything else (e.g., `net10.0` for Skia development), **change it** to `net9.0-windows10.0.19041.0` before building. Remember to **restore the previous value** after WinUI testing is complete if the user was working with a different target.
+If it's set to anything else (e.g., `net11.0` for Skia development), **change it** to `net10.0-windows10.0.19041.0` before building. Remember to **restore the previous value** after WinUI testing is complete if the user was working with a different target.
 
 **Symptoms of a wrong/missing override:**
 - `CS0535: does not implement interface member 'DependencyObject.XXX'` — Uno.UI.Skia is being built as a transitive dependency
 - `MSB4062: ResourcesGenerationTask_v0 could not be loaded` — Uno.UI.Tasks hasn't been built for the expected configuration
-- Hundreds of errors from `Uno.UI.Skia.csproj::TargetFramework=net9.0` — dead giveaway
+- Hundreds of errors from `Uno.UI.Skia.csproj::TargetFramework=net10.0` — dead giveaway
 
 #### 1d. Setup signing certificate (first time)
 
@@ -182,9 +182,9 @@ This is idempotent — safe to run every time. Skip only if you know Graphics3DG
 
 | Error | Cause | Fix |
 |-------|-------|-----|
-| `CS0535: does not implement 'DependencyObject.XXX'` from `Uno.UI.Skia.csproj` | **`crosstargeting_override.props` missing or set to wrong TFM.** MSBuild resolves all TFMs and pulls in Skia which needs source generators. | **Set override to `net9.0-windows10.0.19041.0`** (Phase 1c). This is the #1 most common build failure. |
-| `MSB4062: ResourcesGenerationTask_v0 could not be loaded` | Uno.UI.Tasks.v0.dll not built; cascading from wrong TFM pulling in unexpected dependencies | Set override to `net9.0-windows10.0.19041.0` (Phase 1c) |
-| `NU1201: not compatible with net9.0-...` | `crosstargeting_override.props` TFM mismatch | Set to `net9.0-windows10.0.19041.0` |
+| `CS0535: does not implement 'DependencyObject.XXX'` from `Uno.UI.Skia.csproj` | **`crosstargeting_override.props` missing or set to wrong TFM.** MSBuild resolves all TFMs and pulls in Skia which needs source generators. | **Set override to `net10.0-windows10.0.19041.0`** (Phase 1c). This is the #1 most common build failure. |
+| `MSB4062: ResourcesGenerationTask_v0 could not be loaded` | Uno.UI.Tasks.v0.dll not built; cascading from wrong TFM pulling in unexpected dependencies | Set override to `net10.0-windows10.0.19041.0` (Phase 1c) |
+| `NU1201: not compatible with net10.0-...` | `crosstargeting_override.props` TFM mismatch | Set to `net10.0-windows10.0.19041.0` |
 | `PRI175` / `PRI252: .xbf not found` | MAX_PATH >= 260 chars | Shorten repo path or `subst` drive |
 | `APPX0101: signing key required` | No cert in store | Run `setup-cert.ps1` (Phase 1d) |
 | `APPX0105: Cannot import key file` | Used `PackageCertificateKeyFile` instead of thumbprint | Switch to `PackageCertificateThumbprint` |
@@ -290,7 +290,7 @@ for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"Failed\".*?<m
 ```
 
 **Cleanup steps:**
-1. **Restore `crosstargeting_override.props`**: If you changed it in Phase 1c (e.g., from `net10.0` to `net9.0-windows10.0.19041.0`), **restore it to the user's previous value** so their Skia/Wasm development workflow isn't broken.
+1. **Restore `crosstargeting_override.props`**: If you changed it in Phase 1c (e.g., from `net11.0` to `net10.0-windows10.0.19041.0`), **restore it to the user's previous value** so their Skia/Wasm development workflow isn't broken.
 
 **Interpreting WinUI failures**: Tests that fail on WinUI represent the native WinUI behavior. If a test passes on Uno but fails on WinUI (or vice versa), this reveals a parity gap. Use the `[PlatformCondition]` attribute to exclude tests from WinUI:
 ```csharp
@@ -322,7 +322,7 @@ fi
 if [ ! -f "$OVERRIDE_FILE" ]; then
     cp src/crosstargeting_override.props.sample "$OVERRIDE_FILE"
 fi
-# Ensure it contains net9.0-windows10.0.19041.0
+# Ensure it contains net10.0-windows10.0.19041.0
 # (use Edit tool to set UnoTargetFrameworkOverride)
 
 # --- Phase 1b: Setup cert (idempotent, first time prompts UAC) ---
@@ -407,7 +407,7 @@ for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"(\w+)\"', con
 | Property | Value |
 |----------|-------|
 | **Build tool** | MSBuild via **dash syntax** (not `dotnet build`, not `/slash` switches) |
-| **Target framework** | `net9.0-windows10.0.19041.0` (`$(NetPreviousWinAppSDK)`) |
+| **Target framework** | `net10.0-windows10.0.19041.0` (`$(NetPreviousWinAppSDK)`) |
 | **Platform** | x64 |
 | **Output** | MSIX bundle in `AppPackages/` |
 | **WinAppSDK version** | 1.8 (check csproj for exact version) |

@@ -9,7 +9,7 @@ uid: Uno.GettingStarted.CreateAnApp.AI.Cursor
     This will create the solution the folder you've already created in vscode. For example:
 
     ```bash
-    dotnet new unoapp --tfm net10.0 -n MyApp -o .
+    dotnet new unoapp --tfm net11.0 -n MyApp -o .
     ```
 
 1. In Cursor, open the project that was just created (e.g., `MyApp`).

@@ -7,7 +7,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>uno.platform.samplesapp.skia</string>
 	<key>MinimumOSVersion</key>
-	<string>12.2</string>
+	<string>13.0</string>
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>3</integer>

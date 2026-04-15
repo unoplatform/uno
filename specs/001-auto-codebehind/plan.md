@@ -17,7 +17,7 @@ Auto-generate a minimal code-behind partial class (constructor + `InitializeComp
 **Primary Dependencies**: Microsoft.CodeAnalysis (Roslyn APIs), Uno.UI.SourceGenerators infrastructure
 **Storage**: N/A (build-time source generation only)
 **Testing**: MSBuild-based source generator tests (`Uno.UI.SourceGenerators.Tests`), runtime tests (`Uno.UI.RuntimeTests`)
-**Target Platform**: All Uno Platform targets (Skia, WebAssembly, Android, iOS, macOS, tvOS) + WinUI (`net10.0-windows10.0.*`)
+**Target Platform**: All Uno Platform targets (Skia, WebAssembly, Android, iOS, macOS, tvOS) + WinUI (`net11.0-windows10.0.*`)
 **Project Type**: Library (source generator DLL) + MSBuild integration (.props/.targets)
 **Performance Goals**: Incremental generation - no re-generation when inputs haven't changed; sub-second for typical projects
 **Constraints**: Must be `netstandard2.0` (Roslyn generator requirement); must not interfere with existing XAML generation pipeline
@@ -105,7 +105,7 @@ This means a separate generator would cause spurious warnings and break any XAML
 | Path | Targets | Mechanism | Why |
 |------|---------|-----------|-----|
 | **Integrated** | All Uno Platform targets (Skia, WASM, Mobile) | Extension to `XamlCodeGeneration.Generate()` | Avoids Symbol-null interaction with XAML generator |
-| **Standalone** | WinUI (`net10.0-windows10.0.*`) | Separate `IIncrementalGenerator` | Safe: Uno's XAML generator is disabled on WinUI (`ShouldRunGenerator=false`). WinUI's own XAML compiler handles `InitializeComponent()`. No interaction concern. |
+| **Standalone** | WinUI (`net11.0-windows10.0.*`) | Separate `IIncrementalGenerator` | Safe: Uno's XAML generator is disabled on WinUI (`ShouldRunGenerator=false`). WinUI's own XAML compiler handles `InitializeComponent()`. No interaction concern. |
 
 ### 3. Integrated Path: How It Works (Uno Targets)
 

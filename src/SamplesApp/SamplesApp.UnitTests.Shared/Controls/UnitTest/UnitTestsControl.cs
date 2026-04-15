@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -703,7 +704,11 @@ namespace Uno.UI.Samples.Tests
 			}
 		}
 
-		public async Task RunTestsForInstance(object testClassInstance)
+		private const DynamicallyAccessedMemberTypes RunTestsForInstanceRequirements =
+			  DynamicallyAccessedMemberTypes.PublicParameterlessConstructor
+			| DynamicallyAccessedMemberTypes.PublicMethods;
+
+		public async Task RunTestsForInstance<[DynamicallyAccessedMembers(RunTestsForInstanceRequirements)] T>(T testClassInstance)
 		{
 			Interlocked.Exchange(ref _cts, new CancellationTokenSource())?.Cancel(); // cancel any previous CTS
 
@@ -713,7 +718,7 @@ namespace Uno.UI.Samples.Tests
 			{
 				try
 				{
-					var testTypeInfo = BuildType(testClassInstance.GetType());
+					var testTypeInfo = BuildType(typeof(T));
 					var engineConfig = BuildConfig();
 
 					await ExecuteTestsForInstance(_cts.Token, testClassInstance, testTypeInfo, engineConfig);
@@ -1331,6 +1336,7 @@ namespace Uno.UI.Samples.Tests
 					? TimeSpan.FromMilliseconds(methodAttribute.Timeout)
 					: null;
 
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "TODO")]
 		private IEnumerable<UnitTestClassInfo> InitializeTests()
 		{
 			var testAssembliesTypes =
@@ -1389,6 +1395,8 @@ namespace Uno.UI.Samples.Tests
 			return groupedList.ToArray();
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "TODO")]
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "TODO")]
 		private IEnumerable<UnitTestClassInfo> GetFilteredTests(IEnumerable<Type> types, int groupCount, int activeGroup)
 		{
 			var testClasses =
@@ -1396,7 +1404,7 @@ namespace Uno.UI.Samples.Tests
 				where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
 				orderby type.Name
 				select type;
-
+#pragma warning disable IL2072
 			var groupedList =
 				from type in testClasses
 				from test in GetMethodsWithAttribute(type, typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute)).OrderBy(m => m.Name)
@@ -1404,6 +1412,7 @@ namespace Uno.UI.Samples.Tests
 				group test by type into g
 				where g.Count() != 0
 				select BuildTestClassInfo(g.Key, g.ToArray());
+#pragma warning restore IL2072
 			return groupedList;
 		}
 
@@ -1418,7 +1427,7 @@ namespace Uno.UI.Samples.Tests
 			return BitConverter.ToUInt64(hash, 0);
 		}
 
-		private static UnitTestClassInfo BuildTestClassInfo(Type type, MethodInfo[] tests)
+		private static UnitTestClassInfo BuildTestClassInfo([DynamicallyAccessedMembers(RunTestsForInstanceRequirements)] Type type, MethodInfo[] tests)
 		{
 			try
 			{
@@ -1435,7 +1444,7 @@ namespace Uno.UI.Samples.Tests
 			}
 		}
 
-		private static UnitTestClassInfo BuildType(Type type)
+		private static UnitTestClassInfo BuildType([DynamicallyAccessedMembers(RunTestsForInstanceRequirements)] Type type)
 		{
 			try
 			{
@@ -1452,7 +1461,7 @@ namespace Uno.UI.Samples.Tests
 			}
 		}
 
-		private static MethodInfo[] GetMethodsWithAttribute(Type type, Type attributeType)
+		private static MethodInfo[] GetMethodsWithAttribute([DynamicallyAccessedMembers(RunTestsForInstanceRequirements)] Type type, Type attributeType)
 			=> (
 				from method in type.GetMethods()
 				where method.GetCustomAttribute(attributeType) != null

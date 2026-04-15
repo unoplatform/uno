@@ -1,6 +1,6 @@
 <Project Sdk="Uno.Sdk.Private">
     <PropertyGroup>
-        <TargetFrameworks>net10.0-desktop;net10.0-browserwasm</TargetFrameworks>
+        <TargetFrameworks>net11.0-desktop;net11.0-browserwasm</TargetFrameworks>
 
         <OutputType>Exe</OutputType>
         <UnoSingleProject>true</UnoSingleProject>
@@ -35,10 +35,10 @@
             <_FilteredRuntimeCopyLocalItems
               Include="@(RuntimeCopyLocalItems)"
               Condition=" '%(Filename)' == 'Uno.UI.RemoteControl'
-                  and $([System.String]::Copy('%(RelativeDir)').Replace('\','/').ToLowerInvariant().Contains('net9.0/skia')) " />
+                  and $([System.String]::Copy('%(RelativeDir)').Replace('\','/').ToLowerInvariant().Contains('net10.0/skia')) " />
         </ItemGroup>
 
-        <Error Text="The project must not reference Uno.UI.RemoteControl.dll from a net9.0 folder."
+        <Error Text="The project must not reference Uno.UI.RemoteControl.dll from a net10.0 folder."
                Condition=" '@(_FilteredRuntimeCopyLocalItems)' != '' " />
     </Target>
 

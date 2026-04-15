@@ -104,7 +104,11 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 				_eventLog.Add(new RoutedEventLogEntry(evt, eventName, sender, args, Validate(sender, evt, args)));
 				if (ReferenceEquals(sender, TouchTarget) && (handleEvent?.IsChecked ?? false))
 				{
+#pragma warning disable IL2075
+					// We don't know the type of `args` at compile-time…
+					// TODO: can we use `IHandleableRoutedEventArgs`? Not all types which have a Handled property implement that interface, but they *could*…?
 					args.GetType().GetProperty("Handled")?.SetValue(args, true);
+#pragma warning restore IL2075
 				}
 			};
 

@@ -1290,12 +1290,12 @@ This section documents the impact of each phase on the build pipeline, NuGet pac
 
 ### Host Multi-TFM
 
-The Host targets `$(NetPrevious);$(NetCurrent)` (currently `net9.0;net10.0`). Changes to `Program.cs` (accepting `--addins`) compile for both TFMs. The nuspec packages both:
+The Host targets `$(NetPrevious);$(NetCurrent)` (currently `net10.0;net11.0`). Changes to `Program.cs` (accepting `--addins`) compile for both TFMs. The nuspec packages both:
 
 ```xml
 <!-- build/nuget/Uno.WinUI.DevServer.nuspec:175-176 -->
-<file src="..\..\src\Uno.UI.RemoteControl.Host\bin\Release\net9.0\*.*" target="tools\rc\host\net9.0" />
 <file src="..\..\src\Uno.UI.RemoteControl.Host\bin\Release\net10.0\*.*" target="tools\rc\host\net10.0" />
+<file src="..\..\src\Uno.UI.RemoteControl.Host\bin\Release\net11.0\*.*" target="tools\rc\host\net11.0" />
 ```
 
 ### CI Pipeline Impact
@@ -1479,7 +1479,7 @@ function Test-PackageContent {
     Expand-Archive -Path $devServerPkg.FullName -DestinationPath $extractDir
 
     # Verify both TFM Host binaries are present
-    foreach ($tfm in @('net9.0', 'net10.0')) {
+    foreach ($tfm in @('net10.0', 'net11.0')) {
         $hostDll = Join-Path $extractDir "tools/rc/host/$tfm/Uno.UI.RemoteControl.Host.dll"
         if (-not (Test-Path $hostDll)) {
             throw "Package missing Host binary for $tfm at tools/rc/host/$tfm/"
@@ -1586,7 +1586,7 @@ The script accepts a `-DevServerCliDllPath` parameter (line 5 of `run-devserver-
 ```powershell
 # From repo root — uses local build, no tool install needed
 ./build/test-scripts/run-devserver-cli-tests.ps1 `
-    -DevServerCliDllPath src/Uno.UI.DevServer.Cli/bin/Release/net9.0/Uno.UI.DevServer.Cli.dll
+    -DevServerCliDllPath src/Uno.UI.DevServer.Cli/bin/Release/net10.0/Uno.UI.DevServer.Cli.dll
 ```
 
 This runs **all** tests (existing 5 + new 6) against the local build. The script auto-detects the DLL path and invokes via `dotnet <dll>` instead of the global tool.
@@ -1596,7 +1596,7 @@ To also run package content validation locally, set the environment variable:
 ```powershell
 $env:PACKAGES_DIR = "src/nupkg"
 ./build/test-scripts/run-devserver-cli-tests.ps1 `
-    -DevServerCliDllPath src/Uno.UI.DevServer.Cli/bin/Release/net9.0/Uno.UI.DevServer.Cli.dll
+    -DevServerCliDllPath src/Uno.UI.DevServer.Cli/bin/Release/net10.0/Uno.UI.DevServer.Cli.dll
 ```
 
 **Step 3: Run unit tests**
@@ -1616,7 +1616,7 @@ These two scenarios cannot be automated and require manual verification:
 ```powershell
 cd src/Uno.UI.RemoteControl.Host
 dotnet build -c Release /p:UnoNugetOverrideVersion=99.0.0-local
-# Verify: ~/.nuget/packages/uno.winui.devserver/99.0.0-local/tools/rc/host/net9.0/ updated
+# Verify: ~/.nuget/packages/uno.winui.devserver/99.0.0-local/tools/rc/host/net10.0/ updated
 ```
 
 2. **IDE Regression** — Open a real Uno project in VS/Rider, verify DevServer still launches via the IDE's own mechanism (no `--addins`). This validates backward compatibility with IDE extensions that bypass the CLI entirely.
@@ -1672,7 +1672,7 @@ The local and CI paths run the **same test functions**. CI additionally exercise
 The current TFM resolution in `UnoToolsLocator` (`UnoToolsLocator.cs:520,559`) is simplistic:
 
 ```csharp
-// Current: parse dotnet --version -> "9.0.100" -> "net9.0"
+// Current: parse dotnet --version -> "9.0.100" -> "net10.0"
 var dotnetVersion = await TryGetDotNetVersionInfo();
 var tfm = $"net{dotnetVersion.Major}.{dotnetVersion.Minor}";
 ```
@@ -1680,7 +1680,7 @@ var tfm = $"net{dotnetVersion.Major}.{dotnetVersion.Minor}";
 **Problems on the critical path**:
 - `dotnet --version` spawns a subprocess on **every startup** (`UnoToolsLocator.cs:520`) — 0.5-1s
 - Multiple .NET SDKs installed → `dotnet --version` may not match the SDK pinned in `global.json`
-- Host package may not have a binary for the exact TFM (e.g., only `net9.0` available but SDK reports `net10.0`)
+- Host package may not have a binary for the exact TFM (e.g., only `net10.0` available but SDK reports `net11.0`)
 - Preview SDKs may report unexpected version strings
 
 ### Phase 0 Fix: Cache `dotnet --version`
@@ -1828,7 +1828,7 @@ The `packages.json` `versionOverride` field allows TFM-specific version override
   "group": "WasmBootstrap",
   "version": "9.0.23",
   "packages": ["Uno.Wasm.Bootstrap", "Uno.Wasm.Bootstrap.DevServer"],
-  "versionOverride": { "net10.0": "10.0.15" }
+  "versionOverride": { "net11.0": "10.0.15" }
 }
 ```
 

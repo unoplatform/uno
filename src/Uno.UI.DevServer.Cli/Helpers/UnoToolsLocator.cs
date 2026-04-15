@@ -381,7 +381,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			$"""
 			<Project Sdk="{packageId}/{version}">
 				<PropertyGroup>
-					<TargetFramework>net9.0</TargetFramework>
+					<TargetFramework>net10.0</TargetFramework>
 					<UnoSingleProject>true</UnoSingleProject>
 					<OutputType>exe</OutputType>
 				</PropertyGroup>

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -8,8 +9,9 @@ namespace Uno.UI.Samples.Tests;
 
 public class UnitTestClassInfo
 {
+	private const DynamicallyAccessedMemberTypes TypeRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
 	public UnitTestClassInfo(
-		Type? type,
+		[DynamicallyAccessedMembers(TypeRequirements)] Type? type,
 		MethodInfo[]? tests,
 		MethodInfo? initialize,
 		MethodInfo? cleanup)
@@ -23,6 +25,7 @@ public class UnitTestClassInfo
 
 	public string TestClassName { get; }
 
+	[DynamicallyAccessedMembers(TypeRequirements)]
 	public Type? Type { get; }
 
 	public MethodInfo[]? Tests { get; }

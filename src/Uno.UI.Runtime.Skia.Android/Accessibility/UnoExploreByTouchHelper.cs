@@ -171,8 +171,17 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		return false;
 	}
 
+#if NET11_0_OR_GREATER
+	protected override void OnPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat? node)
+#else   // NET11_0_OR_GREATER
 	protected override void OnPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat node)
+#endif  // NET11_0_OR_GREATER
 	{
+		if (node is null)
+		{
+			return;
+		}
+
 		// TODO: What about non-UIElements? e.g, Hyperlinks?
 		// In WinUI, `TextElement`s can have automation peers. We need to support that in Uno.
 		if (_idToElement.TryGetValue(virtualViewId, out var element) &&
@@ -211,11 +220,19 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				}
 
 				var automationControlType = peer!.GetAutomationControlType();
+				var isChecked = peer is IToggleProvider toggleProvider && toggleProvider.ToggleState == ToggleState.On;
 
 				node.ContentDescription = peer.GetName() ?? "";
 				node.Password = peer.IsPassword();
 				node.Enabled = peer.IsEnabled();
-				node.Checked = peer is IToggleProvider toggleProvider && toggleProvider.ToggleState == ToggleState.On;
+
+#if NET11_0_OR_GREATER
+				// API break in Xamarin.AndroidX.Core between 1.16.0.2 and 11.7.0.2.
+				node.Checked = isChecked ? 1 : 0;
+#else   // NET11_0_OR_GREATER
+				node.Checked = isChecked;
+#endif  // NET11_0_OR_GREATER
+
 				node.Checkable = peer is IToggleProvider;
 				node.Clickable = isClickable;
 				node.Editable = automationControlType == AutomationControlType.Edit;
@@ -223,7 +240,11 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				if (peer.GetLabeledBy() is FrameworkElementAutomationPeer labeledByPeer &&
 					_cwtElementToId.TryGetValue(labeledByPeer.Owner, out var labeledByVirtualId))
 				{
+#if NET11_0_OR_GREATER
+					node.AddLabeledBy(_host, (int)labeledByVirtualId);
+#else   // NET11_0_OR_GREATER
 					node.SetLabeledBy(_host, (int)labeledByVirtualId);
+#endif  // NET11_0_OR_GREATER
 				}
 
 				node.Heading = peer.GetHeadingLevel() != AutomationHeadingLevel.None;

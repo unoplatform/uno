@@ -27,7 +27,7 @@ internal static class FontHelper
 	private static Func<FontProperties, FontFamily, nfloat?, UIFont?> _tryGetFont;
 
 	private const int DefaultUIFontPreferredBodyFontSize = 17;
-	private static float? DefaultPreferredBodyFontSize = UIFont.PreferredBody.FontDescriptor.FontAttributes.Size;
+	private static float? DefaultPreferredBodyFontSize = UIFont.PreferredBody?.FontDescriptor?.FontAttributes?.Size;
 
 	static FontHelper()
 	{
@@ -114,7 +114,8 @@ internal static class FontHelper
 		}
 
 		return ApplyStyle(
-			UIFont.SystemFontOfSize(properties.Size, properties.Weight.ToUIFontWeight()),
+			UIFont.SystemFontOfSize(properties.Size, properties.Weight.ToUIFontWeight())
+				?? throw new InvalidOperationException($"Failed to get system font with size {properties.Size} and weight {properties.Weight}!"),
 			properties);
 	}
 
@@ -221,9 +222,10 @@ internal static class FontHelper
 		if (fontProperties.Weight.Weight == FontWeights.Bold.Weight && !font.FontDescriptor.SymbolicTraits.HasFlag(UIFontDescriptorSymbolicTraits.Bold))
 		{
 			var descriptor = font.FontDescriptor.CreateWithTraits(font.FontDescriptor.SymbolicTraits | UIFontDescriptorSymbolicTraits.Bold);
-			if (descriptor != null)
+			var boldFont = descriptor == null ? null : UIFont.FromDescriptor(descriptor, fontProperties.Size);
+			if (boldFont != null)
 			{
-				font = UIFont.FromDescriptor(descriptor, fontProperties.Size);
+				font = boldFont;
 			}
 			else
 			{
@@ -239,9 +241,10 @@ internal static class FontHelper
 		if (fontProperties.Style == FontStyle.Italic && !font.FontDescriptor.SymbolicTraits.HasFlag(UIFontDescriptorSymbolicTraits.Italic))
 		{
 			var descriptor = font.FontDescriptor.CreateWithTraits(font.FontDescriptor.SymbolicTraits | UIFontDescriptorSymbolicTraits.Italic);
-			if (descriptor != null)
+			var italicFont = descriptor == null ? null : UIFont.FromDescriptor(descriptor, fontProperties.Size);
+			if (italicFont != null)
 			{
-				font = UIFont.FromDescriptor(descriptor, fontProperties.Size);
+				font = italicFont;
 			}
 			else
 			{
@@ -319,7 +322,7 @@ internal static class FontHelper
 				// Use the font even if the registration failed if the error code
 				// reports the fonts have already been registered.
 
-				return UIFont.FromName(font.PostScriptName, size);
+				return UIFont.FromName(font.PostScriptName!, size);
 			}
 			else
 			{
