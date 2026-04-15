@@ -2174,6 +2174,7 @@
 		       Callers using .App<App>(...) need to drop the explicit type argument to resolve to the new
 		       non-generic overload. UnoPlatformHostBuilderExtensions is source-rebuilt per consuming app. -->
 		  <Member fullName="Uno.UI.Hosting.IUnoPlatformHostBuilder Uno.UI.Hosting.UnoPlatformHostBuilderExtensions.App(Uno.UI.Hosting.IUnoPlatformHostBuilder builder, System.Func`1&lt;TApplication&gt; appBuilder)" reason="Replaced by non-generic App(Func&lt;Application&gt;) to allow collectible ALC collection on CoreCLR" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.SetSubMenuDirection(System.Boolean isSubMenuDirectionUp)" reason="Moved to explicit ISubMenuOwner interface implementation" />
 	  </Methods>
 	</IgnoreSet>
 	<![CDATA[

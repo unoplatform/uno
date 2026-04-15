@@ -70,6 +70,14 @@ namespace Uno.UI
 			/// Note: This is incompatible with the way accessibility works on UWP.
 			/// </remarks>
 			public static bool UseSimpleAccessibility { get; set; }
+
+			/// <summary>
+			/// When set to <c>true</c>, enables the accessibility semantic tree automatically
+			/// on WebAssembly without requiring user interaction with the "Enable Accessibility" button.
+			/// This is similar to Flutter's <c>SemanticsBinding.instance.ensureSemantics()</c>.
+			/// Set this in your application startup before the host is built. The default value is <c>false</c>.
+			/// </summary>
+			public static bool AutoEnableAccessibility { get; set; }
 		}
 
 		public static class ComboBox
@@ -918,9 +926,30 @@ namespace Uno.UI
 			public static bool? UseOpenGLOnWin32 { get; set; }
 
 			/// <summary>
+			/// Determines if Vulkan rendering should be enabled on the X11 target.
+			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to
+			/// OpenGL (or software rendering) if Vulkan is unavailable.
+			/// </summary>
+			public static bool UseVulkanOnX11 { get; set; }
+
+			/// <summary>
+			/// Determines if Vulkan rendering should be enabled on the Win32 target.
+			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to
+			/// OpenGL (or software rendering) if Vulkan is unavailable.
+			/// </summary>
+			public static bool UseVulkanOnWin32 { get; set; }
+
+			/// <summary>
 			/// Determines if OpenGL rendering should be enabled on the Android target when using the skia renderer.
 			/// </summary>
 			public static bool UseOpenGLOnSkiaAndroid { get; set; } = true;
+
+			/// <summary>
+			/// Determines if Vulkan rendering should be enabled on the Android target when using the skia renderer.
+			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to OpenGL ES
+			/// (or software rendering) if Vulkan is unavailable.
+			/// </summary>
+			public static bool UseVulkanOnSkiaAndroid { get; set; }
 
 			/// <summary>
 			/// Enables certain optimizations that skip rendering some subtrees

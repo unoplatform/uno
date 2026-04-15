@@ -80,8 +80,8 @@ public partial class ApiInformation
 	private static bool IsImplementedByUno(MemberInfo? member) => (member?.GetCustomAttributes(typeof(Uno.NotImplementedAttribute), false)?.Length ?? -1) == 0;
 
 	public static bool IsTypePresent(
-			[DynamicallyAccessedMembers(PublicMembers)]
-			string typeName)
+		[DynamicallyAccessedMembers(PublicMembers)]
+		string typeName)
 	{
 		lock (_gate)
 		{
@@ -201,8 +201,8 @@ public partial class ApiInformation
 	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
 	[return: DynamicallyAccessedMembers(PublicMembers)]
 	private static Type? GetValidType(
-			[DynamicallyAccessedMembers(PublicMembers)]
-			string typeName)
+		[DynamicallyAccessedMembers(PublicMembers)]
+		string typeName)
 	{
 		lock (_assemblies)
 		{

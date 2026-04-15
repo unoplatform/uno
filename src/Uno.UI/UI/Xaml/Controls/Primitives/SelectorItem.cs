@@ -8,6 +8,8 @@ using Windows.UI.Core;
 using System.Threading.Tasks;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Windows.Devices.Input;
 #if __APPLE_UIKIT__
 using UIKit;
@@ -132,6 +134,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			OnIsSelectedChanged();
 
 			Selector?.NotifyListItemSelected(this, oldIsSelected, newIsSelected);
+
+			// Raise IsSelected property changed event for accessibility (WinUI parity).
+			// Screen readers use this to announce selection state changes.
+			if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged))
+			{
+				var peer = GetOrCreateAutomationPeer();
+				if (peer is Automation.Peers.SelectorItemAutomationPeer selectorItemPeer)
+				{
+					selectorItemPeer.RaisePropertyChangedEvent(
+						Automation.SelectionItemPatternIdentifiers.IsSelectedProperty,
+						oldIsSelected,
+						newIsSelected);
+				}
+			}
 		}
 
 		internal protected virtual void OnIsSelectedChanged() { }

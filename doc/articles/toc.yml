@@ -207,6 +207,8 @@
         href: xref:uno.development.using.markup
       - name: Platform-specific C# code
         href: platform-specific-csharp.md
+      - name: Implicit XAML Namespaces
+        href: xref:Uno.Features.ImplicitXamlNamespaces
       - name: Platform-specific XAML markup
         href: platform-specific-xaml.md
       - name: Auto-Generated Code-Behind
@@ -225,6 +227,8 @@
         href: features/using-linux-framebuffer.md
       - name: Using Skia Desktop (macOS)
         href: xref:Uno.Skia.macOS
+      - name: Vulkan Rendering Backend
+        href: xref:Uno.Skia.Vulkan
       - name: Getting Started With Tests
         href: xref:Uno.Authoring.Tests
       - name: Logging
@@ -616,6 +620,8 @@
           href: features/routed-events.md
         - name: Shapes & Brushes
           href: features/shapes-and-brushes.md
+        - name: Spell checking
+          href: features/spellchecking.md
         - name: String resources and localization
           href: features/working-with-strings.md
         - name: Succinct syntax

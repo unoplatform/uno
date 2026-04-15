@@ -363,7 +363,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid)]
 		public async Task When_RadioButtons_Unload_SelectedIndex()
 		{
 			var vm = new When_RadioButtons_Unload_VM
@@ -439,7 +438,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid)]
 		public async Task When_RadioButtons_Unload_SelectedItem()
 		{
 			var vm = new When_RadioButtons_Unload_VM();

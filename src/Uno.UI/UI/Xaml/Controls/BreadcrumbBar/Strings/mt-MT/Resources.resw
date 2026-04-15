@@ -122,7 +122,7 @@
     <comment>The automation name for the BreadcrumbBar ellipsis button.</comment>
   </data>
   <data name="BreadcrumbBarItemLocalizedControlType" xml:space="preserve">
-    <value>item tal-istrixxa tal-breadcrumb</value>
+    <value>element tal-istrixxa tal-indirizzi</value>
     <comment>A simple description of the control for UIA</comment>
   </data>
 </root>

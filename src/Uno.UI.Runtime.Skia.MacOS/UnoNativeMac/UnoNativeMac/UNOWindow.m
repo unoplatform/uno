@@ -6,6 +6,7 @@
 #import "MouseButtons.h"
 #import "UNOApplication.h"
 #import "UNOSoftView.h"
+#import "UNOAccessibility.h"
 
 static NSWindow *main_window;
 static NSMutableSet<NSWindow*> *windows;
@@ -1276,6 +1277,45 @@ NSOperatingSystemVersion _osVersion;
     [center removeObserver:windowDidChangeScreen name:NSApplicationDidChangeScreenParametersNotification object:self];
 
     uno_get_window_close_callback()(self);
+}
+
+#pragma mark - NSAccessibility
+
+- (NSArray *)accessibilityChildren {
+    // Merge the native view children with our custom accessibility tree elements
+    NSMutableArray *children = [NSMutableArray arrayWithArray:[super accessibilityChildren]];
+    NSArray *a11yChildren = uno_accessibility_get_root_children();
+    if (a11yChildren) {
+        [children addObjectsFromArray:a11yChildren];
+    }
+    return children;
+}
+
+- (id)accessibilityFocusedUIElement {
+    // Return the currently focused accessibility element for VoiceOver
+    id focusedElement = uno_accessibility_get_focused_element();
+    if (focusedElement) {
+        return focusedElement;
+    }
+    // Fall back to the default implementation
+    return [super accessibilityFocusedUIElement];
+}
+
+- (id)accessibilityHitTest:(NSPoint)point {
+    // First check if the point hits any of our custom accessibility elements
+    NSArray *a11yChildren = uno_accessibility_get_root_children();
+    if (a11yChildren) {
+        for (id child in [a11yChildren reverseObjectEnumerator]) {
+            if ([child respondsToSelector:@selector(accessibilityHitTest:)]) {
+                id hit = [child accessibilityHitTest:point];
+                if (hit) {
+                    return hit;
+                }
+            }
+        }
+    }
+    // Fall back to the default implementation
+    return [super accessibilityHitTest:point];
 }
 
 @end

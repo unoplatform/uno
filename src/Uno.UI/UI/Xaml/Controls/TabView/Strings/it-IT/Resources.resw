@@ -145,4 +145,8 @@
     <value>Scorri l'elenco delle schede in avanti</value>
     <comment>Tooltip for the tab list scroll increase button.</comment>
   </data>
+  <data name="TabViewNewTabAddedNotification" xml:space="preserve">
+    <value>Nuova scheda aggiunta.</value>
+    <comment>String read by Narrator when a new tab is added.</comment>
+  </data>
 </root>
