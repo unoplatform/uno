@@ -5301,9 +5301,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			TextCompositionStartedEventArgs? startedArgs = null;
-			TextCompositionChangedEventArgs? changedArgs = null;
-			TextCompositionEndedEventArgs? endedArgs = null;
+			TextCompositionStartedEventArgs startedArgs = null;
+			TextCompositionChangedEventArgs changedArgs = null;
+			TextCompositionEndedEventArgs endedArgs = null;
 
 			SUT.TextCompositionStarted += (s, e) => startedArgs = e;
 			SUT.TextCompositionChanged += (s, e) => changedArgs = e;
@@ -5349,7 +5349,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("Hello", SUT.Text);
 
-			TextCompositionStartedEventArgs? startedArgs = null;
+			TextCompositionStartedEventArgs startedArgs = null;
 			SUT.TextCompositionStarted += (s, e) => startedArgs = e;
 
 			fake.SimulateCompositionStart();
@@ -5593,10 +5593,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public bool IsComposing { get; private set; }
 			public bool EndImeSessionCalled { get; set; }
 
-			public event EventHandler? CompositionStarted;
-			public event EventHandler<ImeCompositionEventArgs>? CompositionUpdated;
-			public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
-			public event EventHandler? CompositionEnded;
+			public event EventHandler CompositionStarted;
+			public event EventHandler<ImeCompositionEventArgs> CompositionUpdated;
+			public event EventHandler<ImeCompositionEventArgs> CompositionCompleted;
+			public event EventHandler CompositionEnded;
 
 			public void StartImeSession(TextBox textBox) { }
 
