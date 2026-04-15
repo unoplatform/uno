@@ -639,11 +639,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <remarks>Unlike the LayoutInformation.GetLayoutSlot(), this property is set **BEFORE** arranging the children of the ScrollViewer</remarks>
 		internal Size ViewportArrangeSize { get; private set; }
 
-		// Note for implementers: Search for SharedHelpers.IsRS5OrHigher() in ItemsRepeaterScrollHost.cs
-		// => This should be re-enabled AND this class also gives the base implementation for the anchoring
-		[global::Uno.NotImplemented]
-		public UIElement? CurrentAnchor => null;
-
 		/// <summary>
 		/// Cached value of <see cref="Uno.UI.Xaml.Controls.ScrollViewer.UpdatesModeProperty"/>,
 		/// in order to not access the DP on each scroll (perf considerations)
@@ -686,11 +681,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			ViewportArrangeSize = finalSize;
 
-			var arrangeSize = base.ArrangeOverride(finalSize);
-			TrimOverscroll(Orientation.Horizontal);
-			TrimOverscroll(Orientation.Vertical);
-
-			return arrangeSize;
+			return AnchoringArrangeOverride(finalSize, size =>
+			{
+				var arranged = base.ArrangeOverride(size);
+				TrimOverscroll(Orientation.Horizontal);
+				TrimOverscroll(Orientation.Vertical);
+				return arranged;
+			});
 		}
 
 		partial void TrimOverscroll(Orientation orientation);
