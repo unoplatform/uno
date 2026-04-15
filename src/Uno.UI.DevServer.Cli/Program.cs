@@ -178,10 +178,23 @@ internal class Program
 	}
 
 	private static bool IsMcpMode(string[] args)
-		=> args.Contains("--mcp-app")
-		|| (args.Length >= 2
-			&& string.Equals(args[0], "mcp", StringComparison.OrdinalIgnoreCase)
-			&& string.Equals(args[1], "serve", StringComparison.OrdinalIgnoreCase));
+	{
+		if (args.Contains("--mcp-app"))
+		{
+			return true;
+		}
+
+		for (int i = 0; i < args.Length - 1; i++)
+		{
+			if (string.Equals(args[i], "mcp", StringComparison.OrdinalIgnoreCase)
+				&& string.Equals(args[i + 1], "serve", StringComparison.OrdinalIgnoreCase))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	private static void WriteOption(string option, string description)
 	{
