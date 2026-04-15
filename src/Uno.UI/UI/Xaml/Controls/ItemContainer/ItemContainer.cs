@@ -493,7 +493,8 @@ partial class ItemContainer : Control
 
 		if (canRaiseItemInvoked &&
 			!args.Handled &&
-			!m_pointerInfo.IsPressed())
+			!m_pointerInfo.IsPressed() &&
+			m_pointerInfo.IsPointerOver())
 		{
 			args.Handled = RaiseItemInvoked(ItemContainerInteractionTrigger.PointerReleased, args.OriginalSource);
 		}
