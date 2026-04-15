@@ -394,14 +394,21 @@ namespace Uno.Xaml
 					// Try markup extension
 					// FIXME: is this rule correct?
 					var v = pair.Value;
-					// Uno feature 004 (XAML C# expressions): unambiguous opt-in directive forms
-					// ({= ...}, {.Member}, {this.Member}) are NEVER valid markup extensions. Bypass
-					// the markup-extension parser so the classifier downstream receives the raw
-					// attribute text and can emit UNO2020 / UNO2099. The classifier itself is gated
-					// by the UnoXamlCSharpExpressionsEnabled MSBuild property; here we only
+					// Uno feature 004 (XAML C# expressions): several attribute-value shapes can
+					// NEVER be valid markup extensions and must bypass ParsedMarkupExtensionInfo.Parse
+					// so the generator classifier downstream receives the raw text and either lowers
+					// it or emits a UNO2xxx diagnostic:
+					//   • Opt-in directive forms: {= ...}, {.Member...}, {this.Member...}
+					//   • Unambiguous C# expression forms: operators outside string literals (`+`,
+					//     `-`, `*`, `/`, `%`, `<`, `>`, `==`, `!=`, `&&`, `||`, `??`, `?:`, etc.),
+					//     interpolated strings ({$'...'} / {$"..."}), lambda introducer ((…) =>).
+					// Bare-identifier / dotted-path / method-call forms remain ambiguous with custom
+					// markup extensions and are NOT bypassed here — authors must use the `{= Foo}`
+					// directive (future work: flag-gated bypass behind UnoXamlCSharpExpressionsEnabled).
+					// The classifier itself gates on UnoXamlCSharpExpressionsEnabled; here we only
 					// suppress the parse that would otherwise turn into a misleading XAML error.
-					var isUnoCSharpExpressionDirective = IsUnoCSharpExpressionDirective(v);
-					if (!string.IsNullOrEmpty(v) && v[0] == '{' && v.ElementAtOrDefault(1) != '}' && !isUnoCSharpExpressionDirective)
+					var isUnoCSharpExpression = IsUnoCSharpExpressionAttribute(v);
+					if (!string.IsNullOrEmpty(v) && v[0] == '{' && v.ElementAtOrDefault(1) != '}' && !isUnoCSharpExpression)
 					{
 						IEnumerable<XamlXmlNodeInfo> ProcessArgs(ParsedMarkupExtensionInfo info)
 						{
@@ -470,12 +477,21 @@ namespace Uno.Xaml
 			=> value.StartsWith("{}", StringComparison.Ordinal) ? value.Substring(2) : value;
 
 		/// <summary>
-		/// Uno feature 004 (XAML C# expressions): detects the unambiguous opt-in directive prefixes
-		/// — <c>{= ...}</c>, <c>{.Member...}</c>, <c>{this.Member...}</c>. These never resolve as
-		/// markup extensions. Recognising them here lets Uno's downstream classifier receive the
-		/// raw attribute text and emit the appropriate UNO2xxx diagnostic.
+		/// Uno feature 004 (XAML C# expressions): returns true when the attribute value carries
+		/// syntax that is never valid as a markup extension and therefore must skip
+		/// <see cref="ParsedMarkupExtensionInfo.Parse"/>. Recognised shapes:
+		/// <list type="bullet">
+		///   <item>Directive forms: <c>{= ...}</c>, <c>{.Member...}</c>, <c>{this.Member...}</c>.</item>
+		///   <item>Unambiguous expression operators outside string literals.</item>
+		///   <item>Interpolated string prefix <c>{$'...'</c> / <c>{$"...</c>.</item>
+		///   <item>Lambda introducer <c>{(…) =&gt;</c>.</item>
+		/// </list>
+		/// Bare identifiers, dotted paths, and method-call forms remain ambiguous with custom
+		/// markup extensions and continue to flow through the markup-extension parser. The
+		/// downstream classifier (<c>UnoXamlCSharpExpressionsEnabled</c>-gated) decides what to
+		/// emit: UNO2020 (opt-in off), UNO2099 (WinAppSDK), or lowered expression output.
 		/// </summary>
-		private static bool IsUnoCSharpExpressionDirective(string value)
+		internal static bool IsUnoCSharpExpressionAttribute(string value)
 		{
 			if (string.IsNullOrEmpty(value) || value.Length < 3 || value[0] != '{' || value[value.Length - 1] != '}')
 			{
@@ -503,7 +519,117 @@ namespace Uno.Xaml
 				return true;
 			}
 
+			// {$'...'} or {$"..."} — interpolated string literal.
+			if (value.Length >= 4 && value[1] == '$'
+				&& (value[2] == '\'' || value[2] == '"'))
+			{
+				return true;
+			}
+
+			// {(... ) => ...} — lambda event handler. The opening `(` is distinctive: no
+			// Uno/WinUI markup extension begins with `(`.
+			if (value[1] == '(')
+			{
+				return true;
+			}
+
+			// Contains an unambiguous compound-expression marker outside a string literal.
+			if (ContainsCompoundMarkerOutsideStrings(value, 1, value.Length - 1))
+			{
+				return true;
+			}
+
 			return false;
+		}
+
+		/// <summary>
+		/// Scans <paramref name="value"/> from <paramref name="start"/> (inclusive) to
+		/// <paramref name="end"/> (exclusive) for characters that unambiguously indicate a C#
+		/// expression body. Skips single- and double-quoted string literals so content like
+		/// <c>{StaticResource 'FooBar'}</c> is not misclassified.
+		/// </summary>
+		private static bool ContainsCompoundMarkerOutsideStrings(string value, int start, int end)
+		{
+			for (var i = start; i < end; i++)
+			{
+				var c = value[i];
+
+				if (c == '\'' || c == '"')
+				{
+					i = SkipQuotedSpan(value, i, end);
+					continue;
+				}
+
+				switch (c)
+				{
+					// Arithmetic / compound operators.
+					case '+': case '*': case '/': case '%': case '^': case '~':
+						return true;
+
+					// Comparison / logical.
+					case '<': case '>': case '!':
+						return true;
+
+					// `&&`, `||` — the lead char alone is enough.
+					case '&': case '|':
+						return true;
+
+					// `?` discriminates ternary / null-coalescing / conditional access.
+					// `?.` is valid in x:Bind paths (e.g. `{x:Bind Foo?.Bar}`) and MUST NOT be
+					// bypassed. `??` (null-coalescing) and `? … :` (ternary) are expression-only.
+					case '?':
+						if (i + 1 < end && value[i + 1] != '.')
+						{
+							return true;
+						}
+						break;
+
+					// Interpolation marker `$'` / `$"` inside (not at start).
+					case '$':
+						if (i + 1 < end && (value[i + 1] == '\'' || value[i + 1] == '"'))
+						{
+							return true;
+						}
+						break;
+
+					// `=>` (lambda) and `==` (comparison) — both are unambiguous expression
+					// markers. `=` alone is a markup-ext `K=V` separator and stays passive.
+					case '=':
+						if (i + 1 < end && (value[i + 1] == '>' || value[i + 1] == '='))
+						{
+							return true;
+						}
+						break;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Returns the index of the closing quote (inclusive). Handles escape sequences so
+		/// <c>'it\'s'</c> scans as one literal. If the literal is unterminated, returns
+		/// <paramref name="end"/> - 1 so the outer scan finishes.
+		/// </summary>
+		private static int SkipQuotedSpan(string value, int openingIndex, int end)
+		{
+			var quote = value[openingIndex];
+			var i = openingIndex + 1;
+			while (i < end)
+			{
+				var c = value[i];
+				if (c == '\\' && i + 1 < end)
+				{
+					i += 2;
+					continue;
+				}
+				if (c == quote)
+				{
+					return i;
+				}
+				i++;
+			}
+			return end - 1;
 		}
 
 		private static bool IsCSharpIdentifierStart(char c) => char.IsLetter(c) || c == '_';

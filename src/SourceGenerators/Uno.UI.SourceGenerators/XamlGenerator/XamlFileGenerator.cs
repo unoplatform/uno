@@ -1958,7 +1958,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_isWinAppSdk,
 				_generatorContext);
 
-			return outcome != ClassificationOutcome.FallThrough;
+			switch (outcome)
+			{
+				case ClassificationOutcome.FallThrough:
+					return false;
+
+				case ClassificationOutcome.HandledWithDiagnostic:
+					return true;
+
+				case ClassificationOutcome.RecognisedPendingImplementation:
+					return TryEmitCSharpExpression(member, rawText);
+
+				default:
+					return false;
+			}
 		}
 
 		private bool HasMarkupExtension(XamlMemberDefinition? valueNode)
@@ -3269,8 +3282,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						if (TryHandleCSharpExpression(member))
 						{
-							// Feature 004: classifier emitted a diagnostic (UNO2020 / UNO2099) or lowered the
-							// expression into the existing binding pipeline. Skip the legacy branches below.
+							// Feature 004: classifier emitted a diagnostic (UNO2020 / UNO2099) and consumed
+							// the member. When the classifier rewrote the member into a synthesized {x:Bind}
+							// node instead, it returns false and we fall through to HasMarkupExtension below.
 						}
 						else if (HasMarkupExtension(member))
 						{
@@ -5930,6 +5944,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var objectUid = GetObjectUid(objectDefinition);
 				var closingPunctuation = string.IsNullOrWhiteSpace(closureName) ? "," : ";";
+
+				// Feature 004 (XAML C# expressions): BuildLiteralPropertiesWithFilter runs BEFORE
+				// BuildProperties in most call sites, so we rewrite C# expression attributes into
+				// synthesized {x:Bind} nodes here — otherwise the literal branch below would emit
+				// `.Text = "{= FullName}"` verbatim and win over the markup-extension branch.
+				foreach (var member in extendedProperties)
+				{
+					if (member.Objects.Count == 0 && member.Value is string)
+					{
+						TryHandleCSharpExpression(member);
+					}
+				}
 
 				foreach (var member in extendedProperties)
 				{

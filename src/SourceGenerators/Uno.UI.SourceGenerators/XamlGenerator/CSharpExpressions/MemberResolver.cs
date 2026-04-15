@@ -1,5 +1,7 @@
 #nullable enable
 
+using Microsoft.CodeAnalysis;
+
 namespace Uno.UI.SourceGenerators.XamlGenerator.CSharpExpressions;
 
 /// <summary>
@@ -20,13 +22,60 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.CSharpExpressions;
 /// </remarks>
 internal static class MemberResolver
 {
-	// TODO (T034): implement bare-identifier resolution (US1 scope — UNO2002, UNO2003).
-	// TODO (T066): extend with ForcedThis, ForcedDataType, MarkupExtension branches (US3 — UNO2001).
+	// TODO (T066): extend with ForcedThis, ForcedDataType branches (US3 — UNO2001 nuances).
 	// TODO (T076): extend with static-type lookup via ResolutionScope.GlobalUsings (US4 — UNO2004).
 	public static ResolutionResult Resolve(string identifier, ResolutionScope scope)
 	{
-		_ = identifier;
-		_ = scope;
-		return new ResolutionResult(MemberLocation.Neither, Symbol: null, Diagnostic: null);
+		var pageSymbol = FindInstanceMember(scope.PageType, identifier);
+		var dataSymbol = scope.DataType is { } dataType
+			? FindInstanceMember(dataType, identifier)
+			: null;
+
+		if (pageSymbol is not null && dataSymbol is not null)
+		{
+			return new ResolutionResult(MemberLocation.Both, pageSymbol, Diagnostics.AmbiguousMemberExpression);
+		}
+
+		if (pageSymbol is not null)
+		{
+			return new ResolutionResult(MemberLocation.This, pageSymbol, Diagnostic: null);
+		}
+
+		if (dataSymbol is not null)
+		{
+			return new ResolutionResult(MemberLocation.DataType, dataSymbol, Diagnostic: null);
+		}
+
+		if (scope.KnownMarkupExtensions.TryGetValue(identifier, out var markupExtension))
+		{
+			return new ResolutionResult(MemberLocation.MarkupExtension, markupExtension, Diagnostic: null);
+		}
+
+		return new ResolutionResult(MemberLocation.Neither, Symbol: null, Diagnostics.MemberNotFound);
+	}
+
+	private static ISymbol? FindInstanceMember(INamedTypeSymbol type, string identifier)
+	{
+		for (var current = (INamedTypeSymbol?)type; current is not null; current = current.BaseType)
+		{
+			foreach (var member in current.GetMembers(identifier))
+			{
+				if (member.IsStatic)
+				{
+					continue;
+				}
+
+				switch (member.Kind)
+				{
+					case SymbolKind.Property:
+					case SymbolKind.Field:
+					case SymbolKind.Method:
+					case SymbolKind.Event:
+						return member;
+				}
+			}
+		}
+
+		return null;
 	}
 }

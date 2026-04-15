@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using Microsoft.CodeAnalysis;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.CSharpExpressions;
@@ -13,17 +14,44 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.CSharpExpressions;
 /// </summary>
 internal static class XDataTypeResolver
 {
-	// TODO (T033): implement. Contract:
-	//   - Walk from the member's owning XamlObjectDefinition upwards via parent pointers.
-	//   - Stop at the nearest DataTemplate root (x:DataType on a DataTemplate is local to that template).
-	//   - Return the resolved INamedTypeSymbol or null.
-	//   - Caller emits UNO2010 (one per file) when resolution fails for any classified expression.
+	/// <summary>
+	/// Walks from <paramref name="memberOwner"/> upward until it finds an <c>x:DataType</c>
+	/// attribute or exits the enclosing <c>DataTemplate</c>. Returns the resolved type
+	/// (via <paramref name="typeResolver"/>) or <c>null</c>.
+	/// </summary>
+	/// <param name="memberOwner">The <see cref="XamlObjectDefinition"/> that owns the member carrying the expression.</param>
+	/// <param name="typeResolver">Callback that resolves a raw XAML type string (e.g. <c>local:Customer</c>) to an <see cref="INamedTypeSymbol"/>. Typically wraps <c>RewriteNamespaces</c> + <c>GetType</c>.</param>
 	public static INamedTypeSymbol? Resolve(
 		XamlObjectDefinition memberOwner,
-		Compilation compilation)
+		Func<string, INamedTypeSymbol?> typeResolver)
 	{
-		_ = memberOwner;
-		_ = compilation;
+		if (memberOwner is null)
+		{
+			return null;
+		}
+
+		for (var current = memberOwner; current is not null; current = current.Owner)
+		{
+			foreach (var member in current.Members)
+			{
+				if (member.Member.Name == "DataType"
+					&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
+					&& member.Value is string value
+					&& !string.IsNullOrWhiteSpace(value))
+				{
+					return typeResolver(value);
+				}
+			}
+
+			// DataTemplate shadows ancestors: if the current element is a DataTemplate
+			// and did not declare x:DataType above, stop here (the outer scope's
+			// x:DataType does not apply inside a DataTemplate).
+			if (current.Type?.Name == "DataTemplate")
+			{
+				return null;
+			}
+		}
+
 		return null;
 	}
 }

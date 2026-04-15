@@ -1,7 +1,9 @@
 #nullable enable
 
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.CSharpExpressions;
 
@@ -13,15 +15,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.CSharpExpressions;
 /// </summary>
 internal static class CSharpExpressionParser
 {
-	// TODO (T032): implement. Expected flow:
-	//   1. Apply OperatorAliases.Replace.
-	//   2. Apply QuoteTransform.Transform.
-	//   3. CSharpSyntaxTree.ParseText(innerCSharp, options).
-	//   4. Return tree + any script-mode parse diagnostics for the caller to convert to UNO2006.
 	public static (SyntaxTree Tree, bool HasErrors) Parse(string innerCSharp)
 	{
+		var aliased = OperatorAliases.Replace(innerCSharp);
+		var quoted = QuoteTransform.Transform(aliased);
+
 		var options = CSharpParseOptions.Default.WithKind(SourceCodeKind.Script);
-		var tree = CSharpSyntaxTree.ParseText(innerCSharp, options);
+		var tree = CSharpSyntaxTree.ParseText(quoted, options);
 		var hasErrors = false;
 
 		foreach (var diag in tree.GetDiagnostics())
@@ -30,6 +30,18 @@ internal static class CSharpExpressionParser
 			{
 				hasErrors = true;
 				break;
+			}
+		}
+
+		// Expression bodies are single-statement. Script mode accepts multiple top-level
+		// statements without error; promote that to a parse failure so UNO2006 can fire.
+		if (!hasErrors)
+		{
+			var root = tree.GetRoot();
+			var globalStatements = root.ChildNodes().OfType<GlobalStatementSyntax>().ToList();
+			if (globalStatements.Count > 1)
+			{
+				hasErrors = true;
 			}
 		}
 

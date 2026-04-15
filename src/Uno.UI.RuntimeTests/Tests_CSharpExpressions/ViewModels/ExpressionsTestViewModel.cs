@@ -23,8 +23,9 @@ public sealed class ExpressionsTestViewModel : INotifyPropertyChanged
 	private decimal _taxRate = 0.2m;
 	private AddressViewModel _user = new() { Address = new AddressInfo { City = "London" } };
 
-	public string FirstName { get => _firstName; set => Set(ref _firstName, value); }
-	public string LastName { get => _lastName; set => Set(ref _lastName, value); }
+	public string FirstName { get => _firstName; set { if (!EqualityComparer<string>.Default.Equals(_firstName, value)) { _firstName = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FirstName))); PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FullName))); } } }
+	public string LastName { get => _lastName; set { if (!EqualityComparer<string>.Default.Equals(_lastName, value)) { _lastName = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LastName))); PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FullName))); } } }
+	public string FullName => _firstName + " " + _lastName;
 	public bool IsVip { get => _isVip; set => Set(ref _isVip, value); }
 	public string? Nickname { get => _nickname; set => Set(ref _nickname, value); }
 	public decimal Price { get => _price; set => Set(ref _price, value); }

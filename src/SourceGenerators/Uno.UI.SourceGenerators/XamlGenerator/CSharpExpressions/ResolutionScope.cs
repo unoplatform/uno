@@ -34,8 +34,5 @@ internal sealed class ResolutionScope
 	/// Decision entry point for a bare identifier. See <c>contracts/resolution-algorithm.md</c>.
 	/// </summary>
 	public ResolutionResult Resolve(string identifier)
-	{
-		// TODO (Phase 3 / T034): implement the full decision table.
-		return new ResolutionResult(MemberLocation.Neither, Symbol: null, Diagnostic: null);
-	}
+		=> MemberResolver.Resolve(identifier, this);
 }
