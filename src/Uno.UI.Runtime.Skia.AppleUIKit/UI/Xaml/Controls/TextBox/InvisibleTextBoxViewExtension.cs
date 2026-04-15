@@ -79,20 +79,9 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void InvalidateLayout()
 	{
-		if (_textBoxView is not null)
+		if (_textBoxView is UIView nativeView)
 		{
-			//var width = _view.DisplayBlock.ActualWidth;
-			//var height = _view.DisplayBlock.ActualHeight;
-
-			//var position = _view.DisplayBlock.TransformToVisual(null).TransformPoint(default);
-			//var rect = new Rect(position.X, position.Y, width, height);
-			//var physical = rect.LogicalToPhysicalPixels();
-			//_nativeInput.Layout(
-			//	(int)physical.Left,
-			//	(int)physical.Top,
-			//	(int)physical.Right,
-			//	(int)physical.Bottom
-			//);
+			UpdateNativeViewFrame(nativeView);
 		}
 	}
 
@@ -262,18 +251,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 				_latestNativeView = view;
 				layer.AddSubview(nativeView);
 
-				var textBox = _textBoxView?.Owner?.TextBox;
-				var rect = textBox?.GetAbsoluteBoundsRect();
-				var physical = rect?.LogicalToPhysicalPixels();
-				var width = physical?.Width ?? 10;
-				var height = physical?.Height ?? 10;
-				// Push the overlay native view out of the visible view - this way
-				// the blue typing suggestion overlay will not be shown to the user.
-				nativeView.Frame = new CoreGraphics.CGRect(
-					-1000 - width,
-					-1000 - height,
-					width,
-					height);
+				UpdateNativeViewFrame(nativeView);
 			}
 		}
 	}
@@ -315,6 +293,24 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			nativeView.RemoveFromSuperview();
 			_latestNativeView = null;
 		}
+	}
+
+	private void UpdateNativeViewFrame(UIView nativeView)
+	{
+		var textBox = _textBoxView?.Owner?.TextBox;
+		var rect = textBox?.GetAbsoluteBoundsRect();
+		// GetAbsoluteBoundsRect returns WinUI DIPs which map 1:1 to iOS
+		// points.  Do NOT convert to physical pixels — UIView.Frame is in
+		// points, not physical pixels.
+		var x = rect?.X ?? 0;
+		var y = rect?.Y ?? 0;
+		var width = rect?.Width ?? 10;
+		var height = rect?.Height ?? 10;
+		// Position the native view at the TextBox location so that iPadOS
+		// places its floating keyboard near the focused control. The view
+		// is not visible because the TextInputLayer sits behind the Skia
+		// rendering surface in the native view hierarchy.
+		nativeView.Frame = new CoreGraphics.CGRect(x, y, width, height);
 	}
 
 	private static bool CouldBecomeFirstResponder(FrameworkElement? element)
