@@ -243,9 +243,71 @@ namespace Uno.UWPSyncGenerator
 			}
 		}
 
+		// Namespace prefixes that are excluded from sync generation because they are
+		// Windows-only, deprecated, or otherwise have no cross-platform implementation
+		// path on Uno. A prefix match also covers sub-namespaces.
+		//
+		// - To re-enable a namespace, remove (or comment out) its entry below and
+		//   run the sync generator.
+		// - When a new WinUI / Windows SDK version surfaces additional Windows-only
+		//   APIs, add the namespace prefix here with a short rationale.
+		private static readonly string[] _excludedNamespacePrefixes = new[]
+		{
+			// --- Windows-only / deprecated app-model APIs ---
+			"Windows.UI.Core.AnimationMetrics",                 // Win8 system animation metrics
+			"Windows.Web.Http.Diagnostics",                     // ETW HTTP diagnostics (Windows ETW)
+			"Windows.ApplicationModel.Resources.Management",    // PRI resource packaging
+			"Windows.ApplicationModel.Calls.Background",        // Dialer / VoIP background tasks
+			"Windows.ApplicationModel.CommunicationBlocking",   // Call / SMS blocking
+			"Windows.ApplicationModel.Search.Core",             // Win8 Charms search suggestions
+			"Windows.ApplicationModel.SocialInfo",              // People Hub social providers (+ .Provider)
+			"Windows.ApplicationModel.Preview.InkWorkspace",    // Windows Ink workspace host
+			"Windows.ApplicationModel.Preview.Notes",           // Sticky Notes app host
+			"Windows.Management.Deployment.Preview",            // MSIX deployment preview
+			"Windows.Security.Isolation",                       // Windows Sandbox / WDAG
+			"Windows.System.Update",                            // Windows IoT Core update service
+			"Windows.Perception.Automation.Core",               // HoloLens simulation test APIs
+
+			// --- IoT hardware (Windows 10 IoT Core only) ---
+			"Windows.Devices.Adc",                              // covers Adc.Provider
+			"Windows.Devices.Gpio",                             // covers Gpio.Provider
+			"Windows.Devices.I2c",                              // covers I2c.Provider
+			"Windows.Devices.Pwm",                              // covers Pwm.Provider
+			"Windows.Devices.Spi",                              // covers Spi.Provider
+			"Windows.Devices.Custom",                           // Custom device driver access
+			"Windows.Devices.Portable",                         // WPD removable storage
+			"Windows.Devices.Scanners",                         // WIA scanners
+
+			// --- Gaming / Xbox (platform-locked services) ---
+			"Windows.Gaming.Input.Preview",                     // Preview XInput extensions (Windows.Gaming.Input root stays)
+			"Windows.Gaming.Preview",                           // covers Preview.GamesEnumeration
+			"Windows.Gaming.XboxLive",                          // covers XboxLive.Storage
+			"Windows.Networking.XboxLive",                      // Xbox Live secure sockets
+			"Windows.Media.AppBroadcasting",                    // Game Bar broadcasting
+			"Windows.Media.AppRecording",                       // Game Bar clip recording
+
+			// --- AI / Maps / 3D printing / playlists (Windows-only services) ---
+			"Windows.AI.MachineLearning",                       // Windows ML / DirectML (+ .Preview)
+			"Windows.Services.Maps.Guidance",                   // Windows Maps guidance
+			"Windows.Services.Maps.LocalSearch",                // Windows Maps local search
+			"Windows.Services.TargetedContent",                 // Windows consumer-experience targeting
+			"Windows.Graphics.Printing3D",                      // 3D Print pipeline
+			"Windows.Media.Playlists",                          // WPL / ZPL playlist files
+		};
+
 		private static bool SkipNamespace(INamedTypeSymbol namedTypeSymbol)
 		{
 			var @namespace = namedTypeSymbol.ContainingNamespace.ToDisplayString();
+
+			foreach (var prefix in _excludedNamespacePrefixes)
+			{
+				if (@namespace == prefix ||
+					@namespace.StartsWith(prefix + ".", StringComparison.Ordinal))
+				{
+					return true;
+				}
+			}
+
 			if (@namespace.StartsWith("Microsoft.UI.Input.Experimental", StringComparison.Ordinal))
 			{
 				// Skip Microsoft.UI.Input.Experimental as it is not part of WinAppSDK desktop APIs
