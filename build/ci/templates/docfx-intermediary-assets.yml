@@ -1,6 +1,6 @@
 steps:
   - task: UseNode@1
-    displayName: "Install Node 14.7.1"
+    displayName: "Install Node 14.17.1"
     inputs:
       version: "14.17.1"
 
