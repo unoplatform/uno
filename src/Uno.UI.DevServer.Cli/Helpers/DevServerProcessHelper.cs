@@ -305,7 +305,7 @@ internal static class DevServerProcessHelper
 			EnableRaisingEvents = true
 		};
 
-		var (outputSb, errorSb) = ObserveOutputs(startInfo, "devserver", logger, process, forwardOutputToConsole: false);
+		var (_, errorSb) = ObserveOutputs(startInfo, "devserver", logger, process, forwardOutputToConsole: false);
 
 		process.Start();
 		logger.LogDebug("Started host process: {Pid}", process.Id);

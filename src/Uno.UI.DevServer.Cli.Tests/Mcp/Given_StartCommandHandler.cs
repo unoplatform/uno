@@ -1,8 +1,6 @@
 using System.Diagnostics;
-using System.Net;
 using AwesomeAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
-using Uno.UI.DevServer.Cli.Helpers;
 
 namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 

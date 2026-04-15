@@ -1,7 +1,5 @@
 using System.Diagnostics;
 using AwesomeAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Uno.UI.DevServer.Cli.Helpers;
 
