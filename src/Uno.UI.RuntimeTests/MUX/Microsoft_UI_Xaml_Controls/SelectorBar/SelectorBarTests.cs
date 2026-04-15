@@ -238,18 +238,19 @@ public class SelectorBarTests : MUXApiTestBase
 
 		await UITestHelper.Load(selectorBar);
 
-		var item = selectorBar.Items[0];
+		var item = selectorBar.Items[1];
 
 		// Get the bounds of the SelectorBarItem and compute its center.
 		var bounds = item.GetAbsoluteBoundsRect();
 		var center = new Point(bounds.GetMidX(), bounds.GetMidY());
 
 		// Press mouse on the SelectorBarItem.
-		mouse.Press(center);
-
+		mouse.MoveTo(center);
+		await TestServices.WindowHelper.WaitForIdle();
+		mouse.Press();
 		await TestServices.WindowHelper.WaitForIdle();
 
-		Verify.IsTrue(await ControlHelper.IsInVisualState(selectorBar.Items[0], "CombinedStates", "UnselectedPressed"),
+		Verify.IsTrue(await ControlHelper.IsInVisualState(item, "CombinedStates", "UnselectedPressed"),
 			"SelectorBarItem should be in UnselectedPressed state after pointer press.");
 
 		// Move the mouse well outside the SelectorBarItem bounds and release.
@@ -260,7 +261,7 @@ public class SelectorBarTests : MUXApiTestBase
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// The visual state should return to UnselectedNormal, not be stuck on UnselectedPressed.
-		Verify.IsTrue(await ControlHelper.IsInVisualState(selectorBar.Items[0], "CombinedStates", "UnselectedNormal"),
+		Verify.IsTrue(await ControlHelper.IsInVisualState(item, "CombinedStates", "UnselectedNormal"),
 			"SelectorBarItem should return to UnselectedNormal after pointer released outside bounds.");
 	}
 #endif
