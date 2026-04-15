@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Input;
 using NUnit.Framework;
@@ -66,7 +67,7 @@ namespace SamplesApp.UITests
 			{
 				if (AppInitializer.GetLocalPlatform() == Platform.iOS)
 				{
-					AppInitializer.ColdStartApp();
+					ColdStartWithRetry();
 				}
 				else
 				{
@@ -94,7 +95,8 @@ namespace SamplesApp.UITests
 			}
 			catch
 			{
-				ResetSimulator();
+				// ColdStartWithRetry already performs resets inside its retry loop for iOS.
+				// For non-iOS, ResetSimulator is a no-op. Avoid a redundant reset here.
 				throw;
 			}
 
@@ -265,6 +267,48 @@ namespace SamplesApp.UITests
 			{
 				return null;
 			}
+		}
+
+		// iOS simulator startup can intermittently fail (e.g., XcodeService socket bind), so retry with reset.
+		private static void ColdStartWithRetry()
+		{
+			const int maxAttempts = 3;
+			var retryDelay = TimeSpan.FromSeconds(15);
+			Exception lastError = null;
+
+			for (var attempt = 1; attempt <= maxAttempts; attempt++)
+			{
+				try
+				{
+					AppInitializer.ColdStartApp();
+					return;
+				}
+				catch (Exception ex)
+				{
+					lastError = ex;
+					Console.WriteLine($"Cold start attempt {attempt}/{maxAttempts} failed: {ex}");
+
+					// ResetSimulator internally calls ColdStartApp after erasing the sim.
+					// Wrap in try/catch so a failure inside reset doesn't abort the retry loop.
+					try
+					{
+						ResetSimulator();
+					}
+					catch (Exception resetEx)
+					{
+						Console.WriteLine($"Simulator reset failed: {resetEx}");
+					}
+
+					if (attempt < maxAttempts)
+					{
+						Thread.Sleep(retryDelay);
+					}
+				}
+			}
+
+			throw new InvalidOperationException(
+				$"Cold start failed after {maxAttempts} attempts.",
+				lastError);
 		}
 
 		private void WriteSystemLogs(string fileName)
