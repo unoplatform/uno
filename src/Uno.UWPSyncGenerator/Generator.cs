@@ -804,6 +804,15 @@ namespace Uno.UWPSyncGenerator
 					// Also it's not clear if it's useful to generate it or not.
 					return true;
 
+				case "Windows.Devices.ILowLevelDevicesAggregateProvider":
+				case "Windows.Devices.LowLevelDevicesAggregateProvider":
+				case "Windows.ApplicationModel.Background.PhoneTrigger":
+					// Skipped because the type signatures reference types in namespaces
+					// excluded via _excludedNamespacePrefixes (Windows.Devices.{Adc,Gpio,
+					// I2c,Pwm,Spi}.Provider and Windows.ApplicationModel.Calls.Background),
+					// which would cause CS0234 in the generated stubs.
+					return true;
+
 				case "Microsoft.UI.Xaml.DependencyObject":
 					// On WinUI, DependencyObject has more than we currently want.
 					return true;
