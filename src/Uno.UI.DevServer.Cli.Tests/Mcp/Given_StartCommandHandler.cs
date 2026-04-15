@@ -179,6 +179,81 @@ public class Given_StartCommandHandler
 		joinedArgs.Should().Contain("--command=list");
 	}
 
+	[TestMethod]
+	[Description("When --solution is absent from CLI args, resolvedSolutionPath should be used as fallback")]
+	public async Task RunAsync_NoSolutionArg_UsesResolvedSolutionPath()
+	{
+		ProcessStartInfo? capturedStartInfo = null;
+		var handler = CreateHandler(
+			onSpawnProcess: psi =>
+			{
+				capturedStartInfo = psi;
+				return Task.FromResult(0);
+			});
+
+		var exitCode = await handler.RunAsync(
+			hostPath: "/path/to/host.dll",
+			originalArgs: ["start", "--httpPort", "50000", "--ideChannel", "test-channel"],
+			workingDirectory: "/app",
+			addins: null,
+			resolvedSolutionPath: "/app/auto-discovered.sln");
+
+		capturedStartInfo.Should().NotBeNull();
+		var joinedArgs = capturedStartInfo!.Arguments;
+		joinedArgs.Should().Contain("--solution");
+		joinedArgs.Should().Contain("/app/auto-discovered.sln");
+	}
+
+	[TestMethod]
+	[Description("When --solution IS in CLI args, resolvedSolutionPath should NOT override it")]
+	public async Task RunAsync_ExplicitSolutionArg_IgnoresResolvedSolutionPath()
+	{
+		ProcessStartInfo? capturedStartInfo = null;
+		var handler = CreateHandler(
+			onSpawnProcess: psi =>
+			{
+				capturedStartInfo = psi;
+				return Task.FromResult(0);
+			});
+
+		var exitCode = await handler.RunAsync(
+			hostPath: "/path/to/host.dll",
+			originalArgs: ["start", "--httpPort", "50000", "--solution", "/app/explicit.sln", "--ideChannel", "test-channel"],
+			workingDirectory: "/app",
+			addins: null,
+			resolvedSolutionPath: "/app/auto-discovered.sln");
+
+		capturedStartInfo.Should().NotBeNull();
+		var joinedArgs = capturedStartInfo!.Arguments;
+		joinedArgs.Should().Contain("/app/explicit.sln");
+		joinedArgs.Should().NotContain("auto-discovered");
+	}
+
+	[TestMethod]
+	[Description("When --solution is absent and resolvedSolutionPath matches an existing server, handler should reuse it")]
+	public async Task RunAsync_ResolvedSolution_FindsExistingServer()
+	{
+		var rebindCalled = false;
+		var handler = CreateHandler(
+			existingServerBySolution: new FakeServerInfo(ProcessId: 100, Port: 9000, SolutionPath: "/app/auto-discovered.sln"),
+			onRebindIdeChannel: (port, channel) =>
+			{
+				rebindCalled = true;
+				port.Should().Be(9000);
+				return Task.FromResult(true);
+			});
+
+		var exitCode = await handler.RunAsync(
+			hostPath: "/path/to/host.dll",
+			originalArgs: ["start", "--httpPort", "50000", "--ideChannel", "test-channel"],
+			workingDirectory: "/app",
+			addins: null,
+			resolvedSolutionPath: "/app/auto-discovered.sln");
+
+		exitCode.Should().Be(0);
+		rebindCalled.Should().BeTrue();
+	}
+
 	// --- Helpers ---
 
 	private static StartCommandHandler CreateHandler(

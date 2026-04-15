@@ -185,9 +185,16 @@ internal sealed class StartCommandHandler
 		string hostPath,
 		string[] originalArgs,
 		string workingDirectory,
-		string? addins)
+		string? addins,
+		string? resolvedSolutionPath = null)
 	{
 		var parsed = ParseStartArgs(originalArgs);
+
+		// Fall back to auto-discovered solution when --solution not in CLI args
+		if (string.IsNullOrWhiteSpace(parsed.Solution) && !string.IsNullOrWhiteSpace(resolvedSolutionPath))
+		{
+			parsed = parsed with { Solution = resolvedSolutionPath };
+		}
 
 		// Check for existing server by solution
 		if (!string.IsNullOrWhiteSpace(parsed.Solution))

@@ -149,7 +149,9 @@ internal class CliManager
 				// reach the host via IConfiguration, even on older host binaries
 				// that don't forward --ideChannel in their two-process launcher.
 				var startHandler = CreateStartCommandHandler();
-				return await startHandler.RunAsync(hostPath, originalArgs, workingDirectory, resolvedAddIns);
+				return await startHandler.RunAsync(
+					hostPath, originalArgs, workingDirectory, resolvedAddIns,
+					workspaceResolution?.SelectedSolutionPath);
 			}
 
 			// Non-start commands (stop, list, cleanup) still use controller mode
