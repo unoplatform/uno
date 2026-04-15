@@ -806,6 +806,7 @@ namespace Uno.UWPSyncGenerator
 
 				case "Windows.Devices.ILowLevelDevicesAggregateProvider":
 				case "Windows.Devices.LowLevelDevicesAggregateProvider":
+				case "Windows.Devices.LowLevelDevicesController":
 				case "Windows.ApplicationModel.Background.PhoneTrigger":
 					// Skipped because the type signatures reference types in namespaces
 					// excluded via _excludedNamespacePrefixes (Windows.Devices.{Adc,Gpio,
