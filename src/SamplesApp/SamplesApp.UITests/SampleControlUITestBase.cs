@@ -25,6 +25,12 @@ namespace SamplesApp.UITests
 		protected IApp _app;
 		private static int _totalTestFixtureCount;
 		private static bool _firstRun = true;
+		// Set by AfterEachTest when an iOS test fails with an NUnit [Timeout] expiry.
+		// Observed when the Calabash backend inside the running app dies mid-run:
+		// every subsequent test burns its 60 s timeout on cancelled GET /version calls
+		// before Xamarin.UITest's internal retry loop surfaces the failure. Resetting
+		// the simulator before the next run breaks the cascade.
+		private static bool _pendingIosRecovery;
 		private DateTime _startTime;
 		private readonly string _screenShotPath = Environment.GetEnvironmentVariable("UNO_UITEST_SCREENSHOT_PATH");
 
@@ -218,8 +224,24 @@ namespace SamplesApp.UITests
 				}
 			}
 
-			var app = AppInitializer.AttachToApp();
-			_app = app ?? _app;
+			var isIos = AppInitializer.GetLocalPlatform() == Platform.iOS;
+
+			if (_pendingIosRecovery && isIos)
+			{
+				Console.WriteLine("Prior test timed out on iOS; resetting simulator before next run.");
+				_pendingIosRecovery = false;
+				_app = ResetSimulator() ?? _app;
+			}
+			else
+			{
+				// On iOS, bound the attach so a dead Calabash backend can't consume the
+				// full NUnit [Timeout] before we recover. 20 s is well under 60 s and
+				// far above a healthy attach (<1 s in practice).
+				var app = isIos
+					? RunAttachWithTimeout(TimeSpan.FromSeconds(20))
+					: AppInitializer.AttachToApp();
+				_app = app ?? _app;
+			}
 
 			Helpers.App = _app;
 		}
@@ -237,6 +259,21 @@ namespace SamplesApp.UITests
 			}
 
 			WriteSystemLogs(GetCurrentStepTitle("log"));
+
+			if (AppInitializer.GetLocalPlatform() == Platform.iOS)
+			{
+				var result = TestContext.CurrentContext.Result;
+				if (result.Message is { } message
+					&& message.Contains("Test exceeded Timeout value of"))
+				{
+					_pendingIosRecovery = true;
+					Console.WriteLine("iOS test hit NUnit [Timeout]; flagging simulator reset for next run.");
+				}
+				else if (result.Outcome == ResultState.Success)
+				{
+					_pendingIosRecovery = false;
+				}
+			}
 		}
 
 		private static IApp ResetSimulator()
@@ -281,6 +318,29 @@ namespace SamplesApp.UITests
 			{
 				throw coldStartTask.Exception;
 			}
+		}
+
+		private static IApp RunAttachWithTimeout(TimeSpan timeout)
+		{
+			var attachTask = Task.Run(() => AppInitializer.AttachToApp());
+			var timeoutTask = Task.Delay(timeout);
+
+			var winner = Task.WhenAny(attachTask, timeoutTask);
+			winner.Wait();
+
+			if (winner.Result == timeoutTask)
+			{
+				Console.WriteLine($"AttachToApp exceeded {timeout}; resetting iOS simulator.");
+				return ResetSimulator();
+			}
+
+			if (attachTask.Exception is not null)
+			{
+				Console.WriteLine($"AttachToApp failed ({attachTask.Exception.GetBaseException().Message}); resetting iOS simulator.");
+				return ResetSimulator();
+			}
+
+			return attachTask.Result;
 		}
 
 		private static void ShutdownAndEraseIosSimulator()
