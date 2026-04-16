@@ -154,6 +154,7 @@ export PATH=$PATH:~/.local/bin
 
 if ! command -v idb >/dev/null 2>&1
 then
+	echo "===== PHASE: Install idb (t=${SECONDS}s) ====="
 	echo "Installing idb (fb-idb + idb-companion) pinned to Python 3.12"
 
 	# 1) Make sure we have a usable python3.12, but don't fail if Homebrew linking conflicts
@@ -181,17 +182,31 @@ fi
 ##
 ## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
 ##
+echo "===== PHASE: Boot simulator (t=${SECONDS}s) ====="
 echo "Starting simulator: [$UITEST_IOSDEVICE_ID] ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
 
+# Block until the simulator has actually finished booting; `simctl boot`
+# returns immediately, and a following `idb install` races the boot and
+# can stall for several minutes on CI agents.
+xcrun simctl bootstatus "$UITEST_IOSDEVICE_ID" -b
+
 # echo "Install app on simulator: $UITEST_IOSDEVICE_ID"
 # xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
-idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"
+# Run idb install in the background so its wall time overlaps with the
+# NUnitTransformTool build below. We `wait` on it before starting tests.
+echo "===== PHASE: Start idb install (background) (t=${SECONDS}s) ====="
+idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" &
+IDB_INSTALL_PID=$!
 
 ## Pre-build the transform tool to get early warnings
+echo "===== PHASE: Build Uno.NUnitTransformTool (t=${SECONDS}s) ====="
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 dotnet build
 popd
+
+echo "===== PHASE: Wait for idb install to finish (t=${SECONDS}s) ====="
+wait $IDB_INSTALL_PID
 
 cd $BUILD_SOURCESDIRECTORY/build
 
@@ -213,6 +228,7 @@ fi
 
 cd $UNO_TESTS_LOCAL_TESTS_FILE
 
+echo "===== PHASE: Start tests (t=${SECONDS}s) ====="
 echo "Starting tests in mode $UITEST_AUTOMATED_GROUP"
 
 if [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];

@@ -18,7 +18,10 @@ parameters:
 jobs:
 - job: ${{ parameters.JobName }}
   timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
-  cancelTimeoutInMinutes: 0
+  # Allow a short grace period on cancellation so PublishTestResults /
+  # PublishBuildArtifacts can run — otherwise a job-level timeout looks
+  # like "never started" because no artifacts or results are uploaded.
+  cancelTimeoutInMinutes: 3
   dependsOn: ${{ parameters.dependsOn }}
   displayName: ${{ parameters.JobDisplayName }}
   pool:

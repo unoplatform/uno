@@ -179,7 +179,7 @@ jobs:
       JobName: 'iOS_Snapshot_Tests_Group_${{ snapshotGroup.value }}'
       JobDisplayName: 'Snapshot Tests ${{ snapshotGroup.key }}'
       TestRunName: 'iOS Native Snapshot Tests ${{ snapshotGroup.key }}'
-      JobTimeoutInMinutes: 60
+      JobTimeoutInMinutes: 80
       SamplesAppArtifactName: 'ios-uitest-build'
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: true
