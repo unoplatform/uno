@@ -33,8 +33,6 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProviderOperation.Data.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProviderOperation.Provider.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCompleted()
@@ -42,5 +40,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareProviderOperation", "void ShareProviderOperation.ReportCompleted()");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProviderOperation.Data.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProviderOperation.Provider.get
 	}
 }

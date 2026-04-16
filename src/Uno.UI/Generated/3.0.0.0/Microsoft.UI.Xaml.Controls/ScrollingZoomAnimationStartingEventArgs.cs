@@ -13,11 +13,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property CorrelationId
 		// Skipping already declared property EndZoomFactor
 		// Skipping already declared property StartZoomFactor
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs.CenterPoint.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs.StartZoomFactor.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs.EndZoomFactor.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs.Animation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs.Animation.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs.CenterPoint.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs.CorrelationId.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs.EndZoomFactor.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs.StartZoomFactor.get
 	}
 }

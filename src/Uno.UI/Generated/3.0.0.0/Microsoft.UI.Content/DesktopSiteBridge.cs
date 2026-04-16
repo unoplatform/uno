@@ -9,45 +9,22 @@ namespace Microsoft.UI.Content
 	public partial class DesktopSiteBridge : global::Microsoft.UI.IClosableNotifier, global::Microsoft.UI.Content.IContentSiteBridge, global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal DesktopSiteBridge()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float OverrideScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float DesktopSiteBridge.OverrideScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DesktopSiteBridge.OverrideScale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "float DesktopSiteBridge.OverrideScale");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Content.ContentLayoutDirection? LayoutDirectionOverride
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContentLayoutDirection? DesktopSiteBridge.LayoutDirectionOverride is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentLayoutDirection%3F%20DesktopSiteBridge.LayoutDirectionOverride");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "ContentLayoutDirection? DesktopSiteBridge.LayoutDirectionOverride");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member DispatcherQueue DesktopSiteBridge.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20DesktopSiteBridge.DispatcherQueue");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsClosed
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DesktopSiteBridge.IsClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopSiteBridge.IsClosed");
 			}
 		}
 #endif
@@ -73,6 +50,34 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Content.ContentLayoutDirection? LayoutDirectionOverride
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContentLayoutDirection? DesktopSiteBridge.LayoutDirectionOverride is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentLayoutDirection%3F%20DesktopSiteBridge.LayoutDirectionOverride");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "ContentLayoutDirection? DesktopSiteBridge.LayoutDirectionOverride");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float OverrideScale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float DesktopSiteBridge.OverrideScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DesktopSiteBridge.OverrideScale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "float DesktopSiteBridge.OverrideScale");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.WindowId WindowId
 		{
 			get
@@ -83,31 +88,11 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsClosed
+		public static bool IsSupported()
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DesktopSiteBridge.IsClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopSiteBridge.IsClosed");
-			}
+			throw new global::System.NotImplementedException("The member bool DesktopSiteBridge.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopSiteBridge.IsSupported%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsVisible.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void MoveInZOrderBelow(global::Microsoft.UI.WindowId windowId)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.MoveInZOrderBelow(WindowId windowId)");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.OverrideScale.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.Dispose()");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.WindowId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Connect(global::Microsoft.UI.Content.ContentIsland content)
@@ -159,28 +144,38 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void MoveInZOrderBelow(global::Microsoft.UI.WindowId windowId)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.MoveInZOrderBelow(WindowId windowId)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Show()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.Show()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsEnabled.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsClosed.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.Closed.add
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.Closed.remove
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.FrameworkClosed.add
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.FrameworkClosed.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.Dispose()");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.DispatcherQueue.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsClosed.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsEnabled.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsVisible.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.LayoutDirectionOverride.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.LayoutDirectionOverride.set
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.OverrideScale.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool IsSupported()
-		{
-			throw new global::System.NotImplementedException("The member bool DesktopSiteBridge.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopSiteBridge.IsSupported%28%29");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.OverrideScale.set
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.WindowId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Microsoft.UI.ClosableNotifierHandler Closed

@@ -63,10 +63,10 @@ namespace Windows.Media.Protection
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.RevocationAndRenewalItem.Reasons.get
 		// Forced skipping of method Windows.Media.Protection.RevocationAndRenewalItem.HeaderHash.get
-		// Forced skipping of method Windows.Media.Protection.RevocationAndRenewalItem.PublicKeyHash.get
 		// Forced skipping of method Windows.Media.Protection.RevocationAndRenewalItem.Name.get
+		// Forced skipping of method Windows.Media.Protection.RevocationAndRenewalItem.PublicKeyHash.get
+		// Forced skipping of method Windows.Media.Protection.RevocationAndRenewalItem.Reasons.get
 		// Forced skipping of method Windows.Media.Protection.RevocationAndRenewalItem.RenewalId.get
 	}
 }

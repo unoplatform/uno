@@ -63,10 +63,10 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.Stage.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.Session.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.ContinueDeletingImportedItemsFromSourceAsync.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.ContinueFindingItemsAsync.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.ContinueImportingItemsAsync.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.ContinueDeletingImportedItemsFromSourceAsync.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.Session.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.Stage.get
 	}
 }

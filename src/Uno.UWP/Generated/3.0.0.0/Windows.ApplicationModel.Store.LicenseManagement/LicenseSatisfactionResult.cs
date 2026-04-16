@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionResult.LicenseSatisfactionInfos.get
 		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionResult.ExtendedError.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionResult.LicenseSatisfactionInfos.get
 	}
 }

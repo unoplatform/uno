@@ -15,6 +15,20 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan DefaultDuration
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan ConnectedAnimationService.DefaultDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20ConnectedAnimationService.DefaultDuration");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "TimeSpan ConnectedAnimationService.DefaultDuration");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionEasingFunction DefaultEasingFunction
 		{
 			get
@@ -29,22 +43,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan DefaultDuration
+		public static global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService GetForCurrentView()
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan ConnectedAnimationService.DefaultDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20ConnectedAnimationService.DefaultDuration");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService", "TimeSpan ConnectedAnimationService.DefaultDuration");
-			}
+			throw new global::System.NotImplementedException("The member ConnectedAnimationService ConnectedAnimationService.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConnectedAnimationService%20ConnectedAnimationService.GetForCurrentView%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.DefaultDuration.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.DefaultDuration.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.DefaultEasingFunction.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.DefaultEasingFunction.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation PrepareToAnimate(string key, global::Microsoft.UI.Xaml.UIElement source)
@@ -59,12 +62,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			throw new global::System.NotImplementedException("The member ConnectedAnimation ConnectedAnimationService.GetAnimation(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConnectedAnimation%20ConnectedAnimationService.GetAnimation%28string%20key%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService GetForCurrentView()
-		{
-			throw new global::System.NotImplementedException("The member ConnectedAnimationService ConnectedAnimationService.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConnectedAnimationService%20ConnectedAnimationService.GetForCurrentView%28%29");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.DefaultDuration.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.DefaultDuration.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.DefaultEasingFunction.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.DefaultEasingFunction.set
 	}
 }

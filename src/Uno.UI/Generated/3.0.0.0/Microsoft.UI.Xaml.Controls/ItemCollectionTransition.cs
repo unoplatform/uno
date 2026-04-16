@@ -63,11 +63,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Operation.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Triggers.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.OldBounds.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.NewBounds.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.HasStarted.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProgress Start()
@@ -75,5 +70,10 @@ namespace Microsoft.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member ItemCollectionTransitionProgress ItemCollectionTransition.Start() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ItemCollectionTransitionProgress%20ItemCollectionTransition.Start%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.HasStarted.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.NewBounds.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.OldBounds.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Operation.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Triggers.get
 	}
 }

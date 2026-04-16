@@ -32,10 +32,6 @@ namespace Windows.Media.Effects
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Media.Effects.IBasicVideoEffect.IsReadOnly.get
-		// Forced skipping of method Windows.Media.Effects.IBasicVideoEffect.SupportedMemoryTypes.get
-		// Forced skipping of method Windows.Media.Effects.IBasicVideoEffect.TimeIndependent.get
-		// Forced skipping of method Windows.Media.Effects.IBasicVideoEffect.SupportedEncodingProperties.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void SetEncodingProperties(global::Windows.Media.MediaProperties.VideoEncodingProperties encodingProperties, global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice device);
 #endif
@@ -48,5 +44,9 @@ namespace Windows.Media.Effects
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void DiscardQueuedFrames();
 #endif
+		// Forced skipping of method Windows.Media.Effects.IBasicVideoEffect.IsReadOnly.get
+		// Forced skipping of method Windows.Media.Effects.IBasicVideoEffect.SupportedEncodingProperties.get
+		// Forced skipping of method Windows.Media.Effects.IBasicVideoEffect.SupportedMemoryTypes.get
+		// Forced skipping of method Windows.Media.Effects.IBasicVideoEffect.TimeIndependent.get
 	}
 }

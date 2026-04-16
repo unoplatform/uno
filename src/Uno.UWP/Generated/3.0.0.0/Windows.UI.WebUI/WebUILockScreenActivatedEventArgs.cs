@@ -15,6 +15,36 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUILockScreenActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUILockScreenActivatedEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int CurrentlyShownApplicationViewId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int WebUILockScreenActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WebUILockScreenActivatedEventArgs.CurrentlyShownApplicationViewId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object Info
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object WebUILockScreenActivatedEventArgs.Info is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20WebUILockScreenActivatedEventArgs.Info");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -53,42 +83,12 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int CurrentlyShownApplicationViewId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int WebUILockScreenActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WebUILockScreenActivatedEventArgs.CurrentlyShownApplicationViewId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object Info
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object WebUILockScreenActivatedEventArgs.Info is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20WebUILockScreenActivatedEventArgs.Info");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUILockScreenActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUILockScreenActivatedEventArgs.ActivatedOperation");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenActivatedEventArgs.ActivatedOperation.get
+		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenActivatedEventArgs.CurrentlyShownApplicationViewId.get
 		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenActivatedEventArgs.Info.get
 		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenActivatedEventArgs.CurrentlyShownApplicationViewId.get
-		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUILockScreenActivatedEventArgs.User.get
 		// Processing: Windows.ApplicationModel.Activation.ILockScreenActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

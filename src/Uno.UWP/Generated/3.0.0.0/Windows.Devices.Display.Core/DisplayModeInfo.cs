@@ -85,22 +85,6 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Display.Core.DisplayPresentationRate PhysicalPresentationRate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DisplayPresentationRate DisplayModeInfo.PhysicalPresentationRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayPresentationRate%20DisplayModeInfo.PhysicalPresentationRate");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.SourceResolution.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.IsStereo.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.SourcePixelFormat.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.TargetResolution.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.PresentationRate.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.IsInterlaced.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplayBitsPerChannel GetWireFormatSupportedBitsPerChannel(global::Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding encoding)
 		{
 			throw new global::System.NotImplementedException("The member DisplayBitsPerChannel DisplayModeInfo.GetWireFormatSupportedBitsPerChannel(DisplayWireFormatPixelEncoding encoding) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayBitsPerChannel%20DisplayModeInfo.GetWireFormatSupportedBitsPerChannel%28DisplayWireFormatPixelEncoding%20encoding%29");
@@ -113,7 +97,12 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member bool DisplayModeInfo.IsWireFormatSupported(DisplayWireFormat wireFormat) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayModeInfo.IsWireFormatSupported%28DisplayWireFormat%20wireFormat%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.IsInterlaced.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.IsStereo.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.PresentationRate.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.Properties.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.PhysicalPresentationRate.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.SourcePixelFormat.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.SourceResolution.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.TargetResolution.get
 	}
 }

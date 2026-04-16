@@ -10,66 +10,6 @@ namespace Windows.Media.SpeechRecognition
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint> Constraints
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<ISpeechRecognitionConstraint> SpeechRecognizer.Constraints is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CISpeechRecognitionConstraint%3E%20SpeechRecognizer.Constraints");
-			}
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Globalization.Language CurrentLanguage
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Language SpeechRecognizer.CurrentLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Language%20SpeechRecognizer.CurrentLanguage");
-			}
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts Timeouts
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SpeechRecognizerTimeouts SpeechRecognizer.Timeouts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognizerTimeouts%20SpeechRecognizer.Timeouts");
-			}
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions UIOptions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SpeechRecognizerUIOptions SpeechRecognizer.UIOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognizerUIOptions%20SpeechRecognizer.UIOptions");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession ContinuousRecognitionSession
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SpeechContinuousRecognitionSession SpeechRecognizer.ContinuousRecognitionSession is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechContinuousRecognitionSession%20SpeechRecognizer.ContinuousRecognitionSession");
-			}
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.SpeechRecognition.SpeechRecognizerState State
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SpeechRecognizerState SpeechRecognizer.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognizerState%20SpeechRecognizer.State");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Globalization.Language> SupportedGrammarLanguages
 		{
 			get
@@ -98,14 +38,66 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 #endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public SpeechRecognizer(global::Windows.Globalization.Language language)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint> Constraints
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "SpeechRecognizer.SpeechRecognizer(Language language)");
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<ISpeechRecognitionConstraint> SpeechRecognizer.Constraints is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CISpeechRecognitionConstraint%3E%20SpeechRecognizer.Constraints");
+			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SpeechRecognizer(Windows.Globalization.Language)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession ContinuousRecognitionSession
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SpeechContinuousRecognitionSession SpeechRecognizer.ContinuousRecognitionSession is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechContinuousRecognitionSession%20SpeechRecognizer.ContinuousRecognitionSession");
+			}
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Globalization.Language CurrentLanguage
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Language SpeechRecognizer.CurrentLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Language%20SpeechRecognizer.CurrentLanguage");
+			}
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.SpeechRecognition.SpeechRecognizerState State
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SpeechRecognizerState SpeechRecognizer.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognizerState%20SpeechRecognizer.State");
+			}
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts Timeouts
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SpeechRecognizerTimeouts SpeechRecognizer.Timeouts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognizerTimeouts%20SpeechRecognizer.Timeouts");
+			}
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions UIOptions
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SpeechRecognizerUIOptions SpeechRecognizer.UIOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognizerUIOptions%20SpeechRecognizer.UIOptions");
+			}
+		}
+#endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpeechRecognizer()
@@ -114,10 +106,24 @@ namespace Windows.Media.SpeechRecognition
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SpeechRecognizer()
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.CurrentLanguage.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.Constraints.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.Timeouts.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.UIOptions.get
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public SpeechRecognizer(global::Windows.Globalization.Language language)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "SpeechRecognizer.SpeechRecognizer(Language language)");
+		}
+#endif
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SpeechRecognizer(Windows.Globalization.Language)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<bool> TrySetSystemSpeechLanguageAsync(global::Windows.Globalization.Language speechLanguage)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SpeechRecognizer.TrySetSystemSpeechLanguageAsync(Language speechLanguage) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SpeechRecognizer.TrySetSystemSpeechLanguageAsync%28Language%20speechLanguage%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SupportedGrammarLanguages.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SupportedTopicLanguages.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SystemSpeechLanguage.get
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechRecognition.SpeechRecognitionCompilationResult> CompileConstraintsAsync()
@@ -150,8 +156,6 @@ namespace Windows.Media.SpeechRecognition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "void SpeechRecognizer.Dispose()");
 		}
 #endif
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.ContinuousRecognitionSession.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.State.get
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction StopRecognitionAsync()
@@ -161,16 +165,12 @@ namespace Windows.Media.SpeechRecognition
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.HypothesisGenerated.add
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.HypothesisGenerated.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> TrySetSystemSpeechLanguageAsync(global::Windows.Globalization.Language speechLanguage)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SpeechRecognizer.TrySetSystemSpeechLanguageAsync(Language speechLanguage) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SpeechRecognizer.TrySetSystemSpeechLanguageAsync%28Language%20speechLanguage%29");
-		}
-#endif
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SystemSpeechLanguage.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SupportedTopicLanguages.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SupportedGrammarLanguages.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.Constraints.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.ContinuousRecognitionSession.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.CurrentLanguage.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.State.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.Timeouts.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.UIOptions.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SpeechRecognition.SpeechRecognizer, global::Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs> RecognitionQualityDegrading

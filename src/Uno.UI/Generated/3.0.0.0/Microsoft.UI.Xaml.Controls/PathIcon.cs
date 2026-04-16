@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class PathIcon : global::Microsoft.UI.Xaml.Controls.IconElement
 	{
-		// Skipping already declared property Data
 		// Skipping already declared property DataProperty
+		// Skipping already declared property Data
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PathIcon.PathIcon()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.PathIcon()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.DataProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.Data.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.Data.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIcon.DataProperty.get
 	}
 }

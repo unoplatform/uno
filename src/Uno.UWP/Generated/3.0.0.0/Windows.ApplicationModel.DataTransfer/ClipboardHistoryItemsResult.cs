@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.Status.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.Items.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.Status.get
 	}
 }

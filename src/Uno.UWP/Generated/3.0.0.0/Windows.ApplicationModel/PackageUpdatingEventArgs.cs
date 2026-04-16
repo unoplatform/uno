@@ -74,10 +74,10 @@ namespace Windows.ApplicationModel
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.ActivityId.get
+		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.ErrorCode.get
+		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.IsComplete.get
+		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.Progress.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.SourcePackage.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.TargetPackage.get
-		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.Progress.get
-		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.IsComplete.get
-		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.ErrorCode.get
 	}
 }

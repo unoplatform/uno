@@ -15,6 +15,20 @@ namespace Windows.Storage.Streams
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.AsyncOperationCompletedHandler<uint> Completed
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AsyncOperationCompletedHandler<uint> DataReaderLoadOperation.Completed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncOperationCompletedHandler%3Cuint%3E%20DataReaderLoadOperation.Completed");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "AsyncOperationCompletedHandler<uint> DataReaderLoadOperation.Completed");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Exception ErrorCode
 		{
 			get
@@ -45,30 +59,11 @@ namespace Windows.Storage.Streams
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.AsyncOperationCompletedHandler<uint> Completed
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AsyncOperationCompletedHandler<uint> DataReaderLoadOperation.Completed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncOperationCompletedHandler%3Cuint%3E%20DataReaderLoadOperation.Completed");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "AsyncOperationCompletedHandler<uint> DataReaderLoadOperation.Completed");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Completed.set
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Completed.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint GetResults()
 		{
 			throw new global::System.NotImplementedException("The member uint DataReaderLoadOperation.GetResults() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20DataReaderLoadOperation.GetResults%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Id.get
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Status.get
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.ErrorCode.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Cancel()
@@ -83,6 +78,11 @@ namespace Windows.Storage.Streams
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "void DataReaderLoadOperation.Close()");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Completed.get
+		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Completed.set
+		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.ErrorCode.get
+		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Id.get
+		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Status.get
 		// Processing: Windows.Foundation.IAsyncOperation<uint>
 		// Processing: Windows.Foundation.IAsyncInfo
 	}

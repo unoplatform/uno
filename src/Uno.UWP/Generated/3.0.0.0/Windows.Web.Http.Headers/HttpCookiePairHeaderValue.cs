@@ -10,6 +10,16 @@ namespace Windows.Web.Http.Headers
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Name
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string HttpCookiePairHeaderValue.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpCookiePairHeaderValue.Name");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Value
 		{
 			get
@@ -19,16 +29,6 @@ namespace Windows.Web.Http.Headers
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpCookiePairHeaderValue", "string HttpCookiePairHeaderValue.Value");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string HttpCookiePairHeaderValue.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpCookiePairHeaderValue.Name");
 			}
 		}
 #endif
@@ -48,16 +48,6 @@ namespace Windows.Web.Http.Headers
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValue.HttpCookiePairHeaderValue(string, string)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValue.Name.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValue.Value.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValue.Value.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public override string ToString()
-		{
-			throw new global::System.NotImplementedException("The member string HttpCookiePairHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpCookiePairHeaderValue.ToString%28%29");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpCookiePairHeaderValue Parse(string input)
@@ -72,5 +62,15 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpCookiePairHeaderValue.TryParse(string input, out HttpCookiePairHeaderValue cookiePairHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpCookiePairHeaderValue.TryParse%28string%20input%2C%20out%20HttpCookiePairHeaderValue%20cookiePairHeaderValue%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public override string ToString()
+		{
+			throw new global::System.NotImplementedException("The member string HttpCookiePairHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpCookiePairHeaderValue.ToString%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValue.Name.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValue.Value.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValue.Value.set
 	}
 }

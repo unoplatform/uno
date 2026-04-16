@@ -11,9 +11,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.AppBarButtonAutomationPeer(Microsoft.UI.Xaml.Controls.AppBarButton)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.AppBarButtonAutomationPeer(Microsoft.UI.Xaml.Controls.AppBarButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.ExpandCollapseState.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.Expand()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.ExpandCollapseState.get
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	}
 }

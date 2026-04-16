@@ -12,8 +12,8 @@ namespace Microsoft.UI.Xaml.Controls.AnimatedVisuals
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronRightDownSmallVisualSource.AnimatedChevronRightDownSmallVisualSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronRightDownSmallVisualSource.AnimatedChevronRightDownSmallVisualSource()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronRightDownSmallVisualSource.TryCreateAnimatedVisual(Microsoft.UI.Composition.Compositor, out object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronRightDownSmallVisualSource.Markers.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronRightDownSmallVisualSource.SetColorProperty(string, Windows.UI.Color)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronRightDownSmallVisualSource.Markers.get
 		// Processing: Microsoft.UI.Xaml.Controls.IAnimatedVisualSource
 		// Processing: Microsoft.UI.Xaml.Controls.IAnimatedVisualSource2
 	}

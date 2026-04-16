@@ -10,31 +10,21 @@ namespace Windows.Storage
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.StorageFolder AppCaptures
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFolder KnownFolders.AppCaptures is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20KnownFolders.AppCaptures");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.StorageFolder CameraRoll
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member StorageFolder KnownFolders.CameraRoll is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20KnownFolders.CameraRoll");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.StorageFolder Playlists
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StorageFolder KnownFolders.Playlists is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20KnownFolders.Playlists");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.StorageFolder SavedPictures
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StorageFolder KnownFolders.SavedPictures is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20KnownFolders.SavedPictures");
 			}
 		}
 #endif
@@ -80,6 +70,16 @@ namespace Windows.Storage
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.StorageFolder Objects3D
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFolder KnownFolders.Objects3D is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20KnownFolders.Objects3D");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.StorageFolder PicturesLibrary
 		{
 			get
@@ -90,11 +90,41 @@ namespace Windows.Storage
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.StorageFolder Playlists
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFolder KnownFolders.Playlists is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20KnownFolders.Playlists");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.StorageFolder RecordedCalls
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFolder KnownFolders.RecordedCalls is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20KnownFolders.RecordedCalls");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.StorageFolder RemovableDevices
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member StorageFolder KnownFolders.RemovableDevices is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20KnownFolders.RemovableDevices");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.StorageFolder SavedPictures
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFolder KnownFolders.SavedPictures is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20KnownFolders.SavedPictures");
 			}
 		}
 #endif
@@ -110,32 +140,9 @@ namespace Windows.Storage
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.StorageFolder AppCaptures
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderForUserAsync(global::Windows.System.User user, global::Windows.Storage.KnownFolderId folderId)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StorageFolder KnownFolders.AppCaptures is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20KnownFolders.AppCaptures");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.StorageFolder Objects3D
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StorageFolder KnownFolders.Objects3D is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20KnownFolders.Objects3D");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.StorageFolder RecordedCalls
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StorageFolder KnownFolders.RecordedCalls is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20KnownFolders.RecordedCalls");
-			}
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> KnownFolders.GetFolderForUserAsync(User user, KnownFolderId folderId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20KnownFolders.GetFolderForUserAsync%28User%20user%2C%20KnownFolderId%20folderId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -159,25 +166,18 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> KnownFolders.GetFolderAsync(KnownFolderId folderId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20KnownFolders.GetFolderAsync%28KnownFolderId%20folderId%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderForUserAsync(global::Windows.System.User user, global::Windows.Storage.KnownFolderId folderId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> KnownFolders.GetFolderForUserAsync(User user, KnownFolderId folderId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20KnownFolders.GetFolderForUserAsync%28User%20user%2C%20KnownFolderId%20folderId%29");
-		}
-#endif
-		// Forced skipping of method Windows.Storage.KnownFolders.Objects3D.get
 		// Forced skipping of method Windows.Storage.KnownFolders.AppCaptures.get
-		// Forced skipping of method Windows.Storage.KnownFolders.RecordedCalls.get
-		// Forced skipping of method Windows.Storage.KnownFolders.SavedPictures.get
 		// Forced skipping of method Windows.Storage.KnownFolders.CameraRoll.get
-		// Forced skipping of method Windows.Storage.KnownFolders.Playlists.get
-		// Forced skipping of method Windows.Storage.KnownFolders.MusicLibrary.get
-		// Forced skipping of method Windows.Storage.KnownFolders.PicturesLibrary.get
-		// Forced skipping of method Windows.Storage.KnownFolders.VideosLibrary.get
 		// Forced skipping of method Windows.Storage.KnownFolders.DocumentsLibrary.get
 		// Forced skipping of method Windows.Storage.KnownFolders.HomeGroup.get
-		// Forced skipping of method Windows.Storage.KnownFolders.RemovableDevices.get
 		// Forced skipping of method Windows.Storage.KnownFolders.MediaServerDevices.get
+		// Forced skipping of method Windows.Storage.KnownFolders.MusicLibrary.get
+		// Forced skipping of method Windows.Storage.KnownFolders.Objects3D.get
+		// Forced skipping of method Windows.Storage.KnownFolders.PicturesLibrary.get
+		// Forced skipping of method Windows.Storage.KnownFolders.Playlists.get
+		// Forced skipping of method Windows.Storage.KnownFolders.RecordedCalls.get
+		// Forced skipping of method Windows.Storage.KnownFolders.RemovableDevices.get
+		// Forced skipping of method Windows.Storage.KnownFolders.SavedPictures.get
+		// Forced skipping of method Windows.Storage.KnownFolders.VideosLibrary.get
 	}
 }

@@ -11,7 +11,6 @@ namespace Windows.Devices.Sensors
 		// Skipping already declared property AngularVelocityX
 		// Skipping already declared property AngularVelocityY
 		// Skipping already declared property AngularVelocityZ
-		// Skipping already declared property Timestamp
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan? PerformanceCount
@@ -32,11 +31,12 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.Timestamp.get
+		// Skipping already declared property Timestamp
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.AngularVelocityX.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.AngularVelocityY.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.AngularVelocityZ.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.Properties.get
+		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.Timestamp.get
 	}
 }

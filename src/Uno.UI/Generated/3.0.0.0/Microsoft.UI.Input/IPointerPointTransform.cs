@@ -9,8 +9,8 @@ namespace Microsoft.UI.Input
 	public partial interface IPointerPointTransform
 	{
 		// Skipping already declared property Inverse
-		// Forced skipping of method Microsoft.UI.Input.IPointerPointTransform.Inverse.get
 		// Skipping already declared method Microsoft.UI.Input.IPointerPointTransform.TryTransform(Windows.Foundation.Point, out Windows.Foundation.Point)
 		// Skipping already declared method Microsoft.UI.Input.IPointerPointTransform.TryTransformBounds(Windows.Foundation.Rect, out Windows.Foundation.Rect)
+		// Forced skipping of method Microsoft.UI.Input.IPointerPointTransform.Inverse.get
 	}
 }

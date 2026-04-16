@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class FadeOutThemeAnimation
 	{
-		// Skipping already declared property TargetName
 		// Skipping already declared property TargetNameProperty
+		// Skipping already declared property TargetName
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.FadeOutThemeAnimation.FadeOutThemeAnimation()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeOutThemeAnimation.FadeOutThemeAnimation()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeOutThemeAnimation.TargetNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeOutThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeOutThemeAnimation.TargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.FadeOutThemeAnimation.TargetNameProperty.get
 	}
 }

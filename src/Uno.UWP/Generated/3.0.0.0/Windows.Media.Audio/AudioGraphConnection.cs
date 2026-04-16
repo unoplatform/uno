@@ -15,6 +15,16 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Audio.IAudioNode Destination
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IAudioNode AudioGraphConnection.Destination is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAudioNode%20AudioGraphConnection.Destination");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double Gain
 		{
 			get
@@ -27,18 +37,8 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Audio.IAudioNode Destination
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IAudioNode AudioGraphConnection.Destination is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAudioNode%20AudioGraphConnection.Destination");
-			}
-		}
-#endif
 		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.Destination.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.Gain.set
 		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.Gain.get
+		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.Gain.set
 	}
 }

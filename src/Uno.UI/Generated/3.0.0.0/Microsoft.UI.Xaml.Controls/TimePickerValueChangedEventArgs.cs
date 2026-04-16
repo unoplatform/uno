@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property NewTime
 		// Skipping already declared property OldTime
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.OldTime.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.NewTime.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerValueChangedEventArgs.OldTime.get
 	}
 }

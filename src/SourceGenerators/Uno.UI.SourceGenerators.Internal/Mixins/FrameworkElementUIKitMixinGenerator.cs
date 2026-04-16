@@ -217,6 +217,8 @@ public sealed class FrameworkElementUIKitMixinGenerator : IIncrementalGenerator
 		sb.AppendLine();
 		sb.AppendLine("#if UNO_MIXIN_GENERATION && __APPLE_UIKIT__");
 		sb.AppendLine();
+		sb.AppendLine("#nullable disable");
+		sb.AppendLine();
 		sb.AppendLine("#pragma warning disable 414");
 		sb.AppendLine();
 		sb.AppendLine("using System;");

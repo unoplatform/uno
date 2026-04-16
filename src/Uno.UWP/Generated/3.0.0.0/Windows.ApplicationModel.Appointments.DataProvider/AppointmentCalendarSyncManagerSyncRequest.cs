@@ -23,7 +23,6 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarSyncManagerSyncRequest.AppointmentCalendarLocalId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
@@ -38,5 +37,6 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendarSyncManagerSyncRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppointmentCalendarSyncManagerSyncRequest.ReportFailedAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarSyncManagerSyncRequest.AppointmentCalendarLocalId.get
 	}
 }

@@ -37,8 +37,8 @@ namespace Windows.Web.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Uri.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Handled.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Handled.set
+		// Forced skipping of method Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Uri.get
 	}
 }

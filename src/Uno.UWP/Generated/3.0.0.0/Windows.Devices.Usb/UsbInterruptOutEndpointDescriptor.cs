@@ -53,9 +53,9 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutEndpointDescriptor.MaxPacketSize.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutEndpointDescriptor.EndpointNumber.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutEndpointDescriptor.Interval.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutEndpointDescriptor.MaxPacketSize.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptOutEndpointDescriptor.Pipe.get
 	}
 }

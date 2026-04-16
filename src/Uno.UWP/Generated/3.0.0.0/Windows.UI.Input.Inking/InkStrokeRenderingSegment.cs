@@ -83,9 +83,9 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.Position.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.BezierControlPoint1.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.BezierControlPoint2.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.Position.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.Pressure.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.TiltX.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.TiltY.get

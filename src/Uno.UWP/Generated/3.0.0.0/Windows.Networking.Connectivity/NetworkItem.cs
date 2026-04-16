@@ -23,7 +23,6 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.NetworkId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.NetworkTypes GetNetworkTypes()
@@ -31,5 +30,6 @@ namespace Windows.Networking.Connectivity
 			throw new global::System.NotImplementedException("The member NetworkTypes NetworkItem.GetNetworkTypes() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkTypes%20NetworkItem.GetNetworkTypes%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.NetworkId.get
 	}
 }

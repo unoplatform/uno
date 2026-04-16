@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class PivotItem : global::Microsoft.UI.Xaml.Controls.ContentControl
 	{
-		// Skipping already declared property Header
 		// Skipping already declared property HeaderProperty
+		// Skipping already declared property Header
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PivotItem.PivotItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.PivotItem()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.HeaderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.Header.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.Header.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.HeaderProperty.get
 	}
 }

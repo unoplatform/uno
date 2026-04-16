@@ -12,9 +12,9 @@ namespace Windows.Services.Maps
 		// Skipping already declared property Description
 		// Skipping already declared property DisplayName
 		// Skipping already declared property Point
-		// Forced skipping of method Windows.Services.Maps.MapLocation.Point.get
-		// Forced skipping of method Windows.Services.Maps.MapLocation.DisplayName.get
-		// Forced skipping of method Windows.Services.Maps.MapLocation.Description.get
 		// Forced skipping of method Windows.Services.Maps.MapLocation.Address.get
+		// Forced skipping of method Windows.Services.Maps.MapLocation.Description.get
+		// Forced skipping of method Windows.Services.Maps.MapLocation.DisplayName.get
+		// Forced skipping of method Windows.Services.Maps.MapLocation.Point.get
 	}
 }

@@ -8,20 +8,20 @@ namespace Windows.Devices.Midi
 #endif
 	public partial class MidiNoteOffMessage : global::Windows.Devices.Midi.IMidiMessage
 	{
+		// Skipping already declared property Channel
+		// Skipping already declared property Note
 		// Skipping already declared property RawData
 		// Skipping already declared property Timestamp
 		// Skipping already declared property Type
-		// Skipping already declared property Channel
-		// Skipping already declared property Note
 		// Skipping already declared property Velocity
 		// Skipping already declared method Windows.Devices.Midi.MidiNoteOffMessage.MidiNoteOffMessage(byte, byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiNoteOffMessage.MidiNoteOffMessage(byte, byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiNoteOffMessage.Channel.get
 		// Forced skipping of method Windows.Devices.Midi.MidiNoteOffMessage.Note.get
-		// Forced skipping of method Windows.Devices.Midi.MidiNoteOffMessage.Velocity.get
-		// Forced skipping of method Windows.Devices.Midi.MidiNoteOffMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiNoteOffMessage.RawData.get
+		// Forced skipping of method Windows.Devices.Midi.MidiNoteOffMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiNoteOffMessage.Type.get
+		// Forced skipping of method Windows.Devices.Midi.MidiNoteOffMessage.Velocity.get
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}
 }

@@ -43,8 +43,8 @@ namespace Windows.Web.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs.Uri.get
-		// Forced skipping of method Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs.Referrer.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs.MediaType.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs.Referrer.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs.Uri.get
 	}
 }

@@ -15,15 +15,15 @@ namespace Windows.Devices.WiFiDirect
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Ssid
+		public bool IsEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WiFiDirectLegacySettings.Ssid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WiFiDirectLegacySettings.Ssid");
+				throw new global::System.NotImplementedException("The member bool WiFiDirectLegacySettings.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WiFiDirectLegacySettings.IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectLegacySettings", "string WiFiDirectLegacySettings.Ssid");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectLegacySettings", "bool WiFiDirectLegacySettings.IsEnabled");
 			}
 		}
 #endif
@@ -43,23 +43,23 @@ namespace Windows.Devices.WiFiDirect
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsEnabled
+		public string Ssid
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WiFiDirectLegacySettings.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WiFiDirectLegacySettings.IsEnabled");
+				throw new global::System.NotImplementedException("The member string WiFiDirectLegacySettings.Ssid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WiFiDirectLegacySettings.Ssid");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectLegacySettings", "bool WiFiDirectLegacySettings.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectLegacySettings", "string WiFiDirectLegacySettings.Ssid");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.IsEnabled.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.IsEnabled.set
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.Ssid.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.Ssid.set
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.Passphrase.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.Passphrase.set
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.Ssid.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.Ssid.set
 	}
 }

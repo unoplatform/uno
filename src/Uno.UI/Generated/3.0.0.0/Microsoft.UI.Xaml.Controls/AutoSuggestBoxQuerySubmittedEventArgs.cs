@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property QueryText
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.AutoSuggestBoxQuerySubmittedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.AutoSuggestBoxQuerySubmittedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.QueryText.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.ChosenSuggestion.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.QueryText.get
 	}
 }

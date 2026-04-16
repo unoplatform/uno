@@ -15,20 +15,6 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float ScalingFactor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float InkModelerAttributes.ScalingFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InkModelerAttributes.ScalingFactor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkModelerAttributes", "float InkModelerAttributes.ScalingFactor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan PredictionTime
 		{
 			get
@@ -38,6 +24,20 @@ namespace Windows.UI.Input.Inking
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkModelerAttributes", "TimeSpan InkModelerAttributes.PredictionTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float ScalingFactor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float InkModelerAttributes.ScalingFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InkModelerAttributes.ScalingFactor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkModelerAttributes", "float InkModelerAttributes.ScalingFactor");
 			}
 		}
 #endif

@@ -43,8 +43,8 @@ namespace Windows.System.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.TotalPhysicalSizeInBytes.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.AvailableSizeInBytes.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.CommittedSizeInBytes.get
+		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.TotalPhysicalSizeInBytes.get
 	}
 }

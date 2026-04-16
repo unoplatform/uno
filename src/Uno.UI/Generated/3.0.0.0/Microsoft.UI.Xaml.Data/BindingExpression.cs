@@ -10,8 +10,8 @@ namespace Microsoft.UI.Xaml.Data
 	{
 		// Skipping already declared property DataItem
 		// Skipping already declared property ParentBinding
+		// Skipping already declared method Microsoft.UI.Xaml.Data.BindingExpression.UpdateSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.DataItem.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.ParentBinding.get
-		// Skipping already declared method Microsoft.UI.Xaml.Data.BindingExpression.UpdateSource()
 	}
 }

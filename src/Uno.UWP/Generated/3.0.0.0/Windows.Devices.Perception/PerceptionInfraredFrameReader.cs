@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -38,11 +37,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameReader.FrameArrived.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameReader.FrameArrived.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameReader.Source.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameReader.IsPaused.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameReader.IsPaused.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.PerceptionInfraredFrame TryReadLatestFrame()
@@ -50,6 +44,8 @@ namespace Windows.Devices.Perception
 			throw new global::System.NotImplementedException("The member PerceptionInfraredFrame PerceptionInfraredFrameReader.TryReadLatestFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionInfraredFrame%20PerceptionInfraredFrameReader.TryReadLatestFrame%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameReader.FrameArrived.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameReader.FrameArrived.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -57,6 +53,9 @@ namespace Windows.Devices.Perception
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionInfraredFrameReader", "void PerceptionInfraredFrameReader.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameReader.IsPaused.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameReader.IsPaused.set
+		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameReader.Source.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Perception.PerceptionInfraredFrameReader, global::Windows.Devices.Perception.PerceptionInfraredFrameArrivedEventArgs> FrameArrived

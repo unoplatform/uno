@@ -13,8 +13,8 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiSystemExclusiveMessage.MidiSystemExclusiveMessage(Windows.Storage.Streams.IBuffer)
 		// Forced skipping of method Windows.Devices.Midi.MidiSystemExclusiveMessage.MidiSystemExclusiveMessage(Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Devices.Midi.MidiSystemExclusiveMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSystemExclusiveMessage.RawData.get
+		// Forced skipping of method Windows.Devices.Midi.MidiSystemExclusiveMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSystemExclusiveMessage.Type.get
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}

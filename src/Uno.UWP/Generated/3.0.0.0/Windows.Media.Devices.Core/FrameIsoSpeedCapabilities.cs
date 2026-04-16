@@ -53,9 +53,9 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.FrameIsoSpeedCapabilities.Supported.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameIsoSpeedCapabilities.Min.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameIsoSpeedCapabilities.Max.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameIsoSpeedCapabilities.Min.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameIsoSpeedCapabilities.Step.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameIsoSpeedCapabilities.Supported.get
 	}
 }

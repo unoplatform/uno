@@ -9,11 +9,11 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 	public partial class CoreDragDropManager
 	{
 		// Skipping already declared property AreConcurrentOperationsEnabled
+		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.GetForCurrentView()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.TargetRequested.add
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.TargetRequested.remove
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.AreConcurrentOperationsEnabled.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.AreConcurrentOperationsEnabled.set
-		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.GetForCurrentView()
 		// Skipping already declared event Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.TargetRequested
 	}
 }

@@ -103,14 +103,14 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Report.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.AccountNumber.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.ExpirationDate.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.ServiceCode.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Title.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.FirstName.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.MiddleInitial.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Surname.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Report.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.ServiceCode.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Suffix.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Surname.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderBankCardDataReceivedEventArgs.Title.get
 	}
 }

@@ -20,20 +20,20 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public HttpClient(global::Windows.Web.Http.Filters.IHttpFilter filter)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpClient", "HttpClient.HttpClient(IHttpFilter filter)");
-		}
-#endif
-		// Forced skipping of method Windows.Web.Http.HttpClient.HttpClient(Windows.Web.Http.Filters.IHttpFilter)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpClient()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpClient", "HttpClient.HttpClient()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpClient.HttpClient()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public HttpClient(global::Windows.Web.Http.Filters.IHttpFilter filter)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpClient", "HttpClient.HttpClient(IHttpFilter filter)");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.HttpClient.HttpClient(Windows.Web.Http.Filters.IHttpFilter)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpResponseMessage, global::Windows.Web.Http.HttpProgress> DeleteAsync(global::System.Uri uri)
@@ -104,7 +104,6 @@ namespace Windows.Web.Http
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> HttpClient.SendRequestAsync(HttpRequestMessage request, HttpCompletionOption completionOption) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CHttpResponseMessage%2C%20HttpProgress%3E%20HttpClient.SendRequestAsync%28HttpRequestMessage%20request%2C%20HttpCompletionOption%20completionOption%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.HttpClient.DefaultRequestHeaders.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpRequestResult, global::Windows.Web.Http.HttpProgress> TryDeleteAsync(global::System.Uri uri)
@@ -189,6 +188,7 @@ namespace Windows.Web.Http
 			throw new global::System.NotImplementedException("The member string HttpClient.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpClient.ToString%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.HttpClient.DefaultRequestHeaders.get
 		// Processing: System.IDisposable
 	}
 }

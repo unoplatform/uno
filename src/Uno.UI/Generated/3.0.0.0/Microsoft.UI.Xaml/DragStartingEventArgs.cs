@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class DragStartingEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-		// Skipping already declared property Cancel
 		// Skipping already declared property AllowedOperations
+		// Skipping already declared property Cancel
 		// Skipping already declared property Data
 		// Skipping already declared property DragUI
+		// Skipping already declared method Microsoft.UI.Xaml.DragStartingEventArgs.GetDeferral()
+		// Skipping already declared method Microsoft.UI.Xaml.DragStartingEventArgs.GetPosition(Microsoft.UI.Xaml.UIElement)
+		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.AllowedOperations.get
+		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.AllowedOperations.set
 		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.Cancel.set
 		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.Data.get
 		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.DragUI.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.AllowedOperations.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragStartingEventArgs.AllowedOperations.set
-		// Skipping already declared method Microsoft.UI.Xaml.DragStartingEventArgs.GetDeferral()
-		// Skipping already declared method Microsoft.UI.Xaml.DragStartingEventArgs.GetPosition(Microsoft.UI.Xaml.UIElement)
 	}
 }

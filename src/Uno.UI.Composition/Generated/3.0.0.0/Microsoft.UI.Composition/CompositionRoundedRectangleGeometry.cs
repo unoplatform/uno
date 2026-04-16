@@ -8,14 +8,14 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionRoundedRectangleGeometry : global::Microsoft.UI.Composition.CompositionGeometry
 	{
-		// Skipping already declared property Size
-		// Skipping already declared property Offset
 		// Skipping already declared property CornerRadius
+		// Skipping already declared property Offset
+		// Skipping already declared property Size
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.CornerRadius.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.CornerRadius.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Offset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Size.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Size.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.CornerRadius.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.CornerRadius.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Offset.get
 	}
 }

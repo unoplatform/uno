@@ -3,21 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum AutomationFlowDirections
 	{
-#if false
-		Default = 0,
-#endif
-#if false
-		RightToLeft = 1,
-#endif
-#if false
-		BottomToTop = 2,
-#endif
-#if false
-		Vertical = 3,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationFlowDirections.Default
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationFlowDirections.RightToLeft
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationFlowDirections.BottomToTop
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationFlowDirections.Vertical
 	}
 #endif
 }

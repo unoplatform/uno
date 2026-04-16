@@ -33,7 +33,7 @@ namespace Windows.Media.Protection
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.ComponentLoadFailedEventArgs.Information.get
 		// Forced skipping of method Windows.Media.Protection.ComponentLoadFailedEventArgs.Completion.get
+		// Forced skipping of method Windows.Media.Protection.ComponentLoadFailedEventArgs.Information.get
 	}
 }

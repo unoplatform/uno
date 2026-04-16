@@ -8,17 +8,17 @@ namespace Windows.ApplicationModel.Email
 #endif
 	public partial class EmailRecipient
 	{
-		// Skipping already declared property Name
 		// Skipping already declared property Address
+		// Skipping already declared property Name
+		// Skipping already declared method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient()
 		// Skipping already declared method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient(string)
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient(string)
 		// Skipping already declared method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient(string, string)
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient(string, string)
-		// Skipping already declared method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient()
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.EmailRecipient()
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.Name.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.Name.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.Address.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.Address.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailRecipient.Name.set
 	}
 }

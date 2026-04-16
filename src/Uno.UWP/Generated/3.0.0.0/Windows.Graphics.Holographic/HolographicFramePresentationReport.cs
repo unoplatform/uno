@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Holographic
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -64,9 +63,9 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.CompositorGpuDuration.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.AppGpuDuration.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.AppGpuOverrun.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.CompositorGpuDuration.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.MissedPresentationOpportunityCount.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.PresentationCount.get
 	}

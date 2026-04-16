@@ -9,14 +9,14 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class NavigationViewItemInvokedEventArgs
 	{
 		// Skipping already declared property InvokedItem
-		// Skipping already declared property IsSettingsInvoked
 		// Skipping already declared property InvokedItemContainer
+		// Skipping already declared property IsSettingsInvoked
 		// Skipping already declared property RecommendedNavigationTransitionInfo
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.NavigationViewItemInvokedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.NavigationViewItemInvokedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.InvokedItem.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.IsSettingsInvoked.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.InvokedItemContainer.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.IsSettingsInvoked.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.RecommendedNavigationTransitionInfo.get
 	}
 }

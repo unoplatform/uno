@@ -83,13 +83,6 @@ namespace Windows.Devices.Sms
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.MessageType.get
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.TextMessage.get
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.WapMessage.get
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.AppMessage.get
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.BroadcastMessage.get
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.VoicemailMessage.get
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.StatusMessage.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Drop()
@@ -104,5 +97,12 @@ namespace Windows.Devices.Sms
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "void SmsMessageReceivedTriggerDetails.Accept()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.AppMessage.get
+		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.BroadcastMessage.get
+		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.MessageType.get
+		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.StatusMessage.get
+		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.TextMessage.get
+		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.VoicemailMessage.get
+		// Forced skipping of method Windows.Devices.Sms.SmsMessageReceivedTriggerDetails.WapMessage.get
 	}
 }

@@ -28,8 +28,6 @@ namespace Windows.Storage
 			}
 		}
 #endif
-		// Skipping already declared property Name
-		// Skipping already declared property Path
 		// Skipping already declared property DisplayName
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -51,6 +49,8 @@ namespace Windows.Storage
 			}
 		}
 #endif
+		// Skipping already declared property Name
+		// Skipping already declared property Path
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.FileProperties.StorageItemContentProperties Properties
@@ -62,6 +62,14 @@ namespace Windows.Storage
 		}
 #endif
 		// Skipping already declared property Provider
+		// Skipping already declared method Windows.Storage.StorageFolder.GetFolderFromPathAsync(string)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderFromPathForUserAsync(global::Windows.System.User user, string path)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> StorageFolder.GetFolderFromPathForUserAsync(User user, string path) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20StorageFolder.GetFolderFromPathForUserAsync%28User%20user%2C%20string%20path%29");
+		}
+#endif
 		// Skipping already declared method Windows.Storage.StorageFolder.CreateFileAsync(string)
 		// Skipping already declared method Windows.Storage.StorageFolder.CreateFileAsync(string, Windows.Storage.CreationCollisionOption)
 		// Skipping already declared method Windows.Storage.StorageFolder.CreateFolderAsync(string)
@@ -89,10 +97,6 @@ namespace Windows.Storage
 		// Skipping already declared method Windows.Storage.StorageFolder.DeleteAsync()
 		// Skipping already declared method Windows.Storage.StorageFolder.DeleteAsync(Windows.Storage.StorageDeleteOption)
 		// Skipping already declared method Windows.Storage.StorageFolder.GetBasicPropertiesAsync()
-		// Forced skipping of method Windows.Storage.StorageFolder.Name.get
-		// Forced skipping of method Windows.Storage.StorageFolder.Path.get
-		// Forced skipping of method Windows.Storage.StorageFolder.Attributes.get
-		// Forced skipping of method Windows.Storage.StorageFolder.DateCreated.get
 		// Skipping already declared method Windows.Storage.StorageFolder.IsOfType(Windows.Storage.StorageItemTypes)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -234,10 +238,6 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageItemThumbnail> StorageFolder.GetThumbnailAsync(ThumbnailMode mode, uint requestedSize, ThumbnailOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageItemThumbnail%3E%20StorageFolder.GetThumbnailAsync%28ThumbnailMode%20mode%2C%20uint%20requestedSize%2C%20ThumbnailOptions%20options%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.StorageFolder.DisplayName.get
-		// Forced skipping of method Windows.Storage.StorageFolder.DisplayType.get
-		// Forced skipping of method Windows.Storage.StorageFolder.FolderRelativeId.get
-		// Forced skipping of method Windows.Storage.StorageFolder.Properties.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetScaledImageAsThumbnailAsync(global::Windows.Storage.FileProperties.ThumbnailMode mode)
@@ -262,7 +262,6 @@ namespace Windows.Storage
 		// Skipping already declared method Windows.Storage.StorageFolder.GetParentAsync()
 		// Skipping already declared method Windows.Storage.StorageFolder.IsEqual(Windows.Storage.IStorageItem)
 		// Skipping already declared method Windows.Storage.StorageFolder.TryGetItemAsync(string)
-		// Forced skipping of method Windows.Storage.StorageFolder.Provider.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.StorageLibraryChangeTracker TryGetChangeTracker()
@@ -270,14 +269,15 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member StorageLibraryChangeTracker StorageFolder.TryGetChangeTracker() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageLibraryChangeTracker%20StorageFolder.TryGetChangeTracker%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderFromPathForUserAsync(global::Windows.System.User user, string path)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> StorageFolder.GetFolderFromPathForUserAsync(User user, string path) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20StorageFolder.GetFolderFromPathForUserAsync%28User%20user%2C%20string%20path%29");
-		}
-#endif
-		// Skipping already declared method Windows.Storage.StorageFolder.GetFolderFromPathAsync(string)
+		// Forced skipping of method Windows.Storage.StorageFolder.Attributes.get
+		// Forced skipping of method Windows.Storage.StorageFolder.DateCreated.get
+		// Forced skipping of method Windows.Storage.StorageFolder.DisplayName.get
+		// Forced skipping of method Windows.Storage.StorageFolder.DisplayType.get
+		// Forced skipping of method Windows.Storage.StorageFolder.FolderRelativeId.get
+		// Forced skipping of method Windows.Storage.StorageFolder.Name.get
+		// Forced skipping of method Windows.Storage.StorageFolder.Path.get
+		// Forced skipping of method Windows.Storage.StorageFolder.Properties.get
+		// Forced skipping of method Windows.Storage.StorageFolder.Provider.get
 		// Processing: Windows.Storage.IStorageFolder
 		// Processing: Windows.Storage.IStorageItem
 		// Processing: Windows.Storage.Search.IStorageFolderQueryOperations

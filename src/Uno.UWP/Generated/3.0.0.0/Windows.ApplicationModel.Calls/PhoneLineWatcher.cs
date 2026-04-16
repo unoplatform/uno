@@ -37,14 +37,14 @@ namespace Windows.ApplicationModel.Calls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLineWatcher", "void PhoneLineWatcher.Stop()");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.EnumerationCompleted.add
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.EnumerationCompleted.remove
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.LineAdded.add
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.LineAdded.remove
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.LineRemoved.add
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.LineRemoved.remove
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.LineUpdated.add
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.LineUpdated.remove
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.EnumerationCompleted.add
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.EnumerationCompleted.remove
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.Stopped.add
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.Stopped.remove
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineWatcher.Status.get

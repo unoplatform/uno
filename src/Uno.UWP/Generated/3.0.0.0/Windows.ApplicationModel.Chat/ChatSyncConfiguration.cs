@@ -15,20 +15,6 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Chat.ChatRestoreHistorySpan RestoreHistorySpan
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ChatRestoreHistorySpan ChatSyncConfiguration.RestoreHistorySpan is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatRestoreHistorySpan%20ChatSyncConfiguration.RestoreHistorySpan");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatSyncConfiguration", "ChatRestoreHistorySpan ChatSyncConfiguration.RestoreHistorySpan");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSyncEnabled
 		{
 			get
@@ -38,6 +24,20 @@ namespace Windows.ApplicationModel.Chat
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatSyncConfiguration", "bool ChatSyncConfiguration.IsSyncEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Chat.ChatRestoreHistorySpan RestoreHistorySpan
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ChatRestoreHistorySpan ChatSyncConfiguration.RestoreHistorySpan is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatRestoreHistorySpan%20ChatSyncConfiguration.RestoreHistorySpan");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatSyncConfiguration", "ChatRestoreHistorySpan ChatSyncConfiguration.RestoreHistorySpan");
 			}
 		}
 #endif

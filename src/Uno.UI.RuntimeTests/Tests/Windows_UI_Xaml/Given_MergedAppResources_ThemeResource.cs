@@ -47,7 +47,7 @@ public class Given_MergedAppResources_ThemeResource
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWasm)]
 	public async Task When_MergedAppResource_ThemeResource_Tracks_Theme_Change()
 	{
 		using (StyleHelper.UseAppLevelResources(new MergedAppResources_ThemeResource_Test_AppBrushes()))

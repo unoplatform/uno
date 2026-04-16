@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.Location.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.Element.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.Location.get
 	}
 }

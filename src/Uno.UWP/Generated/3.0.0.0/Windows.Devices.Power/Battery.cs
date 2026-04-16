@@ -13,16 +13,6 @@ namespace Windows.Devices.Power
 		{
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Battery.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Battery.DeviceId");
-			}
-		}
-#endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Power.Battery AggregateBattery
@@ -33,17 +23,16 @@ namespace Windows.Devices.Power
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Power.Battery.DeviceId.get
-#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Power.BatteryReport GetReport()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DeviceId
 		{
-			throw new global::System.NotImplementedException("The member BatteryReport Battery.GetReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryReport%20Battery.GetReport%28%29");
+			get
+			{
+				throw new global::System.NotImplementedException("The member string Battery.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Battery.DeviceId");
+			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Power.Battery.ReportUpdated.add
-		// Forced skipping of method Windows.Devices.Power.Battery.ReportUpdated.remove
-		// Forced skipping of method Windows.Devices.Power.Battery.AggregateBattery.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Power.Battery> FromIdAsync(string deviceId)
@@ -58,6 +47,17 @@ namespace Windows.Devices.Power
 			throw new global::System.NotImplementedException("The member string Battery.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Battery.GetDeviceSelector%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Power.Battery.AggregateBattery.get
+#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Power.BatteryReport GetReport()
+		{
+			throw new global::System.NotImplementedException("The member BatteryReport Battery.GetReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryReport%20Battery.GetReport%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Power.Battery.ReportUpdated.add
+		// Forced skipping of method Windows.Devices.Power.Battery.ReportUpdated.remove
+		// Forced skipping of method Windows.Devices.Power.Battery.DeviceId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Power.Battery, object> ReportUpdated

@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.StartIndex.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.Length.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.StartIndex.get
 	}
 }

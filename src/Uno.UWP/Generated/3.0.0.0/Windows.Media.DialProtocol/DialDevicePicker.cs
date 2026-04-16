@@ -36,14 +36,6 @@ namespace Windows.Media.DialProtocol
 		}
 #endif
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DialDevicePicker()
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.Filter.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.Appearance.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DialDeviceSelected.add
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DialDeviceSelected.remove
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DisconnectButtonClicked.add
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DisconnectButtonClicked.remove
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DialDevicePickerDismissed.add
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DialDevicePickerDismissed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Show(global::Windows.Foundation.Rect selection)
@@ -86,6 +78,14 @@ namespace Windows.Media.DialProtocol
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.DialProtocol.DialDevicePicker", "void DialDevicePicker.SetDisplayStatus(DialDevice device, DialDeviceDisplayStatus status)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DialDevicePickerDismissed.add
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DialDevicePickerDismissed.remove
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DialDeviceSelected.add
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DialDeviceSelected.remove
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DisconnectButtonClicked.add
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DisconnectButtonClicked.remove
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.Appearance.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.Filter.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.DialProtocol.DialDevicePicker, object> DialDevicePickerDismissed

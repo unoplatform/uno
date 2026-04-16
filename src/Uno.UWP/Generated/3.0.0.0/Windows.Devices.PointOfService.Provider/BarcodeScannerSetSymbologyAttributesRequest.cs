@@ -33,8 +33,6 @@ namespace Windows.Devices.PointOfService.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerSetSymbologyAttributesRequest.Symbology.get
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerSetSymbologyAttributesRequest.Attributes.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
@@ -63,5 +61,7 @@ namespace Windows.Devices.PointOfService.Provider
 			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerSetSymbologyAttributesRequest.ReportFailedAsync(int reason, string failedReasonDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BarcodeScannerSetSymbologyAttributesRequest.ReportFailedAsync%28int%20reason%2C%20string%20failedReasonDescription%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerSetSymbologyAttributesRequest.Attributes.get
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerSetSymbologyAttributesRequest.Symbology.get
 	}
 }

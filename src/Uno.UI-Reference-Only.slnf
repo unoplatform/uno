@@ -24,7 +24,7 @@
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Reference.csproj",
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.Reference.csproj",
       "Uno.UI\\Uno.UI.Reference.csproj",
-      "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
+      "Uno.UWPSyncGenerator.Reference.WinUI\\Uno.UWPSyncGenerator.Reference.WinUI.csproj",
       "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj",
       "Uno.UWP\\Uno.Reference.csproj"
     ]

@@ -8,20 +8,20 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class Viewbox : global::Microsoft.UI.Xaml.FrameworkElement
 	{
-		// Skipping already declared property StretchDirection
-		// Skipping already declared property Stretch
-		// Skipping already declared property Child
 		// Skipping already declared property StretchDirectionProperty
 		// Skipping already declared property StretchProperty
+		// Skipping already declared property Child
+		// Skipping already declared property Stretch
+		// Skipping already declared property StretchDirection
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Viewbox.Viewbox()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Viewbox.Viewbox()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Viewbox.StretchDirectionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Viewbox.StretchProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Viewbox.Child.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Viewbox.Child.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Viewbox.Stretch.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Viewbox.Stretch.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Viewbox.StretchDirection.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Viewbox.StretchDirection.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Viewbox.StretchProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Viewbox.StretchDirectionProperty.get
 	}
 }

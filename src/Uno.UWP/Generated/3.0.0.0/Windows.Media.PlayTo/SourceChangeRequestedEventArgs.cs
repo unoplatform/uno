@@ -113,15 +113,15 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Stream.get
-		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Title.get
-		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Author.get
 		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Album.get
-		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Genre.get
-		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Description.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Author.get
 		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Date.get
-		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Thumbnail.get
-		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Rating.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Description.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Genre.get
 		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Properties.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Rating.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Stream.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Thumbnail.get
+		// Forced skipping of method Windows.Media.PlayTo.SourceChangeRequestedEventArgs.Title.get
 	}
 }

@@ -41,9 +41,9 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.AmbientLight.Color.get
 		// Forced skipping of method Microsoft.UI.Composition.AmbientLight.Color.set
 		// Forced skipping of method Microsoft.UI.Composition.AmbientLight.Intensity.get
-		// Forced skipping of method Microsoft.UI.Composition.AmbientLight.Color.get
 		// Forced skipping of method Microsoft.UI.Composition.AmbientLight.Intensity.set
 	}
 }

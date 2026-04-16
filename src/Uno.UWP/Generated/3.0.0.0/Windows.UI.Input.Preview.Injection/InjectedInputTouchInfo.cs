@@ -8,11 +8,11 @@ namespace Windows.UI.Input.Preview.Injection
 #endif
 	public partial class InjectedInputTouchInfo
 	{
-		// Skipping already declared property TouchParameters
-		// Skipping already declared property Pressure
-		// Skipping already declared property PointerInfo
-		// Skipping already declared property Orientation
 		// Skipping already declared property Contact
+		// Skipping already declared property Orientation
+		// Skipping already declared property PointerInfo
+		// Skipping already declared property Pressure
+		// Skipping already declared property TouchParameters
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.InjectedInputTouchInfo()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.InjectedInputTouchInfo()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.Contact.get

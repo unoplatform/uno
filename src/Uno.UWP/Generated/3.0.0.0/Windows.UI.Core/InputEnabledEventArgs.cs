@@ -37,9 +37,9 @@ namespace Windows.UI.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.InputEnabledEventArgs.InputEnabled.get
 		// Forced skipping of method Windows.UI.Core.InputEnabledEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.InputEnabledEventArgs.Handled.set
+		// Forced skipping of method Windows.UI.Core.InputEnabledEventArgs.InputEnabled.get
 		// Processing: Windows.UI.Core.ICoreWindowEventArgs
 	}
 }

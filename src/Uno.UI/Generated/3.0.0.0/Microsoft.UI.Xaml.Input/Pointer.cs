@@ -12,9 +12,9 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property IsInRange
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property PointerId
-		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.PointerId.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.IsInContact.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.IsInRange.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.PointerDeviceType.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.PointerId.get
 	}
 }

@@ -53,9 +53,9 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.IsResumable.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.ActualUri.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.StatusCode.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.Headers.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.IsResumable.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.ResponseInformation.StatusCode.get
 	}
 }

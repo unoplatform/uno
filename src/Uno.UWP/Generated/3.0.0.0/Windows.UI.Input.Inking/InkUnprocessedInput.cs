@@ -25,18 +25,18 @@ namespace Windows.UI.Input.Inking
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerEntered.add
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerEntered.remove
-		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerHovered.add
-		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerHovered.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerExited.add
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerExited.remove
-		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerPressed.add
-		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerPressed.remove
-		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerMoved.add
-		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerMoved.remove
-		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerReleased.add
-		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerReleased.remove
+		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerHovered.add
+		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerHovered.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerLost.add
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerLost.remove
+		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerMoved.add
+		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerMoved.remove
+		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerPressed.add
+		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerPressed.remove
+		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerReleased.add
+		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerReleased.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.InkPresenter.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

@@ -13,8 +13,8 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiActiveSensingMessage.MidiActiveSensingMessage()
 		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.MidiActiveSensingMessage()
-		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.RawData.get
+		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiActiveSensingMessage.Type.get
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}

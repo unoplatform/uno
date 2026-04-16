@@ -26,34 +26,6 @@ namespace Windows.UI.Input.Spatial
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.SpatialGestureRecognizer(Windows.UI.Input.Spatial.SpatialGestureSettings)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionStarted.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionStarted.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionEnded.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionEnded.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.Tapped.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.Tapped.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldStarted.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldStarted.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCompleted.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCompleted.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCanceled.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCanceled.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationStarted.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationStarted.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationUpdated.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationUpdated.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCompleted.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCompleted.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCanceled.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCanceled.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationStarted.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationStarted.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationUpdated.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationUpdated.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCompleted.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCompleted.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCanceled.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCanceled.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CaptureInteraction(global::Windows.UI.Input.Spatial.SpatialInteraction interaction)
@@ -75,6 +47,34 @@ namespace Windows.UI.Input.Spatial
 			throw new global::System.NotImplementedException("The member bool SpatialGestureRecognizer.TrySetGestureSettings(SpatialGestureSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialGestureRecognizer.TrySetGestureSettings%28SpatialGestureSettings%20settings%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCanceled.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCanceled.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCompleted.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCompleted.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldStarted.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldStarted.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCanceled.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCanceled.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCompleted.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCompleted.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationStarted.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationStarted.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationUpdated.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationUpdated.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCanceled.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCanceled.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCompleted.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCompleted.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationStarted.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationStarted.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationUpdated.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationUpdated.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionEnded.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionEnded.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionStarted.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionStarted.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.Tapped.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.Tapped.remove
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.GestureSettings.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

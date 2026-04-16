@@ -10,9 +10,9 @@ namespace Windows.ApplicationModel.Appointments
 	{
 		// Skipping already declared property Address
 		// Skipping already declared property DisplayName
-		// Forced skipping of method Windows.ApplicationModel.Appointments.IAppointmentParticipant.DisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.IAppointmentParticipant.DisplayName.set
 		// Forced skipping of method Windows.ApplicationModel.Appointments.IAppointmentParticipant.Address.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.IAppointmentParticipant.Address.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.IAppointmentParticipant.DisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.IAppointmentParticipant.DisplayName.set
 	}
 }

@@ -113,15 +113,15 @@ namespace Windows.Media.Control
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Title.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Subtitle.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumArtist.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Artist.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTitle.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.TrackNumber.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Genres.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTrackCount.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Artist.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Genres.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.PlaybackType.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Subtitle.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Thumbnail.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.Title.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties.TrackNumber.get
 	}
 }

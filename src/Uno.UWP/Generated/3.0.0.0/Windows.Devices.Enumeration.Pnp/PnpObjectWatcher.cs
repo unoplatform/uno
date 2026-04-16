@@ -23,17 +23,6 @@ namespace Windows.Devices.Enumeration.Pnp
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Added.add
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Added.remove
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Updated.add
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Updated.remove
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Removed.add
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Removed.remove
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.EnumerationCompleted.add
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.EnumerationCompleted.remove
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Stopped.add
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Stopped.remove
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -48,6 +37,17 @@ namespace Windows.Devices.Enumeration.Pnp
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObjectWatcher", "void PnpObjectWatcher.Stop()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Added.add
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Added.remove
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.EnumerationCompleted.add
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.EnumerationCompleted.remove
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Removed.add
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Removed.remove
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Stopped.add
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Stopped.remove
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Updated.add
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Updated.remove
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Enumeration.Pnp.PnpObjectWatcher, global::Windows.Devices.Enumeration.Pnp.PnpObject> Added

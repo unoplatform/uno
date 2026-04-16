@@ -15,10 +15,10 @@ namespace Windows.Media.Core
 			set;
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.ISingleSelectMediaTrackList.SelectedIndex.get
+		// Forced skipping of method Windows.Media.Core.ISingleSelectMediaTrackList.SelectedIndex.set
 		// Forced skipping of method Windows.Media.Core.ISingleSelectMediaTrackList.SelectedIndexChanged.add
 		// Forced skipping of method Windows.Media.Core.ISingleSelectMediaTrackList.SelectedIndexChanged.remove
-		// Forced skipping of method Windows.Media.Core.ISingleSelectMediaTrackList.SelectedIndex.set
-		// Forced skipping of method Windows.Media.Core.ISingleSelectMediaTrackList.SelectedIndex.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.ISingleSelectMediaTrackList, object> SelectedIndexChanged;
 #endif

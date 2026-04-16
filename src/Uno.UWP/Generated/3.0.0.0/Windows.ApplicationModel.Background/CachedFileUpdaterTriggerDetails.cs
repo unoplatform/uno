@@ -43,8 +43,8 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.UpdateTarget.get
-		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.UpdateRequest.get
 		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.CanRequestUserInput.get
+		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.UpdateRequest.get
+		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.UpdateTarget.get
 	}
 }

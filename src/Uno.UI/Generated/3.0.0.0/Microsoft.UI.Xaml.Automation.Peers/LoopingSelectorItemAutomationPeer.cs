@@ -11,11 +11,11 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property IsSelected
 		// Skipping already declared property SelectionContainer
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.ScrollIntoView()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.IsSelected.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.SelectionContainer.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.AddToSelection()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.RemoveFromSelection()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.Select()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.IsSelected.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemAutomationPeer.SelectionContainer.get
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider
 	}

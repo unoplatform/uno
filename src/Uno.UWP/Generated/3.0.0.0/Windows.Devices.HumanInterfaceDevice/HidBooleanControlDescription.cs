@@ -25,6 +25,16 @@ namespace Windows.Devices.HumanInterfaceDevice
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsAbsolute
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool HidBooleanControlDescription.IsAbsolute is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HidBooleanControlDescription.IsAbsolute");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.HumanInterfaceDevice.HidCollection> ParentCollections
 		{
 			get
@@ -73,22 +83,12 @@ namespace Windows.Devices.HumanInterfaceDevice
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsAbsolute
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool HidBooleanControlDescription.IsAbsolute is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HidBooleanControlDescription.IsAbsolute");
-			}
-		}
-#endif
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.Id.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.IsAbsolute.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.ParentCollections.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.ReportId.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.ReportType.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.UsagePage.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.UsageId.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.ParentCollections.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.IsAbsolute.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.UsagePage.get
 	}
 }

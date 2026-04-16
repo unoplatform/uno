@@ -10,174 +10,6 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double TranslateZ
-		{
-			get
-			{
-				return (double)this.GetValue(TranslateZProperty);
-			}
-			set
-			{
-				this.SetValue(TranslateZProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double TranslateY
-		{
-			get
-			{
-				return (double)this.GetValue(TranslateYProperty);
-			}
-			set
-			{
-				this.SetValue(TranslateYProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double TranslateX
-		{
-			get
-			{
-				return (double)this.GetValue(TranslateXProperty);
-			}
-			set
-			{
-				this.SetValue(TranslateXProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double ScaleZ
-		{
-			get
-			{
-				return (double)this.GetValue(ScaleZProperty);
-			}
-			set
-			{
-				this.SetValue(ScaleZProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double ScaleY
-		{
-			get
-			{
-				return (double)this.GetValue(ScaleYProperty);
-			}
-			set
-			{
-				this.SetValue(ScaleYProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double ScaleX
-		{
-			get
-			{
-				return (double)this.GetValue(ScaleXProperty);
-			}
-			set
-			{
-				this.SetValue(ScaleXProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double RotationZ
-		{
-			get
-			{
-				return (double)this.GetValue(RotationZProperty);
-			}
-			set
-			{
-				this.SetValue(RotationZProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double RotationY
-		{
-			get
-			{
-				return (double)this.GetValue(RotationYProperty);
-			}
-			set
-			{
-				this.SetValue(RotationYProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double RotationX
-		{
-			get
-			{
-				return (double)this.GetValue(RotationXProperty);
-			}
-			set
-			{
-				this.SetValue(RotationXProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double CenterZ
-		{
-			get
-			{
-				return (double)this.GetValue(CenterZProperty);
-			}
-			set
-			{
-				this.SetValue(CenterZProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double CenterY
-		{
-			get
-			{
-				return (double)this.GetValue(CenterYProperty);
-			}
-			set
-			{
-				this.SetValue(CenterYProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double CenterX
-		{
-			get
-			{
-				return (double)this.GetValue(CenterXProperty);
-			}
-			set
-			{
-				this.SetValue(CenterXProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CenterXProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CenterX), typeof(double),
@@ -274,12 +106,192 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double CenterX
+		{
+			get
+			{
+				return (double)this.GetValue(CenterXProperty);
+			}
+			set
+			{
+				this.SetValue(CenterXProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double CenterY
+		{
+			get
+			{
+				return (double)this.GetValue(CenterYProperty);
+			}
+			set
+			{
+				this.SetValue(CenterYProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double CenterZ
+		{
+			get
+			{
+				return (double)this.GetValue(CenterZProperty);
+			}
+			set
+			{
+				this.SetValue(CenterZProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double RotationX
+		{
+			get
+			{
+				return (double)this.GetValue(RotationXProperty);
+			}
+			set
+			{
+				this.SetValue(RotationXProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double RotationY
+		{
+			get
+			{
+				return (double)this.GetValue(RotationYProperty);
+			}
+			set
+			{
+				this.SetValue(RotationYProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double RotationZ
+		{
+			get
+			{
+				return (double)this.GetValue(RotationZProperty);
+			}
+			set
+			{
+				this.SetValue(RotationZProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double ScaleX
+		{
+			get
+			{
+				return (double)this.GetValue(ScaleXProperty);
+			}
+			set
+			{
+				this.SetValue(ScaleXProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double ScaleY
+		{
+			get
+			{
+				return (double)this.GetValue(ScaleYProperty);
+			}
+			set
+			{
+				this.SetValue(ScaleYProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double ScaleZ
+		{
+			get
+			{
+				return (double)this.GetValue(ScaleZProperty);
+			}
+			set
+			{
+				this.SetValue(ScaleZProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double TranslateX
+		{
+			get
+			{
+				return (double)this.GetValue(TranslateXProperty);
+			}
+			set
+			{
+				this.SetValue(TranslateXProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double TranslateY
+		{
+			get
+			{
+				return (double)this.GetValue(TranslateYProperty);
+			}
+			set
+			{
+				this.SetValue(TranslateYProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double TranslateZ
+		{
+			get
+			{
+				return (double)this.GetValue(TranslateZProperty);
+			}
+			set
+			{
+				this.SetValue(TranslateZProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CompositeTransform3D() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D", "CompositeTransform3D.CompositeTransform3D()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.CompositeTransform3D()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.CenterXProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.CenterYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.CenterZProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.RotationXProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.RotationYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.RotationZProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.ScaleXProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.ScaleYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.ScaleZProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateXProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateZProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.CenterX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.CenterX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.CenterY.get
@@ -304,17 +316,5 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateY.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateZ.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateZ.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.CenterXProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.CenterYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.CenterZProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.RotationXProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.RotationYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.RotationZProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.ScaleXProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.ScaleYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.ScaleZProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateXProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateZProperty.get
 	}
 }

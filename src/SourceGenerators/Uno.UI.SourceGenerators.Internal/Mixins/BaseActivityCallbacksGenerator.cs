@@ -67,6 +67,10 @@ public sealed class BaseActivityCallbacksGenerator : IIncrementalGenerator
 			.Select(method =>
 			{
 				var match = methodRegex.Match(method);
+				if (!match.Success)
+				{
+					throw new InvalidOperationException($"BaseActivityCallbacks: unable to parse method line: {method}");
+				}
 				var name = match.Groups["name"].Value;
 				var nameOverride = match.Groups["nameOverride"].Value;
 				var eventName = string.IsNullOrEmpty(nameOverride) ? name : nameOverride;
@@ -129,14 +133,16 @@ public sealed class BaseActivityCallbacksGenerator : IIncrementalGenerator
 				sb.AppendLine("\t\t\t{");
 				foreach (var p in parameters)
 				{
-					var propName = char.ToUpper(p.ParamName[0], System.Globalization.CultureInfo.InvariantCulture) + p.ParamName.Substring(1);
-					sb.AppendLine($"\t\t\t\t{propName} = {p.ParamName}; ");
+					var normalizedParamName = p.ParamName.TrimStart('@');
+					var propName = char.ToUpper(normalizedParamName[0], System.Globalization.CultureInfo.InvariantCulture) + normalizedParamName.Substring(1);
+					sb.AppendLine($"\t\t\t\tthis.{propName} = {p.ParamName}; ");
 				}
 				sb.AppendLine("\t\t\t}");
 				sb.AppendLine();
 				foreach (var p in parameters)
 				{
-					var propName = char.ToUpper(p.ParamName[0], System.Globalization.CultureInfo.InvariantCulture) + p.ParamName.Substring(1);
+					var normalizedParamName = p.ParamName.TrimStart('@');
+					var propName = char.ToUpper(normalizedParamName[0], System.Globalization.CultureInfo.InvariantCulture) + normalizedParamName.Substring(1);
 					sb.AppendLine($"\t\t\tpublic {p.Type} {propName} {{ get; }} ");
 				}
 				sb.AppendLine("\t\t}");
@@ -197,7 +203,7 @@ public sealed class BaseActivityCallbacksGenerator : IIncrementalGenerator
 		}
 
 		sb.AppendLine("}");
-		sb.AppendLine("#endif ");
+		sb.AppendLine("#endif");
 
 		return sb.ToString();
 	}

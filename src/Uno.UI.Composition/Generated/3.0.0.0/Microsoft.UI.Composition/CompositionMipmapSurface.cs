@@ -53,9 +53,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.LevelCount.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.PixelFormat.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.SizeInt32.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionDrawingSurface GetDrawingSurfaceForLevel(uint level)
@@ -64,6 +61,9 @@ namespace Microsoft.UI.Composition
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.AlphaMode.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.LevelCount.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.PixelFormat.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.SizeInt32.get
 		// Processing: Microsoft.UI.Composition.ICompositionSurface
 	}
 }

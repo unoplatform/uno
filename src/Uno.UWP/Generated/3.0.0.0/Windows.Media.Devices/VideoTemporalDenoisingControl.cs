@@ -47,9 +47,9 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.SupportedModes.get
 		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.Mode.get
 		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.Mode.set
+		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.Supported.get
+		// Forced skipping of method Windows.Media.Devices.VideoTemporalDenoisingControl.SupportedModes.get
 	}
 }

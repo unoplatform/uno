@@ -43,9 +43,6 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.Number.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.MessageCount.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.Type.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DialVoicemailAsync()
@@ -53,5 +50,8 @@ namespace Windows.ApplicationModel.Calls
 			throw new global::System.NotImplementedException("The member IAsyncAction PhoneVoicemail.DialVoicemailAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PhoneVoicemail.DialVoicemailAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.MessageCount.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.Number.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.Type.get
 	}
 }

@@ -40,15 +40,15 @@ namespace Windows.Graphics.Printing.OptionDetails
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.OptionId.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.OptionType.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.ErrorText.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.ErrorText.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.State.set
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.State.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.Value.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		bool TrySetValue(object value);
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.ErrorText.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.ErrorText.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.OptionId.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.OptionType.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.State.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.State.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.Value.get
 	}
 }

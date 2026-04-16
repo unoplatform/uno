@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.WebUI
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -12,6 +11,36 @@ namespace Windows.UI.WebUI
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal WebUIFileSavePickerContinuationEventArgs()
 		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIFileSavePickerContinuationEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIFileSavePickerContinuationEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Collections.ValueSet ContinuationData
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ValueSet WebUIFileSavePickerContinuationEventArgs.ContinuationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20WebUIFileSavePickerContinuationEventArgs.ContinuationData");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.StorageFile File
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFile WebUIFileSavePickerContinuationEventArgs.File is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFile%20WebUIFileSavePickerContinuationEventArgs.File");
+			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -54,42 +83,12 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Collections.ValueSet ContinuationData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ValueSet WebUIFileSavePickerContinuationEventArgs.ContinuationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20WebUIFileSavePickerContinuationEventArgs.ContinuationData");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.StorageFile File
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StorageFile WebUIFileSavePickerContinuationEventArgs.File is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFile%20WebUIFileSavePickerContinuationEventArgs.File");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIFileSavePickerContinuationEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIFileSavePickerContinuationEventArgs.ActivatedOperation");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerContinuationEventArgs.File.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerContinuationEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerContinuationEventArgs.ContinuationData.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerContinuationEventArgs.File.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerContinuationEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerContinuationEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerContinuationEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerContinuationEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerContinuationEventArgs.User.get
 		// Processing: Windows.ApplicationModel.Activation.IFileSavePickerContinuationEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IContinuationActivatedEventArgs

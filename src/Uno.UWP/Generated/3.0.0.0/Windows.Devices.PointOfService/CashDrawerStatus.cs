@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerStatus.StatusKind.get
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerStatus.ExtendedStatus.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerStatus.StatusKind.get
 	}
 }

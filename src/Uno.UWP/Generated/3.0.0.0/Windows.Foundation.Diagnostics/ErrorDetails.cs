@@ -43,9 +43,6 @@ namespace Windows.Foundation.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.Description.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.LongDescription.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.HelpUri.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Foundation.Diagnostics.ErrorDetails> CreateFromHResultAsync(int errorCode)
@@ -53,5 +50,8 @@ namespace Windows.Foundation.Diagnostics
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ErrorDetails> ErrorDetails.CreateFromHResultAsync(int errorCode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CErrorDetails%3E%20ErrorDetails.CreateFromHResultAsync%28int%20errorCode%29");
 		}
 #endif
+		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.Description.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.HelpUri.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.LongDescription.get
 	}
 }

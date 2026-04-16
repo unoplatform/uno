@@ -286,4 +286,123 @@ internal static class DevServerProcessHelper
 
 		return (process.ExitCode, stdOut, stdErr);
 	}
+
+	/// <summary>
+	/// Spawns the host in direct mode (no <c>--command</c>) and waits for
+	/// the HTTP port to become reachable.  Returns 0 on success, 1 on timeout
+	/// or process failure.
+	/// </summary>
+	public static async Task<int> RunDirectProcessAsync(
+		ProcessStartInfo startInfo,
+		ILogger logger,
+		int readinessTimeoutMs = 30_000)
+	{
+		logger.LogDebug("Starting host (direct mode): {File} {Args}", startInfo.FileName, startInfo.Arguments);
+
+		Process process = new()
+		{
+			StartInfo = startInfo,
+			EnableRaisingEvents = true
+		};
+
+		var (_, errorSb) = ObserveOutputs(startInfo, "devserver", logger, process, forwardOutputToConsole: false);
+
+		process.Start();
+		logger.LogDebug("Started host process: {Pid}", process.Id);
+
+		try
+		{
+			if (startInfo.RedirectStandardOutput)
+			{
+				process.BeginOutputReadLine();
+			}
+			if (startInfo.RedirectStandardError)
+			{
+				process.BeginErrorReadLine();
+			}
+		}
+		catch (InvalidOperationException)
+		{
+			// Streams may not be available
+		}
+
+		// Extract the port from the args to probe for readiness
+		var port = ExtractPort(startInfo.Arguments);
+		if (port <= 0)
+		{
+			logger.LogWarning("Unable to extract HTTP port from host arguments; skipping readiness wait.");
+			return 0;
+		}
+
+		var ready = await WaitForTcpReadyAsync(port, readinessTimeoutMs);
+		if (!ready)
+		{
+			if (process.HasExited)
+			{
+				logger.LogError("Host process died (exit code {ExitCode}) before becoming ready.", process.ExitCode);
+			}
+			else
+			{
+				logger.LogError("Host did not become ready within {TimeoutMs}ms. Terminating.", readinessTimeoutMs);
+				try
+				{
+					process.Kill();
+					await process.WaitForExitAsync();
+				}
+				catch { }
+			}
+
+			var stdErr = errorSb.ToString();
+			if (!string.IsNullOrWhiteSpace(stdErr))
+			{
+				logger.LogError("Host stderr:\n{ErrorOutput}", stdErr);
+			}
+
+			return 1;
+		}
+
+		logger.LogInformation("DevServer is ready on port {Port}.", port);
+		return 0;
+	}
+
+	private static int ExtractPort(string arguments)
+	{
+		var parts = arguments.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+		for (var i = 0; i < parts.Length - 1; i++)
+		{
+			if (string.Equals(parts[i], "--httpPort", StringComparison.OrdinalIgnoreCase)
+				&& int.TryParse(parts[i + 1], out var port))
+			{
+				return port;
+			}
+		}
+
+		return 0;
+	}
+
+	private static async Task<bool> WaitForTcpReadyAsync(int port, int timeoutMs)
+	{
+		var sw = System.Diagnostics.Stopwatch.StartNew();
+		var endpoint = new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, port);
+
+		while (sw.ElapsedMilliseconds < timeoutMs)
+		{
+			try
+			{
+				using var tcp = new System.Net.Sockets.TcpClient();
+				var connectTask = tcp.ConnectAsync(endpoint.Address, endpoint.Port);
+				var timeoutTask = Task.Delay(1000);
+				var winner = await Task.WhenAny(connectTask, timeoutTask);
+				if (winner == connectTask && !connectTask.IsFaulted)
+				{
+					return true;
+				}
+			}
+			catch { }
+
+			await Task.Delay(500);
+		}
+
+		return false;
+	}
 }

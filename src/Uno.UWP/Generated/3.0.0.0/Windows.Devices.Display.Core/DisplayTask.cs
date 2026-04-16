@@ -27,12 +27,5 @@ namespace Windows.Devices.Display.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayTask", "void DisplayTask.SetWait(DisplayFence readyFence, ulong readyFenceValue)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SetSignal(global::Windows.Devices.Display.Core.DisplayTaskSignalKind signalKind, global::Windows.Devices.Display.Core.DisplayFence fence)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayTask", "void DisplayTask.SetSignal(DisplayTaskSignalKind signalKind, DisplayFence fence)");
-		}
-#endif
 	}
 }

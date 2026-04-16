@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class XamlCompositionBrushBase : global::Microsoft.UI.Xaml.Media.Brush
 	{
-		// Skipping already declared property FallbackColor
-		// Skipping already declared property CompositionBrush
 		// Skipping already declared property FallbackColorProperty
+		// Skipping already declared property CompositionBrush
+		// Skipping already declared property FallbackColor
 		// Skipping already declared method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.XamlCompositionBrushBase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.XamlCompositionBrushBase()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColor.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColor.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.CompositionBrush.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.CompositionBrush.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColorProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.OnConnected()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.OnDisconnected()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.CompositionBrush.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.CompositionBrush.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColor.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColor.set
 	}
 }

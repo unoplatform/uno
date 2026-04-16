@@ -8,18 +8,18 @@ namespace Windows.Storage.Streams
 #endif
 	public partial class DataWriterStoreOperation : global::Windows.Foundation.IAsyncOperation<uint>, global::Windows.Foundation.IAsyncInfo
 	{
+		// Skipping already declared property Completed
 		// Skipping already declared property ErrorCode
 		// Skipping already declared property Id
 		// Skipping already declared property Status
-		// Skipping already declared property Completed
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Completed.set
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Completed.get
 		// Skipping already declared method Windows.Storage.Streams.DataWriterStoreOperation.GetResults()
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Id.get
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Status.get
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.ErrorCode.get
 		// Skipping already declared method Windows.Storage.Streams.DataWriterStoreOperation.Cancel()
 		// Skipping already declared method Windows.Storage.Streams.DataWriterStoreOperation.Close()
+		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Completed.get
+		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Completed.set
+		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.ErrorCode.get
+		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Id.get
+		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Status.get
 		// Processing: Windows.Foundation.IAsyncOperation<uint>
 		// Processing: Windows.Foundation.IAsyncInfo
 	}

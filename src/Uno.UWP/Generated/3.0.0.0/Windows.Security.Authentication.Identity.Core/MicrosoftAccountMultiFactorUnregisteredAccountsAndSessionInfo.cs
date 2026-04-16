@@ -43,8 +43,8 @@ namespace Windows.Security.Authentication.Identity.Core
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo.ServiceResponse.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo.Sessions.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo.UnregisteredAccounts.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo.ServiceResponse.get
 	}
 }

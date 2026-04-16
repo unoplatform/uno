@@ -47,9 +47,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.ScrollOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.ScrollingEventKind.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.ScrollOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.ScrollingEventKind.get
 	}
 }

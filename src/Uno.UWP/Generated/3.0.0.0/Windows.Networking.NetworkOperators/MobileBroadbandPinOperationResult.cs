@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinOperationResult.IsSuccessful.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinOperationResult.AttemptsRemaining.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinOperationResult.IsSuccessful.get
 	}
 }

@@ -17,10 +17,10 @@ namespace Windows.Storage
 		// Skipping already declared method Windows.Storage.IStorageItem.DeleteAsync()
 		// Skipping already declared method Windows.Storage.IStorageItem.DeleteAsync(Windows.Storage.StorageDeleteOption)
 		// Skipping already declared method Windows.Storage.IStorageItem.GetBasicPropertiesAsync()
-		// Forced skipping of method Windows.Storage.IStorageItem.Name.get
-		// Forced skipping of method Windows.Storage.IStorageItem.Path.get
+		// Skipping already declared method Windows.Storage.IStorageItem.IsOfType(Windows.Storage.StorageItemTypes)
 		// Forced skipping of method Windows.Storage.IStorageItem.Attributes.get
 		// Forced skipping of method Windows.Storage.IStorageItem.DateCreated.get
-		// Skipping already declared method Windows.Storage.IStorageItem.IsOfType(Windows.Storage.StorageItemTypes)
+		// Forced skipping of method Windows.Storage.IStorageItem.Name.get
+		// Forced skipping of method Windows.Storage.IStorageItem.Path.get
 	}
 }

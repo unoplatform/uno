@@ -964,7 +964,7 @@ public sealed class FrameworkElementAndroidMixinGenerator : IIncrementalGenerato
 			sb.AppendLine("\t\t\tif (newSize != previousSize)");
 			sb.AppendLine("\t\t\t{");
 			sb.AppendLine("\t\t\t\tSizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, newSize));");
-			sb.AppendLine("\t\t\t\t_renderTransform?.UpdateSize(newSize); // TODO: Move ** BEFORE ** base.OnLayout() ???");
+			sb.AppendLine("\t\t\t\t_renderTransform?.UpdateSize(newSize);");
 			sb.AppendLine("\t\t\t}");
 			sb.AppendLine("\t\t}");
 			sb.AppendLine();

@@ -11,9 +11,9 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Handled
 		// Skipping already declared property Key
 		// Skipping already declared property Modifiers
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs.Key.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs.Modifiers.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs.Key.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs.Modifiers.get
 	}
 }

@@ -50,8 +50,8 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member int CoreWebView2ExecuteScriptResult.TryGetResultAsString(out string stringResult) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2ExecuteScriptResult.TryGetResultAsString%28out%20string%20stringResult%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ExecuteScriptResult.Succeeded.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ExecuteScriptResult.ResultAsJson.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ExecuteScriptResult.Exception.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ExecuteScriptResult.ResultAsJson.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ExecuteScriptResult.Succeeded.get
 	}
 }

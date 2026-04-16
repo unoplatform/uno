@@ -43,8 +43,8 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.HingeAngleReading.Timestamp.get
 		// Forced skipping of method Windows.Devices.Sensors.HingeAngleReading.AngleInDegrees.get
 		// Forced skipping of method Windows.Devices.Sensors.HingeAngleReading.Properties.get
+		// Forced skipping of method Windows.Devices.Sensors.HingeAngleReading.Timestamp.get
 	}
 }

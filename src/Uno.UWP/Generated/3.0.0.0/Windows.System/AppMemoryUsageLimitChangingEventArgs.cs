@@ -33,7 +33,7 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppMemoryUsageLimitChangingEventArgs.OldLimit.get
 		// Forced skipping of method Windows.System.AppMemoryUsageLimitChangingEventArgs.NewLimit.get
+		// Forced skipping of method Windows.System.AppMemoryUsageLimitChangingEventArgs.OldLimit.get
 	}
 }

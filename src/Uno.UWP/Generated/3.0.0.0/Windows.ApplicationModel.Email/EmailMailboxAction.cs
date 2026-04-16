@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAction.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAction.ChangeNumber.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAction.Kind.get
 	}
 }

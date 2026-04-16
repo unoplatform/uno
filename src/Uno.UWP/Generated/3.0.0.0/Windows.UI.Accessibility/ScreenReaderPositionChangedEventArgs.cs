@@ -33,7 +33,7 @@ namespace Windows.UI.Accessibility
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs.ScreenPositionInRawPixels.get
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs.IsReadingText.get
+		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs.ScreenPositionInRawPixels.get
 	}
 }

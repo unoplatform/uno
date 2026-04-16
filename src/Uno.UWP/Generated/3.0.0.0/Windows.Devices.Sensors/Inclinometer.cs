@@ -15,15 +15,21 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint ReportInterval
+		public string DeviceId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Inclinometer.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Inclinometer.ReportInterval");
+				throw new global::System.NotImplementedException("The member string Inclinometer.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Inclinometer.DeviceId");
 			}
-			set
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint MaxBatchSize
+		{
+			get
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Inclinometer", "uint Inclinometer.ReportInterval");
+				throw new global::System.NotImplementedException("The member uint Inclinometer.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Inclinometer.MaxBatchSize");
 			}
 		}
 #endif
@@ -63,6 +69,20 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint ReportInterval
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint Inclinometer.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Inclinometer.ReportInterval");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Inclinometer", "uint Inclinometer.ReportInterval");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint ReportLatency
 		{
 			get
@@ -72,16 +92,6 @@ namespace Windows.Devices.Sensors
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Inclinometer", "uint Inclinometer.ReportLatency");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint MaxBatchSize
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint Inclinometer.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Inclinometer.MaxBatchSize");
 			}
 		}
 #endif
@@ -97,34 +107,25 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceId
+		public static global::Windows.Devices.Sensors.Inclinometer GetDefault()
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Inclinometer.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Inclinometer.DeviceId");
-			}
+			throw new global::System.NotImplementedException("The member Inclinometer Inclinometer.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Inclinometer%20Inclinometer.GetDefault%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sensors.InclinometerReading GetCurrentReading()
+		public static global::Windows.Devices.Sensors.Inclinometer GetDefaultForRelativeReadings()
 		{
-			throw new global::System.NotImplementedException("The member InclinometerReading Inclinometer.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InclinometerReading%20Inclinometer.GetCurrentReading%28%29");
+			throw new global::System.NotImplementedException("The member Inclinometer Inclinometer.GetDefaultForRelativeReadings() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Inclinometer%20Inclinometer.GetDefaultForRelativeReadings%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.MinimumReportInterval.get
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReportInterval.set
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReportInterval.get
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReadingChanged.add
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReadingChanged.remove
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.DeviceId.get
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReadingTransform.set
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReadingTransform.get
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReadingType.get
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReportLatency.set
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReportLatency.get
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.MaxBatchSize.get
-		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReportThreshold.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Devices.Sensors.Inclinometer GetDefault(global::Windows.Devices.Sensors.SensorReadingType sensorReadingtype)
+		{
+			throw new global::System.NotImplementedException("The member Inclinometer Inclinometer.GetDefault(SensorReadingType sensorReadingtype) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Inclinometer%20Inclinometer.GetDefault%28SensorReadingType%20sensorReadingtype%29");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector(global::Windows.Devices.Sensors.SensorReadingType readingType)
@@ -141,25 +142,24 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.Sensors.Inclinometer GetDefault(global::Windows.Devices.Sensors.SensorReadingType sensorReadingtype)
+		public global::Windows.Devices.Sensors.InclinometerReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member Inclinometer Inclinometer.GetDefault(SensorReadingType sensorReadingtype) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Inclinometer%20Inclinometer.GetDefault%28SensorReadingType%20sensorReadingtype%29");
+			throw new global::System.NotImplementedException("The member InclinometerReading Inclinometer.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InclinometerReading%20Inclinometer.GetCurrentReading%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.Sensors.Inclinometer GetDefaultForRelativeReadings()
-		{
-			throw new global::System.NotImplementedException("The member Inclinometer Inclinometer.GetDefaultForRelativeReadings() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Inclinometer%20Inclinometer.GetDefaultForRelativeReadings%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.Sensors.Inclinometer GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member Inclinometer Inclinometer.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Inclinometer%20Inclinometer.GetDefault%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReadingChanged.add
+		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReadingChanged.remove
+		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.DeviceId.get
+		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.MaxBatchSize.get
+		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.MinimumReportInterval.get
+		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReadingTransform.get
+		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReadingTransform.set
+		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReadingType.get
+		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReportInterval.get
+		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReportInterval.set
+		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReportLatency.get
+		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReportLatency.set
+		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReportThreshold.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Inclinometer, global::Windows.Devices.Sensors.InclinometerReadingChangedEventArgs> ReadingChanged
