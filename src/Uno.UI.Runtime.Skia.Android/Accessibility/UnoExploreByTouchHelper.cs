@@ -58,7 +58,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		{
 			return ExploreByTouchHelper.HostId;
 		}
-		var (element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(x, y).PhysicalToLogicalPixels(), RootElement.XamlRoot);
+		var (element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(x, y).PhysicalToLogicalPixels(), RootElement.XamlRoot?.VisualTree.RootElement);
 		element ??= RootElement;
 		try
 		{

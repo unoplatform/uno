@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
@@ -929,6 +930,10 @@ internal partial class InputManager
 				throw new InvalidOperationException("The XamlRoot must be properly initialized for hit testing.");
 			}
 
+			// When a RelativeRoot is set (scoped InputInjector), coordinates are
+			// in that element's local space and the hit-test is scoped to its subtree.
+			// SearchDownForTopMostElementAt propagates the searchRoot to GetTransform
+			// so all coordinate transforms are relative to that element.
 			return VisualTreeHelper.HitTest(
 				args.CurrentPoint.Position,
 				args.RelativeRoot as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement,

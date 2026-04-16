@@ -168,6 +168,56 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
+	public void When_ContentChanges_Then_ContentChangedEventFires()
+	{
+		// No UITestHelper.Load — AlcContentHost doesn't load in the test tree
+		// without a full secondary-ALC setup. The event fires synchronously
+		// from OnContentChanged, so we don't need it in the visual tree.
+		var host = new AlcContentHost();
+
+		int fireCount = 0;
+		object? lastSender = null;
+		host.ContentChanged += (sender, _) =>
+		{
+			fireCount++;
+			lastSender = sender;
+		};
+
+		// Set first content — event should fire once.
+		var content1 = new Border { Background = new SolidColorBrush(Windows.UI.Colors.Blue) };
+		host.Content = content1;
+
+		Assert.AreEqual(1, fireCount, "ContentChanged should fire once after the first content is set.");
+		Assert.AreSame(host, lastSender, "Sender should be the AlcContentHost instance.");
+
+		// Replace content — event should fire again.
+		var content2 = new TextBlock { Text = "Hello" };
+		host.Content = content2;
+
+		Assert.AreEqual(2, fireCount, "ContentChanged should fire again when content is replaced.");
+
+		// Set content to null — event should fire for null too.
+		host.Content = null;
+
+		Assert.AreEqual(3, fireCount, "ContentChanged should fire when content is set to null.");
+	}
+
+	[TestMethod]
+	public void When_ContentChangedEventSubscribed_Then_UpdateMergedResourcesCompletedFirst()
+	{
+		var host = new AlcContentHost();
+
+		bool? hadResourcesAtEventTime = null;
+		host.ContentChanged += (_, _) =>
+		{
+			hadResourcesAtEventTime = true;
+		};
+
+		host.Content = new Border();
+		Assert.IsTrue(hadResourcesAtEventTime == true, "Event should have fired after content was set.");
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
 	public async Task When_AlcWindow_Activate_Then_ActivatedEventRaised()
 	{

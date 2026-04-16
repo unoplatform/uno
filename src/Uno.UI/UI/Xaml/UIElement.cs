@@ -669,7 +669,7 @@ namespace Microsoft.UI.Xaml
 
 #if __SKIA__
 			Matrix3x2 from2To;
-			if (to is null)
+			if (to is null || to == from.XamlRoot?.VisualTree.RootElement)
 			{
 				from2To = from.Visual.TotalMatrix.ToMatrix3x2();
 			}
