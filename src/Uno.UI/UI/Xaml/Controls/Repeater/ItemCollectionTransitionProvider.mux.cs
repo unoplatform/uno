@@ -14,12 +14,14 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class ItemCollectionTransitionProvider
 {
 #if HAS_UNO
-	// TODO Uno: Original C++ destructor stops all keep-alive timers.
-	// Uno does not support cleanup via finalizers; consumers should call Dispose() or stop
-	// using the provider when done. The timers will be collected when the provider is GC'd.
-	//
-	// Original destructor logic (not executed):
-	// foreach (var keepAliveTimer in _keepAliveTimersMap.Keys) { keepAliveTimer.Stop(); }
+	// Uno: The original C++ destructor stops every keep-alive DispatcherTimer to avoid
+	// use-after-free — C++/WinRT's `{ this, &Method }` handler binding stores a raw
+	// `this` pointer and does not extend the provider's lifetime. In C#, `timer.Tick
+	// += OnKeepAliveTimerTick` holds a strong delegate reference back to the provider,
+	// so the provider stays alive (via Dispatcher -> DispatcherTimer -> Tick delegate)
+	// until each timer fires, at which point OnKeepAliveTimerTick stops the timer and
+	// removes it from _keepAliveTimersMap. GC then collects the provider naturally.
+	// No IDisposable, finalizer, or Unloaded hook is required.
 #endif
 
 	// #pragma region IItemCollectionTransitionProvider
