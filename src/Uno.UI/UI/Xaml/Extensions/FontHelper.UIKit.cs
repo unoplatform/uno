@@ -99,7 +99,7 @@ internal static class FontHelper
 				var fontFamilyName = FontFamilyHelper.RemoveUri(requestedFamily.Source);
 
 				// If there's a ".", we assume there's an extension and that it's a font file path.
-				font = fontFamilyName.Contains(".") ? GetCustomFont(fontFamilyName, fontProperties) : GetSystemFont(fontProperties, fontFamilyName);
+				font = fontFamilyName.Contains('.') ? GetCustomFont(fontFamilyName, fontProperties) : GetSystemFont(fontProperties, fontFamilyName);
 			}
 		}
 
@@ -264,7 +264,7 @@ internal static class FontHelper
 		var fileName = Path.GetFileNameWithoutExtension(file);
 		var fileExtension = Path.GetExtension(file)!.Substring(1);
 
-		var url = file.Contains("/")
+		var url = file.Contains('/')
 
 			// Search the file using the appropriate subdirectory
 			? NSBundle
