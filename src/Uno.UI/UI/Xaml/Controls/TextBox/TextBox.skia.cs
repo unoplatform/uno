@@ -1088,7 +1088,9 @@ public partial class TextBox
 			default:
 				// During IME composition, skip normal character insertion.
 				// The IME extension handles text updates via OnImeCompositionUpdated → ProcessTextInput.
-				if (_isComposing)
+				// On platforms where the platform applies text directly (e.g., Android),
+				// key events are independent of composition events and should not be swallowed.
+				if (ShouldSwallowKeyDuringComposition)
 				{
 					return;
 				}

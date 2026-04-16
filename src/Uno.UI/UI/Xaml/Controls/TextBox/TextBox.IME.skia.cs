@@ -15,9 +15,15 @@ public partial class TextBox
 	private static TextBox? _activeImeTextBox;
 	private bool _isComposing;
 	private bool _platformTextApplyInProgress;
+	// True when the current composition session has the platform applying text directly
+	// (e.g., Android's InputConnection). In this mode, key events arrive independently
+	// from composition events and should NOT be swallowed by the IsComposing check.
+	private bool _compositionAppliedByPlatform;
 	private int _compositionStartIndex;
 	private int _compositionLength;
 	private int _compositionResolvedLength;
+
+	internal bool ShouldSwallowKeyDuringComposition => _isComposing && !_compositionAppliedByPlatform;
 
 	public event TypedEventHandler<TextBox, TextCompositionStartedEventArgs>? TextCompositionStarted;
 	public event TypedEventHandler<TextBox, TextCompositionChangedEventArgs>? TextCompositionChanged;
@@ -63,6 +69,7 @@ public partial class TextBox
 		// event didn't fire (e.g., extension's _isComposing already false but TextBox's
 		// _isComposing still true from a stale CompositionStarted). Without this, all
 		// subsequent key events would be swallowed at the IsComposing check in OnKeyDown.
+		_compositionAppliedByPlatform = false;
 		if (_isComposing)
 		{
 			var startIndex = _compositionStartIndex;
@@ -107,6 +114,9 @@ public partial class TextBox
 			// Suppress CancelCompositionOnExternalChange for the ProcessTextInput call
 			// that will follow from the platform's text sync (EndBatchEdit).
 			_platformTextApplyInProgress = true;
+			// Mark the session so key events aren't swallowed by the IsComposing check
+			// (Android key events are independent of composition events).
+			_compositionAppliedByPlatform = true;
 		}
 		else
 		{
@@ -136,6 +146,7 @@ public partial class TextBox
 		var startIndex = _compositionStartIndex;
 		var committedLength = committedText.Length;
 		_isComposing = false;
+		_compositionAppliedByPlatform = false;
 		_compositionLength = 0;
 		_compositionStartIndex = 0;
 		_compositionResolvedLength = 0;
@@ -148,6 +159,7 @@ public partial class TextBox
 	{
 		if (!_isComposing)
 		{
+			_compositionAppliedByPlatform = false;
 			return;
 		}
 
@@ -156,6 +168,7 @@ public partial class TextBox
 		var startIndex = _compositionStartIndex;
 		var length = _compositionLength;
 		_isComposing = false;
+		_compositionAppliedByPlatform = false;
 		_compositionLength = 0;
 		_compositionStartIndex = 0;
 		_compositionResolvedLength = 0;
@@ -215,6 +228,7 @@ public partial class TextBox
 		var startIndex = _compositionStartIndex;
 		var length = _compositionLength;
 		_isComposing = false;
+		_compositionAppliedByPlatform = false;
 		_compositionLength = 0;
 		_compositionStartIndex = 0;
 		_compositionResolvedLength = 0;
