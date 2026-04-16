@@ -62,35 +62,38 @@ namespace SamplesApp.UITests
 			// Environment.SetEnvironmentVariable("ANDROID_HOME", @"C:\Program Files (x86)\Android\android-sdk");
 			// Environment.SetEnvironmentVariable("JAVA_HOME", @"C:\Program Files\Microsoft\jdk-11.0.12.7-hotspot");
 
-			try
+			// Retry cold-start in-process so a stuck iOS Calabash backend (Xamarin.UITest's
+			// internal EnsureCalabashRunning can otherwise poll for ~30 minutes) fails fast
+			// per attempt and recovers via a simulator erase between attempts, instead of
+			// poisoning the static ctor and failing every test with TypeInitializationException.
+			var isIos = AppInitializer.GetLocalPlatform() == Platform.iOS;
+			var perAttemptTimeout = isIos ? TimeSpan.FromMinutes(4) : TimeSpan.FromMinutes(5);
+			const int maxAttempts = 3;
+
+			Exception lastError = null;
+			for (int attempt = 1; attempt <= maxAttempts; attempt++)
 			{
-				// Start the app only once, so the tests runs don't restart it
-				// and gain some time for the tests.
-				// An explicit timeout guards against ColdStartApp hangs — notably
-				// Xamarin.UITest + calabash handshake stalls on iOS CI agents, which
-				// would otherwise silently burn the whole job budget.
-				var coldStartTask = Task.Run(() => AppInitializer.ColdStartApp());
-
-				var timeout = TimeSpan.FromMinutes(5);
-				var timeoutTask = Task.Delay(timeout);
-
-				var allTasks = Task.WhenAny(coldStartTask, timeoutTask);
-				allTasks.Wait();
-
-				if (allTasks.Result == timeoutTask)
+				try
 				{
-					throw new Exception($"Cold start timeout after {timeout}");
+					RunColdStartWithTimeout(perAttemptTimeout);
+					lastError = null;
+					break;
 				}
-
-				if (coldStartTask.Exception is not null)
+				catch (Exception ex)
 				{
-					throw coldStartTask.Exception;
+					lastError = ex;
+					Console.WriteLine($"Cold start attempt {attempt}/{maxAttempts} failed: {ex.Message}");
+					if (attempt < maxAttempts && isIos)
+					{
+						Console.WriteLine("Resetting iOS simulator before retry...");
+						ShutdownAndEraseIosSimulator();
+					}
 				}
 			}
-			catch
+
+			if (lastError is not null)
 			{
-				ResetSimulator();
-				throw;
+				throw lastError;
 			}
 
 			TryInitializeSkiaSharpLoader();
@@ -239,7 +242,7 @@ namespace SamplesApp.UITests
 		private static IApp ResetSimulator()
 		{
 			if (AppInitializer.GetLocalPlatform() == Platform.iOS
-								&& Environment.GetEnvironmentVariable("UITEST_IOSDEVICE_ID") is { } simId)
+				&& Environment.GetEnvironmentVariable("UITEST_IOSDEVICE_ID") is not null)
 			{
 				// Shutdown the simulator to avoid errors like
 				// 2023-04-27 02:34:43.241 iOSDeviceManager[61843:222611] *** Terminating app due to uncaught exception 'CBXException', reason: 'Error codesigning /Users/runner/work/1/s/build/ios-uitest-build/SamplesApp.app: '
@@ -250,8 +253,7 @@ namespace SamplesApp.UITests
 				//    at System.Reflection.ConstructorInvoker.Invoke(Object obj, IntPtr* args, BindingFlags invokeAttr)
 				// --DeviceAgentException
 				//    at Xamarin.UITest.iOS.iOSAppLauncher.LaunchAppLocal(IiOSAppConfiguration appConfiguration, HttpClient httpClient, Boolean clearAppData)
-				System.Diagnostics.Process.Start("xcrun", $"simctl shutdown \"{simId}\"").WaitForExit();
-				System.Diagnostics.Process.Start("xcrun", $"simctl erase \"{simId}\"").WaitForExit();
+				ShutdownAndEraseIosSimulator();
 
 				// Retry a cold startup after the erasure
 				return AppInitializer.ColdStartApp();
@@ -259,6 +261,47 @@ namespace SamplesApp.UITests
 			else
 			{
 				return null;
+			}
+		}
+
+		private static void RunColdStartWithTimeout(TimeSpan timeout)
+		{
+			var coldStartTask = Task.Run(() => AppInitializer.ColdStartApp());
+			var timeoutTask = Task.Delay(timeout);
+
+			var winner = Task.WhenAny(coldStartTask, timeoutTask);
+			winner.Wait();
+
+			if (winner.Result == timeoutTask)
+			{
+				throw new Exception($"Cold start timeout after {timeout}");
+			}
+
+			if (coldStartTask.Exception is not null)
+			{
+				throw coldStartTask.Exception;
+			}
+		}
+
+		private static void ShutdownAndEraseIosSimulator()
+		{
+			if (Environment.GetEnvironmentVariable("UITEST_IOSDEVICE_ID") is { } simId)
+			{
+				// Shutdown may fail if the sim isn't booted; ignore and continue to erase.
+				TryRunXcrun($"simctl shutdown \"{simId}\"");
+				TryRunXcrun($"simctl erase \"{simId}\"");
+			}
+		}
+
+		private static void TryRunXcrun(string args)
+		{
+			try
+			{
+				System.Diagnostics.Process.Start("xcrun", args)?.WaitForExit();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"xcrun {args} failed: {ex.Message}");
 			}
 		}
 
