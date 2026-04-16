@@ -188,8 +188,11 @@ public partial class TextBox
 		var replaced = text[..startIndex] + newText + text[endIndex..];
 
 		// Place the caret at the IME-reported cursor position within the composition,
-		// or at the end of the new text if not available.
-		var caretOffset = cursorPosition >= 0 ? cursorPosition : newText.Length;
+		// or at the end of the new text if not available. Clamp to valid range
+		// since some IMEs may report offsets beyond the current preedit length.
+		var caretOffset = cursorPosition >= 0
+			? Math.Min(cursorPosition, newText.Length)
+			: newText.Length;
 
 		_suppressCurrentlyTyping = true;
 		_clearHistoryOnTextChanged = false;
