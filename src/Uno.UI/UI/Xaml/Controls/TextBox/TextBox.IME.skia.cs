@@ -58,6 +58,23 @@ public partial class TextBox
 	{
 		_imeExtension?.EndImeSession();
 		_activeImeTextBox = null;
+
+		// Defensively reset composition state in case the extension's CompositionEnded
+		// event didn't fire (e.g., extension's _isComposing already false but TextBox's
+		// _isComposing still true from a stale CompositionStarted). Without this, all
+		// subsequent key events would be swallowed at the IsComposing check in OnKeyDown.
+		if (_isComposing)
+		{
+			var startIndex = _compositionStartIndex;
+			var length = _compositionLength;
+			_isComposing = false;
+			_compositionLength = 0;
+			_compositionStartIndex = 0;
+			_compositionResolvedLength = 0;
+
+			TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length));
+			InvalidateTextBoxRender();
+		}
 	}
 
 	private void OnImeCompositionStarted()
