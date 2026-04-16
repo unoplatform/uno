@@ -167,7 +167,12 @@ public partial class TextBox
 	private void ReplaceCompositionText(string newText, int cursorPosition = -1)
 	{
 		var text = Text;
-		var replaced = text[.._compositionStartIndex] + newText + text[(_compositionStartIndex + _compositionLength)..];
+		// Clamp indices to text bounds in case the platform modified the text
+		// out-of-band (e.g., Android IME autocorrect during a composition session)
+		// leaving _compositionStartIndex/_compositionLength stale.
+		var startIndex = Math.Min(_compositionStartIndex, text.Length);
+		var endIndex = Math.Min(_compositionStartIndex + _compositionLength, text.Length);
+		var replaced = text[..startIndex] + newText + text[endIndex..];
 
 		// Place the caret at the IME-reported cursor position within the composition,
 		// or at the end of the new text if not available.
@@ -177,7 +182,7 @@ public partial class TextBox
 		_clearHistoryOnTextChanged = false;
 		try
 		{
-			_pendingSelection = (_compositionStartIndex + caretOffset, 0);
+			_pendingSelection = (startIndex + caretOffset, 0);
 			ProcessTextInput(replaced);
 		}
 		finally
