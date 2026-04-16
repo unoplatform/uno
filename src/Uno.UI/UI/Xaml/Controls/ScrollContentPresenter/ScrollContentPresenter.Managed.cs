@@ -475,7 +475,10 @@ namespace Microsoft.UI.Xaml.Controls
 				// Scroll offset animation
 				var scrollAnimation = compositor.CreateVector2KeyFrameAnimation();
 				scrollAnimation.InsertKeyFrame(1.0f, target, easing);
-				scrollAnimation.Duration = TimeSpan.FromSeconds(1);
+				// Distance-based duration: snappy for small motions (keyboard arrows ~30 px → 200 ms),
+				// smoother for larger jumps (wheel notch ~200 px → ~450 ms, big ChangeView → capped at 600 ms).
+				var distance = Vector2.Distance(visual.AnchorPoint, target);
+				scrollAnimation.Duration = TimeSpan.FromMilliseconds(Math.Clamp(150 + distance * 1.5, 200, 600));
 				// AnchorPoint also carries the centering offset, which has to be removed to get back the logical scroll offsets.
 				void OnFrame(CompositionAnimation? _) => Updated(GetAnimatedHorizontalOffset(), GetAnimatedVerticalOffset(), true);
 				void OnStopped(object? _, EventArgs __)
