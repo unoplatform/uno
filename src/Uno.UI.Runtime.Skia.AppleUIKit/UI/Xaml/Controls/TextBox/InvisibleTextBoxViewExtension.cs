@@ -160,6 +160,13 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		_textBoxView.SecureTextEntry = textBox is PasswordBox;
 		SetSoftKeyboardTheme();
+
+		// KeyboardType may have changed — re-evaluate the native view
+		// position (anchored vs. off-screen).
+		if (_textBoxView is UIView nativeView)
+		{
+			UpdateNativeViewFrame(nativeView);
+		}
 	}
 
 	private void SetSoftKeyboardTheme()
@@ -306,11 +313,33 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		var y = rect?.Y ?? 0;
 		var width = rect?.Width ?? 10;
 		var height = rect?.Height ?? 10;
-		// Position the native view at the TextBox location so that iPadOS
-		// places its floating keyboard near the focused control. The view
-		// is not visible because the TextInputLayer sits behind the Skia
-		// rendering surface in the native view hierarchy.
-		nativeView.Frame = new CoreGraphics.CGRect(x, y, width, height);
+
+		// Only iPad shows a floating numeric keypad that needs an anchor
+		// view. For all other cases we push the native view off-screen so
+		// that the iOS autocorrect/suggestion bubble does not leak over
+		// the Skia-rendered text.
+		if (ShouldAnchorToTextBox())
+		{
+			nativeView.Frame = new CoreGraphics.CGRect(x, y, width, height);
+		}
+		else
+		{
+			nativeView.Frame = new CoreGraphics.CGRect(-1000 - width, -1000 - height, width, height);
+		}
+	}
+
+	private bool ShouldAnchorToTextBox()
+	{
+		if (UIDevice.CurrentDevice.UserInterfaceIdiom != UIUserInterfaceIdiom.Pad)
+		{
+			return false;
+		}
+
+		return _textBoxView?.KeyboardType is
+			UIKeyboardType.NumberPad or
+			UIKeyboardType.DecimalPad or
+			UIKeyboardType.NumbersAndPunctuation or
+			UIKeyboardType.PhonePad;
 	}
 
 	private static bool CouldBecomeFirstResponder(FrameworkElement? element)
