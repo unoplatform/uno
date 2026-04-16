@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -131,6 +132,14 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		if (IsAccessibilityEnabled)
 		{
 			OnSizeOrOffsetChanged(visual);
+
+			// Raise automatic property changes (IsOffscreen, IsEnabled, Name, ItemStatus)
+			// so accessibility clients get notified when elements move on/off screen.
+			if (visual is ContainerVisual containerVisual
+				&& containerVisual.Owner?.Target is UIElement owner)
+			{
+				owner.GetOrCreateAutomationPeer()?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+			}
 		}
 	}
 

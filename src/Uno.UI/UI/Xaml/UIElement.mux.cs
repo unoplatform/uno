@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
+using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
@@ -32,6 +33,12 @@ namespace Microsoft.UI.Xaml
 		// Ensures peer identity is stable across calls so that reference
 		// comparisons (e.g. HasKeyboardFocusImpl, SetFocusHelper) work correctly.
 		private AutomationPeer? _uiElementAutomationPeer;
+
+		/// <summary>
+		/// Returns the cached automation peer without creating one. Used for raising
+		/// property change notifications only on elements that already have peers.
+		/// </summary>
+		internal AutomationPeer? CachedAutomationPeer => _uiElementAutomationPeer;
 
 		/// <summary>
 		/// Set to True when the imminent Focus(FocusState) call needs to use an animation if bringing the focused
@@ -820,10 +827,26 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		//UNO TODO: Implement GetGlobalBoundsWithOptions on UIElement
 		internal Rect GetGlobalBoundsWithOptions(bool ignoreClipping, bool ignoreClippingOnScrollContentPresenters, bool useTargetInformation)
 		{
-			return new Rect();
+#if __SKIA__
+			if (!IsInLiveTree)
+			{
+				return default;
+			}
+
+			var size = Visual.Size;
+			if (size.X <= 0 || size.Y <= 0)
+			{
+				return default;
+			}
+
+			var transform = GetTransform(from: this, to: null);
+			var localRect = new Rect(0, 0, size.X, size.Y);
+			return transform.Transform(localRect);
+#else
+			return default;
+#endif
 		}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE

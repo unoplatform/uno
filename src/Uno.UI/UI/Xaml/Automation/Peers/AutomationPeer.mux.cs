@@ -253,27 +253,11 @@ partial class AutomationPeer
 	//------------------------------------------------------------------------
 	private bool IsKeyboardFocusableImpl()
 	{
-		// Get the owner element if this is a FrameworkElementAutomationPeer
+		// Delegate to UIElement.IsFocusable which matches WinUI's logic:
+		// IsVisible && (IsEnabled || AllowFocusWhenDisabled) && (IsTabStop || IsFocusableForFocusEngagement) && AreAllAncestorsVisible
 		if (this is FrameworkElementAutomationPeer feap && feap.Owner is UIElement owner)
 		{
-			// Check if the element is visible
-			if (owner.Visibility != Visibility.Visible)
-			{
-				return false;
-			}
-
-			// For Controls, check IsTabStop and IsEnabled
-			if (owner is Control control)
-			{
-				return control.IsTabStop && control.IsEnabled;
-			}
-
-			// For other focusable elements, check if they can receive focus
-			// AllowFocusOnInteraction is on FrameworkElement, not UIElement
-			if (owner is FrameworkElement fe && fe.AllowFocusOnInteraction)
-			{
-				return true;
-			}
+			return owner.IsFocusable;
 		}
 
 		return false;
@@ -290,12 +274,11 @@ partial class AutomationPeer
 	//------------------------------------------------------------------------
 	private bool IsOffscreenImpl(bool ignoreClippingOnScrollContentPresenters)
 	{
-		//TODO (DOTI): ActualWidth/Heigh doesn't seem to be supported on some platforms
 #if __SKIA__
 		// Get the owner element if this is a FrameworkElementAutomationPeer
 		if (this is FrameworkElementAutomationPeer feap && feap.Owner is UIElement owner)
 		{
-			// Check visibility
+			// Check visibility (WinUI: IsVisible on the element itself)
 			if (owner.Visibility != Visibility.Visible)
 			{
 				return true;
@@ -316,8 +299,19 @@ partial class AutomationPeer
 				}
 			}
 
-			// Check if element is clipped out of view
-			// Get the bounding rectangle - if it's empty, the element is offscreen
+			// Check if element is in the live visual tree (WinUI: IsActive on each ancestor)
+			if (!owner.IsInLiveTree)
+			{
+				return true;
+			}
+
+			// Check all ancestors are visible (WinUI: walks parent chain checking IsVisible)
+			if (!owner.AreAllAncestorsVisible())
+			{
+				return true;
+			}
+
+			// Check if element is clipped out of view via global bounds
 			var bounds = owner.GetGlobalBoundsWithOptions(
 				ignoreClipping: false,
 				ignoreClippingOnScrollContentPresenters: ignoreClippingOnScrollContentPresenters,
