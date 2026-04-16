@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ItemCollectionTransition.cpp, commit 5f9e851133b3
 
-using System.Diagnostics;
 using Windows.Foundation;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 

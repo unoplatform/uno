@@ -55,7 +55,12 @@ partial class ItemCollectionTransitionProvider
 				_transitionsWithAnimationsMap[_transitionsBatch] = new List<ItemCollectionTransition>();
 			}
 
-			_transitionsWithAnimationsMap[_transitionsBatch].Add(transition);
+			// Mirrors the WinUI C++ `if (transitionsWithAnimations)` null guard: std::map::operator[]
+			// default-constructs a null IVector when the key is absent, which the C++ path then skips.
+			if (_transitionsWithAnimationsMap.TryGetValue(_transitionsBatch, out var transitionsWithAnimations))
+			{
+				transitionsWithAnimations.Add(transition);
+			}
 		}
 
 		// To ensure proper VirtualizationInfo ordering, we still need to raise TransitionCompleted in a
