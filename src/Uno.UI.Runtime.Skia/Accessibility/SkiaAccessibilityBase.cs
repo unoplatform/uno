@@ -135,10 +135,12 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 			// Raise automatic property changes (IsOffscreen, IsEnabled, Name, ItemStatus)
 			// so accessibility clients get notified when elements move on/off screen.
+			// Use CachedAutomationPeer to avoid creating peers eagerly on every layout pass,
+			// which would prevent elements from being garbage collected.
 			if (visual is ContainerVisual containerVisual
 				&& containerVisual.Owner?.Target is UIElement owner)
 			{
-				owner.GetOrCreateAutomationPeer()?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+				owner.CachedAutomationPeer?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
 			}
 		}
 	}
