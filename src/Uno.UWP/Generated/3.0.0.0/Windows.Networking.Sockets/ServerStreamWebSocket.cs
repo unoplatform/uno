@@ -43,11 +43,6 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.Information.get
-		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.InputStream.get
-		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.OutputStream.get
-		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.Closed.add
-		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.Closed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Close(ushort code, string reason)
@@ -55,6 +50,8 @@ namespace Windows.Networking.Sockets
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ServerStreamWebSocket", "void ServerStreamWebSocket.Close(ushort code, string reason)");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.Closed.add
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.Closed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -62,6 +59,9 @@ namespace Windows.Networking.Sockets
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ServerStreamWebSocket", "void ServerStreamWebSocket.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.Information.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.InputStream.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.OutputStream.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.Sockets.ServerStreamWebSocket, global::Windows.Networking.Sockets.WebSocketClosedEventArgs> Closed

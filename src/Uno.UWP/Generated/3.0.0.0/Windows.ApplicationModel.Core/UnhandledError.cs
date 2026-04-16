@@ -23,7 +23,6 @@ namespace Windows.ApplicationModel.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Core.UnhandledError.Handled.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Propagate()
@@ -31,5 +30,6 @@ namespace Windows.ApplicationModel.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.UnhandledError", "void UnhandledError.Propagate()");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Core.UnhandledError.Handled.get
 	}
 }

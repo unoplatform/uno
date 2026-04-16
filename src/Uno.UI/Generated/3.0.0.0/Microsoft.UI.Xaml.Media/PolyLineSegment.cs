@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class PolyLineSegment : global::Microsoft.UI.Xaml.Media.PathSegment
 	{
-		// Skipping already declared property Points
 		// Skipping already declared property PointsProperty
+		// Skipping already declared property Points
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PolyLineSegment.PolyLineSegment()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.PolyLineSegment()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.PointsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.Points.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.Points.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.PointsProperty.get
 	}
 }

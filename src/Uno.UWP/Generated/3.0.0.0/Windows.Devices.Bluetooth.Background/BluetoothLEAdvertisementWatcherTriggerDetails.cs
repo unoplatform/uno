@@ -43,8 +43,8 @@ namespace Windows.Devices.Bluetooth.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementWatcherTriggerDetails.Error.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementWatcherTriggerDetails.Advertisements.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementWatcherTriggerDetails.Error.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementWatcherTriggerDetails.SignalStrengthFilter.get
 	}
 }

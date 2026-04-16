@@ -15,15 +15,29 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ProfileName
+		public bool AllowHostInputProcessing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ControllerOptions.ProfileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ControllerOptions.ProfileName");
+				throw new global::System.NotImplementedException("The member bool CoreWebView2ControllerOptions.AllowHostInputProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ControllerOptions.AllowHostInputProcessing");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "string CoreWebView2ControllerOptions.ProfileName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "bool CoreWebView2ControllerOptions.AllowHostInputProcessing");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color DefaultBackgroundColor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color CoreWebView2ControllerOptions.DefaultBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20CoreWebView2ControllerOptions.DefaultBackgroundColor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "Color CoreWebView2ControllerOptions.DefaultBackgroundColor");
 			}
 		}
 #endif
@@ -43,6 +57,20 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ProfileName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CoreWebView2ControllerOptions.ProfileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ControllerOptions.ProfileName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "string CoreWebView2ControllerOptions.ProfileName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ScriptLocale
 		{
 			get
@@ -55,11 +83,15 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ScriptLocale.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ScriptLocale.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ProfileName.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ProfileName.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.AllowHostInputProcessing.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.AllowHostInputProcessing.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.DefaultBackgroundColor.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.DefaultBackgroundColor.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.IsInPrivateModeEnabled.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.IsInPrivateModeEnabled.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ProfileName.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ProfileName.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ScriptLocale.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ScriptLocale.set
 	}
 }

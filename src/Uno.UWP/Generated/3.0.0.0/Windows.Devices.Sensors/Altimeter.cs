@@ -15,20 +15,6 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint ReportInterval
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint Altimeter.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Altimeter.ReportInterval");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Altimeter", "uint Altimeter.ReportInterval");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DeviceId
 		{
 			get
@@ -39,11 +25,35 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint MaxBatchSize
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint Altimeter.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Altimeter.MaxBatchSize");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint MinimumReportInterval
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member uint Altimeter.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Altimeter.MinimumReportInterval");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint ReportInterval
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint Altimeter.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Altimeter.ReportInterval");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Altimeter", "uint Altimeter.ReportInterval");
 			}
 		}
 #endif
@@ -63,12 +73,9 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint MaxBatchSize
+		public static global::Windows.Devices.Sensors.Altimeter GetDefault()
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint Altimeter.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Altimeter.MaxBatchSize");
-			}
+			throw new global::System.NotImplementedException("The member Altimeter Altimeter.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Altimeter%20Altimeter.GetDefault%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -78,22 +85,15 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member AltimeterReading Altimeter.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AltimeterReading%20Altimeter.GetCurrentReading%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.DeviceId.get
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.MinimumReportInterval.get
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.ReportInterval.set
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.ReportInterval.get
 		// Forced skipping of method Windows.Devices.Sensors.Altimeter.ReadingChanged.add
 		// Forced skipping of method Windows.Devices.Sensors.Altimeter.ReadingChanged.remove
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.ReportLatency.set
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.ReportLatency.get
+		// Forced skipping of method Windows.Devices.Sensors.Altimeter.DeviceId.get
 		// Forced skipping of method Windows.Devices.Sensors.Altimeter.MaxBatchSize.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.Sensors.Altimeter GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member Altimeter Altimeter.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Altimeter%20Altimeter.GetDefault%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Sensors.Altimeter.MinimumReportInterval.get
+		// Forced skipping of method Windows.Devices.Sensors.Altimeter.ReportInterval.get
+		// Forced skipping of method Windows.Devices.Sensors.Altimeter.ReportInterval.set
+		// Forced skipping of method Windows.Devices.Sensors.Altimeter.ReportLatency.get
+		// Forced skipping of method Windows.Devices.Sensors.Altimeter.ReportLatency.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Altimeter, global::Windows.Devices.Sensors.AltimeterReadingChangedEventArgs> ReadingChanged

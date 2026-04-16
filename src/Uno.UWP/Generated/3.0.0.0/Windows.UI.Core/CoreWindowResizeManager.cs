@@ -29,19 +29,19 @@ namespace Windows.UI.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void NotifyLayoutCompleted()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowResizeManager", "void CoreWindowResizeManager.NotifyLayoutCompleted()");
-		}
-#endif
-		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.ShouldWaitForLayoutCompletion.set
-		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.ShouldWaitForLayoutCompletion.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Core.CoreWindowResizeManager GetForCurrentView()
 		{
 			throw new global::System.NotImplementedException("The member CoreWindowResizeManager CoreWindowResizeManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWindowResizeManager%20CoreWindowResizeManager.GetForCurrentView%28%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void NotifyLayoutCompleted()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowResizeManager", "void CoreWindowResizeManager.NotifyLayoutCompleted()");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.ShouldWaitForLayoutCompletion.get
+		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.ShouldWaitForLayoutCompletion.set
 	}
 }

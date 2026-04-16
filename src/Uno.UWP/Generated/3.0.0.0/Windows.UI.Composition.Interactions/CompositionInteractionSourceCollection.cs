@@ -6,7 +6,7 @@ namespace Windows.UI.Composition.Interactions
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CompositionInteractionSourceCollection : global::Windows.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.ICompositionInteractionSource>
+	public partial class CompositionInteractionSourceCollection : global::Windows.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.ICompositionInteractionSource>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal CompositionInteractionSourceCollection()
@@ -23,7 +23,6 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.Count.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::Windows.UI.Composition.Interactions.ICompositionInteractionSource value)
@@ -45,16 +44,16 @@ namespace Windows.UI.Composition.Interactions
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "void CompositionInteractionSourceCollection.RemoveAll()");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.First()
-		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Composition.Interactions.ICompositionInteractionSource>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.UI.Composition.Interactions.ICompositionInteractionSource>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Composition.Interactions.ICompositionInteractionSource> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<ICompositionInteractionSource> CompositionInteractionSourceCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CICompositionInteractionSource%3E%20CompositionInteractionSourceCollection.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.Count.get
+		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Composition.Interactions.ICompositionInteractionSource>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

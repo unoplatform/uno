@@ -43,9 +43,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.SupportedModes.get
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.Mode.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Configure(global::Windows.Media.Devices.AdvancedPhotoCaptureSettings settings)
@@ -53,5 +50,8 @@ namespace Windows.Media.Devices
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AdvancedPhotoControl", "void AdvancedPhotoControl.Configure(AdvancedPhotoCaptureSettings settings)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.Mode.get
+		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.Supported.get
+		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.SupportedModes.get
 	}
 }

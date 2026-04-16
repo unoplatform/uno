@@ -8,11 +8,7 @@ namespace Windows.Storage.Pickers
 #endif
 	public partial class FolderPicker
 	{
-		// Skipping already declared property ViewMode
-		// Skipping already declared property SuggestedStartLocation
-		// Skipping already declared property SettingsIdentifier
 		// Skipping already declared property CommitButtonText
-		// Skipping already declared property FileTypeFilter
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Collections.ValueSet ContinuationData
@@ -23,6 +19,9 @@ namespace Windows.Storage.Pickers
 			}
 		}
 #endif
+		// Skipping already declared property FileTypeFilter
+		// Skipping already declared property SettingsIdentifier
+		// Skipping already declared property SuggestedStartLocation
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.User User
@@ -33,33 +32,9 @@ namespace Windows.Storage.Pickers
 			}
 		}
 #endif
+		// Skipping already declared property ViewMode
 		// Skipping already declared method Windows.Storage.Pickers.FolderPicker.FolderPicker()
 		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.FolderPicker()
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.ContinuationData.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void PickFolderAndContinue()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FolderPicker", "void FolderPicker.PickFolderAndContinue()");
-		}
-#endif
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.ViewMode.get
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.ViewMode.set
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.SettingsIdentifier.get
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.SettingsIdentifier.set
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.SuggestedStartLocation.get
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.SuggestedStartLocation.set
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.CommitButtonText.get
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.CommitButtonText.set
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.FileTypeFilter.get
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> PickSingleFolderAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> FolderPicker.PickSingleFolderAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20FolderPicker.PickSingleFolderAsync%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.User.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Pickers.FolderPicker CreateForUser(global::Windows.System.User user)
@@ -67,5 +42,30 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotImplementedException("The member FolderPicker FolderPicker.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FolderPicker%20FolderPicker.CreateForUser%28User%20user%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void PickFolderAndContinue()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FolderPicker", "void FolderPicker.PickFolderAndContinue()");
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> PickSingleFolderAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> FolderPicker.PickSingleFolderAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20FolderPicker.PickSingleFolderAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.CommitButtonText.get
+		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.CommitButtonText.set
+		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.ContinuationData.get
+		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.FileTypeFilter.get
+		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.SettingsIdentifier.get
+		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.SettingsIdentifier.set
+		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.SuggestedStartLocation.get
+		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.SuggestedStartLocation.set
+		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.User.get
+		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.ViewMode.get
+		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.ViewMode.set
 	}
 }

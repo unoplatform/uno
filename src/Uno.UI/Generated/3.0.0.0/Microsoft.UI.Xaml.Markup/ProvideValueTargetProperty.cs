@@ -13,8 +13,8 @@ namespace Microsoft.UI.Xaml.Markup
 		// Skipping already declared property Type
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.ProvideValueTargetProperty()
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.ProvideValueTargetProperty()
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.DeclaringType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.Name.get
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.Type.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty.DeclaringType.get
 	}
 }

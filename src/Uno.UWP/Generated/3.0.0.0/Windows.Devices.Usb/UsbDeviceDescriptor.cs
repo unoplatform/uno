@@ -73,11 +73,11 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.BcdDeviceRevision.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.BcdUsb.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.MaxPacketSize0.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.VendorId.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.ProductId.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.BcdDeviceRevision.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.NumberOfConfigurations.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.ProductId.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.VendorId.get
 	}
 }

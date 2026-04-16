@@ -8,27 +8,27 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class Page : global::Microsoft.UI.Xaml.Controls.UserControl
 	{
-		// Skipping already declared property TopAppBar
-		// Skipping already declared property NavigationCacheMode
-		// Skipping already declared property BottomAppBar
-		// Skipping already declared property Frame
 		// Skipping already declared property BottomAppBarProperty
 		// Skipping already declared property FrameProperty
 		// Skipping already declared property TopAppBarProperty
+		// Skipping already declared property BottomAppBar
+		// Skipping already declared property Frame
+		// Skipping already declared property NavigationCacheMode
+		// Skipping already declared property TopAppBar
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Page.Page()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.Page()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.BottomAppBarProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.FrameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.TopAppBarProperty.get
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Page.OnNavigatedFrom(Microsoft.UI.Xaml.Navigation.NavigationEventArgs)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Page.OnNavigatedTo(Microsoft.UI.Xaml.Navigation.NavigationEventArgs)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Page.OnNavigatingFrom(Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.BottomAppBar.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.BottomAppBar.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.Frame.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.NavigationCacheMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.NavigationCacheMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.TopAppBar.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.TopAppBar.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.BottomAppBar.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.BottomAppBar.set
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Page.OnNavigatedFrom(Microsoft.UI.Xaml.Navigation.NavigationEventArgs)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Page.OnNavigatedTo(Microsoft.UI.Xaml.Navigation.NavigationEventArgs)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Page.OnNavigatingFrom(Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.FrameProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.TopAppBarProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.BottomAppBarProperty.get
 	}
 }

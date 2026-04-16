@@ -15,6 +15,16 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration Configuration
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ChatMessageTransportConfiguration ChatMessageTransport.Configuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatMessageTransportConfiguration%20ChatMessageTransport.Configuration");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsActive
 		{
 			get
@@ -55,16 +65,6 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration Configuration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ChatMessageTransportConfiguration ChatMessageTransport.Configuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatMessageTransportConfiguration%20ChatMessageTransport.Configuration");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Chat.ChatMessageTransportKind TransportKind
 		{
 			get
@@ -73,10 +73,6 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransport.IsAppSetAsNotificationProvider.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransport.IsActive.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransport.TransportFriendlyName.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransport.TransportId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RequestSetAsNotificationProviderAsync()
@@ -85,6 +81,10 @@ namespace Windows.ApplicationModel.Chat
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransport.Configuration.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransport.IsActive.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransport.IsAppSetAsNotificationProvider.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransport.TransportFriendlyName.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransport.TransportId.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageTransport.TransportKind.get
 	}
 }

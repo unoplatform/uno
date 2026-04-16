@@ -23,7 +23,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.SupportedPins.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.NetworkOperators.MobileBroadbandPin GetPin(global::Windows.Networking.NetworkOperators.MobileBroadbandPinType pinType)
@@ -31,5 +30,6 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member MobileBroadbandPin MobileBroadbandPinManager.GetPin(MobileBroadbandPinType pinType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandPin%20MobileBroadbandPinManager.GetPin%28MobileBroadbandPinType%20pinType%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.SupportedPins.get
 	}
 }

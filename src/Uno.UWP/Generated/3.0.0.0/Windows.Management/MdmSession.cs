@@ -53,10 +53,6 @@ namespace Windows.Management
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.MdmSession.Alerts.get
-		// Forced skipping of method Windows.Management.MdmSession.ExtendedError.get
-		// Forced skipping of method Windows.Management.MdmSession.Id.get
-		// Forced skipping of method Windows.Management.MdmSession.State.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction AttachAsync()
@@ -85,5 +81,9 @@ namespace Windows.Management
 			throw new global::System.NotImplementedException("The member IAsyncAction MdmSession.StartAsync(IEnumerable<MdmAlert> alerts) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MdmSession.StartAsync%28IEnumerable%3CMdmAlert%3E%20alerts%29");
 		}
 #endif
+		// Forced skipping of method Windows.Management.MdmSession.Alerts.get
+		// Forced skipping of method Windows.Management.MdmSession.ExtendedError.get
+		// Forced skipping of method Windows.Management.MdmSession.Id.get
+		// Forced skipping of method Windows.Management.MdmSession.State.get
 	}
 }

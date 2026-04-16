@@ -55,16 +55,6 @@ namespace Windows.Media.Capture
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Width
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint MediaCaptureVideoProfileMediaDescription.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MediaCaptureVideoProfileMediaDescription.Width");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, object> Properties
 		{
 			get
@@ -83,12 +73,22 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.Width.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.Height.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint Width
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint MediaCaptureVideoProfileMediaDescription.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MediaCaptureVideoProfileMediaDescription.Width");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.FrameRate.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.IsVariablePhotoSequenceSupported.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.Height.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.IsHdrVideoSupported.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.Subtype.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.IsVariablePhotoSequenceSupported.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.Properties.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.Subtype.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.Width.get
 	}
 }

@@ -6,11 +6,12 @@ namespace Microsoft.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CompositionEffectSourceParameter
+	public partial class CompositionEffectSourceParameter : global::Windows.Graphics.Effects.IGraphicsEffectSource
 	{
 		// Skipping already declared property Name
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.Name.get
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEffectSourceParameter.CompositionEffectSourceParameter(string)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.CompositionEffectSourceParameter(string)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.Name.get
+		// Processing: Windows.Graphics.Effects.IGraphicsEffectSource
 	}
 }

@@ -100,14 +100,6 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member Certificate CoreWebView2ClientCertificate.ToCertificate() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20CoreWebView2ClientCertificate.ToCertificate%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.Subject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.Issuer.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.ValidFrom.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.ValidTo.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.DerEncodedSerialNumber.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.DisplayName.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.PemEncodedIssuerCertificateChain.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.Kind.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ToPemEncoding()
@@ -115,5 +107,13 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member string CoreWebView2ClientCertificate.ToPemEncoding() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ClientCertificate.ToPemEncoding%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.DerEncodedSerialNumber.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.DisplayName.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.Issuer.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.Kind.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.PemEncodedIssuerCertificateChain.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.Subject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.ValidFrom.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.ValidTo.get
 	}
 }

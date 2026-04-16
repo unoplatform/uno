@@ -33,15 +33,6 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.AlgorithmName.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.BlockLength.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Cryptography.Core.CryptographicKey CreateSymmetricKey(global::Windows.Storage.Streams.IBuffer keyMaterial)
-		{
-			throw new global::System.NotImplementedException("The member CryptographicKey SymmetricKeyAlgorithmProvider.CreateSymmetricKey(IBuffer keyMaterial) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicKey%20SymmetricKeyAlgorithmProvider.CreateSymmetricKey%28IBuffer%20keyMaterial%29");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider OpenAlgorithm(string algorithm)
@@ -49,5 +40,14 @@ namespace Windows.Security.Cryptography.Core
 			throw new global::System.NotImplementedException("The member SymmetricKeyAlgorithmProvider SymmetricKeyAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SymmetricKeyAlgorithmProvider%20SymmetricKeyAlgorithmProvider.OpenAlgorithm%28string%20algorithm%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Cryptography.Core.CryptographicKey CreateSymmetricKey(global::Windows.Storage.Streams.IBuffer keyMaterial)
+		{
+			throw new global::System.NotImplementedException("The member CryptographicKey SymmetricKeyAlgorithmProvider.CreateSymmetricKey(IBuffer keyMaterial) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicKey%20SymmetricKeyAlgorithmProvider.CreateSymmetricKey%28IBuffer%20keyMaterial%29");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.AlgorithmName.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricKeyAlgorithmProvider.BlockLength.get
 	}
 }

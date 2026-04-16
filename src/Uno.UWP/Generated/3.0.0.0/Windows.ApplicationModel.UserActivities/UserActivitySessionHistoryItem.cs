@@ -43,8 +43,8 @@ namespace Windows.ApplicationModel.UserActivities
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem.UserActivity.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem.StartTime.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem.EndTime.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem.StartTime.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem.UserActivity.get
 	}
 }

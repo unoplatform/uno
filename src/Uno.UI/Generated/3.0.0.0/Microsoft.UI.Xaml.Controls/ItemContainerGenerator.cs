@@ -13,8 +13,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainerGenerator.ItemsChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainerGenerator.ItemsChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object ItemFromContainer(global::Microsoft.UI.Xaml.DependencyObject container)
@@ -113,6 +111,8 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemContainerGenerator", "void ItemContainerGenerator.Recycle(GeneratorPosition position, int count)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainerGenerator.ItemsChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainerGenerator.ItemsChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventHandler ItemsChanged

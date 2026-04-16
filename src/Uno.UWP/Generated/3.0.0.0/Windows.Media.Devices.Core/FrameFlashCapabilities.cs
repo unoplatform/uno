@@ -43,8 +43,8 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashCapabilities.Supported.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashCapabilities.RedEyeReductionSupported.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashCapabilities.PowerSupported.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashCapabilities.RedEyeReductionSupported.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashCapabilities.Supported.get
 	}
 }

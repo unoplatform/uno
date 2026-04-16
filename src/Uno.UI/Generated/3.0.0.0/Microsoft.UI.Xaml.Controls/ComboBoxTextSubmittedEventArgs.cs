@@ -10,8 +10,8 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property Text
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs.Text.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs.Text.get
 	}
 }

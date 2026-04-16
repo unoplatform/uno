@@ -9,21 +9,16 @@ namespace Microsoft.UI.Composition
 	public partial class ScalarNaturalMotionAnimation : global::Microsoft.UI.Composition.NaturalMotionAnimation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal ScalarNaturalMotionAnimation()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float InitialVelocity
+		public float? FinalValue
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ScalarNaturalMotionAnimation.InitialVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScalarNaturalMotionAnimation.InitialVelocity");
+				throw new global::System.NotImplementedException("The member float? ScalarNaturalMotionAnimation.FinalValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%3F%20ScalarNaturalMotionAnimation.FinalValue");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "float ScalarNaturalMotionAnimation.InitialVelocity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "float? ScalarNaturalMotionAnimation.FinalValue");
 			}
 		}
 #endif
@@ -43,23 +38,23 @@ namespace Microsoft.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float? FinalValue
+		public float InitialVelocity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float? ScalarNaturalMotionAnimation.FinalValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%3F%20ScalarNaturalMotionAnimation.FinalValue");
+				throw new global::System.NotImplementedException("The member float ScalarNaturalMotionAnimation.InitialVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScalarNaturalMotionAnimation.InitialVelocity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "float? ScalarNaturalMotionAnimation.FinalValue");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ScalarNaturalMotionAnimation", "float ScalarNaturalMotionAnimation.InitialVelocity");
 			}
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.FinalValue.get
-		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.InitialVelocity.set
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.FinalValue.set
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.InitialValue.get
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.InitialValue.set
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.InitialVelocity.get
+		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.InitialVelocity.set
 	}
 }

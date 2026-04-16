@@ -8,20 +8,17 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class Brush : global::Microsoft.UI.Xaml.DependencyObject, global::Microsoft.UI.Composition.IAnimationObject
 	{
-		// Skipping already declared property Transform
-		// Skipping already declared property RelativeTransform
-		// Skipping already declared property Opacity
 		// Skipping already declared property OpacityProperty
 		// Skipping already declared property RelativeTransformProperty
 		// Skipping already declared property TransformProperty
+		// Skipping already declared property Opacity
+		// Skipping already declared property RelativeTransform
+		// Skipping already declared property Transform
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Brush.Brush()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.Brush()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.Opacity.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.Opacity.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.Transform.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.Transform.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.RelativeTransform.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.RelativeTransform.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.OpacityProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.RelativeTransformProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.TransformProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void PopulatePropertyInfoOverride(string propertyName, global::Microsoft.UI.Composition.AnimationPropertyInfo animationPropertyInfo)
@@ -36,9 +33,12 @@ namespace Microsoft.UI.Xaml.Media
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Brush", "void Brush.PopulatePropertyInfo(string propertyName, AnimationPropertyInfo propertyInfo)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.OpacityProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.TransformProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.RelativeTransformProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.Opacity.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.Opacity.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.RelativeTransform.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.RelativeTransform.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.Transform.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.Transform.set
 		// Processing: Microsoft.UI.Composition.IAnimationObject
 	}
 }

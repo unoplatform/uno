@@ -23,7 +23,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -48,6 +47,7 @@ namespace Windows.Networking.NetworkOperators
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimWatcher.Stopped.remove
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimWatcher.Updated.add
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimWatcher.Updated.remove
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.NetworkOperators.ESimWatcher, global::Windows.Networking.NetworkOperators.ESimAddedEventArgs> Added

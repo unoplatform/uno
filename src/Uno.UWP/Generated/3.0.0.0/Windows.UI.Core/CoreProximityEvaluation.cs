@@ -10,6 +10,14 @@ namespace Windows.UI.Core
 	{
 		// Forced skipping of method Windows.UI.Core.CoreProximityEvaluation.CoreProximityEvaluation()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public CoreProximityEvaluation(int _Score, global::Windows.Foundation.Point _AdjustedPoint)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreProximityEvaluation", "CoreProximityEvaluation.CoreProximityEvaluation(int _Score, Point _AdjustedPoint)");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Core.CoreProximityEvaluation.CoreProximityEvaluation(int, Windows.Foundation.Point)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int Score;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

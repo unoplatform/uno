@@ -66,7 +66,7 @@ internal static class VisualExtensions
 		{
 			if (v is ShapeVisual sv)
 			{
-				return sv.ViewBox?.GetRect().ToString() ?? "null";
+				return sv.ViewBox?.GetRect().ToString(global::System.Globalization.CultureInfo.InvariantCulture) ?? "null";
 			}
 
 			return "N/A";

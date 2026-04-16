@@ -103,15 +103,6 @@ namespace Windows.Graphics.Display
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.CurrentAdvancedColorKind.get
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.RedPrimary.get
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.GreenPrimary.get
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.BluePrimary.get
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.WhitePoint.get
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.MaxLuminanceInNits.get
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.MinLuminanceInNits.get
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.MaxAverageFullFrameLuminanceInNits.get
-		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.SdrWhiteLevelInNits.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsHdrMetadataFormatCurrentlySupported(global::Windows.Graphics.Display.HdrMetadataFormat format)
@@ -126,5 +117,14 @@ namespace Windows.Graphics.Display
 			throw new global::System.NotImplementedException("The member bool AdvancedColorInfo.IsAdvancedColorKindAvailable(AdvancedColorKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AdvancedColorInfo.IsAdvancedColorKindAvailable%28AdvancedColorKind%20kind%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.BluePrimary.get
+		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.CurrentAdvancedColorKind.get
+		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.GreenPrimary.get
+		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.MaxAverageFullFrameLuminanceInNits.get
+		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.MaxLuminanceInNits.get
+		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.MinLuminanceInNits.get
+		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.RedPrimary.get
+		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.SdrWhiteLevelInNits.get
+		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.WhitePoint.get
 	}
 }

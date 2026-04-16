@@ -8,9 +8,6 @@ namespace Windows.ApplicationModel.Calls
 #endif
 	public partial class PhoneCallHistoryEntryAddress
 	{
-		// Skipping already declared property RawAddressKind
-		// Skipping already declared property RawAddress
-		// Skipping already declared property DisplayName
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ContactId
@@ -25,10 +22,13 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Skipping already declared method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.PhoneCallHistoryEntryAddress(string, Windows.ApplicationModel.Calls.PhoneCallHistoryEntryRawAddressKind)
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.PhoneCallHistoryEntryAddress(string, Windows.ApplicationModel.Calls.PhoneCallHistoryEntryRawAddressKind)
+		// Skipping already declared property DisplayName
+		// Skipping already declared property RawAddress
+		// Skipping already declared property RawAddressKind
 		// Skipping already declared method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.PhoneCallHistoryEntryAddress()
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.PhoneCallHistoryEntryAddress()
+		// Skipping already declared method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.PhoneCallHistoryEntryAddress(string, Windows.ApplicationModel.Calls.PhoneCallHistoryEntryRawAddressKind)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.PhoneCallHistoryEntryAddress(string, Windows.ApplicationModel.Calls.PhoneCallHistoryEntryRawAddressKind)
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.ContactId.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.ContactId.set
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryAddress.DisplayName.get

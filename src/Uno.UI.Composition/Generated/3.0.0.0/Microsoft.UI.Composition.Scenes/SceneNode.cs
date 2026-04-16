@@ -53,17 +53,6 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNode.Transform.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.Scenes.SceneComponent FindFirstComponentOfType(global::Microsoft.UI.Composition.Scenes.SceneComponentType value)
-		{
-			throw new global::System.NotImplementedException("The member SceneComponent SceneNode.FindFirstComponentOfType(SceneComponentType value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneComponent%20SceneNode.FindFirstComponentOfType%28SceneComponentType%20value%29");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNode.Components.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNode.Parent.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNode.Children.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneNode Create(global::Microsoft.UI.Composition.Compositor compositor)
@@ -71,5 +60,16 @@ namespace Microsoft.UI.Composition.Scenes
 			throw new global::System.NotImplementedException("The member SceneNode SceneNode.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneNode%20SceneNode.Create%28Compositor%20compositor%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Composition.Scenes.SceneComponent FindFirstComponentOfType(global::Microsoft.UI.Composition.Scenes.SceneComponentType value)
+		{
+			throw new global::System.NotImplementedException("The member SceneComponent SceneNode.FindFirstComponentOfType(SceneComponentType value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneComponent%20SceneNode.FindFirstComponentOfType%28SceneComponentType%20value%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNode.Children.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNode.Components.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNode.Parent.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNode.Transform.get
 	}
 }

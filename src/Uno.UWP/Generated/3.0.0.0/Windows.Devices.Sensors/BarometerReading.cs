@@ -8,13 +8,13 @@ namespace Windows.Devices.Sensors
 #endif
 	public partial class BarometerReading
 	{
-		// Skipping already declared property StationPressureInHectopascals
-		// Skipping already declared property Timestamp
 		// Skipping already declared property PerformanceCount
 		// Skipping already declared property Properties
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.StationPressureInHectopascals.get
+		// Skipping already declared property StationPressureInHectopascals
+		// Skipping already declared property Timestamp
 		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.Properties.get
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.StationPressureInHectopascals.get
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.Timestamp.get
 	}
 }

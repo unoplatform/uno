@@ -15,20 +15,6 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaProperties.MediaPixelFormat PixelFormat
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaPixelFormat PhotoConfirmationControl.PixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPixelFormat%20PhotoConfirmationControl.PixelFormat");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.PhotoConfirmationControl", "MediaPixelFormat PhotoConfirmationControl.PixelFormat");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Enabled
 		{
 			get
@@ -43,6 +29,20 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.MediaProperties.MediaPixelFormat PixelFormat
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaPixelFormat PhotoConfirmationControl.PixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPixelFormat%20PhotoConfirmationControl.PixelFormat");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.PhotoConfirmationControl", "MediaPixelFormat PhotoConfirmationControl.PixelFormat");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Supported
 		{
 			get
@@ -51,10 +51,10 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.Supported.get
 		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.Enabled.get
 		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.Enabled.set
 		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.PixelFormat.get
 		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.PixelFormat.set
+		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.Supported.get
 	}
 }

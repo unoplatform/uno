@@ -23,7 +23,6 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.ConnectionProfile.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -31,6 +30,7 @@ namespace Windows.Networking.Connectivity
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionSession", "void ConnectionSession.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.ConnectionProfile.get
 		// Processing: System.IDisposable
 	}
 }

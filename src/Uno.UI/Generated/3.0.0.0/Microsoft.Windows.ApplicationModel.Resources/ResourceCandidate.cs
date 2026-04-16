@@ -64,9 +64,9 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		}
 #endif
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.ResourceCandidate(byte[])
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.ValueAsString.get
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.ValueAsBytes.get
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.Kind.get
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.QualifierValues.get
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.ValueAsBytes.get
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate.ValueAsString.get
 	}
 }

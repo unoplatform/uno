@@ -39,10 +39,10 @@ namespace Windows.System.RemoteSystems
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.RemoteSystemAdded.add
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.RemoteSystemAdded.remove
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.RemoteSystemUpdated.add
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.RemoteSystemUpdated.remove
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.RemoteSystemRemoved.add
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.RemoteSystemRemoved.remove
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.RemoteSystemUpdated.add
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.RemoteSystemUpdated.remove
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.EnumerationCompleted.add
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.EnumerationCompleted.remove
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcher.ErrorOccurred.add

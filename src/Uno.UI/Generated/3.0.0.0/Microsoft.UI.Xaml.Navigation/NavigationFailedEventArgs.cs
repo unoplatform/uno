@@ -8,8 +8,8 @@ namespace Microsoft.UI.Xaml.Navigation
 #endif
 	public partial class NavigationFailedEventArgs
 	{
-		// Skipping already declared property Handled
 		// Skipping already declared property Exception
+		// Skipping already declared property Handled
 		// Skipping already declared property SourcePageType
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.Exception.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs.Handled.get

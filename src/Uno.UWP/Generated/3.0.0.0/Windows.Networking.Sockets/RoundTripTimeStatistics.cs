@@ -10,6 +10,14 @@ namespace Windows.Networking.Sockets
 	{
 		// Forced skipping of method Windows.Networking.Sockets.RoundTripTimeStatistics.RoundTripTimeStatistics()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public RoundTripTimeStatistics(uint _Variance, uint _Max, uint _Min, uint _Sum)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.RoundTripTimeStatistics", "RoundTripTimeStatistics.RoundTripTimeStatistics(uint _Variance, uint _Max, uint _Min, uint _Sum)");
+		}
+#endif
+		// Forced skipping of method Windows.Networking.Sockets.RoundTripTimeStatistics.RoundTripTimeStatistics(uint, uint, uint, uint)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint Variance;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

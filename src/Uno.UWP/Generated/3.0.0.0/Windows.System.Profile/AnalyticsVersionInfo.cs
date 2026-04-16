@@ -10,18 +10,7 @@ namespace Windows.System.Profile
 	{
 		// Skipping already declared property DeviceFamily
 		// Skipping already declared property DeviceFamilyVersion
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ProductName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AnalyticsVersionInfo.ProductName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AnalyticsVersionInfo.ProductName");
-			}
-		}
-#endif
 		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.DeviceFamily.get
 		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.DeviceFamilyVersion.get
-		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.ProductName.get
 	}
 }

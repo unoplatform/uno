@@ -73,11 +73,11 @@ namespace Windows.System.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.ReadOperationCount.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.WriteOperationCount.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.OtherOperationCount.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.BytesReadCount.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.BytesWrittenCount.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.OtherBytesCount.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.OtherOperationCount.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.ReadOperationCount.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.WriteOperationCount.get
 	}
 }

@@ -15,6 +15,16 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Collections.ValueSet ContinuationData
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ValueSet WebAuthenticationBrokerContinuationEventArgs.ContinuationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20WebAuthenticationBrokerContinuationEventArgs.ContinuationData");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -45,16 +55,6 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Collections.ValueSet ContinuationData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ValueSet WebAuthenticationBrokerContinuationEventArgs.ContinuationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20WebAuthenticationBrokerContinuationEventArgs.ContinuationData");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Authentication.Web.WebAuthenticationResult WebAuthenticationResult
 		{
 			get
@@ -63,11 +63,11 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.WebAuthenticationResult.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.ContinuationData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.SplashScreen.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs.WebAuthenticationResult.get
 		// Processing: Windows.ApplicationModel.Activation.IWebAuthenticationBrokerContinuationEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IContinuationActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

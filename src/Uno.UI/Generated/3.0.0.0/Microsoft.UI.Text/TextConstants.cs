@@ -89,12 +89,12 @@ namespace Microsoft.UI.Text
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Text.TextConstants.AutoColor.get
-		// Forced skipping of method Microsoft.UI.Text.TextConstants.MinUnitCount.get
 		// Forced skipping of method Microsoft.UI.Text.TextConstants.MaxUnitCount.get
+		// Forced skipping of method Microsoft.UI.Text.TextConstants.MinUnitCount.get
 		// Forced skipping of method Microsoft.UI.Text.TextConstants.UndefinedColor.get
 		// Forced skipping of method Microsoft.UI.Text.TextConstants.UndefinedFloatValue.get
-		// Forced skipping of method Microsoft.UI.Text.TextConstants.UndefinedInt32Value.get
 		// Forced skipping of method Microsoft.UI.Text.TextConstants.UndefinedFontStretch.get
 		// Forced skipping of method Microsoft.UI.Text.TextConstants.UndefinedFontStyle.get
+		// Forced skipping of method Microsoft.UI.Text.TextConstants.UndefinedInt32Value.get
 	}
 }

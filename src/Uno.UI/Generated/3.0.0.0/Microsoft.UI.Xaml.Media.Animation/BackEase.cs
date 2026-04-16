@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class BackEase : global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase
 	{
-		// Skipping already declared property Amplitude
 		// Skipping already declared property AmplitudeProperty
+		// Skipping already declared property Amplitude
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.BackEase.BackEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.BackEase()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.AmplitudeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.Amplitude.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.Amplitude.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.AmplitudeProperty.get
 	}
 }

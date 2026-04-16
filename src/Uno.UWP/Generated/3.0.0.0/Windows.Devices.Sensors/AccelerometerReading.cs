@@ -38,16 +38,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-#if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset Timestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset AccelerometerReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20AccelerometerReading.Timestamp");
-			}
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan? PerformanceCount
@@ -68,11 +58,21 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.Timestamp.get
+#if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset Timestamp
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DateTimeOffset AccelerometerReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20AccelerometerReading.Timestamp");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.AccelerationX.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.AccelerationY.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.AccelerationZ.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.Properties.get
+		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.Timestamp.get
 	}
 }

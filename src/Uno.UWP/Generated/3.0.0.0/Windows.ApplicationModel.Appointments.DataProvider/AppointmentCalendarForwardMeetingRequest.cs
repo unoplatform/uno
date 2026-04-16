@@ -83,13 +83,6 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.AppointmentCalendarLocalId.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.AppointmentLocalId.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.AppointmentOriginalStartTime.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.Invitees.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.Subject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.ForwardHeader.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.Comment.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
@@ -104,5 +97,12 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendarForwardMeetingRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppointmentCalendarForwardMeetingRequest.ReportFailedAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.AppointmentCalendarLocalId.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.AppointmentLocalId.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.AppointmentOriginalStartTime.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.Comment.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.ForwardHeader.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.Invitees.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarForwardMeetingRequest.Subject.get
 	}
 }

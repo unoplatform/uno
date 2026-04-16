@@ -54,8 +54,8 @@ namespace Windows.ApplicationModel.Store.Preview
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo.HardwareManufacturerId.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo.StoreContentModifierId.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo.ModelName.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo.ManufacturerName.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo.ModelName.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StoreHardwareManufacturerInfo.StoreContentModifierId.get
 	}
 }

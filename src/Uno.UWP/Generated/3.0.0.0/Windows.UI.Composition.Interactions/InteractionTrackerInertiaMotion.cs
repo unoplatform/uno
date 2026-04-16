@@ -15,6 +15,20 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.ExpressionAnimation Condition
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ExpressionAnimation InteractionTrackerInertiaMotion.Condition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExpressionAnimation%20InteractionTrackerInertiaMotion.Condition");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTrackerInertiaMotion", "ExpressionAnimation InteractionTrackerInertiaMotion.Condition");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.ExpressionAnimation Motion
 		{
 			get
@@ -29,28 +43,14 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.ExpressionAnimation Condition
+		public static global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaMotion Create(global::Windows.UI.Composition.Compositor compositor)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ExpressionAnimation InteractionTrackerInertiaMotion.Condition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExpressionAnimation%20InteractionTrackerInertiaMotion.Condition");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTrackerInertiaMotion", "ExpressionAnimation InteractionTrackerInertiaMotion.Condition");
-			}
+			throw new global::System.NotImplementedException("The member InteractionTrackerInertiaMotion InteractionTrackerInertiaMotion.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionTrackerInertiaMotion%20InteractionTrackerInertiaMotion.Create%28Compositor%20compositor%29");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaMotion.Condition.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaMotion.Condition.set
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaMotion.Motion.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaMotion.Motion.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaMotion Create(global::Windows.UI.Composition.Compositor compositor)
-		{
-			throw new global::System.NotImplementedException("The member InteractionTrackerInertiaMotion InteractionTrackerInertiaMotion.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionTrackerInertiaMotion%20InteractionTrackerInertiaMotion.Create%28Compositor%20compositor%29");
-		}
-#endif
 	}
 }

@@ -27,12 +27,6 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.IsInterceptionEnabledWhenInForeground.get
-		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.IsInterceptionEnabledWhenInForeground.set
-		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.KeyDown.add
-		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.KeyDown.remove
-		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.KeyUp.add
-		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.KeyUp.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.KeyboardDeliveryInterceptor GetForCurrentView()
@@ -40,6 +34,12 @@ namespace Windows.UI.Input
 			throw new global::System.NotImplementedException("The member KeyboardDeliveryInterceptor KeyboardDeliveryInterceptor.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyboardDeliveryInterceptor%20KeyboardDeliveryInterceptor.GetForCurrentView%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.KeyDown.add
+		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.KeyDown.remove
+		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.KeyUp.add
+		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.KeyUp.remove
+		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.IsInterceptionEnabledWhenInForeground.get
+		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.IsInterceptionEnabledWhenInForeground.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.KeyboardDeliveryInterceptor, global::Windows.UI.Core.KeyEventArgs> KeyDown

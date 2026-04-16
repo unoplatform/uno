@@ -73,11 +73,11 @@ namespace Windows.Media.Control
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.StartTime.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.EndTime.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.MinSeekTime.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.MaxSeekTime.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.Position.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.LastUpdatedTime.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.MaxSeekTime.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.MinSeekTime.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.Position.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.StartTime.get
 	}
 }

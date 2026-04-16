@@ -28,11 +28,6 @@ namespace Windows.Media.Protection.PlayReady
 			set;
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest.Uri.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest.Uri.set
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest.ResponseCustomData.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest.ChallengeCustomData.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest.ChallengeCustomData.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Foundation.IAsyncAction BeginServiceRequest();
 #endif
@@ -45,5 +40,10 @@ namespace Windows.Media.Protection.PlayReady
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::System.Exception ProcessManualEnablingResponse(byte[] responseBytes);
 #endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest.ChallengeCustomData.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest.ChallengeCustomData.set
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest.ResponseCustomData.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest.Uri.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest.Uri.set
 	}
 }

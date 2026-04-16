@@ -10,20 +10,6 @@ namespace Windows.Security.Cryptography.Certificates
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.HostName ServerDnsName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HostName ChainValidationParameters.ServerDnsName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20ChainValidationParameters.ServerDnsName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainValidationParameters", "HostName ChainValidationParameters.ServerDnsName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Certificates.CertificateChainPolicy CertificateChainPolicy
 		{
 			get
@@ -33,6 +19,20 @@ namespace Windows.Security.Cryptography.Certificates
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainValidationParameters", "CertificateChainPolicy ChainValidationParameters.CertificateChainPolicy");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Networking.HostName ServerDnsName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HostName ChainValidationParameters.ServerDnsName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20ChainValidationParameters.ServerDnsName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainValidationParameters", "HostName ChainValidationParameters.ServerDnsName");
 			}
 		}
 #endif

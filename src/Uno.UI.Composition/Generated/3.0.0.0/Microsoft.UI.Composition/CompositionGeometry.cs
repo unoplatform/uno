@@ -8,14 +8,14 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionGeometry : global::Microsoft.UI.Composition.CompositionObject
 	{
-		// Skipping already declared property TrimStart
-		// Skipping already declared property TrimOffset
 		// Skipping already declared property TrimEnd
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimOffset.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimEnd.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimStart.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimOffset.set
+		// Skipping already declared property TrimOffset
+		// Skipping already declared property TrimStart
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimEnd.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimEnd.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimOffset.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimOffset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimStart.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimStart.set
 	}
 }

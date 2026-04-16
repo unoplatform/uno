@@ -27,8 +27,6 @@ namespace Windows.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneVisual.Root.get
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneVisual.Root.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Composition.Scenes.SceneVisual Create(global::Windows.UI.Composition.Compositor compositor)
@@ -36,5 +34,7 @@ namespace Windows.UI.Composition.Scenes
 			throw new global::System.NotImplementedException("The member SceneVisual SceneVisual.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneVisual%20SceneVisual.Create%28Compositor%20compositor%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneVisual.Root.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneVisual.Root.set
 	}
 }
