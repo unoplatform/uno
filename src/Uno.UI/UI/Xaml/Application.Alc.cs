@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Loader;
 using Microsoft.UI.Xaml.Resources;
 using Uno.Foundation.Logging;
@@ -111,8 +112,8 @@ partial class Application
 	/// Purges Type-keyed caches of entries from non-default (collectible) ALCs.
 	/// Called from <see cref="Window.CloseAlcWindow"/> during ALC teardown.
 	/// </summary>
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "ALC cleanup reflection")]
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup reflection")]
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "ALC cleanup reflection")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup reflection")]
 	internal static void CleanupNonDefaultAlcCaches()
 	{
 		// Remove Application instances registered for non-default ALCs from the CWT.
@@ -178,9 +179,9 @@ partial class Application
 		}
 	}
 
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Diagnostic")]
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Diagnostic")]
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Diagnostic")]
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Diagnostic")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Diagnostic")]
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Diagnostic")]
 	private static void DeepScanForAlcReferences()
 	{
 		var defaultAlc = AssemblyLoadContext.Default;
@@ -249,8 +250,8 @@ partial class Application
 		}
 	}
 
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Diagnostic")]
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Diagnostic")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Diagnostic")]
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Diagnostic")]
 	private static void ScanObject(
 		object obj,
 		string path,
