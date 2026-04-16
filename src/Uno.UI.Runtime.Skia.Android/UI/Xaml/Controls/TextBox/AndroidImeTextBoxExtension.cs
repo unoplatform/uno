@@ -112,7 +112,7 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 		}
 	}
 
-	private void OnCompositionStateChanged(int composingStart, int composingEnd, string? composingText, string fullText)
+	private void OnCompositionStateChanged(int composingStart, int composingEnd, string? composingText, string fullText, bool textChanged)
 	{
 		if (!_sessionActive)
 		{
@@ -124,6 +124,20 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 
 		if (!wasComposing && isNowComposing)
 		{
+			// Don't treat passive autocorrect/spell-check compositions (composing region
+			// set on existing text without any text change) as a real composition session.
+			// Without this filter, the IME setting a composing region on pre-existing text
+			// would set _isComposing=true on the TextBox, causing all subsequent key events
+			// to be swallowed by the IsComposing check in OnKeyDown.
+			if (!textChanged)
+			{
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Ignoring passive composition (no text change): [{composingStart}..{composingEnd}] '{composingText}'");
+				}
+				return;
+			}
+
 			// Transition: Idle → Composing
 			_isComposing = true;
 			_lastComposingStart = composingStart;
