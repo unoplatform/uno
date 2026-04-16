@@ -335,18 +335,18 @@ public partial class InputInjector
 	private void DispatchPointerAdded(PointerEventArgs args)
 	{
 		args.RelativeRoot = _relativeRoot;
-		DispatchPointerAdded(args);
+		_target.InjectPointerAdded(args);
 	}
 
 	private void DispatchPointerUpdated(PointerEventArgs args)
 	{
 		args.RelativeRoot = _relativeRoot;
-		DispatchPointerUpdated(args);
+		_target.InjectPointerUpdated(args);
 	}
 
 	private void DispatchPointerRemoved(PointerEventArgs args)
 	{
 		args.RelativeRoot = _relativeRoot;
-		DispatchPointerRemoved(args);
+		_target.InjectPointerRemoved(args);
 	}
 }

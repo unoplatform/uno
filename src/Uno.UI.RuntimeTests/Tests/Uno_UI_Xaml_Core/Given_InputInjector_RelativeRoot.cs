@@ -58,7 +58,6 @@ public class Given_InputInjector_RelativeRoot
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
-	[Ignore("SIGABRT in SearchDownForTopMostElementAt when the search root is not the VT root. The searchRoot parameter and GetTransform fix are correct but something deeper in the Skia hit-test path (Visual.GetArrangeClipPathInElementCoordinateSpace or element.HitTest) crashes with non-VT-root elements. Needs debugger investigation.")]
 	public async Task When_ClickWithRelativeRoot_Then_HitTestScopedToSubtree()
 	{
 		// Simplest case: a single Border as RelativeRoot, click its center.
@@ -99,7 +98,6 @@ public class Given_InputInjector_RelativeRoot
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
-	[Ignore("Same SearchDownForTopMostElementAt SIGABRT as When_ClickWithRelativeRoot_Then_HitTestScopedToSubtree.")]
 	public async Task When_ClickWithRelativeRoot_Then_NestedChildrenStillHit()
 	{
 		// Verifies that children INSIDE the relative root subtree are still
