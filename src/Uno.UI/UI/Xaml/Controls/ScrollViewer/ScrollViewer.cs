@@ -1693,12 +1693,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (canScrollHorizontally && key is VirtualKey.Left or VirtualKey.Right)
 				{
-					ScrollToHorizontalOffset(newOffset);
+					// WinUI routes keyboard scrolls through ChangeViewWithOptionalAnimation(disableAnimation=FALSE)
+					// so the view animates smoothly to the new offset instead of jumping.
+					ChangeView(newOffset, null, null, disableAnimation: false);
 					args.Handled = !NumericExtensions.AreClose(oldHorizontalOffset, Presenter.TargetHorizontalOffset);
 				}
 				else if (canScrollVertically && key is not (VirtualKey.Left or VirtualKey.Right))
 				{
-					ScrollToVerticalOffset(newOffset);
+					ChangeView(null, newOffset, null, disableAnimation: false);
 					args.Handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
 				}
 
