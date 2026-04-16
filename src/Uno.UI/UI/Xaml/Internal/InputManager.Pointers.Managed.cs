@@ -532,7 +532,9 @@ internal partial class InputManager
 			{
 				case PointerDeviceType.Touch:
 					// For touch we need to raise the PointerExited event on all the part of the tree that is pointer over, not only those considered as stale!
-					var overLeaf = VisualTreeHelper.SearchDownForLeaf(_inputManager.ContentRoot.VisualTree.RootElement, _isOver);
+					var overLeaf = VisualTreeHelper.SearchDownForLeaf(
+						args.RelativeRoot as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement,
+						_isOver);
 					result += Raise(Leave, overLeaf, routedArgs);
 					break;
 
@@ -542,8 +544,11 @@ internal partial class InputManager
 				case PointerDeviceType.Pen when hadCapture && args.CurrentPoint.Properties.IsInRange:
 					if (result.VisualTreeAltered)
 					{
+						// Keep `root` as the real visual-tree root (used for the Branch endpoint).
+						// Scope ONLY the leaf search to RelativeRoot so injected events bypass
+						// design-time overlays without distorting the branch walked by Leave/Enter.
 						var root = _inputManager.ContentRoot.VisualTree.RootElement;
-						overStaleBranch = new(root, VisualTreeHelper.SearchDownForLeaf(root, _isOver));
+						overStaleBranch = new(root, VisualTreeHelper.SearchDownForLeaf(args.RelativeRoot as UIElement ?? root, _isOver));
 					}
 					result += RaiseLeaveEnter(routedArgs, overStaleBranch, ref originalSource, needsNonStaleOriginalSource: false);
 					break;
@@ -924,7 +929,10 @@ internal partial class InputManager
 				throw new InvalidOperationException("The XamlRoot must be properly initialized for hit testing.");
 			}
 
-			return VisualTreeHelper.HitTest(args.CurrentPoint.Position, _inputManager.ContentRoot.XamlRoot, null, isStale, entryPoint, entryLine, reason);
+			return VisualTreeHelper.HitTest(
+				args.CurrentPoint.Position,
+				args.RelativeRoot as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement,
+				null, isStale, entryPoint, entryLine, reason);
 		}
 
 		private delegate void RaisePointerEventArgs(UIElement element, PointerRoutedEventArgs args, BubblingContext ctx);

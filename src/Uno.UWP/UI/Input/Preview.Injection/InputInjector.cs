@@ -2,11 +2,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Windows.Devices.Input;
 using Windows.System;
+using Windows.UI.Core;
 
 namespace Windows.UI.Input.Preview.Injection;
 
@@ -30,9 +32,36 @@ public partial class InputInjector
 	public static InputInjector? TryCreate()
 		=> _inputManager is not null ? new InputInjector(_inputManager) : null;
 
+	/// <summary>
+	/// Creates an <see cref="InputInjector"/> whose injected pointer events carry
+	/// a relative root. The <see cref="InputManager"/> uses that root to scope
+	/// hit-testing, letting automation bypass design-time overlays (e.g. Hot Design)
+	/// to reach the inner application underneath.
+	/// </summary>
+	/// <param name="relativeRoot">
+	/// The UI element that should be used as the hit-test root for every pointer
+	/// event produced by this injector. Typed as <c>object</c> because this package
+	/// cannot reference <c>Microsoft.UI.Xaml.UIElement</c>; the input manager casts
+	/// via <c>as UIElement</c>.
+	/// </param>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	[global::Uno.UnoOnly]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+	public static InputInjector? TryCreate(object relativeRoot)
+	{
+		var injector = TryCreate();
+		if (injector is not null)
+		{
+			injector._relativeRoot = relativeRoot;
+		}
+
+		return injector;
+	}
+
 	private readonly InjectedInputState _mouse = new(PointerDeviceType.Mouse);
 	private (InjectedInputState state, bool isAdded)? _touch;
 	private (InjectedInputState state, bool isAdded)? _pen;
+	private object? _relativeRoot;
 
 	/// <summary>
 	/// Gets the current state of the mouse pointer
@@ -73,7 +102,7 @@ public partial class InputInjector
 				}
 			};
 
-			_target.InjectPointerRemoved(cancel.ToEventArgs(_touch.Value.state));
+			DispatchPointerRemoved(cancel.ToEventArgs(_touch.Value.state));
 
 			_touch = null;
 		}
@@ -94,17 +123,17 @@ public partial class InputInjector
 
 			if (_touch is { isAdded: false })
 			{
-				_target.InjectPointerAdded(args);
+				DispatchPointerAdded(args);
 				_touch = (touch, isAdded: true);
 			}
 
 			touch.Update(args);
 
-			_target.InjectPointerUpdated(args);
+			DispatchPointerUpdated(args);
 
 			if (info.PointerInfo.PointerOptions.HasFlag(InjectedInputPointerOptions.PointerUp))
 			{
-				_target.InjectPointerRemoved(args);
+				DispatchPointerRemoved(args);
 				_touch = (touch, isAdded: false);
 			}
 		}
@@ -125,19 +154,19 @@ public partial class InputInjector
 
 			if (_touch is { isAdded: false })
 			{
-				_target.InjectPointerAdded(args);
+				DispatchPointerAdded(args);
 				_touch = (touch, isAdded: true);
 				await WaitForIdle(ct);
 			}
 
 			touch.Update(args);
 
-			_target.InjectPointerUpdated(args);
+			DispatchPointerUpdated(args);
 			await WaitForIdle(ct);
 
 			if (info.PointerInfo.PointerOptions.HasFlag(InjectedInputPointerOptions.PointerUp))
 			{
-				_target.InjectPointerRemoved(args);
+				DispatchPointerRemoved(args);
 				_touch = (touch, isAdded: false);
 				await WaitForIdle(ct);
 			}
@@ -170,7 +199,7 @@ public partial class InputInjector
 					}
 				};
 
-				_target.InjectPointerRemoved(cancel.ToEventArgs(pen.state));
+				DispatchPointerRemoved(cancel.ToEventArgs(pen.state));
 			}
 
 			_pen = null;
@@ -190,17 +219,17 @@ public partial class InputInjector
 
 		if (_pen is { isAdded: false })
 		{
-			_target.InjectPointerAdded(args);
+			DispatchPointerAdded(args);
 			_pen = (pen, isAdded: true);
 		}
 
 		pen.Update(args);
 
-		_target.InjectPointerUpdated(args);
+		DispatchPointerUpdated(args);
 
 		if (input.PointerInfo.PointerOptions.HasFlag(InjectedInputPointerOptions.PointerUp))
 		{
-			_target.InjectPointerRemoved(args);
+			DispatchPointerRemoved(args);
 			_pen = (pen, isAdded: false);
 		}
 	}
@@ -229,7 +258,7 @@ public partial class InputInjector
 			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None);
 			_mouse!.Update(args);
 
-			_target.InjectPointerUpdated(args);
+			DispatchPointerUpdated(args);
 		}
 	}
 
@@ -246,7 +275,7 @@ public partial class InputInjector
 			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None);
 			_mouse!.Update(args);
 
-			_target.InjectPointerUpdated(args);
+			DispatchPointerUpdated(args);
 			await WaitForIdle(ct);
 		}
 	}
@@ -259,7 +288,7 @@ public partial class InputInjector
 			var args = info.ToEventArgs(_mouse!, modifiers);
 			_mouse!.Update(args);
 
-			_target.InjectPointerUpdated(args);
+			DispatchPointerUpdated(args);
 		}
 	}
 
@@ -276,7 +305,7 @@ public partial class InputInjector
 			var args = info.ToEventArgs(_mouse!, modifiers);
 			_mouse!.Update(args);
 
-			_target.InjectPointerUpdated(args);
+			DispatchPointerUpdated(args);
 			await WaitForIdle(ct);
 		}
 	}
@@ -298,5 +327,26 @@ public partial class InputInjector
 				tcs.TrySetException(new Exception("Cannot enqueue work item on dispatcher"));
 			}
 		}
+	}
+
+	// Dispatch wrappers — stamp the relative root on every PointerEventArgs
+	// before forwarding to the target so InputManager can scope hit-testing
+	// to a subtree when one was set via TryCreate(object).
+	private void DispatchPointerAdded(PointerEventArgs args)
+	{
+		args.RelativeRoot = _relativeRoot;
+		DispatchPointerAdded(args);
+	}
+
+	private void DispatchPointerUpdated(PointerEventArgs args)
+	{
+		args.RelativeRoot = _relativeRoot;
+		DispatchPointerUpdated(args);
+	}
+
+	private void DispatchPointerRemoved(PointerEventArgs args)
+	{
+		args.RelativeRoot = _relativeRoot;
+		DispatchPointerRemoved(args);
 	}
 }

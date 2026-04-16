@@ -439,7 +439,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
-			XamlRoot? xamlRoot,
+			UIElement? root,
 			GetHitTestability? getTestability,
 			StalePredicate? isStale,
 			string tracingEntryPoint,
@@ -451,7 +451,7 @@ namespace Microsoft.UI.Xaml.Media
 			TRACE($"HIT_TEST [{tracingEntryPoint!.ToUpperInvariant()}@{tracingEntryLine}{(tracingReason is null ? "" : "--" + tracingReason)}] @{position.ToDebugString()}");
 #endif
 
-			if (xamlRoot?.VisualTree.RootElement is UIElement root)
+			if (root is not null)
 			{
 				return SearchDownForTopMostElementAt(position, root, getTestability ?? DefaultGetTestability, isStale);
 			}
@@ -461,7 +461,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
-			XamlRoot? xamlRoot,
+			UIElement? root,
 			GetHitTestability? getTestability = null,
 			StalePredicate? isStale = null
 #if TRACE_HIT_TESTING
@@ -473,7 +473,7 @@ namespace Microsoft.UI.Xaml.Media
 			)
 		{
 #endif
-			if (xamlRoot?.VisualTree.RootElement is UIElement root)
+			if (root is not null)
 			{
 				return SearchDownForTopMostElementAt(position, root, getTestability ?? DefaultGetTestability, isStale);
 			}
