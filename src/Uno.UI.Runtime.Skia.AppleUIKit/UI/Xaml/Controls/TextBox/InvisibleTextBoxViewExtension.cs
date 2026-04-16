@@ -79,20 +79,9 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void InvalidateLayout()
 	{
-		if (_textBoxView is not null)
+		if (_textBoxView is UIView nativeView)
 		{
-			//var width = _view.DisplayBlock.ActualWidth;
-			//var height = _view.DisplayBlock.ActualHeight;
-
-			//var position = _view.DisplayBlock.TransformToVisual(null).TransformPoint(default);
-			//var rect = new Rect(position.X, position.Y, width, height);
-			//var physical = rect.LogicalToPhysicalPixels();
-			//_nativeInput.Layout(
-			//	(int)physical.Left,
-			//	(int)physical.Top,
-			//	(int)physical.Right,
-			//	(int)physical.Bottom
-			//);
+			UpdateNativeViewFrame(nativeView);
 		}
 	}
 
@@ -171,6 +160,13 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		_textBoxView.SecureTextEntry = textBox is PasswordBox;
 		SetSoftKeyboardTheme();
+
+		// KeyboardType may have changed — re-evaluate the native view
+		// position (anchored vs. off-screen).
+		if (_textBoxView is UIView nativeView)
+		{
+			UpdateNativeViewFrame(nativeView);
+		}
 	}
 
 	private void SetSoftKeyboardTheme()
@@ -262,18 +258,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 				_latestNativeView = view;
 				layer.AddSubview(nativeView);
 
-				var textBox = _textBoxView?.Owner?.TextBox;
-				var rect = textBox?.GetAbsoluteBoundsRect();
-				var physical = rect?.LogicalToPhysicalPixels();
-				var width = physical?.Width ?? 10;
-				var height = physical?.Height ?? 10;
-				// Push the overlay native view out of the visible view - this way
-				// the blue typing suggestion overlay will not be shown to the user.
-				nativeView.Frame = new CoreGraphics.CGRect(
-					-1000 - width,
-					-1000 - height,
-					width,
-					height);
+				UpdateNativeViewFrame(nativeView);
 			}
 		}
 	}
@@ -315,6 +300,46 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			nativeView.RemoveFromSuperview();
 			_latestNativeView = null;
 		}
+	}
+
+	private void UpdateNativeViewFrame(UIView nativeView)
+	{
+		var textBox = _textBoxView?.Owner?.TextBox;
+		var rect = textBox?.GetAbsoluteBoundsRect();
+		// GetAbsoluteBoundsRect returns WinUI DIPs which map 1:1 to iOS
+		// points.  Do NOT convert to physical pixels — UIView.Frame is in
+		// points, not physical pixels.
+		var x = rect?.X ?? 0;
+		var y = rect?.Y ?? 0;
+		var width = rect?.Width ?? 10;
+		var height = rect?.Height ?? 10;
+
+		// Only iPad shows a floating numeric keypad that needs an anchor
+		// view. For all other cases we push the native view off-screen so
+		// that the iOS autocorrect/suggestion bubble does not leak over
+		// the Skia-rendered text.
+		if (ShouldAnchorToTextBox())
+		{
+			nativeView.Frame = new CoreGraphics.CGRect(x, y, width, height);
+		}
+		else
+		{
+			nativeView.Frame = new CoreGraphics.CGRect(-1000 - width, -1000 - height, width, height);
+		}
+	}
+
+	private bool ShouldAnchorToTextBox()
+	{
+		if (UIDevice.CurrentDevice.UserInterfaceIdiom != UIUserInterfaceIdiom.Pad)
+		{
+			return false;
+		}
+
+		return _textBoxView?.KeyboardType is
+			UIKeyboardType.NumberPad or
+			UIKeyboardType.DecimalPad or
+			UIKeyboardType.NumbersAndPunctuation or
+			UIKeyboardType.PhonePad;
 	}
 
 	private static bool CouldBecomeFirstResponder(FrameworkElement? element)
