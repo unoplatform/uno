@@ -60,12 +60,12 @@ namespace Microsoft.UI.Xaml
 			/// </summary>
 			internal void RemoveNonDefaultAlcEntries()
 			{
-				var defaultAlc = System.Runtime.Loader.AssemblyLoadContext.Default;
-				var keysToRemove = new System.Collections.Generic.List<PropertyCacheEntry>();
+				var defaultAlc = global::System.Runtime.Loader.AssemblyLoadContext.Default;
+				var keysToRemove = new global::System.Collections.Generic.List<PropertyCacheEntry>();
 
 				foreach (PropertyCacheEntry key in _entries.Keys)
 				{
-					var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.CachedType.Assembly);
+					var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.CachedType.Assembly);
 					if (alc is not null && alc != defaultAlc)
 					{
 						keysToRemove.Add(key);

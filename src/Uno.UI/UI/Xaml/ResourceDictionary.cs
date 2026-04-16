@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml
 				// Use the ambient resolution context if available (set during App.xaml initialization),
 				// because GetType().Assembly always returns Uno.UI which is in the default ALC.
 				var callingAlc = ResourceResolver.CurrentResolutionAlc
-					?? System.Runtime.Loader.AssemblyLoadContext.Default;
+					?? global::System.Runtime.Loader.AssemblyLoadContext.Default;
 				return ResourceResolver.RetrieveDictionaryForSource(
 					source?.OriginalString,
 					currentAbsolutePath: null,
