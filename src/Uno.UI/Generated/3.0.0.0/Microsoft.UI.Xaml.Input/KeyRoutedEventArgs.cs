@@ -8,7 +8,6 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class KeyRoutedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-		// Skipping already declared property Handled
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DeviceId
@@ -19,14 +18,15 @@ namespace Microsoft.UI.Xaml.Input
 			}
 		}
 #endif
+		// Skipping already declared property Handled
 		// Skipping already declared property Key
 		// Skipping already declared property KeyStatus
 		// Skipping already declared property OriginalKey
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.Key.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.KeyStatus.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.DeviceId.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.Key.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.KeyStatus.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.OriginalKey.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.DeviceId.get
 	}
 }

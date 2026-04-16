@@ -15,29 +15,15 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
+		public global::Windows.UI.Text.Core.CoreTextInputPaneDisplayPolicy InputPaneDisplayPolicy
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreTextEditContext.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreTextEditContext.Name");
+				throw new global::System.NotImplementedException("The member CoreTextInputPaneDisplayPolicy CoreTextEditContext.InputPaneDisplayPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextInputPaneDisplayPolicy%20CoreTextEditContext.InputPaneDisplayPolicy");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "string CoreTextEditContext.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreTextEditContext.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreTextEditContext.IsReadOnly");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "bool CoreTextEditContext.IsReadOnly");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "CoreTextInputPaneDisplayPolicy CoreTextEditContext.InputPaneDisplayPolicy");
 			}
 		}
 #endif
@@ -57,44 +43,32 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Text.Core.CoreTextInputPaneDisplayPolicy InputPaneDisplayPolicy
+		public bool IsReadOnly
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextInputPaneDisplayPolicy CoreTextEditContext.InputPaneDisplayPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextInputPaneDisplayPolicy%20CoreTextEditContext.InputPaneDisplayPolicy");
+				throw new global::System.NotImplementedException("The member bool CoreTextEditContext.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreTextEditContext.IsReadOnly");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "CoreTextInputPaneDisplayPolicy CoreTextEditContext.InputPaneDisplayPolicy");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "bool CoreTextEditContext.IsReadOnly");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.Name.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.Name.set
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.InputScope.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.InputScope.set
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.IsReadOnly.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.IsReadOnly.set
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.InputPaneDisplayPolicy.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.InputPaneDisplayPolicy.set
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.TextRequested.add
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.TextRequested.remove
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.SelectionRequested.add
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.SelectionRequested.remove
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.LayoutRequested.add
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.LayoutRequested.remove
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.TextUpdating.add
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.TextUpdating.remove
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.SelectionUpdating.add
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.SelectionUpdating.remove
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.FormatUpdating.add
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.FormatUpdating.remove
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.CompositionStarted.add
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.CompositionStarted.remove
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.CompositionCompleted.add
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.CompositionCompleted.remove
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.FocusRemoved.add
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.FocusRemoved.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Name
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CoreTextEditContext.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreTextEditContext.Name");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "string CoreTextEditContext.Name");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyFocusEnter()
@@ -130,8 +104,34 @@ namespace Windows.UI.Text.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "void CoreTextEditContext.NotifyLayoutChanged()");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.CompositionCompleted.add
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.CompositionCompleted.remove
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.CompositionStarted.add
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.CompositionStarted.remove
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.FocusRemoved.add
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.FocusRemoved.remove
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.FormatUpdating.add
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.FormatUpdating.remove
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.LayoutRequested.add
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.LayoutRequested.remove
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.SelectionRequested.add
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.SelectionRequested.remove
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.SelectionUpdating.add
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.SelectionUpdating.remove
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.TextRequested.add
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.TextRequested.remove
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.TextUpdating.add
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.TextUpdating.remove
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.NotifyFocusLeaveCompleted.add
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.NotifyFocusLeaveCompleted.remove
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.InputPaneDisplayPolicy.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.InputPaneDisplayPolicy.set
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.InputScope.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.InputScope.set
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.IsReadOnly.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.IsReadOnly.set
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.Name.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.Name.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs> CompositionCompleted

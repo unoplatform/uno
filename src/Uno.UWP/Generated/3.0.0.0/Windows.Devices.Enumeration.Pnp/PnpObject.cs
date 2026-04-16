@@ -43,16 +43,6 @@ namespace Windows.Devices.Enumeration.Pnp
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.Type.get
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.Id.get
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.Properties.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Update(global::Windows.Devices.Enumeration.Pnp.PnpObjectUpdate updateInfo)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObject", "void PnpObject.Update(PnpObjectUpdate updateInfo)");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.Pnp.PnpObject> CreateFromIdAsync(global::Windows.Devices.Enumeration.Pnp.PnpObjectType type, string id, global::System.Collections.Generic.IEnumerable<string> requestedProperties)
@@ -88,5 +78,15 @@ namespace Windows.Devices.Enumeration.Pnp
 			throw new global::System.NotImplementedException("The member PnpObjectWatcher PnpObject.CreateWatcher(PnpObjectType type, IEnumerable<string> requestedProperties, string aqsFilter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PnpObjectWatcher%20PnpObject.CreateWatcher%28PnpObjectType%20type%2C%20IEnumerable%3Cstring%3E%20requestedProperties%2C%20string%20aqsFilter%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Update(global::Windows.Devices.Enumeration.Pnp.PnpObjectUpdate updateInfo)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObject", "void PnpObject.Update(PnpObjectUpdate updateInfo)");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.Id.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.Properties.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.Type.get
 	}
 }

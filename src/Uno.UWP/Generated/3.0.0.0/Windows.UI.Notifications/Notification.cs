@@ -10,20 +10,6 @@ namespace Windows.UI.Notifications
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Notifications.NotificationVisual Visual
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member NotificationVisual Notification.Visual is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NotificationVisual%20Notification.Visual");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.Notification", "NotificationVisual Notification.Visual");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.DateTimeOffset? ExpirationTime
 		{
 			get
@@ -33,6 +19,20 @@ namespace Windows.UI.Notifications
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.Notification", "DateTimeOffset? Notification.ExpirationTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Notifications.NotificationVisual Visual
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member NotificationVisual Notification.Visual is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NotificationVisual%20Notification.Visual");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.Notification", "NotificationVisual Notification.Visual");
 			}
 		}
 #endif

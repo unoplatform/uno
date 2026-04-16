@@ -23,13 +23,6 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.Added.add
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.Added.remove
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.EnumerationCompleted.add
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.EnumerationCompleted.remove
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.Stopped.add
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.Stopped.remove
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -44,6 +37,13 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher", "void DnssdServiceWatcher.Stop()");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.Added.add
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.Added.remove
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.EnumerationCompleted.add
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.EnumerationCompleted.remove
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.Stopped.add
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.Stopped.remove
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher, global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance> Added

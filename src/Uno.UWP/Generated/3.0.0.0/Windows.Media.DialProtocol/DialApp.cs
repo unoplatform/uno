@@ -23,7 +23,6 @@ namespace Windows.Media.DialProtocol
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.DialProtocol.DialApp.AppName.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.DialProtocol.DialAppLaunchResult> RequestLaunchAsync(string appArgument)
@@ -45,5 +44,6 @@ namespace Windows.Media.DialProtocol
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DialAppStateDetails> DialApp.GetAppStateAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDialAppStateDetails%3E%20DialApp.GetAppStateAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.DialProtocol.DialApp.AppName.get
 	}
 }

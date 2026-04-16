@@ -46,9 +46,6 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		}
 #endif
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.DnssdRegistrationResult()
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.Status.get
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.IPAddress.get
-		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.HasInstanceNameChanged.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
@@ -56,5 +53,8 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 			throw new global::System.NotImplementedException("The member string DnssdRegistrationResult.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DnssdRegistrationResult.ToString%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.HasInstanceNameChanged.get
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.IPAddress.get
+		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult.Status.get
 	}
 }

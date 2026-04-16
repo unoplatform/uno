@@ -23,7 +23,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.Capabilities.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(out double value)
@@ -52,5 +51,6 @@ namespace Windows.Media.Devices
 			throw new global::System.NotImplementedException("The member bool MediaDeviceControl.TrySetAuto(bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaDeviceControl.TrySetAuto%28bool%20value%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.Capabilities.get
 	}
 }

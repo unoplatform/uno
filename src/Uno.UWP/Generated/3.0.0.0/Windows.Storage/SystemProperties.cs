@@ -138,18 +138,18 @@ namespace Windows.Storage
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Storage.SystemProperties.Audio.get
 		// Forced skipping of method Windows.Storage.SystemProperties.Author.get
 		// Forced skipping of method Windows.Storage.SystemProperties.Comment.get
+		// Forced skipping of method Windows.Storage.SystemProperties.GPS.get
+		// Forced skipping of method Windows.Storage.SystemProperties.Image.get
 		// Forced skipping of method Windows.Storage.SystemProperties.ItemNameDisplay.get
 		// Forced skipping of method Windows.Storage.SystemProperties.Keywords.get
-		// Forced skipping of method Windows.Storage.SystemProperties.Rating.get
-		// Forced skipping of method Windows.Storage.SystemProperties.Title.get
-		// Forced skipping of method Windows.Storage.SystemProperties.Audio.get
-		// Forced skipping of method Windows.Storage.SystemProperties.GPS.get
 		// Forced skipping of method Windows.Storage.SystemProperties.Media.get
 		// Forced skipping of method Windows.Storage.SystemProperties.Music.get
 		// Forced skipping of method Windows.Storage.SystemProperties.Photo.get
+		// Forced skipping of method Windows.Storage.SystemProperties.Rating.get
+		// Forced skipping of method Windows.Storage.SystemProperties.Title.get
 		// Forced skipping of method Windows.Storage.SystemProperties.Video.get
-		// Forced skipping of method Windows.Storage.SystemProperties.Image.get
 	}
 }

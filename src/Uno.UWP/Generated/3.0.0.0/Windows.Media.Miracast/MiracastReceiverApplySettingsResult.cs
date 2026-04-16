@@ -33,7 +33,7 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverApplySettingsResult.Status.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverApplySettingsResult.ExtendedError.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverApplySettingsResult.Status.get
 	}
 }

@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum AutomationCaretPosition
 	{
-#if false
-		Unknown = 0,
-#endif
-#if false
-		EndOfLine = 1,
-#endif
-#if false
-		BeginningOfLine = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationCaretPosition.Unknown
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationCaretPosition.EndOfLine
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationCaretPosition.BeginningOfLine
 	}
 #endif
 }

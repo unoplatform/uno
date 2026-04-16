@@ -63,8 +63,6 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraPose.HolographicCamera.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraPose.Viewport.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Holographic.HolographicStereoTransform? TryGetViewTransform(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
@@ -72,7 +70,6 @@ namespace Windows.Graphics.Holographic
 			throw new global::System.NotImplementedException("The member HolographicStereoTransform? HolographicCameraPose.TryGetViewTransform(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicStereoTransform%3F%20HolographicCameraPose.TryGetViewTransform%28SpatialCoordinateSystem%20coordinateSystem%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraPose.ProjectionTransform.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Perception.Spatial.SpatialBoundingFrustum? TryGetCullingFrustum(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
@@ -87,8 +84,6 @@ namespace Windows.Graphics.Holographic
 			throw new global::System.NotImplementedException("The member SpatialBoundingFrustum? HolographicCameraPose.TryGetVisibleFrustum(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialBoundingFrustum%3F%20HolographicCameraPose.TryGetVisibleFrustum%28SpatialCoordinateSystem%20coordinateSystem%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraPose.NearPlaneDistance.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraPose.FarPlaneDistance.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void OverrideViewTransform(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::Windows.Graphics.Holographic.HolographicStereoTransform coordinateSystemToViewTransform)
@@ -110,5 +105,10 @@ namespace Windows.Graphics.Holographic
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCameraPose", "void HolographicCameraPose.OverrideViewport(Rect leftViewport, Rect rightViewport)");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraPose.FarPlaneDistance.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraPose.HolographicCamera.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraPose.NearPlaneDistance.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraPose.ProjectionTransform.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraPose.Viewport.get
 	}
 }

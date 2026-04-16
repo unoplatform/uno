@@ -11,8 +11,8 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		// Skipping already declared property ProtocolError
 		// Skipping already declared property Services
 		// Skipping already declared property Status
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceServicesResult.Status.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceServicesResult.ProtocolError.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceServicesResult.Services.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceServicesResult.Status.get
 	}
 }

@@ -33,44 +33,6 @@ namespace Microsoft.Graphics.Display
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.IsStereoEnabled.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetColorProfileAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> DisplayInformation.GetColorProfileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20DisplayInformation.GetColorProfileAsync%28%29");
-		}
-#endif
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.IsStereoEnabledChanged.add
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.IsStereoEnabledChanged.remove
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.DispatcherQueue.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IRandomAccessStream GetColorProfile()
-		{
-			throw new global::System.NotImplementedException("The member IRandomAccessStream DisplayInformation.GetColorProfile() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20DisplayInformation.GetColorProfile%28%29");
-		}
-#endif
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.ColorProfileChanged.add
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.ColorProfileChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Graphics.Display.DisplayAdvancedColorInfo GetAdvancedColorInfo()
-		{
-			throw new global::System.NotImplementedException("The member DisplayAdvancedColorInfo DisplayInformation.GetAdvancedColorInfo() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayAdvancedColorInfo%20DisplayInformation.GetAdvancedColorInfo%28%29");
-		}
-#endif
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.AdvancedColorInfoChanged.add
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.AdvancedColorInfoChanged.remove
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.Destroyed.add
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.Destroyed.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "void DisplayInformation.Dispose()");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.Graphics.Display.DisplayInformation CreateForWindowId(global::Microsoft.UI.WindowId windowId)
@@ -85,6 +47,44 @@ namespace Microsoft.Graphics.Display
 			throw new global::System.NotImplementedException("The member DisplayInformation DisplayInformation.CreateForDisplayId(DisplayId displayId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayInformation%20DisplayInformation.CreateForDisplayId%28DisplayId%20displayId%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetColorProfileAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> DisplayInformation.GetColorProfileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20DisplayInformation.GetColorProfileAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IRandomAccessStream GetColorProfile()
+		{
+			throw new global::System.NotImplementedException("The member IRandomAccessStream DisplayInformation.GetColorProfile() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20DisplayInformation.GetColorProfile%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.Graphics.Display.DisplayAdvancedColorInfo GetAdvancedColorInfo()
+		{
+			throw new global::System.NotImplementedException("The member DisplayAdvancedColorInfo DisplayInformation.GetAdvancedColorInfo() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayAdvancedColorInfo%20DisplayInformation.GetAdvancedColorInfo%28%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.AdvancedColorInfoChanged.add
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.AdvancedColorInfoChanged.remove
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.ColorProfileChanged.add
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.ColorProfileChanged.remove
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.Destroyed.add
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.Destroyed.remove
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.IsStereoEnabledChanged.add
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.IsStereoEnabledChanged.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Graphics.Display.DisplayInformation", "void DisplayInformation.Dispose()");
+		}
+#endif
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.DispatcherQueue.get
+		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.IsStereoEnabled.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Graphics.Display.DisplayInformation, object> AdvancedColorInfoChanged

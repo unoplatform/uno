@@ -16,8 +16,8 @@ namespace Microsoft.UI.Xaml.Navigation
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs.Cancel.set
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs.NavigationMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs.SourcePageType.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs.Parameter.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs.NavigationTransitionInfo.get
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs.Parameter.get
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs.SourcePageType.get
 	}
 }

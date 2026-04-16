@@ -33,17 +33,6 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironment.IsEnabled.get
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironment.Kind.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowManagement.DisplayRegion> GetDisplayRegions()
-		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<DisplayRegion> WindowingEnvironment.GetDisplayRegions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CDisplayRegion%3E%20WindowingEnvironment.GetDisplayRegions%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironment.Changed.add
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironment.Changed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowManagement.WindowingEnvironment> FindAll()
@@ -58,6 +47,17 @@ namespace Windows.UI.WindowManagement
 			throw new global::System.NotImplementedException("The member IReadOnlyList<WindowingEnvironment> WindowingEnvironment.FindAll(WindowingEnvironmentKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CWindowingEnvironment%3E%20WindowingEnvironment.FindAll%28WindowingEnvironmentKind%20kind%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowManagement.DisplayRegion> GetDisplayRegions()
+		{
+			throw new global::System.NotImplementedException("The member IReadOnlyList<DisplayRegion> WindowingEnvironment.GetDisplayRegions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CDisplayRegion%3E%20WindowingEnvironment.GetDisplayRegions%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironment.Changed.add
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironment.Changed.remove
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironment.IsEnabled.get
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironment.Kind.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.WindowManagement.WindowingEnvironment, global::Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs> Changed

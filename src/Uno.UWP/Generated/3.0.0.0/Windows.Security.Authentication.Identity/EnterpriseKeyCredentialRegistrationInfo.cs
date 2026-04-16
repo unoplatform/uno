@@ -63,10 +63,10 @@ namespace Windows.Security.Authentication.Identity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.TenantId.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.TenantName.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.Subject.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.KeyId.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.KeyName.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.Subject.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.TenantId.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.TenantName.get
 	}
 }

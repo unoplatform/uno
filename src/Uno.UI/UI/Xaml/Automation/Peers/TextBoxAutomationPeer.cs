@@ -42,7 +42,7 @@ public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer, Pro
 	{
 		if (IsReadOnly)
 		{
-			throw new System.InvalidOperationException("Cannot set value on a read-only TextBox.");
+			throw new InvalidOperationException("Cannot set value on a read-only TextBox.");
 		}
 
 		((TextBox)Owner).Text = value;

@@ -63,11 +63,6 @@ namespace Windows.Web.Http
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.HttpGetStringResult.ExtendedError.get
-		// Forced skipping of method Windows.Web.Http.HttpGetStringResult.RequestMessage.get
-		// Forced skipping of method Windows.Web.Http.HttpGetStringResult.ResponseMessage.get
-		// Forced skipping of method Windows.Web.Http.HttpGetStringResult.Succeeded.get
-		// Forced skipping of method Windows.Web.Http.HttpGetStringResult.Value.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -82,6 +77,11 @@ namespace Windows.Web.Http
 			throw new global::System.NotImplementedException("The member string HttpGetStringResult.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpGetStringResult.ToString%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.HttpGetStringResult.ExtendedError.get
+		// Forced skipping of method Windows.Web.Http.HttpGetStringResult.RequestMessage.get
+		// Forced skipping of method Windows.Web.Http.HttpGetStringResult.ResponseMessage.get
+		// Forced skipping of method Windows.Web.Http.HttpGetStringResult.Succeeded.get
+		// Forced skipping of method Windows.Web.Http.HttpGetStringResult.Value.get
 		// Processing: System.IDisposable
 	}
 }

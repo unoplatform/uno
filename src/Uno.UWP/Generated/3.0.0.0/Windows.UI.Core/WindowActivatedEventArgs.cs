@@ -10,9 +10,9 @@ namespace Windows.UI.Core
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property WindowActivationState
-		// Forced skipping of method Windows.UI.Core.WindowActivatedEventArgs.WindowActivationState.get
 		// Forced skipping of method Windows.UI.Core.WindowActivatedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.WindowActivatedEventArgs.Handled.set
+		// Forced skipping of method Windows.UI.Core.WindowActivatedEventArgs.WindowActivationState.get
 		// Processing: Windows.UI.Core.ICoreWindowEventArgs
 	}
 }

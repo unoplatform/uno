@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.ModuleCommandResult.Status.get
 		// Forced skipping of method Windows.Media.Devices.ModuleCommandResult.Result.get
+		// Forced skipping of method Windows.Media.Devices.ModuleCommandResult.Status.get
 	}
 }

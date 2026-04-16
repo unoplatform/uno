@@ -9,10 +9,10 @@ namespace Microsoft.UI.Xaml.Input
 	public partial class InputScopeName : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property NameValue
-		// Skipping already declared method Microsoft.UI.Xaml.Input.InputScopeName.InputScopeName(Microsoft.UI.Xaml.Input.InputScopeNameValue)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScopeName.InputScopeName(Microsoft.UI.Xaml.Input.InputScopeNameValue)
 		// Skipping already declared method Microsoft.UI.Xaml.Input.InputScopeName.InputScopeName()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScopeName.InputScopeName()
+		// Skipping already declared method Microsoft.UI.Xaml.Input.InputScopeName.InputScopeName(Microsoft.UI.Xaml.Input.InputScopeNameValue)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScopeName.InputScopeName(Microsoft.UI.Xaml.Input.InputScopeNameValue)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScopeName.NameValue.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScopeName.NameValue.set
 	}

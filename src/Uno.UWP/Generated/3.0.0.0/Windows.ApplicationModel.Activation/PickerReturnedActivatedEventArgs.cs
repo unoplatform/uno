@@ -25,6 +25,16 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string PickerOperationId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PickerReturnedActivatedEventArgs.PickerOperationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PickerReturnedActivatedEventArgs.PickerOperationId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ApplicationExecutionState PreviousExecutionState
 		{
 			get
@@ -43,18 +53,8 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string PickerOperationId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PickerReturnedActivatedEventArgs.PickerOperationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PickerReturnedActivatedEventArgs.PickerOperationId");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs.PickerOperationId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs.PickerOperationId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.PickerReturnedActivatedEventArgs.SplashScreen.get
 		// Processing: Windows.ApplicationModel.Activation.IPickerReturnedActivatedEventArgs

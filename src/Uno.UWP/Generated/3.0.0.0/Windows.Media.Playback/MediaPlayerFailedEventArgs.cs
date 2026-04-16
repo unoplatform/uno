@@ -12,7 +12,7 @@ namespace Windows.Media.Playback
 		// Skipping already declared property ErrorMessage
 		// Skipping already declared property ExtendedErrorCode
 		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.Error.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.ExtendedErrorCode.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.ErrorMessage.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlayerFailedEventArgs.ExtendedErrorCode.get
 	}
 }

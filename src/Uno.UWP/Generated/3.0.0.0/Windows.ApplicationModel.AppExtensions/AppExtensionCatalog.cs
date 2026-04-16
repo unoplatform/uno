@@ -15,6 +15,13 @@ namespace Windows.ApplicationModel.AppExtensions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.AppExtensions.AppExtensionCatalog Open(string appExtensionName)
+		{
+			throw new global::System.NotImplementedException("The member AppExtensionCatalog AppExtensionCatalog.Open(string appExtensionName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppExtensionCatalog%20AppExtensionCatalog.Open%28string%20appExtensionName%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.AppExtensions.AppExtension>> FindAllAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<AppExtension>> AppExtensionCatalog.FindAllAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CAppExtension%3E%3E%20AppExtensionCatalog.FindAllAsync%28%29");
@@ -29,21 +36,14 @@ namespace Windows.ApplicationModel.AppExtensions
 #endif
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageInstalled.add
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageInstalled.remove
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageUpdating.add
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageUpdating.remove
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageUpdated.add
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageUpdated.remove
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageUninstalling.add
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageUninstalling.remove
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageStatusChanged.add
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageStatusChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.AppExtensions.AppExtensionCatalog Open(string appExtensionName)
-		{
-			throw new global::System.NotImplementedException("The member AppExtensionCatalog AppExtensionCatalog.Open(string appExtensionName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppExtensionCatalog%20AppExtensionCatalog.Open%28string%20appExtensionName%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageUninstalling.add
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageUninstalling.remove
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageUpdated.add
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageUpdated.remove
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageUpdating.add
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageUpdating.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.AppExtensions.AppExtensionCatalog, global::Windows.ApplicationModel.AppExtensions.AppExtensionPackageInstalledEventArgs> PackageInstalled

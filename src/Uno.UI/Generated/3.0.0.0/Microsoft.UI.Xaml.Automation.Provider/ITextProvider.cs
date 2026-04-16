@@ -10,11 +10,11 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 	{
 		// Skipping already declared property DocumentRange
 		// Skipping already declared property SupportedTextSelection
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ITextProvider.DocumentRange.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ITextProvider.SupportedTextSelection.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ITextProvider.GetSelection()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ITextProvider.GetVisibleRanges()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ITextProvider.RangeFromChild(Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ITextProvider.RangeFromPoint(Windows.Foundation.Point)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ITextProvider.DocumentRange.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ITextProvider.SupportedTextSelection.get
 	}
 }

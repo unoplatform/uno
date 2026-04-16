@@ -44,7 +44,7 @@ namespace Windows.Networking.NetworkOperators
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPco.Data.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPco.IsComplete.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPco.DeviceId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPco.IsComplete.get
 	}
 }

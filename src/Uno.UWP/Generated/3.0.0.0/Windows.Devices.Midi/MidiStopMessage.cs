@@ -13,8 +13,8 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiStopMessage.MidiStopMessage()
 		// Forced skipping of method Windows.Devices.Midi.MidiStopMessage.MidiStopMessage()
-		// Forced skipping of method Windows.Devices.Midi.MidiStopMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiStopMessage.RawData.get
+		// Forced skipping of method Windows.Devices.Midi.MidiStopMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiStopMessage.Type.get
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}

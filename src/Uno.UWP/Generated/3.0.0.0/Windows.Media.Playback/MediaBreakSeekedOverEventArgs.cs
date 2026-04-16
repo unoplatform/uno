@@ -43,8 +43,8 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaBreakSeekedOverEventArgs.SeekedOverBreaks.get
-		// Forced skipping of method Windows.Media.Playback.MediaBreakSeekedOverEventArgs.OldPosition.get
 		// Forced skipping of method Windows.Media.Playback.MediaBreakSeekedOverEventArgs.NewPosition.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreakSeekedOverEventArgs.OldPosition.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreakSeekedOverEventArgs.SeekedOverBreaks.get
 	}
 }

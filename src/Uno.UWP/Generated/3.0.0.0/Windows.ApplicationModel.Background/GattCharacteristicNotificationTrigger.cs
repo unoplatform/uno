@@ -30,20 +30,20 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public GattCharacteristicNotificationTrigger(global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic characteristic, global::Windows.Devices.Bluetooth.Background.BluetoothEventTriggeringMode eventTriggeringMode)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger", "GattCharacteristicNotificationTrigger.GattCharacteristicNotificationTrigger(GattCharacteristic characteristic, BluetoothEventTriggeringMode eventTriggeringMode)");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.GattCharacteristicNotificationTrigger(Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic, Windows.Devices.Bluetooth.Background.BluetoothEventTriggeringMode)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public GattCharacteristicNotificationTrigger(global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic characteristic)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger", "GattCharacteristicNotificationTrigger.GattCharacteristicNotificationTrigger(GattCharacteristic characteristic)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.GattCharacteristicNotificationTrigger(Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public GattCharacteristicNotificationTrigger(global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic characteristic, global::Windows.Devices.Bluetooth.Background.BluetoothEventTriggeringMode eventTriggeringMode)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger", "GattCharacteristicNotificationTrigger.GattCharacteristicNotificationTrigger(GattCharacteristic characteristic, BluetoothEventTriggeringMode eventTriggeringMode)");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.GattCharacteristicNotificationTrigger(Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic, Windows.Devices.Bluetooth.Background.BluetoothEventTriggeringMode)
 		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.Characteristic.get
 		// Forced skipping of method Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger.EventTriggeringMode.get
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger

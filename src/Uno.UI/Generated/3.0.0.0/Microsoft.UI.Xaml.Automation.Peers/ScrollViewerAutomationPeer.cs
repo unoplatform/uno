@@ -16,14 +16,14 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property VerticallyScrollable
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.ScrollViewerAutomationPeer(Microsoft.UI.Xaml.Controls.ScrollViewer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.ScrollViewerAutomationPeer(Microsoft.UI.Xaml.Controls.ScrollViewer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.HorizontallyScrollable.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.HorizontalScrollPercent.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.HorizontalViewSize.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticallyScrollable.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticalScrollPercent.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticalViewSize.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.Scroll(Microsoft.UI.Xaml.Automation.ScrollAmount, Microsoft.UI.Xaml.Automation.ScrollAmount)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.SetScrollPercent(double, double)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.HorizontalScrollPercent.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.HorizontalViewSize.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.HorizontallyScrollable.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticalScrollPercent.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticalViewSize.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticallyScrollable.get
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollProvider
 	}
 }

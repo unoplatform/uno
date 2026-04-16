@@ -8,8 +8,8 @@ namespace Windows.Globalization.NumberFormatting
 #endif
 	public partial class SignificantDigitsNumberRounder : global::Windows.Globalization.NumberFormatting.INumberRounder
 	{
-		// Skipping already declared property SignificantDigits
 		// Skipping already declared property RoundingAlgorithm
+		// Skipping already declared property SignificantDigits
 		// Skipping already declared method Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder.SignificantDigitsNumberRounder()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder.SignificantDigitsNumberRounder()
 		// Skipping already declared method Windows.Globalization.NumberFormatting.SignificantDigitsNumberRounder.RoundInt32(int)

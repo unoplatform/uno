@@ -29,11 +29,11 @@ namespace Windows.Media.Core
 			set;
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.IMediaCue.StartTime.set
-		// Forced skipping of method Windows.Media.Core.IMediaCue.StartTime.get
-		// Forced skipping of method Windows.Media.Core.IMediaCue.Duration.set
 		// Forced skipping of method Windows.Media.Core.IMediaCue.Duration.get
-		// Forced skipping of method Windows.Media.Core.IMediaCue.Id.set
+		// Forced skipping of method Windows.Media.Core.IMediaCue.Duration.set
 		// Forced skipping of method Windows.Media.Core.IMediaCue.Id.get
+		// Forced skipping of method Windows.Media.Core.IMediaCue.Id.set
+		// Forced skipping of method Windows.Media.Core.IMediaCue.StartTime.get
+		// Forced skipping of method Windows.Media.Core.IMediaCue.StartTime.set
 	}
 }

@@ -47,9 +47,9 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.SupportedModes.get
 		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.Mode.get
 		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.Mode.set
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.Supported.get
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.SupportedModes.get
 	}
 }

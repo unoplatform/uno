@@ -13,23 +13,11 @@ namespace Windows.UI.Input.Spatial
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceDetected.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceDetected.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceLost.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceLost.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceUpdated.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceUpdated.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourcePressed.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourcePressed.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceReleased.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceReleased.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.InteractionDetected.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.InteractionDetected.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Spatial.SpatialInteractionSourceState> GetDetectedSourcesAtTimestamp(global::Windows.Perception.PerceptionTimestamp timeStamp)
+		public static global::Windows.UI.Input.Spatial.SpatialInteractionManager GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<SpatialInteractionSourceState> SpatialInteractionManager.GetDetectedSourcesAtTimestamp(PerceptionTimestamp timeStamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSpatialInteractionSourceState%3E%20SpatialInteractionManager.GetDetectedSourcesAtTimestamp%28PerceptionTimestamp%20timeStamp%29");
+			throw new global::System.NotImplementedException("The member SpatialInteractionManager SpatialInteractionManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionManager%20SpatialInteractionManager.GetForCurrentView%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -41,11 +29,23 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Input.Spatial.SpatialInteractionManager GetForCurrentView()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Spatial.SpatialInteractionSourceState> GetDetectedSourcesAtTimestamp(global::Windows.Perception.PerceptionTimestamp timeStamp)
 		{
-			throw new global::System.NotImplementedException("The member SpatialInteractionManager SpatialInteractionManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionManager%20SpatialInteractionManager.GetForCurrentView%28%29");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<SpatialInteractionSourceState> SpatialInteractionManager.GetDetectedSourcesAtTimestamp(PerceptionTimestamp timeStamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSpatialInteractionSourceState%3E%20SpatialInteractionManager.GetDetectedSourcesAtTimestamp%28PerceptionTimestamp%20timeStamp%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.InteractionDetected.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.InteractionDetected.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceDetected.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceDetected.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceLost.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceLost.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourcePressed.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourcePressed.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceReleased.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceReleased.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceUpdated.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceUpdated.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialInteractionManager, global::Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs> InteractionDetected

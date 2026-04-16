@@ -53,9 +53,9 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreQueueItemStatus.PackageInstallState.get
-		// Forced skipping of method Windows.Services.Store.StoreQueueItemStatus.PackageInstallExtendedState.get
-		// Forced skipping of method Windows.Services.Store.StoreQueueItemStatus.UpdateStatus.get
 		// Forced skipping of method Windows.Services.Store.StoreQueueItemStatus.ExtendedError.get
+		// Forced skipping of method Windows.Services.Store.StoreQueueItemStatus.PackageInstallExtendedState.get
+		// Forced skipping of method Windows.Services.Store.StoreQueueItemStatus.PackageInstallState.get
+		// Forced skipping of method Windows.Services.Store.StoreQueueItemStatus.UpdateStatus.get
 	}
 }

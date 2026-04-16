@@ -15,6 +15,16 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool PanelBasedOptimizationControl.IsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PanelBasedOptimizationControl.IsSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Enumeration.Panel Panel
 		{
 			get
@@ -24,16 +34,6 @@ namespace Windows.Media.Devices
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.PanelBasedOptimizationControl", "Panel PanelBasedOptimizationControl.Panel");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PanelBasedOptimizationControl.IsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PanelBasedOptimizationControl.IsSupported");
 			}
 		}
 #endif

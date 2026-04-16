@@ -63,10 +63,10 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreImage.Uri.get
-		// Forced skipping of method Windows.Services.Store.StoreImage.ImagePurposeTag.get
-		// Forced skipping of method Windows.Services.Store.StoreImage.Width.get
-		// Forced skipping of method Windows.Services.Store.StoreImage.Height.get
 		// Forced skipping of method Windows.Services.Store.StoreImage.Caption.get
+		// Forced skipping of method Windows.Services.Store.StoreImage.Height.get
+		// Forced skipping of method Windows.Services.Store.StoreImage.ImagePurposeTag.get
+		// Forced skipping of method Windows.Services.Store.StoreImage.Uri.get
+		// Forced skipping of method Windows.Services.Store.StoreImage.Width.get
 	}
 }

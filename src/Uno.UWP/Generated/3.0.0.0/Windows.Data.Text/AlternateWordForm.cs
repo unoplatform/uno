@@ -43,8 +43,8 @@ namespace Windows.Data.Text
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Data.Text.AlternateWordForm.SourceTextSegment.get
 		// Forced skipping of method Windows.Data.Text.AlternateWordForm.AlternateText.get
 		// Forced skipping of method Windows.Data.Text.AlternateWordForm.NormalizationFormat.get
+		// Forced skipping of method Windows.Data.Text.AlternateWordForm.SourceTextSegment.get
 	}
 }

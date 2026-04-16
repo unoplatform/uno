@@ -9,11 +9,11 @@ namespace Windows.UI.Core
 	public partial class SystemNavigationManager
 	{
 		// Skipping already declared property AppViewBackButtonVisibility
+		// Skipping already declared method Windows.UI.Core.SystemNavigationManager.GetForCurrentView()
 		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.BackRequested.add
 		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.BackRequested.remove
 		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.AppViewBackButtonVisibility.get
 		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.AppViewBackButtonVisibility.set
-		// Skipping already declared method Windows.UI.Core.SystemNavigationManager.GetForCurrentView()
 		// Skipping already declared event Windows.UI.Core.SystemNavigationManager.BackRequested
 	}
 }

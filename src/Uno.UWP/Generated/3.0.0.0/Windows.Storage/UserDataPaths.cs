@@ -203,6 +203,20 @@ namespace Windows.Storage
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.UserDataPaths GetForUser(global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member UserDataPaths UserDataPaths.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataPaths%20UserDataPaths.GetForUser%28User%20user%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.UserDataPaths GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member UserDataPaths UserDataPaths.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataPaths%20UserDataPaths.GetDefault%28%29");
+		}
+#endif
 		// Forced skipping of method Windows.Storage.UserDataPaths.CameraRoll.get
 		// Forced skipping of method Windows.Storage.UserDataPaths.Cookies.get
 		// Forced skipping of method Windows.Storage.UserDataPaths.Desktop.get
@@ -222,19 +236,5 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.UserDataPaths.Screenshots.get
 		// Forced skipping of method Windows.Storage.UserDataPaths.Templates.get
 		// Forced skipping of method Windows.Storage.UserDataPaths.Videos.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.UserDataPaths GetForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member UserDataPaths UserDataPaths.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataPaths%20UserDataPaths.GetForUser%28User%20user%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.UserDataPaths GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member UserDataPaths UserDataPaths.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataPaths%20UserDataPaths.GetDefault%28%29");
-		}
-#endif
 	}
 }

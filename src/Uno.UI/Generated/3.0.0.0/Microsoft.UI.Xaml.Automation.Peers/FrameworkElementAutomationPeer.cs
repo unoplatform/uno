@@ -11,8 +11,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property Owner
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.FrameworkElementAutomationPeer(Microsoft.UI.Xaml.FrameworkElement)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.FrameworkElementAutomationPeer(Microsoft.UI.Xaml.FrameworkElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.Owner.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.FromElement(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.CreatePeerForElement(Microsoft.UI.Xaml.UIElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.Owner.get
 	}
 }

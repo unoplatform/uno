@@ -43,8 +43,8 @@ namespace Windows.Devices.Bluetooth.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.Socket.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.Incoming.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.RemoteDevice.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.Socket.get
 	}
 }

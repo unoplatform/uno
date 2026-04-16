@@ -143,18 +143,18 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.Kind.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.FrameUri.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.HasLinkText.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.HasLinkUri.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.HasSelection.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.HasSourceUri.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.IsEditable.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.IsRequestedForMainFrame.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.PageUri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.FrameUri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.HasLinkUri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.LinkUri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.HasLinkText.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.Kind.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.LinkText.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.HasSourceUri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.SourceUri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.HasSelection.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.LinkUri.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.PageUri.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.SelectionText.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.SourceUri.get
 	}
 }

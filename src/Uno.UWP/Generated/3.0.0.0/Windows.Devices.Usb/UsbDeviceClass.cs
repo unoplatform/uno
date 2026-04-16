@@ -10,15 +10,15 @@ namespace Windows.Devices.Usb
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public byte? SubclassCode
+		public byte ClassCode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte? UsbDeviceClass.SubclassCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%3F%20UsbDeviceClass.SubclassCode");
+				throw new global::System.NotImplementedException("The member byte UsbDeviceClass.ClassCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbDeviceClass.ClassCode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbDeviceClass", "byte? UsbDeviceClass.SubclassCode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbDeviceClass", "byte UsbDeviceClass.ClassCode");
 			}
 		}
 #endif
@@ -38,15 +38,15 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public byte ClassCode
+		public byte? SubclassCode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbDeviceClass.ClassCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbDeviceClass.ClassCode");
+				throw new global::System.NotImplementedException("The member byte? UsbDeviceClass.SubclassCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%3F%20UsbDeviceClass.SubclassCode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbDeviceClass", "byte UsbDeviceClass.ClassCode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbDeviceClass", "byte? UsbDeviceClass.SubclassCode");
 			}
 		}
 #endif
@@ -60,9 +60,9 @@ namespace Windows.Devices.Usb
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClass.UsbDeviceClass()
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClass.ClassCode.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClass.ClassCode.set
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClass.SubclassCode.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClass.SubclassCode.set
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClass.ProtocolCode.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClass.ProtocolCode.set
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClass.SubclassCode.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClass.SubclassCode.set
 	}
 }

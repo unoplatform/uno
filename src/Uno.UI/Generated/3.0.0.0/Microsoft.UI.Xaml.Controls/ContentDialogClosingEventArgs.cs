@@ -10,9 +10,9 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Cancel
 		// Skipping already declared property Result
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.Result.get
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.GetDeferral()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.Cancel.set
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.GetDeferral()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.Result.get
 	}
 }

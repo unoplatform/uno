@@ -10,7 +10,7 @@ namespace Windows.Devices.Haptics
 	{
 		// Skipping already declared property Duration
 		// Skipping already declared property Waveform
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsControllerFeedback.Waveform.get
 		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsControllerFeedback.Duration.get
+		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsControllerFeedback.Waveform.get
 	}
 }

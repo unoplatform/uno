@@ -6,7 +6,7 @@ namespace Microsoft.UI.Composition
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CompositionProjectedShadowReceiverUnorderedCollection : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.CompositionProjectedShadowReceiver>
+	public partial class CompositionProjectedShadowReceiverUnorderedCollection : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.CompositionProjectedShadowReceiver>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal CompositionProjectedShadowReceiverUnorderedCollection()
@@ -23,7 +23,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.First()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::Microsoft.UI.Composition.CompositionProjectedShadowReceiver value)
@@ -31,7 +30,6 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection", "void CompositionProjectedShadowReceiverUnorderedCollection.Add(CompositionProjectedShadowReceiver value)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.Count.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Remove(global::Microsoft.UI.Composition.CompositionProjectedShadowReceiver value)
@@ -46,15 +44,16 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection", "void CompositionProjectedShadowReceiverUnorderedCollection.RemoveAll()");
 		}
 #endif
-		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.CompositionProjectedShadowReceiver>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.CompositionProjectedShadowReceiver>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Microsoft.UI.Composition.CompositionProjectedShadowReceiver> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<CompositionProjectedShadowReceiver> CompositionProjectedShadowReceiverUnorderedCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CCompositionProjectedShadowReceiver%3E%20CompositionProjectedShadowReceiverUnorderedCollection.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.Count.get
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.CompositionProjectedShadowReceiver>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

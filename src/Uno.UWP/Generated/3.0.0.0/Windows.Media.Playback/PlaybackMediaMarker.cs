@@ -54,8 +54,8 @@ namespace Windows.Media.Playback
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.PlaybackMediaMarker(System.TimeSpan, string, string)
-		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.Time.get
 		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.MediaMarkerType.get
 		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.Text.get
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.Time.get
 	}
 }

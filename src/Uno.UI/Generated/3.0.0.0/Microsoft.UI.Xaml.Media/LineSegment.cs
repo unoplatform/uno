@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class LineSegment : global::Microsoft.UI.Xaml.Media.PathSegment
 	{
-		// Skipping already declared property Point
 		// Skipping already declared property PointProperty
+		// Skipping already declared property Point
 		// Skipping already declared method Microsoft.UI.Xaml.Media.LineSegment.LineSegment()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.LineSegment()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.PointProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.Point.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.Point.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.PointProperty.get
 	}
 }

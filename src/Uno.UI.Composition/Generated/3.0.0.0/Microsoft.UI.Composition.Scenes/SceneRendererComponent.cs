@@ -8,10 +8,5 @@ namespace Microsoft.UI.Composition.Scenes
 #endif
 	public partial class SceneRendererComponent : global::Microsoft.UI.Composition.Scenes.SceneComponent
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal SceneRendererComponent()
-		{
-		}
-#endif
 	}
 }
