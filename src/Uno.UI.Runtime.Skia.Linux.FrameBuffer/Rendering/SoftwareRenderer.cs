@@ -59,5 +59,18 @@ namespace Uno.UI.Runtime.Skia
 
 		protected override SKSurface UpdateSize(int width, int height)
 			=> SKSurface.Create(new SKImageInfo(width, height, _fbDev.PixelFormat, SKAlphaType.Premul));
+
+		public override void Dispose()
+		{
+			// Clearing the mapped framebuffer makes the shell prompt visible again once the shell writes to it.
+			try
+			{
+				_fbDev.Clear();
+			}
+			catch (Exception e)
+			{
+				this.LogDebug()?.Debug($"Failed to clear the framebuffer on exit: {e.Message}");
+			}
+		}
 	}
 }
