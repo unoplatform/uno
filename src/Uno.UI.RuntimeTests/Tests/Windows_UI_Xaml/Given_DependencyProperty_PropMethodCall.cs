@@ -200,6 +200,19 @@ public class Given_DependencyProperty_PropMethodCall
 		Assert.AreEqual(100, control.TestCoerced);
 	}
 
+	[TestMethod]
+	public void When_Coercion_Then_ReadLocalValue_Returns_Base_Value()
+	{
+		var control = new PropMethodCallTestControl();
+
+		// Local value 200 is coerced to 100 for the effective value,
+		// but ReadLocalValue must return the pre-coercion local base value.
+		control.TestCoerced = 200;
+
+		Assert.AreEqual(100, control.TestCoerced); // effective (coerced)
+		Assert.AreEqual(200, control.ReadLocalValue(PropMethodCallTestControl.TestCoercedProperty));
+	}
+
 	private partial class PropMethodCallTestControl : Control
 	{
 		private bool _testBool;
@@ -263,65 +276,61 @@ public class Given_DependencyProperty_PropMethodCall
 			}
 		);
 
-		private static object TestBoolMethod(DependencyObject instance, bool isGet, object valueToSet)
+#nullable enable
+		private static object? TestBoolMethod(DependencyObject instance, bool isGet, object? valueToSet)
 		{
 			var control = (PropMethodCallTestControl)instance;
 			if (isGet)
 			{
 				return Boxes.Box(control._testBool);
 			}
-			else
-			{
-				var newValue = (bool)valueToSet;
-				if (newValue != control._testBool)
-				{
-					control._testBool = newValue;
-					return true;
-				}
 
-				return false;
+			var newValue = (bool)valueToSet!;
+			if (newValue != control._testBool)
+			{
+				control._testBool = newValue;
+				return true;
 			}
+
+			return false;
 		}
 
-		private static object TestIntMethod(DependencyObject instance, bool isGet, object valueToSet)
+		private static object? TestIntMethod(DependencyObject instance, bool isGet, object? valueToSet)
 		{
 			var control = (PropMethodCallTestControl)instance;
 			if (isGet)
 			{
 				return control._testInt;
 			}
-			else
-			{
-				var newValue = (int)valueToSet;
-				if (newValue != control._testInt)
-				{
-					control._testInt = newValue;
-					return true;
-				}
 
-				return false;
+			var newValue = (int)valueToSet!;
+			if (newValue != control._testInt)
+			{
+				control._testInt = newValue;
+				return true;
 			}
+
+			return false;
 		}
 
-		private static object TestCoercedMethod(DependencyObject instance, bool isGet, object valueToSet)
+		private static object? TestCoercedMethod(DependencyObject instance, bool isGet, object? valueToSet)
 		{
 			var control = (PropMethodCallTestControl)instance;
 			if (isGet)
 			{
 				return control._testCoerced;
 			}
-			else
-			{
-				var newValue = (int)valueToSet;
-				if (newValue != control._testCoerced)
-				{
-					control._testCoerced = newValue;
-					return true;
-				}
 
-				return false;
+			var newValue = (int)valueToSet!;
+			if (newValue != control._testCoerced)
+			{
+				control._testCoerced = newValue;
+				return true;
 			}
+
+			return false;
 		}
+#nullable restore
 
 		private static object CoerceTestCoerced(DependencyObject d, object baseValue, DependencyPropertyValuePrecedences precedence)
 		{

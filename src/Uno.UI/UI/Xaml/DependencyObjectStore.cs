@@ -321,7 +321,12 @@ namespace Microsoft.UI.Xaml
 
 			if (details?.GetBaseValueSource() == DependencyPropertyValuePrecedences.Local)
 			{
-				if (property.IsPropMethodCall)
+				// For PropMethodCall DPs, the authoritative local value is on the backing field
+				// via the method delegate. However, when ModifiedValue exists (coercion/animation
+				// active), the backing field holds the effective (coerced/animated) value, while
+				// the real local base value is preserved in DependencyPropertyDetails via
+				// ModifiedValue — so we must fall through to details.GetBaseValue() in that case.
+				if (property.IsPropMethodCall && details.GetModifiedValue() is null)
 				{
 					return GetValueFromMethodCall(property);
 				}

@@ -125,8 +125,17 @@ public partial class TextBox
 
 	public bool CanUndo => (bool)GetValue(CanUndoProperty);
 
-	private static object GetCanUndo(DependencyObject instance, bool isGet, object valueToSet)
-		=> Uno.UI.Helpers.Boxes.Box(((TextBox)instance)._historyIndex > 0);
+#nullable enable
+	private static object? GetCanUndo(DependencyObject instance, bool isGet, object? valueToSet)
+	{
+		if (!isGet)
+		{
+			throw new InvalidOperationException($"{nameof(CanUndoProperty)} is read-only.");
+		}
+
+		return Uno.UI.Helpers.Boxes.Box(((TextBox)instance)._historyIndex > 0);
+	}
+#nullable restore
 
 	public static DependencyProperty CanRedoProperty { get; } = DependencyProperty.Register(
 		nameof(CanRedo),
@@ -139,11 +148,18 @@ public partial class TextBox
 
 	public bool CanRedo => (bool)GetValue(CanRedoProperty);
 
-	private static object GetCanRedo(DependencyObject instance, bool isGet, object valueToSet)
+#nullable enable
+	private static object? GetCanRedo(DependencyObject instance, bool isGet, object? valueToSet)
 	{
+		if (!isGet)
+		{
+			throw new InvalidOperationException($"{nameof(CanRedoProperty)} is read-only.");
+		}
+
 		var textBox = (TextBox)instance;
 		return Uno.UI.Helpers.Boxes.Box(textBox._historyIndex < textBox._history.Count - 1);
 	}
+#nullable restore
 
 	[GeneratedDependencyProperty(DefaultValue = false)]
 	public static DependencyProperty CanPasteClipboardContentProperty { get; } = CreateCanPasteClipboardContentProperty();

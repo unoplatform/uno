@@ -45,27 +45,27 @@ namespace Microsoft.UI.Xaml
 			}
 		);
 
-		private static object HitTestVisible(DependencyObject instance, bool isGet, object valueToSet)
+#nullable enable
+		private static object? HitTestVisible(DependencyObject instance, bool isGet, object? valueToSet)
 		{
 			var element = (UIElement)instance;
 			if (isGet)
 			{
 				return Boxes.Box(element._isHitTestVisible);
 			}
-			else
-			{
-				var newValue = (bool)valueToSet;
-				if (newValue != element._isHitTestVisible)
-				{
-					element._isHitTestVisible = newValue;
-					// The value has changed.
-					return true;
-				}
 
-				// The value didn't change.
-				return false;
+			var newValue = (bool)valueToSet!;
+			if (newValue != element._isHitTestVisible)
+			{
+				element._isHitTestVisible = newValue;
+				// The value has changed.
+				return true;
 			}
+
+			// The value didn't change.
+			return false;
 		}
+#nullable restore
 
 
 		[GeneratedDependencyProperty(DefaultValue = 1.0, ChangedCallback = true)]
