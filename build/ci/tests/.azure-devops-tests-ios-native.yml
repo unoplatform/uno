@@ -15,6 +15,12 @@ parameters:
     value: '04'
   - key: '4'
     value: '05'
+  - key: '5'
+    value: '06'
+  - key: '6'
+    value: '07'
+  - key: '7'
+    value: '08'
 
   # Runtime Test Groups
   UITEST_RUNTIME_TEST_GROUP_COUNT: 8
@@ -179,7 +185,7 @@ jobs:
       JobName: 'iOS_Snapshot_Tests_Group_${{ snapshotGroup.value }}'
       JobDisplayName: 'Snapshot Tests ${{ snapshotGroup.key }}'
       TestRunName: 'iOS Native Snapshot Tests ${{ snapshotGroup.key }}'
-      JobTimeoutInMinutes: 60
+      JobTimeoutInMinutes: 90
       SamplesAppArtifactName: 'ios-uitest-build'
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: true
