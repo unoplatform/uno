@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.Helpers;
 using Uno.Xaml;
+using XamlParseException = Uno.Xaml.XamlParseException;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit;

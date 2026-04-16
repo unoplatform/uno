@@ -1,0 +1,17 @@
+<UserControl
+	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ImplicitXamlNamespaces_McIgnorable"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	mc:Ignorable="d"
+	d:DesignHeight="400"
+	d:DesignWidth="400">
+
+	<StackPanel>
+		<Button x:Name="McButton"
+				x:FieldModifier="public"
+				Content="MC Test" />
+		<TextBlock x:Name="McTextBlock"
+				   x:FieldModifier="public"
+				   Text="MC Ignorable Works" />
+	</StackPanel>
+</UserControl>

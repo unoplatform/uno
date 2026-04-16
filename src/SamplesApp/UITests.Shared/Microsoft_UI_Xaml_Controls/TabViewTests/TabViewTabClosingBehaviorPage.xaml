@@ -5,40 +5,41 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-	<Grid>
-		<StackPanel Orientation="Horizontal">
-			<Grid MaxWidth="500">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="*"/>
-				</Grid.ColumnDefinitions>
-				<muxc:TabView
-                    MaxWidth="500"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+    <Grid>
+        <StackPanel Orientation="Horizontal">
+            <Grid MaxWidth="500">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <muxc:TabView
                     x:Name="Tabs"
-                    TabCloseRequested="TabViewTabCloseRequested"
-                    AddTabButtonClick="AddButtonClick">
+                    MaxWidth="500"
+                    AddTabButtonClick="AddButtonClick"
+                    TabCloseRequested="TabViewTabCloseRequested">
 
-					<muxc:TabViewItem Header="Tab 0" AutomationProperties.Name="Tab 0"/>
-					<muxc:TabViewItem Header="Tab 1" AutomationProperties.Name="Tab 1"/>
-					<muxc:TabViewItem Header="Tab 2" AutomationProperties.Name="Tab 2"/>
-					<muxc:TabViewItem Header="Tab 3" AutomationProperties.Name="Tab 3"/>
-					<muxc:TabViewItem Header="Tab 4" AutomationProperties.Name="Tab 4"/>
-					<muxc:TabViewItem Header="Tab 5" AutomationProperties.Name="Tab 5"/>
-				</muxc:TabView>
-			</Grid>
-			<StackPanel>
-				<TextBlock Text="Actual width"/>
-				<TextBlock x:Name="TabViewWidth" AutomationProperties.Name="TabViewWidth"/>
-				<TextBlock Text="Scroll buttons status"/>
-				<TextBlock x:Name="ScrollButtonStatus" AutomationProperties.Name="ScrollButtonStatus" />
-			</StackPanel>
-			<StackPanel>
-				<Button AutomationProperties.Name="GetActualWidthButton"
-                        Click="GetActualWidthsButton_Click"
-                        Content="Get actual TabView width"/>
-			</StackPanel>
-		</StackPanel>
-	</Grid>
+                    <muxc:TabViewItem AutomationProperties.Name="Tab 0" Header="Tab 0" />
+                    <muxc:TabViewItem AutomationProperties.Name="Tab 1" Header="Tab 1" />
+                    <muxc:TabViewItem AutomationProperties.Name="Tab 2" Header="Tab 2" />
+                    <muxc:TabViewItem AutomationProperties.Name="Tab 3" Header="Tab 3" />
+                    <muxc:TabViewItem AutomationProperties.Name="Tab 4" Header="Tab 4" />
+                    <muxc:TabViewItem AutomationProperties.Name="Tab 5" Header="Tab 5" />
+                </muxc:TabView>
+            </Grid>
+            <StackPanel>
+                <TextBlock Text="Actual width" />
+                <TextBlock x:Name="TabViewWidth" AutomationProperties.Name="TabViewWidth" />
+                <TextBlock Text="Scroll buttons status" />
+                <TextBlock x:Name="ScrollButtonStatus" AutomationProperties.Name="ScrollButtonStatus" />
+            </StackPanel>
+            <StackPanel>
+                <Button
+                    AutomationProperties.Name="GetActualWidthButton"
+                    Click="GetActualWidthsButton_Click"
+                    Content="Get actual TabView width" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
 </Page>

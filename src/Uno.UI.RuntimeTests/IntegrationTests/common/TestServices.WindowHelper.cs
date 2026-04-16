@@ -13,9 +13,11 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using System.Linq;
 using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
 
+using Windows.Foundation;
+
 #if HAS_UNO
 using DirectUI;
-
+using Uno.UI.Xaml.Input;
 #endif
 
 #if WINAPPSDK
@@ -47,9 +49,10 @@ namespace Private.Infrastructure
 					_currentTestWindow = value;
 
 #if !HAS_UNO
-					// Inject the current test window in the finger test service to avoid a
+					// Inject the current test window in the input injection services to avoid a
 					// dependency on TestServices in the Uno.UI.Toolkit project
 					Uno.UI.Toolkit.DevTools.Input.Finger.TestServices_WindowHelper_CurrentTestWindow = value;
+					Uno.UI.Toolkit.DevTools.Input.Mouse.TestServices_WindowHelper_CurrentTestWindow = value;
 #endif
 				}
 			}
@@ -134,6 +137,8 @@ namespace Private.Infrastructure
 			public static UnitTestDispatcherCompat RootElementDispatcher => UseActualWindowRoot
 				? (CurrentTestWindow is { } ? UnitTestDispatcherCompat.From(CurrentTestWindow) : UnitTestDispatcherCompat.Instance)
 				: UnitTestDispatcherCompat.From(EmbeddedTestRoot.control);
+
+			public static Rect WindowBounds => CurrentTestWindow?.Bounds ?? default;
 
 			internal static Page SetupSimulatedAppPage()
 			{
@@ -484,6 +489,18 @@ namespace Private.Infrastructure
 			}
 
 #if HAS_UNO
+			internal async static Task SetLastInputMethod(InputDeviceType lastInputType, XamlRoot xamlRoot)
+			{
+				// Uno specific: Implementation is a bit different in WinUI.
+				await RunOnUIThread(() =>
+				{
+					if (TestServices.WindowHelper.XamlRoot?.VisualTree?.ContentRoot?.InputManager is { } inputManager)
+					{
+						inputManager.LastInputDeviceType = lastInputType;
+					}
+				});
+			}
+
 			internal async static Task<ToolTip> TestGetActualToolTip(UIElement element)
 			{
 				ToolTip toolTip = null;

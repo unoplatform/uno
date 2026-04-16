@@ -32,4 +32,22 @@ public partial class RangeBase : Control
 	{
 		return ((RangeBase)dependencyObject).SetRangeBaseValue(MaximumProperty, baseValue);
 	}
+
+	// Uno specific: coercion workaround
+
+	private static void OnRangeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+	{
+		if (sender is not RangeBase control) return;
+
+		if (e.Property == MinimumProperty || e.Property == MaximumProperty)
+		{
+			var clampedValue = control.CoerceValueBetween(control.m_uncoercedValue, control.Minimum, control.Maximum);
+			var currentValue = control.Value;
+
+			if (clampedValue != currentValue)
+			{
+				control.CoerceValue(ValueProperty);
+			}
+		}
+	}
 }

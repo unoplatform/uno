@@ -55,7 +55,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 #endif
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidCollection.Id.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidCollection.Type.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidCollection.UsagePage.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidCollection.UsageId.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidCollection.UsagePage.get
 	}
 }

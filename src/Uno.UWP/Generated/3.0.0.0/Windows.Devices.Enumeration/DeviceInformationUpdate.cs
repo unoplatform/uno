@@ -11,16 +11,6 @@ namespace Windows.Devices.Enumeration
 		// Skipping already declared property Id
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyDictionary<string, object> Properties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> DeviceInformationUpdate.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20DeviceInformationUpdate.Properties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Enumeration.DeviceInformationKind Kind
 		{
 			get
@@ -29,8 +19,18 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyDictionary<string, object> Properties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> DeviceInformationUpdate.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20DeviceInformationUpdate.Properties");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationUpdate.Id.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationUpdate.Properties.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationUpdate.Kind.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationUpdate.Properties.get
 	}
 }

@@ -33,8 +33,13 @@ namespace Windows.UI.Shell
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Shell.TaskbarManager.IsSupported.get
-		// Forced skipping of method Windows.UI.Shell.TaskbarManager.IsPinningAllowed.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.UI.Shell.TaskbarManager GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member TaskbarManager TaskbarManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TaskbarManager%20TaskbarManager.GetDefault%28%29");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> IsCurrentAppPinnedAsync()
@@ -84,12 +89,7 @@ namespace Windows.UI.Shell
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> TaskbarManager.TryUnpinSecondaryTileAsync(string tileId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20TaskbarManager.TryUnpinSecondaryTileAsync%28string%20tileId%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Shell.TaskbarManager GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member TaskbarManager TaskbarManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TaskbarManager%20TaskbarManager.GetDefault%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.IsPinningAllowed.get
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.IsSupported.get
 	}
 }

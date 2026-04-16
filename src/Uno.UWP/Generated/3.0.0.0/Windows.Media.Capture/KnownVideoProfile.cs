@@ -36,9 +36,6 @@ namespace Windows.Media.Capture
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		VideoHdr8 = 9,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		CompressedCamera = 10,
-#endif
 	}
 #endif
 }

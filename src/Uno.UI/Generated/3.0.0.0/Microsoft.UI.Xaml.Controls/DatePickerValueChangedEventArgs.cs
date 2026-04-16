@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property NewDate
 		// Skipping already declared property OldDate
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs.OldDate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs.NewDate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerValueChangedEventArgs.OldDate.get
 	}
 }

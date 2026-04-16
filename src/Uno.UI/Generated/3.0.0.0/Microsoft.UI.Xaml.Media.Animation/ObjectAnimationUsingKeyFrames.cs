@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty EnableDependentAnimationProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(EnableDependentAnimation), typeof(bool),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool EnableDependentAnimation
 		{
 			get
@@ -23,19 +31,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Skipping already declared property KeyFrames
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty EnableDependentAnimationProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(EnableDependentAnimation), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.ObjectAnimationUsingKeyFrames()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.ObjectAnimationUsingKeyFrames()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.KeyFrames.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.EnableDependentAnimation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.EnableDependentAnimation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.KeyFrames.get
 	}
 }

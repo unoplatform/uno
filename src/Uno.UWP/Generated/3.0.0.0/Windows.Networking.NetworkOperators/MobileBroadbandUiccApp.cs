@@ -33,8 +33,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccApp.Id.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccApp.Kind.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult> GetRecordDetailsAsync(global::System.Collections.Generic.IEnumerable<uint> uiccFilePath)
@@ -49,5 +47,7 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandUiccAppReadRecordResult> MobileBroadbandUiccApp.ReadRecordAsync(IEnumerable<uint> uiccFilePath, int recordIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMobileBroadbandUiccAppReadRecordResult%3E%20MobileBroadbandUiccApp.ReadRecordAsync%28IEnumerable%3Cuint%3E%20uiccFilePath%2C%20int%20recordIndex%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccApp.Id.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccApp.Kind.get
 	}
 }

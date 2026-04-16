@@ -22,12 +22,10 @@ using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
-internal sealed partial class UnoSKCanvasView : GLSurfaceView
+internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderView
 {
-	internal UnoExploreByTouchHelper ExploreByTouchHelper { get; }
-	internal TextInputPlugin TextInputPlugin { get; }
-
-	internal static UnoSKCanvasView? Instance { get; private set; }
+	public UnoExploreByTouchHelper ExploreByTouchHelper { get; }
+	public TextInputPlugin TextInputPlugin { get; }
 
 	private readonly InternalRenderer _renderer;
 
@@ -36,7 +34,6 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 		SetEGLContextClientVersion(2);
 		SetEGLConfigChooser(8, 8, 8, 8, 0, 8);
 		SetRenderer(_renderer = new InternalRenderer());
-		Instance = this;
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
 		ViewCompat.SetAccessibilityDelegate(this, ExploreByTouchHelper);
@@ -53,12 +50,12 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 		RenderMode = Rendermode.WhenDirty;
 	}
 
-	internal void ResetRendererContext()
+	public void ResetRendererContext()
 	{
 		_renderer.ResetContext();
 	}
 
-	internal void InvalidateRender()
+	public void InvalidateRender()
 	{
 		ExploreByTouchHelper.InvalidateRoot();
 		// Request the call of IRenderer.OnDrawFrame for one frame

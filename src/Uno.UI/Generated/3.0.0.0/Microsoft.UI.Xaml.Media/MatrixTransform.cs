@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class MatrixTransform : global::Microsoft.UI.Xaml.Media.Transform
 	{
-		// Skipping already declared property Matrix
 		// Skipping already declared property MatrixProperty
+		// Skipping already declared property Matrix
 		// Skipping already declared method Microsoft.UI.Xaml.Media.MatrixTransform.MatrixTransform()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.MatrixTransform()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.MatrixProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.Matrix.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.Matrix.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.MatrixProperty.get
 	}
 }

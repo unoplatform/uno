@@ -5,25 +5,29 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="using:Uno.UI.Toolkit"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-	      Padding="32,32" x:Name="parentView">
+    <Grid
+        x:Name="parentView"
+        Padding="32,32"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-		<toolkit:ElevatedView Background="Gray"
-		                      ShadowColor="Black"
-		                      Height="160"
-		                      Width="200"
-		                      Elevation="8"
-		                      HorizontalAlignment="Left"
-		                      VerticalAlignment="Top"
-		                      x:Name="elevatedView">
+        <toolkit:ElevatedView
+            x:Name="elevatedView"
+            Width="200"
+            Height="160"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Background="Gray"
+            Elevation="8"
+            ShadowColor="Black">
 
-			<TextBlock Text="Hello, world!"
-			           Margin="20"
-					   x:Name="elevatedViewText"
-			           FontSize="30" />
-		</toolkit:ElevatedView>
-	</Grid>
+            <TextBlock
+                x:Name="elevatedViewText"
+                Margin="20"
+                FontSize="30"
+                Text="Hello, world!" />
+        </toolkit:ElevatedView>
+    </Grid>
 </Page>

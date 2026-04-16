@@ -32,5 +32,19 @@ namespace Microsoft.UI.Xaml.Controls
 				VisualStateManager.GoToState(this, "Normal", true);
 			}
 		}
+
+		internal override string GetPlainText()
+		{
+			if (Header is not null)
+			{
+				var plainText = FrameworkElement.GetStringFromObject(Header);
+				if (!string.IsNullOrEmpty(plainText))
+				{
+					return plainText;
+				}
+			}
+
+			return PlaceholderText ?? string.Empty;
+		}
 	}
 }

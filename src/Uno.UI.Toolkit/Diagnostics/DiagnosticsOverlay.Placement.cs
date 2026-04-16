@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
+#if __ANDROID__ || __IOS__
 using Windows.UI.ViewManagement;
+#endif
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -44,7 +46,7 @@ public sealed partial class DiagnosticsOverlay
 
 	private PlacementOrigin _origin;
 	private Point _location; // The location, relative to the _origin
-#if HAS_UNO_WINUI
+#if __ANDROID__ || __IOS__
 	private StatusBar? _statusBar;
 #endif
 	private bool _isPlacementInit;
@@ -54,7 +56,7 @@ public sealed partial class DiagnosticsOverlay
 		CleanPlacement();
 		RestoreLocation();
 
-#if HAS_UNO_WINUI
+#if __ANDROID__ || __IOS__
 		if (ApiInformation.IsMethodPresent(typeof(StatusBar), nameof(StatusBar.GetForCurrentView))
 			&& StatusBar.GetForCurrentView() is { } statusBar)
 		{
@@ -63,7 +65,9 @@ public sealed partial class DiagnosticsOverlay
 			statusBar.Hiding += OnStatusBarChanged;
 			statusBar.Showing += OnStatusBarChanged;
 		}
+#endif
 
+#if HAS_UNO_WINUI
 		_root.VisualTree.VisibleBoundsChanged += OnVisibleBoundsChanged;
 #endif
 
@@ -74,13 +78,15 @@ public sealed partial class DiagnosticsOverlay
 	{
 		_isPlacementInit = false;
 
-#if HAS_UNO_WINUI
+#if __ANDROID__ || __IOS__
 		if (_statusBar is { } statusBar)
 		{
 			statusBar.Hiding -= OnStatusBarChanged;
 			statusBar.Showing -= OnStatusBarChanged;
 		}
+#endif
 
+#if HAS_UNO_WINUI
 		_root.VisualTree.VisibleBoundsChanged -= OnVisibleBoundsChanged;
 #endif
 	}
@@ -143,10 +149,12 @@ public sealed partial class DiagnosticsOverlay
 	private void OnAnchorManipulatedCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
 		=> UpdatePlacement();
 
-#if HAS_UNO_WINUI
+#if __ANDROID__ || __IOS__
 	private void OnStatusBarChanged(StatusBar sender, object args)
 		=> UpdatePlacement();
+#endif
 
+#if HAS_UNO_WINUI
 	private void OnVisibleBoundsChanged(object? sender, EventArgs e)
 		=> UpdatePlacement();
 #endif

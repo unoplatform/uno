@@ -23,7 +23,6 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.UIViewSettings.UserInteractionMode.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.ViewManagement.UIViewSettings GetForCurrentView()
@@ -31,5 +30,6 @@ namespace Windows.UI.ViewManagement
 			throw new global::System.NotImplementedException("The member UIViewSettings UIViewSettings.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIViewSettings%20UIViewSettings.GetForCurrentView%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.ViewManagement.UIViewSettings.UserInteractionMode.get
 	}
 }

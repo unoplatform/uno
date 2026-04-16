@@ -27,7 +27,7 @@ namespace Uno.Samples.UITest.Generator
 
 		private static readonly string[] _defaultCategories = new[] { "Default" };
 
-		private const int GroupCount = 5;
+		private const int GroupCount = 8;
 
 		public void Initialize(GeneratorInitializationContext context)
 		{

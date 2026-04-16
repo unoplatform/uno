@@ -23,7 +23,6 @@ namespace Windows.Security.Credentials
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Credentials.KeyCredential.Name.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer RetrievePublicKey()
@@ -52,5 +51,6 @@ namespace Windows.Security.Credentials
 			throw new global::System.NotImplementedException("The member IAsyncOperation<KeyCredentialAttestationResult> KeyCredential.GetAttestationAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CKeyCredentialAttestationResult%3E%20KeyCredential.GetAttestationAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Credentials.KeyCredential.Name.get
 	}
 }

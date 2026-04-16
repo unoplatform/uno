@@ -63,11 +63,6 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.OutboundMaxBitsPerSecond.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.InboundMaxBitsPerSecond.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.IanaInterfaceType.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.NetworkItem.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.NetworkAdapterId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Connectivity.ConnectionProfile> GetConnectedProfileAsync()
@@ -75,5 +70,10 @@ namespace Windows.Networking.Connectivity
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ConnectionProfile> NetworkAdapter.GetConnectedProfileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CConnectionProfile%3E%20NetworkAdapter.GetConnectedProfileAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.IanaInterfaceType.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.InboundMaxBitsPerSecond.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.NetworkAdapterId.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.NetworkItem.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.OutboundMaxBitsPerSecond.get
 	}
 }

@@ -1,5 +1,0 @@
-﻿<#@template language="C#" compilerOptions="/debug-" debug="false" #>
-<#@output extension=".cs" #>
-#if __ANDROID__
-<#@include file="../Uno.UI/BaseActivity.Callbacks.Implementation.Android.tt"#>
-#endif 

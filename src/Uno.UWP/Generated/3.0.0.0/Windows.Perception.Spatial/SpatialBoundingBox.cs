@@ -10,6 +10,14 @@ namespace Windows.Perception.Spatial
 	{
 		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingBox.SpatialBoundingBox()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public SpatialBoundingBox(global::System.Numerics.Vector3 _Center, global::System.Numerics.Vector3 _Extents)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialBoundingBox", "SpatialBoundingBox.SpatialBoundingBox(Vector3 _Center, Vector3 _Extents)");
+		}
+#endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingBox.SpatialBoundingBox(System.Numerics.Vector3, System.Numerics.Vector3)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Vector3 Center;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

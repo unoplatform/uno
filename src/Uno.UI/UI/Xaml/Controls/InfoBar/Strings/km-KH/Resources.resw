@@ -126,7 +126,7 @@
     <comment>The tooltip that appears on the Close button in InfoBar.</comment>
   </data>
   <data name="InfoBarClosedNotification" xml:space="preserve">
-    <value>បោះបង់ចោលរបារព័ត៌មាន</value>
+    <value>បានបោះបង់របារព័ត៌មាន</value>
     <comment>The string read by narrator when the InfoBar closes.</comment>
   </data>
   <data name="InfoBarCustomLandmarkName" xml:space="preserve">
@@ -134,7 +134,7 @@
     <comment>This is the custom landmark used to denote an InfoBar to narrator.</comment>
   </data>
   <data name="InfoBarIconSeverityErrorName" xml:space="preserve">
-    <value>រូបតំណាងបញ្ហា</value>
+    <value>រូបតំណាងកំហុស</value>
     <comment>Automation name used to announce the severity error icon.</comment>
   </data>
   <data name="InfoBarIconSeverityInformationalName" xml:space="preserve">
@@ -154,7 +154,7 @@
     <comment>The formatted string read by narrator when the InfoBar opens: "{Severity level}, {Title} {Message}"</comment>
   </data>
   <data name="InfoBarSeverityErrorName" xml:space="preserve">
-    <value>សារព័ត៌មាន បញ្ហាធ្ងន់ធ្ងរ</value>
+    <value>សារអំពីព័ត៌មាន កំហុសធ្ងន់ធ្ងរ</value>
     <comment>Name used to announce severity error to users.</comment>
   </data>
   <data name="InfoBarSeverityInformationalName" xml:space="preserve">

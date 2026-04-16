@@ -8,16 +8,16 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 	public partial class ContactEmail
 	{
-		// Skipping already declared property Kind
-		// Skipping already declared property Description
 		// Skipping already declared property Address
+		// Skipping already declared property Description
+		// Skipping already declared property Kind
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactEmail.ContactEmail()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.ContactEmail()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Address.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Address.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Kind.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Kind.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Description.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Description.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Kind.set
 	}
 }

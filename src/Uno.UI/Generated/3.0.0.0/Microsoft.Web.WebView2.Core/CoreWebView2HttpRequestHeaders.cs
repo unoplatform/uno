@@ -3,69 +3,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CoreWebView2HttpRequestHeaders : global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>
+	public partial class CoreWebView2HttpRequestHeaders : global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>, global::System.Collections.IEnumerable
 	{
-#if false
-		internal CoreWebView2HttpRequestHeaders()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public string GetHeader(string name)
-		{
-			throw new global::System.NotImplementedException("The member string CoreWebView2HttpRequestHeaders.GetHeader(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2HttpRequestHeaders.GetHeader%28string%20name%29");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator GetHeaders(string name)
-		{
-			throw new global::System.NotImplementedException("The member CoreWebView2HttpHeadersCollectionIterator CoreWebView2HttpRequestHeaders.GetHeaders(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2HttpHeadersCollectionIterator%20CoreWebView2HttpRequestHeaders.GetHeaders%28string%20name%29");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public bool Contains(string name)
-		{
-			throw new global::System.NotImplementedException("The member bool CoreWebView2HttpRequestHeaders.Contains(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2HttpRequestHeaders.Contains%28string%20name%29");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public void SetHeader(string name, string value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders", "void CoreWebView2HttpRequestHeaders.SetHeader(string name, string value)");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public void RemoveHeader(string name)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders", "void CoreWebView2HttpRequestHeaders.RemoveHeader(string name)");
-		}
-#endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.First()
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.GetHeader(string)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.GetHeaders(string)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.Contains(string)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.SetHeader(string, string)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.RemoveHeader(string)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.GetEnumerator()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders.System.Collections.IEnumerable.GetEnumerator()
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
-#if false
-		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, string>> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 		// Processing: System.Collections.IEnumerable
-#if false
-		// DeclaringType: System.Collections.IEnumerable
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 	}
 }

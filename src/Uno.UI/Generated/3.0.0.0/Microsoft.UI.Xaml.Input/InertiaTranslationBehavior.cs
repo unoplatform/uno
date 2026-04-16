@@ -8,8 +8,8 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class InertiaTranslationBehavior
 	{
-		// Skipping already declared property DesiredDisplacement
 		// Skipping already declared property DesiredDeceleration
+		// Skipping already declared property DesiredDisplacement
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.DesiredDeceleration.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.DesiredDeceleration.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaTranslationBehavior.DesiredDisplacement.get

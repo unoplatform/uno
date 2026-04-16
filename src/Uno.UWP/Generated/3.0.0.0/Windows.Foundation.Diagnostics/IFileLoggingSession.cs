@@ -14,7 +14,6 @@ namespace Windows.Foundation.Diagnostics
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Foundation.Diagnostics.IFileLoggingSession.Name.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void AddLoggingChannel(global::Windows.Foundation.Diagnostics.ILoggingChannel loggingChannel);
 #endif
@@ -27,6 +26,7 @@ namespace Windows.Foundation.Diagnostics
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CloseAndSaveToFileAsync();
 #endif
+		// Forced skipping of method Windows.Foundation.Diagnostics.IFileLoggingSession.Name.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.IFileLoggingSession.LogFileGenerated.add
 		// Forced skipping of method Windows.Foundation.Diagnostics.IFileLoggingSession.LogFileGenerated.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

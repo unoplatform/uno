@@ -162,7 +162,7 @@
     <comment>Name used to announce severity informational to users.</comment>
   </data>
   <data name="InfoBarSeveritySuccessName" xml:space="preserve">
-    <value>Информационное сообщение,серьезность определена</value>
+    <value>Информационное сообщение, серьезность определена</value>
     <comment>Name used to announce severity success to users.</comment>
   </data>
   <data name="InfoBarSeverityWarningName" xml:space="preserve">

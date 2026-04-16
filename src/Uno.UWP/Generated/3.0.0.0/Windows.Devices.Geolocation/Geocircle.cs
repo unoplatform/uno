@@ -8,10 +8,10 @@ namespace Windows.Devices.Geolocation
 #endif
 	public partial class Geocircle : global::Windows.Devices.Geolocation.IGeoshape
 	{
-		// Skipping already declared property Center
-		// Skipping already declared property Radius
 		// Skipping already declared property AltitudeReferenceSystem
+		// Skipping already declared property Center
 		// Skipping already declared property GeoshapeType
+		// Skipping already declared property Radius
 		// Skipping already declared property SpatialReferenceId
 		// Skipping already declared method Windows.Devices.Geolocation.Geocircle.Geocircle(Windows.Devices.Geolocation.BasicGeoposition, double)
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.Geocircle(Windows.Devices.Geolocation.BasicGeoposition, double)
@@ -31,11 +31,11 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.Geocircle(Windows.Devices.Geolocation.BasicGeoposition, double, Windows.Devices.Geolocation.AltitudeReferenceSystem, uint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.Center.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.Radius.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.GeoshapeType.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.SpatialReferenceId.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.AltitudeReferenceSystem.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.Center.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.GeoshapeType.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.Radius.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.SpatialReferenceId.get
 		// Processing: Windows.Devices.Geolocation.IGeoshape
 	}
 }

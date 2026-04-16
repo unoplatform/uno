@@ -28,6 +28,20 @@ public partial class FrameworkElement
 	private Brush _themeForeground;
 	private bool _isForegroundFrozen;
 
+	/// <summary>
+	/// Returns true when this element is a theme boundary that should block automatic
+	/// DP inheritance cascade for Foreground-type properties.
+	/// </summary>
+	/// <remarks>
+	/// In WinUI, Foreground is not an inherited DP — it propagates through the
+	/// TextFormatting system which has a freeze flag at theme boundaries.
+	/// In Uno, Foreground IS inherited (FrameworkPropertyMetadataOptions.Inherits),
+	/// so a parent setting Foreground auto-cascades to ALL descendants, bypassing
+	/// the theme walk's early-return at elements with explicit RequestedTheme.
+	/// This property lets DependencyObjectStore block that cascade at theme boundaries.
+	/// </remarks>
+	internal bool IsForegroundInheritanceBlocked => _isForegroundFrozen;
+
 	#region Requested theme dependency property
 
 	public ElementTheme RequestedTheme
@@ -176,6 +190,10 @@ public partial class FrameworkElement
 		}
 
 		SetIsProcessingThemeWalk(true);
+		// MUX Reference: CCoreServices::NotifyThemeChange() calls
+		// BeginCachingThemeResources() before the theme walk.
+		// Reentrant-safe: nested calls (recursive child walks) get no-op guards.
+		using var cacheGuard = ThemeWalkResourceCache.Instance.BeginCachingThemeResources();
 		try
 		{
 			NotifyThemeChangedCore(theme, forceRefresh);
@@ -204,13 +222,16 @@ public partial class FrameworkElement
 
 		bool themeChanged = oldBase != newBase || forceRefresh;
 
-		// 2. PUSH this element's theme to global context for resource lookups
+		// 2. PUSH this element's theme to global context
+		// The push/pop is still needed because ResourceDictionary.GetActiveThemeDictionary()
+		// uses the global theme stack to determine which theme sub-dictionary to return.
+		// Even though ThemeResourceReference pins the target dictionary, the dictionary's
+		// TryGetValue still needs to know the active theme to select Light/Dark sub-dict.
 		var currentActiveTheme = ResourceDictionary.GetActiveTheme();
 		string themeKey;
 		bool needsPush;
 		if (newBase == Theme.None)
 		{
-			// No explicit theme resolved - use current active theme, don't push
 			themeKey = currentActiveTheme.Key;
 			needsPush = false;
 		}
@@ -234,10 +255,6 @@ public partial class FrameworkElement
 			}
 			else if (themeChanged)
 			{
-				// MUX Reference: CUIElement/CControl/CTextBlock::PullInheritedTextFormatting
-				// For children inheriting theme (RequestedTheme == Default),
-				// pull the frozen foreground from the parent, just as WinUI children
-				// pull from parent's TextFormatting during EnsureTextFormatting.
 				var parent = this.GetParent() as FrameworkElement;
 				var parentFg = parent?._themeForeground;
 				if (parentFg is not null)
@@ -246,8 +263,6 @@ public partial class FrameworkElement
 				}
 				else if (_themeForeground is not null)
 				{
-					// Parent no longer has a frozen foreground (e.g., root switched
-					// from Dark back to Default). Clear our stale inherited value.
 					_themeForeground = null;
 					_isForegroundFrozen = false;
 
@@ -261,7 +276,7 @@ public partial class FrameworkElement
 				}
 			}
 
-			// 4. Update theme resources (uses pushed global context)
+			// 4. Update theme resources via pinned-dictionary path
 			if (themeChanged)
 			{
 				UpdateThemeBindings(ResourceUpdateReason.ThemeResource);
@@ -277,9 +292,6 @@ public partial class FrameworkElement
 			}
 
 			// 7. Persist theme AFTER core walk (MUX Reference: Theming.cpp line 155)
-			// Placed inside the virtual method so subclasses (e.g., PopupRoot)
-			// can omit persistence — matching WinUI where CPopupRoot overrides
-			// NotifyThemeChanged and never calls SetTheme on itself.
 			SetTheme(theme);
 		}
 		finally
@@ -408,23 +420,23 @@ public partial class FrameworkElement
 
 		if (freeze)
 		{
-			// MUX Reference framework.cpp line 3415-3451:
-			// EnsureTextFormatting, SetRequestedThemeForSubTree, LookupThemeResource,
-			// SetForeground, SetFreezeForeground(true), MarkInheritedPropertyDirty
-
-			// Check if the Foreground DP is explicitly set (locally, by style, or animated).
-			// If so, that value takes priority and we don't need to freeze.
-			// Matches WinUI: HasLocalOrModifierValue || IsPropertySetByStyle
 			DependencyProperty foregroundProperty = GetForegroundProperty();
+
+			// MUX Reference framework.cpp line 3423-3429:
+			// WinUI skips the entire freeze when Foreground is set locally or by style,
+			// relying on PullInheritedTextFormatting to propagate the styled value.
+			// In Uno, Foreground is an inherited DP, so children auto-cascade from
+			// the parent. We still need _themeForeground for children that don't
+			// inherit via DP (e.g., popup/template content), but we skip the SetValue
+			// to avoid overriding the styled value on THIS element.
+			bool skipSetValue = false;
 			if (foregroundProperty is not null)
 			{
 				var precedence = this.GetCurrentHighestValuePrecedence(foregroundProperty);
-				if (precedence == DependencyPropertyValuePrecedences.Local
-					|| precedence == DependencyPropertyValuePrecedences.ExplicitStyle
-					|| precedence == DependencyPropertyValuePrecedences.ImplicitStyle
-					|| precedence == DependencyPropertyValuePrecedences.Animations)
+				if (precedence != DependencyPropertyValuePrecedences.DefaultValue
+					&& precedence != DependencyPropertyValuePrecedences.Inheritance)
 				{
-					return;
+					skipSetValue = true;
 				}
 			}
 
@@ -437,13 +449,14 @@ public partial class FrameworkElement
 					"DefaultTextForegroundThemeBrush", null);
 				if (brush is not null)
 				{
-					// Store frozen state (matches WinUI TextFormatting fields)
+					// Always store for child inheritance (popup content, template children)
 					_themeForeground = brush;
 					_isForegroundFrozen = true;
 
-					// Apply to the DP at Inheritance precedence so it's visible
-					// to the rendering system while being overridable by Local/Style.
-					if (foregroundProperty is not null)
+					// Only set the DP when Foreground isn't already set by a higher
+					// precedence (local/style). This matches WinUI's skip behavior
+					// while preserving _themeForeground for child propagation.
+					if (foregroundProperty is not null && !skipSetValue)
 					{
 						this.SetValue(
 							foregroundProperty, brush,

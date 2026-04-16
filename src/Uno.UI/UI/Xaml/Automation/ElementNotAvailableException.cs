@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Xaml.Automation
 {
-	public class ElementNotAvailableException : Exception
+	public partial class ElementNotAvailableException : Exception
 	{
 		public ElementNotAvailableException()
 		{

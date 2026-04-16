@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TabViewItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property IconElement
-		// Skipping already declared property TabGeometry
 		// Skipping already declared property IconElementProperty
 		// Skipping already declared property TabGeometryProperty
+		// Skipping already declared property IconElement
+		// Skipping already declared property TabGeometry
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.TabViewItemTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.TabViewItemTemplateSettings()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.IconElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.TabGeometryProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.IconElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.IconElement.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.TabGeometry.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.TabGeometry.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.TabGeometryProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.IconElementProperty.get
 	}
 }

@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class RepeatButton : global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase
 	{
-		// Skipping already declared property Interval
-		// Skipping already declared property Delay
 		// Skipping already declared property DelayProperty
 		// Skipping already declared property IntervalProperty
+		// Skipping already declared property Delay
+		// Skipping already declared property Interval
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.RepeatButton()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.RepeatButton()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.DelayProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.IntervalProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.Delay.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.Delay.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.Interval.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.Interval.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.DelayProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.IntervalProperty.get
 	}
 }

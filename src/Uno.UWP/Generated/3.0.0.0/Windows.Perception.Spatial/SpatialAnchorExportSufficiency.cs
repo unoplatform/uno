@@ -44,7 +44,7 @@ namespace Windows.Perception.Spatial
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.IsMinimallySufficient.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.SufficiencyLevel.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.RecommendedSufficiencyLevel.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.SufficiencyLevel.get
 	}
 }

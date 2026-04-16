@@ -10,7 +10,7 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property Exponent
 		// Skipping already declared property Mode
-		// Forced skipping of method Microsoft.UI.Composition.ExponentialEasingFunction.Mode.get
 		// Forced skipping of method Microsoft.UI.Composition.ExponentialEasingFunction.Exponent.get
+		// Forced skipping of method Microsoft.UI.Composition.ExponentialEasingFunction.Mode.get
 	}
 }

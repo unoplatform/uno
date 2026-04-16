@@ -43,8 +43,8 @@ namespace Windows.Security.Credentials
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.CertificateChainBuffer.get
 		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.AttestationBuffer.get
+		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.CertificateChainBuffer.get
 		// Forced skipping of method Windows.Security.Credentials.KeyCredentialAttestationResult.Status.get
 	}
 }

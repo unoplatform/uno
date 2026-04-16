@@ -26,7 +26,13 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.GeovisitMonitor()
-		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.MonitoringScope.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geovisit> GetLastReportAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Geovisit> GeovisitMonitor.GetLastReportAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGeovisit%3E%20GeovisitMonitor.GetLastReportAsync%28%29");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start(global::Windows.Devices.Geolocation.VisitMonitoringScope value)
@@ -43,13 +49,7 @@ namespace Windows.Devices.Geolocation
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.VisitStateChanged.add
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.VisitStateChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geovisit> GetLastReportAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Geovisit> GeovisitMonitor.GetLastReportAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGeovisit%3E%20GeovisitMonitor.GetLastReportAsync%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.MonitoringScope.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Geolocation.GeovisitMonitor, global::Windows.Devices.Geolocation.GeovisitStateChangedEventArgs> VisitStateChanged

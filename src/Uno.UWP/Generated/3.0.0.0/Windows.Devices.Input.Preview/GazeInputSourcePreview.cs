@@ -13,12 +13,6 @@ namespace Windows.Devices.Input.Preview
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeMoved.add
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeMoved.remove
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeEntered.add
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeEntered.remove
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeExited.add
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeExited.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.Preview.GazeInputSourcePreview GetForCurrentView()
@@ -33,6 +27,12 @@ namespace Windows.Devices.Input.Preview
 			throw new global::System.NotImplementedException("The member GazeDeviceWatcherPreview GazeInputSourcePreview.CreateWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GazeDeviceWatcherPreview%20GazeInputSourcePreview.CreateWatcher%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeEntered.add
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeEntered.remove
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeExited.add
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeExited.remove
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeMoved.add
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeMoved.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeInputSourcePreview, global::Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs> GazeEntered

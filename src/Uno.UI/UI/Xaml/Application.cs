@@ -151,13 +151,40 @@ namespace Microsoft.UI.Xaml
 
 		internal bool IsSuspended { get; set; }
 
-		private void InitializeSystemTheme()
+		internal void InitializeSystemTheme()
 		{
 			if (!IsThemeSetExplicitly)
 			{
 				// just cache the theme, but do not notify about a change unnecessarily
 				InternalRequestedTheme = GetSystemTheme();
 			}
+
+			// Force-sync ResourceDictionary's static Themes.Active with the application's
+			// resolved theme before any resource lookup can happen at startup.
+			//
+			// Themes.Active is normally updated as a side-effect of the InternalRequestedTheme
+			// setter (via UpdateRequestedThemesForResources). However, there are two startup
+			// paths that can leave Themes.Active at its static default ("Default") while
+			// Application.RequestedTheme reports a real theme:
+			//
+			//   1. App.xaml declares RequestedTheme="Dark" before this method runs.
+			//      SetExplicitRequestedTheme(Dark) -> SetRequestedTheme(Dark) sees that the
+			//      backing field already equals Dark (because _requestedTheme's field default
+			//      is ApplicationTheme.Dark) and short-circuits as a no-op, never invoking
+			//      the InternalRequestedTheme setter.
+			//
+			//   2. IsThemeSetExplicitly was already true when this method is reached, so the
+			//      `if (!IsThemeSetExplicitly)` block above is skipped and the setter never runs.
+			//
+			// In both cases, ThemeDictionary lookups performed while loading Application.Resources
+			// (and the first frames that reference ThemeResource keys) would hit GetActiveTheme()
+			// returning "Default", resolving against the wrong sub-dictionary. For a dictionary
+			// that only defines "Light" and "Dark" sub-dicts, this means the lookup misses
+			// entirely (and potentially poisons KeyNotFoundCache).
+			//
+			// This unconditional call guarantees Themes.Active is coherent with
+			// InternalRequestedTheme by the time the runtime starts consuming resources.
+			UpdateRequestedThemesForResources();
 		}
 
 		private ApplicationTheme InternalRequestedTheme

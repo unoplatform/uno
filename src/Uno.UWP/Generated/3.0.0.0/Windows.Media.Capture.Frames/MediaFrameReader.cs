@@ -27,8 +27,6 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReader.FrameArrived.add
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReader.FrameArrived.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.Frames.MediaFrameReference TryAcquireLatestFrame()
@@ -50,6 +48,8 @@ namespace Windows.Media.Capture.Frames
 			throw new global::System.NotImplementedException("The member IAsyncAction MediaFrameReader.StopAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MediaFrameReader.StopAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReader.FrameArrived.add
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReader.FrameArrived.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -57,8 +57,8 @@ namespace Windows.Media.Capture.Frames
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MediaFrameReader", "void MediaFrameReader.Dispose()");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReader.AcquisitionMode.set
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReader.AcquisitionMode.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReader.AcquisitionMode.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Capture.Frames.MediaFrameReader, global::Windows.Media.Capture.Frames.MediaFrameArrivedEventArgs> FrameArrived

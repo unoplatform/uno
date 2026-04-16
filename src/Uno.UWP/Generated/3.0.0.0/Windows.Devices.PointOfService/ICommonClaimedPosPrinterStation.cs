@@ -91,26 +91,26 @@ namespace Windows.Devices.PointOfService
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.CharactersPerLine.set
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.CharactersPerLine.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.LineHeight.set
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.LineHeight.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.LineSpacing.set
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.LineSpacing.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.LineWidth.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsLetterQuality.set
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsLetterQuality.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsPaperNearEnd.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.ColorCartridge.set
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.ColorCartridge.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsCoverOpen.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsCartridgeRemoved.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsCartridgeEmpty.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsHeadCleaning.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsPaperEmpty.get
-		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsReadyToPrint.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		bool ValidateData(string data);
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.CharactersPerLine.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.CharactersPerLine.set
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.ColorCartridge.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.ColorCartridge.set
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsCartridgeEmpty.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsCartridgeRemoved.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsCoverOpen.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsHeadCleaning.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsLetterQuality.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsLetterQuality.set
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsPaperEmpty.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsPaperNearEnd.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsReadyToPrint.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.LineHeight.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.LineHeight.set
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.LineSpacing.get
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.LineSpacing.set
+		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.LineWidth.get
 	}
 }

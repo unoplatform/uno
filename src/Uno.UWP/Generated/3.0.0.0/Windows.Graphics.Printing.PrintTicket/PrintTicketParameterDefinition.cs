@@ -83,12 +83,12 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.DataType.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.Name.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.RangeMax.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.RangeMin.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.UnitType.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.XmlNamespace.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.XmlNode.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.DataType.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.UnitType.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.RangeMin.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.RangeMax.get
 	}
 }

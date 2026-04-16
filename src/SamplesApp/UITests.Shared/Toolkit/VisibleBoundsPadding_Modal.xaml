@@ -1,43 +1,49 @@
-﻿<Page x:Class="UITests.Toolkit.VisibleBoundsPadding_Modal"
-	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	  xmlns:local="using:UITests.Toolkit"
-	  xmlns:toolkit="using:Uno.UI.Toolkit"
-	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  mc:Ignorable="d"
-	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page
+    x:Class="UITests.Toolkit.VisibleBoundsPadding_Modal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Toolkit"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="using:Uno.UI.Toolkit"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<Grid toolkit:VisibleBoundsPadding.PaddingMask="All"
-		  Background="Blue"
-		  AutomationProperties.AutomationId="ContainerGrid">
-		<Rectangle Fill="Red"
-				   AutomationProperties.AutomationId="TestRectangle" />
+    <Grid
+        toolkit:VisibleBoundsPadding.PaddingMask="All"
+        AutomationProperties.AutomationId="ContainerGrid"
+        Background="Blue">
+        <Rectangle AutomationProperties.AutomationId="TestRectangle" Fill="Red" />
 
-		<StackPanel>
-			<Grid>
-				<Button Content="Change Layout"
-						AutomationProperties.AutomationId="ChangeLayoutButton"
-						x:Name="ChangeLayoutButton"
-						HorizontalAlignment="Left"
-						Click="Button_Click" />
+        <StackPanel>
+            <Grid>
+                <Button
+                    x:Name="ChangeLayoutButton"
+                    HorizontalAlignment="Left"
+                    AutomationProperties.AutomationId="ChangeLayoutButton"
+                    Click="Button_Click"
+                    Content="Change Layout" />
 
-				<Button Content="Close Modal"
-						AutomationProperties.AutomationId="CloseModalButton"
-						x:Name="CloseModalButton"
-						HorizontalAlignment="Right"
-						Click="CloseModalClick" />
-			</Grid>
-			<Rectangle Fill="Blue"
-					   Height="100"
-					   Width="100" />
-			<Rectangle x:Name="LayoutRectangle"
-					   Fill="Blue"
-					   Height="100"
-					   Width="100" />
-			<Rectangle Fill="Blue"
-					   Height="100"
-					   Width="100" />
-		</StackPanel>
-	</Grid>
+                <Button
+                    x:Name="CloseModalButton"
+                    HorizontalAlignment="Right"
+                    AutomationProperties.AutomationId="CloseModalButton"
+                    Click="CloseModalClick"
+                    Content="Close Modal" />
+            </Grid>
+            <Rectangle
+                Width="100"
+                Height="100"
+                Fill="Blue" />
+            <Rectangle
+                x:Name="LayoutRectangle"
+                Width="100"
+                Height="100"
+                Fill="Blue" />
+            <Rectangle
+                Width="100"
+                Height="100"
+                Fill="Blue" />
+        </StackPanel>
+    </Grid>
 </Page>

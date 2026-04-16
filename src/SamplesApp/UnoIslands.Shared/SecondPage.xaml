@@ -2,28 +2,30 @@
     x:Class="UnoIslands.SecondPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UnoIslands"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UnoIslands"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<StackPanel x:Name="Root">
-		<TextBlock Text="Hello, world 2!"
-				   Margin="20"
-				   FontSize="30" />
-		<Button Content="test" />
-		<Border Background="Red">
-			<StackPanel>
-				<SymbolIcon Symbol="Home" />
-				<ComboBox Header="Test"
-						  x:Name="test"
-						  ItemsSource="{Binding}">
-				</ComboBox>
-				<TextBlock Text="{Binding}"
-						   Margin="20"
-						   FontSize="30" />
-			</StackPanel>
-		</Border>
-	</StackPanel>
+    <StackPanel x:Name="Root">
+        <TextBlock
+            Margin="20"
+            FontSize="30"
+            Text="Hello, world 2!" />
+        <Button Content="test" />
+        <Border Background="Red">
+            <StackPanel>
+                <SymbolIcon Symbol="Home" />
+                <ComboBox
+                    x:Name="test"
+                    Header="Test"
+                    ItemsSource="{Binding}" />
+                <TextBlock
+                    Margin="20"
+                    FontSize="30"
+                    Text="{Binding}" />
+            </StackPanel>
+        </Border>
+    </StackPanel>
 </Page>

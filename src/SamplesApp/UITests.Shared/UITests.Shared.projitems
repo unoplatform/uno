@@ -298,6 +298,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\SplitMenuFlyoutItemTests\SplitMenuFlyoutItemPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RatingControlTests\RatingControlBasic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -849,6 +853,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationPropertiesExtensions_Role.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\CompositionPathTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1318,6 +1326,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ThemeResources\BasicThemeResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ThemeResources\ElementLevelTheme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -5041,6 +5053,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\AlphaMaskTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\MixTransformCliPropertyAndClippedByParentWithBorders_Then_RenderingIsValid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -6047,6 +6063,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RadioMenuFlyoutItemTests\RadioMenuFlyoutItemPage.xaml.cs">
       <DependentUpon>RadioMenuFlyoutItemPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\SplitMenuFlyoutItemTests\SplitMenuFlyoutItemPage.xaml.cs">
+      <DependentUpon>SplitMenuFlyoutItemPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\RatingControlTests\RatingControlBasic.xaml.cs">
       <DependentUpon>RatingControlBasic.xaml</DependentUpon>
     </Compile>
@@ -6444,6 +6463,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationProperties_Name.xaml.cs">
       <DependentUpon>AutomationProperties_Name.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationPropertiesExtensions_Role.xaml.cs">
+      <DependentUpon>AutomationPropertiesExtensions_Role.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\RotatingCubeGlCanvasElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SimpleTriangleGlCanvasElement.cs" />
@@ -8844,6 +8866,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\MaskBrushTests.xaml.cs">
       <DependentUpon>MaskBrushTests.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\AlphaMaskTests.xaml.cs">
+      <DependentUpon>AlphaMaskTests.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\TransformElementClippedByParent_Then_ClippingAppliedPostRendering.xaml.cs">
       <DependentUpon>TransformElementClippedByParent_Then_ClippingAppliedPostRendering.xaml</DependentUpon>
     </Compile>
@@ -9986,6 +10011,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ThemeResources\BasicThemeResources.xaml.cs">
       <DependentUpon>BasicThemeResources.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ThemeResources\ElementLevelTheme.xaml.cs">
+      <DependentUpon>ElementLevelTheme.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Resources\StaticResource\StaticResource_Simple.xaml.cs">
       <DependentUpon>StaticResource_Simple.xaml</DependentUpon>

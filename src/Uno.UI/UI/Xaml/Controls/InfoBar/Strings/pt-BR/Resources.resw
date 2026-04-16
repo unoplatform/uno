@@ -142,11 +142,11 @@
     <comment>Automation name used to announce the severity informational icon.</comment>
   </data>
   <data name="InfoBarIconSeveritySuccessName" xml:space="preserve">
-    <value>Ícone de Sucesso</value>
+    <value>Ícone de Êxito</value>
     <comment>Automation name used to announce the severity success icon.</comment>
   </data>
   <data name="InfoBarIconSeverityWarningName" xml:space="preserve">
-    <value>Ícone de Aviso</value>
+    <value>Ícone de aviso</value>
     <comment>Automation name used to announce the severity warning icon.</comment>
   </data>
   <data name="InfoBarOpenedNotification" xml:space="preserve">

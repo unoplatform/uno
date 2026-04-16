@@ -12,10 +12,10 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared property HighContrastScheme
 		// Skipping already declared method Windows.UI.ViewManagement.AccessibilitySettings.AccessibilitySettings()
 		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.AccessibilitySettings()
-		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.HighContrast.get
-		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.HighContrastScheme.get
 		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.HighContrastChanged.add
 		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.HighContrastChanged.remove
+		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.HighContrast.get
+		// Forced skipping of method Windows.UI.ViewManagement.AccessibilitySettings.HighContrastScheme.get
 		// Skipping already declared event Windows.UI.ViewManagement.AccessibilitySettings.HighContrastChanged
 	}
 }

@@ -11,8 +11,8 @@ namespace Microsoft.UI.Xaml.Resources
 		// Skipping already declared property Current
 		// Skipping already declared method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.CustomXamlResourceLoader()
 		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.CustomXamlResourceLoader()
-		// Skipping already declared method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.GetResource(string, string, string, string)
 		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.Current.get
 		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.Current.set
+		// Skipping already declared method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.GetResource(string, string, string, string)
 	}
 }

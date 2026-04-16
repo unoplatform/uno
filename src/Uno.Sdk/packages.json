@@ -40,7 +40,7 @@
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.34"
+			"net10.0": "10.1.0-dev.137"
 		}
 	},
 	{
@@ -74,35 +74,35 @@
 	},
 	{
 		"group": "Resizetizer",
-		"version": "1.12.1",
+		"version": "1.13.0-dev.11",
 		"packages": [
 			"Uno.Resizetizer"
 		]
 	},
 	{
 		"group": "sdkextras",
-		"version": "6.3.1",
+		"version": "6.4.0-dev.7",
 		"packages": [
 			"Uno.Sdk.Extras"
 		]
 	},
 	{
 		"group": "settings",
-		"version": "1.8-dev.42",
+		"version": "1.8.0-dev.42",
 		"packages": [
 			"Uno.Settings.DevServer"
 		]
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.18.66",
+		"version": "1.19.0-dev.325",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
 	},
 	{
 		"group": "SkiaSharp",
-		"version": "3.119.1",
+		"version": "3.119.2",
 		"packages": [
 			"SkiaSharp.Skottie",
 			"SkiaSharp.Views.Uno.WinUI",
@@ -129,34 +129,34 @@
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.26100.7463",
+		"version": "10.0.26100.7705",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
 		]
 	},
 	{
 		"group": "MicrosoftLoggingConsole",
-		"version": "9.0.12",
+		"version": "9.0.14",
 		"packages": [
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.2"
+			"net10.0": "10.0.5"
 		}
 	},
 	{
 		"group": "WindowsCompatibility",
-		"version": "9.0.12",
+		"version": "9.0.14",
 		"packages": [
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.2"
+			"net10.0": "10.0.5"
 		}
 	},
 	{
 		"group": "MsalClient",
-		"version": "4.81.0",
+		"version": "4.83.1",
 		"packages": [
 			"Microsoft.Identity.Client",
 			"Microsoft.Identity.Client.Extensions.Msal"
@@ -300,12 +300,12 @@
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.30"
+			"net10.0": "10.0.50"
 		}
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "6.5.10",
+		"version": "6.6.0-dev.5",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -313,7 +313,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "7.1.1",
+		"version": "7.2.0-dev.40",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -343,7 +343,7 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "8.4.2",
+		"version": "8.5.0-dev.29",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -356,7 +356,7 @@
 	},
 	{
 		"group": "Themes",
-		"version": "6.1.1",
+		"version": "7.0.0-dev.12",
 		"packages": [
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",
@@ -375,7 +375,7 @@
 	},
 	{
 		"group": "MicrosoftWebView2",
-		"version": "1.0.3719.77",
+		"version": "1.0.3856.49",
 		"packages": [
 			"Microsoft.Web.WebView2"
 		]

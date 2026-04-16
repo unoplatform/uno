@@ -47,9 +47,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.AutomationControlType.Separator
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.AutomationControlType.SemanticZoom
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.AutomationControlType.AppBar
-#if false
-		FlipView = 41,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.AutomationControlType.FlipView
 	}
 #endif
 }

@@ -35,6 +35,16 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Devices.Core.FrameFlashCapabilities Flash
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member FrameFlashCapabilities FrameControlCapabilities.Flash is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameFlashCapabilities%20FrameControlCapabilities.Flash");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.Core.FrameFocusCapabilities Focus
 		{
 			get
@@ -63,21 +73,11 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.Core.FrameFlashCapabilities Flash
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FrameFlashCapabilities FrameControlCapabilities.Flash is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameFlashCapabilities%20FrameControlCapabilities.Flash");
-			}
-		}
-#endif
 		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.Exposure.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.ExposureCompensation.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.IsoSpeed.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.Focus.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.PhotoConfirmationSupported.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.Flash.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.Focus.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.IsoSpeed.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.PhotoConfirmationSupported.get
 	}
 }

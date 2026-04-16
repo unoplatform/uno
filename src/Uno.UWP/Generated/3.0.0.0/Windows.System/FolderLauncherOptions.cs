@@ -10,16 +10,6 @@ namespace Windows.System
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Storage.IStorageItem> ItemsToSelect
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<IStorageItem> FolderLauncherOptions.ItemsToSelect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIStorageItem%3E%20FolderLauncherOptions.ItemsToSelect");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.ViewManagement.ViewSizePreference DesiredRemainingView
 		{
 			get
@@ -34,15 +24,25 @@ namespace Windows.System
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.Storage.IStorageItem> ItemsToSelect
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<IStorageItem> FolderLauncherOptions.ItemsToSelect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIStorageItem%3E%20FolderLauncherOptions.ItemsToSelect");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public FolderLauncherOptions()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.FolderLauncherOptions", "FolderLauncherOptions.FolderLauncherOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.System.FolderLauncherOptions.FolderLauncherOptions()
-		// Forced skipping of method Windows.System.FolderLauncherOptions.ItemsToSelect.get
 		// Forced skipping of method Windows.System.FolderLauncherOptions.DesiredRemainingView.get
 		// Forced skipping of method Windows.System.FolderLauncherOptions.DesiredRemainingView.set
+		// Forced skipping of method Windows.System.FolderLauncherOptions.ItemsToSelect.get
 		// Processing: Windows.System.ILauncherViewOptions
 	}
 }

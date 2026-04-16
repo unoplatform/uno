@@ -24,6 +24,16 @@ namespace Windows.Devices.WiFiDirect
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectConfigurationMethod> PreferenceOrderedConfigurationMethods
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<WiFiDirectConfigurationMethod> WiFiDirectConnectionParameters.PreferenceOrderedConfigurationMethods is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWiFiDirectConfigurationMethod%3E%20WiFiDirectConnectionParameters.PreferenceOrderedConfigurationMethods");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.WiFiDirect.WiFiDirectPairingProcedure PreferredPairingProcedure
 		{
 			get
@@ -38,27 +48,12 @@ namespace Windows.Devices.WiFiDirect
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectConfigurationMethod> PreferenceOrderedConfigurationMethods
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<WiFiDirectConfigurationMethod> WiFiDirectConnectionParameters.PreferenceOrderedConfigurationMethods is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWiFiDirectConfigurationMethod%3E%20WiFiDirectConnectionParameters.PreferenceOrderedConfigurationMethods");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WiFiDirectConnectionParameters()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters", "WiFiDirectConnectionParameters.WiFiDirectConnectionParameters()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.WiFiDirectConnectionParameters()
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.GroupOwnerIntent.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.GroupOwnerIntent.set
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.PreferenceOrderedConfigurationMethods.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.PreferredPairingProcedure.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.PreferredPairingProcedure.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Enumeration.DevicePairingKinds GetDevicePairingKinds(global::Windows.Devices.WiFiDirect.WiFiDirectConfigurationMethod configurationMethod)
@@ -66,6 +61,11 @@ namespace Windows.Devices.WiFiDirect
 			throw new global::System.NotImplementedException("The member DevicePairingKinds WiFiDirectConnectionParameters.GetDevicePairingKinds(WiFiDirectConfigurationMethod configurationMethod) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DevicePairingKinds%20WiFiDirectConnectionParameters.GetDevicePairingKinds%28WiFiDirectConfigurationMethod%20configurationMethod%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.GroupOwnerIntent.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.GroupOwnerIntent.set
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.PreferenceOrderedConfigurationMethods.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.PreferredPairingProcedure.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.PreferredPairingProcedure.set
 		// Processing: Windows.Devices.Enumeration.IDevicePairingSettings
 	}
 }

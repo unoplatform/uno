@@ -18,6 +18,7 @@ using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Media;
 
@@ -66,6 +67,7 @@ namespace Microsoft.UI.Xaml
 
 		private readonly DependencyPropertyDetailsCollection _properties;
 		private ResourceBindingCollection? _resourceBindings;
+		private ThemeResourceMap? _themeResources;
 
 		private DependencyProperty _parentDataContextProperty = UIElement.DataContextProperty;
 
@@ -75,6 +77,12 @@ namespace Microsoft.UI.Xaml
 
 		private readonly ManagedWeakReference _originalObjectRef;
 		private DependencyObject? _hardOriginalObjectRef;
+
+		/// <summary>
+		/// Cached VisualTree pointer, matching WinUI's CDependencyObject::m_pVisualTree.
+		/// Set during Enter when the element enters the live tree.
+		/// </summary>
+		private ManagedWeakReference? _visualTreeCacheWeakReference;
 
 		/// <summary>
 		/// This field is used to pass a reference to itself in the case
@@ -162,6 +170,28 @@ namespace Microsoft.UI.Xaml
 
 					OnParentChanged(previousParent, value);
 				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the cached VisualTree for this DependencyObject.
+		/// Matches WinUI's CDependencyObject::GetVisualTree/SetVisualTree.
+		/// </summary>
+		internal VisualTree? VisualTreeCache
+		{
+			get => _visualTreeCacheWeakReference?.IsDisposed == false
+				? _visualTreeCacheWeakReference.Target as VisualTree
+				: null;
+			set
+			{
+				if (_visualTreeCacheWeakReference is not null)
+				{
+					WeakReferencePool.ReturnWeakReference(this, _visualTreeCacheWeakReference);
+				}
+
+				_visualTreeCacheWeakReference = value is not null
+					? WeakReferencePool.RentWeakReference(this, value)
+					: null;
 			}
 		}
 
@@ -550,6 +580,7 @@ namespace Microsoft.UI.Xaml
 					{
 						// If a non-theme value is being set, clear any theme binding so it's not overwritten if the theme changes.
 						_resourceBindings?.ClearBinding(property, precedence);
+						_themeResources?.Clear(property, precedence);
 					}
 
 					// Value may or may not have changed based on the precedence
@@ -1201,6 +1232,17 @@ namespace Microsoft.UI.Xaml
 
 		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
+			// WinUI: Foreground propagates through TextFormatting, NOT through DP inheritance.
+			// In Uno, Foreground has FrameworkPropertyMetadataOptions.Inherits which auto-cascades
+			// to ALL descendants. This breaks element-level theming because a parent's theme change
+			// cascades Foreground through theme boundaries (elements with explicit RequestedTheme).
+			// Block the cascade at theme boundaries, matching WinUI's TextFormatting freeze behavior.
+			if (IsForegroundDependencyProperty(parentProperty)
+				&& ActualInstance is FrameworkElement { IsForegroundInheritanceBlocked: true })
+			{
+				return;
+			}
+
 			var (localProperty, propertyDetails) = GetLocalPropertyDetails(parentProperty);
 
 			if (localProperty != null)
@@ -1385,234 +1427,20 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
-		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
+		/// Returns true if the given DependencyProperty is one of the known Foreground properties
+		/// that participate in theme-boundary inheritance blocking.
 		/// </summary>
-		internal void UpdateResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null, ResourceDictionary? containingDictionary = null)
-		{
-			if (updateReason == ResourceUpdateReason.None)
-			{
-				throw new ArgumentException();
-			}
-
-			ResourceDictionary[]? dictionariesInScope = null;
-
-			if ((updateReason & ResourceUpdateReason.ThemeResource) != 0 &&
-				_properties.HasBindings)
-			{
-				dictionariesInScope = GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
-				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
-				{
-					ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
-				}
-
-				_properties.UpdateBindingExpressions();
-
-				for (int i = 0; i < dictionariesInScope.Length; i++)
-				{
-					ResourceResolver.PopSourceFromScope();
-				}
-			}
-
-			if (_resourceBindings?.HasBindings == true)
-			{
-				dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
-
-				var bindings = _resourceBindings.GetAllBindings();
-				foreach (var binding in bindings)
-				{
-					InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
-				}
-			}
-
-			UpdateChildResourceBindings(updateReason, resourceContextProvider);
-		}
-
 		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and
-		/// can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
+		/// MUX Reference: WinUI uses KnownPropertyIndex and InheritedProperties::GetCorrespondingInheritedProperty
+		/// to identify Foreground properties. We use DP identity checks to avoid fragile string comparison.
 		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
-		{
-			try
-			{
-				InnerUpdateResourceBindingsUnsafe(updateReason, dictionariesInScope, property, binding);
-			}
-			catch (Exception e)
-			{
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
-				{
-					this.Log().Warn($"Failed to update binding, target may have been disposed", e);
-				}
-			}
-		}
-
-		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and
-		/// can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
-		{
-			if ((binding.UpdateReason & updateReason) == ResourceUpdateReason.None)
-			{
-				// If the reason for the update doesn't match the reason(s) that the binding was created for, don't update it
-				return;
-			}
-
-			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
-			{
-				// Add the current dictionaries to the resolver scope,
-				// this allows for StaticResource.ResourceKey to resolve properly
-
-				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
-				{
-					ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
-				}
-			}
-
-			var wasSet = false;
-			foreach (var dict in dictionariesInScope)
-			{
-				if (dict.TryGetValue(binding.ResourceKey, out var value, shouldCheckSystem: false))
-				{
-					wasSet = true;
-					SetResourceBindingValue(property, binding, value);
-					break;
-				}
-			}
-
-			if (!wasSet)
-			{
-				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
-				{
-					SetResourceBindingValue(property, binding, value);
-				}
-			}
-
-			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
-			{
-				foreach (var dict in dictionariesInScope)
-				{
-					ResourceResolver.PopSourceFromScope();
-				}
-			}
-		}
-
-		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "normal flow of operation")]
-		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "normal flow of operation")]
-		private void SetResourceBindingValue(DependencyProperty property, ResourceBinding binding, object? value)
-		{
-			var convertedValue = BindingPropertyHelper.Convert(property.Type, value);
-			if (binding.SetterBindingPath != null)
-			{
-				try
-				{
-					_isSettingPersistentResourceBinding = binding.IsPersistent;
-					binding.SetterBindingPath.Value = convertedValue;
-				}
-				finally
-				{
-					_isSettingPersistentResourceBinding = false;
-				}
-			}
-			else
-			{
-				SetValue(property, convertedValue, binding.Precedence, isPersistentResourceBinding: binding.IsPersistent);
-			}
-		}
-
-		private bool _isUpdatingChildResourceBindings;
-
-		private void UpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
-		{
-			if (_isUpdatingChildResourceBindings)
-			{
-				// Some DPs might be creating reference cycles, so we make sure not to enter an infinite loop.
-				return;
-			}
-
-			if ((updateReason & ResourceUpdateReason.PropagatesThroughTree) != ResourceUpdateReason.None)
-			{
-				try
-				{
-					InnerUpdateChildResourceBindings(updateReason, resourceContextProvider);
-				}
-				finally
-				{
-					_isUpdatingChildResourceBindings = false;
-				}
-
-				if (ActualInstance is IThemeChangeAware themeChangeAware)
-				{
-					// Call OnThemeChanged after bindings of descendants have been updated
-					themeChangeAware.OnThemeChanged();
-				}
-
-				_properties.OnThemeChanged();
-			}
-		}
-
-		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and
-		/// can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
-		{
-			_isUpdatingChildResourceBindings = true;
-
-			foreach (var propertyDetail in _properties.GetAllDetails())
-			{
-				if (propertyDetail == null
-					|| propertyDetail == _properties.DataContextPropertyDetails)
-				{
-					continue;
-				}
-
-				var propertyValue = GetValue(propertyDetail);
-
-				if (propertyValue is IEnumerable<DependencyObject> dependencyObjectCollection &&
-					// Try to avoid enumerating collections that shouldn't be enumerated, since we may be encountering user-defined values. This may need to be refined to somehow only consider values coming from the framework itself.
-					(propertyValue is ICollection || propertyValue is DependencyObjectCollectionBase)
-				)
-				{
-					foreach (var innerValue in dependencyObjectCollection)
-					{
-						UpdateResourceBindingsIfNeeded(innerValue, updateReason, resourceContextProvider);
-					}
-				}
-
-				if (propertyValue is IAdditionalChildrenProvider updateable)
-				{
-					foreach (var innerValue in updateable.GetAdditionalChildObjects())
-					{
-						UpdateResourceBindingsIfNeeded(innerValue, updateReason, resourceContextProvider);
-					}
-				}
-
-				if (propertyValue is DependencyObject dependencyObject)
-				{
-					UpdateResourceBindingsIfNeeded(dependencyObject, updateReason, resourceContextProvider);
-				}
-			}
-		}
-
-		private void UpdateResourceBindingsIfNeeded(DependencyObject dependencyObject, ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
-		{
-			// propagate to non-FE DO
-			if (dependencyObject is not IFrameworkElement && dependencyObject is IDependencyObjectStoreProvider storeProvider)
-			{
-				storeProvider.Store.UpdateResourceBindings(
-					updateReason,
-					// when propagating to non-FE, we need to inject a FE as the resource context
-					resourceContextProvider: resourceContextProvider ?? ActualInstance as FrameworkElement
-				);
-			}
-		}
+		private static bool IsForegroundDependencyProperty(DependencyProperty property) =>
+			property == Controls.Control.ForegroundProperty
+			|| property == Controls.TextBlock.ForegroundProperty
+			|| property == Controls.IconElement.ForegroundProperty
+			|| property == Controls.ContentPresenter.ForegroundProperty
+			|| property == Controls.RichTextBlock.ForegroundProperty
+			|| property == Documents.TextElement.ForegroundProperty;
 
 		/// <summary>
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.

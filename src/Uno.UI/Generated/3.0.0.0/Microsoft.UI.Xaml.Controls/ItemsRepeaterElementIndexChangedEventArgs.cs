@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property NewIndex
 		// Skipping already declared property OldIndex
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.Element.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.OldIndex.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.NewIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.OldIndex.get
 	}
 }

@@ -13,10 +13,10 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.HoldingRoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.HoldingRoutedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.PointerDeviceType.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.HoldingState.get
+		// Skipping already declared method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.GetPosition(Microsoft.UI.Xaml.UIElement)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.Handled.set
-		// Skipping already declared method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.GetPosition(Microsoft.UI.Xaml.UIElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.HoldingState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs.PointerDeviceType.get
 	}
 }

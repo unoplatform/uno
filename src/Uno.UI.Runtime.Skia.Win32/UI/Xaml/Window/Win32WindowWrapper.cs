@@ -53,6 +53,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private readonly HWND _hwnd;
 	private readonly IRenderer _renderer;
 
+	private Win32Accessibility? _accessibility;
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
@@ -102,10 +103,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.RegisterWindow(_hwnd);
 
-		_renderTimer = CreateRenderTimer();
-		_renderer = FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
-			? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
-			: new SoftwareRenderer(_hwnd);
+		_framePacer = CreateFramePacer();
+		_renderer = FeatureConfiguration.Rendering.UseVulkanOnWin32
+			? (IRenderer?)VulkanRenderer.TryCreateVulkanRenderer(_hwnd)
+				?? (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
+					? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
+					: new SoftwareRenderer(_hwnd))
+			: FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
+				? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
+				: new SoftwareRenderer(_hwnd);
 
 		RegisterForBackgroundColor();
 
@@ -122,6 +128,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		window.AppWindow.TitleBar.Changed += OnAppWindowTitleBarChanged;
 		UpdateClientAreaExtension();
+
+		InitializeAccessibility();
 	}
 
 	private void OnAppWindowTitleBarChanged(object? sender, EventArgs e)
@@ -219,6 +227,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private unsafe LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
 		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
+
+		if (msg == Win32UIAutomationInterop.WM_GETOBJECT
+			&& (int)lParam.Value == Win32UIAutomationInterop.UiaRootObjectId)
+		{
+			return Win32UIAutomationInterop.HandleGetObject(
+				hwnd, wParam, lParam, _accessibility?.RootProvider);
+		}
 
 		if (TryHandleCustomCaptionMessage(hwnd, msg, wParam, lParam, out var customCaptionResult))
 		{
@@ -428,6 +443,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
 		Win32Host.UnregisterWindow(_hwnd);
+		_framePacer.Dispose();
 		_renderer.Dispose();
 		_rendererDisposed = true;
 		_backgroundDisposable?.Dispose();
@@ -740,6 +756,35 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 
 		return hIcon;
+	}
+
+	private void InitializeAccessibility()
+	{
+		_accessibility = Win32Accessibility.Instance;
+
+		// Defer tree initialization until the root element is available.
+		// The root element may not be set yet at construction time.
+		if (Window?.RootElement is { } rootElement)
+		{
+			_accessibility.Initialize(_hwnd.Value, rootElement);
+		}
+		else if (Window is not null)
+		{
+			// Wait for the content to be set, then initialize
+			Window.Activated += OnWindowActivatedForAccessibility;
+		}
+	}
+
+	private void OnWindowActivatedForAccessibility(object sender, Microsoft.UI.Xaml.WindowActivatedEventArgs args)
+	{
+		if (Window is not null)
+		{
+			Window.Activated -= OnWindowActivatedForAccessibility;
+			if (Window.RootElement is { } rootElement)
+			{
+				_accessibility?.Initialize(_hwnd.Value, rootElement);
+			}
+		}
 	}
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;

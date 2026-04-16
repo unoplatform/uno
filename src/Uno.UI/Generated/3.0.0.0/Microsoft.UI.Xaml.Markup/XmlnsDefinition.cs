@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Markup
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XmlnsDefinition.XmlnsDefinition()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public XmlnsDefinition(string _XmlNamespace, string _Namespace)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Markup.XmlnsDefinition", "XmlnsDefinition.XmlnsDefinition(string _XmlNamespace, string _Namespace)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XmlnsDefinition.XmlnsDefinition(string, string)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public string XmlNamespace;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

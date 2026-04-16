@@ -43,8 +43,8 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcherEvent.Kind.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcherEvent.DeviceInformation.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcherEvent.DeviceInformationUpdate.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcherEvent.Kind.get
 	}
 }

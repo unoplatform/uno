@@ -4,14 +4,24 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignWidth="400"
+    mc:Ignorable="d">
 
-	<Grid>
-		<Canvas>
-			<Border x:Name="BBorderInCanvas" Background="Red"  HorizontalAlignment="Left"  Height="50" Width="50" />
-		</Canvas>
-		<Border x:Name="BBorderOutCanvas" Background="Green" HorizontalAlignment="Center"  Height="50" Width="50"/>
-	</Grid>
+    <Grid>
+        <Canvas>
+            <Border
+                x:Name="BBorderInCanvas"
+                Width="50"
+                Height="50"
+                HorizontalAlignment="Left"
+                Background="Red" />
+        </Canvas>
+        <Border
+            x:Name="BBorderOutCanvas"
+            Width="50"
+            Height="50"
+            HorizontalAlignment="Center"
+            Background="Green" />
+    </Grid>
 </UserControl>

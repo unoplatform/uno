@@ -145,4 +145,8 @@
     <value>தாவல் பட்டியலை முன்னோக்கி நகர்த்தவும்</value>
     <comment>Tooltip for the tab list scroll increase button.</comment>
   </data>
+  <data name="TabViewNewTabAddedNotification" xml:space="preserve">
+    <value>புதிய தாவல் சேர்க்கப்பட்டது.</value>
+    <comment>String read by Narrator when a new tab is added.</comment>
+  </data>
 </root>

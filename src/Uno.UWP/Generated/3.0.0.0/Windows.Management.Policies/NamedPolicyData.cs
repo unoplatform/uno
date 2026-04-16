@@ -73,12 +73,6 @@ namespace Windows.Management.Policies
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.Area.get
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.Name.get
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.Kind.get
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.IsManaged.get
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.IsUserPolicy.get
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.User.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool GetBoolean()
@@ -116,6 +110,12 @@ namespace Windows.Management.Policies
 #endif
 		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.Changed.add
 		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.Changed.remove
+		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.Area.get
+		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.IsManaged.get
+		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.IsUserPolicy.get
+		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.Kind.get
+		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.Name.get
+		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.User.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Management.Policies.NamedPolicyData, object> Changed

@@ -10,15 +10,15 @@ namespace Windows.ApplicationModel.Payments
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Value
+		public string Currency
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentCurrencyAmount.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentCurrencyAmount.Value");
+				throw new global::System.NotImplementedException("The member string PaymentCurrencyAmount.Currency is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentCurrencyAmount.Currency");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentCurrencyAmount", "string PaymentCurrencyAmount.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentCurrencyAmount", "string PaymentCurrencyAmount.Currency");
 			}
 		}
 #endif
@@ -38,15 +38,15 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Currency
+		public string Value
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentCurrencyAmount.Currency is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentCurrencyAmount.Currency");
+				throw new global::System.NotImplementedException("The member string PaymentCurrencyAmount.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentCurrencyAmount.Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentCurrencyAmount", "string PaymentCurrencyAmount.Currency");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentCurrencyAmount", "string PaymentCurrencyAmount.Value");
 			}
 		}
 #endif

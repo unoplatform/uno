@@ -83,11 +83,6 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.BulkInEndpoints.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.InterruptInEndpoints.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.BulkOutEndpoints.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.InterruptOutEndpoints.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.Selected.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SelectSettingAsync()
@@ -95,7 +90,12 @@ namespace Windows.Devices.Usb
 			throw new global::System.NotImplementedException("The member IAsyncAction UsbInterfaceSetting.SelectSettingAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UsbInterfaceSetting.SelectSettingAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.InterfaceDescriptor.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.BulkInEndpoints.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.BulkOutEndpoints.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.Descriptors.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.InterfaceDescriptor.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.InterruptInEndpoints.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.InterruptOutEndpoints.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.Selected.get
 	}
 }

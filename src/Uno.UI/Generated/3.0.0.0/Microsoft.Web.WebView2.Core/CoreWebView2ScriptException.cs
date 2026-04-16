@@ -63,10 +63,10 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.LineNumber.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.ColumnNumber.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.Name.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.LineNumber.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.Message.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.Name.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptException.ToJson.get
 	}
 }

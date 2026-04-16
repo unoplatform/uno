@@ -43,8 +43,8 @@ namespace Windows.Devices.Enumeration.Pnp
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.Type.get
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.Id.get
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.Properties.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.Type.get
 	}
 }

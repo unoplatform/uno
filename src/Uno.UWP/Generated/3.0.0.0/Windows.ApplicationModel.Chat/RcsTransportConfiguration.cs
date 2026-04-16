@@ -74,10 +74,10 @@ namespace Windows.ApplicationModel.Chat
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.MaxAttachmentCount.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.MaxMessageSizeInKilobytes.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.MaxGroupMessageSizeInKilobytes.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.MaxRecipientCount.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.MaxFileSizeInKilobytes.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.MaxGroupMessageSizeInKilobytes.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.MaxMessageSizeInKilobytes.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.MaxRecipientCount.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransportConfiguration.WarningFileSizeInKilobytes.get
 	}
 }

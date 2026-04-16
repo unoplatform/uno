@@ -15,6 +15,26 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIToastNotificationActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIToastNotificationActivatedEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Argument
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WebUIToastNotificationActivatedEventArgs.Argument is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIToastNotificationActivatedEventArgs.Argument");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -55,16 +75,6 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Argument
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WebUIToastNotificationActivatedEventArgs.Argument is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIToastNotificationActivatedEventArgs.Argument");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Collections.ValueSet UserInput
 		{
 			get
@@ -73,23 +83,13 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIToastNotificationActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIToastNotificationActivatedEventArgs.ActivatedOperation");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.UI.WebUI.WebUIToastNotificationActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIToastNotificationActivatedEventArgs.Argument.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIToastNotificationActivatedEventArgs.UserInput.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIToastNotificationActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIToastNotificationActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIToastNotificationActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIToastNotificationActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIToastNotificationActivatedEventArgs.User.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIToastNotificationActivatedEventArgs.UserInput.get
 		// Processing: Windows.ApplicationModel.Activation.IToastNotificationActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.UI.WebUI.IActivatedEventArgsDeferral

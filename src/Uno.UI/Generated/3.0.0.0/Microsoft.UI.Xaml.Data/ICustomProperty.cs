@@ -12,13 +12,13 @@ namespace Microsoft.UI.Xaml.Data
 		// Skipping already declared property CanWrite
 		// Skipping already declared property Name
 		// Skipping already declared property Type
-		// Forced skipping of method Microsoft.UI.Xaml.Data.ICustomProperty.Type.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.ICustomProperty.Name.get
 		// Skipping already declared method Microsoft.UI.Xaml.Data.ICustomProperty.GetValue(object)
 		// Skipping already declared method Microsoft.UI.Xaml.Data.ICustomProperty.SetValue(object, object)
 		// Skipping already declared method Microsoft.UI.Xaml.Data.ICustomProperty.GetIndexedValue(object, object)
 		// Skipping already declared method Microsoft.UI.Xaml.Data.ICustomProperty.SetIndexedValue(object, object, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.ICustomProperty.CanWrite.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.ICustomProperty.CanRead.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.ICustomProperty.CanWrite.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.ICustomProperty.Name.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.ICustomProperty.Type.get
 	}
 }

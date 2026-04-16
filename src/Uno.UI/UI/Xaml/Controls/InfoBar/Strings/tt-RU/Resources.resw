@@ -130,7 +130,7 @@
     <comment>The string read by narrator when the InfoBar closes.</comment>
   </data>
   <data name="InfoBarCustomLandmarkName" xml:space="preserve">
-    <value>Мәгълүмат аслыгы</value>
+    <value>Мәгълүмат юлы</value>
     <comment>This is the custom landmark used to denote an InfoBar to narrator.</comment>
   </data>
   <data name="InfoBarIconSeverityErrorName" xml:space="preserve">
@@ -154,7 +154,7 @@
     <comment>The formatted string read by narrator when the InfoBar opens: "{Severity level}, {Title} {Message}"</comment>
   </data>
   <data name="InfoBarSeverityErrorName" xml:space="preserve">
-    <value>Мәгълүмат хәбәре, җитдилек хатасы</value>
+    <value>Мәгълүмат хәбәре, хатаның җитдилеге</value>
     <comment>Name used to announce severity error to users.</comment>
   </data>
   <data name="InfoBarSeverityInformationalName" xml:space="preserve">
@@ -162,7 +162,7 @@
     <comment>Name used to announce severity informational to users.</comment>
   </data>
   <data name="InfoBarSeveritySuccessName" xml:space="preserve">
-    <value>Мәгълүмат хәбәре, җитдилек уңышы</value>
+    <value>Мәгълүмат хәбәре, уңышның җитдилеге</value>
     <comment>Name used to announce severity success to users.</comment>
   </data>
   <data name="InfoBarSeverityWarningName" xml:space="preserve">

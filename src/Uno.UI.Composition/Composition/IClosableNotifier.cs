@@ -9,7 +9,7 @@ namespace Microsoft.UI;
 /// <para>Typically, an object would need to know when another WinRT object is closed if it depends on that WinRT object to satisfy its functionality.If the WinRT object it
 /// depends on is closed, you can perform cleanup operations and/or unregister from events.</para>
 /// </remarks>
-public interface IClosableNotifier
+public partial interface IClosableNotifier
 {
 	/// <summary>
 	/// Gets a value that indicates whether the object is closed (disposed).

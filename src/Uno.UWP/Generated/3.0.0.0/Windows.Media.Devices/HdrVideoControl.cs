@@ -47,9 +47,9 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.HdrVideoControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.HdrVideoControl.SupportedModes.get
 		// Forced skipping of method Windows.Media.Devices.HdrVideoControl.Mode.get
 		// Forced skipping of method Windows.Media.Devices.HdrVideoControl.Mode.set
+		// Forced skipping of method Windows.Media.Devices.HdrVideoControl.Supported.get
+		// Forced skipping of method Windows.Media.Devices.HdrVideoControl.SupportedModes.get
 	}
 }

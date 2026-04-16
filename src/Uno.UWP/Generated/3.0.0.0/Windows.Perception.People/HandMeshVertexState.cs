@@ -33,7 +33,6 @@ namespace Windows.Perception.People
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.CoordinateSystem.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetVertices(global::Windows.Perception.People.HandMeshVertex[] vertices)
@@ -41,6 +40,7 @@ namespace Windows.Perception.People
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandMeshVertexState", "void HandMeshVertexState.GetVertices(HandMeshVertex[] vertices)");
 		}
 #endif
+		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.CoordinateSystem.get
 		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.UpdateTimestamp.get
 	}
 }

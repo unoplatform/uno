@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty IconElementProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(IconElement), typeof(global::Microsoft.UI.Xaml.Controls.IconElement),
+			typeof(global::Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.IconElement)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Controls.IconElement IconElement
 		{
 			get
@@ -24,22 +32,14 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IconElementProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IconElement), typeof(global::Microsoft.UI.Xaml.Controls.IconElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.IconElement)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TitleBarTemplateSettings() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings", "TitleBarTemplateSettings.TitleBarTemplateSettings()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.TitleBarTemplateSettings()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.IconElementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.IconElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.IconElement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.IconElementProperty.get
 	}
 }

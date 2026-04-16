@@ -15,6 +15,16 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Enumeration.DeviceInformation DeviceInformation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DeviceInformation DevicePairingActivatedEventArgs.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20DevicePairingActivatedEventArgs.DeviceInformation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -50,16 +60,6 @@ namespace Windows.ApplicationModel.Activation
 			get
 			{
 				throw new global::System.NotImplementedException("The member User DevicePairingActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20DevicePairingActivatedEventArgs.User");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Enumeration.DeviceInformation DeviceInformation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DeviceInformation DevicePairingActivatedEventArgs.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20DevicePairingActivatedEventArgs.DeviceInformation");
 			}
 		}
 #endif

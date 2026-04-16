@@ -25,16 +25,6 @@ namespace Windows.Perception
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset TargetTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PerceptionTimestamp.TargetTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20PerceptionTimestamp.TargetTime");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan SystemRelativeTargetTime
 		{
 			get
@@ -43,8 +33,18 @@ namespace Windows.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.PerceptionTimestamp.TargetTime.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset TargetTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DateTimeOffset PerceptionTimestamp.TargetTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20PerceptionTimestamp.TargetTime");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Perception.PerceptionTimestamp.PredictionAmount.get
 		// Forced skipping of method Windows.Perception.PerceptionTimestamp.SystemRelativeTargetTime.get
+		// Forced skipping of method Windows.Perception.PerceptionTimestamp.TargetTime.get
 	}
 }

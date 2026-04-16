@@ -12,7 +12,7 @@ namespace Windows.Security.Authentication.Web
 		// Skipping already declared property ResponseErrorDetail
 		// Skipping already declared property ResponseStatus
 		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.ResponseData.get
-		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.ResponseStatus.get
 		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.ResponseErrorDetail.get
+		// Forced skipping of method Windows.Security.Authentication.Web.WebAuthenticationResult.ResponseStatus.get
 	}
 }

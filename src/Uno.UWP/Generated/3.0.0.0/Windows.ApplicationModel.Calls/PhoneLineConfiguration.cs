@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineConfiguration.IsVideoCallingEnabled.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineConfiguration.ExtendedProperties.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineConfiguration.IsVideoCallingEnabled.get
 	}
 }

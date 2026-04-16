@@ -53,7 +53,7 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 		{
 			if (FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate)
 			{
-				_renderTimer.Interval = TimeSpan.FromSeconds(1.0 / _refreshRate).TotalMilliseconds;
+				_framePacer.UpdateTargetFps(_refreshRate);
 			}
 		}
 	}

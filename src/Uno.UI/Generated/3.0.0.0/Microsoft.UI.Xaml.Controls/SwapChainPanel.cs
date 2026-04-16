@@ -10,6 +10,22 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty CompositionScaleXProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(CompositionScaleX), typeof(float),
+			typeof(global::Microsoft.UI.Xaml.Controls.SwapChainPanel),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(float)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty CompositionScaleYProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(CompositionScaleY), typeof(float),
+			typeof(global::Microsoft.UI.Xaml.Controls.SwapChainPanel),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(float)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float CompositionScaleX
 		{
 			get
@@ -30,35 +46,19 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CompositionScaleXProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(CompositionScaleX), typeof(float),
-			typeof(global::Microsoft.UI.Xaml.Controls.SwapChainPanel),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(float)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CompositionScaleYProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(CompositionScaleY), typeof(float),
-			typeof(global::Microsoft.UI.Xaml.Controls.SwapChainPanel),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(float)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SwapChainPanel() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.SwapChainPanel", "SwapChainPanel.SwapChainPanel()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.SwapChainPanel()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleX.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleY.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CreateCoreIndependentInputSource(Microsoft.UI.Input.InputPointerSourceDeviceKinds)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CreateCoreIndependentInputSource(Microsoft.UI.Input.InputPointerSourceDeviceKinds)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleX.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwapChainPanel.CompositionScaleY.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.SwapChainPanel, object> CompositionScaleChanged

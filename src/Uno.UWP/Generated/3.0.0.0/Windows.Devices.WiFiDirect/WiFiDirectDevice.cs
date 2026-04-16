@@ -33,22 +33,18 @@ namespace Windows.Devices.WiFiDirect
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.ConnectionStatus.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.DeviceId.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.ConnectionStatusChanged.add
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.ConnectionStatusChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair> GetConnectionEndpointPairs()
+		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<EndpointPair> WiFiDirectDevice.GetConnectionEndpointPairs() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CEndpointPair%3E%20WiFiDirectDevice.GetConnectionEndpointPairs%28%29");
+			throw new global::System.NotImplementedException("The member string WiFiDirectDevice.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WiFiDirectDevice.GetDeviceSelector%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.WiFiDirectDevice> FromIdAsync(string deviceId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectDevice", "void WiFiDirectDevice.Dispose()");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectDevice> WiFiDirectDevice.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiDirectDevice%3E%20WiFiDirectDevice.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -67,18 +63,22 @@ namespace Windows.Devices.WiFiDirect
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelector()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair> GetConnectionEndpointPairs()
 		{
-			throw new global::System.NotImplementedException("The member string WiFiDirectDevice.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WiFiDirectDevice.GetDeviceSelector%28%29");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<EndpointPair> WiFiDirectDevice.GetConnectionEndpointPairs() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CEndpointPair%3E%20WiFiDirectDevice.GetConnectionEndpointPairs%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.ConnectionStatusChanged.add
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.ConnectionStatusChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.WiFiDirectDevice> FromIdAsync(string deviceId)
+		public void Dispose()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectDevice> WiFiDirectDevice.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiDirectDevice%3E%20WiFiDirectDevice.FromIdAsync%28string%20deviceId%29");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectDevice", "void WiFiDirectDevice.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.ConnectionStatus.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.DeviceId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.WiFiDirect.WiFiDirectDevice, object> ConnectionStatusChanged

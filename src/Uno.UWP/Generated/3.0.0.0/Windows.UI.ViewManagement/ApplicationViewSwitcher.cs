@@ -10,27 +10,6 @@ namespace Windows.UI.ViewManagement
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> TryShowAsViewModeAsync(int viewId, global::Windows.UI.ViewManagement.ApplicationViewMode viewMode)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ApplicationViewSwitcher.TryShowAsViewModeAsync(int viewId, ApplicationViewMode viewMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ApplicationViewSwitcher.TryShowAsViewModeAsync%28int%20viewId%2C%20ApplicationViewMode%20viewMode%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> TryShowAsViewModeAsync(int viewId, global::Windows.UI.ViewManagement.ApplicationViewMode viewMode, global::Windows.UI.ViewManagement.ViewModePreferences viewModePreferences)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ApplicationViewSwitcher.TryShowAsViewModeAsync(int viewId, ApplicationViewMode viewMode, ViewModePreferences viewModePreferences) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ApplicationViewSwitcher.TryShowAsViewModeAsync%28int%20viewId%2C%20ApplicationViewMode%20viewMode%2C%20ViewModePreferences%20viewModePreferences%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void DisableSystemViewActivationPolicy()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewSwitcher", "void ApplicationViewSwitcher.DisableSystemViewActivationPolicy()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void DisableShowingMainViewOnActivation()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewSwitcher", "void ApplicationViewSwitcher.DisableShowingMainViewOnActivation()");
@@ -83,6 +62,27 @@ namespace Windows.UI.ViewManagement
 		public static global::Windows.Foundation.IAsyncOperation<bool> PrepareForCustomAnimatedSwitchAsync(int toViewId, int fromViewId, global::Windows.UI.ViewManagement.ApplicationViewSwitchingOptions options)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ApplicationViewSwitcher.PrepareForCustomAnimatedSwitchAsync(int toViewId, int fromViewId, ApplicationViewSwitchingOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ApplicationViewSwitcher.PrepareForCustomAnimatedSwitchAsync%28int%20toViewId%2C%20int%20fromViewId%2C%20ApplicationViewSwitchingOptions%20options%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void DisableSystemViewActivationPolicy()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewSwitcher", "void ApplicationViewSwitcher.DisableSystemViewActivationPolicy()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<bool> TryShowAsViewModeAsync(int viewId, global::Windows.UI.ViewManagement.ApplicationViewMode viewMode)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ApplicationViewSwitcher.TryShowAsViewModeAsync(int viewId, ApplicationViewMode viewMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ApplicationViewSwitcher.TryShowAsViewModeAsync%28int%20viewId%2C%20ApplicationViewMode%20viewMode%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<bool> TryShowAsViewModeAsync(int viewId, global::Windows.UI.ViewManagement.ApplicationViewMode viewMode, global::Windows.UI.ViewManagement.ViewModePreferences viewModePreferences)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ApplicationViewSwitcher.TryShowAsViewModeAsync(int viewId, ApplicationViewMode viewMode, ViewModePreferences viewModePreferences) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ApplicationViewSwitcher.TryShowAsViewModeAsync%28int%20viewId%2C%20ApplicationViewMode%20viewMode%2C%20ViewModePreferences%20viewModePreferences%29");
 		}
 #endif
 	}

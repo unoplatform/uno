@@ -15,6 +15,16 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.PointOfService.LineDisplayCursor Cursor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member LineDisplayCursor LineDisplayWindow.Cursor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayCursor%20LineDisplayWindow.Cursor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan InterCharacterWaitInterval
 		{
 			get
@@ -29,26 +39,6 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Size SizeInCharacters
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Size LineDisplayWindow.SizeInCharacters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20LineDisplayWindow.SizeInCharacters");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.PointOfService.LineDisplayCursor Cursor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member LineDisplayCursor LineDisplayWindow.Cursor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayCursor%20LineDisplayWindow.Cursor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.PointOfService.LineDisplayMarquee Marquee
 		{
 			get
@@ -57,9 +47,16 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayWindow.SizeInCharacters.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayWindow.InterCharacterWaitInterval.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayWindow.InterCharacterWaitInterval.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Size SizeInCharacters
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Size LineDisplayWindow.SizeInCharacters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20LineDisplayWindow.SizeInCharacters");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryRefreshAsync()
@@ -102,8 +99,6 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> LineDisplayWindow.TryClearTextAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20LineDisplayWindow.TryClearTextAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayWindow.Cursor.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayWindow.Marquee.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<uint> ReadCharacterAtCursorAsync()
@@ -160,6 +155,11 @@ namespace Windows.Devices.PointOfService
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayWindow", "void LineDisplayWindow.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayWindow.Cursor.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayWindow.InterCharacterWaitInterval.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayWindow.InterCharacterWaitInterval.set
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayWindow.Marquee.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayWindow.SizeInCharacters.get
 		// Processing: System.IDisposable
 	}
 }

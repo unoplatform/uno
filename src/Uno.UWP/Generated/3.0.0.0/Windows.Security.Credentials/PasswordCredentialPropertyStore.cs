@@ -6,15 +6,59 @@ namespace Windows.Security.Credentials
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PasswordCredentialPropertyStore : global::Windows.Foundation.Collections.IPropertySet, global::Windows.Foundation.Collections.IObservableMap<string, object>, global::System.Collections.Generic.IDictionary<string, object>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>
+	public partial class PasswordCredentialPropertyStore : global::Windows.Foundation.Collections.IPropertySet, global::Windows.Foundation.Collections.IObservableMap<string, object>, global::System.Collections.Generic.IDictionary<string, object>, global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<string, object>>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public global::System.Collections.Generic.ICollection<string> Keys
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PasswordCredentialPropertyStore.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PasswordCredentialPropertyStore.Size");
+				throw new global::System.NotImplementedException("The member ICollection<string> PasswordCredentialPropertyStore.Keys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cstring%3E%20PasswordCredentialPropertyStore.Keys");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.ICollection<object> Values
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ICollection<object> PasswordCredentialPropertyStore.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cobject%3E%20PasswordCredentialPropertyStore.Values");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int Count
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int PasswordCredentialPropertyStore.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PasswordCredentialPropertyStore.Count");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsReadOnly
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool PasswordCredentialPropertyStore.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PasswordCredentialPropertyStore.IsReadOnly");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object this[string key]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object PasswordCredentialPropertyStore.this[string key] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20PasswordCredentialPropertyStore.this%5Bstring%20key%5D");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.PasswordCredentialPropertyStore", "object PasswordCredentialPropertyStore.this[string key]");
 			}
 		}
 #endif
@@ -28,14 +72,77 @@ namespace Windows.Security.Credentials
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.PasswordCredentialPropertyStore()
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.MapChanged.add
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.MapChanged.remove
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.Lookup(string)
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.Size.get
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.HasKey(string)
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.GetView()
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.Insert(string, object)
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.Remove(string)
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.Clear()
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.First()
+		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.Keys.get
+		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.Values.get
+		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.Count.get
+		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.IsReadOnly.get
+		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.this[string].get
+		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.this[string].set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(string key, object value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.PasswordCredentialPropertyStore", "void PasswordCredentialPropertyStore.Add(string key, object value)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ContainsKey(string key)
+		{
+			throw new global::System.NotImplementedException("The member bool PasswordCredentialPropertyStore.ContainsKey(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PasswordCredentialPropertyStore.ContainsKey%28string%20key%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Remove(string key)
+		{
+			throw new global::System.NotImplementedException("The member bool PasswordCredentialPropertyStore.Remove(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PasswordCredentialPropertyStore.Remove%28string%20key%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool TryGetValue(string key, out object value)
+		{
+			throw new global::System.NotImplementedException("The member bool PasswordCredentialPropertyStore.TryGetValue(string key, out object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PasswordCredentialPropertyStore.TryGetValue%28string%20key%2C%20out%20object%20value%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(global::System.Collections.Generic.KeyValuePair<string, object> item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.PasswordCredentialPropertyStore", "void PasswordCredentialPropertyStore.Add(KeyValuePair<string, object> item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Clear()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.PasswordCredentialPropertyStore", "void PasswordCredentialPropertyStore.Clear()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item)
+		{
+			throw new global::System.NotImplementedException("The member bool PasswordCredentialPropertyStore.Contains(KeyValuePair<string, object> item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PasswordCredentialPropertyStore.Contains%28KeyValuePair%3Cstring%2C%20object%3E%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, object>[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.PasswordCredentialPropertyStore", "void PasswordCredentialPropertyStore.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>.Remove(System.Collections.Generic.KeyValuePair<string, object>)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator()
+		{
+			throw new global::System.NotImplementedException("The member IEnumerator<KeyValuePair<string, object>> PasswordCredentialPropertyStore.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CKeyValuePair%3Cstring%2C%20object%3E%3E%20PasswordCredentialPropertyStore.GetEnumerator%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Credentials.PasswordCredentialPropertyStore.System.Collections.IEnumerable.GetEnumerator()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.Collections.MapChangedEventHandler<string, object> MapChanged
@@ -55,105 +162,7 @@ namespace Windows.Security.Credentials
 		// Processing: Windows.Foundation.Collections.IPropertySet
 		// Processing: Windows.Foundation.Collections.IObservableMap<string, object>
 		// Processing: System.Collections.Generic.IDictionary<string, object>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, object>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(string key, object value)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, object>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ContainsKey(string key)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, object>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Remove(string key)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IDictionary<string, object>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool TryGetValue(string key, out object value)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object this[string key]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.ICollection<string> Keys
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.ICollection<object> Values
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(global::System.Collections.Generic.KeyValuePair<string, object> item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, object>[] array, int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -162,35 +171,7 @@ namespace Windows.Security.Credentials
 			throw new global::System.NotSupportedException();
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

@@ -9,12 +9,12 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class UserControl
 	{
-		// Skipping already declared property Content
 		// Skipping already declared property ContentProperty
+		// Skipping already declared property Content
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.UserControl.UserControl()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.UserControl()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.ContentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.Content.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.ContentProperty.get
 	}
 }
