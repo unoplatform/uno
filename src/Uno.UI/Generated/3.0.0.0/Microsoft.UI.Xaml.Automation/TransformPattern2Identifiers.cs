@@ -13,8 +13,8 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property MinZoomProperty
 		// Skipping already declared property ZoomLevelProperty
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.CanZoomProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.ZoomLevelProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.MaxZoomProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.MinZoomProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.TransformPattern2Identifiers.ZoomLevelProperty.get
 	}
 }

@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ToggleSwitchAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 
+using System;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
@@ -155,6 +156,6 @@ public partial class ToggleSwitchAutomationPeer : FrameworkElementAutomationPeer
 			? core.GetLocalizedResourceString("TEXT_TOGGLESWITCH_ON")
 			: core.GetLocalizedResourceString("TEXT_TOGGLESWITCH_OFF");
 
-		return string.Equals(text, defaultText, System.StringComparison.Ordinal);
+		return string.Equals(text, defaultText, StringComparison.Ordinal);
 	}
 }

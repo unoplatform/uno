@@ -15,16 +15,6 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Sockets.SocketMessageType MessageType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SocketMessageType MessageWebSocketMessageReceivedEventArgs.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketMessageType%20MessageWebSocketMessageReceivedEventArgs.MessageType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsMessageComplete
 		{
 			get
@@ -33,7 +23,17 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs.MessageType.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Networking.Sockets.SocketMessageType MessageType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SocketMessageType MessageWebSocketMessageReceivedEventArgs.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketMessageType%20MessageWebSocketMessageReceivedEventArgs.MessageType");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs.~MessageWebSocketMessageReceivedEventArgs()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.DataReader GetDataReader()
@@ -49,5 +49,6 @@ namespace Windows.Networking.Sockets
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs.IsMessageComplete.get
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs.MessageType.get
 	}
 }

@@ -63,10 +63,10 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.Country.get
-		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.State.get
 		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.City.get
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.Country.get
 		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.PostalCode.get
+		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.State.get
 		// Forced skipping of method Windows.Devices.Geolocation.CivicAddress.Timestamp.get
 	}
 }

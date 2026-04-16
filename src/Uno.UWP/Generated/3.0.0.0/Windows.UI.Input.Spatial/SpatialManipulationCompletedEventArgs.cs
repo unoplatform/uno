@@ -23,7 +23,6 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.InteractionSourceKind.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Spatial.SpatialManipulationDelta TryGetCumulativeDelta(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
@@ -31,5 +30,6 @@ namespace Windows.UI.Input.Spatial
 			throw new global::System.NotImplementedException("The member SpatialManipulationDelta SpatialManipulationCompletedEventArgs.TryGetCumulativeDelta(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialManipulationDelta%20SpatialManipulationCompletedEventArgs.TryGetCumulativeDelta%28SpatialCoordinateSystem%20coordinateSystem%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs.InteractionSourceKind.get
 	}
 }

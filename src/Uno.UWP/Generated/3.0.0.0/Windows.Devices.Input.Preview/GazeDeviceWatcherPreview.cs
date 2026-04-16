@@ -13,14 +13,6 @@ namespace Windows.Devices.Input.Preview
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Added.add
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Added.remove
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Removed.add
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Removed.remove
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Updated.add
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Updated.remove
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.EnumerationCompleted.add
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.EnumerationCompleted.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -35,6 +27,14 @@ namespace Windows.Devices.Input.Preview
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeDeviceWatcherPreview", "void GazeDeviceWatcherPreview.Stop()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Added.add
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Added.remove
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.EnumerationCompleted.add
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.EnumerationCompleted.remove
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Removed.add
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Removed.remove
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Updated.add
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Updated.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview, global::Windows.Devices.Input.Preview.GazeDeviceWatcherAddedPreviewEventArgs> Added

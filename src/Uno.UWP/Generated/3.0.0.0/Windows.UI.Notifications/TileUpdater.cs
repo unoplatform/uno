@@ -44,7 +44,6 @@ namespace Windows.UI.Notifications
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.EnableNotificationQueue(bool enable)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.TileUpdater.Setting.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddToSchedule(global::Windows.UI.Notifications.ScheduledTileNotification scheduledTile)
@@ -122,5 +121,6 @@ namespace Windows.UI.Notifications
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.EnableNotificationQueueForSquare310x310(bool enable)");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Notifications.TileUpdater.Setting.get
 	}
 }

@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.Status.get
 		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.ExtendedError.get
+		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.Status.get
 	}
 }

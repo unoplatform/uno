@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class GradientStop : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property Offset
-		// Skipping already declared property Color
 		// Skipping already declared property ColorProperty
 		// Skipping already declared property OffsetProperty
+		// Skipping already declared property Color
+		// Skipping already declared property Offset
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GradientStop.GradientStop()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.GradientStop()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.ColorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.OffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.Color.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.Color.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.Offset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.Offset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.ColorProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.OffsetProperty.get
 	}
 }

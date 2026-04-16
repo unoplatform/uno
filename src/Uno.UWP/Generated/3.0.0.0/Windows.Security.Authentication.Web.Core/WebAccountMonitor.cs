@@ -13,12 +13,12 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Updated.add
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Updated.remove
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Removed.add
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Removed.remove
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.DefaultSignInAccountChanged.add
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.DefaultSignInAccountChanged.remove
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Removed.add
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Removed.remove
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Updated.add
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Updated.remove
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.AccountPictureUpdated.add
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.AccountPictureUpdated.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

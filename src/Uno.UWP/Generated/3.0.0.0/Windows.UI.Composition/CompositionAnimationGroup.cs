@@ -6,7 +6,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CompositionAnimationGroup : global::Windows.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.CompositionAnimation>, global::Windows.UI.Composition.ICompositionAnimationBase
+	public partial class CompositionAnimationGroup : global::Windows.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.CompositionAnimation>, global::System.Collections.IEnumerable, global::Windows.UI.Composition.ICompositionAnimationBase
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal CompositionAnimationGroup()
@@ -23,7 +23,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionAnimationGroup.Count.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::Windows.UI.Composition.CompositionAnimation value)
@@ -45,16 +44,16 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionAnimationGroup", "void CompositionAnimationGroup.RemoveAll()");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionAnimationGroup.First()
-		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Composition.CompositionAnimation>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.UI.Composition.CompositionAnimation>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Composition.CompositionAnimation> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<CompositionAnimation> CompositionAnimationGroup.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CCompositionAnimation%3E%20CompositionAnimationGroup.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionAnimationGroup.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.UI.Composition.CompositionAnimationGroup.Count.get
+		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Composition.CompositionAnimation>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

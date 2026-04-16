@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Navigation
 #endif
 	public partial class NavigationEventArgs
 	{
-		// Skipping already declared property Uri
 		// Skipping already declared property Content
 		// Skipping already declared property NavigationMode
 		// Skipping already declared property NavigationTransitionInfo
 		// Skipping already declared property Parameter
 		// Skipping already declared property SourcePageType
+		// Skipping already declared property Uri
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.Content.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.Parameter.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.NavigationTransitionInfo.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.SourcePageType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.NavigationMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.NavigationTransitionInfo.get
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.Parameter.get
+		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.SourcePageType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.Uri.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.Uri.set
 	}

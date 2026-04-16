@@ -8,10 +8,10 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 #endif
 	public partial class CoreDragUIOverride
 	{
-		// Skipping already declared property IsGlyphVisible
-		// Skipping already declared property IsContentVisible
-		// Skipping already declared property IsCaptionVisible
 		// Skipping already declared property Caption
+		// Skipping already declared property IsCaptionVisible
+		// Skipping already declared property IsContentVisible
+		// Skipping already declared property IsGlyphVisible
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetContentFromSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap softwareBitmap)
@@ -26,14 +26,14 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride", "void CoreDragUIOverride.SetContentFromSoftwareBitmap(SoftwareBitmap softwareBitmap, Point anchorPoint)");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.IsContentVisible.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.IsContentVisible.set
+		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.Clear()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.Caption.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.Caption.set
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.IsCaptionVisible.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.IsCaptionVisible.set
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.IsContentVisible.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.IsContentVisible.set
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.IsGlyphVisible.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.IsGlyphVisible.set
-		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.Clear()
 	}
 }

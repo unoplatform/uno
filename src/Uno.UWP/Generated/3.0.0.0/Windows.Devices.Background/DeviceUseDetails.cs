@@ -33,7 +33,7 @@ namespace Windows.Devices.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Background.DeviceUseDetails.DeviceId.get
 		// Forced skipping of method Windows.Devices.Background.DeviceUseDetails.Arguments.get
+		// Forced skipping of method Windows.Devices.Background.DeviceUseDetails.DeviceId.get
 	}
 }

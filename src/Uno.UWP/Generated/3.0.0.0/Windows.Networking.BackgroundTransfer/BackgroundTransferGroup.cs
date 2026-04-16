@@ -15,6 +15,16 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Name
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string BackgroundTransferGroup.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BackgroundTransferGroup.Name");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.BackgroundTransfer.BackgroundTransferBehavior TransferBehavior
 		{
 			get
@@ -29,23 +39,13 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string BackgroundTransferGroup.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BackgroundTransferGroup.Name");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.Name.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.TransferBehavior.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.TransferBehavior.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Networking.BackgroundTransfer.BackgroundTransferGroup CreateGroup(string name)
 		{
 			throw new global::System.NotImplementedException("The member BackgroundTransferGroup BackgroundTransferGroup.CreateGroup(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundTransferGroup%20BackgroundTransferGroup.CreateGroup%28string%20name%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.Name.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.TransferBehavior.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.TransferBehavior.set
 	}
 }

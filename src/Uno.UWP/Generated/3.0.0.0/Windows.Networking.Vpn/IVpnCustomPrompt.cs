@@ -29,11 +29,11 @@ namespace Windows.Networking.Vpn
 			set;
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.IVpnCustomPrompt.Label.set
-		// Forced skipping of method Windows.Networking.Vpn.IVpnCustomPrompt.Label.get
-		// Forced skipping of method Windows.Networking.Vpn.IVpnCustomPrompt.Compulsory.set
-		// Forced skipping of method Windows.Networking.Vpn.IVpnCustomPrompt.Compulsory.get
-		// Forced skipping of method Windows.Networking.Vpn.IVpnCustomPrompt.Bordered.set
 		// Forced skipping of method Windows.Networking.Vpn.IVpnCustomPrompt.Bordered.get
+		// Forced skipping of method Windows.Networking.Vpn.IVpnCustomPrompt.Bordered.set
+		// Forced skipping of method Windows.Networking.Vpn.IVpnCustomPrompt.Compulsory.get
+		// Forced skipping of method Windows.Networking.Vpn.IVpnCustomPrompt.Compulsory.set
+		// Forced skipping of method Windows.Networking.Vpn.IVpnCustomPrompt.Label.get
+		// Forced skipping of method Windows.Networking.Vpn.IVpnCustomPrompt.Label.set
 	}
 }

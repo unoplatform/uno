@@ -53,9 +53,9 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.UserNotification.Notification.get
 		// Forced skipping of method Windows.UI.Notifications.UserNotification.AppInfo.get
-		// Forced skipping of method Windows.UI.Notifications.UserNotification.Id.get
 		// Forced skipping of method Windows.UI.Notifications.UserNotification.CreationTime.get
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.Id.get
+		// Forced skipping of method Windows.UI.Notifications.UserNotification.Notification.get
 	}
 }

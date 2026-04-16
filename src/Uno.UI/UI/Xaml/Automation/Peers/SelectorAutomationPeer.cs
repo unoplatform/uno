@@ -31,7 +31,7 @@ public partial class SelectorAutomationPeer : ItemsControlAutomationPeer, ISelec
 
 	public bool CanSelectMultiple => SelectorOwner is { } selector && !selector.IsSingleSelection;
 
-	public virtual bool IsSelectionRequired => false;
+	public bool IsSelectionRequired => false;
 
 	public IRawElementProviderSimple[] GetSelection()
 	{

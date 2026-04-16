@@ -53,9 +53,9 @@ namespace Windows.Networking.Proximity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Proximity.ProximityMessage.MessageType.get
-		// Forced skipping of method Windows.Networking.Proximity.ProximityMessage.SubscriptionId.get
 		// Forced skipping of method Windows.Networking.Proximity.ProximityMessage.Data.get
 		// Forced skipping of method Windows.Networking.Proximity.ProximityMessage.DataAsString.get
+		// Forced skipping of method Windows.Networking.Proximity.ProximityMessage.MessageType.get
+		// Forced skipping of method Windows.Networking.Proximity.ProximityMessage.SubscriptionId.get
 	}
 }

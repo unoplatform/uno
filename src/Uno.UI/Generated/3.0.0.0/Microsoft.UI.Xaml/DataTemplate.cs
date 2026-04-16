@@ -18,6 +18,21 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.DataTemplate.DataTemplate()
 		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.DataTemplate()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.IDataTemplateExtension GetExtensionInstance(global::Microsoft.UI.Xaml.FrameworkElement element)
+		{
+			return (global::Microsoft.UI.Xaml.IDataTemplateExtension)element.GetValue(ExtensionInstanceProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetExtensionInstance(global::Microsoft.UI.Xaml.FrameworkElement element, global::Microsoft.UI.Xaml.IDataTemplateExtension value)
+		{
+			element.SetValue(ExtensionInstanceProperty, value);
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.ExtensionInstanceProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.DataTemplate.LoadContent()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -31,21 +46,6 @@ namespace Microsoft.UI.Xaml
 		public void RecycleElement(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DataTemplate", "void DataTemplate.RecycleElement(ElementFactoryRecycleArgs args)");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.ExtensionInstanceProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.IDataTemplateExtension GetExtensionInstance(global::Microsoft.UI.Xaml.FrameworkElement element)
-		{
-			return (global::Microsoft.UI.Xaml.IDataTemplateExtension)element.GetValue(ExtensionInstanceProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetExtensionInstance(global::Microsoft.UI.Xaml.FrameworkElement element, global::Microsoft.UI.Xaml.IDataTemplateExtension value)
-		{
-			element.SetValue(ExtensionInstanceProperty, value);
 		}
 #endif
 		// Processing: Microsoft.UI.Xaml.IElementFactory

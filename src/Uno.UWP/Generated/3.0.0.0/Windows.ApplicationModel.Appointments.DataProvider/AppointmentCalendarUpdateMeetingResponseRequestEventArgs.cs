@@ -23,7 +23,6 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarUpdateMeetingResponseRequestEventArgs.Request.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -31,5 +30,6 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 			throw new global::System.NotImplementedException("The member Deferral AppointmentCalendarUpdateMeetingResponseRequestEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20AppointmentCalendarUpdateMeetingResponseRequestEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarUpdateMeetingResponseRequestEventArgs.Request.get
 	}
 }

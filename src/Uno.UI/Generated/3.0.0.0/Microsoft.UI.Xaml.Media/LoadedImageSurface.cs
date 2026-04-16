@@ -11,18 +11,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property DecodedPhysicalSize
 		// Skipping already declared property DecodedSize
 		// Skipping already declared property NaturalSize
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.DecodedPhysicalSize.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.DecodedSize.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.NaturalSize.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.LoadCompleted.add
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.LoadCompleted.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.LoadedImageSurface", "void LoadedImageSurface.Dispose()");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Media.LoadedImageSurface StartLoadFromUri(global::System.Uri uri, global::Windows.Foundation.Size desiredMaxSize)
@@ -51,6 +39,18 @@ namespace Microsoft.UI.Xaml.Media
 			throw new global::System.NotImplementedException("The member LoadedImageSurface LoadedImageSurface.StartLoadFromStream(IRandomAccessStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LoadedImageSurface%20LoadedImageSurface.StartLoadFromStream%28IRandomAccessStream%20stream%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.LoadCompleted.add
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.LoadCompleted.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.LoadedImageSurface", "void LoadedImageSurface.Dispose()");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.DecodedPhysicalSize.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.DecodedSize.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSurface.NaturalSize.get
 		// Skipping already declared event Microsoft.UI.Xaml.Media.LoadedImageSurface.LoadCompleted
 		// Processing: System.IDisposable
 		// Processing: Microsoft.UI.Composition.ICompositionSurface

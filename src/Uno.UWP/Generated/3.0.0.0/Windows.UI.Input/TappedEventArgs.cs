@@ -8,13 +8,13 @@ namespace Windows.UI.Input
 #endif
 	public partial class TappedEventArgs
 	{
+		// Skipping already declared property ContactCount
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
 		// Skipping already declared property TapCount
-		// Skipping already declared property ContactCount
+		// Forced skipping of method Windows.UI.Input.TappedEventArgs.ContactCount.get
 		// Forced skipping of method Windows.UI.Input.TappedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Windows.UI.Input.TappedEventArgs.Position.get
 		// Forced skipping of method Windows.UI.Input.TappedEventArgs.TapCount.get
-		// Forced skipping of method Windows.UI.Input.TappedEventArgs.ContactCount.get
 	}
 }

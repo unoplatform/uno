@@ -10,6 +10,20 @@ namespace Windows.Data.Text
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Text.Core.CoreTextInputScope InputScope
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreTextInputScope TextPredictionGenerator.InputScope is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextInputScope%20TextPredictionGenerator.InputScope");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.TextPredictionGenerator", "CoreTextInputScope TextPredictionGenerator.InputScope");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool LanguageAvailableButNotInstalled
 		{
 			get
@@ -30,28 +44,12 @@ namespace Windows.Data.Text
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Text.Core.CoreTextInputScope InputScope
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreTextInputScope TextPredictionGenerator.InputScope is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextInputScope%20TextPredictionGenerator.InputScope");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.TextPredictionGenerator", "CoreTextInputScope TextPredictionGenerator.InputScope");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TextPredictionGenerator(string languageTag)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.TextPredictionGenerator", "TextPredictionGenerator.TextPredictionGenerator(string languageTag)");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.TextPredictionGenerator(string)
-		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.ResolvedLanguage.get
-		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.LanguageAvailableButNotInstalled.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetCandidatesAsync(string input)
@@ -82,5 +80,7 @@ namespace Windows.Data.Text
 #endif
 		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.InputScope.get
 		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.InputScope.set
+		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.LanguageAvailableButNotInstalled.get
+		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.ResolvedLanguage.get
 	}
 }

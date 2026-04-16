@@ -26,9 +26,9 @@ namespace Windows.UI.Accessibility
 		}
 #endif
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.ScreenReaderService()
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.CurrentScreenReaderPosition.get
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.ScreenReaderPositionChanged.add
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.ScreenReaderPositionChanged.remove
+		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.CurrentScreenReaderPosition.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Accessibility.ScreenReaderService, global::Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs> ScreenReaderPositionChanged

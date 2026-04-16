@@ -53,9 +53,9 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.TaskId.get
-		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.Name.get
-		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.Trigger.get
 		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.EntryPoint.get
+		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.Name.get
+		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.TaskId.get
+		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.Trigger.get
 	}
 }

@@ -1,0 +1,46 @@
+<ResourceDictionary x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.MergedAppResources_ThemeResource_Test_AppBrushes"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls"
+					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					mc:Ignorable="d">
+
+	<!--
+		A single ResourceDictionary intended to be merged into Application.Resources
+		that contains BOTH ThemeDictionaries-scoped entries and top-level (non-theme)
+		entries, consumed via {ThemeResource} from both direct property assignments
+		and Style Setters living in a separate merged dictionary.
+	-->
+	<ResourceDictionary.ThemeDictionaries>
+		<ResourceDictionary x:Key="Light">
+			<SolidColorBrush x:Key="MergedRegression_ThemedBrush"
+							 Color="#FFFFFF" />
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="Dark">
+			<SolidColorBrush x:Key="MergedRegression_ThemedBrush"
+							 Color="#16181A" />
+		</ResourceDictionary>
+	</ResourceDictionary.ThemeDictionaries>
+
+	<!-- Root-level (non-themed) resources, same dictionary file as the ThemeDictionaries above -->
+	<LinearGradientBrush x:Key="MergedRegression_RootGradientBrush"
+						 StartPoint="0,0.5"
+						 EndPoint="1,0.5">
+		<GradientStop Color="#FF7A67F8"
+					  Offset="0" />
+		<GradientStop Color="#FF159BFF"
+					  Offset="1" />
+	</LinearGradientBrush>
+
+	<!-- Style whose Setters reference the ThemeResources above -->
+	<Style x:Key="MergedRegression_ButtonStyle"
+		   TargetType="Button">
+		<Setter Property="Background"
+				Value="{ThemeResource MergedRegression_ThemedBrush}" />
+		<Setter Property="BorderBrush"
+				Value="{ThemeResource MergedRegression_RootGradientBrush}" />
+		<Setter Property="BorderThickness"
+				Value="1" />
+	</Style>
+</ResourceDictionary>

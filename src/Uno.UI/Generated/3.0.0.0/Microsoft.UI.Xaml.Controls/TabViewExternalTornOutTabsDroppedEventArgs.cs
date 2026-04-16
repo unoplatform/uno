@@ -8,8 +8,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TabViewExternalTornOutTabsDroppedEventArgs
 	{
+		// Skipping already declared property DropIndex
+		// Skipping already declared property Items
+		// Skipping already declared property Tabs
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppedEventArgs.DropIndex.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppedEventArgs.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppedEventArgs.Tabs.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppedEventArgs.DropIndex.get
 	}
 }

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Services.Cortana
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -12,6 +11,13 @@ namespace Windows.Services.Cortana
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal CortanaPermissionsManager()
 		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Services.Cortana.CortanaPermissionsManager GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member CortanaPermissionsManager CortanaPermissionsManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CortanaPermissionsManager%20CortanaPermissionsManager.GetDefault%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -40,13 +46,6 @@ namespace Windows.Services.Cortana
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Cortana.CortanaPermissionsChangeResult> RevokePermissionsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Services.Cortana.CortanaPermission> permissions)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CortanaPermissionsChangeResult> CortanaPermissionsManager.RevokePermissionsAsync(IEnumerable<CortanaPermission> permissions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCortanaPermissionsChangeResult%3E%20CortanaPermissionsManager.RevokePermissionsAsync%28IEnumerable%3CCortanaPermission%3E%20permissions%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Services.Cortana.CortanaPermissionsManager GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member CortanaPermissionsManager CortanaPermissionsManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CortanaPermissionsManager%20CortanaPermissionsManager.GetDefault%28%29");
 		}
 #endif
 	}

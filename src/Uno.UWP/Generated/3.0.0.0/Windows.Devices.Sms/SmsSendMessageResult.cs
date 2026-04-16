@@ -83,11 +83,11 @@ namespace Windows.Devices.Sms
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.CellularClass.get
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.IsErrorTransient.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.IsSuccessful.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.MessageReferenceNumbers.get
-		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.CellularClass.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.ModemErrorCode.get
-		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.IsErrorTransient.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.NetworkCauseCode.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.TransportFailureCause.get
 	}

@@ -23,12 +23,12 @@ namespace Windows.Devices.Geolocation.Geofencing
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.Geofence(string, Windows.Devices.Geolocation.IGeoshape, Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates, bool, System.TimeSpan)
 		// Skipping already declared method Windows.Devices.Geolocation.Geofencing.Geofence.Geofence(string, Windows.Devices.Geolocation.IGeoshape, Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates, bool, System.TimeSpan, System.DateTimeOffset, System.TimeSpan)
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.Geofence(string, Windows.Devices.Geolocation.IGeoshape, Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates, bool, System.TimeSpan, System.DateTimeOffset, System.TimeSpan)
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.StartTime.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.Duration.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.DwellTime.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.Geoshape.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.Id.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.MonitoredStates.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.Geoshape.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.SingleUse.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.Geofence.StartTime.get
 	}
 }

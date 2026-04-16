@@ -37,9 +37,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.HighDynamicRangeAnalyzer.get
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.DesiredAnalysisInterval.set
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.DesiredAnalysisInterval.get
 		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.SceneAnalyzed.add
 		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.SceneAnalyzed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -49,6 +46,9 @@ namespace Windows.Media.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffect", "void SceneAnalysisEffect.SetProperties(IPropertySet configuration)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.DesiredAnalysisInterval.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.DesiredAnalysisInterval.set
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.HighDynamicRangeAnalyzer.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.SceneAnalysisEffect, global::Windows.Media.Core.SceneAnalyzedEventArgs> SceneAnalyzed

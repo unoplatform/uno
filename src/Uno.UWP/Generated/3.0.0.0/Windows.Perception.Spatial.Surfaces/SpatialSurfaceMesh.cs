@@ -73,11 +73,12 @@ namespace Windows.Perception.Spatial.Surfaces
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.SurfaceInfo.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.~SpatialSurfaceMesh()
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.CoordinateSystem.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.SurfaceInfo.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.TriangleIndices.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.VertexPositions.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.VertexPositionScale.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.VertexNormals.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.VertexPositionScale.get
+		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMesh.VertexPositions.get
 	}
 }

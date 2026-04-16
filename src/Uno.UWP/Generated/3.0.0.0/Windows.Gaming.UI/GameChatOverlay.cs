@@ -27,15 +27,6 @@ namespace Windows.Gaming.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.UI.GameChatOverlay.DesiredPosition.get
-		// Forced skipping of method Windows.Gaming.UI.GameChatOverlay.DesiredPosition.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void AddMessage(string sender, string message, global::Windows.Gaming.UI.GameChatMessageOrigin origin)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlay", "void GameChatOverlay.AddMessage(string sender, string message, GameChatMessageOrigin origin)");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Gaming.UI.GameChatOverlay GetDefault()
@@ -43,5 +34,14 @@ namespace Windows.Gaming.UI
 			throw new global::System.NotImplementedException("The member GameChatOverlay GameChatOverlay.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameChatOverlay%20GameChatOverlay.GetDefault%28%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void AddMessage(string sender, string message, global::Windows.Gaming.UI.GameChatMessageOrigin origin)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlay", "void GameChatOverlay.AddMessage(string sender, string message, GameChatMessageOrigin origin)");
+		}
+#endif
+		// Forced skipping of method Windows.Gaming.UI.GameChatOverlay.DesiredPosition.get
+		// Forced skipping of method Windows.Gaming.UI.GameChatOverlay.DesiredPosition.set
 	}
 }

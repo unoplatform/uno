@@ -8,66 +8,6 @@ namespace Windows.ApplicationModel.Activation
 #endif
 	public partial class ProtocolActivatedEventArgs : global::Windows.ApplicationModel.Activation.IProtocolActivatedEventArgs, global::Windows.ApplicationModel.Activation.IActivatedEventArgs, global::Windows.ApplicationModel.Activation.IProtocolActivatedEventArgsWithCallerPackageFamilyNameAndData, global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs, global::Windows.ApplicationModel.Activation.IViewSwitcherProvider, global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
 	{
-#if false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivationKind ProtocolActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationKind%20ProtocolActivatedEventArgs.Kind");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Activation.ApplicationExecutionState PreviousExecutionState
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState ProtocolActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationExecutionState%20ProtocolActivatedEventArgs.PreviousExecutionState");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Activation.SplashScreen SplashScreen
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SplashScreen ProtocolActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SplashScreen%20ProtocolActivatedEventArgs.SplashScreen");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.User User
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member User ProtocolActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20ProtocolActivatedEventArgs.User");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public int CurrentlyShownApplicationViewId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int ProtocolActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ProtocolActivatedEventArgs.CurrentlyShownApplicationViewId");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Uri
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri ProtocolActivatedEventArgs.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20ProtocolActivatedEventArgs.Uri");
-			}
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string CallerPackageFamilyName
@@ -78,6 +18,7 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
+		// Skipping already declared property CurrentlyShownApplicationViewId
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Collections.ValueSet Data
@@ -85,6 +26,20 @@ namespace Windows.ApplicationModel.Activation
 			get
 			{
 				throw new global::System.NotImplementedException("The member ValueSet ProtocolActivatedEventArgs.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20ProtocolActivatedEventArgs.Data");
+			}
+		}
+#endif
+		// Skipping already declared property Kind
+		// Skipping already declared property PreviousExecutionState
+		// Skipping already declared property SplashScreen
+		// Skipping already declared property Uri
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.System.User User
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member User ProtocolActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20ProtocolActivatedEventArgs.User");
 			}
 		}
 #endif
@@ -98,15 +53,15 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs.Uri.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs.CallerPackageFamilyName.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs.CurrentlyShownApplicationViewId.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs.Data.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs.CallerPackageFamilyName.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs.Data.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs.CurrentlyShownApplicationViewId.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs.ViewSwitcher.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs.Uri.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs.User.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs.ViewSwitcher.get
 		// Processing: Windows.ApplicationModel.Activation.IProtocolActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IProtocolActivatedEventArgsWithCallerPackageFamilyNameAndData

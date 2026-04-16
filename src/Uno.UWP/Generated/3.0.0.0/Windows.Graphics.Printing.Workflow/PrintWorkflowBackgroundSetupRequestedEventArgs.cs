@@ -30,7 +30,6 @@ namespace Windows.Graphics.Printing.Workflow
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WorkflowPrintTicket> PrintWorkflowBackgroundSetupRequestedEventArgs.GetUserPrintTicketAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWorkflowPrintTicket%3E%20PrintWorkflowBackgroundSetupRequestedEventArgs.GetUserPrintTicketAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowBackgroundSetupRequestedEventArgs.Configuration.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetRequiresUI()
@@ -45,5 +44,6 @@ namespace Windows.Graphics.Printing.Workflow
 			throw new global::System.NotImplementedException("The member Deferral PrintWorkflowBackgroundSetupRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20PrintWorkflowBackgroundSetupRequestedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowBackgroundSetupRequestedEventArgs.Configuration.get
 	}
 }

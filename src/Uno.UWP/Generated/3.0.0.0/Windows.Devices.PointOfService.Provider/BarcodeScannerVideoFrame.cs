@@ -53,10 +53,6 @@ namespace Windows.Devices.PointOfService.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame.Format.get
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame.Width.get
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame.Height.get
-		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame.PixelData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -64,6 +60,10 @@ namespace Windows.Devices.PointOfService.Provider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "void BarcodeScannerVideoFrame.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame.Format.get
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame.Height.get
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame.PixelData.get
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame.Width.get
 		// Processing: System.IDisposable
 	}
 }

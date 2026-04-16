@@ -30,29 +30,6 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.XamlLight()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.CompositionLight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.CompositionLight.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected virtual string GetId()
-		{
-			throw new global::System.NotImplementedException("The member string XamlLight.GetId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20XamlLight.GetId%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected virtual void OnConnected(global::Microsoft.UI.Xaml.UIElement newElement)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.XamlLight", "void XamlLight.OnConnected(UIElement newElement)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected virtual void OnDisconnected(global::Microsoft.UI.Xaml.UIElement oldElement)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.XamlLight", "void XamlLight.OnDisconnected(UIElement oldElement)");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void AddTargetElement(string lightId, global::Microsoft.UI.Xaml.UIElement element)
@@ -81,5 +58,28 @@ namespace Microsoft.UI.Xaml.Media
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.XamlLight", "void XamlLight.RemoveTargetBrush(string lightId, Brush brush)");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		protected virtual string GetId()
+		{
+			throw new global::System.NotImplementedException("The member string XamlLight.GetId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20XamlLight.GetId%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		protected virtual void OnConnected(global::Microsoft.UI.Xaml.UIElement newElement)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.XamlLight", "void XamlLight.OnConnected(UIElement newElement)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		protected virtual void OnDisconnected(global::Microsoft.UI.Xaml.UIElement oldElement)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.XamlLight", "void XamlLight.OnDisconnected(UIElement oldElement)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.CompositionLight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlLight.CompositionLight.set
 	}
 }

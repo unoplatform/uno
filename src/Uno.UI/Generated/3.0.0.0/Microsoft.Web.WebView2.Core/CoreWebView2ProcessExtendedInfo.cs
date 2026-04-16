@@ -33,7 +33,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo.ProcessInfo.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo.AssociatedFrameInfos.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo.ProcessInfo.get
 	}
 }

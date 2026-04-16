@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property CollapsedItem
 		// Skipping already declared property CollapsedItemContainer
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemCollapsedEventArgs.CollapsedItemContainer.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemCollapsedEventArgs.CollapsedItem.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemCollapsedEventArgs.CollapsedItemContainer.get
 	}
 }

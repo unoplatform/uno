@@ -83,12 +83,12 @@ namespace Windows.Security.Authentication.Identity.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.UserAccountId.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.SessionId.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.DisplaySessionId.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.ApprovalStatus.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.AuthenticationType.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.RequestTime.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.DisplaySessionId.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.ExpirationTime.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.RequestTime.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.SessionId.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo.UserAccountId.get
 	}
 }

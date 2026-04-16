@@ -29,22 +29,22 @@ namespace Microsoft.UI.Input.DragDrop
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragDropManager", "void DragDropManager.Dispose()");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.AreConcurrentOperationsEnabled.set
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.TargetRequested.add
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.TargetRequested.remove
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.AreConcurrentOperationsEnabled.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.DragDrop.DragDropManager GetForIsland(global::Microsoft.UI.Content.ContentIsland content)
 		{
 			throw new global::System.NotImplementedException("The member DragDropManager DragDropManager.GetForIsland(ContentIsland content) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DragDropManager%20DragDropManager.GetForIsland%28ContentIsland%20content%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.TargetRequested.add
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.TargetRequested.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragDropManager", "void DragDropManager.Dispose()");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.AreConcurrentOperationsEnabled.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.AreConcurrentOperationsEnabled.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.DragDrop.DragDropManager, global::Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs> TargetRequested

@@ -23,11 +23,6 @@ namespace Windows.Graphics.Printing.Workflow
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.SetupRequested.add
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.SetupRequested.remove
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.XpsDataAvailable.add
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.XpsDataAvailable.remove
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -35,6 +30,11 @@ namespace Windows.Graphics.Printing.Workflow
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession", "void PrintWorkflowForegroundSession.Start()");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.SetupRequested.add
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.SetupRequested.remove
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.XpsDataAvailable.add
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.XpsDataAvailable.remove
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession, global::Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSetupRequestedEventArgs> SetupRequested

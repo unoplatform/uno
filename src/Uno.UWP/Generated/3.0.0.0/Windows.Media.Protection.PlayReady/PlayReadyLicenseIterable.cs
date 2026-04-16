@@ -6,7 +6,7 @@ namespace Windows.Media.Protection.PlayReady
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PlayReadyLicenseIterable : global::System.Collections.Generic.IEnumerable<global::Windows.Media.Protection.PlayReady.IPlayReadyLicense>
+	public partial class PlayReadyLicenseIterable : global::System.Collections.Generic.IEnumerable<global::Windows.Media.Protection.PlayReady.IPlayReadyLicense>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -24,16 +24,15 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable.PlayReadyLicenseIterable(Windows.Media.Protection.PlayReady.PlayReadyContentHeader, bool)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable.First()
-		// Processing: System.Collections.Generic.IEnumerable<Windows.Media.Protection.PlayReady.IPlayReadyLicense>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Media.Protection.PlayReady.IPlayReadyLicense>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Protection.PlayReady.IPlayReadyLicense> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<IPlayReadyLicense> PlayReadyLicenseIterable.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CIPlayReadyLicense%3E%20PlayReadyLicenseIterable.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable.System.Collections.IEnumerable.GetEnumerator()
+		// Processing: System.Collections.Generic.IEnumerable<Windows.Media.Protection.PlayReady.IPlayReadyLicense>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

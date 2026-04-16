@@ -1214,11 +1214,12 @@ This refactoring is a **prerequisite** for the state machine (Phase 1c). All ser
 - **Fix `McpClientProxy.DisposeAsync` hang**: `TrySetCanceled()` on TCS before awaiting (process shutdown must not block)
 - Health resource (`uno://health`) + `uno_health` tool
 
-### Phase 1b: Background Discovery + Direct Server Launch (MCP-only)
-- Background discovery chain using Phase 0's fast resolution
-- Skip controller process in MCP mode (direct Host launch)
-- **Re-implement CLI-side**: AmbientRegistry check (1g-bis) + `.csproj.user` generation (currently controller-only, see `Program.Command.cs:101`)
-- Pass add-in paths via `--addins`
+### Phase 1b: Background Discovery + Direct Server Launch ✅ **IMPLEMENTED**
+- CLI `start` now bypasses the controller and launches the Host directly via `StartCommandHandler`
+- CLI-side: AmbientRegistry check, IDE channel rebind, port allocation, `.csproj.user` generation
+- All arguments (`--ideChannel`, `--addins`, `--metadata-updates`) forwarded to Host in direct mode
+- Fixes backward compatibility with older Host binaries (SDK ≤ 6.5.x) that dropped `--ideChannel` in the two-process launcher
+- See `StartCommandHandler.cs`, tests in `Given_StartCommandHandler.cs` and `Given_StartCommandHandler_Integration.cs`
 
 ### Phase 1c: Hot Reconnection (MCP-only)
 

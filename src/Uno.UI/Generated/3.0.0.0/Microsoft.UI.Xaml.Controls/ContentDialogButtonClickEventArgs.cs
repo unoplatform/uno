@@ -9,8 +9,8 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ContentDialogButtonClickEventArgs
 	{
 		// Skipping already declared property Cancel
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.GetDeferral()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.Cancel.set
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.GetDeferral()
 	}
 }

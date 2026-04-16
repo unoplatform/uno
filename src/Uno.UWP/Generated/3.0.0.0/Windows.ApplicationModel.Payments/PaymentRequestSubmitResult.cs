@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.Status.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.Response.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.Status.get
 	}
 }

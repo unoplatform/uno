@@ -44,8 +44,8 @@ namespace Windows.Security.Authentication.OnlineId
 			throw new global::System.NotImplementedException("The member IAsyncOperation<OnlineIdSystemTicketResult> OnlineIdSystemAuthenticatorForUser.GetTicketAsync(OnlineIdServiceTicketRequest request) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3COnlineIdSystemTicketResult%3E%20OnlineIdSystemAuthenticatorForUser.GetTicketAsync%28OnlineIdServiceTicketRequest%20request%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticatorForUser.ApplicationId.set
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticatorForUser.ApplicationId.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticatorForUser.ApplicationId.set
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticatorForUser.User.get
 	}
 }

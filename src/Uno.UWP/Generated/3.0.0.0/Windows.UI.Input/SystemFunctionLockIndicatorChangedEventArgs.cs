@@ -47,9 +47,9 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.Timestamp.get
-		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.IsIndicatorOn.get
 		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.Handled.set
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.IsIndicatorOn.get
+		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.Timestamp.get
 	}
 }

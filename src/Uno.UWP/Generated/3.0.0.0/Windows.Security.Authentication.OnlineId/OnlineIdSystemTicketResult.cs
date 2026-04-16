@@ -43,8 +43,8 @@ namespace Windows.Security.Authentication.OnlineId
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult.ExtendedError.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult.Identity.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult.Status.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdSystemTicketResult.ExtendedError.get
 	}
 }

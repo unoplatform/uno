@@ -43,9 +43,6 @@ namespace Windows.Graphics.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.Surface.get
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.SystemRelativeTime.get
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.ContentSize.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -53,6 +50,9 @@ namespace Windows.Graphics.Capture
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.Direct3D11CaptureFrame", "void Direct3D11CaptureFrame.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.ContentSize.get
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.Surface.get
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.SystemRelativeTime.get
 		// Processing: System.IDisposable
 	}
 }

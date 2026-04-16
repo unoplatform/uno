@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerStatusUpdatedEventArgs.Status.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerStatusUpdatedEventArgs.ExtendedStatus.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerStatusUpdatedEventArgs.Status.get
 	}
 }

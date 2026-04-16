@@ -8,8 +8,8 @@ namespace Microsoft.UI.Xaml.Navigation
 #endif
 	public partial class FrameNavigationOptions
 	{
-		// Skipping already declared property TransitionInfoOverride
 		// Skipping already declared property IsNavigationStackEnabled
+		// Skipping already declared property TransitionInfoOverride
 		// Skipping already declared method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.FrameNavigationOptions()
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.FrameNavigationOptions()
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.IsNavigationStackEnabled.get

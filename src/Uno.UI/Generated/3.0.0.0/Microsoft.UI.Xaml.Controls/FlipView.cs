@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class FlipView
 	{
-		// Skipping already declared property UseTouchAnimationsForAllNavigation
 		// Skipping already declared property UseTouchAnimationsForAllNavigationProperty
+		// Skipping already declared property UseTouchAnimationsForAllNavigation
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.FlipView.FlipView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipView.FlipView()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipView.UseTouchAnimationsForAllNavigationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipView.UseTouchAnimationsForAllNavigation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipView.UseTouchAnimationsForAllNavigation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipView.UseTouchAnimationsForAllNavigationProperty.get
 	}
 }

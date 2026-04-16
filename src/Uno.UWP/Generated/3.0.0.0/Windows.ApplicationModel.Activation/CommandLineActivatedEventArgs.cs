@@ -25,6 +25,16 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Activation.CommandLineActivationOperation Operation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CommandLineActivationOperation CommandLineActivatedEventArgs.Operation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CommandLineActivationOperation%20CommandLineActivatedEventArgs.Operation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ApplicationExecutionState PreviousExecutionState
 		{
 			get
@@ -53,18 +63,8 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Activation.CommandLineActivationOperation Operation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CommandLineActivationOperation CommandLineActivatedEventArgs.Operation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CommandLineActivationOperation%20CommandLineActivatedEventArgs.Operation");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivatedEventArgs.Operation.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivatedEventArgs.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivatedEventArgs.Operation.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivatedEventArgs.User.get

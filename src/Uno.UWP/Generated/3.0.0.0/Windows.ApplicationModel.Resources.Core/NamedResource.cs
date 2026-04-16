@@ -33,8 +33,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.NamedResource.Uri.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.NamedResource.Candidates.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Resources.Core.ResourceCandidate Resolve()
@@ -63,5 +61,7 @@ namespace Windows.ApplicationModel.Resources.Core
 			throw new global::System.NotImplementedException("The member IReadOnlyList<ResourceCandidate> NamedResource.ResolveAll(ResourceContext resourceContext) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CResourceCandidate%3E%20NamedResource.ResolveAll%28ResourceContext%20resourceContext%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.NamedResource.Candidates.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.NamedResource.Uri.get
 	}
 }

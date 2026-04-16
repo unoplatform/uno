@@ -43,8 +43,8 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.EstimatedRemovalDate.get
 		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.FeatureId.get
 		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.Status.get
-		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.EstimatedRemovalDate.get
 	}
 }

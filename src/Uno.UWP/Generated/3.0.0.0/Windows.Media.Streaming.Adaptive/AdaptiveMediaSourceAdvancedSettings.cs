@@ -15,15 +15,15 @@ namespace Windows.Media.Streaming.Adaptive
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double? DesiredBitrateHeadroomRatio
+		public bool AllSegmentsIndependent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? AdaptiveMediaSourceAdvancedSettings.DesiredBitrateHeadroomRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20AdaptiveMediaSourceAdvancedSettings.DesiredBitrateHeadroomRatio");
+				throw new global::System.NotImplementedException("The member bool AdaptiveMediaSourceAdvancedSettings.AllSegmentsIndependent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AdaptiveMediaSourceAdvancedSettings.AllSegmentsIndependent");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceAdvancedSettings", "double? AdaptiveMediaSourceAdvancedSettings.DesiredBitrateHeadroomRatio");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceAdvancedSettings", "bool AdaptiveMediaSourceAdvancedSettings.AllSegmentsIndependent");
 			}
 		}
 #endif
@@ -43,23 +43,23 @@ namespace Windows.Media.Streaming.Adaptive
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AllSegmentsIndependent
+		public double? DesiredBitrateHeadroomRatio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AdaptiveMediaSourceAdvancedSettings.AllSegmentsIndependent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AdaptiveMediaSourceAdvancedSettings.AllSegmentsIndependent");
+				throw new global::System.NotImplementedException("The member double? AdaptiveMediaSourceAdvancedSettings.DesiredBitrateHeadroomRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20AdaptiveMediaSourceAdvancedSettings.DesiredBitrateHeadroomRatio");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceAdvancedSettings", "bool AdaptiveMediaSourceAdvancedSettings.AllSegmentsIndependent");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceAdvancedSettings", "double? AdaptiveMediaSourceAdvancedSettings.DesiredBitrateHeadroomRatio");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceAdvancedSettings.AllSegmentsIndependent.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceAdvancedSettings.AllSegmentsIndependent.set
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceAdvancedSettings.DesiredBitrateHeadroomRatio.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceAdvancedSettings.DesiredBitrateHeadroomRatio.set
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceAdvancedSettings.BitrateDowngradeTriggerRatio.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceAdvancedSettings.BitrateDowngradeTriggerRatio.set
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceAdvancedSettings.DesiredBitrateHeadroomRatio.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceAdvancedSettings.DesiredBitrateHeadroomRatio.set
 	}
 }

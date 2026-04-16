@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml;
 
 namespace WinRT.Interop;
 
-public static class WindowNative
+public static partial class WindowNative
 {
 	public static IntPtr GetWindowHandle(object target)
 	{
