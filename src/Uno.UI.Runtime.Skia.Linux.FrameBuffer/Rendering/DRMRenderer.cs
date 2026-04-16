@@ -41,6 +41,15 @@ namespace Uno.UI.Runtime.Skia
 		private bool _invalidateRenderCalledWhileWaitingForPageFlip;
 		private readonly GCHandle _selfHandle;
 
+		private LibDrm.drmModeModeInfo _savedMode;
+		private uint _savedBufferId;
+		private uint _savedCrtcX;
+		private uint _savedCrtcY;
+		private int _savedModeValid;
+		private uint _savedConnectorId;
+		private volatile bool _disposed;
+		private bool _crtcRestored;
+
 		public readonly record struct DRMInitOptions(string? CardPath, FramebufferHostBuilder.DRMConnectorChooserDelegate? DRMConnectorChooser, FramebufferHostBuilder.DRMFourCCColorFormat GBMSurfaceColorFormat);
 
 		public unsafe DRMRenderer(IXamlRootHost host, DRMInitOptions drmInitOptions, MouseIndicatorOptions mouseIndicatorOptions) : base(host, mouseIndicatorOptions)
@@ -218,6 +227,20 @@ namespace Uno.UI.Runtime.Skia
 			var connectorId = connector.Id;
 			var mode = modeInfo.Mode;
 
+			// Save the current CRTC state so we can restore it on exit, which allows
+			// the kernel fbcon to reattach and the CLI prompt to reappear.
+			var savedCrtc = LibDrm.drmModeGetCrtc(_card, _crtc);
+			if (savedCrtc != null)
+			{
+				_savedMode = savedCrtc->mode;
+				_savedBufferId = savedCrtc->buffer_id;
+				_savedCrtcX = savedCrtc->x;
+				_savedCrtcY = savedCrtc->y;
+				_savedModeValid = savedCrtc->mode_valid;
+				_savedConnectorId = connectorId;
+				LibDrm.drmModeFreeCrtc(savedCrtc);
+			}
+
 			var res = LibDrm.drmModeSetCrtc(_card, _crtc, fbId, 0, 0, &connectorId, 1, &mode);
 			if (res != 0)
 			{
@@ -269,6 +292,11 @@ namespace Uno.UI.Runtime.Skia
 
 		public override unsafe void InvalidateRender()
 		{
+			if (_disposed)
+			{
+				return;
+			}
+
 			Volatile.Write(ref _invalidateRenderCalledWhileWaitingForPageFlip, true);
 			if (Interlocked.Exchange(ref _waitingForPageFlip, true))
 			{
@@ -358,6 +386,10 @@ namespace Uno.UI.Runtime.Skia
 		{
 			var handle = GCHandle.FromIntPtr((IntPtr)user_data);
 			var @this = (DRMRenderer)handle.Target!;
+			if (@this._disposed)
+			{
+				return;
+			}
 			Volatile.Write(ref @this._invalidateRenderCalledWhileWaitingForPageFlip, false);
 			@this.Render();
 			Volatile.Write(ref @this._waitingForPageFlip, false);
@@ -411,6 +443,48 @@ namespace Uno.UI.Runtime.Skia
 		}
 
 		private void OnBoFree(IntPtr bo, IntPtr fbHandle) => LibDrm.drmModeRmFB(_card, fbHandle.ToInt32());
+
+		public override unsafe void Dispose()
+		{
+			if (_disposed)
+			{
+				return;
+			}
+			_disposed = true;
+
+			if (_crtcRestored)
+			{
+				return;
+			}
+			_crtcRestored = true;
+
+			try
+			{
+				var connectorId = _savedConnectorId;
+				int restoreRes;
+				if (_savedModeValid != 0 && connectorId != 0)
+				{
+					fixed (LibDrm.drmModeModeInfo* modePtr = &_savedMode)
+					{
+						restoreRes = LibDrm.drmModeSetCrtc(_card, _crtc, _savedBufferId, _savedCrtcX, _savedCrtcY, &connectorId, 1, modePtr);
+					}
+				}
+				else
+				{
+					// Nothing was driving the CRTC before us: disable it so the driver releases it.
+					restoreRes = LibDrm.drmModeSetCrtc(_card, _crtc, 0, 0, 0, null, 0, null);
+				}
+
+				if (restoreRes != 0)
+				{
+					this.LogDebug()?.Debug($"{nameof(LibDrm.drmModeSetCrtc)} returned {restoreRes} while restoring the original CRTC state on exit.");
+				}
+			}
+			catch (Exception e)
+			{
+				this.LogDebug()?.Debug($"Failed to restore the original CRTC state on exit: {e.Message}");
+			}
+		}
 
 		[GeneratedRegex("card[0-9]+")]
 		private static partial Regex DRMCardPathRegex();
