@@ -66,8 +66,10 @@ internal class McpStdioServer(
 	};
 
 	// ── Meta-tool tracking state ───────────────────────────────────────
-	// Tracks whether the client supports tools/list_changed by observing
-	// whether it re-queries list_tools after a notification.
+	// Meta-tools stay published for the full session. Some MCP clients can
+	// transiently rebuild their routing table as the upstream tool set changes.
+	// Removing the compatibility tools after a re-query makes them non-routable
+	// exactly when the client still needs a stable fallback.
 	private volatile bool _listChangedNotificationSent;
 	private volatile bool _clientReQueriedAfterListChanged;
 
@@ -79,12 +81,17 @@ internal class McpStdioServer(
 		_listChangedNotificationSent = true;
 	}
 
-	/// <summary>
-	/// Returns true when meta-tools (uno_discover_tools, uno_execute_tool) should be included
-	/// in list_tools responses. Meta-tools are included until the client demonstrates support
-	/// for tools/list_changed by re-querying list_tools after a notification.
-	/// </summary>
-	internal bool ShouldIncludeMetaTools => !_clientReQueriedAfterListChanged;
+	internal void OnListToolsQueried()
+	{
+		if (_listChangedNotificationSent)
+		{
+			_clientReQueriedAfterListChanged = true;
+		}
+	}
+
+	internal bool ClientReQueriedAfterListChanged => _clientReQueriedAfterListChanged;
+
+	internal bool ShouldIncludeMetaTools => true;
 
 	private static void LogTimeline(ILogger logger, string stage, long elapsedMilliseconds, string details)
 	{
@@ -403,12 +410,9 @@ internal class McpStdioServer(
 				var listToolsStopwatch = Stopwatch.StartNew();
 				logger.LogTrace("RECV list_tools");
 
-				// Track whether the client re-queried after tools/list_changed.
-				// A re-query means the client supports list_changed and does not need meta-tools.
-				if (_listChangedNotificationSent)
-				{
-					_clientReQueriedAfterListChanged = true;
-				}
+				// Preserve the observation for diagnostics/tests, but keep the
+				// compatibility meta-tools published regardless of re-query state.
+				OnListToolsQueried();
 
 				await ensureRootsInitialized(ctx, tcs, ct);
 
