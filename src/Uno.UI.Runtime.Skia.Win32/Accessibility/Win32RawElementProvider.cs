@@ -498,6 +498,16 @@ internal class Win32RawElementProvider :
 
 	private static void CollectAutomationPeers(UIElement element, List<AutomationPeer> result)
 	{
+		CollectAutomationPeers(element, result, 0);
+	}
+
+	private static void CollectAutomationPeers(UIElement element, List<AutomationPeer> result, int depth)
+	{
+		if (depth > MaxHitTestDepth)
+		{
+			return;
+		}
+
 		foreach (var child in element.GetChildren())
 		{
 			if (child.Visibility == Visibility.Collapsed)
@@ -513,7 +523,7 @@ internal class Win32RawElementProvider :
 			else
 			{
 				// No peer on this element - flatten by recursing into its children
-				CollectAutomationPeers(child, result);
+				CollectAutomationPeers(child, result, depth + 1);
 			}
 		}
 	}

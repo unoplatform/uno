@@ -298,39 +298,46 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 
 	private void CleanupProviders(UIElement element)
 	{
-		if (_providers.TryGetValue(element, out var provider))
+		// Use an explicit stack instead of recursion to prevent StackOverflow
+		// on deep visual trees when subtrees are removed.
+		var stack = new Stack<UIElement>();
+		stack.Push(element);
+
+		while (stack.Count > 0)
 		{
-			// A provider can briefly remain alive after removal (e.g. pending structure
-			// notifications or external UIA/COM references). Clear any cached peer lists
-			// first so a stale provider cannot keep the removed subtree alive.
-			provider.InvalidateChildrenCache();
-			_pendingStructureChanges.Remove(provider);
+			var current = stack.Pop();
 
-			_providers.Remove(element);
-			if (provider.RepresentedPeer is { } representedPeer)
+			if (_providers.TryGetValue(current, out var provider))
 			{
-				_peerProviders.Remove(representedPeer);
-			}
+				// Clear cached peer lists so a stale provider cannot keep the
+				// removed subtree alive.
+				provider.InvalidateChildrenCache();
+				_pendingStructureChanges.Remove(provider);
 
-			// Disconnect the provider from UIA so stale COM references are released.
-			// This matches WinUI3's CUIAWrapper::Invalidate() which calls
-			// UiaDisconnectProvider(this) when the automation peer is destroyed.
-			try
-			{
-				_ = Win32UIAutomationInterop.UiaDisconnectProvider(provider);
-			}
-			catch (Exception ex)
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				_providers.Remove(current);
+				if (provider.RepresentedPeer is { } representedPeer)
 				{
-					this.Log().Debug($"UiaDisconnectProvider failed for {provider.DescribeElement()}: {ex.Message}");
+					_peerProviders.Remove(representedPeer);
+				}
+
+				// Disconnect the provider from UIA so stale COM references are released.
+				try
+				{
+					_ = Win32UIAutomationInterop.UiaDisconnectProvider(provider);
+				}
+				catch (Exception ex)
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"UiaDisconnectProvider failed for {provider.DescribeElement()}: {ex.Message}");
+					}
 				}
 			}
-		}
 
-		foreach (var child in element.GetChildren())
-		{
-			CleanupProviders(child);
+			foreach (var child in current.GetChildren())
+			{
+				stack.Push(child);
+			}
 		}
 	}
 
