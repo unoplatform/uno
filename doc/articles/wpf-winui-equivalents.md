@@ -297,6 +297,7 @@ Always use `BasedOn` when overriding default control styles. Without it, your st
 | `MediaElement` | `MediaPlayerElement` |
 | `InputBindings` | `KeyboardAccelerators` |
 | `KeyBinding` | `KeyboardAccelerator` |
+
 ### Code-Behind Replacements
 
 | Find | Replace With |
