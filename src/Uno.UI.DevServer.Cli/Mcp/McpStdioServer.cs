@@ -28,10 +28,10 @@ internal class McpStdioServer(
 	internal const int InitializeTimeoutMs = 120_000; // 2 minutes
 
 	// ── Meta-tool definitions ──────────────────────────────────────────
-	// These tools provide a compatibility layer for MCP clients that do not
-	// re-query list_tools after a tools/list_changed notification. They are
-	// included in the initial list_tools response and removed once the client
-	// demonstrates support for tools/list_changed by re-querying.
+	// These tools provide a stable compatibility layer while the direct upstream
+	// tool set changes during DevServer startup, reconnects, or license-driven
+	// tool list updates. They stay published for the full session so MCP clients
+	// always retain a routable fallback path.
 
 	internal static readonly Tool InitializeTool = new()
 	{
@@ -197,7 +197,7 @@ internal class McpStdioServer(
 					return healthResult;
 				}
 
-				// Handle uno_discover_tools (meta-tool for clients without list_changed)
+				// Handle uno_discover_tools (stable compatibility meta-tool)
 				if (toolName == DiscoverToolsTool.Name)
 				{
 					try
@@ -247,7 +247,7 @@ internal class McpStdioServer(
 					}
 				}
 
-				// Handle uno_execute_tool (meta-tool for clients without list_changed)
+				// Handle uno_execute_tool (stable compatibility meta-tool)
 				if (toolName == ExecuteToolTool.Name)
 				{
 					if (ctx.Params?.Arguments is not { } executeArgs
