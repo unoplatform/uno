@@ -50,6 +50,7 @@ Button, TextBox, TextBlock, CheckBox, RadioButton, ComboBox, ListBox, ListView, 
 The following controls do not have direct equivalents in WPF but are often valuable to introduce when modernizing your UI with WinUI / Uno Platform:
 
 NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton, GridView.
+
 ### Controls Requiring Replacement
 
 | WPF Control | WinUI / Uno Replacement | Notes |
