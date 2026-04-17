@@ -1,9 +1,9 @@
+using System.Text.Json;
 using AwesomeAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using ModelContextProtocol.Protocol;
 using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.DevServer.Cli.Mcp;
-using System.Text.Json;
 
 namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 
@@ -256,6 +256,19 @@ public class Given_McpStdioServer
 		server.OnListChangedNotificationSent();
 
 		// The client has not re-queried list_tools yet, so meta-tools should still be included
+		server.ShouldIncludeMetaTools.Should().BeTrue();
+	}
+
+	[TestMethod]
+	[Description("ShouldIncludeMetaTools stays true after a client re-queries after list_changed so compatibility tools remain routable for the full session")]
+	public void ShouldIncludeMetaTools_AfterClientReQuery_RemainsTrue()
+	{
+		var server = CreateMcpStdioServer();
+
+		server.OnListChangedNotificationSent();
+		server.OnListToolsQueried();
+
+		server.ClientReQueriedAfterListChanged.Should().BeTrue();
 		server.ShouldIncludeMetaTools.Should().BeTrue();
 	}
 

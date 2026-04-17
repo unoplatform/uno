@@ -343,7 +343,7 @@ sequenceDiagram
     end
 ```
 
-> **Note**: The tool cache (`tools-cache.json`) has been removed. For MCP clients that do not re-query `list_tools` after `tools/list_changed`, the meta-tools `uno_discover_tools` and `uno_execute_tool` provide an alternative mechanism to discover and call upstream tools.
+> **Note**: The tool cache (`tools-cache.json`) has been removed. The meta-tools `uno_discover_tools` and `uno_execute_tool` now provide a stable compatibility mechanism to discover and call upstream tools throughout the session, even as `tools/list_changed` updates the direct tool set.
 
 ### Clients Without `list_changed` Support
 
@@ -722,4 +722,4 @@ Both layers are self-discovering — no hardcoded package names. A new add-in pa
 
 ### Tool Cache (Removed)
 
-The `ToolCacheFile` (`tools-cache.json`) has been removed. There is no more file persistence for tool definitions (`IsToolCacheEnabled`, `PersistToolCacheIfNeeded`, `RefreshCachedToolsFromUpstreamAsync` no longer exist). The meta-tools `uno_discover_tools` (returns upstream tools with full schemas) and `uno_execute_tool` (forwards a tool call to the upstream by name) replace the cache as the mechanism for MCP clients that do not re-query `list_tools` after `tools/list_changed`.
+The `ToolCacheFile` (`tools-cache.json`) has been removed. There is no more file persistence for tool definitions (`IsToolCacheEnabled`, `PersistToolCacheIfNeeded`, `RefreshCachedToolsFromUpstreamAsync` no longer exist). The meta-tools `uno_discover_tools` (returns upstream tools with full schemas) and `uno_execute_tool` (forwards a tool call to the upstream by name) replace the cache as a stable compatibility mechanism while the direct tool set changes during the session.
