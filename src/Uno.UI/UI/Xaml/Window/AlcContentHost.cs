@@ -27,6 +27,13 @@ public sealed partial class AlcContentHost : ContentControl
 		Loaded += OnLoaded;
 	}
 
+	/// <summary>
+	/// Raised after <see cref="OnContentChanged"/> completes. Allows hosting code
+	/// (e.g. Studio Live's <c>AppBinaryLoader</c>) to observe inner-app content
+	/// transitions without subclassing.
+	/// </summary>
+	public event EventHandler<EventArgs>? ContentChanged;
+
 	internal Application? SourceApplicationOverride
 	{
 		get => _sourceApplicationOverride;
@@ -46,6 +53,8 @@ public sealed partial class AlcContentHost : ContentControl
 
 		_contentApplication = Application.GetForInstance(newContent);
 		UpdateMergedResources();
+
+		ContentChanged?.Invoke(this, EventArgs.Empty);
 	}
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
