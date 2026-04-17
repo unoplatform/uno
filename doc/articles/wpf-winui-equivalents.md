@@ -55,7 +55,7 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 
 | WPF Control | WinUI / Uno Replacement | Notes |
 |---|---|---|
-| `DataGrid` | Community Toolkit `DataGrid` | Similar API, not identical. Requires `CommunityToolkit.WinUI.UI.Controls`. |
+| `DataGrid` | Community Toolkit `DataGrid` | Similar API, not identical. In WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, use the Uno-ported toolkit packages (`Uno.CommunityToolkit.WinUI.*`). |
 | `Ribbon` | `CommandBar` or `NavigationView` | No Ribbon in WinUI |
 | `Menu` / `MenuItem` | `MenuBar` / `MenuBarItem` / `MenuFlyoutItem` | `MenuBar` for top-level menus; `MenuFlyout` for context menus |
 | `ContextMenu` | `MenuFlyout` via `ContextFlyout` property | Assign to `ContextFlyout` on any `UIElement` |
@@ -65,14 +65,14 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 | `DocumentViewer` | `WebView2` | Render PDFs/XPS inside WebView2 |
 | `FlowDocument` | `RichTextBlock` | Partial replacement only |
 | `RichTextBox` | `RichEditBox` | Rich text editing |
-| `WrapPanel` | `WrapPanel` (built-in on Uno Platform) or Community Toolkit `WrapPanel` | Built-in on Uno Platform; in WinUI 3 (Windows App SDK only), use `CommunityToolkit.WinUI.UI.Controls` |
-| `UniformGrid` | Community Toolkit `UniformGrid` | Not in WinUI by default |
-| `DockPanel` | Community Toolkit `DockPanel` | Not in WinUI by default |
+| `WrapPanel` | `WrapPanel` (built-in on Uno Platform) or Community Toolkit `WrapPanel` | Built-in on Uno Platform; in WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, use the Uno-ported toolkit packages (`Uno.CommunityToolkit.WinUI.*`). |
+| `UniformGrid` | Community Toolkit `UniformGrid` | Not in WinUI by default. In WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, use the Uno-ported toolkit packages (`Uno.CommunityToolkit.WinUI.*`). |
+| `DockPanel` | Community Toolkit `DockPanel` | Not in WinUI by default. In WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, use the Uno-ported toolkit packages (`Uno.CommunityToolkit.WinUI.*`). |
 | `GroupBox` | `Expander` or custom `HeaderedContentControl` | No GroupBox in WinUI |
 | `Label` | `TextBlock` | Use `TextBlock` + `AccessKey` property |
 | `MediaElement` | `MediaPlayerElement` | Different API surface |
 | `Window` (standalone) | `Window` | Window host; content is typically a `Page`/root `UIElement`. Use `ContentDialog` for modal windows. |
-| `GridSplitter` | Community Toolkit `GridSplitter` | Requires `CommunityToolkit.WinUI.UI.Controls` |
+| `GridSplitter` | Community Toolkit `GridSplitter` | In WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, use the Uno-ported toolkit packages (`Uno.CommunityToolkit.WinUI.*`). |
 | `Calendar` | `CalendarView` | Similar functionality with updated API |
 | `ListBox` | `ListView` | `ListView` is the WinUI equivalent |
 
