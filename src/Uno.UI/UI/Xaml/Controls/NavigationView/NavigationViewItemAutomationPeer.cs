@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
-public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider, ISelectionItemProvider
+public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider, IInvokeProvider, ISelectionItemProvider
 {
 	private enum AutomationOutput
 	{
@@ -123,7 +123,7 @@ public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomati
 		return 0;
 	}
 
-	private void Invoke()
+	public void Invoke()
 	{
 		var navView = GetParentNavigationView();
 		if (navView != null)
