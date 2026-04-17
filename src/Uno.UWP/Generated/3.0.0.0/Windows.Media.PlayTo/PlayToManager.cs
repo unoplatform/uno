@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.PlayTo
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -28,12 +27,6 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.PlayToManager.SourceRequested.add
-		// Forced skipping of method Windows.Media.PlayTo.PlayToManager.SourceRequested.remove
-		// Forced skipping of method Windows.Media.PlayTo.PlayToManager.SourceSelected.add
-		// Forced skipping of method Windows.Media.PlayTo.PlayToManager.SourceSelected.remove
-		// Forced skipping of method Windows.Media.PlayTo.PlayToManager.DefaultSourceSelection.set
-		// Forced skipping of method Windows.Media.PlayTo.PlayToManager.DefaultSourceSelection.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.PlayTo.PlayToManager GetForCurrentView()
@@ -48,6 +41,12 @@ namespace Windows.Media.PlayTo
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToManager", "void PlayToManager.ShowPlayToUI()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.PlayTo.PlayToManager.SourceRequested.add
+		// Forced skipping of method Windows.Media.PlayTo.PlayToManager.SourceRequested.remove
+		// Forced skipping of method Windows.Media.PlayTo.PlayToManager.SourceSelected.add
+		// Forced skipping of method Windows.Media.PlayTo.PlayToManager.SourceSelected.remove
+		// Forced skipping of method Windows.Media.PlayTo.PlayToManager.DefaultSourceSelection.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToManager.DefaultSourceSelection.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.PlayTo.PlayToManager, global::Windows.Media.PlayTo.PlayToSourceRequestedEventArgs> SourceRequested

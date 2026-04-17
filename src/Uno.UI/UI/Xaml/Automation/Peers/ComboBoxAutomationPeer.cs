@@ -122,7 +122,16 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 
 	public bool IsReadOnly => !((ComboBox)Owner).IsEnabled || !((ComboBox)Owner).IsEditable;
 
-	public string Value => FrameworkElement.GetStringFromObject(((ComboBox)Owner).SelectedItem); // TODO Uno: this is different from WinUI
+	public string Value
+	{
+		get
+		{
+			var selectionBoxItem = ((ComboBox)Owner).SelectionBoxItem;
+			return selectionBoxItem is not null
+				? FrameworkElement.GetStringFromObject(selectionBoxItem)
+				: string.Empty;
+		}
+	}
 
 	public void SetValue(string value)
 	{

@@ -72,9 +72,9 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactField.ContactField(string, string, Windows.ApplicationModel.Contacts.ContactFieldType, Windows.ApplicationModel.Contacts.ContactFieldCategory)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactField.Type.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactField.Category.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactField.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactField.Type.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactField.Value.get
 		// Processing: Windows.ApplicationModel.Contacts.IContactField
 	}

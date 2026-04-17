@@ -47,9 +47,9 @@ namespace Windows.UI.Input.Inking.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.NewInkPoints.get
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.PointerId.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.Disposition.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.Disposition.set
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.NewInkPoints.get
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.PointerId.get
 	}
 }

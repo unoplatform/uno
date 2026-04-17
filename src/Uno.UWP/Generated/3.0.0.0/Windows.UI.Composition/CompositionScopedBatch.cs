@@ -33,8 +33,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionScopedBatch.IsActive.get
-		// Forced skipping of method Windows.UI.Composition.CompositionScopedBatch.IsEnded.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void End()
@@ -58,6 +56,8 @@ namespace Windows.UI.Composition
 #endif
 		// Forced skipping of method Windows.UI.Composition.CompositionScopedBatch.Completed.add
 		// Forced skipping of method Windows.UI.Composition.CompositionScopedBatch.Completed.remove
+		// Forced skipping of method Windows.UI.Composition.CompositionScopedBatch.IsActive.get
+		// Forced skipping of method Windows.UI.Composition.CompositionScopedBatch.IsEnded.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<object, global::Windows.UI.Composition.CompositionBatchCompletedEventArgs> Completed

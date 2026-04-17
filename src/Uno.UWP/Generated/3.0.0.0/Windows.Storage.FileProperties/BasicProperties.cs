@@ -20,9 +20,6 @@ namespace Windows.Storage.FileProperties
 		}
 #endif
 		// Skipping already declared property Size
-		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.Size.get
-		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.DateModified.get
-		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.ItemDate.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, object>> RetrievePropertiesAsync(global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
@@ -44,6 +41,9 @@ namespace Windows.Storage.FileProperties
 			throw new global::System.NotImplementedException("The member IAsyncAction BasicProperties.SavePropertiesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BasicProperties.SavePropertiesAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.DateModified.get
+		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.ItemDate.get
+		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.Size.get
 		// Processing: Windows.Storage.FileProperties.IStorageItemExtraProperties
 	}
 }

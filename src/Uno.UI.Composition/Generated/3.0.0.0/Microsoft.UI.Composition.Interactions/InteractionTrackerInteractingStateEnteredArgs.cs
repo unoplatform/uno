@@ -8,8 +8,8 @@ namespace Microsoft.UI.Composition.Interactions
 #endif
 	public partial class InteractionTrackerInteractingStateEnteredArgs
 	{
-		// Skipping already declared property RequestId
 		// Skipping already declared property IsFromBinding
+		// Skipping already declared property RequestId
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.IsFromBinding.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.RequestId.get
 	}

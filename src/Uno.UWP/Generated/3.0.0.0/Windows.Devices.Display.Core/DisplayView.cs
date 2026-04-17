@@ -47,9 +47,6 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayView.Paths.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayView.ContentResolution.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayView.ContentResolution.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetPrimaryPath(global::Windows.Devices.Display.Core.DisplayPath path)
@@ -57,6 +54,9 @@ namespace Windows.Devices.Display.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayView", "void DisplayView.SetPrimaryPath(DisplayPath path)");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayView.ContentResolution.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayView.ContentResolution.set
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayView.Paths.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayView.Properties.get
 	}
 }

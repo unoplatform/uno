@@ -63,10 +63,10 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.CodecInfo.Kind.get
 		// Forced skipping of method Windows.Media.Core.CodecInfo.Category.get
-		// Forced skipping of method Windows.Media.Core.CodecInfo.Subtypes.get
 		// Forced skipping of method Windows.Media.Core.CodecInfo.DisplayName.get
 		// Forced skipping of method Windows.Media.Core.CodecInfo.IsTrusted.get
+		// Forced skipping of method Windows.Media.Core.CodecInfo.Kind.get
+		// Forced skipping of method Windows.Media.Core.CodecInfo.Subtypes.get
 	}
 }

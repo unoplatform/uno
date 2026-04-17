@@ -31,6 +31,10 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			// Snap child sizes and accumulated positions to physical pixel boundaries to prevent
+			// sub-pixel floating-point errors from triggering spurious line wraps at non-integer scales.
+			var scale = this.XamlRoot?.RasterizationScale ?? 1.0;
+
 			// Variables tracking the size of the current line, the total size
 			// measured so far, and the maximum size available to fill.  Note
 			// that the line might represent a row or a column depending on the
@@ -58,11 +62,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 				OrientedSize elementSize = new OrientedSize(
 					o,
-					hasFixedWidth ? itemWidth : desiredSize.Width,
-					hasFixedHeight ? itemHeight : desiredSize.Height);
+					LayoutHelper.LayoutRound(hasFixedWidth ? itemWidth : desiredSize.Width, scale),
+					LayoutHelper.LayoutRound(hasFixedHeight ? itemHeight : desiredSize.Height, scale));
 
 				// If this element falls of the edge of the line
-				if (NumericExtensions.IsGreaterThan(lineSize.Direct + elementSize.Direct, maximumSize.Direct))
+				if (NumericExtensions.IsGreaterThan(lineSize.Direct + elementSize.Direct, LayoutHelper.LayoutRound(maximumSize.Direct, scale)))
 				{
 					// Update the total size with the direct and indirect growth
 					// for the current line
@@ -74,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 					// If the current element is larger than the maximum size,
 					// place it on a line by itself
-					if (NumericExtensions.IsGreaterThan(elementSize.Direct, maximumSize.Direct))
+					if (NumericExtensions.IsGreaterThan(elementSize.Direct, LayoutHelper.LayoutRound(maximumSize.Direct, scale)))
 					{
 						// Update the total size for the line occupied by this
 						// single element
@@ -88,7 +92,7 @@ namespace Microsoft.UI.Xaml.Controls
 				else
 				{
 					// Otherwise just add the element to the end of the line
-					lineSize.Direct += elementSize.Direct;
+					lineSize.Direct = LayoutHelper.LayoutRound(lineSize.Direct + elementSize.Direct, scale);
 					lineSize.Indirect = Math.Max(lineSize.Indirect, elementSize.Indirect);
 				}
 			}
@@ -103,6 +107,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size arrangeSize)
 		{
+			// Snap child sizes and accumulated positions to physical pixel boundaries to prevent
+			// sub-pixel floating-point errors from triggering spurious line wraps at non-integer scales.
+			var scale = this.XamlRoot?.RasterizationScale ?? 1.0;
+
 			// Variables tracking the size of the current line, and the maximum
 			// size available to fill.  Note that the line might represent a row
 			// or a column depending on the orientation.
@@ -138,24 +146,24 @@ namespace Microsoft.UI.Xaml.Controls
 				// Get the size of the element
 				OrientedSize elementSize = new OrientedSize(
 					o,
-					hasFixedWidth ? itemWidth : desiredSize.Width,
-					hasFixedHeight ? itemHeight : desiredSize.Height);
+					LayoutHelper.LayoutRound(hasFixedWidth ? itemWidth : desiredSize.Width, scale),
+					LayoutHelper.LayoutRound(hasFixedHeight ? itemHeight : desiredSize.Height, scale));
 
 				// If this element falls of the edge of the line
-				if (NumericExtensions.IsGreaterThan(lineSize.Direct + elementSize.Direct, maximumSize.Direct))
+				if (NumericExtensions.IsGreaterThan(lineSize.Direct + elementSize.Direct, LayoutHelper.LayoutRound(maximumSize.Direct, scale)))
 				{
 					// Then we just completed a line and we should arrange it
-					ArrangeLine(children, lineStart, lineEnd, directDelta, indirectOffset, lineSize.Indirect);
+					ArrangeLine(children, lineStart, lineEnd, directDelta, indirectOffset, lineSize.Indirect, scale);
 
 					// Move the current element to a new line
 					indirectOffset += lineSize.Indirect;
 					lineSize = elementSize;
 
 					// If the current element is larger than the maximum size
-					if (NumericExtensions.IsGreaterThan(elementSize.Direct, maximumSize.Direct))
+					if (NumericExtensions.IsGreaterThan(elementSize.Direct, LayoutHelper.LayoutRound(maximumSize.Direct, scale)))
 					{
 						// Arrange the element as a single line
-						ArrangeLine(children, lineEnd, ++lineEnd, directDelta, indirectOffset, elementSize.Indirect);
+						ArrangeLine(children, lineEnd, ++lineEnd, directDelta, indirectOffset, elementSize.Indirect, scale);
 
 						// Move to a new line
 						indirectOffset += lineSize.Indirect;
@@ -168,7 +176,7 @@ namespace Microsoft.UI.Xaml.Controls
 				else
 				{
 					// Otherwise just add the element to the end of the line
-					lineSize.Direct += elementSize.Direct;
+					lineSize.Direct = LayoutHelper.LayoutRound(lineSize.Direct + elementSize.Direct, scale);
 					lineSize.Indirect = Math.Max(lineSize.Indirect, elementSize.Indirect);
 				}
 			}
@@ -176,7 +184,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Arrange any elements on the last line
 			if (lineStart < count)
 			{
-				ArrangeLine(children, lineStart, count, directDelta, indirectOffset, lineSize.Indirect);
+				ArrangeLine(children, lineStart, count, directDelta, indirectOffset, lineSize.Indirect, scale);
 			}
 
 			return arrangeSize;
@@ -185,6 +193,9 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Arrange a sequence of elements in a single line.
 		/// </summary>
+		/// <param name="children">
+		/// The full children array, indexed by <paramref name="lineStart"/> and <paramref name="lineEnd"/>.
+		/// </param>
 		/// <param name="lineStart">
 		/// Index of the first element in the sequence to arrange.
 		/// </param>
@@ -200,7 +211,10 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <param name="indirectGrowth">
 		/// Shared indirect growth of the elements on this line.
 		/// </param>
-		private void ArrangeLine(View[] children, int lineStart, int lineEnd, double? directDelta, double indirectOffset, double indirectGrowth)
+		/// <param name="scale">
+		/// The display rasterization scale, used to snap element offsets to physical pixel boundaries.
+		/// </param>
+		private void ArrangeLine(View[] children, int lineStart, int lineEnd, double? directDelta, double indirectOffset, double indirectGrowth, double scale)
 		{
 			double directOffset = 0.0f;
 
@@ -229,7 +243,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				ArrangeElement(element, bounds);
 
-				directOffset += directGrowth;
+				directOffset = LayoutHelper.LayoutRound(directOffset + directGrowth, scale);
 			}
 		}
 	}

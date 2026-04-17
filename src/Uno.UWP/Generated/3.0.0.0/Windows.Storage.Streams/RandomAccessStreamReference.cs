@@ -8,10 +8,10 @@ namespace Windows.Storage.Streams
 #endif
 	public partial class RandomAccessStreamReference : global::Windows.Storage.Streams.IRandomAccessStreamReference
 	{
-		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.OpenReadAsync()
 		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.CreateFromFile(Windows.Storage.IStorageFile)
 		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.CreateFromUri(System.Uri)
 		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.CreateFromStream(Windows.Storage.Streams.IRandomAccessStream)
+		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.OpenReadAsync()
 		// Processing: Windows.Storage.Streams.IRandomAccessStreamReference
 	}
 }

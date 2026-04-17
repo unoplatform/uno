@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.PlayTo
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -34,7 +33,7 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.PreviousSource.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.CurrentSource.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.PreviousSource.get
 	}
 }

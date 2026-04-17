@@ -33,8 +33,6 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequest.EmailMailboxId.get
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequest.EmailFolderId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
@@ -49,5 +47,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxEmptyFolderRequest.ReportFailedAsync(EmailMailboxEmptyFolderStatus status) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20EmailMailboxEmptyFolderRequest.ReportFailedAsync%28EmailMailboxEmptyFolderStatus%20status%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequest.EmailFolderId.get
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequest.EmailMailboxId.get
 	}
 }

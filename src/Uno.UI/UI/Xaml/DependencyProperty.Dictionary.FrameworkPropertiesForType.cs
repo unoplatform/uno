@@ -51,8 +51,8 @@ namespace Microsoft.UI.Xaml
 				{
 					if (key is Type t)
 					{
-						var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(t.Assembly);
-						if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+						var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(t.Assembly);
+						if (alc is not null && alc != global::System.Runtime.Loader.AssemblyLoadContext.Default)
 						{
 							keysToRemove.Add(t);
 						}

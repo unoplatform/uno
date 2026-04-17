@@ -34,12 +34,6 @@ namespace Windows.Media.Audio
 			set;
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.IAudioNode.EffectDefinitions.get
-		// Forced skipping of method Windows.Media.Audio.IAudioNode.OutgoingGain.set
-		// Forced skipping of method Windows.Media.Audio.IAudioNode.OutgoingGain.get
-		// Forced skipping of method Windows.Media.Audio.IAudioNode.EncodingProperties.get
-		// Forced skipping of method Windows.Media.Audio.IAudioNode.ConsumeInput.get
-		// Forced skipping of method Windows.Media.Audio.IAudioNode.ConsumeInput.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void Start();
 #endif
@@ -55,5 +49,11 @@ namespace Windows.Media.Audio
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void EnableEffectsByDefinition(global::Windows.Media.Effects.IAudioEffectDefinition definition);
 #endif
+		// Forced skipping of method Windows.Media.Audio.IAudioNode.ConsumeInput.get
+		// Forced skipping of method Windows.Media.Audio.IAudioNode.ConsumeInput.set
+		// Forced skipping of method Windows.Media.Audio.IAudioNode.EffectDefinitions.get
+		// Forced skipping of method Windows.Media.Audio.IAudioNode.EncodingProperties.get
+		// Forced skipping of method Windows.Media.Audio.IAudioNode.OutgoingGain.get
+		// Forced skipping of method Windows.Media.Audio.IAudioNode.OutgoingGain.set
 	}
 }

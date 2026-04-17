@@ -21,16 +21,16 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 
 	public void OnFocused(TextBox textBox)
 	{
-		if (UnoSKCanvasView.Instance is { } canvasView)
+		if (ApplicationActivity.RenderView?.TextInputPlugin is { } textInputPlugin)
 		{
-			canvasView.TextInputPlugin.ShowTextInput(textBox);
-			canvasView.TextInputPlugin.NotifyViewEntered(textBox, textBox.GetHashCode());
+			textInputPlugin.ShowTextInput(textBox);
+			textInputPlugin.NotifyViewEntered(textBox, textBox.GetHashCode());
 		}
 	}
 
 	public void OnUnfocused(TextBox textBox)
 	{
-		if (UnoSKCanvasView.Instance is { } canvasView)
+		if (ApplicationActivity.RenderView?.TextInputPlugin is { } textInputPlugin)
 		{
 			// Hide the keyboard only when the next element to be focused is not an Element that
 			// could require the keyboard (TextBox, AutoSuggestBox, NumberBox, etc.).
@@ -38,10 +38,10 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 			// https://github.com/unoplatform/uno-private/issues/1160
 			if (!IsFocusingElementKeyboardActivator(textBox.XamlRoot))
 			{
-				canvasView.TextInputPlugin.HideTextInput();
+				textInputPlugin.HideTextInput();
 			}
 
-			canvasView.TextInputPlugin.NotifyViewExited(textBox.GetHashCode());
+			textInputPlugin.NotifyViewExited(textBox.GetHashCode());
 		}
 
 		static bool IsFocusingElementKeyboardActivator(XamlRoot? xamlRoot)
@@ -70,17 +70,17 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 
 	public void FinishAutofillContext(bool shouldSave)
 	{
-		if (UnoSKCanvasView.Instance is { } canvasView)
+		if (ApplicationActivity.RenderView?.TextInputPlugin is { } textInputPlugin)
 		{
-			canvasView.TextInputPlugin.FinishAutofillContext(shouldSave);
+			textInputPlugin.FinishAutofillContext(shouldSave);
 		}
 	}
 
 	public void NotifyValueChanged(TextBox textBox)
 	{
-		if (UnoSKCanvasView.Instance is { } canvasView)
+		if (ApplicationActivity.RenderView?.TextInputPlugin is { } textInputPlugin)
 		{
-			canvasView.TextInputPlugin.NotifyValueChanged(textBox.GetHashCode(), textBox.Text);
+			textInputPlugin.NotifyValueChanged(textBox.GetHashCode(), textBox.Text);
 		}
 	}
 

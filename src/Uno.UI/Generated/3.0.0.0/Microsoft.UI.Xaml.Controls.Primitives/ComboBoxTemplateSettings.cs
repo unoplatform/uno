@@ -13,10 +13,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property DropDownOffset
 		// Skipping already declared property DropDownOpenedHeight
 		// Skipping already declared property SelectedItemDirection
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.DropDownOpenedHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.DropDownClosedHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.DropDownOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.SelectedItemDirection.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.DropDownContentMinWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.DropDownOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.DropDownOpenedHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings.SelectedItemDirection.get
 	}
 }

@@ -15,6 +15,16 @@ namespace Windows.Gaming.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Gaming.Input.FlightStick> FlightSticks
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<FlightStick> FlightStick.FlightSticks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CFlightStick%3E%20FlightStick.FlightSticks");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.GameControllerSwitchKind HatSwitchKind
 		{
 			get
@@ -55,15 +65,16 @@ namespace Windows.Gaming.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Gaming.Input.FlightStick> FlightSticks
+		public static global::Windows.Gaming.Input.FlightStick FromGameController(global::Windows.Gaming.Input.IGameController gameController)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<FlightStick> FlightStick.FlightSticks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CFlightStick%3E%20FlightStick.FlightSticks");
-			}
+			throw new global::System.NotImplementedException("The member FlightStick FlightStick.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FlightStick%20FlightStick.FromGameController%28IGameController%20gameController%29");
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.HatSwitchKind.get
+		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightStickAdded.add
+		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightStickAdded.remove
+		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightStickRemoved.add
+		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightStickRemoved.remove
+		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightSticks.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel(global::Windows.Gaming.Input.FlightStickButtons button)
@@ -84,9 +95,6 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.HeadsetDisconnected.remove
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.UserChanged.add
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.UserChanged.remove
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.Headset.get
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.IsWireless.get
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.User.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
@@ -94,16 +102,40 @@ namespace Windows.Gaming.Input
 			throw new global::System.NotImplementedException("The member BatteryReport FlightStick.TryGetBatteryReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryReport%20FlightStick.TryGetBatteryReport%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightStickAdded.add
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightStickAdded.remove
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightStickRemoved.add
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightStickRemoved.remove
-		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightSticks.get
+		// Forced skipping of method Windows.Gaming.Input.FlightStick.HatSwitchKind.get
+		// Forced skipping of method Windows.Gaming.Input.FlightStick.Headset.get
+		// Forced skipping of method Windows.Gaming.Input.FlightStick.IsWireless.get
+		// Forced skipping of method Windows.Gaming.Input.FlightStick.User.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Gaming.Input.FlightStick FromGameController(global::Windows.Gaming.Input.IGameController gameController)
+		public static event global::System.EventHandler<global::Windows.Gaming.Input.FlightStick> FlightStickAdded
 		{
-			throw new global::System.NotImplementedException("The member FlightStick FlightStick.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FlightStick%20FlightStick.FromGameController%28IGameController%20gameController%29");
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.FlightStick", "event EventHandler<FlightStick> FlightStick.FlightStickAdded");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.FlightStick", "event EventHandler<FlightStick> FlightStick.FlightStickAdded");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static event global::System.EventHandler<global::Windows.Gaming.Input.FlightStick> FlightStickRemoved
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.FlightStick", "event EventHandler<FlightStick> FlightStick.FlightStickRemoved");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.FlightStick", "event EventHandler<FlightStick> FlightStick.FlightStickRemoved");
+			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -151,38 +183,6 @@ namespace Windows.Gaming.Input
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.FlightStick", "event TypedEventHandler<IGameController, UserChangedEventArgs> FlightStick.UserChanged");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static event global::System.EventHandler<global::Windows.Gaming.Input.FlightStick> FlightStickAdded
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.FlightStick", "event EventHandler<FlightStick> FlightStick.FlightStickAdded");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.FlightStick", "event EventHandler<FlightStick> FlightStick.FlightStickAdded");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static event global::System.EventHandler<global::Windows.Gaming.Input.FlightStick> FlightStickRemoved
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.FlightStick", "event EventHandler<FlightStick> FlightStick.FlightStickRemoved");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.FlightStick", "event EventHandler<FlightStick> FlightStick.FlightStickRemoved");
 			}
 		}
 #endif

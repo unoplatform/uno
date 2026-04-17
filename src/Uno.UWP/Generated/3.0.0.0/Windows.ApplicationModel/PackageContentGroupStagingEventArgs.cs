@@ -84,11 +84,11 @@ namespace Windows.ApplicationModel
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.ActivityId.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.ContentGroupName.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.ErrorCode.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.IsComplete.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.IsContentGroupRequired.get
 		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.Package.get
 		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.Progress.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.IsComplete.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.ErrorCode.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.ContentGroupName.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroupStagingEventArgs.IsContentGroupRequired.get
 	}
 }

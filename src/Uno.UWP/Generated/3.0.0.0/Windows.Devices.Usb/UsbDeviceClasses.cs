@@ -103,14 +103,14 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.CdcControl.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.Physical.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.PersonalHealthcare.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.ActiveSync.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.PalmSync.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.CdcControl.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.DeviceFirmwareUpdate.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.Irda.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.Measurement.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.PalmSync.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.PersonalHealthcare.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.Physical.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.VendorSpecific.get
 	}
 }

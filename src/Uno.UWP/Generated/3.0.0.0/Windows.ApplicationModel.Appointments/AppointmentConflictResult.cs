@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentConflictResult.Type.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentConflictResult.Date.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentConflictResult.Type.get
 	}
 }

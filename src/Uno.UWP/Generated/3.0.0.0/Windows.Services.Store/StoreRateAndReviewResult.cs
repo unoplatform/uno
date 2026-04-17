@@ -32,7 +32,7 @@ namespace Windows.Services.Store
 #endif
 		// Forced skipping of method Windows.Services.Store.StoreRateAndReviewResult.ExtendedError.get
 		// Forced skipping of method Windows.Services.Store.StoreRateAndReviewResult.ExtendedJsonData.get
-		// Forced skipping of method Windows.Services.Store.StoreRateAndReviewResult.WasUpdated.get
 		// Forced skipping of method Windows.Services.Store.StoreRateAndReviewResult.Status.get
+		// Forced skipping of method Windows.Services.Store.StoreRateAndReviewResult.WasUpdated.get
 	}
 }

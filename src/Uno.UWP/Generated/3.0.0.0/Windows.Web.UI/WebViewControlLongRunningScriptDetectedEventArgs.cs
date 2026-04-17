@@ -15,6 +15,16 @@ namespace Windows.Web.UI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan ExecutionTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool StopPageScriptExecution
 		{
 			get
@@ -24,16 +34,6 @@ namespace Windows.Web.UI
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs", "bool WebViewControlLongRunningScriptDetectedEventArgs.StopPageScriptExecution");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan ExecutionTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime");
 			}
 		}
 #endif

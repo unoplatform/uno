@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class DoubleKeyFrame : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property Value
-		// Skipping already declared property KeyTime
 		// Skipping already declared property KeyTimeProperty
 		// Skipping already declared property ValueProperty
+		// Skipping already declared property KeyTime
+		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.DoubleKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.DoubleKeyFrame()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.Value.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.Value.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.KeyTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.ValueProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.KeyTime.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.KeyTime.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.KeyTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.Value.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame.Value.set
 	}
 }

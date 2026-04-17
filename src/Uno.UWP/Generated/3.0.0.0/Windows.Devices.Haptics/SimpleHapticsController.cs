@@ -68,12 +68,6 @@ namespace Windows.Devices.Haptics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.Id.get
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.SupportedFeedback.get
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.IsIntensitySupported.get
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.IsPlayCountSupported.get
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.IsPlayDurationSupported.get
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.IsReplayPauseIntervalSupported.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StopFeedback()
@@ -109,5 +103,11 @@ namespace Windows.Devices.Haptics
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Haptics.SimpleHapticsController", "void SimpleHapticsController.SendHapticFeedbackForPlayCount(SimpleHapticsControllerFeedback feedback, double intensity, int playCount, TimeSpan replayPauseInterval)");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.Id.get
+		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.IsIntensitySupported.get
+		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.IsPlayCountSupported.get
+		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.IsPlayDurationSupported.get
+		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.IsReplayPauseIntervalSupported.get
+		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.SupportedFeedback.get
 	}
 }

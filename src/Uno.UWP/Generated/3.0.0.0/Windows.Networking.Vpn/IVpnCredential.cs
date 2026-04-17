@@ -32,9 +32,9 @@ namespace Windows.Networking.Vpn
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.IVpnCredential.PasskeyCredential.get
-		// Forced skipping of method Windows.Networking.Vpn.IVpnCredential.CertificateCredential.get
 		// Forced skipping of method Windows.Networking.Vpn.IVpnCredential.AdditionalPin.get
+		// Forced skipping of method Windows.Networking.Vpn.IVpnCredential.CertificateCredential.get
 		// Forced skipping of method Windows.Networking.Vpn.IVpnCredential.OldPasswordCredential.get
+		// Forced skipping of method Windows.Networking.Vpn.IVpnCredential.PasskeyCredential.get
 	}
 }

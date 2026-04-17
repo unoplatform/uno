@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Shapes
 #endif
 	public partial class Path : global::Microsoft.UI.Xaml.Shapes.Shape
 	{
-		// Skipping already declared property Data
 		// Skipping already declared property DataProperty
+		// Skipping already declared property Data
 		// Skipping already declared method Microsoft.UI.Xaml.Shapes.Path.Path()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Path.Path()
+		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Path.DataProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Path.Data.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Path.Data.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Path.DataProperty.get
 	}
 }

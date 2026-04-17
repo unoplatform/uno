@@ -38,6 +38,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				?.Namespace ?? "";
 
 			_clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(defaultXmlNamespace, Array.Empty<string>());
+
+			// When implicit namespaces are enabled and no default xmlns is declared in the file,
+			// use the presentation namespaces as the implicit default
+			if (_enableImplicitXamlNamespaces && string.IsNullOrEmpty(defaultXmlNamespace))
+			{
+				_clrNamespaces = XamlConstants.Namespaces.PresentationNamespaces;
+			}
 		}
 
 		/// <summary>
@@ -494,6 +501,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
+				// When implicit namespaces are enabled, search global CLR namespaces
+				// for types registered via XmlnsDefinition to the global URI
+				if (_enableImplicitXamlNamespaces
+					&& _globalClrNamespaces.Length > 0
+					&& (trimmedNamespace == XamlConstants.PresentationXamlXmlNamespace || string.IsNullOrEmpty(trimmedNamespace)))
+				{
+					if (SearchNamespacesWithAmbiguityCheck(type.Name, _globalClrNamespaces) is INamedTypeSymbol globalResult)
+					{
+						return globalResult;
+					}
+				}
+
+				// When implicit namespaces are enabled, resolve types from XmlnsDefinition-registered URIs
+				// that are not already in _knownNamespaces (to avoid interfering with standard resolution)
+				if (_enableImplicitXamlNamespaces
+					&& _allXmlnsDefinitions != null
+					&& !_knownNamespaces.ContainsKey(trimmedNamespace)
+					&& _allXmlnsDefinitions.TryGetValue(trimmedNamespace, out var xmlnsDefNamespaces))
+				{
+					if (SearchNamespaces(type.Name, xmlnsDefNamespaces) is INamedTypeSymbol xmlnsDefResult)
+					{
+						return xmlnsDefResult;
+					}
+				}
+
 				if (
 					type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
 					&& type.Name == "Bind"
@@ -549,6 +581,51 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return null;
+		}
+
+		/// <summary>
+		/// Searches for a type across the given namespaces, reporting a UXAML0005 error
+		/// if the same type name is found in more than one namespace.
+		/// </summary>
+		private INamedTypeSymbol? SearchNamespacesWithAmbiguityCheck(string name, string[] namespaces)
+		{
+			INamedTypeSymbol? firstMatch = null;
+			string? firstNamespace = null;
+			List<(string Namespace, INamedTypeSymbol Symbol)>? additionalMatches = null;
+
+			foreach (var @namespace in namespaces)
+			{
+				if (_metadataHelper.FindTypeByFullName(@namespace + "." + name) is INamedTypeSymbol type)
+				{
+					if (firstMatch is null)
+					{
+						firstMatch = type;
+						firstNamespace = @namespace;
+					}
+					else
+					{
+						additionalMatches ??= new();
+						additionalMatches.Add((@namespace, type));
+					}
+				}
+			}
+
+			if (firstMatch is not null && additionalMatches is not null)
+			{
+				var allNamespaces = new[] { firstNamespace! }
+					.Concat(additionalMatches.Select(m => m.Namespace));
+				var namespacesText = string.Join(", ", allNamespaces.Select(n => $"'{n}'"));
+
+				_generatorContext.ReportDiagnostic(
+					Diagnostic.Create(
+						XamlCodeGenerationDiagnostics.AmbiguousGlobalTypeRule,
+						Location.None,
+						$"The type '{name}' was found in multiple global XAML namespaces: {namespacesText}. Use an explicit xmlns prefix to disambiguate."));
+
+				return null;
+			}
+
+			return firstMatch;
 		}
 
 		private INamedTypeSymbol? SearchClrNamespaces(string name)

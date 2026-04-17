@@ -10,15 +10,15 @@ namespace Windows.UI.Input.Preview.Injection
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ushort VirtualKey
+		public global::Windows.UI.Input.Preview.Injection.InjectedInputKeyOptions KeyOptions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort InjectedInputKeyboardInfo.VirtualKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20InjectedInputKeyboardInfo.VirtualKey");
+				throw new global::System.NotImplementedException("The member InjectedInputKeyOptions InjectedInputKeyboardInfo.KeyOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InjectedInputKeyOptions%20InjectedInputKeyboardInfo.KeyOptions");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "ushort InjectedInputKeyboardInfo.VirtualKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "InjectedInputKeyOptions InjectedInputKeyboardInfo.KeyOptions");
 			}
 		}
 #endif
@@ -38,15 +38,15 @@ namespace Windows.UI.Input.Preview.Injection
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.Preview.Injection.InjectedInputKeyOptions KeyOptions
+		public ushort VirtualKey
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InjectedInputKeyOptions InjectedInputKeyboardInfo.KeyOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InjectedInputKeyOptions%20InjectedInputKeyboardInfo.KeyOptions");
+				throw new global::System.NotImplementedException("The member ushort InjectedInputKeyboardInfo.VirtualKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20InjectedInputKeyboardInfo.VirtualKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "InjectedInputKeyOptions InjectedInputKeyboardInfo.KeyOptions");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo", "ushort InjectedInputKeyboardInfo.VirtualKey");
 			}
 		}
 #endif

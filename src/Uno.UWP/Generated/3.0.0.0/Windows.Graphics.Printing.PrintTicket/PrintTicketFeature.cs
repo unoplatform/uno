@@ -73,10 +73,6 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.Name.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.XmlNamespace.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.XmlNode.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.DisplayName.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketOption GetOption(string name, string xmlNamespace)
@@ -84,7 +80,6 @@ namespace Windows.Graphics.Printing.PrintTicket
 			throw new global::System.NotImplementedException("The member PrintTicketOption PrintTicketFeature.GetOption(string name, string xmlNamespace) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketOption%20PrintTicketFeature.GetOption%28string%20name%2C%20string%20xmlNamespace%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.Options.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketOption GetSelectedOption()
@@ -99,6 +94,11 @@ namespace Windows.Graphics.Printing.PrintTicket
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTicket.PrintTicketFeature", "void PrintTicketFeature.SetSelectedOption(PrintTicketOption value)");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.DisplayName.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.Name.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.Options.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.SelectionType.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.XmlNamespace.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.XmlNode.get
 	}
 }

@@ -21,7 +21,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.KeepInteriorCornersSquareProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void SetKeepInteriorCornersSquare(global::Microsoft.UI.Xaml.Controls.ComboBox comboBox, bool value)
@@ -36,5 +35,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			return (bool)comboBox.GetValue(KeepInteriorCornersSquareProperty);
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.KeepInteriorCornersSquareProperty.get
 	}
 }

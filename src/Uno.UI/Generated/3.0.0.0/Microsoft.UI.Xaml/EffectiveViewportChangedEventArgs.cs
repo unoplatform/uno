@@ -39,9 +39,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.EffectiveViewport.get
-		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.MaxViewport.get
 		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.BringIntoViewDistanceX.get
 		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.BringIntoViewDistanceY.get
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.EffectiveViewport.get
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.MaxViewport.get
 	}
 }

@@ -15,6 +15,12 @@ parameters:
     value: '04'
   - key: '4'
     value: '05'
+  - key: '5'
+    value: '06'
+  - key: '6'
+    value: '07'
+  - key: '7'
+    value: '08'
 
   # Runtime Test Groups
   UITEST_RUNTIME_TEST_GROUP_COUNT: 8
@@ -172,21 +178,22 @@ jobs:
 #     SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
 #     xCodeRoot: ${{ parameters.xCodeRootTest }}
 
-- ${{ each snapshotGroup in parameters.SNAPSHOT_GROUPS }}:
-  - template: .azure-devops-tests-ios-runner.yml
-    parameters:
-      nugetPackages: $(NUGET_PACKAGES)
-      JobName: 'iOS_Snapshot_Tests_Group_${{ snapshotGroup.value }}'
-      JobDisplayName: 'Snapshot Tests ${{ snapshotGroup.key }}'
-      TestRunName: 'iOS Native Snapshot Tests ${{ snapshotGroup.key }}'
-      JobTimeoutInMinutes: 60
-      SamplesAppArtifactName: 'ios-uitest-build'
-      vmImage: ${{ parameters.vmImageTest }}
-      UITEST_SNAPSHOTS_ONLY: true
-      UITEST_SNAPSHOTS_GROUP: '0${{ snapshotGroup.key }}' # Example: 01, 02, 03, 04, 05
-      UITEST_TEST_TIMEOUT: '10m'
-      UITEST_ALLOW_RERUN: 'false'
-      SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
-      xCodeRoot: ${{ parameters.xCodeRootTest }}
-      dependsOn:
-        - iOS_Build
+- ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+  - ${{ each snapshotGroup in parameters.SNAPSHOT_GROUPS }}:
+    - template: .azure-devops-tests-ios-runner.yml
+      parameters:
+        nugetPackages: $(NUGET_PACKAGES)
+        JobName: 'iOS_Snapshot_Tests_Group_${{ snapshotGroup.value }}'
+        JobDisplayName: 'Snapshot Tests ${{ snapshotGroup.key }}'
+        TestRunName: 'iOS Native Snapshot Tests ${{ snapshotGroup.key }}'
+        JobTimeoutInMinutes: 90
+        SamplesAppArtifactName: 'ios-uitest-build'
+        vmImage: ${{ parameters.vmImageTest }}
+        UITEST_SNAPSHOTS_ONLY: true
+        UITEST_SNAPSHOTS_GROUP: '0${{ snapshotGroup.key }}' # Example: 01, 02, 03, 04, 05
+        UITEST_TEST_TIMEOUT: '10m'
+        UITEST_ALLOW_RERUN: 'false'
+        SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
+        xCodeRoot: ${{ parameters.xCodeRootTest }}
+        dependsOn:
+          - iOS_Build

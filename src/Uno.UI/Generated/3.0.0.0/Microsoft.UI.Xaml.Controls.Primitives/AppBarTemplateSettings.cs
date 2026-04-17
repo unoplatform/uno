@@ -19,14 +19,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property NegativeHiddenVerticalDelta
 		// Skipping already declared property NegativeMinimalVerticalDelta
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.ClipRect.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.CompactVerticalDelta.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.CompactRootMargin.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.MinimalVerticalDelta.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.MinimalRootMargin.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.HiddenVerticalDelta.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.CompactVerticalDelta.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.HiddenRootMargin.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.HiddenVerticalDelta.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.MinimalRootMargin.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.MinimalVerticalDelta.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.NegativeCompactVerticalDelta.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.NegativeMinimalVerticalDelta.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.NegativeHiddenVerticalDelta.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.NegativeMinimalVerticalDelta.get
 	}
 }

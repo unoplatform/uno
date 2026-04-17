@@ -43,8 +43,8 @@ namespace Windows.System.Diagnostics
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.IdleTime.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.KernelTime.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.UserTime.get
-		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.IdleTime.get
 	}
 }

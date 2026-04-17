@@ -53,10 +53,6 @@ namespace Windows.ApplicationModel.LockScreen
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.Logo.get
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.Glyph.get
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.Number.get
-		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.AutomationName.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void LaunchApp()
@@ -64,5 +60,9 @@ namespace Windows.ApplicationModel.LockScreen
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.LockScreen.LockScreenBadge", "void LockScreenBadge.LaunchApp()");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.AutomationName.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.Glyph.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.Logo.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenBadge.Number.get
 	}
 }

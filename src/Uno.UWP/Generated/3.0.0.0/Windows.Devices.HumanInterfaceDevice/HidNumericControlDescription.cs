@@ -173,21 +173,21 @@ namespace Windows.Devices.HumanInterfaceDevice
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.Id.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.ReportId.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.ReportType.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.ReportSize.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.ReportCount.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.UsagePage.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.UsageId.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.LogicalMinimum.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.LogicalMaximum.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.PhysicalMinimum.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.PhysicalMaximum.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.UnitExponent.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.Unit.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.IsAbsolute.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.HasNull.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.Id.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.IsAbsolute.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.LogicalMaximum.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.LogicalMinimum.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.ParentCollections.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.PhysicalMaximum.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.PhysicalMinimum.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.ReportCount.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.ReportId.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.ReportSize.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.ReportType.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.Unit.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.UnitExponent.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.UsageId.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription.UsagePage.get
 	}
 }

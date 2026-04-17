@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
@@ -9,11 +9,11 @@ internal static class SymbolMatchingHelpers
 {
 	public static bool AreMatching(ISymbol uapSymbol, ISymbol unoSymbol)
 	{
-		//if (uapSymbol?.Name == "SizeInt32" ||
-		//	unoSymbol?.Name == "Size" && unoSymbol?.ContainingType?.Name == "AppWindow")
-		//{
-		//	global::System.Diagnostics.Debugger.Break();
-		//}
+		if (ShouldSkipSymbol(uapSymbol))
+		{
+			return true;
+		}
+
 		if (uapSymbol is IEventSymbol uapEvent)
 		{
 			var result = unoSymbol is IEventSymbol unoEvent && AreEventsMatching(uapEvent, unoEvent);
@@ -61,6 +61,50 @@ internal static class SymbolMatchingHelpers
 		}
 	}
 
+	private static bool ShouldSkipSymbol(ISymbol uapSymbol)
+	{
+		if (uapSymbol.Name == "TimeSpan" && uapSymbol.ContainingSymbol.Name == "Duration")
+		{
+			// field vs property difference between Uno and WinUI.
+			return true;
+		}
+
+		if (uapSymbol.Name is "Left" or "Top" or "Right" or "Bottom" && uapSymbol.ContainingSymbol.Name == "Thickness")
+		{
+			// field vs property difference between Uno and WinUI.
+			return true;
+		}
+
+		if (uapSymbol.Name is "Value" or "GridUnitType" && uapSymbol.ContainingSymbol.Name == "GridLength")
+		{
+			// field vs property difference between Uno and WinUI.
+			return true;
+		}
+
+		if (uapSymbol.Name is "TopLeft" or "TopRight" or "BottomRight" or "BottomLeft" && uapSymbol.ContainingSymbol.Name == "CornerRadius")
+		{
+			// field vs property difference between Uno and WinUI.
+			return true;
+		}
+
+		if (uapSymbol.ContainingSymbol?.Name is
+			"ColorKeyFrameCollection" or
+			"Matrix" or
+			"KeyTime" or
+			"PointCollection" or
+			"RepeatBehavior" or
+			"Matrix3D" or
+			"InlineCollection" or
+			"GridLength" or
+			"GeneratorPosition" or
+			"ToggleSwitch")
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private static bool AreMatchingCommon(ISymbol uapSymbol, ISymbol unoSymbol)
 	{
 		if (unoSymbol.Kind == SymbolKind.ErrorType)
@@ -103,12 +147,22 @@ internal static class SymbolMatchingHelpers
 		var result = /*uapSymbol.DeclaredAccessibility == unoSymbol.DeclaredAccessibility &&*/
 			uapSymbol.IsAbstract == unoSymbol.IsAbstract &&
 			uapSymbol.IsOverride == unoSymbol.IsOverride &&
-			uapSymbol.Name == unoSymbol.Name &&
+			StripGlobal(uapSymbol.Name) == StripGlobal(unoSymbol.Name) &&
 			// Temporary skip named type: Until we match seal-ness and static-ness with UWP.
 			(uapSymbol.IsSealed == unoSymbol.IsSealed || uapSymbol.Kind == SymbolKind.NamedType) &&
 			(uapSymbol.IsStatic == unoSymbol.IsStatic) &&
 			uapSymbol.IsVirtual == unoSymbol.IsVirtual;
 		return result;
+	}
+
+	private static string StripGlobal(string s)
+	{
+		if (s.StartsWith("global::", StringComparison.Ordinal))
+		{
+			return s.Substring("global::".Length);
+		}
+
+		return s;
 	}
 
 	private static bool AreEventsMatching(IEventSymbol uapEvent, IEventSymbol unoEvent)
@@ -212,7 +266,7 @@ internal static class SymbolMatchingHelpers
 			uapMethod.IsVararg == unoMethod.IsVararg &&
 			uapMethod.MethodKind == unoMethod.MethodKind &&
 			AreMatching(uapMethod.ReturnType, unoMethod.ReturnType) &&
-			uapMethod.TypeArguments == unoMethod.TypeArguments;
+			AreTypeArgumentsMatching(uapMethod.TypeArguments, unoMethod.TypeArguments);
 	}
 
 	private static bool AreTypeParametersMatching(ITypeParameterSymbol uapTypeParameter, ITypeParameterSymbol unoTypeParameter)
@@ -247,10 +301,81 @@ internal static class SymbolMatchingHelpers
 		return true;
 	}
 
+	private static bool AreTypeArgumentsMatching(ImmutableArray<ITypeSymbol> uapTypeArguments, ImmutableArray<ITypeSymbol> unoTypeArguments)
+	{
+		if (uapTypeArguments.Length != unoTypeArguments.Length)
+		{
+			return false;
+		}
+
+		for (int i = 0; i < uapTypeArguments.Length; i++)
+		{
+			if (uapTypeArguments[i].Name != unoTypeArguments[i].Name)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private static bool AreParametersMatching(IParameterSymbol uapParameters, IParameterSymbol unoParameters) =>
 		uapParameters.IsOptional == unoParameters.IsOptional &&
-		uapParameters.Name == unoParameters.Name &&
+		(uapParameters.Name == unoParameters.Name || IgnoreParameterName(uapParameters)) &&
 		uapParameters.IsParams == unoParameters.IsParams &&
-		uapParameters.RefKind == unoParameters.RefKind &&
+		(uapParameters.RefKind == unoParameters.RefKind || IgnoreRefKind(uapParameters)) &&
 		AreMatching(uapParameters.Type, unoParameters.Type);
+
+	private static bool IgnoreRefKind(IParameterSymbol uapParameter)
+	{
+		if (uapParameter.ContainingSymbol.Name == "Equals" && uapParameter.ContainingType.Name == "GuidHelper")
+		{
+			// GuidHelpers.Equals uses "in" RefKind in WinUI, while it uses "ref" RefKind in UWP.
+			// In Uno, we use "ref" in both flavors.
+			return true;
+		}
+
+		return false;
+	}
+
+	private static bool IgnoreParameterName(IParameterSymbol uapParameter)
+	{
+		var name = uapParameter.Name;
+		if (name.StartsWith('_'))
+		{
+			// The '_' check is to ignore parameter name differences for badly named WinUI parameters.
+			// For example, FontWeight constructor parameter in WinUI is called "_Weight", while we name it "weight"
+			// Our naming makes more sense, and we want to avoid this breaking change for now.
+			// We can revisit in the future if we want to match WinUI naming.
+			return true;
+		}
+		else if (name == "windowsruntimeStream")
+		{
+			// In Uno, we name it windowsRuntimeStream.
+			// Skip for now to avoid breaking changes.
+			return true;
+		}
+		else if (uapParameter.ContainingSymbol.Name == "Equals")
+		{
+			// Some object.Equals overrides in WinUI use parameter name as "o" while uno uses "obj".
+			// There is also CornerRadius.Equals where we name the parameter as "other" while WinUI name it "cornerRadius"
+			// Also, Duration.Equals(Duration,Duration) in Uno names the parameters as "first"/"second" while WinUI name it as "t1"/"t2"
+			// Skip for now to avoid breaking changes.
+			return true;
+		}
+		else if (uapParameter.ContainingSymbol.Name == "Compare" && uapParameter.ContainingType.Name == "Duration")
+		{
+			// Duration.Compare(Duration,Duration) in Uno names the parameters as "first"/"second" while WinUI name it as "t1"/"t2"
+			// Skip for now to avoid breaking changes.
+			return true;
+		}
+		else if (name == "location" && uapParameter.ContainingType.Name == "Rect")
+		{
+			// Rect(Point,Size) constructor names the Point parameter as location in WinUI while we name it point in Uno.
+			// Skip for now to avoid breaking changes.
+			return true;
+		}
+
+		return false;
+	}
 }

@@ -45,6 +45,16 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<uint> SupportedBarcodeSymbologies
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> PosPrinter.SupportedBarcodeSymbologies is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20PosPrinter.SupportedBarcodeSymbologies");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<uint> SupportedCharacterSets
 		{
 			get
@@ -61,66 +71,6 @@ namespace Windows.Devices.PointOfService
 			{
 				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PosPrinter.SupportedTypeFaces is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20PosPrinter.SupportedTypeFaces");
 			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<uint> SupportedBarcodeSymbologies
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> PosPrinter.SupportedBarcodeSymbologies is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20PosPrinter.SupportedBarcodeSymbologies");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.DeviceId.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.Capabilities.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.SupportedCharacterSets.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.SupportedTypeFaces.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.Status.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedPosPrinter> ClaimPrinterAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ClaimedPosPrinter> PosPrinter.ClaimPrinterAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CClaimedPosPrinter%3E%20PosPrinter.ClaimPrinterAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<string> CheckHealthAsync(global::Windows.Devices.PointOfService.UnifiedPosHealthCheckLevel level)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> PosPrinter.CheckHealthAsync(UnifiedPosHealthCheckLevel level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20PosPrinter.CheckHealthAsync%28UnifiedPosHealthCheckLevel%20level%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<string> GetStatisticsAsync(global::System.Collections.Generic.IEnumerable<string> statisticsCategories)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> PosPrinter.GetStatisticsAsync(IEnumerable<string> statisticsCategories) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20PosPrinter.GetStatisticsAsync%28IEnumerable%3Cstring%3E%20statisticsCategories%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.StatusUpdated.add
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.StatusUpdated.remove
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.SupportedBarcodeSymbologies.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.PointOfService.PosPrinterFontProperty GetFontProperty(string typeface)
-		{
-			throw new global::System.NotImplementedException("The member PosPrinterFontProperty PosPrinter.GetFontProperty(string typeface) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PosPrinterFontProperty%20PosPrinter.GetFontProperty%28string%20typeface%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinter", "void PosPrinter.Dispose()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelector(global::Windows.Devices.PointOfService.PosConnectionTypes connectionTypes)
-		{
-			throw new global::System.NotImplementedException("The member string PosPrinter.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PosPrinter.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -144,6 +94,56 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member string PosPrinter.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PosPrinter.GetDeviceSelector%28%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelector(global::Windows.Devices.PointOfService.PosConnectionTypes connectionTypes)
+		{
+			throw new global::System.NotImplementedException("The member string PosPrinter.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PosPrinter.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedPosPrinter> ClaimPrinterAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ClaimedPosPrinter> PosPrinter.ClaimPrinterAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CClaimedPosPrinter%3E%20PosPrinter.ClaimPrinterAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<string> CheckHealthAsync(global::Windows.Devices.PointOfService.UnifiedPosHealthCheckLevel level)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> PosPrinter.CheckHealthAsync(UnifiedPosHealthCheckLevel level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20PosPrinter.CheckHealthAsync%28UnifiedPosHealthCheckLevel%20level%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<string> GetStatisticsAsync(global::System.Collections.Generic.IEnumerable<string> statisticsCategories)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> PosPrinter.GetStatisticsAsync(IEnumerable<string> statisticsCategories) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20PosPrinter.GetStatisticsAsync%28IEnumerable%3Cstring%3E%20statisticsCategories%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.StatusUpdated.add
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.StatusUpdated.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.PointOfService.PosPrinterFontProperty GetFontProperty(string typeface)
+		{
+			throw new global::System.NotImplementedException("The member PosPrinterFontProperty PosPrinter.GetFontProperty(string typeface) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PosPrinterFontProperty%20PosPrinter.GetFontProperty%28string%20typeface%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.PosPrinter", "void PosPrinter.Dispose()");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.Capabilities.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.DeviceId.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.Status.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.SupportedBarcodeSymbologies.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.SupportedCharacterSets.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.SupportedTypeFaces.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.PosPrinter, global::Windows.Devices.PointOfService.PosPrinterStatusUpdatedEventArgs> StatusUpdated

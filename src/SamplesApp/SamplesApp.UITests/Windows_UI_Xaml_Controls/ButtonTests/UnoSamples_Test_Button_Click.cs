@@ -88,6 +88,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
 		public void Button_Events()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Button.Button_Events");

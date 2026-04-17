@@ -15,20 +15,6 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.SizeInt32 MaxImageSize
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SizeInt32 MiracastReceiverCursorImageChannelSettings.MaxImageSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20MiracastReceiverCursorImageChannelSettings.MaxImageSize");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings", "SizeInt32 MiracastReceiverCursorImageChannelSettings.MaxImageSize");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEnabled
 		{
 			get
@@ -38,6 +24,20 @@ namespace Windows.Media.Miracast
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings", "bool MiracastReceiverCursorImageChannelSettings.IsEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.SizeInt32 MaxImageSize
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SizeInt32 MiracastReceiverCursorImageChannelSettings.MaxImageSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20MiracastReceiverCursorImageChannelSettings.MaxImageSize");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings", "SizeInt32 MiracastReceiverCursorImageChannelSettings.MaxImageSize");
 			}
 		}
 #endif

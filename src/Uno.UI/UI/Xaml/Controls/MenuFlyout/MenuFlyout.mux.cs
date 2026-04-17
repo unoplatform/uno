@@ -1,0 +1,82 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\core\core\elements\MenuFlyout.cpp, tag winui3/release/1.5.4, commit 98a60c8
+
+using Microsoft.UI.Xaml.Input;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml;
+
+namespace Microsoft.UI.Xaml.Controls;
+
+partial class MenuFlyout
+{
+	internal static void KeyboardAcceleratorFlyoutItemEnter(
+		DependencyObject element,
+		DependencyObject pNamescopeOwner,
+		DependencyProperty property,
+		EnterParams parameters)
+	{
+		var value = element.GetValue(property);
+		if (value is MenuFlyoutItemBaseCollection items)
+		{
+			// This is a dead enter to register any keyboard accelerators that may be present in the MenuFlyout items
+			// to the list of live accelerators
+			var visualTree = parameters.VisualTree;
+#if HAS_UNO // Uno specific: recover VisualTree from parent (see Flyout.mux.cs Enter for rationale).
+			visualTree ??= (element.GetParent() as DependencyObject)?.GetVisualTree();
+#endif
+			parameters = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
+			//params.fSkipNameRegistration = true;
+			//params.fUseLayoutRounding = false;
+			//params.fCoercedIsEnabled = false;
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			foreach (MenuFlyoutItemBase item in items)
+			{
+				item.Enter(parameters, 0);
+			}
+#endif
+		}
+	}
+
+	internal static void KeyboardAcceleratorFlyoutItemLeave(
+		DependencyObject element,
+		DependencyObject pNamescopeOwner,
+		DependencyProperty property,
+		LeaveParams parameters)
+	{
+		var value = element.GetValue(property);
+		if (value is MenuFlyoutItemBaseCollection items)
+		{
+			// This is a dead leave to remove any keyboard accelerators that may be present in the MenuFlyout items
+			// from the list of live accelerators
+			var visualTree = parameters.VisualTree;
+#if HAS_UNO // Uno specific: recover VisualTree from parent (see Flyout.mux.cs Enter for rationale).
+			visualTree ??= (element.GetParent() as DependencyObject)?.GetVisualTree();
+#endif
+			parameters = new LeaveParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
+			//params.fSkipNameRegistration = true;
+			//params.fUseLayoutRounding = false;
+			//params.fCoercedIsEnabled = false;
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			foreach (MenuFlyoutItemBase item in items)
+			{
+				item.Leave(parameters);
+			}
+#endif
+		}
+	}
+
+	internal override void Enter(DependencyObject namescopeOwner, EnterParams parameters)
+	{
+		base.Enter(namescopeOwner, parameters);
+		KeyboardAcceleratorFlyoutItemEnter(this, namescopeOwner, MenuFlyout.ItemsProperty, parameters);
+	}
+
+	internal override void Leave(DependencyObject namescopeOwner, LeaveParams parameters)
+	{
+		base.Leave(namescopeOwner, parameters);
+		KeyboardAcceleratorFlyoutItemLeave(this, namescopeOwner, MenuFlyout.ItemsProperty, parameters);
+	}
+}

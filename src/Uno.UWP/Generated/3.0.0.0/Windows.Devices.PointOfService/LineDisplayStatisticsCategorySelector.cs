@@ -44,7 +44,7 @@ namespace Windows.Devices.PointOfService
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.AllStatistics.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.UnifiedPosStatistics.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.ManufacturerStatistics.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.UnifiedPosStatistics.get
 	}
 }

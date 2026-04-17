@@ -15,15 +15,15 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 Direction
+		public global::Windows.UI.Color Color
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 DistantLight.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20DistantLight.Direction");
+				throw new global::System.NotImplementedException("The member Color DistantLight.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DistantLight.Color");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DistantLight", "Vector3 DistantLight.Direction");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DistantLight", "Color DistantLight.Color");
 			}
 		}
 #endif
@@ -43,15 +43,15 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color Color
+		public global::System.Numerics.Vector3 Direction
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DistantLight.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DistantLight.Color");
+				throw new global::System.NotImplementedException("The member Vector3 DistantLight.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20DistantLight.Direction");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DistantLight", "Color DistantLight.Color");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.DistantLight", "Vector3 DistantLight.Direction");
 			}
 		}
 #endif

@@ -26,9 +26,6 @@ namespace Windows.Foundation.Diagnostics
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Foundation.Diagnostics.ILoggingChannel.Name.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.ILoggingChannel.Enabled.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.ILoggingChannel.Level.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void LogMessage(string eventString);
 #endif
@@ -41,6 +38,9 @@ namespace Windows.Foundation.Diagnostics
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void LogValuePair(string value1, int value2, global::Windows.Foundation.Diagnostics.LoggingLevel level);
 #endif
+		// Forced skipping of method Windows.Foundation.Diagnostics.ILoggingChannel.Enabled.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.ILoggingChannel.Level.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.ILoggingChannel.Name.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.ILoggingChannel.LoggingEnabled.add
 		// Forced skipping of method Windows.Foundation.Diagnostics.ILoggingChannel.LoggingEnabled.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

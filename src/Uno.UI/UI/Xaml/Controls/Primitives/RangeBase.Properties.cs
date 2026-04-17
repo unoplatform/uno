@@ -48,7 +48,7 @@ public partial class RangeBase
 			nameof(Maximum),
 			typeof(double),
 			typeof(RangeBase),
-			new FrameworkPropertyMetadata(1.0, null, CoerceMaximum));
+			new FrameworkPropertyMetadata(1.0, OnRangeChanged, CoerceMaximum));
 
 	/// <summary>
 	/// Gets or sets the Minimum possible Value of the range element.
@@ -71,7 +71,7 @@ public partial class RangeBase
 			nameof(Minimum),
 			typeof(double),
 			typeof(RangeBase),
-			new FrameworkPropertyMetadata(0.0, null, CoerceMinimum));
+			new FrameworkPropertyMetadata(0.0, OnRangeChanged, CoerceMinimum));
 
 	/// <summary>
 	/// Gets or sets a Value to be added to or subtracted from the Value of a RangeBase control.

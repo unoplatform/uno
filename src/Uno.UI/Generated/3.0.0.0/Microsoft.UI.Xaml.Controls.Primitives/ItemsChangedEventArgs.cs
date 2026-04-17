@@ -64,9 +64,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.Action.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.Position.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.OldPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.ItemCount.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.ItemUICount.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.OldPosition.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.Position.get
 	}
 }

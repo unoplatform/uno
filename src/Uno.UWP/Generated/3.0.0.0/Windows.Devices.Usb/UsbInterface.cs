@@ -84,11 +84,11 @@ namespace Windows.Devices.Usb
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbInterface.BulkInPipes.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterruptInPipes.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterface.BulkOutPipes.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterruptOutPipes.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterfaceSettings.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterfaceNumber.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterface.Descriptors.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterfaceNumber.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterfaceSettings.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterruptInPipes.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterruptOutPipes.get
 	}
 }

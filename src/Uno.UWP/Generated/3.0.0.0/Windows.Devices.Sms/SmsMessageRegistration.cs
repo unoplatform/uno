@@ -15,6 +15,16 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sms.SmsMessageRegistration> AllRegistrations
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<SmsMessageRegistration> SmsMessageRegistration.AllRegistrations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSmsMessageRegistration%3E%20SmsMessageRegistration.AllRegistrations");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Id
 		{
 			get
@@ -25,15 +35,12 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sms.SmsMessageRegistration> AllRegistrations
+		public static global::Windows.Devices.Sms.SmsMessageRegistration Register(string id, global::Windows.Devices.Sms.SmsFilterRules filterRules)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SmsMessageRegistration> SmsMessageRegistration.AllRegistrations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSmsMessageRegistration%3E%20SmsMessageRegistration.AllRegistrations");
-			}
+			throw new global::System.NotImplementedException("The member SmsMessageRegistration SmsMessageRegistration.Register(string id, SmsFilterRules filterRules) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageRegistration%20SmsMessageRegistration.Register%28string%20id%2C%20SmsFilterRules%20filterRules%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.Id.get
+		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.AllRegistrations.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Unregister()
@@ -43,14 +50,7 @@ namespace Windows.Devices.Sms
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.MessageReceived.add
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.MessageReceived.remove
-		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.AllRegistrations.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.Sms.SmsMessageRegistration Register(string id, global::Windows.Devices.Sms.SmsFilterRules filterRules)
-		{
-			throw new global::System.NotImplementedException("The member SmsMessageRegistration SmsMessageRegistration.Register(string id, SmsFilterRules filterRules) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageRegistration%20SmsMessageRegistration.Register%28string%20id%2C%20SmsFilterRules%20filterRules%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.Id.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sms.SmsMessageRegistration, global::Windows.Devices.Sms.SmsMessageReceivedTriggerDetails> MessageReceived

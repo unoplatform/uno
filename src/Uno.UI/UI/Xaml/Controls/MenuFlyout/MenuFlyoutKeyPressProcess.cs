@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\components\controls\KeyDownUp\inc\MenuFlyoutKeyPressProcess.h, tag winui3/release/1.5.4, commit 98a60c8
+
 using Windows.System;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+partial class MenuFlyoutPresenter
 {
-	class KeyPressMenuFlyoutPresenter
+	internal static class KeyProcess
 	{
 		internal static bool KeyDown(VirtualKey key, MenuFlyoutPresenter control)
 		{
@@ -51,8 +54,11 @@ namespace Microsoft.UI.Xaml.Controls
 			return pbHandled;
 		}
 	}
+}
 
-	class KeyPressMenuFlyout
+partial class MenuFlyout
+{
+	internal static class KeyProcess
 	{
 		internal static bool KeyDown(VirtualKey key, MenuFlyoutItem control)
 		{

@@ -43,8 +43,8 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountPartnerAccountInfo.AccountKind.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountPartnerAccountInfo.DisplayName.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountPartnerAccountInfo.Priority.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountPartnerAccountInfo.AccountKind.get
 	}
 }

@@ -33,10 +33,6 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StorePackageLicense.LicenseLost.add
-		// Forced skipping of method Windows.Services.Store.StorePackageLicense.LicenseLost.remove
-		// Forced skipping of method Windows.Services.Store.StorePackageLicense.Package.get
-		// Forced skipping of method Windows.Services.Store.StorePackageLicense.IsValid.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReleaseLicense()
@@ -44,6 +40,8 @@ namespace Windows.Services.Store
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePackageLicense", "void StorePackageLicense.ReleaseLicense()");
 		}
 #endif
+		// Forced skipping of method Windows.Services.Store.StorePackageLicense.LicenseLost.add
+		// Forced skipping of method Windows.Services.Store.StorePackageLicense.LicenseLost.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -51,6 +49,8 @@ namespace Windows.Services.Store
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePackageLicense", "void StorePackageLicense.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Services.Store.StorePackageLicense.IsValid.get
+		// Forced skipping of method Windows.Services.Store.StorePackageLicense.Package.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Services.Store.StorePackageLicense, object> LicenseLost

@@ -20,7 +20,7 @@ namespace Windows.ApplicationModel.Activation
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.IContactPanelActivatedEventArgs.ContactPanel.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.IContactPanelActivatedEventArgs.Contact.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.IContactPanelActivatedEventArgs.ContactPanel.get
 	}
 }

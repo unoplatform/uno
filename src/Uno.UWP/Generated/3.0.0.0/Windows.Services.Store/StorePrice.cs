@@ -73,11 +73,11 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Services.Store.StorePrice.CurrencyCode.get
 		// Forced skipping of method Windows.Services.Store.StorePrice.FormattedBasePrice.get
 		// Forced skipping of method Windows.Services.Store.StorePrice.FormattedPrice.get
+		// Forced skipping of method Windows.Services.Store.StorePrice.FormattedRecurrencePrice.get
 		// Forced skipping of method Windows.Services.Store.StorePrice.IsOnSale.get
 		// Forced skipping of method Windows.Services.Store.StorePrice.SaleEndDate.get
-		// Forced skipping of method Windows.Services.Store.StorePrice.CurrencyCode.get
-		// Forced skipping of method Windows.Services.Store.StorePrice.FormattedRecurrencePrice.get
 	}
 }

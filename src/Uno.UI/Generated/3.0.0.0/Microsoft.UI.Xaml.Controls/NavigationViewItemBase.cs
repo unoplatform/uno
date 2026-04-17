@@ -8,10 +8,10 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class NavigationViewItemBase
 	{
-		// Skipping already declared property IsSelected
 		// Skipping already declared property IsSelectedProperty
+		// Skipping already declared property IsSelected
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.IsSelectedProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.IsSelected.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.IsSelectedProperty.get
 	}
 }

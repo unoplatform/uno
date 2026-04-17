@@ -75,6 +75,13 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateAudioGraphResult> CreateAsync(global::Windows.Media.Audio.AudioGraphSettings settings)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioGraphResult> AudioGraph.CreateAsync(AudioGraphSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCreateAudioGraphResult%3E%20AudioGraph.CreateAsync%28AudioGraphSettings%20settings%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Audio.AudioFrameInputNode CreateFrameInputNode()
 		{
 			throw new global::System.NotImplementedException("The member AudioFrameInputNode AudioGraph.CreateFrameInputNode() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioFrameInputNode%20AudioGraph.CreateFrameInputNode%28%29");
@@ -185,18 +192,12 @@ namespace Windows.Media.Audio
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioGraph", "void AudioGraph.ResetAllNodes()");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.QuantumStarted.add
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.QuantumStarted.remove
 		// Forced skipping of method Windows.Media.Audio.AudioGraph.QuantumProcessed.add
 		// Forced skipping of method Windows.Media.Audio.AudioGraph.QuantumProcessed.remove
+		// Forced skipping of method Windows.Media.Audio.AudioGraph.QuantumStarted.add
+		// Forced skipping of method Windows.Media.Audio.AudioGraph.QuantumStarted.remove
 		// Forced skipping of method Windows.Media.Audio.AudioGraph.UnrecoverableErrorOccurred.add
 		// Forced skipping of method Windows.Media.Audio.AudioGraph.UnrecoverableErrorOccurred.remove
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.CompletedQuantumCount.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.EncodingProperties.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.LatencyInSamples.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.PrimaryRenderDevice.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.RenderDeviceAudioProcessing.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.SamplesPerQuantum.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -253,13 +254,12 @@ namespace Windows.Media.Audio
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateMediaSourceAudioInputNodeResult> AudioGraph.CreateMediaSourceAudioInputNodeAsync(MediaSource mediaSource, AudioNodeEmitter emitter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCreateMediaSourceAudioInputNodeResult%3E%20AudioGraph.CreateMediaSourceAudioInputNodeAsync%28MediaSource%20mediaSource%2C%20AudioNodeEmitter%20emitter%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.CreateAudioGraphResult> CreateAsync(global::Windows.Media.Audio.AudioGraphSettings settings)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioGraphResult> AudioGraph.CreateAsync(AudioGraphSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCreateAudioGraphResult%3E%20AudioGraph.CreateAsync%28AudioGraphSettings%20settings%29");
-		}
-#endif
+		// Forced skipping of method Windows.Media.Audio.AudioGraph.CompletedQuantumCount.get
+		// Forced skipping of method Windows.Media.Audio.AudioGraph.EncodingProperties.get
+		// Forced skipping of method Windows.Media.Audio.AudioGraph.LatencyInSamples.get
+		// Forced skipping of method Windows.Media.Audio.AudioGraph.PrimaryRenderDevice.get
+		// Forced skipping of method Windows.Media.Audio.AudioGraph.RenderDeviceAudioProcessing.get
+		// Forced skipping of method Windows.Media.Audio.AudioGraph.SamplesPerQuantum.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Audio.AudioGraph, object> QuantumProcessed

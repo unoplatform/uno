@@ -13,15 +13,15 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.UninitializeForContext(Microsoft.UI.Xaml.Controls.LayoutContext)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.Measure(Microsoft.UI.Xaml.Controls.LayoutContext, Windows.Foundation.Size)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.Arrange(Microsoft.UI.Xaml.Controls.LayoutContext, Windows.Foundation.Size)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.MeasureInvalidated.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.MeasureInvalidated.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.ArrangeInvalidated.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.ArrangeInvalidated.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.IndexBasedLayoutOrientation.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.MeasureInvalidated.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.MeasureInvalidated.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.InvalidateMeasure()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.InvalidateArrange()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.SetIndexBasedLayoutOrientation(Microsoft.UI.Xaml.Controls.IndexBasedLayoutOrientation)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.CreateDefaultItemTransitionProvider()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.IndexBasedLayoutOrientation.get
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Layout.ArrangeInvalidated
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Layout.MeasureInvalidated
 	}

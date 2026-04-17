@@ -54,8 +54,8 @@ namespace Windows.Security.Authentication.Web.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.WebAccountClientView(Windows.Security.Authentication.Web.Provider.WebAccountClientViewType, System.Uri, string)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.AccountPairwiseId.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.ApplicationCallbackUri.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.Type.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.AccountPairwiseId.get
 	}
 }

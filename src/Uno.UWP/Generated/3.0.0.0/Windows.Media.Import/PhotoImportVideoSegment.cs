@@ -63,10 +63,10 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportVideoSegment.Name.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportVideoSegment.SizeInBytes.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportVideoSegment.Date.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportVideoSegment.Name.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportVideoSegment.Sibling.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportVideoSegment.Sidecars.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportVideoSegment.SizeInBytes.get
 	}
 }

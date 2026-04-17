@@ -43,8 +43,8 @@ namespace Windows.Networking.Proximity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs.State.get
 		// Forced skipping of method Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs.Id.get
 		// Forced skipping of method Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs.Socket.get
+		// Forced skipping of method Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs.State.get
 	}
 }

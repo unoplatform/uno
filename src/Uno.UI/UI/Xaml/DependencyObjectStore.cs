@@ -18,6 +18,7 @@ using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Media;
 
@@ -76,6 +77,12 @@ namespace Microsoft.UI.Xaml
 
 		private readonly ManagedWeakReference _originalObjectRef;
 		private DependencyObject? _hardOriginalObjectRef;
+
+		/// <summary>
+		/// Cached VisualTree pointer, matching WinUI's CDependencyObject::m_pVisualTree.
+		/// Set during Enter when the element enters the live tree.
+		/// </summary>
+		private ManagedWeakReference? _visualTreeCacheWeakReference;
 
 		/// <summary>
 		/// This field is used to pass a reference to itself in the case
@@ -163,6 +170,28 @@ namespace Microsoft.UI.Xaml
 
 					OnParentChanged(previousParent, value);
 				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the cached VisualTree for this DependencyObject.
+		/// Matches WinUI's CDependencyObject::GetVisualTree/SetVisualTree.
+		/// </summary>
+		internal VisualTree? VisualTreeCache
+		{
+			get => _visualTreeCacheWeakReference?.IsDisposed == false
+				? _visualTreeCacheWeakReference.Target as VisualTree
+				: null;
+			set
+			{
+				if (_visualTreeCacheWeakReference is not null)
+				{
+					WeakReferencePool.ReturnWeakReference(this, _visualTreeCacheWeakReference);
+				}
+
+				_visualTreeCacheWeakReference = value is not null
+					? WeakReferencePool.RentWeakReference(this, value)
+					: null;
 			}
 		}
 

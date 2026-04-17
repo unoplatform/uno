@@ -32,6 +32,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
 
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Wpf")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]

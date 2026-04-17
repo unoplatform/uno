@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.PaymentToken(string, string)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.PaymentMethodId.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.JsonDetails.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.PaymentMethodId.get
 	}
 }

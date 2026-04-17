@@ -15,20 +15,6 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Contacts.ContactNameOrder SystemSortOrder
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContactNameOrder ContactManagerForUser.SystemSortOrder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactNameOrder%20ContactManagerForUser.SystemSortOrder");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactManagerForUser", "ContactNameOrder ContactManagerForUser.SystemSortOrder");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactNameOrder SystemDisplayNameOrder
 		{
 			get
@@ -38,6 +24,20 @@ namespace Windows.ApplicationModel.Contacts
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactManagerForUser", "ContactNameOrder ContactManagerForUser.SystemDisplayNameOrder");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Contacts.ContactNameOrder SystemSortOrder
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContactNameOrder ContactManagerForUser.SystemSortOrder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactNameOrder%20ContactManagerForUser.SystemSortOrder");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactManagerForUser", "ContactNameOrder ContactManagerForUser.SystemSortOrder");
 			}
 		}
 #endif
@@ -86,11 +86,6 @@ namespace Windows.ApplicationModel.Contacts
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ContactAnnotationStore> ContactManagerForUser.RequestAnnotationStoreAsync(ContactAnnotationStoreAccessType accessType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CContactAnnotationStore%3E%20ContactManagerForUser.RequestAnnotationStoreAsync%28ContactAnnotationStoreAccessType%20accessType%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactManagerForUser.SystemDisplayNameOrder.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactManagerForUser.SystemDisplayNameOrder.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactManagerForUser.SystemSortOrder.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactManagerForUser.SystemSortOrder.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactManagerForUser.User.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ShowFullContactCard(global::Windows.ApplicationModel.Contacts.Contact contact, global::Windows.ApplicationModel.Contacts.FullContactCardOptions fullContactCardOptions)
@@ -98,5 +93,10 @@ namespace Windows.ApplicationModel.Contacts
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactManagerForUser", "void ContactManagerForUser.ShowFullContactCard(Contact contact, FullContactCardOptions fullContactCardOptions)");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactManagerForUser.SystemDisplayNameOrder.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactManagerForUser.SystemDisplayNameOrder.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactManagerForUser.SystemSortOrder.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactManagerForUser.SystemSortOrder.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactManagerForUser.User.get
 	}
 }

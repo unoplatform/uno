@@ -63,10 +63,10 @@ namespace Windows.Media.SpeechSynthesis
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Description.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.DisplayName.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Gender.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Id.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Language.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Description.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Gender.get
 	}
 }

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Loader;
 using Microsoft.UI.Xaml.Resources;
 using Uno.Foundation.Logging;
@@ -111,8 +112,8 @@ partial class Application
 	/// Purges Type-keyed caches of entries from non-default (collectible) ALCs.
 	/// Called from <see cref="Window.CloseAlcWindow"/> during ALC teardown.
 	/// </summary>
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "ALC cleanup reflection")]
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup reflection")]
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "ALC cleanup reflection")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup reflection")]
 	internal static void CleanupNonDefaultAlcCaches()
 	{
 		// Remove Application instances registered for non-default ALCs from the CWT.
@@ -178,9 +179,9 @@ partial class Application
 		}
 	}
 
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Diagnostic")]
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Diagnostic")]
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Diagnostic")]
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Diagnostic")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Diagnostic")]
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Diagnostic")]
 	private static void DeepScanForAlcReferences()
 	{
 		var defaultAlc = AssemblyLoadContext.Default;
@@ -200,9 +201,9 @@ partial class Application
 				foreach (var type in asm.GetTypes())
 				{
 					foreach (var field in type.GetFields(
-						System.Reflection.BindingFlags.Static |
-						System.Reflection.BindingFlags.NonPublic |
-						System.Reflection.BindingFlags.Public))
+						global::System.Reflection.BindingFlags.Static |
+						global::System.Reflection.BindingFlags.NonPublic |
+						global::System.Reflection.BindingFlags.Public))
 					{
 						try
 						{
@@ -249,8 +250,8 @@ partial class Application
 		}
 	}
 
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Diagnostic")]
-	[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Diagnostic")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Diagnostic")]
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Diagnostic")]
 	private static void ScanObject(
 		object obj,
 		string path,
@@ -319,7 +320,7 @@ partial class Application
 		}
 
 		// Check inside IEnumerable (Dictionary, List, etc.) — sample first N items
-		if (obj is System.Collections.IEnumerable enumerable && obj is not string)
+		if (obj is global::System.Collections.IEnumerable enumerable && obj is not string)
 		{
 			var count = 0;
 			try
@@ -349,9 +350,9 @@ partial class Application
 			try
 			{
 				foreach (var f in objType.GetFields(
-					System.Reflection.BindingFlags.Instance |
-					System.Reflection.BindingFlags.NonPublic |
-					System.Reflection.BindingFlags.Public))
+					global::System.Reflection.BindingFlags.Instance |
+					global::System.Reflection.BindingFlags.NonPublic |
+					global::System.Reflection.BindingFlags.Public))
 				{
 					try
 					{

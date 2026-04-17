@@ -27,12 +27,5 @@ namespace Windows.Devices.Display.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayTaskPool", "void DisplayTaskPool.ExecuteTask(DisplayTask task)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Display.Core.DisplayTaskResult TryExecuteTask(global::Windows.Devices.Display.Core.DisplayTask task)
-		{
-			throw new global::System.NotImplementedException("The member DisplayTaskResult DisplayTaskPool.TryExecuteTask(DisplayTask task) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayTaskResult%20DisplayTaskPool.TryExecuteTask%28DisplayTask%20task%29");
-		}
-#endif
 	}
 }

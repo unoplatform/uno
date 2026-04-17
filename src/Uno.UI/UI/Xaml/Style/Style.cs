@@ -41,8 +41,8 @@ namespace Microsoft.UI.Xaml
 			var keysToRemove = new List<Type>();
 			foreach (var key in dictionary.Keys)
 			{
-				var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
-				if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+				var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
+				if (alc is not null && alc != global::System.Runtime.Loader.AssemblyLoadContext.Default)
 				{
 					keysToRemove.Add(key);
 				}

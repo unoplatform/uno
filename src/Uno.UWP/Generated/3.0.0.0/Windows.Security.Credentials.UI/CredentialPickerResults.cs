@@ -83,12 +83,12 @@ namespace Windows.Security.Credentials.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerResults.ErrorCode.get
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerResults.CredentialSaveOption.get
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerResults.CredentialSaved.get
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerResults.Credential.get
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerResults.CredentialDomainName.get
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerResults.CredentialUserName.get
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerResults.CredentialPassword.get
+		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerResults.CredentialSaveOption.get
+		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerResults.CredentialSaved.get
+		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerResults.CredentialUserName.get
+		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerResults.ErrorCode.get
 	}
 }

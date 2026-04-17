@@ -15,20 +15,6 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float PowerPercent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float TorchControl.PowerPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20TorchControl.PowerPercent");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.TorchControl", "float TorchControl.PowerPercent");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Enabled
 		{
 			get
@@ -38,6 +24,20 @@ namespace Windows.Media.Devices
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.TorchControl", "bool TorchControl.Enabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float PowerPercent
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float TorchControl.PowerPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20TorchControl.PowerPercent");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.TorchControl", "float TorchControl.PowerPercent");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.TorchControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.TorchControl.PowerSupported.get
 		// Forced skipping of method Windows.Media.Devices.TorchControl.Enabled.get
 		// Forced skipping of method Windows.Media.Devices.TorchControl.Enabled.set
 		// Forced skipping of method Windows.Media.Devices.TorchControl.PowerPercent.get
 		// Forced skipping of method Windows.Media.Devices.TorchControl.PowerPercent.set
+		// Forced skipping of method Windows.Media.Devices.TorchControl.PowerSupported.get
+		// Forced skipping of method Windows.Media.Devices.TorchControl.Supported.get
 	}
 }

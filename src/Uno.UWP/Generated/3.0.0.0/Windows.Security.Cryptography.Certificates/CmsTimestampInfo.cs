@@ -43,8 +43,8 @@ namespace Windows.Security.Cryptography.Certificates
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsTimestampInfo.SigningCertificate.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsTimestampInfo.Certificates.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsTimestampInfo.SigningCertificate.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsTimestampInfo.Timestamp.get
 	}
 }

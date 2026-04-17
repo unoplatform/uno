@@ -9,9 +9,9 @@ namespace Windows.ApplicationModel.Activation
 	public partial class SplashScreen
 	{
 		// Skipping already declared property ImageLocation
-		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.ImageLocation.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.Dismissed.add
 		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.Dismissed.remove
+		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.ImageLocation.get
 		// Skipping already declared event Windows.ApplicationModel.Activation.SplashScreen.Dismissed
 	}
 }

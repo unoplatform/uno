@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Data
 		// Skipping already declared method Microsoft.UI.Xaml.Data.ItemIndexRange.ItemIndexRange(int, uint)
 		// Forced skipping of method Microsoft.UI.Xaml.Data.ItemIndexRange.ItemIndexRange(int, uint)
 		// Forced skipping of method Microsoft.UI.Xaml.Data.ItemIndexRange.FirstIndex.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.ItemIndexRange.Length.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.ItemIndexRange.LastIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.ItemIndexRange.Length.get
 	}
 }

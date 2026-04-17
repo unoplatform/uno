@@ -134,7 +134,7 @@
     <comment>This is the custom landmark used to denote an InfoBar to narrator.</comment>
   </data>
   <data name="InfoBarIconSeverityErrorName" xml:space="preserve">
-    <value>దోషం సూక్ష్మచిత్రం</value>
+    <value>దోషం చిహ్నం</value>
     <comment>Automation name used to announce the severity error icon.</comment>
   </data>
   <data name="InfoBarIconSeverityInformationalName" xml:space="preserve">
@@ -146,7 +146,7 @@
     <comment>Automation name used to announce the severity success icon.</comment>
   </data>
   <data name="InfoBarIconSeverityWarningName" xml:space="preserve">
-    <value>హెచ్చరిక సూక్ష్మచిత్రం</value>
+    <value>హెచ్చరిక చిహ్నం</value>
     <comment>Automation name used to announce the severity warning icon.</comment>
   </data>
   <data name="InfoBarOpenedNotification" xml:space="preserve">

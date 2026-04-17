@@ -15,20 +15,6 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint? Value
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint? FrameIsoSpeedControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20FrameIsoSpeedControl.Value");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameIsoSpeedControl", "uint? FrameIsoSpeedControl.Value");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Auto
 		{
 			get
@@ -38,6 +24,20 @@ namespace Windows.Media.Devices.Core
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameIsoSpeedControl", "bool FrameIsoSpeedControl.Auto");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint? Value
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint? FrameIsoSpeedControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20FrameIsoSpeedControl.Value");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.FrameIsoSpeedControl", "uint? FrameIsoSpeedControl.Value");
 			}
 		}
 #endif

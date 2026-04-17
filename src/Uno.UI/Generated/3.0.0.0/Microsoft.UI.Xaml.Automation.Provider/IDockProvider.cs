@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 	public partial interface IDockProvider
 	{
 		// Skipping already declared property DockPosition
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IDockProvider.DockPosition.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IDockProvider.SetDockPosition(Microsoft.UI.Xaml.Automation.DockPosition)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IDockProvider.DockPosition.get
 	}
 }

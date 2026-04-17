@@ -23,6 +23,16 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool BackgroundDataUsageRestricted
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ConnectionCost.BackgroundDataUsageRestricted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionCost.BackgroundDataUsageRestricted");
+			}
+		}
+#endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.NetworkCostType NetworkCostType
@@ -53,20 +63,10 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool BackgroundDataUsageRestricted
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ConnectionCost.BackgroundDataUsageRestricted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionCost.BackgroundDataUsageRestricted");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.NetworkCostType.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.Roaming.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.OverDataLimit.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.ApproachingDataLimit.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.BackgroundDataUsageRestricted.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.NetworkCostType.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.OverDataLimit.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.Roaming.get
 	}
 }

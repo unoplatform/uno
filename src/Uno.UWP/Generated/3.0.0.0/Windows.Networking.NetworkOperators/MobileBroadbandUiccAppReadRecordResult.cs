@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.Status.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.Data.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.Status.get
 	}
 }

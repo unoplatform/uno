@@ -43,8 +43,8 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.CaptureTimeOffset.get
 		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.Frame.get
 		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.Thumbnail.get
-		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.CaptureTimeOffset.get
 	}
 }

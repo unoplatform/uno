@@ -63,11 +63,6 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.RequestMessage.get
-		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.ServerCertificate.get
-		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.ServerCertificateErrorSeverity.get
-		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.ServerCertificateErrors.get
-		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.ServerIntermediateCertificates.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Reject()
@@ -82,5 +77,10 @@ namespace Windows.Web.Http.Filters
 			throw new global::System.NotImplementedException("The member Deferral HttpServerCustomValidationRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20HttpServerCustomValidationRequestedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.RequestMessage.get
+		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.ServerCertificate.get
+		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.ServerCertificateErrorSeverity.get
+		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.ServerCertificateErrors.get
+		// Forced skipping of method Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs.ServerIntermediateCertificates.get
 	}
 }

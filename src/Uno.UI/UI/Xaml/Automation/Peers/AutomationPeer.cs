@@ -509,17 +509,23 @@ public partial class AutomationPeer : DependencyObject
 	/// Raises an automation event.
 	/// </summary>
 	/// <param name="eventId">The event to raise.</param>
+#if __SKIA__
 	public void RaiseAutomationEvent(AutomationEvents eventId)
 	{
-		// TODO Implement when implemented in WinUI
-		// #if __SKIA__
-		// 		if (ListenerExists(eventId))
-		// 		{
-		// 			AutomationPeerListener?.NotifyAutomationEvent(this, eventId);
-		// 		}
-		// #else
+		// Mirrors WinUI pattern: CAutomationPeer::RaiseAutomationEvent checks ListenerExists
+		// then delegates to CCoreServices::UIARaiseAutomationEvent → CUIAWindow::UIARaiseAutomationEvent
+		var listener = AutomationPeerListener;
+		if (listener is not null && listener.ListenerExistsHelper(eventId))
+		{
+			listener.OnAutomationEvent(this, eventId);
+		}
+	}
+#else
+	public void RaiseAutomationEvent(AutomationEvents eventId)
+	{
 		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
 	}
+#endif
 
 	/// <summary>
 	/// Initiates a notification event.

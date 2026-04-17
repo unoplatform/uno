@@ -119,7 +119,7 @@ When updating the versions of NuGet packages, make sure to update all the .nuspe
 
 Uno Platform uses a tool which synchronizes all WinRT and WinUI APIs with the type implementations already present in Uno. This ensures that all APIs are present for consumers of Uno, even if some are not implemented.
 
-The synchronization process takes the APIs provided by the WinMD files referenced by the `Uno.UWPSyncGenerator.Reference` project and generates stubbed classes for types in the `Generated` folders of Uno.UI, Uno.Foundation and Uno.WinRT projects. If the generated classes have been partially implemented in Uno (in the non-Generated folders), the tool will automatically skip those implemented methods.
+The synchronization process takes the APIs provided by the WinMD files referenced by the `Uno.UWPSyncGenerator.Reference.WinUI` project and generates stubbed classes for types in the `Generated` folders of Uno.UI, Uno.Foundation and Uno.WinRT projects. If the generated classes have been partially implemented in Uno (in the non-Generated folders), the tool will automatically skip those implemented methods.
 
 The tool needs to be run on Windows because of its dependency on the Windows SDK WinMD files.
 

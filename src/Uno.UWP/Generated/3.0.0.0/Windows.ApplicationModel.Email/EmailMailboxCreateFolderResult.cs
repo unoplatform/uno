@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCreateFolderResult.Status.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCreateFolderResult.Folder.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCreateFolderResult.Status.get
 	}
 }

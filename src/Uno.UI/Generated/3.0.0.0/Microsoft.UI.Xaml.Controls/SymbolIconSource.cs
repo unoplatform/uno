@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class SymbolIconSource : global::Microsoft.UI.Xaml.Controls.IconSource
 	{
-		// Skipping already declared property Symbol
 		// Skipping already declared property SymbolProperty
+		// Skipping already declared property Symbol
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SymbolIconSource.SymbolIconSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIconSource.SymbolIconSource()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIconSource.SymbolProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIconSource.Symbol.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIconSource.Symbol.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIconSource.SymbolProperty.get
 	}
 }

@@ -10,34 +10,6 @@ namespace Windows.Storage.Search
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string StreamContentType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string IndexableContent.StreamContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20IndexableContent.StreamContentType");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "string IndexableContent.StreamContentType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IRandomAccessStream Stream
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStream IndexableContent.Stream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20IndexableContent.Stream");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "IRandomAccessStream IndexableContent.Stream");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Id
 		{
 			get
@@ -57,6 +29,34 @@ namespace Windows.Storage.Search
 			get
 			{
 				throw new global::System.NotImplementedException("The member IDictionary<string, object> IndexableContent.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20object%3E%20IndexableContent.Properties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IRandomAccessStream Stream
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IRandomAccessStream IndexableContent.Stream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20IndexableContent.Stream");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "IRandomAccessStream IndexableContent.Stream");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string StreamContentType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string IndexableContent.StreamContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20IndexableContent.StreamContentType");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.IndexableContent", "string IndexableContent.StreamContentType");
 			}
 		}
 #endif

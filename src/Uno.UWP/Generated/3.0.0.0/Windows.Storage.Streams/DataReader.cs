@@ -8,7 +8,7 @@ namespace Windows.Storage.Streams
 #endif
 	public partial class DataReader : global::Windows.Storage.Streams.IDataReader, global::System.IDisposable
 	{
-		// Skipping already declared property UnicodeEncoding
+		// Skipping already declared property ByteOrder
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.InputStreamOptions InputStreamOptions
@@ -23,8 +23,8 @@ namespace Windows.Storage.Streams
 			}
 		}
 #endif
-		// Skipping already declared property ByteOrder
 		// Skipping already declared property UnconsumedBufferLength
+		// Skipping already declared property UnicodeEncoding
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DataReader(global::Windows.Storage.Streams.IInputStream inputStream)
@@ -33,13 +33,7 @@ namespace Windows.Storage.Streams
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Streams.DataReader.DataReader(Windows.Storage.Streams.IInputStream)
-		// Forced skipping of method Windows.Storage.Streams.DataReader.UnconsumedBufferLength.get
-		// Forced skipping of method Windows.Storage.Streams.DataReader.UnicodeEncoding.get
-		// Forced skipping of method Windows.Storage.Streams.DataReader.UnicodeEncoding.set
-		// Forced skipping of method Windows.Storage.Streams.DataReader.ByteOrder.get
-		// Forced skipping of method Windows.Storage.Streams.DataReader.ByteOrder.set
-		// Forced skipping of method Windows.Storage.Streams.DataReader.InputStreamOptions.get
-		// Forced skipping of method Windows.Storage.Streams.DataReader.InputStreamOptions.set
+		// Skipping already declared method Windows.Storage.Streams.DataReader.FromBuffer(Windows.Storage.Streams.IBuffer)
 		// Skipping already declared method Windows.Storage.Streams.DataReader.ReadByte()
 		// Skipping already declared method Windows.Storage.Streams.DataReader.ReadBytes(byte[])
 		// Skipping already declared method Windows.Storage.Streams.DataReader.ReadBuffer(uint)
@@ -72,7 +66,13 @@ namespace Windows.Storage.Streams
 		}
 #endif
 		// Skipping already declared method Windows.Storage.Streams.DataReader.Dispose()
-		// Skipping already declared method Windows.Storage.Streams.DataReader.FromBuffer(Windows.Storage.Streams.IBuffer)
+		// Forced skipping of method Windows.Storage.Streams.DataReader.ByteOrder.get
+		// Forced skipping of method Windows.Storage.Streams.DataReader.ByteOrder.set
+		// Forced skipping of method Windows.Storage.Streams.DataReader.InputStreamOptions.get
+		// Forced skipping of method Windows.Storage.Streams.DataReader.InputStreamOptions.set
+		// Forced skipping of method Windows.Storage.Streams.DataReader.UnconsumedBufferLength.get
+		// Forced skipping of method Windows.Storage.Streams.DataReader.UnicodeEncoding.get
+		// Forced skipping of method Windows.Storage.Streams.DataReader.UnicodeEncoding.set
 		// Processing: Windows.Storage.Streams.IDataReader
 		// Processing: System.IDisposable
 	}

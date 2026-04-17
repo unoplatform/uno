@@ -43,9 +43,6 @@ namespace Windows.System.UserProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.IsEnabled.get
-		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.IsSingleAppKioskMode.get
-		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.User.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.UserProfile.AssignedAccessSettings GetDefault()
@@ -60,5 +57,8 @@ namespace Windows.System.UserProfile
 			throw new global::System.NotImplementedException("The member AssignedAccessSettings AssignedAccessSettings.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AssignedAccessSettings%20AssignedAccessSettings.GetForUser%28User%20user%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.IsEnabled.get
+		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.IsSingleAppKioskMode.get
+		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.User.get
 	}
 }

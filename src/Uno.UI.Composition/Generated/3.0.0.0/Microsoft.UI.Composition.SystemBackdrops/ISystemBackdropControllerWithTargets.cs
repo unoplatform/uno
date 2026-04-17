@@ -14,7 +14,6 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 			get;
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropControllerWithTargets.State.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		bool AddSystemBackdropTarget(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop systemBackdropTarget);
 #endif
@@ -27,6 +26,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void SetSystemBackdropConfiguration(global::Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration configuration);
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropControllerWithTargets.State.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropControllerWithTargets.StateChanged.add
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropControllerWithTargets.StateChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

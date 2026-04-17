@@ -142,11 +142,11 @@
     <comment>Automation name used to announce the severity informational icon.</comment>
   </data>
   <data name="InfoBarIconSeveritySuccessName" xml:space="preserve">
-    <value>أيقونه النجاح</value>
+    <value>أيقونة النجاح</value>
     <comment>Automation name used to announce the severity success icon.</comment>
   </data>
   <data name="InfoBarIconSeverityWarningName" xml:space="preserve">
-    <value>أيقونة التحذير</value>
+    <value>أيقونة تحذير</value>
     <comment>Automation name used to announce the severity warning icon.</comment>
   </data>
   <data name="InfoBarOpenedNotification" xml:space="preserve">
@@ -154,15 +154,15 @@
     <comment>The formatted string read by narrator when the InfoBar opens: "{Severity level}, {Title} {Message}"</comment>
   </data>
   <data name="InfoBarSeverityErrorName" xml:space="preserve">
-    <value>رسالة معلومات، خطأ في الخطورة</value>
+    <value>رسالة معلومات، خطأ الخطورة</value>
     <comment>Name used to announce severity error to users.</comment>
   </data>
   <data name="InfoBarSeverityInformationalName" xml:space="preserve">
-    <value>رسالة معلوماتية، خطورة إعلامية</value>
+    <value>رسالة معلومات، إعلامية عن الخطورة</value>
     <comment>Name used to announce severity informational to users.</comment>
   </data>
   <data name="InfoBarSeveritySuccessName" xml:space="preserve">
-    <value>رسالة معلومات، خطورة النجاح</value>
+    <value>رسالة معلومات، نجاح الخطورة</value>
     <comment>Name used to announce severity success to users.</comment>
   </data>
   <data name="InfoBarSeverityWarningName" xml:space="preserve">

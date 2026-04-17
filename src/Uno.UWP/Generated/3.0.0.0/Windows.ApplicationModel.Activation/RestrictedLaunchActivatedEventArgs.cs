@@ -35,6 +35,16 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object SharedContext
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object RestrictedLaunchActivatedEventArgs.SharedContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20RestrictedLaunchActivatedEventArgs.SharedContext");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.SplashScreen SplashScreen
 		{
 			get
@@ -53,19 +63,9 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object SharedContext
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object RestrictedLaunchActivatedEventArgs.SharedContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20RestrictedLaunchActivatedEventArgs.SharedContext");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.RestrictedLaunchActivatedEventArgs.SharedContext.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.RestrictedLaunchActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.RestrictedLaunchActivatedEventArgs.PreviousExecutionState.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.RestrictedLaunchActivatedEventArgs.SharedContext.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.RestrictedLaunchActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.RestrictedLaunchActivatedEventArgs.User.get
 		// Processing: Windows.ApplicationModel.Activation.IRestrictedLaunchActivatedEventArgs

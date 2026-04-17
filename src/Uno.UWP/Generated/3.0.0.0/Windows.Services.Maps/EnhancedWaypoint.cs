@@ -36,7 +36,7 @@ namespace Windows.Services.Maps
 		}
 #endif
 		// Forced skipping of method Windows.Services.Maps.EnhancedWaypoint.EnhancedWaypoint(Windows.Devices.Geolocation.Geopoint, Windows.Services.Maps.WaypointKind)
-		// Forced skipping of method Windows.Services.Maps.EnhancedWaypoint.Point.get
 		// Forced skipping of method Windows.Services.Maps.EnhancedWaypoint.Kind.get
+		// Forced skipping of method Windows.Services.Maps.EnhancedWaypoint.Point.get
 	}
 }

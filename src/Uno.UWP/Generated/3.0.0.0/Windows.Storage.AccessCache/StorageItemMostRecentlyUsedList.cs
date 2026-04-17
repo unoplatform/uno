@@ -133,8 +133,6 @@ namespace Windows.Storage.AccessCache
 			throw new global::System.NotImplementedException("The member bool StorageItemMostRecentlyUsedList.CheckAccess(IStorageItem file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StorageItemMostRecentlyUsedList.CheckAccess%28IStorageItem%20file%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.Entries.get
-		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.MaximumItemsAllowed.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Add(global::Windows.Storage.IStorageItem file, string metadata, global::Windows.Storage.AccessCache.RecentStorageItemVisibility visibility)
@@ -149,6 +147,8 @@ namespace Windows.Storage.AccessCache
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList", "void StorageItemMostRecentlyUsedList.AddOrReplace(string token, IStorageItem file, string metadata, RecentStorageItemVisibility visibility)");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.Entries.get
+		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.MaximumItemsAllowed.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList, global::Windows.Storage.AccessCache.ItemRemovedEventArgs> ItemRemoved

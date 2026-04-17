@@ -8,8 +8,8 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class NoFocusCandidateFoundEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-		// Skipping already declared property Handled
 		// Skipping already declared property Direction
+		// Skipping already declared property Handled
 		// Skipping already declared property InputDevice
 		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.Direction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.Handled.get

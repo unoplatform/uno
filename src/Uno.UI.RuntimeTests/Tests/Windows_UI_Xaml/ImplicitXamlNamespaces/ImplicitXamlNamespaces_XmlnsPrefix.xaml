@@ -1,0 +1,12 @@
+<UserControl
+	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ImplicitXamlNamespaces_XmlnsPrefix">
+
+	<StackPanel>
+		<tc:PrefixedControl x:Name="MyPrefixedControl"
+							x:FieldModifier="public"
+							PrefixedLabel="Prefixed Value" />
+		<TextBlock x:Name="StandardTextBlock"
+				   x:FieldModifier="public"
+				   Text="Standard Control" />
+	</StackPanel>
+</UserControl>

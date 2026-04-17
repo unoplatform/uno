@@ -10,13 +10,6 @@ namespace Windows.Management.Workplace
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Management.Workplace.MessagingSyncPolicy GetMessagingSyncPolicy()
-		{
-			throw new global::System.NotImplementedException("The member MessagingSyncPolicy MdmPolicy.GetMessagingSyncPolicy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MessagingSyncPolicy%20MdmPolicy.GetMessagingSyncPolicy%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsBrowserAllowed()
 		{
 			throw new global::System.NotImplementedException("The member bool MdmPolicy.IsBrowserAllowed() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MdmPolicy.IsBrowserAllowed%28%29");
@@ -41,6 +34,13 @@ namespace Windows.Management.Workplace
 		public static bool IsStoreAllowed()
 		{
 			throw new global::System.NotImplementedException("The member bool MdmPolicy.IsStoreAllowed() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MdmPolicy.IsStoreAllowed%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Management.Workplace.MessagingSyncPolicy GetMessagingSyncPolicy()
+		{
+			throw new global::System.NotImplementedException("The member MessagingSyncPolicy MdmPolicy.GetMessagingSyncPolicy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MessagingSyncPolicy%20MdmPolicy.GetMessagingSyncPolicy%28%29");
 		}
 #endif
 	}

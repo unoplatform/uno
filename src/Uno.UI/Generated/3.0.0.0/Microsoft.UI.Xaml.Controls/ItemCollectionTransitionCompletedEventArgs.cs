@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.Transition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.Element.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.Transition.get
 	}
 }

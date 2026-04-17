@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class ExponentialEase : global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase
 	{
-		// Skipping already declared property Exponent
 		// Skipping already declared property ExponentProperty
+		// Skipping already declared property Exponent
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.ExponentialEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.ExponentialEase()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.ExponentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.Exponent.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.Exponent.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ExponentialEase.ExponentProperty.get
 	}
 }

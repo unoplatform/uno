@@ -65,8 +65,8 @@ namespace Windows.Graphics.Holographic
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.FrameId.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.MissedLatchCount.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.SystemRelativeFrameReadyTime.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.SystemRelativeActualGpuFinishTime.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.SystemRelativeFrameReadyTime.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameRenderingReport.SystemRelativeTargetLatchTime.get
 	}
 }

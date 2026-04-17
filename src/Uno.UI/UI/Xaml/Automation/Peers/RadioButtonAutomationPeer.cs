@@ -25,7 +25,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 				return this;
 			}
 
-			return null;
+			// Must call base to preserve Toggle pattern from ToggleButtonAutomationPeer
+			return base.GetPatternCore(patternInterface);
 		}
 
 		protected override string GetClassNameCore() => "RadioButton";

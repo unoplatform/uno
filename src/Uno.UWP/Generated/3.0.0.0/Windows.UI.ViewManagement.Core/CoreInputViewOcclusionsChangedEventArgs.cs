@@ -37,8 +37,8 @@ namespace Windows.UI.ViewManagement.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs.Occlusions.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs.Handled.set
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs.Occlusions.get
 	}
 }

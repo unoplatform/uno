@@ -36,8 +36,6 @@ namespace Windows.UI.Input.Inking.Analysis
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.InkAnalyzer()
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.AnalysisRoot.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.IsAnalyzing.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddDataForStroke(global::Windows.UI.Input.Inking.InkStroke stroke)
@@ -94,5 +92,7 @@ namespace Windows.UI.Input.Inking.Analysis
 			throw new global::System.NotImplementedException("The member IAsyncOperation<InkAnalysisResult> InkAnalyzer.AnalyzeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CInkAnalysisResult%3E%20InkAnalyzer.AnalyzeAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.AnalysisRoot.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.IsAnalyzing.get
 	}
 }

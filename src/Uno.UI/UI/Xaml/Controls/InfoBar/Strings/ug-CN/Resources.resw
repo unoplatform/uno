@@ -126,7 +126,7 @@
     <comment>The tooltip that appears on the Close button in InfoBar.</comment>
   </data>
   <data name="InfoBarClosedNotification" xml:space="preserve">
-    <value>ئۇچۇر بالدىقى ئەمەلدىن قالدۇرۇلدى</value>
+    <value>ئۇچۇر بالدىقى ساقىت قىلىندى</value>
     <comment>The string read by narrator when the InfoBar closes.</comment>
   </data>
   <data name="InfoBarCustomLandmarkName" xml:space="preserve">

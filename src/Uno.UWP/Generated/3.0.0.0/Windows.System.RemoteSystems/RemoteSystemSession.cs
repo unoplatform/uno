@@ -43,11 +43,13 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSession.Id.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSession.DisplayName.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSession.ControllerDisplayName.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSession.Disconnected.add
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSession.Disconnected.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.System.RemoteSystems.RemoteSystemSessionWatcher CreateWatcher()
+		{
+			throw new global::System.NotImplementedException("The member RemoteSystemSessionWatcher RemoteSystemSession.CreateWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemSessionWatcher%20RemoteSystemSession.CreateWatcher%28%29");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher CreateParticipantWatcher()
@@ -62,6 +64,8 @@ namespace Windows.System.RemoteSystems
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemSession.SendInvitationAsync(RemoteSystem invitee) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20RemoteSystemSession.SendInvitationAsync%28RemoteSystem%20invitee%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSession.Disconnected.add
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSession.Disconnected.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -69,13 +73,9 @@ namespace Windows.System.RemoteSystems
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSession", "void RemoteSystemSession.Dispose()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.System.RemoteSystems.RemoteSystemSessionWatcher CreateWatcher()
-		{
-			throw new global::System.NotImplementedException("The member RemoteSystemSessionWatcher RemoteSystemSession.CreateWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemSessionWatcher%20RemoteSystemSession.CreateWatcher%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSession.ControllerDisplayName.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSession.DisplayName.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSession.Id.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.RemoteSystems.RemoteSystemSession, global::Windows.System.RemoteSystems.RemoteSystemSessionDisconnectedEventArgs> Disconnected

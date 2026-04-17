@@ -43,8 +43,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.NextView.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.FinalView.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.IsInertial.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.NextView.get
 	}
 }

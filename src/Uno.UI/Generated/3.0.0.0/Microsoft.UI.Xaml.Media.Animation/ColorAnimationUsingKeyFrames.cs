@@ -8,14 +8,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class ColorAnimationUsingKeyFrames : global::Microsoft.UI.Xaml.Media.Animation.Timeline
 	{
+		// Skipping already declared property EnableDependentAnimationProperty
 		// Skipping already declared property EnableDependentAnimation
 		// Skipping already declared property KeyFrames
-		// Skipping already declared property EnableDependentAnimationProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.ColorAnimationUsingKeyFrames()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.ColorAnimationUsingKeyFrames()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.KeyFrames.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.EnableDependentAnimation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.EnableDependentAnimation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimationUsingKeyFrames.KeyFrames.get
 	}
 }

@@ -43,8 +43,8 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Import.PhotoImportSidecar.Date.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportSidecar.Name.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportSidecar.SizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSidecar.Date.get
 	}
 }

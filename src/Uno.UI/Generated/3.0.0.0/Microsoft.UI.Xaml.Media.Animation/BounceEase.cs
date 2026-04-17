@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class BounceEase : global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase
 	{
-		// Skipping already declared property Bounciness
-		// Skipping already declared property Bounces
 		// Skipping already declared property BouncesProperty
 		// Skipping already declared property BouncinessProperty
+		// Skipping already declared property Bounces
+		// Skipping already declared property Bounciness
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.BounceEase.BounceEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.BounceEase()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.BouncesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.BouncinessProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.Bounces.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.Bounces.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.Bounciness.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.Bounciness.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.BouncesProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.BouncinessProperty.get
 	}
 }

@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.Validated.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.ExtendedError.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.Validated.get
 	}
 }

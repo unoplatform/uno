@@ -11,9 +11,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer.TreeViewItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer.TreeViewItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer.ExpandCollapseState.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer.Expand()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer.ExpandCollapseState.get
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	}
 }

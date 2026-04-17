@@ -1,5 +1,6 @@
 using global::System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Wpf")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]

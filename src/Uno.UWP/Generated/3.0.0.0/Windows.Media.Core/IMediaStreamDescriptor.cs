@@ -29,9 +29,9 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.IMediaStreamDescriptor.IsSelected.get
-		// Forced skipping of method Windows.Media.Core.IMediaStreamDescriptor.Name.set
-		// Forced skipping of method Windows.Media.Core.IMediaStreamDescriptor.Name.get
-		// Forced skipping of method Windows.Media.Core.IMediaStreamDescriptor.Language.set
 		// Forced skipping of method Windows.Media.Core.IMediaStreamDescriptor.Language.get
+		// Forced skipping of method Windows.Media.Core.IMediaStreamDescriptor.Language.set
+		// Forced skipping of method Windows.Media.Core.IMediaStreamDescriptor.Name.get
+		// Forced skipping of method Windows.Media.Core.IMediaStreamDescriptor.Name.set
 	}
 }

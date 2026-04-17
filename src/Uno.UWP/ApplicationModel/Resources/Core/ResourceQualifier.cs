@@ -11,6 +11,26 @@ public partial class ResourceQualifier
 {
 	private static readonly char[] _dashArray = new[] { '-' };
 
+	// MRT resource qualifier names (and their aliases). Used to short-circuit
+	// the BCP-47 fallback in IsLanguageTag so non-language qualifier segments
+	// like "contrast-high" or "scale-200" don't hit the CultureInfo constructor
+	// and throw CultureNotFoundException during resource scanning.
+	private static readonly HashSet<string> _knownQualifierNames =
+		new(StringComparer.OrdinalIgnoreCase)
+		{
+			"alternateform", "altform",
+			"configuration", "config",
+			"contrast",
+			"custom",
+			"dxfeaturelevel",
+			"homeregion",
+			"language", "lang",
+			"layoutdirection",
+			"scale",
+			"targetsize",
+			"theme",
+		};
+
 	internal ResourceQualifier(string name, string value)
 	{
 		QualifierName = name;
@@ -21,9 +41,17 @@ public partial class ResourceQualifier
 
 	public string QualifierValue { get; }
 
-	internal static ResourceQualifier Parse(string str)
+	internal static ResourceQualifier Parse(string str) => Parse(str, allowBareLanguageTag: true);
+
+	// `allowBareLanguageTag` mirrors the MRT rule: you may omit the
+	// `language-` qualifier name, but only in a folder name. File-name
+	// segments must carry the explicit `lang-` / `language-` prefix, so
+	// we skip the bare-BCP-47 detection for them to avoid misclassifying
+	// filenames like `uno-overalls.png` (where `uno` is a valid ISO 639-3
+	// code for Quechua).
+	internal static ResourceQualifier Parse(string str, bool allowBareLanguageTag)
 	{
-		if (IsLanguageTag(str))
+		if (allowBareLanguageTag && IsLanguageTag(str))
 		{
 			str = $"language-{str}";
 		}
@@ -61,12 +89,16 @@ public partial class ResourceQualifier
 				var ietfLanguageTags = cultures.Select(c => c.IetfLanguageTag);
 				var ietfLanguageParentTags = cultures.Select(c => c.Parent.IetfLanguageTag);
 				var twoLetterLanguageTags = cultures.Select(c => c.TwoLetterISOLanguageName);
+				var cultureNames = cultures.Select(c => c.Name);
+				var parentCultureNames = cultures.Select(c => c.Parent.Name);
 
-				var allCulture = Enumerable.Concat(
-					ietfLanguageTags,
-					twoLetterLanguageTags.Concat(ietfLanguageParentTags));
+				var allTags = ietfLanguageTags
+					.Concat(ietfLanguageParentTags)
+					.Concat(twoLetterLanguageTags)
+					.Concat(cultureNames)
+					.Concat(parentCultureNames);
 
-				_languageTags = new HashSet<string>(allCulture.Distinct(), StringComparer.InvariantCultureIgnoreCase);
+				_languageTags = new HashSet<string>(allTags.Distinct(), StringComparer.InvariantCultureIgnoreCase);
 			}
 
 			return _languageTags;
@@ -75,7 +107,57 @@ public partial class ResourceQualifier
 
 	private static bool IsLanguageTag(string str)
 	{
-		return LanguageTags.Contains(str);
+		if (LanguageTags.Contains(str))
+		{
+			return true;
+		}
+
+		var dashIndex = str.IndexOf('-');
+		if (dashIndex < 0)
+		{
+			// Avoid false positives on file extensions like "png" (ISO 639-3 Pangwa).
+			return false;
+		}
+
+		// Known qualifier prefixes (including "language" / "lang" aliases): skip
+		// the CultureInfo fallback to avoid CultureNotFoundException during
+		// resource/asset scanning. Parse's second block produces the language
+		// qualifier from an explicitly-prefixed string like "language-ca-Es-VALENCIA",
+		// so returning false here for prefixed strings is both correct and cheaper.
+		if (_knownQualifierNames.Contains(str.Substring(0, dashIndex)))
+		{
+			return false;
+		}
+
+		// BCP-47 primary language subtags are 2–3 letters (ISO 639-1/2/3).
+		// Skip the CultureInfo fallback for anything else (e.g. "logo-2",
+		// "asset-v2") to avoid CultureNotFoundException throws during
+		// resource/asset scanning.
+		if (dashIndex < 2 || dashIndex > 3)
+		{
+			return false;
+		}
+
+		for (var i = 0; i < dashIndex; i++)
+		{
+			if (!char.IsLetter(str[i]))
+			{
+				return false;
+			}
+		}
+
+		// Fallback for language tags with region/script subtags (e.g., quz-PE,
+		// ca-Es-VALENCIA) that may not be enumerated by GetCultures() on all
+		// platforms.
+		try
+		{
+			var culture = new CultureInfo(str);
+			return !string.IsNullOrEmpty(culture.Name);
+		}
+		catch (CultureNotFoundException)
+		{
+			return false;
+		}
 	}
 
 	#endregion

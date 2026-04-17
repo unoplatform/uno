@@ -1,4 +1,4 @@
-﻿#if HAS_INPUT_INJECTOR
+﻿#if HAS_INPUT_INJECTOR || WINAPPSDK
 
 using System;
 using System.Collections.Generic;
@@ -34,6 +34,7 @@ public class Given_InputInjector
 {
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_InjectTouch()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
@@ -115,6 +116,89 @@ public class Given_InputInjector
 		injector.UninitializeTouchInjection();
 
 		Assert.AreNotEqual(0, actual.Count);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+	public async Task When_MouseClick_PointerPressedAndReleasedAreRaised()
+	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			return;
+		}
+
+		var border = new Border
+		{
+			Background = new SolidColorBrush(Colors.DeepPink),
+			Width = 200,
+			Height = 200,
+		};
+
+		var pressedCount = 0;
+		var releasedCount = 0;
+		border.PointerPressed += (s, e) => pressedCount++;
+		border.PointerReleased += (s, e) => releasedCount++;
+
+		WindowContent = border;
+		await WaitForLoaded(border);
+		await WaitForIdle();
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+
+		var mouse = injector.GetMouse();
+		var center = border.TransformToVisual(TestServices.WindowHelper.XamlRoot.Content).TransformPoint(
+			new Point(border.ActualWidth / 2, border.ActualHeight / 2));
+		mouse.Press(center);
+		mouse.Release();
+
+		await WaitForIdle();
+
+		Assert.AreNotEqual(0, pressedCount, "PointerPressed should have been raised");
+		Assert.AreNotEqual(0, releasedCount, "PointerReleased should have been raised");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+	public async Task When_MouseMove_PointerEventsAreRaised()
+	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			return;
+		}
+
+		var border = new Border
+		{
+			Background = new SolidColorBrush(Colors.DeepPink),
+			Width = 200,
+			Height = 200,
+		};
+
+		var enteredCount = 0;
+		var movedCount = 0;
+		border.PointerEntered += (s, e) => enteredCount++;
+		border.PointerMoved += (s, e) => movedCount++;
+
+		WindowContent = border;
+		await WaitForLoaded(border);
+		await WaitForIdle();
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+
+		var mouse = injector.GetMouse();
+		var topLeft = border.TransformToVisual(TestServices.WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
+		var left = new Point(topLeft.X + 20, topLeft.Y + border.ActualHeight / 2);
+		var right = new Point(topLeft.X + border.ActualWidth - 20, topLeft.Y + border.ActualHeight / 2);
+
+		mouse.MoveTo(left, steps: 5);
+		mouse.MoveTo(right, steps: 5);
+
+		await WaitForIdle();
+
+		Assert.AreNotEqual(0, movedCount, "PointerMoved should have been raised");
 	}
 
 #if HAS_UNO

@@ -33,7 +33,7 @@ namespace Windows.Media.DialProtocol
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.DialProtocol.DialAppStateDetails.State.get
 		// Forced skipping of method Windows.Media.DialProtocol.DialAppStateDetails.FullXml.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialAppStateDetails.State.get
 	}
 }

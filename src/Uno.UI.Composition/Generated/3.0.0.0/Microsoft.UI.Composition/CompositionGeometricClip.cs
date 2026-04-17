@@ -8,11 +8,11 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionGeometricClip : global::Microsoft.UI.Composition.CompositionClip
 	{
-		// Skipping already declared property ViewBox
 		// Skipping already declared property Geometry
+		// Skipping already declared property ViewBox
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.Geometry.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.Geometry.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.ViewBox.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.ViewBox.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.Geometry.get
 	}
 }

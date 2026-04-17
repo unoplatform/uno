@@ -43,8 +43,8 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs.Track.get
-		// Forced skipping of method Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs.OldPresentationMode.get
 		// Forced skipping of method Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs.NewPresentationMode.get
+		// Forced skipping of method Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs.OldPresentationMode.get
+		// Forced skipping of method Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs.Track.get
 	}
 }

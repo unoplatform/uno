@@ -66,10 +66,10 @@ namespace Windows.Devices.Input
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.MouseCapabilities()
-		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.MousePresent.get
-		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.VerticalWheelPresent.get
 		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.HorizontalWheelPresent.get
-		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.SwapButtons.get
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.MousePresent.get
 		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.NumberOfButtons.get
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.SwapButtons.get
+		// Forced skipping of method Windows.Devices.Input.MouseCapabilities.VerticalWheelPresent.get
 	}
 }

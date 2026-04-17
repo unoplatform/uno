@@ -35,16 +35,6 @@ namespace Windows.Media.Capture
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.AdvancedPhotoMode Mode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AdvancedPhotoMode AdvancedCapturedPhoto.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdvancedPhotoMode%20AdvancedCapturedPhoto.Mode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Rect? FrameBoundsRelativeToReferencePhoto
 		{
 			get
@@ -53,9 +43,20 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.Frame.get
-		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.Mode.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Devices.AdvancedPhotoMode Mode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AdvancedPhotoMode AdvancedCapturedPhoto.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdvancedPhotoMode%20AdvancedCapturedPhoto.Mode");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.~AdvancedCapturedPhoto()
 		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.Context.get
+		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.Frame.get
 		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.FrameBoundsRelativeToReferencePhoto.get
+		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.Mode.get
 	}
 }

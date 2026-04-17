@@ -14,14 +14,14 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Transitions
 		// Skipping already declared method Microsoft.UI.Xaml.VisualStateGroup.VisualStateGroup()
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.VisualStateGroup()
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.Name.get
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.Transitions.get
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.States.get
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.CurrentState.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.CurrentStateChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.CurrentStateChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.CurrentStateChanging.add
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.CurrentStateChanging.remove
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.CurrentState.get
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.Name.get
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.States.get
+		// Forced skipping of method Microsoft.UI.Xaml.VisualStateGroup.Transitions.get
 		// Skipping already declared event Microsoft.UI.Xaml.VisualStateGroup.CurrentStateChanged
 		// Skipping already declared event Microsoft.UI.Xaml.VisualStateGroup.CurrentStateChanging
 	}

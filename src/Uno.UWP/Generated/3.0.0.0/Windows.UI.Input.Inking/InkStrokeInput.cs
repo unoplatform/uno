@@ -23,14 +23,14 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeStarted.add
-		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeStarted.remove
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeCanceled.add
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeCanceled.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeContinued.add
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeContinued.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeEnded.add
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeEnded.remove
-		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeCanceled.add
-		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeCanceled.remove
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeStarted.add
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeStarted.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.InkPresenter.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

@@ -44,8 +44,6 @@ namespace Windows.ApplicationModel.Wallet
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.WalletBarcode(Windows.Storage.Streams.IRandomAccessStreamReference)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.Symbology.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.Value.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamReference> GetImageAsync()
@@ -53,5 +51,7 @@ namespace Windows.ApplicationModel.Wallet
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamReference> WalletBarcode.GetImageAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStreamReference%3E%20WalletBarcode.GetImageAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.Symbology.get
+		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletBarcode.Value.get
 	}
 }

@@ -8,11 +8,11 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionEllipseGeometry : global::Microsoft.UI.Composition.CompositionGeometry
 	{
-		// Skipping already declared property Radius
 		// Skipping already declared property Center
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Radius.set
+		// Skipping already declared property Radius
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Center.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Radius.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Center.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Radius.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Radius.set
 	}
 }

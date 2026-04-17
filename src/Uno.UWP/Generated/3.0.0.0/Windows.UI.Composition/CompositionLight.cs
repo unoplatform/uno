@@ -9,21 +9,6 @@ namespace Windows.UI.Composition
 	public partial class CompositionLight : global::Windows.UI.Composition.CompositionObject
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionLight()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.VisualUnorderedCollection Targets
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VisualUnorderedCollection CompositionLight.Targets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualUnorderedCollection%20CompositionLight.Targets");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.VisualUnorderedCollection ExclusionsFromTargets
 		{
@@ -47,9 +32,19 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.Targets.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.VisualUnorderedCollection Targets
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VisualUnorderedCollection CompositionLight.Targets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualUnorderedCollection%20CompositionLight.Targets");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.ExclusionsFromTargets.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.IsEnabled.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.IsEnabled.set
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.Targets.get
 	}
 }

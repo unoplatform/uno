@@ -10,6 +10,14 @@ namespace Windows.Perception.Spatial
 	{
 		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingFrustum.SpatialBoundingFrustum()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public SpatialBoundingFrustum(global::System.Numerics.Plane _Near, global::System.Numerics.Plane _Far, global::System.Numerics.Plane _Right, global::System.Numerics.Plane _Left, global::System.Numerics.Plane _Top, global::System.Numerics.Plane _Bottom)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialBoundingFrustum", "SpatialBoundingFrustum.SpatialBoundingFrustum(Plane _Near, Plane _Far, Plane _Right, Plane _Left, Plane _Top, Plane _Bottom)");
+		}
+#endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingFrustum.SpatialBoundingFrustum(System.Numerics.Plane, System.Numerics.Plane, System.Numerics.Plane, System.Numerics.Plane, System.Numerics.Plane, System.Numerics.Plane)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Plane Near;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -33,7 +33,7 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData.EncryptedData.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData.AuthenticationTag.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.EncryptedAndAuthenticatedData.EncryptedData.get
 	}
 }

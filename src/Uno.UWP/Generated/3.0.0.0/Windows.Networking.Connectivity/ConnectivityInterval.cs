@@ -33,7 +33,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.StartTime.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.ConnectionDuration.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.StartTime.get
 	}
 }

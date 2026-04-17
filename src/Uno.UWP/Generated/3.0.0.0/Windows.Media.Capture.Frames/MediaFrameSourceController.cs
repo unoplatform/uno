@@ -15,21 +15,21 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.VideoDeviceController VideoDeviceController
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VideoDeviceController MediaFrameSourceController.VideoDeviceController is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoDeviceController%20MediaFrameSourceController.VideoDeviceController");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.AudioDeviceController AudioDeviceController
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member AudioDeviceController MediaFrameSourceController.AudioDeviceController is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioDeviceController%20MediaFrameSourceController.AudioDeviceController");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Devices.VideoDeviceController VideoDeviceController
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VideoDeviceController MediaFrameSourceController.VideoDeviceController is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoDeviceController%20MediaFrameSourceController.VideoDeviceController");
 			}
 		}
 #endif
@@ -47,7 +47,6 @@ namespace Windows.Media.Capture.Frames
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaFrameSourceSetPropertyStatus> MediaFrameSourceController.SetPropertyAsync(string propertyId, object propertyValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMediaFrameSourceSetPropertyStatus%3E%20MediaFrameSourceController.SetPropertyAsync%28string%20propertyId%2C%20object%20propertyValue%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceController.VideoDeviceController.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.Frames.MediaFrameSourceGetPropertyResult> GetPropertyByExtendedIdAsync(byte[] extendedPropertyId, uint? maxPropertyValueSize)
@@ -63,5 +62,6 @@ namespace Windows.Media.Capture.Frames
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceController.AudioDeviceController.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceController.VideoDeviceController.get
 	}
 }

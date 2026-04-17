@@ -1,0 +1,12 @@
+<UserControl
+	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ImplicitXamlNamespaces_NoXmlns">
+
+	<StackPanel>
+		<Button x:Name="TestButton"
+				x:FieldModifier="public"
+				Content="Hello" />
+		<TextBlock x:Name="TestTextBlock"
+				   x:FieldModifier="public"
+				   Text="World" />
+	</StackPanel>
+</UserControl>

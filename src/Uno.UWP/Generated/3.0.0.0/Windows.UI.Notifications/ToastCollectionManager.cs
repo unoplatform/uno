@@ -68,7 +68,7 @@ namespace Windows.UI.Notifications
 			throw new global::System.NotImplementedException("The member IAsyncAction ToastCollectionManager.RemoveAllToastCollectionsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ToastCollectionManager.RemoveAllToastCollectionsAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.ToastCollectionManager.User.get
 		// Forced skipping of method Windows.UI.Notifications.ToastCollectionManager.AppId.get
+		// Forced skipping of method Windows.UI.Notifications.ToastCollectionManager.User.get
 	}
 }

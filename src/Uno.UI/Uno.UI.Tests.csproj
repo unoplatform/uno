@@ -33,7 +33,6 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;Themes\WinUI\Resources\**\*.xaml;" Visible="False" />
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
-		<UpToDateCheckInput Include="**\*.tt" Exclude="bin\**\*.tt;obj\**\*.tt;" Visible="False" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -120,23 +119,6 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup>
-		<None Update="Mixins\Android\BaseActivity.Callbacks.tt">
-			<LastGenOutput>BaseActivity.Callbacks.g.cs</LastGenOutput>
-		</None>
-		<None Update="Mixins\Android\FrameworkElementMixins.tt">
-			<LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-		</None>
-		<None Update="Mixins\DependencyPropertyMixins.tt">
-			<LastGenOutput>DependencyPropertyMixins.g.cs</LastGenOutput>
-		</None>
-		<None Update="Mixins\iOS\FrameworkElementMixins.tt">
-			<LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-		</None>
-		<None Update="Mixins\macOS\FrameworkElementMixins.tt">
-			<LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-		</None>
-	</ItemGroup>
 
 	<Import Project="MixinGeneration.targets" />
 	<Import Project="XamlMerge.targets" />

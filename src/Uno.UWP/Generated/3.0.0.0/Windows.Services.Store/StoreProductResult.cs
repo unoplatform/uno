@@ -10,7 +10,7 @@ namespace Windows.Services.Store
 	{
 		// Skipping already declared property ExtendedError
 		// Skipping already declared property Product
-		// Forced skipping of method Windows.Services.Store.StoreProductResult.Product.get
 		// Forced skipping of method Windows.Services.Store.StoreProductResult.ExtendedError.get
+		// Forced skipping of method Windows.Services.Store.StoreProductResult.Product.get
 	}
 }

@@ -115,13 +115,13 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.HasPosition.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.HasSize.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Left.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Top.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Height.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Width.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Left.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.ShouldDisplayMenuBar.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.ShouldDisplayScrollBars.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.ShouldDisplayStatus.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.ShouldDisplayToolbar.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.ShouldDisplayScrollBars.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Top.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Width.get
 	}
 }

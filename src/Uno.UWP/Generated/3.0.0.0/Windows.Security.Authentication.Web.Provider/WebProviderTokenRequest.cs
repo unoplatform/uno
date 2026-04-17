@@ -25,6 +25,26 @@ namespace Windows.Security.Authentication.Web.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ApplicationPackageFamilyName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WebProviderTokenRequest.ApplicationPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebProviderTokenRequest.ApplicationPackageFamilyName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ApplicationProcessName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WebProviderTokenRequest.ApplicationProcessName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebProviderTokenRequest.ApplicationProcessName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Authentication.Web.Core.WebTokenRequest ClientRequest
 		{
 			get
@@ -55,30 +75,6 @@ namespace Windows.Security.Authentication.Web.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ApplicationPackageFamilyName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WebProviderTokenRequest.ApplicationPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebProviderTokenRequest.ApplicationPackageFamilyName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ApplicationProcessName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WebProviderTokenRequest.ApplicationProcessName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebProviderTokenRequest.ApplicationProcessName");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.ClientRequest.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.WebAccounts.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.WebAccountSelectionOptions.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.ApplicationCallbackUri.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Core.CryptographicKey> GetApplicationTokenBindingKeyAsync(global::Windows.Security.Authentication.Web.TokenBindingKeyType keyType, global::System.Uri target)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CryptographicKey> WebProviderTokenRequest.GetApplicationTokenBindingKeyAsync(TokenBindingKeyType keyType, Uri target) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCryptographicKey%3E%20WebProviderTokenRequest.GetApplicationTokenBindingKeyAsync%28TokenBindingKeyType%20keyType%2C%20Uri%20target%29");
@@ -91,8 +87,6 @@ namespace Windows.Security.Authentication.Web.Provider
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> WebProviderTokenRequest.GetApplicationTokenBindingKeyIdAsync(TokenBindingKeyType keyType, Uri target) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIBuffer%3E%20WebProviderTokenRequest.GetApplicationTokenBindingKeyIdAsync%28TokenBindingKeyType%20keyType%2C%20Uri%20target%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.ApplicationPackageFamilyName.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.ApplicationProcessName.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> CheckApplicationForCapabilityAsync(string capabilityName)
@@ -100,5 +94,11 @@ namespace Windows.Security.Authentication.Web.Provider
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> WebProviderTokenRequest.CheckApplicationForCapabilityAsync(string capabilityName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20WebProviderTokenRequest.CheckApplicationForCapabilityAsync%28string%20capabilityName%29");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.ApplicationCallbackUri.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.ApplicationPackageFamilyName.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.ApplicationProcessName.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.ClientRequest.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.WebAccountSelectionOptions.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebProviderTokenRequest.WebAccounts.get
 	}
 }

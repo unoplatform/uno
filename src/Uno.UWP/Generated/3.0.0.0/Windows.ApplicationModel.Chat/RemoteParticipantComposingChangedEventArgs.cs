@@ -43,8 +43,8 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.TransportId.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.ParticipantAddress.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.IsComposing.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.ParticipantAddress.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.TransportId.get
 	}
 }

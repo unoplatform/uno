@@ -74,7 +74,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PageExclusions>$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.xaml</PageExclusions>
+		<PageExclusions>$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.xaml;$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\ImplicitXamlNamespaces\**\*.xaml</PageExclusions>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -83,5 +83,10 @@
 
 	<ItemGroup>
 		<Compile Include="Tests\Windows_UI_Xaml_Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
+	</ItemGroup>
+
+	<!-- Implicit XAML namespace tests are Uno-only (WinAppSDK doesn't support implicit xmlns) -->
+	<ItemGroup>
+		<Compile Remove="Tests\Windows_UI_Xaml\ImplicitXamlNamespaces\**\*.cs" />
 	</ItemGroup>
 </Project>

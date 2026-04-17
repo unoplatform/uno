@@ -3,15 +3,20 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2WebResourceRequestedEventArgs
 	{
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.RequestedSourceKind.get
+		// Skipping already declared property Request
+		// Skipping already declared property RequestedSourceKind
+		// Skipping already declared property ResourceContext
+		// Skipping already declared property Response
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.GetDeferral()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.Request.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.RequestedSourceKind.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.ResourceContext.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.Response.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.Response.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs.ResourceContext.get
 	}
 }

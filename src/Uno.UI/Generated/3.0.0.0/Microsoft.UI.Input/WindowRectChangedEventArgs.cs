@@ -53,9 +53,9 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangedEventArgs.PointerScreenPoint.get
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangedEventArgs.MoveSizeOperation.get
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangedEventArgs.OldWindowRect.get
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangedEventArgs.NewWindowRect.get
+		// Forced skipping of method Microsoft.UI.Input.WindowRectChangedEventArgs.OldWindowRect.get
+		// Forced skipping of method Microsoft.UI.Input.WindowRectChangedEventArgs.PointerScreenPoint.get
 	}
 }

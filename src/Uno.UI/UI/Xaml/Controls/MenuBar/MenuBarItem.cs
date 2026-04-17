@@ -52,6 +52,46 @@ namespace Microsoft.UI.Xaml.Controls
 			SynchronizeMenuBar();
 		}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		// In WinUI, CDependencyObject::EnterImpl has EnterSparseProperties which propagates
+		// Enter to all DP values including the Items collection. In Uno, we need to do this explicitly.
+		// MenuBarItem.Items is an ObservableVector (not a DependencyObject), so the generic
+		// DP parent/Enter mechanism doesn't apply. We explicitly propagate to the items' KA collections.
+		internal override void EnterImpl(Uno.UI.Xaml.EnterParams @params, int depth)
+		{
+			base.EnterImpl(@params, depth);
+
+			var items = Items;
+			if (items is not null)
+			{
+				// Resolve the VisualTree from this element (which IS in the live tree)
+				// and propagate it so that KA collections inside items can find the ContentRoot.
+				var visualTree = @params.VisualTree ?? Uno.UI.Xaml.Core.VisualTree.GetForElement(this, Uno.UI.Xaml.Core.VisualTree.LookupOptions.NoFallback);
+				var kaParams = new Uno.UI.Xaml.EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
+				foreach (var item in items)
+				{
+					item.Enter(kaParams, 0);
+				}
+			}
+		}
+
+		internal override void LeaveImpl(Uno.UI.Xaml.LeaveParams @params)
+		{
+			base.LeaveImpl(@params);
+
+			var items = Items;
+			if (items is not null)
+			{
+				var visualTree = @params.VisualTree ?? Uno.UI.Xaml.Core.VisualTree.GetForElement(this, Uno.UI.Xaml.Core.VisualTree.LookupOptions.NoFallback);
+				var kaParams = new Uno.UI.Xaml.LeaveParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
+				foreach (var item in items)
+				{
+					item.Leave(kaParams);
+				}
+			}
+		}
+#endif
+
 		// IUIElement / IUIElementOverridesHelper
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{

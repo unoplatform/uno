@@ -73,11 +73,11 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCapabilities.PowerReportingType.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCapabilities.IsDrawerOpenSensorAvailable.get
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCapabilities.IsStatisticsReportingSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCapabilities.IsStatisticsUpdatingSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCapabilities.IsStatusReportingSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCapabilities.IsStatusMultiDrawerDetectSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCapabilities.IsDrawerOpenSensorAvailable.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCapabilities.IsStatusReportingSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerCapabilities.PowerReportingType.get
 	}
 }
