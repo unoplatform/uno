@@ -165,7 +165,7 @@ How different SDK versions affect add-in discovery.
 
 | Risk | Scenario | Impact | Mitigation |
 |------|----------|--------|------------|
-| Client doesn't support `tools/list_changed` | Tool list updates after initial response | Client never sees updated tools | `--mcp-wait-tools-list` blocks until upstream responds. Additionally, meta-tools `uno_discover_tools` and `uno_execute_tool` allow clients to discover and invoke upstream tools without re-querying `list_tools`. |
+| Client doesn't support `tools/list_changed` | Tool list updates after initial response | Client never sees updated tools | `--mcp-wait-tools-list` blocks until upstream responds. Additionally, meta-tools `uno_discover_tools` and `uno_execute_tool` remain available throughout the session as a stable compatibility path to upstream tools. |
 | Client doesn't support `resources` | `uno://health` not accessible | No diagnostics | `uno_health` tool as universal fallback |
 | Client doesn't support `roots` | Workspace not discovered | Discovery fails | Roots fallback auto-detected when client lacks `roots` capability and workspace is unresolved; `--force-roots-fallback` still available for explicit override |
 | No client supports `resources/subscribe` | Health push notifications never received | Clients must poll or rely on `tools/list_changed` | Design for pull-based health (tool call), not push-based (subscription) |
@@ -219,7 +219,7 @@ These scenarios test the interaction between different DevServer launchers runni
 | Business | 12 | `tools/list_changed` sent |
 | Expired/None | 0 | Warning in health |
 
-> **Note**: The tool cache (`tools-cache.json`) has been removed. For clients that do not re-query `list_tools` after `tools/list_changed`, the meta-tools `uno_discover_tools` and `uno_execute_tool` provide an alternative mechanism to discover and call upstream tools.
+> **Note**: The tool cache (`tools-cache.json`) has been removed. The meta-tools `uno_discover_tools` and `uno_execute_tool` provide a stable compatibility mechanism to discover and call upstream tools while the direct tool set changes during the session.
 
 ### Validation
 

@@ -81,7 +81,7 @@ This is the existing MCP STDIO proxy. All current options remain:
 | `--port <port>` | Port for DevServer (default: auto-allocate) |
 | `--mcp-wait-tools-list` | Wait for upstream server tools before responding to `list_tools` |
 | `--force-roots-fallback` | Expose `uno_app_initialize` tool and defer workspace resolution until the tool is called. `uno_app_initialize` takes `workspaceDirectory` (required) and `solutionPath` (optional), blocks until the DevServer is connected, and returns status plus available tools. The provided directory is always accepted as workspace root, even when no Uno solution is found yet — the file watcher monitors the directory and auto-starts the DevServer when a solution appears. **Auto-detected**: when the MCP client does not advertise the `roots` capability and the workspace is not already resolved, the proxy automatically enables roots fallback behavior. The CLI flag is still supported for explicit override but is no longer required in most configurations. |
-| `--force-generate-tool-cache` | **Deprecated (no-op)**. Kept for backward compatibility but does nothing. The tool cache (`tools-cache.json`) has been removed; meta-tools (`uno_discover_tools` and `uno_execute_tool`) replace the cache as the mechanism for clients to access tools that arrive after the initial `list_tools`. |
+| `--force-generate-tool-cache` | **Deprecated (no-op)**. Kept for backward compatibility but does nothing. The tool cache (`tools-cache.json`) has been removed; meta-tools (`uno_discover_tools` and `uno_execute_tool`) replace the cache as the stable compatibility mechanism for accessing upstream tools as the direct tool set changes during the session. |
 | `--solution-dir <path>` | Explicit solution root |
 
 ### Subcommand: `mcp status`
