@@ -117,11 +117,11 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 |---|---|---|
 | `KeyDown` | `KeyDown` | `KeyRoutedEventArgs` |
 | `KeyUp` | `KeyUp` | `KeyRoutedEventArgs` |
-| `PreviewKeyDown` | `PreviewKeyDown` | `KeyRoutedEventArgs` |
-| `PreviewKeyUp` | `PreviewKeyUp` | `KeyRoutedEventArgs` |
+| `PreviewKeyDown` | `Uno only (WASM/SKIA): PreviewKeyDown` | `KeyRoutedEventArgs` |
+| `PreviewKeyUp` | `Uno only (WASM/SKIA): PreviewKeyUp` | `KeyRoutedEventArgs` |
 
 > [!NOTE]
-> Unlike pointer/mouse input, WinUI/Uno supports preview keyboard events via `PreviewKeyDown` and `PreviewKeyUp` on `UIElement`. If you are migrating from WPF, use those events for keyboard tunneling scenarios. Platform-specific behavior can still vary, so validate event ordering on your target platforms when the distinction matters.
+> Standard WinUI 3 does not expose WPF-style preview keyboard events. On Uno, `PreviewKeyDown` and `PreviewKeyUp` are available only on some targets (for example, WASM/SKIA), so treat them as platform-specific rather than general WinUI equivalents. When you need a cross-target or WinUI 3-compatible alternative, use `KeyDown` and `KeyUp`, and validate event ordering on your target platforms when the distinction matters.
 
 ### Mouse Capture
 
