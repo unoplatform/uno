@@ -32,8 +32,8 @@
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
 
 		<!-- Avoid transitive dependency from Microsoft.Build.Tasks.Core on a vulnerable version.
-		     Pinned to 9.0.0 to address GHSA-37gx-xxp4-5rgx / GHSA-w3x6-4m5h-cxqf (affects <= 8.0.2). -->
-		<PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.0" />
+		     Pinned to 8.0.3 to address GHSA-37gx-xxp4-5rgx / GHSA-w3x6-4m5h-cxqf (affects <= 8.0.2). -->
+		<PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.3" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
