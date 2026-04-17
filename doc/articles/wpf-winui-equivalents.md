@@ -61,7 +61,7 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 | `ContextMenu` | `MenuFlyout` via `ContextFlyout` property | Assign to `ContextFlyout` on any `UIElement` |
 | `ToolBar` / `ToolBarTray` | `CommandBar` + `AppBarButton` | |
 | `StatusBar` | Custom `Grid` / `StackPanel` or `InfoBar` | No StatusBar control in WinUI |
-| `TabControl` | `TabView` or `NavigationView` (Top mode) | `TabView` supports closeable tabs |
+| `TabControl` | `TabView` or `NavigationView` (Top mode) | `TabView` supports closable tabs |
 | `DocumentViewer` | `WebView2` | Render PDFs/XPS inside WebView2 |
 | `FlowDocument` | `RichTextBlock` | Partial replacement only |
 | `RichTextBox` | `RichEditBox` | Rich text editing |
