@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	public enum ItemCollectionTransitionOperation
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Add = 0,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Remove = 1,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Move = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.ItemCollectionTransitionOperation.Add
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.ItemCollectionTransitionOperation.Remove
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.ItemCollectionTransitionOperation.Move
 	}
 #endif
 }
