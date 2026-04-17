@@ -182,7 +182,7 @@ public class Given_DependencyProperty_PropMethodCall
 		control.TestBool = true;
 		Assert.AreEqual(1, control.PropertyChangedCount);
 
-		// Second set with same value — delegate returns false (no change), so PropertyChanged should not fire again
+		// Second set uses the same effective value, so PropertyChanged should not fire again
 		control.TestBool = true;
 		Assert.AreEqual(1, control.PropertyChangedCount);
 	}
