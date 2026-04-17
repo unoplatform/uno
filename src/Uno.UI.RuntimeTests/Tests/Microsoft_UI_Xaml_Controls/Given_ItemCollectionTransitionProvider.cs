@@ -16,11 +16,13 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [TestClass]
 public partial class Given_ItemCollectionTransitionProvider
 {
+#if HAS_UNO
 	/// <summary>
 	/// Validates that the transition provider's StartTransitions callback receives the expected
 	/// add/remove/move transitions when QueueTransition is called directly.
 	/// Port of ValidateItemCollectionTransitionProvider from WinUI, adjusted to call QueueTransition
 	/// directly since ItemsRepeater integration is not yet wired up.
+	/// Uses internal Uno constructors to create ItemCollectionTransition instances.
 	/// </summary>
 	[TestMethod]
 	[RunsOnUIThread]
@@ -221,4 +223,5 @@ public partial class Given_ItemCollectionTransitionProvider
 		protected override void StartTransitions(IList<ItemCollectionTransition> transitions) =>
 			StartTransitionsFunc?.Invoke(transitions);
 	}
+#endif
 }
