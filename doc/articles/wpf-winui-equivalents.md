@@ -65,16 +65,18 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 | `DocumentViewer` | `WebView2` | Render PDFs/XPS inside WebView2 |
 | `FlowDocument` | `RichTextBlock` | Partial replacement only |
 | `RichTextBox` | `RichEditBox` | Rich text editing |
-| `WrapPanel` | `WrapPanel` (built-in on Uno Platform) or Community Toolkit `WrapPanel` | Built-in on Uno Platform; in WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, use the Uno-ported toolkit packages (`Uno.CommunityToolkit.WinUI.*`). |
-| `UniformGrid` | Community Toolkit `UniformGrid` | Not in WinUI by default. In WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, use the Uno-ported toolkit packages (`Uno.CommunityToolkit.WinUI.*`). |
-| `DockPanel` | Community Toolkit `DockPanel` | Not in WinUI by default. In WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, use the Uno-ported toolkit packages (`Uno.CommunityToolkit.WinUI.*`). |
+| `WrapPanel` | `WrapPanel` (built-in on Uno Platform) or Community Toolkit `WrapPanel` | Built-in on Uno Platform; otherwise see package guidance below. |
+| `UniformGrid` | Community Toolkit `UniformGrid` | Not in WinUI by default; see package guidance below. |
+| `DockPanel` | Community Toolkit `DockPanel` | Not in WinUI by default; see package guidance below. |
 | `GroupBox` | `Expander` or a custom `UserControl`/templated `ContentControl` | No built-in GroupBox in WinUI; use a custom header + border presentation when needed |
 | `Label` | `TextBlock` | Use `TextBlock` + `AccessKey` property |
 | `MediaElement` | `MediaPlayerElement` | Different API surface |
 | `Window` (standalone) | `Window` | Window host; content is typically a `Page`/root `UIElement`. Use `ContentDialog` for modal windows. |
-| `GridSplitter` | Community Toolkit `GridSplitter` | In WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, use the Uno-ported toolkit packages (`Uno.CommunityToolkit.WinUI.*`). |
+| `GridSplitter` | Community Toolkit `GridSplitter` | See package guidance below. |
 | `Calendar` | `CalendarView` | Similar functionality with updated API |
-| `ListBox` | `ListView` | `ListView` is the WinUI equivalent |
+| `ListBox` | `ListBox` or `ListView` | `ListBox` exists in WinUI/Uno; prefer `ListView` when you need richer built-in list item presentation or interaction features |
+
+Package guidance for Community Toolkit controls in this table: in WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, use the Uno-ported toolkit packages (`Uno.CommunityToolkit.WinUI.*`).
 
 ### Useful NuGet Packages
 
@@ -270,7 +272,7 @@ Always use `BasedOn` when overriding default control styles. Without it, your st
 
 | WPF Code | WinUI Replacement | Notes |
 |---|---|---|
-| `Application.Current.Dispatcher.Invoke(...)` | `App.MainWindow.DispatcherQueue.TryEnqueue(...)` | Fire-and-forget; no synchronous `Invoke`. For awaitable dispatch, wrap with a `TaskCompletionSource`: `var tcs = new TaskCompletionSource(); App.MainWindow.DispatcherQueue.TryEnqueue(() => { /* work */ tcs.SetResult(); }); await tcs.Task;` |
+| `Application.Current.Dispatcher.Invoke(...)` | `App.MainWindow.DispatcherQueue.TryEnqueue(...)` | Fire-and-forget; no synchronous `Invoke`. For awaitable dispatch, wrap with a `TaskCompletionSource`: `var tcs = new TaskCompletionSource<bool>(); if (!App.MainWindow.DispatcherQueue.TryEnqueue(() => { /* work */ tcs.SetResult(true); })) { tcs.SetException(new InvalidOperationException("Failed to enqueue work on the DispatcherQueue.")); } await tcs.Task;` |
 | `Window.Current` | `App.MainWindow` (captured at startup) | Not supported in Windows App SDK |
 | `Clipboard` (System.Windows) | `Windows.ApplicationModel.DataTransfer.Clipboard` | Different API surface |
 | `MessageBox.Show()` | `ContentDialog` with `XamlRoot` | No MessageBox in WinUI |
@@ -363,6 +365,11 @@ BINDING UPGRADES:
 OUTPUT: Complete translated XAML with a list of manual follow-up items.
 
 WPF XAML to translate:
+```xml
+<!-- Paste WPF XAML here -->
+```
+````
+<PASTE WPF XAML HERE>
 ````
 
 ## FAQ
@@ -381,7 +388,7 @@ WinUI only has `Visible` and `Collapsed`. For invisible-but-layout-occupying beh
 
 **How do I handle preview/tunneling events?**
 
-WinUI/Uno supports some preview/tunneling events for keyboard input, including `PreviewKeyDown` and `PreviewKeyUp`, so you do not need to replace those with `KeyDown`/`KeyUp`. However, WPF-style preview mouse/pointer events such as `PreviewMouseDown` do not generally have direct equivalents. In those cases, use the corresponding bubbling event (for example, `PointerPressed`) and, if you need to observe events that were already marked handled, register with `AddHandler(..., handledEventsToo: true)`.
+WinUI 3 does not generally provide WPF-style preview/tunneling events. In Uno Platform, some preview keyboard events such as `PreviewKeyDown` and `PreviewKeyUp` are available on specific targets only, so they should not be treated as a general WinUI 3 migration equivalent. For cross-target and WinUI 3-compatible code, use `KeyDown`/`KeyUp` instead. WPF-style preview mouse/pointer events such as `PreviewMouseDown` do not generally have direct equivalents; use the corresponding bubbling event (for example, `PointerPressed`) and, if you need to observe events that were already marked handled, register with `AddHandler(..., handledEventsToo: true)`.
 
 **How do I migrate the Dispatcher pattern?**
 
