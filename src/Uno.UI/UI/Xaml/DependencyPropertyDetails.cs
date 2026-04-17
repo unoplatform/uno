@@ -175,24 +175,22 @@ namespace Microsoft.UI.Xaml
 		/// <param name="precedence">The precedence level to set the value at</param>
 		internal void SetValue(object? value, DependencyPropertyValuePrecedences precedence)
 		{
-			// For PropMethodCall base values, skip validation — the value is
-			// managed by the method delegate, not stored here.
-			bool skipValidation = IsPropMethodCall
-				&& precedence != DependencyPropertyValuePrecedences.Coercion
-				&& precedence != DependencyPropertyValuePrecedences.Animations;
+			Property.ValidateValue(value);
 
-			if (!skipValidation)
+			// PropMethodCall base values live on the backing field, not in _value,
+			// so skip weak-storage wrapping. Coercion/Animation values still land in ModifiedValue
+			// and therefore still need the normal wrapping path.
+			bool storedInValue = !IsPropMethodCall
+				|| precedence == DependencyPropertyValuePrecedences.Coercion
+				|| precedence == DependencyPropertyValuePrecedences.Animations;
+
+			if (storedInValue && HasWeakStorage)
 			{
-				Property.ValidateValue(value);
-
-				if (HasWeakStorage)
-				{
-					value = Validate(value);
-				}
-				else
-				{
-					value = ValidateNoWrap(value);
-				}
+				value = Validate(value);
+			}
+			else
+			{
+				value = ValidateNoWrap(value);
 			}
 
 			switch (precedence)
