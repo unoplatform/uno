@@ -84,7 +84,7 @@ Package guidance for Community Toolkit controls in this table: in WinUI 3 (Windo
 |---|---|
 | `CommunityToolkit.WinUI.UI.Controls` | DataGrid, WrapPanel, DockPanel, UniformGrid. Note: `DataGrid` and some related controls are available in Windows Community Toolkit 7.x; they were removed from 8.x. |
 | `CommunityToolkit.Mvvm` | RelayCommand, ObservableObject, source generators |
-| `Uno.Themes.WinUI` | Material, Cupertino, or Fluent theme support |
+| `Uno.Material.WinUI`, `Uno.Cupertino.WinUI`, `Uno.Simple.WinUI` | Material, Cupertino, or simple theme support |
 | `Uno.Toolkit.WinUI` | Additional cross-platform controls and helpers |
 
 ## Property and Value Mappings
@@ -367,10 +367,8 @@ OUTPUT: Complete translated XAML with a list of manual follow-up items.
 WPF XAML to translate:
 ```xml
 <!-- Paste WPF XAML here -->
-```
-````
 <PASTE WPF XAML HERE>
-````
+```
 
 ## FAQ
 
