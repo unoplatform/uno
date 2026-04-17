@@ -43,8 +43,8 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.UsbInterfaces.get
 		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.ConfigurationDescriptor.get
 		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.Descriptors.get
+		// Forced skipping of method Windows.Devices.Usb.UsbConfiguration.UsbInterfaces.get
 	}
 }

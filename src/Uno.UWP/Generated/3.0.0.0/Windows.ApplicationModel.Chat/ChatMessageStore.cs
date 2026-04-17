@@ -23,7 +23,6 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStore.ChangeTracker.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteMessageAsync(string localMessageId)
@@ -203,6 +202,7 @@ namespace Windows.ApplicationModel.Chat
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ChatMessage> ChatMessageStore.GetMessageBySyncIdAsync(string syncId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CChatMessage%3E%20ChatMessageStore.GetMessageBySyncIdAsync%28string%20syncId%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStore.ChangeTracker.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Chat.ChatMessageStore, global::Windows.ApplicationModel.Chat.ChatMessageChangedEventArgs> MessageChanged

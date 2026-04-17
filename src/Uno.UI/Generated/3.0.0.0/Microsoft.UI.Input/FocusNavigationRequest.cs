@@ -11,11 +11,11 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property CorrelationId
 		// Skipping already declared property HintRect
 		// Skipping already declared property Reason
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.Reason.get
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.HintRect.get
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.CorrelationId.get
 		// Skipping already declared method Microsoft.UI.Input.FocusNavigationRequest.Create(Microsoft.UI.Input.FocusNavigationReason)
 		// Skipping already declared method Microsoft.UI.Input.FocusNavigationRequest.Create(Microsoft.UI.Input.FocusNavigationReason, Windows.Foundation.Rect)
 		// Skipping already declared method Microsoft.UI.Input.FocusNavigationRequest.Create(Microsoft.UI.Input.FocusNavigationReason, Windows.Foundation.Rect, System.Guid)
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.CorrelationId.get
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.HintRect.get
+		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.Reason.get
 	}
 }

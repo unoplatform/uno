@@ -4,42 +4,34 @@
 namespace Microsoft.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented]
 #endif
-public partial class TriggerActionCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.TriggerAction>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.TriggerAction>
-{
-// Skipping already declared property Microsoft.UI.Xaml.TriggerActionCollection.Size
-// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.TriggerActionCollection()
-// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.TriggerActionCollection()
-// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.GetAt(uint)
-// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.Size.get
-// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.GetView()
-// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.IndexOf(Microsoft.UI.Xaml.TriggerAction, out uint)
-// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.SetAt(uint, Microsoft.UI.Xaml.TriggerAction)
-// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.InsertAt(uint, Microsoft.UI.Xaml.TriggerAction)
-// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.RemoveAt(uint)
-// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.Append(Microsoft.UI.Xaml.TriggerAction)
-// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.RemoveAtEnd()
-// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.Clear()
-// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.GetMany(uint, Microsoft.UI.Xaml.TriggerAction[])
-// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.ReplaceAll(Microsoft.UI.Xaml.TriggerAction[])
-// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.First()
-// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.TriggerAction>
-// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.IndexOf(Microsoft.UI.Xaml.TriggerAction)
-// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Insert(int, Microsoft.UI.Xaml.TriggerAction)
-// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.RemoveAt(int)
-// Skipping already declared indexer Microsoft.UI.Xaml.TriggerActionCollection.this[int]
-// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.TriggerAction>
-// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Add(Microsoft.UI.Xaml.TriggerAction)
-// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Clear()
-// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Contains(Microsoft.UI.Xaml.TriggerAction)
-// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.CopyTo(Microsoft.UI.Xaml.TriggerAction[], int)
-// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Remove(Microsoft.UI.Xaml.TriggerAction)
-// Skipping already declared property Microsoft.UI.Xaml.TriggerActionCollection.Count
-// Skipping already declared property Microsoft.UI.Xaml.TriggerActionCollection.IsReadOnly
-// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.TriggerAction>
-// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.GetEnumerator()
-// Processing: System.Collections.IEnumerable
-// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.System.Collections.IEnumerable.GetEnumerator()
-}
+	public partial class TriggerActionCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.TriggerAction>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.TriggerAction>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.TriggerAction>, global::System.Collections.IEnumerable
+	{
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
+		// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.TriggerActionCollection()
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.TriggerActionCollection()
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.IndexOf(Microsoft.UI.Xaml.TriggerAction)
+		// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Insert(int, Microsoft.UI.Xaml.TriggerAction)
+		// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Add(Microsoft.UI.Xaml.TriggerAction)
+		// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Contains(Microsoft.UI.Xaml.TriggerAction)
+		// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.CopyTo(Microsoft.UI.Xaml.TriggerAction[], int)
+		// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.Remove(Microsoft.UI.Xaml.TriggerAction)
+		// Skipping already declared method Microsoft.UI.Xaml.TriggerActionCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.TriggerAction>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerActionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.TriggerAction>.set_Item(int, Microsoft.UI.Xaml.TriggerAction)
+		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.TriggerAction>
+		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.TriggerAction>
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.TriggerAction>
+		// Processing: System.Collections.IEnumerable
+	}
 }

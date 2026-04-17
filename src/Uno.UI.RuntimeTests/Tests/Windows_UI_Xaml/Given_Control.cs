@@ -503,6 +503,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				typeof(FlipView),
 				typeof(FlipViewItem),
 				typeof(FlyoutPresenter),
+				typeof(GroupItem),
 				typeof(Frame),
 				typeof(Microsoft.UI.Xaml.Controls.GridView),
 				typeof(GridViewHeaderItem),

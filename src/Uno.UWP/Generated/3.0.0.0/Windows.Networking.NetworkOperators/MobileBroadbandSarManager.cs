@@ -63,13 +63,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSarManager.IsBackoffEnabled.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSarManager.IsWiFiHardwareIntegrated.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSarManager.IsSarControlledByHardware.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSarManager.Antennas.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSarManager.HysteresisTimerPeriod.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSarManager.TransmissionStateChanged.add
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSarManager.TransmissionStateChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction EnableBackoffAsync()
@@ -126,6 +119,13 @@ namespace Windows.Networking.NetworkOperators
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandSarManager", "void MobileBroadbandSarManager.StopTransmissionStateMonitoring()");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSarManager.TransmissionStateChanged.add
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSarManager.TransmissionStateChanged.remove
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSarManager.Antennas.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSarManager.HysteresisTimerPeriod.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSarManager.IsBackoffEnabled.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSarManager.IsSarControlledByHardware.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSarManager.IsWiFiHardwareIntegrated.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.NetworkOperators.MobileBroadbandSarManager, global::Windows.Networking.NetworkOperators.MobileBroadbandTransmissionStateChangedEventArgs> TransmissionStateChanged

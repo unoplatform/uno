@@ -173,6 +173,13 @@ namespace Windows.Storage
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.SystemDataPaths GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member SystemDataPaths SystemDataPaths.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemDataPaths%20SystemDataPaths.GetDefault%28%29");
+		}
+#endif
 		// Forced skipping of method Windows.Storage.SystemDataPaths.Fonts.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.ProgramData.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.Public.get
@@ -183,18 +190,11 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.SystemDataPaths.PublicPictures.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.PublicVideos.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.System.get
-		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemHost.get
-		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemX86.get
-		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemX64.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemArm.get
+		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemHost.get
+		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemX64.get
+		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemX86.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.UserProfiles.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.Windows.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.SystemDataPaths GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member SystemDataPaths SystemDataPaths.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemDataPaths%20SystemDataPaths.GetDefault%28%29");
-		}
-#endif
 	}
 }

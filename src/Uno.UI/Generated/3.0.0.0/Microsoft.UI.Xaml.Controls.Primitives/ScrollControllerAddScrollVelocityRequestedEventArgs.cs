@@ -13,9 +13,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property OffsetVelocity
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerAddScrollVelocityRequestedEventArgs.ScrollControllerAddScrollVelocityRequestedEventArgs(float, float?)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerAddScrollVelocityRequestedEventArgs.ScrollControllerAddScrollVelocityRequestedEventArgs(float, float?)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerAddScrollVelocityRequestedEventArgs.OffsetVelocity.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerAddScrollVelocityRequestedEventArgs.InertiaDecayRate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerAddScrollVelocityRequestedEventArgs.CorrelationId.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerAddScrollVelocityRequestedEventArgs.CorrelationId.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerAddScrollVelocityRequestedEventArgs.InertiaDecayRate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerAddScrollVelocityRequestedEventArgs.OffsetVelocity.get
 	}
 }

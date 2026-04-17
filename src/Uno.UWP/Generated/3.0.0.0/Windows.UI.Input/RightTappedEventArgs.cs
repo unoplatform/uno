@@ -8,11 +8,11 @@ namespace Windows.UI.Input
 #endif
 	public partial class RightTappedEventArgs
 	{
+		// Skipping already declared property ContactCount
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		// Skipping already declared property ContactCount
+		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.ContactCount.get
 		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.Position.get
-		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.ContactCount.get
 	}
 }

@@ -53,9 +53,9 @@ namespace Windows.Networking.Vpn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.ServerServiceName.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.ServerHostNameList.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.CustomField.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.ServerHostNameList.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.ServerServiceName.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnChannelConfiguration.ServerUris.get
 	}
 }

@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.Status.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.AdditionalErrorMessage.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.Status.get
 	}
 }

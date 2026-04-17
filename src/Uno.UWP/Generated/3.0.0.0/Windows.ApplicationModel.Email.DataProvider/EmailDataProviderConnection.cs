@@ -13,36 +13,6 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.MailboxSyncRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.MailboxSyncRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.DownloadMessageRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.DownloadMessageRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.DownloadAttachmentRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.DownloadAttachmentRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.CreateFolderRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.CreateFolderRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.DeleteFolderRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.DeleteFolderRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.EmptyFolderRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.EmptyFolderRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.MoveFolderRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.MoveFolderRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.UpdateMeetingResponseRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.UpdateMeetingResponseRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ForwardMeetingRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ForwardMeetingRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ProposeNewTimeForMeetingRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ProposeNewTimeForMeetingRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.SetAutoReplySettingsRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.SetAutoReplySettingsRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.GetAutoReplySettingsRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.GetAutoReplySettingsRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ResolveRecipientsRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ResolveRecipientsRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ValidateCertificatesRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ValidateCertificatesRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ServerSearchReadBatchRequested.add
-		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ServerSearchReadBatchRequested.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -50,6 +20,36 @@ namespace Windows.ApplicationModel.Email.DataProvider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "void EmailDataProviderConnection.Start()");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.CreateFolderRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.CreateFolderRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.DeleteFolderRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.DeleteFolderRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.DownloadAttachmentRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.DownloadAttachmentRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.DownloadMessageRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.DownloadMessageRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.EmptyFolderRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.EmptyFolderRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ForwardMeetingRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ForwardMeetingRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.GetAutoReplySettingsRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.GetAutoReplySettingsRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.MailboxSyncRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.MailboxSyncRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.MoveFolderRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.MoveFolderRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ProposeNewTimeForMeetingRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ProposeNewTimeForMeetingRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ResolveRecipientsRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ResolveRecipientsRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ServerSearchReadBatchRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ServerSearchReadBatchRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.SetAutoReplySettingsRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.SetAutoReplySettingsRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.UpdateMeetingResponseRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.UpdateMeetingResponseRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ValidateCertificatesRequested.add
+		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ValidateCertificatesRequested.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxCreateFolderRequestEventArgs> CreateFolderRequested

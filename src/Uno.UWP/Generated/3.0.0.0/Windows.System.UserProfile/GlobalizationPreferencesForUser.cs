@@ -83,12 +83,12 @@ namespace Windows.System.UserProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.User.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Calendars.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Clocks.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Currencies.get
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Languages.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.HomeGeographicRegion.get
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Languages.get
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.User.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WeekStartsOn.get
 	}
 }

@@ -63,10 +63,10 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatCapabilities.IsOnline.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatCapabilities.IsChatCapable.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatCapabilities.IsFileTransferCapable.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatCapabilities.IsGeoLocationPushCapable.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatCapabilities.IsIntegratedMessagingCapable.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatCapabilities.IsOnline.get
 	}
 }

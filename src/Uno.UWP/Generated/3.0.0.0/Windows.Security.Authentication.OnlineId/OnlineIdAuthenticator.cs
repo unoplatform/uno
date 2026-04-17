@@ -71,9 +71,9 @@ namespace Windows.Security.Authentication.OnlineId
 			throw new global::System.NotImplementedException("The member SignOutUserOperation OnlineIdAuthenticator.SignOutUserAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SignOutUserOperation%20OnlineIdAuthenticator.SignOutUserAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.ApplicationId.set
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.ApplicationId.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.CanSignOut.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.ApplicationId.set
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.AuthenticatedSafeCustomerId.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.CanSignOut.get
 	}
 }

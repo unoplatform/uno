@@ -9,6 +9,8 @@ namespace Windows.Graphics
 	public partial struct SizeInt32
 	{
 		// Forced skipping of method Windows.Graphics.SizeInt32.SizeInt32()
+		// Skipping already declared method Windows.Graphics.SizeInt32.SizeInt32(int, int)
+		// Forced skipping of method Windows.Graphics.SizeInt32.SizeInt32(int, int)
 		// Skipping already declared field Windows.Graphics.SizeInt32.Width
 		// Skipping already declared field Windows.Graphics.SizeInt32.Height
 	}

@@ -8,8 +8,8 @@ namespace Windows.Globalization.NumberFormatting
 #endif
 	public partial class IncrementNumberRounder : global::Windows.Globalization.NumberFormatting.INumberRounder
 	{
-		// Skipping already declared property RoundingAlgorithm
 		// Skipping already declared property Increment
+		// Skipping already declared property RoundingAlgorithm
 		// Skipping already declared method Windows.Globalization.NumberFormatting.IncrementNumberRounder.IncrementNumberRounder()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.IncrementNumberRounder()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -48,10 +48,10 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundDouble(double)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundingAlgorithm.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundingAlgorithm.set
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.Increment.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.Increment.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundingAlgorithm.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundingAlgorithm.set
 		// Processing: Windows.Globalization.NumberFormatting.INumberRounder
 	}
 }

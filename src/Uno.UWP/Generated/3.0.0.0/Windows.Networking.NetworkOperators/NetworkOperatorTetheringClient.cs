@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient.MacAddress.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient.HostNames.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient.MacAddress.get
 	}
 }

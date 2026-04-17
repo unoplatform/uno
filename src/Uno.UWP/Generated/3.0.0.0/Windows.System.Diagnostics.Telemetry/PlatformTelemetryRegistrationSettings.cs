@@ -10,20 +10,6 @@ namespace Windows.System.Diagnostics.Telemetry
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint UploadQuotaSize
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint PlatformTelemetryRegistrationSettings.UploadQuotaSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlatformTelemetryRegistrationSettings.UploadQuotaSize");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "uint PlatformTelemetryRegistrationSettings.UploadQuotaSize");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint StorageSize
 		{
 			get
@@ -33,6 +19,20 @@ namespace Windows.System.Diagnostics.Telemetry
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "uint PlatformTelemetryRegistrationSettings.StorageSize");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint UploadQuotaSize
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint PlatformTelemetryRegistrationSettings.UploadQuotaSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlatformTelemetryRegistrationSettings.UploadQuotaSize");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "uint PlatformTelemetryRegistrationSettings.UploadQuotaSize");
 			}
 		}
 #endif

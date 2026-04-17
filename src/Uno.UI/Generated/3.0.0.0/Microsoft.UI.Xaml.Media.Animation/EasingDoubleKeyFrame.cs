@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class EasingDoubleKeyFrame : global::Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame
 	{
-		// Skipping already declared property EasingFunction
 		// Skipping already declared property EasingFunctionProperty
+		// Skipping already declared property EasingFunction
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.EasingDoubleKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.EasingDoubleKeyFrame()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.EasingFunctionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.EasingFunction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.EasingFunction.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingDoubleKeyFrame.EasingFunctionProperty.get
 	}
 }

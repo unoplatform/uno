@@ -43,8 +43,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.Content.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.Id.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.Timestamp.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.Content.get
 	}
 }

@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class Flyout
 	{
-		// Skipping already declared property FlyoutPresenterStyle
-		// Skipping already declared property Content
 		// Skipping already declared property ContentProperty
 		// Skipping already declared property FlyoutPresenterStyleProperty
+		// Skipping already declared property Content
+		// Skipping already declared property FlyoutPresenterStyle
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Flyout.Flyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.Flyout()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.ContentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.FlyoutPresenterStyleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.Content.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.FlyoutPresenterStyle.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.FlyoutPresenterStyle.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.ContentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.FlyoutPresenterStyleProperty.get
 	}
 }

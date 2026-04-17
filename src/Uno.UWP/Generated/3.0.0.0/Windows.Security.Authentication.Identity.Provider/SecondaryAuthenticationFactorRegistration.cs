@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Authentication.Identity.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -12,20 +11,6 @@ namespace Windows.Security.Authentication.Identity.Provider
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal SecondaryAuthenticationFactorRegistration()
 		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction FinishRegisteringDeviceAsync(global::Windows.Storage.Streams.IBuffer deviceConfigurationData)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction SecondaryAuthenticationFactorRegistration.FinishRegisteringDeviceAsync(IBuffer deviceConfigurationData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SecondaryAuthenticationFactorRegistration.FinishRegisteringDeviceAsync%28IBuffer%20deviceConfigurationData%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction AbortRegisteringDeviceAsync(string errorLogMessage)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction SecondaryAuthenticationFactorRegistration.AbortRegisteringDeviceAsync(string errorLogMessage) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SecondaryAuthenticationFactorRegistration.AbortRegisteringDeviceAsync%28string%20errorLogMessage%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -82,6 +67,20 @@ namespace Windows.Security.Authentication.Identity.Provider
 		public static global::Windows.Foundation.IAsyncAction UpdateDeviceConfigurationDataAsync(string deviceId, global::Windows.Storage.Streams.IBuffer deviceConfigurationData)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SecondaryAuthenticationFactorRegistration.UpdateDeviceConfigurationDataAsync(string deviceId, IBuffer deviceConfigurationData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SecondaryAuthenticationFactorRegistration.UpdateDeviceConfigurationDataAsync%28string%20deviceId%2C%20IBuffer%20deviceConfigurationData%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncAction FinishRegisteringDeviceAsync(global::Windows.Storage.Streams.IBuffer deviceConfigurationData)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction SecondaryAuthenticationFactorRegistration.FinishRegisteringDeviceAsync(IBuffer deviceConfigurationData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SecondaryAuthenticationFactorRegistration.FinishRegisteringDeviceAsync%28IBuffer%20deviceConfigurationData%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncAction AbortRegisteringDeviceAsync(string errorLogMessage)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction SecondaryAuthenticationFactorRegistration.AbortRegisteringDeviceAsync(string errorLogMessage) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SecondaryAuthenticationFactorRegistration.AbortRegisteringDeviceAsync%28string%20errorLogMessage%29");
 		}
 #endif
 	}

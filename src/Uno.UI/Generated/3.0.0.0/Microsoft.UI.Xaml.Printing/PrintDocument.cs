@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Printing
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty DocumentSourceProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(DocumentSource), typeof(global::Windows.Graphics.Printing.IPrintDocumentSource),
+			typeof(global::Microsoft.UI.Xaml.Printing.PrintDocument),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Graphics.Printing.IPrintDocumentSource)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.IPrintDocumentSource DocumentSource
 		{
 			get
@@ -20,27 +28,13 @@ namespace Microsoft.UI.Xaml.Printing
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty DocumentSourceProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(DocumentSource), typeof(global::Windows.Graphics.Printing.IPrintDocumentSource),
-			typeof(global::Microsoft.UI.Xaml.Printing.PrintDocument),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Graphics.Printing.IPrintDocumentSource)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PrintDocument() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Printing.PrintDocument", "PrintDocument.PrintDocument()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.PrintDocument()
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.DocumentSource.get
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.Paginate.add
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.Paginate.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.GetPreviewPage.add
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.GetPreviewPage.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.AddPages.add
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.AddPages.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.DocumentSourceProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddPage(global::Microsoft.UI.Xaml.UIElement pageVisual)
@@ -76,7 +70,13 @@ namespace Microsoft.UI.Xaml.Printing
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Printing.PrintDocument", "void PrintDocument.InvalidatePreview()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.DocumentSourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.AddPages.add
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.AddPages.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.GetPreviewPage.add
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.GetPreviewPage.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.Paginate.add
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.Paginate.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.DocumentSource.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Microsoft.UI.Xaml.Printing.AddPagesEventHandler AddPages

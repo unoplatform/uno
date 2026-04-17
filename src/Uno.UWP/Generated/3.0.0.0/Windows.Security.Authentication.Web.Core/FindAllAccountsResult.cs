@@ -44,7 +44,7 @@ namespace Windows.Security.Authentication.Web.Core
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.Accounts.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.Status.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.ProviderError.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.Status.get
 	}
 }

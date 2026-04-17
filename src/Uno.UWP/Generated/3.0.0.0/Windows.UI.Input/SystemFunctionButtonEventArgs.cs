@@ -37,8 +37,8 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.SystemFunctionButtonEventArgs.Timestamp.get
 		// Forced skipping of method Windows.UI.Input.SystemFunctionButtonEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Input.SystemFunctionButtonEventArgs.Handled.set
+		// Forced skipping of method Windows.UI.Input.SystemFunctionButtonEventArgs.Timestamp.get
 	}
 }

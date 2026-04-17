@@ -93,13 +93,13 @@ namespace Windows.Security.Authentication.OnlineId
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.Tickets.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.Id.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.SafeCustomerId.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.SignInName.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.FirstName.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.LastName.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.Id.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.IsBetaAccount.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.IsConfirmedPC.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.LastName.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.SafeCustomerId.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.SignInName.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.Tickets.get
 	}
 }

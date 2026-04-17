@@ -33,7 +33,7 @@ namespace Windows.Media.Ocr
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Ocr.OcrLine.Words.get
 		// Forced skipping of method Windows.Media.Ocr.OcrLine.Text.get
+		// Forced skipping of method Windows.Media.Ocr.OcrLine.Words.get
 	}
 }

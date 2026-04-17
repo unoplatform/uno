@@ -3,54 +3,24 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum AutomationStyleId
 	{
-#if false
-		Heading1 = 70001,
-#endif
-#if false
-		Heading2 = 70002,
-#endif
-#if false
-		Heading3 = 70003,
-#endif
-#if false
-		Heading4 = 70004,
-#endif
-#if false
-		Heading5 = 70005,
-#endif
-#if false
-		Heading6 = 70006,
-#endif
-#if false
-		Heading7 = 70007,
-#endif
-#if false
-		Heading8 = 70008,
-#endif
-#if false
-		Heading9 = 70009,
-#endif
-#if false
-		Title = 70010,
-#endif
-#if false
-		Subtitle = 70011,
-#endif
-#if false
-		Normal = 70012,
-#endif
-#if false
-		Emphasis = 70013,
-#endif
-#if false
-		Quote = 70014,
-#endif
-#if false
-		BulletedList = 70015,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading1
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading2
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading3
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading4
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading5
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading6
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading7
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading8
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading9
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Title
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Subtitle
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Normal
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Emphasis
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Quote
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.BulletedList
 	}
 #endif
 }

@@ -8,14 +8,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class DoubleAnimationUsingKeyFrames : global::Microsoft.UI.Xaml.Media.Animation.Timeline
 	{
+		// Skipping already declared property EnableDependentAnimationProperty
 		// Skipping already declared property EnableDependentAnimation
 		// Skipping already declared property KeyFrames
-		// Skipping already declared property EnableDependentAnimationProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.DoubleAnimationUsingKeyFrames()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.DoubleAnimationUsingKeyFrames()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.KeyFrames.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.EnableDependentAnimation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.EnableDependentAnimation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.KeyFrames.get
 	}
 }

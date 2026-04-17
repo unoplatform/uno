@@ -15,20 +15,6 @@ namespace Windows.Web.Http.Filters
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Web.Http.Filters.HttpCacheWriteBehavior WriteBehavior
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HttpCacheWriteBehavior HttpCacheControl.WriteBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCacheWriteBehavior%20HttpCacheControl.WriteBehavior");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpCacheControl", "HttpCacheWriteBehavior HttpCacheControl.WriteBehavior");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Web.Http.Filters.HttpCacheReadBehavior ReadBehavior
 		{
 			get
@@ -38,6 +24,20 @@ namespace Windows.Web.Http.Filters
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpCacheControl", "HttpCacheReadBehavior HttpCacheControl.ReadBehavior");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Web.Http.Filters.HttpCacheWriteBehavior WriteBehavior
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HttpCacheWriteBehavior HttpCacheControl.WriteBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCacheWriteBehavior%20HttpCacheControl.WriteBehavior");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpCacheControl", "HttpCacheWriteBehavior HttpCacheControl.WriteBehavior");
 			}
 		}
 #endif

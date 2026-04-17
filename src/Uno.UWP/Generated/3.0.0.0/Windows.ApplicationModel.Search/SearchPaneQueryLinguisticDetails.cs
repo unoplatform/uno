@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Search
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.QueryTextAlternatives.get
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.QueryTextCompositionStart.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.QueryTextCompositionLength.get
+		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails.QueryTextCompositionStart.get
 	}
 }

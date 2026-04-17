@@ -19,7 +19,7 @@ namespace Windows.System
 		}
 #endif
 		// Skipping already declared property Status
-		// Forced skipping of method Windows.System.LaunchUriResult.Status.get
 		// Forced skipping of method Windows.System.LaunchUriResult.Result.get
+		// Forced skipping of method Windows.System.LaunchUriResult.Status.get
 	}
 }

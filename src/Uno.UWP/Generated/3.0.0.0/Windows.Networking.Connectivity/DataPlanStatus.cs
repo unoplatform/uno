@@ -73,11 +73,11 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.DataPlanUsage.get
 		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.DataLimitInMegabytes.get
+		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.DataPlanUsage.get
 		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.InboundBitsPerSecond.get
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.OutboundBitsPerSecond.get
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.NextBillingCycle.get
 		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.MaxTransferSizeInMegabytes.get
+		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.NextBillingCycle.get
+		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.OutboundBitsPerSecond.get
 	}
 }

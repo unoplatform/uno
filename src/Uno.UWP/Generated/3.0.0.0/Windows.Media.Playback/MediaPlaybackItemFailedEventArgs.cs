@@ -33,7 +33,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemFailedEventArgs.Item.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemFailedEventArgs.Error.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItemFailedEventArgs.Item.get
 	}
 }

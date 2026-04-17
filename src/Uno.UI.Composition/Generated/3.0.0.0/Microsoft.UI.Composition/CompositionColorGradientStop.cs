@@ -8,11 +8,11 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionColorGradientStop : global::Microsoft.UI.Composition.CompositionObject
 	{
-		// Skipping already declared property Offset
 		// Skipping already declared property Color
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Color.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Offset.set
+		// Skipping already declared property Offset
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Color.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Color.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Offset.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Offset.set
 	}
 }

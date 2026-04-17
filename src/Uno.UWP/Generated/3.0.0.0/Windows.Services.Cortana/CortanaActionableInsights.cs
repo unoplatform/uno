@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Services.Cortana
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -24,7 +23,20 @@ namespace Windows.Services.Cortana
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.User.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Services.Cortana.CortanaActionableInsights GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member CortanaActionableInsights CortanaActionableInsights.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CortanaActionableInsights%20CortanaActionableInsights.GetDefault%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Services.Cortana.CortanaActionableInsights GetForUser(global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member CortanaActionableInsights CortanaActionableInsights.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CortanaActionableInsights%20CortanaActionableInsights.GetForUser%28User%20user%29");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> IsAvailableAsync()
@@ -74,19 +86,6 @@ namespace Windows.Services.Cortana
 			throw new global::System.NotImplementedException("The member IAsyncAction CortanaActionableInsights.ShowInsightsAsync(DataPackage datapackage, CortanaActionableInsightsOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CortanaActionableInsights.ShowInsightsAsync%28DataPackage%20datapackage%2C%20CortanaActionableInsightsOptions%20options%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Services.Cortana.CortanaActionableInsights GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member CortanaActionableInsights CortanaActionableInsights.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CortanaActionableInsights%20CortanaActionableInsights.GetDefault%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Services.Cortana.CortanaActionableInsights GetForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member CortanaActionableInsights CortanaActionableInsights.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CortanaActionableInsights%20CortanaActionableInsights.GetForUser%28User%20user%29");
-		}
-#endif
+		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.User.get
 	}
 }

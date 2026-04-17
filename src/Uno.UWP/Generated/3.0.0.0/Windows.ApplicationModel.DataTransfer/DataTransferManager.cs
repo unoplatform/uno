@@ -13,26 +13,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.DataRequested.add
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.DataRequested.remove
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.TargetApplicationChosen.add
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.TargetApplicationChosen.remove
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.ShareProvidersRequested.add
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.ShareProvidersRequested.remove
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public static void ShowShareUI(global::Windows.ApplicationModel.DataTransfer.ShareUIOptions options)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "void DataTransferManager.ShowShareUI(ShareUIOptions options)");
-		}
-#endif
-#if false || false || __TVOS__ || false || false || false || false
-		[global::Uno.NotImplemented("__TVOS__")]
-		public static bool IsSupported()
-		{
-			throw new global::System.NotImplementedException("The member bool DataTransferManager.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DataTransferManager.IsSupported%28%29");
-		}
-#endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public static void ShowShareUI()
@@ -47,6 +27,26 @@ namespace Windows.ApplicationModel.DataTransfer
 			throw new global::System.NotImplementedException("The member DataTransferManager DataTransferManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataTransferManager%20DataTransferManager.GetForCurrentView%28%29");
 		}
 #endif
+#if false || false || __TVOS__ || false || false || false || false
+		[global::Uno.NotImplemented("__TVOS__")]
+		public static bool IsSupported()
+		{
+			throw new global::System.NotImplementedException("The member bool DataTransferManager.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DataTransferManager.IsSupported%28%29");
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		public static void ShowShareUI(global::Windows.ApplicationModel.DataTransfer.ShareUIOptions options)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "void DataTransferManager.ShowShareUI(ShareUIOptions options)");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.DataRequested.add
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.DataRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.TargetApplicationChosen.add
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.TargetApplicationChosen.remove
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.ShareProvidersRequested.add
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.ShareProvidersRequested.remove
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.DataTransfer.DataTransferManager, global::Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs> DataRequested

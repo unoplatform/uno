@@ -45,6 +45,16 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Holographic.HolographicFrameId Id
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HolographicFrameId HolographicFrame.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicFrameId%20HolographicFrame.Id");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Holographic.HolographicCamera> RemovedCameras
 		{
 			get
@@ -55,25 +65,11 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Holographic.HolographicFrameId Id
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HolographicFrameId HolographicFrame.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicFrameId%20HolographicFrame.Id");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.AddedCameras.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.RemovedCameras.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Holographic.HolographicCameraRenderingParameters GetRenderingParameters(global::Windows.Graphics.Holographic.HolographicCameraPose cameraPose)
 		{
 			throw new global::System.NotImplementedException("The member HolographicCameraRenderingParameters HolographicFrame.GetRenderingParameters(HolographicCameraPose cameraPose) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicCameraRenderingParameters%20HolographicFrame.GetRenderingParameters%28HolographicCameraPose%20cameraPose%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.Duration.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.CurrentPrediction.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void UpdateCurrentPrediction()
@@ -109,6 +105,10 @@ namespace Windows.Graphics.Holographic
 			throw new global::System.NotImplementedException("The member HolographicQuadLayerUpdateParameters HolographicFrame.GetQuadLayerUpdateParameters(HolographicQuadLayer layer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicQuadLayerUpdateParameters%20HolographicFrame.GetQuadLayerUpdateParameters%28HolographicQuadLayer%20layer%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.AddedCameras.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.CurrentPrediction.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.Duration.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.Id.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.RemovedCameras.get
 	}
 }

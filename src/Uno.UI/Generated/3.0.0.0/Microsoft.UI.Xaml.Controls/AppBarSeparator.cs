@@ -8,22 +8,22 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class AppBarSeparator : global::Microsoft.UI.Xaml.Controls.ICommandBarElement
 	{
-		// Skipping already declared property IsCompact
-		// Skipping already declared property DynamicOverflowOrder
-		// Skipping already declared property IsInOverflow
 		// Skipping already declared property DynamicOverflowOrderProperty
 		// Skipping already declared property IsCompactProperty
 		// Skipping already declared property IsInOverflowProperty
+		// Skipping already declared property DynamicOverflowOrder
+		// Skipping already declared property IsCompact
+		// Skipping already declared property IsInOverflow
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AppBarSeparator.AppBarSeparator()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.AppBarSeparator()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsCompactProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsInOverflowProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrder.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrder.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsCompact.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsCompact.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsInOverflow.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrder.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrder.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsCompactProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsInOverflowProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrderProperty.get
 		// Processing: Microsoft.UI.Xaml.Controls.ICommandBarElement
 	}
 }

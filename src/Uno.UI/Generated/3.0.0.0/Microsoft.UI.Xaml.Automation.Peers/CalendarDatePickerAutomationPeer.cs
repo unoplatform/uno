@@ -13,9 +13,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.CalendarDatePickerAutomationPeer(Microsoft.UI.Xaml.Controls.CalendarDatePicker)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.CalendarDatePickerAutomationPeer(Microsoft.UI.Xaml.Controls.CalendarDatePicker)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.Invoke()
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.SetValue(string)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.Value.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.SetValue(string)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IValueProvider
 	}

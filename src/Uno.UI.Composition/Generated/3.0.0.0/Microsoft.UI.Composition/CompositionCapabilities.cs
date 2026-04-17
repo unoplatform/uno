@@ -8,6 +8,8 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionCapabilities
 	{
+		// Skipping already declared method Microsoft.UI.Composition.CompositionCapabilities.CompositionCapabilities()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.CompositionCapabilities()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public bool AreEffectsSupported()
@@ -24,8 +26,6 @@ namespace Microsoft.UI.Composition
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.Changed.add
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.Changed.remove
-		// Skipping already declared method Microsoft.UI.Composition.CompositionCapabilities.CompositionCapabilities()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.CompositionCapabilities()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Composition.CompositionCapabilities, object> Changed

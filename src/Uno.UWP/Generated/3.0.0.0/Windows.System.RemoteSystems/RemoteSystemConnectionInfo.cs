@@ -23,7 +23,6 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.IsProximal.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.RemoteSystems.RemoteSystemConnectionInfo TryCreateFromAppServiceConnection(global::Windows.ApplicationModel.AppService.AppServiceConnection connection)
@@ -31,5 +30,6 @@ namespace Windows.System.RemoteSystems
 			throw new global::System.NotImplementedException("The member RemoteSystemConnectionInfo RemoteSystemConnectionInfo.TryCreateFromAppServiceConnection(AppServiceConnection connection) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemConnectionInfo%20RemoteSystemConnectionInfo.TryCreateFromAppServiceConnection%28AppServiceConnection%20connection%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.IsProximal.get
 	}
 }

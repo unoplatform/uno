@@ -8,9 +8,9 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TreeViewExpandingEventArgs
 	{
-		// Skipping already declared property Node
 		// Skipping already declared property Item
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewExpandingEventArgs.Node.get
+		// Skipping already declared property Node
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewExpandingEventArgs.Item.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewExpandingEventArgs.Node.get
 	}
 }

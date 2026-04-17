@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveOptionalPackagesResult.PackagesRemoved.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveOptionalPackagesResult.ExtendedError.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveOptionalPackagesResult.PackagesRemoved.get
 	}
 }

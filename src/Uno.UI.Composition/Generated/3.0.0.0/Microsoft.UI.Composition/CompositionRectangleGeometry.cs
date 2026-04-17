@@ -8,11 +8,11 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionRectangleGeometry : global::Microsoft.UI.Composition.CompositionGeometry
 	{
-		// Skipping already declared property Size
 		// Skipping already declared property Offset
+		// Skipping already declared property Size
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRectangleGeometry.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRectangleGeometry.Offset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRectangleGeometry.Size.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRectangleGeometry.Size.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRectangleGeometry.Offset.get
 	}
 }

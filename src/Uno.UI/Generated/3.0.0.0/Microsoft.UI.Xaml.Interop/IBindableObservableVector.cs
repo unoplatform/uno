@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Interop
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface IBindableObservableVector : global::Microsoft.UI.Xaml.Interop.IBindableVector, global::Microsoft.UI.Xaml.Interop.IBindableIterable
+	public partial interface IBindableObservableVector : global::System.Collections.IList, global::System.Collections.ICollection, global::System.Collections.IEnumerable
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Interop.IBindableObservableVector.VectorChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Interop.IBindableObservableVector.VectorChanged.remove

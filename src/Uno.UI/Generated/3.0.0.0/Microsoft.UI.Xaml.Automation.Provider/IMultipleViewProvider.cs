@@ -9,9 +9,9 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 	public partial interface IMultipleViewProvider
 	{
 		// Skipping already declared property CurrentView
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IMultipleViewProvider.CurrentView.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IMultipleViewProvider.GetSupportedViews()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IMultipleViewProvider.GetViewName(int)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IMultipleViewProvider.SetCurrentView(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IMultipleViewProvider.CurrentView.get
 	}
 }

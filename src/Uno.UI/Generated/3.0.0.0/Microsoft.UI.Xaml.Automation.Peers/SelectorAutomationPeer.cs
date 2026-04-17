@@ -12,9 +12,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property IsSelectionRequired
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.SelectorAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.Selector)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.SelectorAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.Selector)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.GetSelection()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.CanSelectMultiple.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.IsSelectionRequired.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer.GetSelection()
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.ISelectionProvider
 	}
 }

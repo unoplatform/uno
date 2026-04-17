@@ -22,28 +22,28 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared property ParentNode
 		// Skipping already declared property Prefix
 		// Skipping already declared property PreviousSibling
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NodeValue.get
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NodeValue.set
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NodeType.get
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NodeName.get
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.ParentNode.get
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.ChildNodes.get
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.FirstChild.get
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.LastChild.get
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.PreviousSibling.get
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NextSibling.get
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.Attributes.get
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNode.HasChildNodes()
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.OwnerDocument.get
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNode.InsertBefore(Windows.Data.Xml.Dom.IXmlNode, Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNode.ReplaceChild(Windows.Data.Xml.Dom.IXmlNode, Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNode.RemoveChild(Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNode.AppendChild(Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNode.CloneNode(bool)
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NamespaceUri.get
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.LocalName.get
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.Prefix.get
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNode.Normalize()
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.Attributes.get
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.ChildNodes.get
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.FirstChild.get
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.LastChild.get
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.LocalName.get
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NamespaceUri.get
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NextSibling.get
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NodeName.get
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NodeType.get
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NodeValue.get
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NodeValue.set
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.OwnerDocument.get
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.ParentNode.get
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.Prefix.get
 		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.Prefix.set
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.PreviousSibling.get
 	}
 }

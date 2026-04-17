@@ -43,8 +43,8 @@ namespace Windows.Perception.People
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.People.HeadPose.Position.get
 		// Forced skipping of method Windows.Perception.People.HeadPose.ForwardDirection.get
+		// Forced skipping of method Windows.Perception.People.HeadPose.Position.get
 		// Forced skipping of method Windows.Perception.People.HeadPose.UpDirection.get
 	}
 }

@@ -53,9 +53,9 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Supported.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Min.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Max.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Min.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Step.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Supported.get
 	}
 }

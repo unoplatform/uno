@@ -10,6 +10,14 @@ namespace Windows.Gaming.Input
 	{
 		// Forced skipping of method Windows.Gaming.Input.UINavigationReading.UINavigationReading()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public UINavigationReading(ulong _Timestamp, global::Windows.Gaming.Input.RequiredUINavigationButtons _RequiredButtons, global::Windows.Gaming.Input.OptionalUINavigationButtons _OptionalButtons)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.UINavigationReading", "UINavigationReading.UINavigationReading(ulong _Timestamp, RequiredUINavigationButtons _RequiredButtons, OptionalUINavigationButtons _OptionalButtons)");
+		}
+#endif
+		// Forced skipping of method Windows.Gaming.Input.UINavigationReading.UINavigationReading(ulong, Windows.Gaming.Input.RequiredUINavigationButtons, Windows.Gaming.Input.OptionalUINavigationButtons)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong Timestamp;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
