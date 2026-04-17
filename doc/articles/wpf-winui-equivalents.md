@@ -68,7 +68,7 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 | `WrapPanel` | `WrapPanel` (built-in on Uno Platform) or Community Toolkit `WrapPanel` | Built-in on Uno Platform; in WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, use the Uno-ported toolkit packages (`Uno.CommunityToolkit.WinUI.*`). |
 | `UniformGrid` | Community Toolkit `UniformGrid` | Not in WinUI by default. In WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, use the Uno-ported toolkit packages (`Uno.CommunityToolkit.WinUI.*`). |
 | `DockPanel` | Community Toolkit `DockPanel` | Not in WinUI by default. In WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, use the Uno-ported toolkit packages (`Uno.CommunityToolkit.WinUI.*`). |
-| `GroupBox` | `Expander` or custom `HeaderedContentControl` | No GroupBox in WinUI |
+| `GroupBox` | `Expander` or a custom `UserControl`/templated `ContentControl` | No built-in GroupBox in WinUI; use a custom header + border presentation when needed |
 | `Label` | `TextBlock` | Use `TextBlock` + `AccessKey` property |
 | `MediaElement` | `MediaPlayerElement` | Different API surface |
 | `Window` (standalone) | `Window` | Window host; content is typically a `Page`/root `UIElement`. Use `ContentDialog` for modal windows. |
