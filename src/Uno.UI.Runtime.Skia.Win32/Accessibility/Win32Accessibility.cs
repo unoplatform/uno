@@ -436,6 +436,30 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 	internal static bool TryGetPeerOwner(AutomationPeer peer, [NotNullWhen(true)] out UIElement? owner)
 		=> peer.TryGetProviderOwner(out owner);
 
+	/// <summary>
+	/// Looks up an existing provider for the given peer without creating one.
+	/// Used by event notification methods to avoid eagerly creating providers
+	/// for elements that UIA hasn't navigated to yet — creating providers in
+	/// event paths registers COM callable wrappers with UIA, which hold strong
+	/// references and prevent GC of the underlying UIElements.
+	/// </summary>
+	private Win32RawElementProvider? FindExistingProviderForPeer(AutomationPeer peer, bool resolveEventsSource = false)
+	{
+		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource);
+
+		if (_peerProviders.TryGetValue(resolvedPeer, out var providerByPeer))
+		{
+			return providerByPeer;
+		}
+
+		if (resolvedPeer.TryGetProviderOwner(out var element) && _providers.TryGetValue(element, out var providerByElement))
+		{
+			return providerByElement;
+		}
+
+		return null;
+	}
+
 	// IAutomationPeerListener
 
 	public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
@@ -445,7 +469,7 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 			return;
 		}
 
-		var provider = GetProviderForPeer(peer, resolveEventsSource: true);
+		var provider = FindExistingProviderForPeer(peer, resolveEventsSource: true);
 		if (provider is null)
 		{
 			return;
@@ -478,10 +502,22 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 			return;
 		}
 
-		var provider = GetProviderForPeer(peer, resolveEventsSource: true);
+		// Only look up existing providers for most events — eagerly creating
+		// providers registers COM callable wrappers with UIA that prevent GC.
+		// For focus and live region changes, create a provider so Narrator
+		// can track focus or announce live region content.
+		var provider = FindExistingProviderForPeer(peer, resolveEventsSource: true);
 		if (provider is null)
 		{
-			return;
+			if (eventId is AutomationEvents.AutomationFocusChanged or AutomationEvents.LiveRegionChanged)
+			{
+				provider = GetProviderForPeer(peer, resolveEventsSource: true);
+			}
+
+			if (provider is null)
+			{
+				return;
+			}
 		}
 
 		try
@@ -578,7 +614,7 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 
 		// Use specific provider if available, otherwise fall back to root
 		IRawElementProviderSimple? target = _rootProvider;
-		if (GetProviderForPeer(peer, resolveEventsSource: true) is { } elementProvider)
+		if (FindExistingProviderForPeer(peer, resolveEventsSource: true) is { } elementProvider)
 		{
 			target = elementProvider;
 		}
