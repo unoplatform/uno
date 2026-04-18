@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using Private.Infrastructure;
 using Uno.UI.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
@@ -211,6 +212,220 @@ public class Given_DependencyProperty_PropMethodCall
 
 		Assert.AreEqual(100, control.TestCoerced); // effective (coerced)
 		Assert.AreEqual(200, control.ReadLocalValue(PropMethodCallTestControl.TestCoercedProperty));
+	}
+
+	[TestMethod]
+	public void When_Local_Then_Style_Local_Wins()
+	{
+		// Gap 5 regression: setting local first, then applying a Style with a Setter,
+		// the local value must still win (matches WinUI IsPropertySetByStyle check).
+		var control = new PropMethodCallTestControl();
+		control.TestBool = true;
+
+		var style = new Style(typeof(PropMethodCallTestControl));
+		style.Setters.Add(new Setter(PropMethodCallTestControl.TestBoolProperty, false));
+		control.Style = style;
+
+		Assert.IsTrue(control.TestBool);
+	}
+
+	[TestMethod]
+	public void When_UIElement_IsHitTestVisible_Roundtrip()
+	{
+		var element = new Border();
+		Assert.IsTrue(element.IsHitTestVisible);
+
+		element.IsHitTestVisible = false;
+		Assert.IsFalse(element.IsHitTestVisible);
+		Assert.IsFalse((bool)element.GetValue(UIElement.IsHitTestVisibleProperty));
+
+		element.ClearValue(UIElement.IsHitTestVisibleProperty);
+		Assert.IsTrue(element.IsHitTestVisible);
+	}
+
+	[TestMethod]
+	public void When_UIElement_AllowDrop_Roundtrip()
+	{
+		var element = new Border();
+		Assert.IsFalse(element.AllowDrop);
+
+		element.AllowDrop = true;
+		Assert.IsTrue(element.AllowDrop);
+		Assert.IsTrue((bool)element.GetValue(UIElement.AllowDropProperty));
+
+		element.ClearValue(UIElement.AllowDropProperty);
+		Assert.IsFalse(element.AllowDrop);
+	}
+
+	[TestMethod]
+	public async System.Threading.Tasks.Task When_UIElement_AllowDrop_Inherits_From_Parent()
+	{
+		// WinUI marks AllowDrop as IsInheritedProperty (StaticMetadata.g.cpp:25891).
+		// Setting it on a parent must propagate to a child via inheritance.
+		var child = new Border { Width = 10, Height = 10 };
+		var parent = new Grid { Width = 100, Height = 100, Children = { child } };
+
+		TestServices.WindowHelper.WindowContent = parent;
+		await TestServices.WindowHelper.WaitForLoaded(parent);
+
+		Assert.IsFalse(child.AllowDrop);
+
+		parent.AllowDrop = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(child.AllowDrop); // inherited
+	}
+
+	[TestMethod]
+	public void When_UIElement_CanDrag_Roundtrip()
+	{
+		var element = new Border();
+		Assert.IsFalse(element.CanDrag);
+
+		element.CanDrag = true;
+		Assert.IsTrue(element.CanDrag);
+
+		element.ClearValue(UIElement.CanDragProperty);
+		Assert.IsFalse(element.CanDrag);
+	}
+
+	[TestMethod]
+	public void When_UIElement_IsTabStop_Roundtrip()
+	{
+		var element = new Border();
+		Assert.IsFalse(element.IsTabStop);
+
+		element.IsTabStop = true;
+		Assert.IsTrue(element.IsTabStop);
+
+		element.ClearValue(UIElement.IsTabStopProperty);
+		Assert.IsFalse(element.IsTabStop);
+	}
+
+	[TestMethod]
+	public void When_UIElement_UseSystemFocusVisuals_Roundtrip()
+	{
+		var element = new Border();
+		Assert.IsFalse(element.UseSystemFocusVisuals);
+
+		element.UseSystemFocusVisuals = true;
+		Assert.IsTrue(element.UseSystemFocusVisuals);
+
+		element.ClearValue(UIElement.UseSystemFocusVisualsProperty);
+		Assert.IsFalse(element.UseSystemFocusVisuals);
+	}
+
+	[TestMethod]
+	public void When_UIElement_BoolFlags_Independent()
+	{
+		// Multiple booleans share the BoolFlags storage — setting one must not clobber another.
+		var element = new Border();
+
+		element.AllowDrop = true;
+		element.CanDrag = true;
+		element.IsTabStop = true;
+		element.UseSystemFocusVisuals = true;
+
+		Assert.IsTrue(element.IsHitTestVisible); // untouched default
+		Assert.IsTrue(element.AllowDrop);
+		Assert.IsTrue(element.CanDrag);
+		Assert.IsTrue(element.IsTabStop);
+		Assert.IsTrue(element.UseSystemFocusVisuals);
+
+		element.IsHitTestVisible = false;
+
+		Assert.IsFalse(element.IsHitTestVisible);
+		Assert.IsTrue(element.AllowDrop);
+		Assert.IsTrue(element.CanDrag);
+		Assert.IsTrue(element.IsTabStop);
+		Assert.IsTrue(element.UseSystemFocusVisuals);
+	}
+
+	[TestMethod]
+	public void When_UIElement_Translation_Roundtrip()
+	{
+		var element = new Border();
+		Assert.AreEqual(System.Numerics.Vector3.Zero, element.Translation);
+
+		var newTranslation = new System.Numerics.Vector3(0, 0, 10);
+		element.Translation = newTranslation;
+		Assert.AreEqual(newTranslation, element.Translation);
+		Assert.AreEqual(newTranslation, (System.Numerics.Vector3)element.GetValue(UIElement.TranslationProperty));
+
+		element.ClearValue(UIElement.TranslationProperty);
+		Assert.AreEqual(System.Numerics.Vector3.Zero, element.Translation);
+	}
+
+	[TestMethod]
+	public void When_BrushTransition_Duration_Default_And_Roundtrip()
+	{
+		var transition = new BrushTransition();
+		Assert.AreEqual(TimeSpan.FromTicks(1500000), transition.Duration); // 150 ms
+
+		transition.Duration = TimeSpan.FromMilliseconds(300);
+		Assert.AreEqual(TimeSpan.FromMilliseconds(300), transition.Duration);
+		Assert.AreEqual(TimeSpan.FromMilliseconds(300), (TimeSpan)transition.GetValue(BrushTransition.DurationProperty));
+
+		transition.ClearValue(BrushTransition.DurationProperty);
+		Assert.AreEqual(TimeSpan.FromTicks(1500000), transition.Duration);
+	}
+
+	[TestMethod]
+	public void When_Control_IsEnabled_Roundtrip()
+	{
+		var control = new Button();
+		Assert.IsTrue(control.IsEnabled);
+
+		control.IsEnabled = false;
+		Assert.IsFalse(control.IsEnabled);
+		Assert.IsFalse((bool)control.GetValue(Control.IsEnabledProperty));
+
+		control.ClearValue(Control.IsEnabledProperty);
+		Assert.IsTrue(control.IsEnabled);
+	}
+
+	[TestMethod]
+	public async System.Threading.Tasks.Task When_Control_IsEnabled_Inherits_From_Parent()
+	{
+		// Parent Control disables the subtree; child Control must observe IsEnabled=false via inheritance.
+		var childButton = new Button();
+		var parentContent = new ContentControl { Content = childButton };
+
+		TestServices.WindowHelper.WindowContent = parentContent;
+		await TestServices.WindowHelper.WaitForLoaded(parentContent);
+
+		Assert.IsTrue(childButton.IsEnabled);
+
+		parentContent.IsEnabled = false;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(parentContent.IsEnabled);
+		Assert.IsFalse(childButton.IsEnabled); // inherited
+
+		parentContent.IsEnabled = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(parentContent.IsEnabled);
+		Assert.IsTrue(childButton.IsEnabled); // inherited re-enable
+	}
+
+	[TestMethod]
+	public async System.Threading.Tasks.Task When_Control_IsEnabled_Local_Wins_Over_Inherited()
+	{
+		// Child sets local IsEnabled=true first; parent disables — child stays enabled.
+		// This is the "local-first-then-inheritance" variant of the Gap 5 scenario.
+		var childButton = new Button { IsEnabled = true };
+		var parentContent = new ContentControl { Content = childButton };
+
+		TestServices.WindowHelper.WindowContent = parentContent;
+		await TestServices.WindowHelper.WaitForLoaded(parentContent);
+
+		parentContent.IsEnabled = false;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Child has local IsEnabled=true, but CoerceIsEnabled will coerce to false
+		// because the parent is disabled — matches WinUI's behavior.
+		Assert.IsFalse(childButton.IsEnabled);
 	}
 
 	private partial class PropMethodCallTestControl : Control

@@ -1,37 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Windows.Input;
-using Windows.Foundation;
-using Windows.System;
-using Windows.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Internal;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Internal;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Media3D;
 using Microsoft.UI.Xaml.Shapes;
 using SkiaSharp;
+using Uno.Disposables;
 using Uno.Extensions;
+using Uno.Foundation;
 using Uno.Foundation.Extensibility;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml;
-using Uno.UI.Xaml.Controls.Extensions;
-using Uno.UI.Xaml.Media;
-using System.Runtime.InteropServices.JavaScript;
-using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Core;
-using Uno.Foundation;
+using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
+using Windows.System;
+using Windows.UI;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
-using Microsoft.UI.Xaml.Media.Media3D;
-using System.Numerics;
-using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -161,14 +161,42 @@ public partial class TextBox
 	}
 #nullable restore
 
-	[GeneratedDependencyProperty(DefaultValue = false)]
-	public static DependencyProperty CanPasteClipboardContentProperty { get; } = CreateCanPasteClipboardContentProperty();
+	private bool _canPasteClipboardContent;
+
+	public static DependencyProperty CanPasteClipboardContentProperty { get; } = DependencyProperty.Register(
+		nameof(CanPasteClipboardContent),
+		typeof(bool),
+		typeof(TextBox),
+		new FrameworkPropertyMetadata(defaultValue: false)
+		{
+			PropMethodCall = CanPasteClipboardContentPropMethod,
+		});
 
 	public bool CanPasteClipboardContent
 	{
-		get => GetCanPasteClipboardContentValue();
-		private set => SetCanPasteClipboardContentValue(value);
+		get => (bool)GetValue(CanPasteClipboardContentProperty);
+		private set => SetValue(CanPasteClipboardContentProperty, value);
 	}
+
+#nullable enable
+	private static object? CanPasteClipboardContentPropMethod(DependencyObject instance, bool isGet, object? valueToSet)
+	{
+		var textBox = (TextBox)instance;
+		if (isGet)
+		{
+			return Boxes.Box(textBox._canPasteClipboardContent);
+		}
+
+		var newValue = (bool)valueToSet!;
+		if (textBox._canPasteClipboardContent != newValue)
+		{
+			textBox._canPasteClipboardContent = newValue;
+			return true;
+		}
+
+		return false;
+	}
+#nullable restore
 
 	public static DependencyProperty SelectionFlyoutProperty { get; } =
 		DependencyProperty.Register(

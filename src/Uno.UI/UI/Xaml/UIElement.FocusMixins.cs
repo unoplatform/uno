@@ -1,7 +1,8 @@
-﻿using Uno.UI.Xaml;
+﻿using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Rendering;
-using Microsoft.UI.Xaml.Controls;
 
 #nullable enable
 
@@ -36,7 +37,21 @@ namespace Microsoft.UI.Xaml
 					(bool)false, // This is true for Control descendants (handled by overriding the default in the Control constructor
 					(s, e) => ((UIElement)s)?.OnIsTabStopChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
+				{
+					PropMethodCall = IsTabStopPropMethod,
+				}
 			);
+
+		private static object? IsTabStopPropMethod(DependencyObject instance, bool isGet, object? valueToSet)
+		{
+			var element = (UIElement)instance;
+			if (isGet)
+			{
+				return Boxes.Box(element.GetBoolFlag(BoolFlags.IsTabStop));
+			}
+
+			return element.TrySetBoolFlag(BoolFlags.IsTabStop, (bool)valueToSet!);
+		}
 
 		private protected virtual void OnIsTabStopChanged(bool oldValue, bool newValue) { }
 
@@ -87,12 +102,30 @@ namespace Microsoft.UI.Xaml
 
 		public bool UseSystemFocusVisuals
 		{
-			get => GetUseSystemFocusVisualsValue();
-			set => SetUseSystemFocusVisualsValue(value);
+			get => (bool)GetValue(UseSystemFocusVisualsProperty);
+			set => SetValue(UseSystemFocusVisualsProperty, value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = false)]
-		public static DependencyProperty UseSystemFocusVisualsProperty { get; } = CreateUseSystemFocusVisualsProperty();
+		public static DependencyProperty UseSystemFocusVisualsProperty { get; } =
+			DependencyProperty.Register(
+				nameof(UseSystemFocusVisuals),
+				typeof(bool),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(false)
+				{
+					PropMethodCall = UseSystemFocusVisualsPropMethod,
+				});
+
+		private static object? UseSystemFocusVisualsPropMethod(DependencyObject instance, bool isGet, object? valueToSet)
+		{
+			var element = (UIElement)instance;
+			if (isGet)
+			{
+				return Boxes.Box(element.GetBoolFlag(BoolFlags.UseSystemFocusVisuals));
+			}
+
+			return element.TrySetBoolFlag(BoolFlags.UseSystemFocusVisuals, (bool)valueToSet!);
+		}
 
 		internal virtual void UpdateFocusState(FocusState focusState)
 		{

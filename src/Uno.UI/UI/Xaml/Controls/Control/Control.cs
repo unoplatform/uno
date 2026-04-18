@@ -112,13 +112,46 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
-		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals)]
-		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
+		private bool _isEnabled = true;
+
+		public static DependencyProperty IsEnabledProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsEnabled),
+				typeof(bool),
+				typeof(Control),
+				new FrameworkPropertyMetadata(
+					defaultValue: true,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals,
+					propertyChangedCallback: (s, e) => ((Control)s).OnIsEnabledChanged(e),
+					coerceValueCallback: (s, baseValue, precedence) => ((Control)s).CoerceIsEnabled(baseValue, precedence))
+				{
+					PropMethodCall = IsEnabledPropMethod,
+				});
+
+#nullable enable
+		private static object? IsEnabledPropMethod(DependencyObject instance, bool isGet, object? valueToSet)
+		{
+			var control = (Control)instance;
+			if (isGet)
+			{
+				return Uno.UI.Helpers.Boxes.Box(control._isEnabled);
+			}
+
+			var newValue = (bool)valueToSet!;
+			if (control._isEnabled != newValue)
+			{
+				control._isEnabled = newValue;
+				return true;
+			}
+
+			return false;
+		}
+#nullable restore
 
 		public bool IsEnabled
 		{
-			get => GetIsEnabledValue();
-			set => SetIsEnabledValue(value);
+			get => (bool)GetValue(IsEnabledProperty);
+			set => SetValue(IsEnabledProperty, value);
 		}
 
 		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)

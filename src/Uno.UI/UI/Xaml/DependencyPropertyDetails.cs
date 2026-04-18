@@ -114,8 +114,7 @@ namespace Microsoft.UI.Xaml
 		{
 			// Always set inherited value.
 			// This is needed for now to always be able to restore inherited value efficiently when higher precedences are cleared.
-			// PropMethodCall DPs never use inheritance — their value is always computed from the backing field.
-			if (!IsPropMethodCall && precedence == DependencyPropertyValuePrecedences.Inheritance)
+			if (precedence == DependencyPropertyValuePrecedences.Inheritance)
 			{
 				_inheritedValue = value;
 			}
@@ -141,12 +140,9 @@ namespace Microsoft.UI.Xaml
 				if (_baseValueSource == precedence)
 				{
 					// Caller will re-evaluate base value.
-					// PropMethodCall DPs never participate in inheritance — always fall back to DefaultValue.
-					_baseValueSource = IsPropMethodCall
+					_baseValueSource = _inheritedValue == DependencyProperty.UnsetValue
 						? DependencyPropertyValuePrecedences.DefaultValue
-						: (_inheritedValue == DependencyProperty.UnsetValue
-							? DependencyPropertyValuePrecedences.DefaultValue
-							: DependencyPropertyValuePrecedences.Inheritance);
+						: DependencyPropertyValuePrecedences.Inheritance;
 				}
 			}
 
@@ -165,7 +161,8 @@ namespace Microsoft.UI.Xaml
 				// Otherwise, the BaseValue is stored directly in the _value field.
 				_value = _baseValueSource == DependencyPropertyValuePrecedences.Inheritance ? _inheritedValue : value;
 			}
-			// For PropMethodCall without ModifiedValue: skip _value write — value lives on backing field
+			// For PropMethodCall without ModifiedValue: skip _value write — authoritative value lives on the backing
+			// field and is updated by DependencyObjectStore.SetValueInternal via SetValueViaMethodCall.
 		}
 
 		/// <summary>

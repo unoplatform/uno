@@ -1,26 +1,26 @@
 ﻿#nullable enable
 
 using System;
-using Uno.UI.DataBinding;
+using System.Collections;
 using System.Collections.Generic;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Uno.Collections;
 using Uno.Diagnostics.Eventing;
 using Uno.Disposables;
-using System.Linq;
-using System.Threading;
-using Uno.Collections;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
-using Microsoft.UI.Xaml.Data;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
-using System.Collections;
-using System.Globalization;
-using Windows.ApplicationModel.Calls;
-using Microsoft.UI.Xaml.Controls;
+using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Core;
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.UI.Xaml.Media;
+using Windows.ApplicationModel.Calls;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -2057,18 +2057,25 @@ namespace Microsoft.UI.Xaml
 			if (propertyDetails.Property.IsPropMethodCall)
 			{
 				var highestPrecedence = propertyDetails.CurrentHighestValuePrecedence;
-				if (highestPrecedence == DependencyPropertyValuePrecedences.DefaultValue)
-				{
-					SetValueViaMethodCall(propertyDetails.Property, GetDefaultValue(propertyDetails.Property));
-				}
-				else if (highestPrecedence <= DependencyPropertyValuePrecedences.Animations)
+				if (highestPrecedence <= DependencyPropertyValuePrecedences.Animations)
 				{
 					// Coercion/Animation values ARE stored in ModifiedValue; GetEffectiveValue works.
 					SetValueViaMethodCall(propertyDetails.Property, propertyDetails.GetEffectiveValue());
 				}
-				else if (value != DependencyProperty.UnsetValue)
+				else if (highestPrecedence == DependencyPropertyValuePrecedences.Inheritance)
 				{
-					// Base value: pass incoming value directly, avoiding store-then-read-back.
+					// Effective source is inheritance — push the inherited value tracked in propertyDetails.
+					// Covers both the "just received inherited value" and "cleared a higher precedence, fell back to inherited" cases.
+					SetValueViaMethodCall(propertyDetails.Property, propertyDetails.GetInheritedValue());
+				}
+				else if (highestPrecedence == DependencyPropertyValuePrecedences.DefaultValue)
+				{
+					SetValueViaMethodCall(propertyDetails.Property, GetDefaultValue(propertyDetails.Property));
+				}
+				else if (value != DependencyProperty.UnsetValue && precedence == highestPrecedence)
+				{
+					// Base value was just set at the new highest precedence: pass the incoming value directly.
+					// Skip when precedence < highestPrecedence (set was ignored because a stronger precedence is active).
 					SetValueViaMethodCall(propertyDetails.Property, value);
 				}
 				// else: ClearValue (UnsetValue) where ReevaluateBaseValue already called

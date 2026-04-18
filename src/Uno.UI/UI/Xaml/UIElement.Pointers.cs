@@ -6,13 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.ApplicationModel.DataTransfer.DragDrop;
-using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
-using Windows.Devices.Haptics;
-using Windows.Devices.Input;
-using Windows.Foundation;
-using Windows.UI.Core;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -23,11 +17,18 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.DataTransfer.DragDrop;
+using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
+using Windows.Devices.Haptics;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.UI.Core;
 using MuxPointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
-using Microsoft.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
 namespace Microsoft.UI.Xaml
 {
@@ -108,7 +109,23 @@ namespace Microsoft.UI.Xaml
 			nameof(CanDrag),
 			typeof(bool),
 			typeof(UIElement),
-			new FrameworkPropertyMetadata(default(bool), OnCanDragChanged));
+			new FrameworkPropertyMetadata(default(bool), OnCanDragChanged)
+			{
+				PropMethodCall = CanDragPropMethod,
+			});
+
+#nullable enable
+		private static object? CanDragPropMethod(DependencyObject instance, bool isGet, object? valueToSet)
+		{
+			var element = (UIElement)instance;
+			if (isGet)
+			{
+				return Boxes.Box(element.GetBoolFlag(BoolFlags.CanDrag));
+			}
+
+			return element.TrySetBoolFlag(BoolFlags.CanDrag, (bool)valueToSet!);
+		}
+#nullable restore
 
 		private static void OnCanDragChanged(DependencyObject snd, DependencyPropertyChangedEventArgs args)
 		{
@@ -129,11 +146,29 @@ namespace Microsoft.UI.Xaml
 		#endregion
 
 		#region AllowDrop (DP)
+		// WinUI registers AllowDrop as IsInheritedProperty | IsPropMethodCall
+		// (see StaticMetadata.g.cpp:25887-25891 + InheritedProperties.cpp:646-648).
 		public static DependencyProperty AllowDropProperty { get; } = DependencyProperty.Register(
 			nameof(AllowDrop),
 			typeof(bool),
 			typeof(UIElement),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(defaultValue: false, options: FrameworkPropertyMetadataOptions.Inherits)
+			{
+				PropMethodCall = AllowDropPropMethod,
+			});
+
+#nullable enable
+		private static object? AllowDropPropMethod(DependencyObject instance, bool isGet, object? valueToSet)
+		{
+			var element = (UIElement)instance;
+			if (isGet)
+			{
+				return Boxes.Box(element.GetBoolFlag(BoolFlags.AllowDrop));
+			}
+
+			return element.TrySetBoolFlag(BoolFlags.AllowDrop, (bool)valueToSet!);
+		}
+#nullable restore
 
 		public bool AllowDrop
 		{

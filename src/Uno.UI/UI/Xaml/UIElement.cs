@@ -2,41 +2,42 @@
 #pragma warning disable CS0067
 #endif
 
-using Windows.Foundation;
-using System.Linq;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using System.Collections.Generic;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Uno.Disposables;
-using Microsoft.UI.Xaml.Controls;
-using Uno.UI;
-using Uno;
-using Uno.UI.Controls;
-using Uno.UI.Media;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Numerics;
 using System.Reflection;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Windows.UI.Core;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Uno;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.Controls;
+using Uno.UI.Extensions;
+using Uno.UI.Helpers;
+using Uno.UI.Media;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
-using Uno.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Composition;
-using Windows.Graphics.Display;
-using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Documents;
-using Windows.ApplicationModel.Core;
-using Microsoft.UI.Input;
-using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Core.Scaling;
-using System.Diagnostics.CodeAnalysis;
+using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Media;
+using Windows.ApplicationModel.Core;
+using Windows.Foundation;
+using Windows.Graphics.Display;
+using Windows.UI.Core;
 
 
 #if __APPLE_UIKIT__
@@ -307,29 +308,58 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public Vector3 Translation
 		{
-			get => _translation;
-			set
-			{
-				if (_translation != value)
+			get => (Vector3)GetValue(TranslationProperty);
+			set => SetValue(TranslationProperty, value);
+		}
+
+		public static DependencyProperty TranslationProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Translation),
+				typeof(Vector3),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(
+					Vector3.Zero,
+					(s, e) => ((UIElement)s).OnTranslationChanged((Vector3)e.NewValue))
 				{
-					_translation = value;
+					PropMethodCall = TranslationPropMethod,
+				});
 
+#nullable enable
+		private static object? TranslationPropMethod(DependencyObject instance, bool isGet, object? valueToSet)
+		{
+			var element = (UIElement)instance;
+			if (isGet)
+			{
+				return element._translation;
+			}
+
+			var newValue = (Vector3)valueToSet!;
+			if (element._translation != newValue)
+			{
+				element._translation = newValue;
+				return true;
+			}
+
+			return false;
+		}
+#nullable restore
+
+		private void OnTranslationChanged(Vector3 newValue)
+		{
 #if !__SKIA__
-					if (!_warnedAboutTranslation &&
-						(_translation.X != 0 || _translation.Y != 0))
-					{
-						_warnedAboutTranslation = true;
-						if (this.Log().IsEnabled(LogLevel.Warning))
-						{
-							this.Log().LogWarning("Translation supports only Z-axis on this target.");
-						}
-					}
-#endif
-
-					UpdateShadow();
-					InvalidateArrange();
+			if (!_warnedAboutTranslation &&
+				(newValue.X != 0 || newValue.Y != 0))
+			{
+				_warnedAboutTranslation = true;
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning("Translation supports only Z-axis on this target.");
 				}
 			}
+#endif
+
+			UpdateShadow();
+			InvalidateArrange();
 		}
 
 		public Shadow Shadow

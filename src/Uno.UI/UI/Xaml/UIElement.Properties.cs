@@ -7,16 +7,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Windows.UI.Core;
-using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Input;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.UI.Xaml.Input;
-using Uno.UI.Helpers;
+using Windows.UI.Core;
 
 #if __APPLE_UIKIT__
 using UIKit;
@@ -26,8 +26,35 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{
-		// TODO: Add more PropMethodCall and combine them in BitVector32
-		private bool _isHitTestVisible = true;
+		// Shared storage for boolean dependency properties on UIElement that use the PropMethodCall
+		// flag. Each property occupies a single bit, so memory scales as O(#bits)/element instead
+		// of one DP-store entry per flag. See issue #17300 for the rationale.
+		[Flags]
+		private enum BoolFlags : uint
+		{
+			None = 0,
+			IsHitTestVisible = 1 << 0,
+			AllowDrop = 1 << 1,
+			CanDrag = 1 << 2,
+			IsTabStop = 1 << 3,
+			UseSystemFocusVisuals = 1 << 4,
+		}
+
+		private BoolFlags _boolFlags = BoolFlags.IsHitTestVisible;
+
+		private bool GetBoolFlag(BoolFlags flag) => (_boolFlags & flag) != 0;
+
+		private bool TrySetBoolFlag(BoolFlags flag, bool value)
+		{
+			var newFlags = value ? _boolFlags | flag : _boolFlags & ~flag;
+			if (newFlags == _boolFlags)
+			{
+				return false;
+			}
+
+			_boolFlags = newFlags;
+			return true;
+		}
 
 		public bool IsHitTestVisible
 		{
@@ -51,19 +78,10 @@ namespace Microsoft.UI.Xaml
 			var element = (UIElement)instance;
 			if (isGet)
 			{
-				return Boxes.Box(element._isHitTestVisible);
+				return Boxes.Box(element.GetBoolFlag(BoolFlags.IsHitTestVisible));
 			}
 
-			var newValue = (bool)valueToSet!;
-			if (newValue != element._isHitTestVisible)
-			{
-				element._isHitTestVisible = newValue;
-				// The value has changed.
-				return true;
-			}
-
-			// The value didn't change.
-			return false;
+			return element.TrySetBoolFlag(BoolFlags.IsHitTestVisible, (bool)valueToSet!);
 		}
 #nullable restore
 
