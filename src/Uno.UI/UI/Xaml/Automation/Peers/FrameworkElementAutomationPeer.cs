@@ -39,7 +39,9 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	[ThreadStatic]
 	private static HashSet<AutomationPeer> t_peersResolvingName;
 
+#if !__ANDROID__ && !__APPLE_UIKIT__
 	private const int MaxAutomationTreeDepth = 512;
+#endif
 
 	public UIElement Owner { get; }
 
