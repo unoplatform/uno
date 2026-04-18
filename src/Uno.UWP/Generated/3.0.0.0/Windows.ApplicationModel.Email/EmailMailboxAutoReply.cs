@@ -15,20 +15,6 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Response
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxAutoReply.Response is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailboxAutoReply.Response");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReply", "string EmailMailboxAutoReply.Response");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEnabled
 		{
 			get
@@ -38,6 +24,20 @@ namespace Windows.ApplicationModel.Email
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReply", "bool EmailMailboxAutoReply.IsEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Response
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string EmailMailboxAutoReply.Response is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailboxAutoReply.Response");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReply", "string EmailMailboxAutoReply.Response");
 			}
 		}
 #endif

@@ -78,11 +78,11 @@ namespace Windows.Media.Playback
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaBreak.MediaBreak(Windows.Media.Playback.MediaBreakInsertionMethod, System.TimeSpan)
-		// Forced skipping of method Windows.Media.Playback.MediaBreak.PlaybackList.get
-		// Forced skipping of method Windows.Media.Playback.MediaBreak.PresentationPosition.get
-		// Forced skipping of method Windows.Media.Playback.MediaBreak.InsertionMethod.get
-		// Forced skipping of method Windows.Media.Playback.MediaBreak.CustomProperties.get
 		// Forced skipping of method Windows.Media.Playback.MediaBreak.CanStart.get
 		// Forced skipping of method Windows.Media.Playback.MediaBreak.CanStart.set
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.CustomProperties.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.InsertionMethod.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.PlaybackList.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreak.PresentationPosition.get
 	}
 }

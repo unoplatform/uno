@@ -14,9 +14,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property Start
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.RepeatedScrollSnapPoint(double, double, double, double, Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointsAlignment)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.RepeatedScrollSnapPoint(double, double, double, double, Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointsAlignment)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.Offset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.Interval.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.Start.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.End.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.Interval.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.Offset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatedScrollSnapPoint.Start.get
 	}
 }

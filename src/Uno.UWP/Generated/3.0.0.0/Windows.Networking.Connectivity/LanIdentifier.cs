@@ -44,7 +44,7 @@ namespace Windows.Networking.Connectivity
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.InfrastructureId.get
-		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.PortId.get
 		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.NetworkAdapterId.get
+		// Forced skipping of method Windows.Networking.Connectivity.LanIdentifier.PortId.get
 	}
 }

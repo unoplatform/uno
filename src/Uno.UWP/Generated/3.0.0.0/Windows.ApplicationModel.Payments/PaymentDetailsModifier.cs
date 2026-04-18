@@ -72,9 +72,9 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetailsModifier.PaymentDetailsModifier(System.Collections.Generic.IEnumerable<string>, Windows.ApplicationModel.Payments.PaymentItem, System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Payments.PaymentItem>, string)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetailsModifier.AdditionalDisplayItems.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetailsModifier.JsonData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetailsModifier.SupportedMethodIds.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetailsModifier.Total.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetailsModifier.AdditionalDisplayItems.get
 	}
 }

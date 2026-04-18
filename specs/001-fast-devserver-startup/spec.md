@@ -159,7 +159,7 @@ Both use the same registration pattern:
 
 | ID | Requirement | Priority |
 |----|------------|----------|
-| **FR1** | MCP STDIO server starts and responds to `list_tools` within 1 second of process launch. For clients that do not re-query `list_tools` after `tools/list_changed`, meta-tools (`uno_discover_tools`, `uno_execute_tool`) provide access to upstream tools. | Must |
+| **FR1** | MCP STDIO server starts and responds to `list_tools` within 1 second of process launch. Compatibility meta-tools (`uno_discover_tools`, `uno_execute_tool`) remain available throughout the session as a stable path to upstream tools while the direct tool set changes. | Must |
 | **FR2** | Licensed MCP tools functional within 5 seconds of launch (warm cache). Tool count depends on license tier (Community 9, Pro 11, Business 12). | Must |
 | **FR3** | If host is not ready, tool calls return structured errors with remediation hints | Must |
 | **FR4** | `uno://health`, `uno_health`, and CLI `health` expose the same structured diagnostics model | Must |
@@ -485,7 +485,7 @@ Program.Main()
 
 On first `list_tools`:
 - Return bridge tools (`uno_health`, `uno_app_select_solution`, `uno_app_initialize` when in force-roots-fallback mode) plus meta-tools (`uno_discover_tools`, `uno_execute_tool`)
-- Meta-tools allow clients that do not re-query `list_tools` after `tools/list_changed` to discover and invoke upstream tools
+- Meta-tools provide a stable compatibility path to discover and invoke upstream tools even as `tools/list_changed` updates the direct tool set
 - Tool *calls* that arrive before the host is ready get a structured error (not a hang)
 
 > **Implementation note**: The tool cache (`tools-cache.json`, `ToolCacheFile`) has been removed entirely. There is no more file persistence for tool definitions (`IsToolCacheEnabled`, `PersistToolCacheIfNeeded`, `RefreshCachedToolsFromUpstreamAsync` no longer exist). The meta-tools `uno_discover_tools` and `uno_execute_tool` replace the cache as the mechanism for clients to access tools that arrive after the initial `list_tools`. The `--force-generate-tool-cache` CLI option is now a no-op, kept for backward compatibility.
@@ -1166,7 +1166,7 @@ This refactoring is a **prerequisite** for the state machine (Phase 1c). All ser
 | Upstream `MCPToolsObserverService` TCS has no timeout | If license check throws or hangs **before** `TrySetResult()` at `:161`, upstream `list_tools` blocks forever (`MCPToolsObserverService.cs:194`, TCS at `:37`). Note: `TrySetResult()` IS called in the normal 0-tool path; the gap is exception/hang before that line. | **High (upstream bug)** | Upstream fix recommended — see `uno.app-mcp/README.md` alongside this spec. CLI-side 30s timeout (Phase 1a) mitigates for MCP mode once implemented. |
 | `.targets` diagnostic finds `tools/devserver/` but entry point unknown | Silently degraded state | Medium | Warning in health resource; do NOT load DLLs blindly |
 | Upstream `list_tools` blocks on license resolution | Slower than expected "functional tools" time | Medium | FR10 acknowledges this; CLI-side cache serves tools while upstream resolves |
-| **Tool cache removed** | The `tools-cache.json` file and all associated code (`IsToolCacheEnabled`, `PersistToolCacheIfNeeded`, `RefreshCachedToolsFromUpstreamAsync`) have been removed. Meta-tools (`uno_discover_tools`, `uno_execute_tool`) replace the cache as the mechanism for clients that do not re-query `list_tools` after `tools/list_changed`. `--force-generate-tool-cache` is now a no-op. | **Resolved** | Meta-tools provide a runtime mechanism that does not require file persistence. |
+| **Tool cache removed** | The `tools-cache.json` file and all associated code (`IsToolCacheEnabled`, `PersistToolCacheIfNeeded`, `RefreshCachedToolsFromUpstreamAsync`) have been removed. Meta-tools (`uno_discover_tools`, `uno_execute_tool`) replace the cache as the runtime compatibility mechanism for accessing upstream tools as the direct tool set changes. `--force-generate-tool-cache` is now a no-op. | **Resolved** | Meta-tools provide a runtime mechanism that does not require file persistence. |
 | **Controller bypass reimplementation scope** (Phase 1b) | Missing controller responsibilities break MCP mode | **Medium-High** | Controller has 9 responsibilities (see 1g table). Each must be reimplemented or explicitly delegated. High test coverage required — each responsibility needs a dedicated test. |
 | **VS extension launcher reflection fragility** | VS extension (`uno.studio`) uses reflection to load `Uno.UI.RemoteControl.VS.dll` and probe **two type names**: `Uno.UI.DevServer.VS.EntryPoint` then `Uno.UI.RemoteControl.VS.EntryPoint` (`DevServerLauncher.cs:302-303`), with v3/v2/v1 constructor probing (`DevServerLauncher.cs:313-326`). Changes to either type name or any constructor signature break the VS extension. | Medium | Lock both type names and all three constructor signatures (v1/v2/v3) with regression tests. See `uno.studio/README.md` alongside this spec for full signature details. |
 | **Rider auto-restart race condition** | Rider extension auto-restarts Host immediately on process exit. If CLI MCP mode kills and relaunches Host, Rider may race to restart its own copy → two instances. | **Medium** | AmbientRegistry pre-check exists **only in the controller path** (`Program.Command.cs:37-49`), NOT in the server-mode startup (`Program.cs` only registers at line 221, no pre-check). Rider launches Host directly (no controller). **Mitigation requires adding AmbientRegistry pre-check to the server-mode path** OR ensuring Rider uses the controller path. Test: MCP restarts Host while Rider is connected → verify only one instance survives. |
@@ -1208,7 +1208,7 @@ This refactoring is a **prerequisite** for the state machine (Phase 1c). All ser
 
 ### Phase 1a: Immediate MCP Start (MCP-only)
 - Restructure `McpProxy` to start STDIO server immediately
-- Return bridge tools + meta-tools (`uno_discover_tools`, `uno_execute_tool`) on first `list_tools` for clients that do not re-query after `tools/list_changed`
+- Return bridge tools + meta-tools (`uno_discover_tools`, `uno_execute_tool`) on initial and subsequent `list_tools` responses so clients always retain a stable compatibility route
 - Structured error responses for premature tool calls
 - **Fix `list_tools` indefinite blocking** (FR11): bounded timeout, handle 0-tool case
 - **Fix `McpClientProxy.DisposeAsync` hang**: `TrySetCanceled()` on TCS before awaiting (process shutdown must not block)

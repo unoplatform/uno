@@ -44,7 +44,7 @@ namespace Windows.Security.Authentication.OnlineId
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicketRequest.OnlineIdServiceTicketRequest(string)
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicketRequest.Service.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicketRequest.Policy.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicketRequest.Service.get
 	}
 }

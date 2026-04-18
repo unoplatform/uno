@@ -11,8 +11,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property IsTargetElementProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.EntranceNavigationTransitionInfo()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.EntranceNavigationTransitionInfo()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.IsTargetElementProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.GetIsTargetElement(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.SetIsTargetElement(Microsoft.UI.Xaml.UIElement, bool)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.IsTargetElementProperty.get
 	}
 }

@@ -43,8 +43,8 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkUsage.BytesSent.get
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkUsage.BytesReceived.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkUsage.BytesSent.get
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkUsage.ConnectionDuration.get
 	}
 }

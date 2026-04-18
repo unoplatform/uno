@@ -75,6 +75,13 @@ jobs:
       ArtifactName: uitests-android-netcoremobile-build
       ArtifactType: Container
 
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Android Native Package'
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(build.artifactstagingdirectory)/android
+      artifactName: samplesapp-android-native
+
 - job: Android_Tests
   displayName: ' ' ## Name is concatenated with the matrix group name
   dependsOn:
@@ -106,7 +113,7 @@ jobs:
           UITEST_TEST_MODE_DISPLAY_NAME: 'Automated Tests ${{ testBucket }}'
           UITEST_TEST_MODE_NAME: Automated
           UNO_UITEST_BUCKET_ID: ${{ testBucket }} ## Note: Align with UNO_UITEST_BUCKET_COUNT
-          SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
+          SAMPLEAPP_ARTIFACT_NAME: samplesapp-android-native
           TARGETPLATFORM_NAME: net9
           FAILBUILD_ON_FAILURE: true
           ALLOW_RERUN: true
@@ -120,22 +127,23 @@ jobs:
           UNO_UITEST_BUCKET_ID: RuntimeTests
           UITEST_RUNTIME_TEST_GROUP: ${{ testGroup }}
           UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-          SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
+          SAMPLEAPP_ARTIFACT_NAME: samplesapp-android-native
           TARGETPLATFORM_NAME: net9
           FAILBUILD_ON_FAILURE: true
           ALLOW_RERUN: false
           UITEST_TEST_TIMEOUT: '2600s'
 
-      'Snapshot Tests':
-        ANDROID_SIMULATOR_APILEVEL: 28
-        UITEST_TEST_MODE_DISPLAY_NAME: 'Snapshot Tests'
-        UITEST_TEST_MODE_NAME: Snapshots
-        UNO_UITEST_BUCKET_ID: Snapshot
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
-        TARGETPLATFORM_NAME: net9
-        FAILBUILD_ON_FAILURE: true
-        ALLOW_RERUN: true
-        UITEST_TEST_TIMEOUT: '270s'
+      ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+        'Snapshot Tests':
+          ANDROID_SIMULATOR_APILEVEL: 28
+          UITEST_TEST_MODE_DISPLAY_NAME: 'Snapshot Tests'
+          UITEST_TEST_MODE_NAME: Snapshots
+          UNO_UITEST_BUCKET_ID: Snapshot
+          SAMPLEAPP_ARTIFACT_NAME: samplesapp-android-native
+          TARGETPLATFORM_NAME: net9
+          FAILBUILD_ON_FAILURE: true
+          ALLOW_RERUN: true
+          UITEST_TEST_TIMEOUT: '270s'
 
       # Android 10 testing is disabled because of https://github.com/microsoft/appcenter/issues/1451
       # Android_10.0:
@@ -152,11 +160,11 @@ jobs:
         sudo udevadm trigger --name-match=kvm
     displayName: 'Enable KVM'
 
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download SamplesApp UnitTests'
+  - task: DownloadPipelineArtifact@2
+    displayName: 'Download SamplesApp Android artifact'
     inputs:
-        artifactName: $(SAMPLEAPP_ARTIFACT_NAME)
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: $(SAMPLEAPP_ARTIFACT_NAME)
+      path: '$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android'
 
   - task: DownloadBuildArtifacts@0
     condition: gt(variables['System.JobAttempt'], 1)

@@ -769,6 +769,226 @@
                 </StackPanel>
             </Border>
 
+            <!--  ==============================================  -->
+            <!--  SECTION: IsOffscreen (Visibility toggling)  -->
+            <!--  ==============================================  -->
+            <TextBlock
+                Margin="0,20,0,0"
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{ThemeResource SubtitleTextBlockStyle}"
+                Text="IsOffscreen (visibility toggling)" />
+
+            <TextBlock TextWrapping="WrapWholeWords">
+                Use inspect.exe or Accessibility Insights to verify that IsOffscreen changes
+                when elements are collapsed or made visible. Offscreen elements should report
+                IsOffscreen=True and an empty BoundingRectangle.
+            </TextBlock>
+
+            <Border
+                Padding="12"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <StackPanel Spacing="8">
+                    <Button
+                        x:Name="VisibilityTargetButton"
+                        AutomationProperties.AutomationId="VisibilityTargetButton"
+                        Content="I can be hidden" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Click="OnCollapseTarget" Content="Collapse" />
+                        <Button Click="OnShowTarget" Content="Show" />
+                    </StackPanel>
+                    <TextBlock
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        TextWrapping="WrapWholeWords">
+                        Click "Collapse" and verify the button above reports IsOffscreen=True.
+                        Click "Show" and verify it reports IsOffscreen=False with a valid BoundingRectangle.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!--  Opacity-based offscreen  -->
+            <Border
+                Padding="12"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <StackPanel Spacing="8">
+                    <Button
+                        x:Name="OpacityTargetButton"
+                        AutomationProperties.AutomationId="OpacityTargetButton"
+                        Content="Opacity test" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Click="OnSetOpacityZero" Content="Set Opacity=0" />
+                        <Button Click="OnSetOpacityOne" Content="Set Opacity=1" />
+                    </StackPanel>
+                    <TextBlock
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        TextWrapping="WrapWholeWords">
+                        An element with Opacity=0 should report IsOffscreen=True even though it is still Visible in the tree.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!--  Offscreen via hidden ancestor  -->
+            <Border
+                Padding="12"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <StackPanel Spacing="8">
+                    <StackPanel x:Name="AncestorPanel">
+                        <Button AutomationProperties.AutomationId="ChildOfCollapsibleParent" Content="Child of collapsible parent" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Click="OnCollapseAncestor" Content="Collapse parent" />
+                        <Button Click="OnShowAncestor" Content="Show parent" />
+                    </StackPanel>
+                    <TextBlock
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        TextWrapping="WrapWholeWords">
+                        When the parent StackPanel is collapsed, the child button should also report IsOffscreen=True.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!--  ==============================================  -->
+            <!--  SECTION: IsEnabled / IsKeyboardFocusable  -->
+            <!--  ==============================================  -->
+            <TextBlock
+                Margin="0,20,0,0"
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{ThemeResource SubtitleTextBlockStyle}"
+                Text="IsEnabled and IsKeyboardFocusable" />
+
+            <TextBlock TextWrapping="WrapWholeWords">
+                Verify that IsEnabled and IsKeyboardFocusable update correctly when controls
+                are enabled or disabled. A disabled control should report IsEnabled=False and
+                IsKeyboardFocusable=False.
+            </TextBlock>
+
+            <Border
+                Padding="12"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <StackPanel Spacing="8">
+                    <Button
+                        x:Name="EnabledTargetButton"
+                        AutomationProperties.AutomationId="EnabledTargetButton"
+                        Content="Enable/disable me" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Click="OnDisableTarget" Content="Disable" />
+                        <Button Click="OnEnableTarget" Content="Enable" />
+                    </StackPanel>
+                    <TextBlock
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        TextWrapping="WrapWholeWords">
+                        Click "Disable" and verify IsEnabled=False, IsKeyboardFocusable=False.
+                        Click "Enable" and verify IsEnabled=True, IsKeyboardFocusable=True.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!--  AllowFocusWhenDisabled  -->
+            <Border
+                Padding="12"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <StackPanel Spacing="8">
+                    <Button
+                        x:Name="FocusWhenDisabledButton"
+                        AllowFocusWhenDisabled="True"
+                        AutomationProperties.AutomationId="FocusWhenDisabledButton"
+                        Content="AllowFocusWhenDisabled=True" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Click="OnDisableFocusWhenDisabled" Content="Disable" />
+                        <Button Click="OnEnableFocusWhenDisabled" Content="Enable" />
+                    </StackPanel>
+                    <TextBlock
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        TextWrapping="WrapWholeWords">
+                        With AllowFocusWhenDisabled=True, a disabled control should report
+                        IsEnabled=False but IsKeyboardFocusable=True.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!--  Non-control elements  -->
+            <Border
+                Padding="12"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <StackPanel Spacing="8">
+                    <TextBlock
+                        AutomationProperties.AutomationId="PlainTextBlock"
+                        AutomationProperties.Name="Static text element"
+                        Text="I am a TextBlock (not a Control)" />
+                    <TextBlock
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        TextWrapping="WrapWholeWords">
+                        Non-control elements like TextBlock should report IsEnabled=True (always)
+                        and IsKeyboardFocusable=False (not focusable).
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!--  ==============================================  -->
+            <!--  SECTION: Combined state scenarios  -->
+            <!--  ==============================================  -->
+            <TextBlock
+                Margin="0,20,0,0"
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{ThemeResource SubtitleTextBlockStyle}"
+                Text="Combined state scenarios" />
+
+            <TextBlock TextWrapping="WrapWholeWords">
+                These scenarios combine multiple property changes to test that all UIA properties
+                stay consistent with each other.
+            </TextBlock>
+
+            <Border
+                Padding="12"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <StackPanel Spacing="8">
+                    <TextBox
+                        x:Name="CombinedTextBox"
+                        Width="200"
+                        HorizontalAlignment="Left"
+                        AutomationProperties.AutomationId="CombinedTextBox"
+                        Header="Editable field" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Click="OnDisableCombined" Content="Disable" />
+                        <Button Click="OnEnableCombined" Content="Enable" />
+                        <Button Click="OnCollapseCombined" Content="Collapse" />
+                        <Button Click="OnShowCombined" Content="Show" />
+                    </StackPanel>
+                    <TextBlock
+                        x:Name="CombinedStatusText"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        Text="Use the buttons above to toggle states and verify UIA properties with inspect.exe."
+                        TextWrapping="WrapWholeWords" />
+                </StackPanel>
+            </Border>
+
             <!--  Bottom padding  -->
             <Border Height="40" />
         </StackPanel>

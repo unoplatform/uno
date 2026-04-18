@@ -33,7 +33,7 @@ namespace Windows.Devices.WiFi
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.Timestamp.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.AvailableNetworks.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.Timestamp.get
 	}
 }

@@ -63,10 +63,10 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.RenderingReport.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.MissedScanoutCount.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.RenderingReport.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.SystemRelativeLatchTime.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.SystemRelativeScanoutStartTime.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.SystemRelativePhotonTime.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.SystemRelativeScanoutStartTime.get
 	}
 }

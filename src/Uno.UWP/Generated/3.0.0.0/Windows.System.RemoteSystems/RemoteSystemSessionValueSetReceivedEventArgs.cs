@@ -33,7 +33,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs.Sender.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs.Message.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs.Sender.get
 	}
 }

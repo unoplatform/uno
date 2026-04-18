@@ -87,6 +87,13 @@ jobs:
       ArtifactName: WinAppSDK-Package
       ArtifactType: Container
 
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish WinAppSDK Package'
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(build.artifactstagingdirectory)/AppPackages
+      artifactName: samplesapp-windows-winappsdk
+
 ##
 ## WinUI Runtime Tests
 ##
@@ -109,7 +116,7 @@ jobs:
     vmImage: 'windows-latest'
 
   variables:
-    SamplesAppArtifactName: WinAppSDK-Package
+    SamplesAppArtifactName: samplesapp-windows-winappsdk
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   steps:
@@ -165,9 +172,9 @@ jobs:
       }
 
       # Find and install the MSIX bundle
-      $msixBundlePath = Get-ChildItem -Path "$(SamplesAppArtifactPath)/AppPackages" -Filter "*.msixbundle" -Recurse | Select-Object -First 1
+      $msixBundlePath = Get-ChildItem -Path "$(SamplesAppArtifactPath)" -Filter "*.msixbundle" -Recurse | Select-Object -First 1
       if (-not $msixBundlePath) {
-        throw "Could not find MSIX bundle in $(SamplesAppArtifactPath)/AppPackages"
+        throw "Could not find MSIX bundle in $(SamplesAppArtifactPath)"
       }
       
       Write-Host "Installing MSIX bundle: $($msixBundlePath.FullName)"

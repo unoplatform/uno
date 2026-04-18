@@ -9,26 +9,26 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class AnimatedIcon : global::Microsoft.UI.Xaml.Controls.IconElement
 	{
-		// Skipping already declared property Source
-		// Skipping already declared property MirroredWhenRightToLeft
-		// Skipping already declared property FallbackIconSource
 		// Skipping already declared property FallbackIconSourceProperty
 		// Skipping already declared property MirroredWhenRightToLeftProperty
 		// Skipping already declared property SourceProperty
 		// Skipping already declared property StateProperty
+		// Skipping already declared property FallbackIconSource
+		// Skipping already declared property MirroredWhenRightToLeft
+		// Skipping already declared property Source
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedIcon.AnimatedIcon()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.AnimatedIcon()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.Source.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.Source.set
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedIcon.SetState(Microsoft.UI.Xaml.DependencyObject, string)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedIcon.GetState(Microsoft.UI.Xaml.DependencyObject)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.FallbackIconSourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.MirroredWhenRightToLeftProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.SourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.StateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.FallbackIconSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.FallbackIconSource.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.MirroredWhenRightToLeft.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.MirroredWhenRightToLeft.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.StateProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedIcon.SetState(Microsoft.UI.Xaml.DependencyObject, string)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedIcon.GetState(Microsoft.UI.Xaml.DependencyObject)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.SourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.FallbackIconSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.MirroredWhenRightToLeftProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.Source.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.Source.set
 	}
 }

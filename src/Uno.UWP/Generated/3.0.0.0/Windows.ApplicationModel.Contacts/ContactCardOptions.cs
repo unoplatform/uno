@@ -10,20 +10,6 @@ namespace Windows.ApplicationModel.Contacts
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Contacts.ContactCardTabKind InitialTabKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContactCardTabKind ContactCardOptions.InitialTabKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactCardTabKind%20ContactCardOptions.InitialTabKind");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactCardOptions", "ContactCardTabKind ContactCardOptions.InitialTabKind");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactCardHeaderKind HeaderKind
 		{
 			get
@@ -33,6 +19,20 @@ namespace Windows.ApplicationModel.Contacts
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactCardOptions", "ContactCardHeaderKind ContactCardOptions.HeaderKind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Contacts.ContactCardTabKind InitialTabKind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContactCardTabKind ContactCardOptions.InitialTabKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactCardTabKind%20ContactCardOptions.InitialTabKind");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactCardOptions", "ContactCardTabKind ContactCardOptions.InitialTabKind");
 			}
 		}
 #endif

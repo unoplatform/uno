@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property NewState
 		// Skipping already declared property OldState
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs.OldState.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs.NewState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs.OldState.get
 	}
 }

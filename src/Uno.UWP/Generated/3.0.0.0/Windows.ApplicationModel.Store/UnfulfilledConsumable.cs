@@ -43,8 +43,8 @@ namespace Windows.ApplicationModel.Store
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.OfferId.get
 		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.ProductId.get
 		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.TransactionId.get
-		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.OfferId.get
 	}
 }

@@ -8,26 +8,26 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class Panel : global::Microsoft.UI.Xaml.FrameworkElement
 	{
-		// Skipping already declared property ChildrenTransitions
-		// Skipping already declared property BackgroundTransition
-		// Skipping already declared property Background
-		// Skipping already declared property Children
-		// Skipping already declared property IsItemsHost
 		// Skipping already declared property BackgroundProperty
 		// Skipping already declared property ChildrenTransitionsProperty
 		// Skipping already declared property IsItemsHostProperty
+		// Skipping already declared property Background
+		// Skipping already declared property BackgroundTransition
+		// Skipping already declared property Children
+		// Skipping already declared property ChildrenTransitions
+		// Skipping already declared property IsItemsHost
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Panel.Panel()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.Panel()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.Children.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.BackgroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.ChildrenTransitionsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.IsItemsHostProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.Background.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.Background.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.IsItemsHost.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.ChildrenTransitions.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.ChildrenTransitions.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.BackgroundTransition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.BackgroundTransition.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.BackgroundProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.IsItemsHostProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.ChildrenTransitionsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.Children.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.ChildrenTransitions.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.ChildrenTransitions.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.IsItemsHost.get
 	}
 }

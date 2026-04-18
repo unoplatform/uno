@@ -93,14 +93,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Class.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Nickname.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Policy.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Id.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.ProviderIcon.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.ProviderId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.ProviderName.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.State.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimOperationResult> DisableAsync()
@@ -122,5 +114,13 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimOperationResult> ESimProfile.SetNicknameAsync(string newNickname) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CESimOperationResult%3E%20ESimProfile.SetNicknameAsync%28string%20newNickname%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Class.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Id.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Nickname.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Policy.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.ProviderIcon.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.ProviderId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.ProviderName.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.State.get
 	}
 }

@@ -9,6 +9,18 @@ namespace Windows.ApplicationModel.Core
 	public partial class CoreApplicationView
 	{
 		// Skipping already declared property CoreWindow
+		// Skipping already declared property Dispatcher
+		// Skipping already declared property DispatcherQueue
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsComponent
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CoreApplicationView.IsComponent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreApplicationView.IsComponent");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsHosted
@@ -29,18 +41,6 @@ namespace Windows.ApplicationModel.Core
 			}
 		}
 #endif
-		// Skipping already declared property Dispatcher
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsComponent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreApplicationView.IsComponent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreApplicationView.IsComponent");
-			}
-		}
-#endif
-		// Skipping already declared property TitleBar
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Collections.IPropertySet Properties
@@ -51,19 +51,19 @@ namespace Windows.ApplicationModel.Core
 			}
 		}
 #endif
-		// Skipping already declared property DispatcherQueue
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.CoreWindow.get
+		// Skipping already declared property TitleBar
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.Activated.add
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.Activated.remove
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.IsMain.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.IsHosted.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.Dispatcher.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.IsComponent.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.TitleBar.get
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.HostedViewClosing.add
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.HostedViewClosing.remove
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.Properties.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.CoreWindow.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.Dispatcher.get
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.DispatcherQueue.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.IsComponent.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.IsHosted.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.IsMain.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.Properties.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.TitleBar.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Core.CoreApplicationView, global::Windows.ApplicationModel.Activation.IActivatedEventArgs> Activated

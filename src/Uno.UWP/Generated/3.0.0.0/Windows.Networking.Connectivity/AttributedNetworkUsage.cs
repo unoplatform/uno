@@ -63,10 +63,10 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.BytesSent.get
-		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.BytesReceived.get
 		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.AttributionId.get
 		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.AttributionName.get
 		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.AttributionThumbnail.get
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.BytesReceived.get
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.BytesSent.get
 	}
 }

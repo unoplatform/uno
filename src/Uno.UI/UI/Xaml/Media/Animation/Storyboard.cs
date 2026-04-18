@@ -13,7 +13,6 @@ using Windows.UI.Core;
 using Uno.Disposables;
 using System.Diagnostics;
 using System.Globalization;
-using Windows.Graphics.Printing.PrintSupport;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {

@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -131,6 +132,16 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		if (IsAccessibilityEnabled)
 		{
 			OnSizeOrOffsetChanged(visual);
+
+			// Raise automatic property changes (IsOffscreen, IsEnabled, Name, ItemStatus)
+			// so accessibility clients get notified when elements move on/off screen.
+			// Use CachedAutomationPeer to avoid creating peers eagerly on every layout pass,
+			// which would prevent elements from being garbage collected.
+			if (visual is ContainerVisual containerVisual
+				&& containerVisual.Owner?.Target is UIElement owner)
+			{
+				owner.CachedAutomationPeer?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+			}
 		}
 	}
 

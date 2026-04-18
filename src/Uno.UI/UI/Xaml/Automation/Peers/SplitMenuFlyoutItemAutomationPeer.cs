@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
-internal class SplitMenuFlyoutItemAutomationPeer : FrameworkElementAutomationPeer, IInvokeProvider, IExpandCollapseProvider
+public partial class SplitMenuFlyoutItemAutomationPeer : FrameworkElementAutomationPeer, IInvokeProvider, IExpandCollapseProvider
 {
 	private const string c_primaryButtonAutomationId = "SplitMenuFlyoutItemPrimaryButton";
 

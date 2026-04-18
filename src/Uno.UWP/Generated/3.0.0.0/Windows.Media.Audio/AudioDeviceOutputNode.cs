@@ -15,30 +15,6 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Enumeration.DeviceInformation Device
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DeviceInformation AudioDeviceOutputNode.Device is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20AudioDeviceOutputNode.Device");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double OutgoingGain
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double AudioDeviceOutputNode.OutgoingGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioDeviceOutputNode.OutgoingGain");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioDeviceOutputNode", "double AudioDeviceOutputNode.OutgoingGain");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ConsumeInput
 		{
 			get
@@ -48,6 +24,16 @@ namespace Windows.Media.Audio
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioDeviceOutputNode", "bool AudioDeviceOutputNode.ConsumeInput");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Enumeration.DeviceInformation Device
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DeviceInformation AudioDeviceOutputNode.Device is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20AudioDeviceOutputNode.Device");
 			}
 		}
 #endif
@@ -85,13 +71,20 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.Device.get
-		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.EffectDefinitions.get
-		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.OutgoingGain.set
-		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.OutgoingGain.get
-		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.EncodingProperties.get
-		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.ConsumeInput.get
-		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.ConsumeInput.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double OutgoingGain
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double AudioDeviceOutputNode.OutgoingGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioDeviceOutputNode.OutgoingGain");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioDeviceOutputNode", "double AudioDeviceOutputNode.OutgoingGain");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -134,8 +127,15 @@ namespace Windows.Media.Audio
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioDeviceOutputNode", "void AudioDeviceOutputNode.Dispose()");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.Listener.set
+		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.ConsumeInput.get
+		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.ConsumeInput.set
+		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.Device.get
+		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.EffectDefinitions.get
+		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.EncodingProperties.get
 		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.Listener.get
+		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.Listener.set
+		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.OutgoingGain.get
+		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.OutgoingGain.set
 		// Processing: Windows.Media.Audio.IAudioNode
 		// Processing: System.IDisposable
 		// Processing: Windows.Media.Audio.IAudioNodeWithListener

@@ -10,43 +10,15 @@ namespace Windows.Media
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan StartTime
+		public global::System.TimeSpan EndTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemMediaTransportControlsTimelineProperties.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemMediaTransportControlsTimelineProperties.StartTime");
+				throw new global::System.NotImplementedException("The member TimeSpan SystemMediaTransportControlsTimelineProperties.EndTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemMediaTransportControlsTimelineProperties.EndTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.StartTime");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan Position
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemMediaTransportControlsTimelineProperties.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemMediaTransportControlsTimelineProperties.Position");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.Position");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan MinSeekTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemMediaTransportControlsTimelineProperties.MinSeekTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemMediaTransportControlsTimelineProperties.MinSeekTime");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.MinSeekTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.EndTime");
 			}
 		}
 #endif
@@ -66,15 +38,43 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan EndTime
+		public global::System.TimeSpan MinSeekTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemMediaTransportControlsTimelineProperties.EndTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemMediaTransportControlsTimelineProperties.EndTime");
+				throw new global::System.NotImplementedException("The member TimeSpan SystemMediaTransportControlsTimelineProperties.MinSeekTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemMediaTransportControlsTimelineProperties.MinSeekTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.EndTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.MinSeekTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan Position
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan SystemMediaTransportControlsTimelineProperties.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemMediaTransportControlsTimelineProperties.Position");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.Position");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan StartTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan SystemMediaTransportControlsTimelineProperties.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemMediaTransportControlsTimelineProperties.StartTime");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.StartTime");
 			}
 		}
 #endif
@@ -86,15 +86,15 @@ namespace Windows.Media
 		}
 #endif
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.SystemMediaTransportControlsTimelineProperties()
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.StartTime.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.StartTime.set
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.EndTime.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.EndTime.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.MinSeekTime.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.MinSeekTime.set
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.MaxSeekTime.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.MaxSeekTime.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.MinSeekTime.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.MinSeekTime.set
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.Position.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.Position.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.StartTime.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.StartTime.set
 	}
 }

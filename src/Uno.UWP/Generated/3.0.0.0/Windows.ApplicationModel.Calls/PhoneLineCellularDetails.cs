@@ -53,10 +53,6 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.SimState.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.SimSlotIndex.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.IsModemOn.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.RegistrationRejectCode.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetNetworkOperatorDisplayText(global::Windows.ApplicationModel.Calls.PhoneLineNetworkOperatorDisplayTextLocation location)
@@ -64,5 +60,9 @@ namespace Windows.ApplicationModel.Calls
 			throw new global::System.NotImplementedException("The member string PhoneLineCellularDetails.GetNetworkOperatorDisplayText(PhoneLineNetworkOperatorDisplayTextLocation location) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneLineCellularDetails.GetNetworkOperatorDisplayText%28PhoneLineNetworkOperatorDisplayTextLocation%20location%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.IsModemOn.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.RegistrationRejectCode.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.SimSlotIndex.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.SimState.get
 	}
 }

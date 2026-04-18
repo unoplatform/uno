@@ -53,10 +53,6 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest.AppointmentCalendarLocalId.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest.Appointment.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest.NotifyInvitees.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest.ChangedProperties.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync(global::Windows.ApplicationModel.Appointments.Appointment createdOrUpdatedAppointment)
@@ -71,5 +67,9 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendarCreateOrUpdateAppointmentRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppointmentCalendarCreateOrUpdateAppointmentRequest.ReportFailedAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest.Appointment.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest.AppointmentCalendarLocalId.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest.ChangedProperties.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest.NotifyInvitees.get
 	}
 }

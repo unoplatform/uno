@@ -15,16 +15,6 @@ namespace Windows.Networking.PushNotifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Content
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string RawNotification.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RawNotification.Content");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ChannelId
 		{
 			get
@@ -35,11 +25,11 @@ namespace Windows.Networking.PushNotifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyDictionary<string, string> Headers
+		public string Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, string> RawNotification.Headers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20string%3E%20RawNotification.Headers");
+				throw new global::System.NotImplementedException("The member string RawNotification.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RawNotification.Content");
 			}
 		}
 #endif
@@ -53,9 +43,19 @@ namespace Windows.Networking.PushNotifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.Content.get
-		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.Headers.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyDictionary<string, string> Headers
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, string> RawNotification.Headers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20string%3E%20RawNotification.Headers");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.ChannelId.get
+		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.Content.get
 		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.ContentBytes.get
+		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.Headers.get
 	}
 }

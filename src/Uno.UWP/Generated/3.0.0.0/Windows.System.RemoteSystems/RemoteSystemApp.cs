@@ -25,6 +25,16 @@ namespace Windows.System.RemoteSystems
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ConnectionToken
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string RemoteSystemApp.ConnectionToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemApp.ConnectionToken");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DisplayName
 		{
 			get
@@ -65,16 +75,6 @@ namespace Windows.System.RemoteSystems
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ConnectionToken
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemApp.ConnectionToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemApp.ConnectionToken");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.User User
 		{
 			get
@@ -83,12 +83,12 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.Id.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.Attributes.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.ConnectionToken.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.DisplayName.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.Id.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.IsAvailableByProximity.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.IsAvailableBySpatialProximity.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.Attributes.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.User.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.ConnectionToken.get
 	}
 }

@@ -4,6 +4,18 @@ using Microsoft.UI.Xaml.Data;
 namespace Microsoft.UI.Xaml
 {
 	/// <summary>
+	/// Supports PropMethodCall DPs.
+	/// </summary>
+	/// <remarks>
+	/// <paramref name="valueToSet"/> should be null when isGet is true.
+	/// In WinUI, when setting the value, the return value represents whether the property has changed its value.
+	/// In Uno, we are not yet doing it this way, and the return value is currently ignored when setting the value.
+	/// </remarks>
+#nullable enable
+	internal delegate object? PropMethodCall(DependencyObject instance, bool isGet, object? valueToSet);
+#nullable restore
+
+	/// <summary>
 	/// Defines the metadata to use for a dependency property for framework elements
 	/// </summary>
 	/// <remarks>
@@ -150,6 +162,10 @@ namespace Microsoft.UI.Xaml
 
 		public FrameworkPropertyMetadataOptions Options { get; set; } = FrameworkPropertyMetadataOptions.Default;
 
+		internal PropMethodCall PropMethodCall { get; init; }
+
+		internal bool IsPropMethodCall => PropMethodCall is not null;
+
 		// Kept for binary compat only.
 		// This property should be removed, and the whole FrameworkPropertyMetadata should be internal.
 		public UpdateSourceTrigger DefaultUpdateSourceTrigger
@@ -189,7 +205,10 @@ namespace Microsoft.UI.Xaml
 
 		internal override PropertyMetadata CloneWithOverwrittenDefaultValue(object newDefaultValue)
 		{
-			return new FrameworkPropertyMetadata(newDefaultValue, Options, PropertyChangedCallback, CoerceValueCallback, BackingFieldUpdateCallback, CreateDefaultValueCallback);
+			return new FrameworkPropertyMetadata(newDefaultValue, Options, PropertyChangedCallback, CoerceValueCallback, BackingFieldUpdateCallback, CreateDefaultValueCallback)
+			{
+				PropMethodCall = PropMethodCall,
+			};
 		}
 	}
 }

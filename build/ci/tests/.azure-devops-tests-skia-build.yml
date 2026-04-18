@@ -54,14 +54,14 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net10.0
-      artifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
+      artifactName: samplesapp-desktop-skia
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Wpf Islands Binaries'
     retryCountOnTaskFailure: 3
     inputs:
       targetPath: $(Build.SourcesDirectory)\src\SamplesApp\UnoIslandsSamplesApp.Skia.WPF\bin\Release\net9.0-windows
-      artifactName: uno-islands-skia-wpf-samples-app-$(XAML_FLAVOR_BUILD)
+      artifactName: samplesapp-wpf-islands-skia
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3

@@ -15,6 +15,20 @@ namespace Windows.Security.DataProtection
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Security.DataProtection.UserDataProtectionManager TryGetDefault()
+		{
+			throw new global::System.NotImplementedException("The member UserDataProtectionManager UserDataProtectionManager.TryGetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataProtectionManager%20UserDataProtectionManager.TryGetDefault%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Security.DataProtection.UserDataProtectionManager TryGetForUser(global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member UserDataProtectionManager UserDataProtectionManager.TryGetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataProtectionManager%20UserDataProtectionManager.TryGetForUser%28User%20user%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.DataProtection.UserDataStorageItemProtectionStatus> ProtectStorageItemAsync(global::Windows.Storage.IStorageItem storageItem, global::Windows.Security.DataProtection.UserDataAvailability availability)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataStorageItemProtectionStatus> UserDataProtectionManager.ProtectStorageItemAsync(IStorageItem storageItem, UserDataAvailability availability) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataStorageItemProtectionStatus%3E%20UserDataProtectionManager.ProtectStorageItemAsync%28IStorageItem%20storageItem%2C%20UserDataAvailability%20availability%29");
@@ -50,20 +64,6 @@ namespace Windows.Security.DataProtection
 #endif
 		// Forced skipping of method Windows.Security.DataProtection.UserDataProtectionManager.DataAvailabilityStateChanged.add
 		// Forced skipping of method Windows.Security.DataProtection.UserDataProtectionManager.DataAvailabilityStateChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Security.DataProtection.UserDataProtectionManager TryGetDefault()
-		{
-			throw new global::System.NotImplementedException("The member UserDataProtectionManager UserDataProtectionManager.TryGetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataProtectionManager%20UserDataProtectionManager.TryGetDefault%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Security.DataProtection.UserDataProtectionManager TryGetForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member UserDataProtectionManager UserDataProtectionManager.TryGetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataProtectionManager%20UserDataProtectionManager.TryGetForUser%28User%20user%29");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.DataProtection.UserDataProtectionManager, global::Windows.Security.DataProtection.UserDataAvailabilityStateChangedEventArgs> DataAvailabilityStateChanged

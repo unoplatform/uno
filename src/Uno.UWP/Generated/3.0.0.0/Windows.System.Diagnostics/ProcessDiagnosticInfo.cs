@@ -45,6 +45,16 @@ namespace Windows.System.Diagnostics
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsPackaged
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ProcessDiagnosticInfo.IsPackaged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ProcessDiagnosticInfo.IsPackaged");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.Diagnostics.ProcessMemoryUsage MemoryUsage
 		{
 			get
@@ -85,38 +95,6 @@ namespace Windows.System.Diagnostics
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPackaged
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ProcessDiagnosticInfo.IsPackaged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ProcessDiagnosticInfo.IsPackaged");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.ProcessId.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.ExecutableFileName.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.Parent.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.ProcessStartTime.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.DiskUsage.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.MemoryUsage.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.CpuUsage.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo> GetAppDiagnosticInfos()
-		{
-			throw new global::System.NotImplementedException("The member IList<AppDiagnosticInfo> ProcessDiagnosticInfo.GetAppDiagnosticInfos() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CAppDiagnosticInfo%3E%20ProcessDiagnosticInfo.GetAppDiagnosticInfos%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.IsPackaged.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.System.Diagnostics.ProcessDiagnosticInfo TryGetForProcessId(uint processId)
-		{
-			throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.TryGetForProcessId(uint processId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessDiagnosticInfo%20ProcessDiagnosticInfo.TryGetForProcessId%28uint%20processId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.System.Diagnostics.ProcessDiagnosticInfo> GetForProcesses()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<ProcessDiagnosticInfo> ProcessDiagnosticInfo.GetForProcesses() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CProcessDiagnosticInfo%3E%20ProcessDiagnosticInfo.GetForProcesses%28%29");
@@ -129,5 +107,27 @@ namespace Windows.System.Diagnostics
 			throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.GetForCurrentProcess() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessDiagnosticInfo%20ProcessDiagnosticInfo.GetForCurrentProcess%28%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.System.Diagnostics.ProcessDiagnosticInfo TryGetForProcessId(uint processId)
+		{
+			throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.TryGetForProcessId(uint processId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessDiagnosticInfo%20ProcessDiagnosticInfo.TryGetForProcessId%28uint%20processId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo> GetAppDiagnosticInfos()
+		{
+			throw new global::System.NotImplementedException("The member IList<AppDiagnosticInfo> ProcessDiagnosticInfo.GetAppDiagnosticInfos() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CAppDiagnosticInfo%3E%20ProcessDiagnosticInfo.GetAppDiagnosticInfos%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.CpuUsage.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.DiskUsage.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.ExecutableFileName.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.IsPackaged.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.MemoryUsage.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.Parent.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.ProcessId.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.ProcessStartTime.get
 	}
 }

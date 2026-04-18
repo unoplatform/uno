@@ -11,10 +11,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Skipping already declared property AvailableFormats
 		// Skipping already declared property Properties
 		// Skipping already declared property RequestedOperation
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.Properties.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.RequestedOperation.get
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.ReportOperationCompleted(Windows.ApplicationModel.DataTransfer.DataPackageOperation)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.AvailableFormats.get
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.Contains(string)
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.GetDataAsync(string)
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.GetTextAsync()
@@ -55,5 +52,8 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 #endif
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.SetAcceptedFormatId(string)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.AvailableFormats.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.Properties.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.RequestedOperation.get
 	}
 }

@@ -33,7 +33,7 @@ namespace Microsoft.Windows.AppLifecycle
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppActivationArguments.Kind.get
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppActivationArguments.Data.get
+		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppActivationArguments.Kind.get
 	}
 }

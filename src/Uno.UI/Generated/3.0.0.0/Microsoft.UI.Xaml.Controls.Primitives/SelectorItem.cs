@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class SelectorItem : global::Microsoft.UI.Xaml.Controls.ContentControl
 	{
-		// Skipping already declared property IsSelected
 		// Skipping already declared property IsSelectedProperty
+		// Skipping already declared property IsSelected
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.SelectorItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.SelectorItem()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.IsSelectedProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.IsSelected.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.IsSelectedProperty.get
 	}
 }

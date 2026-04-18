@@ -37,10 +37,10 @@ namespace Windows.Media.SpeechRecognition
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint.IsEnabled.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint.IsEnabled.set
+		// Forced skipping of method Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint.Probability.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint.Probability.set
 		// Forced skipping of method Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint.Tag.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint.Tag.set
 		// Forced skipping of method Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint.Type.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint.Probability.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint.Probability.set
 	}
 }

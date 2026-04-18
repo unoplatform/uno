@@ -202,6 +202,20 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		partial void OnMonochromeColorChanged()
+		{
+			if (_surfaceBrush is not null)
+			{
+				// When the image is already loaded, just update the color filter on the brush
+				// instead of reloading the entire image. This avoids flicker.
+				_surfaceBrush.MonochromeColor = MonochromeColor?.ToSKColor();
+			}
+			else
+			{
+				OnSourceChanged(Source, forceReload: true);
+			}
+		}
+
 		private bool IsSourceReady()
 		{
 			if (Source is SvgImageSource svgImageSource)

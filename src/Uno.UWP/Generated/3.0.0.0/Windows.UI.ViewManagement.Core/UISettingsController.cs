@@ -15,6 +15,13 @@ namespace Windows.UI.ViewManagement.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.ViewManagement.Core.UISettingsController> RequestDefaultAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<UISettingsController> UISettingsController.RequestDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUISettingsController%3E%20UISettingsController.RequestDefaultAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetAdvancedEffectsEnabled(bool value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.UISettingsController", "void UISettingsController.SetAdvancedEffectsEnabled(bool value)");
@@ -46,13 +53,6 @@ namespace Windows.UI.ViewManagement.Core
 		public void SetTextScaleFactor(double value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.UISettingsController", "void UISettingsController.SetTextScaleFactor(double value)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.ViewManagement.Core.UISettingsController> RequestDefaultAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UISettingsController> UISettingsController.RequestDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUISettingsController%3E%20UISettingsController.RequestDefaultAsync%28%29");
 		}
 #endif
 	}

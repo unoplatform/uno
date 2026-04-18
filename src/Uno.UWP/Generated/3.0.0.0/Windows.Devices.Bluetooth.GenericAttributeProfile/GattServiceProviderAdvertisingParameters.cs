@@ -10,20 +10,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsDiscoverable
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool GattServiceProviderAdvertisingParameters.IsDiscoverable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GattServiceProviderAdvertisingParameters.IsDiscoverable");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters", "bool GattServiceProviderAdvertisingParameters.IsDiscoverable");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsConnectable
 		{
 			get
@@ -33,6 +19,20 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters", "bool GattServiceProviderAdvertisingParameters.IsConnectable");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsDiscoverable
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool GattServiceProviderAdvertisingParameters.IsDiscoverable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GattServiceProviderAdvertisingParameters.IsDiscoverable");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters", "bool GattServiceProviderAdvertisingParameters.IsDiscoverable");
 			}
 		}
 #endif
@@ -58,11 +58,11 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters.GattServiceProviderAdvertisingParameters()
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters.IsConnectable.set
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters.IsConnectable.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters.IsDiscoverable.set
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters.IsConnectable.set
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters.IsDiscoverable.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters.ServiceData.set
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters.IsDiscoverable.set
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters.ServiceData.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters.ServiceData.set
 	}
 }

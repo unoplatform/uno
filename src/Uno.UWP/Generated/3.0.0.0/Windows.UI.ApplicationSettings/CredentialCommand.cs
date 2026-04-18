@@ -44,7 +44,7 @@ namespace Windows.UI.ApplicationSettings
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.CredentialCommand(Windows.Security.Credentials.PasswordCredential, Windows.UI.ApplicationSettings.CredentialCommandCredentialDeletedHandler)
-		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.PasswordCredential.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.CredentialDeleted.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.PasswordCredential.get
 	}
 }

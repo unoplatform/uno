@@ -8,14 +8,9 @@ namespace Windows.Devices.Sensors
 #endif
 	public partial class SimpleOrientationSensor
 	{
-		// Skipping already declared property ReadingTransform
 		// Skipping already declared property DeviceId
-		// Skipping already declared method Windows.Devices.Sensors.SimpleOrientationSensor.GetCurrentOrientation()
-		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.OrientationChanged.add
-		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.OrientationChanged.remove
-		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.DeviceId.get
-		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.ReadingTransform.set
-		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.ReadingTransform.get
+		// Skipping already declared property ReadingTransform
+		// Skipping already declared method Windows.Devices.Sensors.SimpleOrientationSensor.GetDefault()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -30,7 +25,12 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SimpleOrientationSensor> SimpleOrientationSensor.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSimpleOrientationSensor%3E%20SimpleOrientationSensor.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Skipping already declared method Windows.Devices.Sensors.SimpleOrientationSensor.GetDefault()
+		// Skipping already declared method Windows.Devices.Sensors.SimpleOrientationSensor.GetCurrentOrientation()
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.OrientationChanged.add
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.OrientationChanged.remove
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.DeviceId.get
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.ReadingTransform.get
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensor.ReadingTransform.set
 		// Skipping already declared event Windows.Devices.Sensors.SimpleOrientationSensor.OrientationChanged
 	}
 }

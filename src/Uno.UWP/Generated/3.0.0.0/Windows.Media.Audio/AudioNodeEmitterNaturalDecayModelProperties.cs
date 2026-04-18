@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.UnityGainDistance.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.CutoffDistance.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.UnityGainDistance.get
 	}
 }

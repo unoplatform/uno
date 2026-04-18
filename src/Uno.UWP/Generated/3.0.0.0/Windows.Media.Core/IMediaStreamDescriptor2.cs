@@ -15,7 +15,7 @@ namespace Windows.Media.Core
 			set;
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.IMediaStreamDescriptor2.Label.set
 		// Forced skipping of method Windows.Media.Core.IMediaStreamDescriptor2.Label.get
+		// Forced skipping of method Windows.Media.Core.IMediaStreamDescriptor2.Label.set
 	}
 }

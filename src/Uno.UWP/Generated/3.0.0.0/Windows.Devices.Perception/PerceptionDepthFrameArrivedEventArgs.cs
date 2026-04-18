@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -24,7 +23,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameArrivedEventArgs.RelativeTime.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.PerceptionDepthFrame TryOpenFrame()
@@ -32,5 +30,6 @@ namespace Windows.Devices.Perception
 			throw new global::System.NotImplementedException("The member PerceptionDepthFrame PerceptionDepthFrameArrivedEventArgs.TryOpenFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionDepthFrame%20PerceptionDepthFrameArrivedEventArgs.TryOpenFrame%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameArrivedEventArgs.RelativeTime.get
 	}
 }

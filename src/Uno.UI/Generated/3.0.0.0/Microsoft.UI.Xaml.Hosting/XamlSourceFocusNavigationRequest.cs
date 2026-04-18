@@ -17,8 +17,8 @@ namespace Microsoft.UI.Xaml.Hosting
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.XamlSourceFocusNavigationRequest(Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationReason, Windows.Foundation.Rect)
 		// Skipping already declared method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.XamlSourceFocusNavigationRequest(Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationReason, Windows.Foundation.Rect, System.Guid)
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.XamlSourceFocusNavigationRequest(Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationReason, Windows.Foundation.Rect, System.Guid)
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.Reason.get
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.HintRect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.CorrelationId.get
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.HintRect.get
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest.Reason.get
 	}
 }

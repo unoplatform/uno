@@ -2149,7 +2149,384 @@
 		  <Member fullName="Microsoft.UI.Xaml.Controls.NumberBoxAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ProgressRingAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrumAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />
+		  <!-- BEGIN WinUI sync: WinRT interop projections replaced by BCL equivalents -->
+		  <Member fullName="Microsoft.UI.Xaml.Interop.IBindableIterable" reason="WinUI sync: replaced by System.Collections.IEnumerable" />
+		  <Member fullName="Microsoft.UI.Xaml.Interop.IBindableVector" reason="WinUI sync: replaced by System.Collections.IList" />
+		  <Member fullName="Microsoft.UI.Xaml.Interop.INotifyCollectionChanged" reason="WinUI sync: replaced by System.Collections.Specialized.INotifyCollectionChanged" />
+		  <Member fullName="Microsoft.UI.Xaml.Interop.NotifyCollectionChangedAction" reason="WinUI sync: replaced by System.Collections.Specialized.NotifyCollectionChangedAction" />
+		  <Member fullName="Microsoft.UI.Xaml.Interop.NotifyCollectionChangedEventArgs" reason="WinUI sync: replaced by System.Collections.Specialized.NotifyCollectionChangedEventArgs" />
+		  <Member fullName="Microsoft.UI.Xaml.Interop.NotifyCollectionChangedEventHandler" reason="WinUI sync: replaced by System.Collections.Specialized.NotifyCollectionChangedEventHandler" />
+		  <Member fullName="Microsoft.UI.Xaml.Data.DataErrorsChangedEventArgs" reason="WinUI sync: replaced by System.ComponentModel.DataErrorsChangedEventArgs" />
+		  <Member fullName="Microsoft.UI.Xaml.Data.INotifyDataErrorInfo" reason="WinUI sync: replaced by System.ComponentModel.INotifyDataErrorInfo" />
+		  <!-- END WinUI sync: WinRT interop projections replaced by BCL equivalents -->
+		  <!-- BEGIN WinUI sync: NotImplemented helper stubs not present in WinAppSDK 1.8 -->
+		  <Member fullName="Microsoft.UI.Xaml.Media.MatrixHelper" reason="WinUI sync: not in WinAppSDK 1.8" />
+		  <Member fullName="Microsoft.UI.Xaml.Media.Media3D.Matrix3DHelper" reason="WinUI sync: not in WinAppSDK 1.8" />
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.KeyTimeHelper" reason="WinUI sync: not in WinAppSDK 1.8" />
+		  <Member fullName="Microsoft.UI.Xaml.Media.Animation.RepeatBehaviorHelper" reason="WinUI sync: not in WinAppSDK 1.8" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.Primitives.GeneratorPositionHelper" reason="WinUI sync: not in WinAppSDK 1.8" />
+		  <!-- END WinUI sync: NotImplemented helper stubs -->
+
+		  <!-- ====================================================================== -->
+		  <!-- BEGIN WinUI sync: Windows.* legacy / preview namespaces removed         -->
+		  <!--                                                                        -->
+		  <!-- All entries below were [NotImplemented] generated stubs only on Uno.   -->
+		  <!-- Verified: zero non-Generated implementations on master, zero usage     -->
+		  <!-- references outside generator/test infrastructure. Removed types match  -->
+		  <!-- WinAppSDK 1.8 surface trim. Where Uno had a real impl in a different  -->
+		  <!-- namespace (Microsoft.UI.Composition, Windows.Devices.Power, etc.) the  -->
+		  <!-- impl is preserved by the branch.                                       -->
+		  <!-- ====================================================================== -->
+
+		  <!-- Group 1: Windows.Phone.* — entire WP8 namespace tree retired by Microsoft.
+		       Includes ApplicationModel, Devices.Power, Management.Deployment,
+		       Media.Devices, Notification.Management, PersonalInformation (incl. Provisioning),
+		       PhoneContract, Speech.Recognition, System.*, UI.Input.
+		       Windows.Phone.Devices.Notification.VibrationDevice is the only real Uno impl
+		       under Windows.Phone.* and is preserved (commit 81670705f0). -->
+		  <Member fullName="Windows\.Phone\.(?!Devices\.Notification\.).+" reason="WinUI sync: Windows.Phone.* retired by WinAppSDK 1.8 (legacy WP8 surface; Windows.Phone.Devices.Notification.VibrationDevice preserved)" isRegex="true" />
+
+		  <!-- Group 2: Windows.ApplicationModel.Calls.* — legacy active-call control APIs.
+		       Modern PhoneCallManager / PhoneCallHistory* surface is preserved (Uno has real
+		       Android/iOS/wasm impls); only the call-state/DTMF/audio-routing stubs go. -->
+		  <Member fullName="Windows\.ApplicationModel\.Calls\.(Dtmf(Key|ToneAudioPlayback)|PhoneCall(AudioDevice|Direction|Info|OperationStatus|Status|sResult)?|PhoneLine(DialResult|OperationStatus)|TransportDeviceAudioRoutingStatus)" reason="WinUI sync: legacy active-call control APIs removed by WinAppSDK 1.8 (PhoneCallManager / PhoneCallHistory* preserved)" isRegex="true" />
+
+		  <!-- Group 3: Windows.ApplicationModel.ConversationalAgent.* — Cortana voice
+		       activation result/configuration types. Cortana retired by Microsoft. -->
+		  <Member fullName="Windows\.ApplicationModel\.ConversationalAgent\.(ActivationSignalDetectionConfiguration(CreationResult|CreationStatus|RemovalResult|SetModelDataResult|StateChangeResult)|ConversationalAgent(ActivationKind|ActivationResult|VoiceActivationPrerequisiteKind)|SignalDetectorResourceKind)" reason="WinUI sync: Cortana ConversationalAgent preview types removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Group 4: Windows.ApplicationModel.* miscellaneous preview/phone-related types -->
+		  <Member fullName="Windows.ApplicationModel.Activation.IPhoneCallActivatedEventArgs" reason="WinUI sync: phone-call activation contract removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.ApplicationModel.Activation.PhoneCallActivatedEventArgs" reason="WinUI sync: phone-call activation args removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.ApplicationModel.AppExecutionContext" reason="WinUI sync: preview app-execution-context API removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.ApplicationModel.AppInstallerPolicySource" reason="WinUI sync: preview installer-policy enum removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.ApplicationModel.CameraApplicationManager" reason="WinUI sync: legacy camera-app launcher removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.ApplicationModel.Holographic.HolographicKeyboard" reason="WinUI sync: HoloLens preview API removed by WinAppSDK 1.8" />
+
+		  <!-- Group 5a: Windows.Devices.Bluetooth.BluetoothLE PHY / preferred-connection
+		       preview parameters. Core BLE surface unchanged. -->
+		  <Member fullName="Windows\.Devices\.Bluetooth\.BluetoothLE(ConnectionParameters|ConnectionPhy(Info)?|PreferredConnectionParameters(Request(Status)?)?)" reason="WinUI sync: BLE PHY / preferred-connection-parameters preview types removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Group 5b: Windows.Devices.Display.Core preview status enums -->
+		  <Member fullName="Windows\.Devices\.Display\.Core\.Display(PresentStatus|ScanoutOptions|SourceStatus|TaskResult)" reason="WinUI sync: DisplayCore preview status enums removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Group 5c: Windows.Devices.Printers.Ipp* preview IPP printer surface -->
+		  <Member fullName="Windows\.Devices\.Printers\.Ipp(AttributeError(Reason)?|AttributeValue(Kind)?|IntegerRange|PrintDevice|Resolution(Unit)?|SetAttributesResult|TextWithLanguage)" reason="WinUI sync: IPP printer preview API removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Group 6a: Windows.Graphics.Capture preview access-gating types -->
+		  <Member fullName="Windows\.Graphics\.Capture\.GraphicsCaptureAccess(Kind)?" reason="WinUI sync: preview capture-access API removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Group 6b/c: Single-type preview removals in Windows.Graphics.* -->
+		  <Member fullName="Windows.Graphics.Display.DisplayServices" reason="WinUI sync: preview API removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.Graphics.Holographic.HolographicDepthReprojectionMethod" reason="WinUI sync: preview enum removed by WinAppSDK 1.8" />
+
+		  <!-- Group 6d: Windows.Graphics.Printing.PrintSupport.* — entire sub-namespace
+		       retired (preview print extension API never stabilized). -->
+		  <Member fullName="Windows\.Graphics\.Printing\.PrintSupport\..+" reason="WinUI sync: PrintSupport preview namespace removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Group 6e: Windows.Graphics.Printing.Workflow.* — entire sub-namespace
+		       retired (preview print-workflow API never stabilized). -->
+		  <Member fullName="Windows\.Graphics\.Printing\.Workflow\..+" reason="WinUI sync: PrintWorkflow preview namespace removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Group 7: Windows.Management.Deployment.* preview deployment types -->
+		  <Member fullName="Windows.Management.Deployment.AppInstallerManager" reason="WinUI sync: preview installer manager removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.Management.Deployment.AutoUpdateSettingsOptions" reason="WinUI sync: preview auto-update settings removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.Management.Deployment.PackageAllUserProvisioningOptions" reason="WinUI sync: preview provisioning options removed by WinAppSDK 1.8" />
+
+		  <!-- Group 8a: Windows.Media.Capture preview types -->
+		  <Member fullName="Windows.Media.Capture.ScreenCapture" reason="WinUI sync: preview screen-capture API removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.Media.Capture.SourceSuspensionChangedEventArgs" reason="WinUI sync: preview event args removed by WinAppSDK 1.8" />
+
+		  <!-- Group 8b: Windows.Media.Core.TimedText{Bouten,Ruby}* — Japanese subtitle
+		       (Bouten emphasis marks and CSS Ruby) types removed by WinAppSDK 1.8. -->
+		  <Member fullName="Windows\.Media\.Core\.TimedText(Bouten(Position|Type)?|Ruby(Align|Position|Reserve)?)" reason="WinUI sync: Japanese subtitle (Bouten/Ruby) types removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Group 8c: Windows.Media.Devices preview camera APIs (CameraOcclusion*, DigitalWindow*) -->
+		  <Member fullName="Windows\.Media\.Devices\.(CameraOcclusion(Info|Kind|State|StateChangedEventArgs)?|DigitalWindow(Bounds|Capability|Control|Mode))" reason="WinUI sync: preview camera occlusion / digital-window APIs removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Group 8d: Windows.Media.Effects single removal -->
+		  <Member fullName="Windows.Media.Effects.SlowMotionEffectDefinition" reason="WinUI sync: preview slow-motion effect removed by WinAppSDK 1.8" />
+
+		  <!-- Group 8e: Cortana voice command APIs (real SpeechRecognition surface preserved) -->
+		  <Member fullName="Windows\.Media\.SpeechRecognition\.VoiceCommand(Manager|Set)" reason="WinUI sync: Cortana voice-command APIs removed by WinAppSDK 1.8 (core SpeechRecognition preserved)" isRegex="true" />
+
+		  <!-- Group 9a: Windows.Networking.NetworkOperators.MobileBroadband* — cellular SIM
+		       slot management preview API. -->
+		  <Member fullName="Windows\.Networking\.NetworkOperators\.MobileBroadband(CellNR|CurrentSlotIndexChangedEventArgs|SlotInfo(ChangedEventArgs)?|SlotManager|SlotState)" reason="WinUI sync: cellular slot-management preview removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Group 9b: Windows.Networking.Vpn preview foreground-activation -->
+		  <Member fullName="Windows\.Networking\.Vpn\.VpnForeground(ActivatedEventArgs|ActivationOperation)" reason="WinUI sync: VPN foreground-activation preview removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Group 10a: Windows.Storage.* preview -->
+		  <Member fullName="Windows.Storage.StorageLibraryChangeTrackerOptions" reason="WinUI sync: preview change-tracker options removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.Storage.StorageLibraryLastChangeId" reason="WinUI sync: preview change-id type removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.Storage.Streams.IPropertySetSerializer" reason="WinUI sync: preview property-set serializer removed by WinAppSDK 1.8" />
+
+		  <!-- Group 10b: Windows.System.* preview -->
+		  <Member fullName="Windows.System.RemoteDesktop.Input.RemoteTextConnection" reason="WinUI sync: preview remote-desktop text connection removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.System.RemoteDesktop.Input.RemoteTextConnectionDataHandler" reason="WinUI sync: preview remote-desktop text data handler removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.System.UserAgeConsentGroup" reason="WinUI sync: preview age-consent enum removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.System.UserAgeConsentResult" reason="WinUI sync: preview age-consent result removed by WinAppSDK 1.8" />
+
+		  <!-- Group 11a: Windows.UI.Composition.* — legacy WinRT projections superseded
+		       by the unified Microsoft.UI.Composition namespace. Real Uno impls live in
+		       Microsoft.UI.Composition (RectangleClip, DelegatedInkTrailVisual,
+		       *EasingFunction, IVisualElement2) and are preserved on the branch. -->
+		  <Member fullName="Windows\.UI\.Composition\.((Back|Bounce|Circle|Elastic|Exponential|Power|Sine)EasingFunction|CompositionEasingFunctionMode|DelegatedInkTrailVisual|ICompositionSupportsSystemBackdrop|ICompositionSurfaceFacade|IVisualElement2|InkTrailPoint|RectangleClip)" reason="WinUI sync: legacy Windows.UI.Composition projections removed (Microsoft.UI.Composition equivalents preserved)" isRegex="true" />
+
+		  <!-- Group 11b: Windows.UI.Core preview independent-input controllers -->
+		  <Member fullName="Windows\.UI\.Core\.CoreIndependentInput(Filters|SourceController)" reason="WinUI sync: preview independent-input controller types removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Group 11c: Windows.UI.Notifications single removal -->
+		  <Member fullName="Windows.UI.Notifications.ToastNotificationMode" reason="WinUI sync: preview toast notification mode removed by WinAppSDK 1.8" />
+
+		  <!-- Group 11d: Windows.UI.Shell.ShareWindowCommand* — preview share-window cmds -->
+		  <Member fullName="Windows\.UI\.Shell\.ShareWindowCommand(EventArgs|Source)?" reason="WinUI sync: preview share-window command types removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Group 11e: Windows.UI.ViewManagement.Core preview framework-input view types -->
+		  <Member fullName="Windows\.UI\.ViewManagement\.Core\.Core(FrameworkInputView(AnimationStartingEventArgs|OcclusionsChangedEventArgs)?|InputViewAnimationStartingEventArgs)" reason="WinUI sync: preview core framework-input view types removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Group 11f/g: single-type Windows.UI.* removals -->
+		  <Member fullName="Windows.UI.WebUI.WebUIPhoneCallActivatedEventArgs" reason="WinUI sync: phone-call activation event args removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.UI.WindowManagement.WindowServices" reason="WinUI sync: preview window-services type removed by WinAppSDK 1.8" />
+
+		  <!-- END WinUI sync: Windows.* legacy / preview namespaces removed -->
 	  </Types>
+
+	  <Fields>
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.ScrollingInputKinds::value__" reason="WinUI sync: type restructured in WinAppSDK 1.8" />
+
+		  <!-- ====================================================================== -->
+		  <!-- BEGIN WinUI sync (Category D): enum constant removals.                 -->
+		  <!--                                                                        -->
+		  <!-- 31 enum members removed by Microsoft from WinAppSDK 1.8 across 19      -->
+		  <!-- preserved enum types. All verified stub-only on master (the enums       -->
+		  <!-- exist as generated stubs; the specific members have zero references in -->
+		  <!-- non-Generated Uno code). User impact: an app that switched on these    -->
+		  <!-- specific enum members in a `case X.Y` arm gets a compile error;        -->
+		  <!-- functional behavior was already broken since Uno never returned these  -->
+		  <!-- values from any API.                                                   -->
+		  <!-- ====================================================================== -->
+
+		  <!-- ConversationalAgent (Cortana retired) -->
+		  <Member fullName="Windows\.ApplicationModel\.ConversationalAgent\.DetectionConfigurationTrainingStatus Windows\.ApplicationModel\.ConversationalAgent\.DetectionConfigurationTrainingStatus::(ConfigurationNotFound|TrainingTimedOut)" reason="WinUI sync: Cortana training-status enum members removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- DisplayCore preview enum members -->
+		  <Member fullName="Windows.Devices.Display.Core.DisplayManagerOptions Windows.Devices.Display.Core.DisplayManagerOptions::VirtualRefreshRateAware" reason="WinUI sync: preview DisplayManagerOptions.VirtualRefreshRateAware removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.Devices.Display.Core.DisplayTaskSignalKind Windows.Devices.Display.Core.DisplayTaskSignalKind::OnPresentFlipTo" reason="WinUI sync: preview DisplayTaskSignalKind.OnPresentFlipTo removed by WinAppSDK 1.8" />
+
+		  <!-- PrintWorkflow preview enum member -->
+		  <Member fullName="Windows.Graphics.Printing.Workflow.PrintWorkflowSessionStatus Windows.Graphics.Printing.Workflow.PrintWorkflowSessionStatus::PdlDataAvailableForModification" reason="WinUI sync: preview PrintWorkflowSessionStatus.PdlDataAvailableForModification removed by WinAppSDK 1.8" />
+
+		  <!-- Media.Capture preview enum members (metadata stream / preview audio profiles / preview video profiles) -->
+		  <Member fullName="Windows.Media.Capture.Frames.MediaFrameSourceKind Windows.Media.Capture.Frames.MediaFrameSourceKind::Metadata" reason="WinUI sync: preview metadata frame-source kind removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.Media.Capture.MediaStreamType Windows.Media.Capture.MediaStreamType::Metadata" reason="WinUI sync: preview metadata media-stream type removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.Media.Capture.KnownVideoProfile Windows.Media.Capture.KnownVideoProfile::CompressedCamera" reason="WinUI sync: preview CompressedCamera video profile removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows\.Media\.Capture\.MediaCategory Windows\.Media\.Capture\.MediaCategory::(FarFieldSpeech|UniformSpeech|VoiceTyping)" reason="WinUI sync: preview audio media categories removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Media.Effects preview audio effects -->
+		  <Member fullName="Windows\.Media\.Effects\.AudioEffectType Windows\.Media\.Effects\.AudioEffectType::(DeepNoiseSuppression|FarFieldBeamForming)" reason="WinUI sync: preview audio effect types removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Networking.Connectivity preview WPA3 / GCMP enum members -->
+		  <Member fullName="Windows\.Networking\.Connectivity\.NetworkAuthenticationType Windows\.Networking\.Connectivity\.NetworkAuthenticationType::Wpa3Enterprise(192Bits)?" reason="WinUI sync: preview WPA3 Enterprise auth type variants removed by WinAppSDK 1.8" isRegex="true" />
+		  <Member fullName="Windows\.Networking\.Connectivity\.NetworkEncryptionType Windows\.Networking\.Connectivity\.NetworkEncryptionType::Gcmp(256)?" reason="WinUI sync: preview GCMP encryption variants removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Networking.NetworkOperators preview 5G NR / eSIM error enum members -->
+		  <Member fullName="Windows\.Networking\.NetworkOperators\.DataClasses Windows\.Networking\.NetworkOperators\.DataClasses::NewRadio(NonStandalone|Standalone)" reason="WinUI sync: preview 5G New Radio data-class members removed by WinAppSDK 1.8" isRegex="true" />
+		  <Member fullName="Windows\.Networking\.NetworkOperators\.ESimOperationStatus Windows\.Networking\.NetworkOperators\.ESimOperationStatus::(IccidAlreadyExists|ProfileDownloadMaxRetriesExceeded|ProfileProcessingError|ServerNotTrusted|TimeoutWaitingForResponse)" reason="WinUI sync: preview eSIM operation-status error members removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Storage preview enum members (see chat: SharedLocal app-data area, DownloadsFolder
+		       known-folder id, AllowedPerAppFolder partial-access status — all preview/Phone-era) -->
+		  <Member fullName="Windows.Storage.ApplicationDataLocality Windows.Storage.ApplicationDataLocality::SharedLocal" reason="WinUI sync: legacy shared-local app-data area removed by WinAppSDK 1.8 (Phone-era publisher sharing)" />
+		  <Member fullName="Windows.Storage.KnownFolderId Windows.Storage.KnownFolderId::DownloadsFolder" reason="WinUI sync: KnownFolderId.DownloadsFolder removed (use KnownFolders.Downloads / FolderPicker)" />
+		  <Member fullName="Windows.Storage.KnownFoldersAccessStatus Windows.Storage.KnownFoldersAccessStatus::AllowedPerAppFolder" reason="WinUI sync: partial per-app-folder access status removed by WinAppSDK 1.8 (binary granted/denied model)" />
+
+		  <!-- System preview enum members -->
+		  <Member fullName="Windows.System.Diagnostics.DiagnosticActionState Windows.System.Diagnostics.DiagnosticActionState::Executing" reason="WinUI sync: preview DiagnosticActionState.Executing removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.System.UserType Windows.System.UserType::SystemManaged" reason="WinUI sync: preview UserType.SystemManaged removed by WinAppSDK 1.8" />
+
+		  <!-- ViewManagement.Core preview input-view kinds -->
+		  <Member fullName="Windows\.UI\.ViewManagement\.Core\.CoreInputViewKind Windows\.UI\.ViewManagement\.Core\.CoreInputViewKind::(Clipboard|Dictation)" reason="WinUI sync: preview CoreInputViewKind members removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- END WinUI sync (Category D): enum constant removals -->
+	  </Fields>
+
+	  <Properties>
+		  <!-- BEGIN WinUI sync: WinRT IVector.Size replaced by ICollection.Count -->
+		  <Member fullName="System.UInt32 Microsoft.UI.Composition.CompositionColorGradientStopCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Composition.CompositionShapeCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Composition.ImplicitAnimationCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Composition.InitialValueExpressionCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Composition.Scenes.SceneComponentCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Composition.Scenes.SceneNodeCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.ResourceDictionary::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.Block Microsoft.UI.Xaml.Documents.BlockCollection::Item(System.Int32)" reason="WinUI sync: indexer provided by base class" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Documents.InlineCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Media.BrushCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Media.DoubleCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Media.PointCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Media.TransformCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Media.Animation.TransitionCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Controls.HubSectionCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <!-- END WinUI sync: WinRT IVector.Size -->
+
+		  <!-- BEGIN WinUI sync (Category A): WinRT IVector.Size projection removed across Windows.* collections.
+		       Same migration as the Microsoft.UI.* block above, extended to all 49 Windows.*
+		       collection types whose WinRT-projected uint Size getter is gone in WinAppSDK 1.8.
+		       Verified all 49 owners: 45 stub-only, 3 with real impls in Microsoft.UI.* namespace
+		       (their non-Generated impl uses ICollection.Count, not Size), 1
+		       (CompositionStrokeDashArray) has a real Size impl but only on the Microsoft.UI.Composition
+		       version which is preserved by this branch. The Windows.* stubs all threw
+		       NotImplementedException at runtime, so converting to a compile error is strictly
+		       an improvement for callers. The Windows\. prefix in the regex prevents matching
+		       any Microsoft.UI.* real impls. -->
+		  <Member fullName="System\.UInt32 Windows\..+::Size\(\)" reason="WinUI sync: WinRT IVector.Size projection removed across Windows.* collections (replaced by ICollection.Count)" isRegex="true" />
+		  <!-- END WinUI sync (Category A): Windows.* IVector.Size -->
+
+		  <!-- ====================================================================== -->
+		  <!-- BEGIN WinUI sync (Category B): shadow property removals.               -->
+		  <!--                                                                        -->
+		  <!-- Properties on KEPT types whose getter/setter type is itself a removed  -->
+		  <!-- type (see Group X entries in <Types> above). Each entry is paired with -->
+		  <!-- a get_/set_ accessor in the <Methods> Category B block below.          -->
+		  <!-- All verified stub-only on master.                                      -->
+		  <!-- ====================================================================== -->
+
+		  <!-- Refs Group 4: Windows.ApplicationModel.AppExecutionContext -->
+		  <Member fullName="Windows.ApplicationModel.AppExecutionContext Windows.ApplicationModel.AppInfo::ExecutionContext()" reason="WinUI sync: returns removed type AppExecutionContext (Group 4)" />
+
+		  <!-- Refs Group 4: Windows.ApplicationModel.AppInstallerPolicySource -->
+		  <Member fullName="Windows.ApplicationModel.AppInstallerPolicySource Windows.ApplicationModel.AppInstallerInfo::PolicySource()" reason="WinUI sync: returns removed type AppInstallerPolicySource (Group 4)" />
+
+		  <!-- Refs Group 2: Windows.ApplicationModel.Calls.TransportDeviceAudioRoutingStatus -->
+		  <Member fullName="Windows.ApplicationModel.Calls.TransportDeviceAudioRoutingStatus Windows.ApplicationModel.Calls.PhoneLineTransportDevice::AudioRoutingStatus()" reason="WinUI sync: returns removed type TransportDeviceAudioRoutingStatus (Group 2)" />
+
+		  <!-- Refs Group 3: Windows.ApplicationModel.ConversationalAgent.SignalDetectorResourceKind -->
+		  <Member fullName="System\.Collections\.Generic\.IReadOnlyList`1&lt;Windows\.ApplicationModel\.ConversationalAgent\.SignalDetectorResourceKind&gt; Windows\.ApplicationModel\.ConversationalAgent\.DetectionConfigurationAvailabilityInfo::UnavailableSystemResources\(\)" reason="WinUI sync: returns list of removed enum SignalDetectorResourceKind (Group 3)" isRegex="true" />
+
+		  <!-- Refs Group 5b: Windows.Devices.Display.Core.DisplaySourceStatus -->
+		  <Member fullName="Windows.Devices.Display.Core.DisplaySourceStatus Windows.Devices.Display.Core.DisplaySource::Status()" reason="WinUI sync: returns removed enum DisplaySourceStatus (Group 5b)" />
+
+		  <!-- Refs Group 6: Windows.Graphics.Holographic.HolographicDepthReprojectionMethod -->
+		  <Member fullName="Windows.Graphics.Holographic.HolographicDepthReprojectionMethod Windows.Graphics.Holographic.HolographicCameraRenderingParameters::DepthReprojectionMethod()" reason="WinUI sync: returns removed enum HolographicDepthReprojectionMethod (Group 6)" />
+		  <Member fullName="System\.Collections\.Generic\.IReadOnlyList`1&lt;Windows\.Graphics\.Holographic\.HolographicDepthReprojectionMethod&gt; Windows\.Graphics\.Holographic\.HolographicViewConfiguration::SupportedDepthReprojectionMethods\(\)" reason="WinUI sync: returns list of removed enum HolographicDepthReprojectionMethod (Group 6)" isRegex="true" />
+
+		  <!-- Refs Group 8b: Windows.Media.Core.TimedTextBouten / TimedTextRuby -->
+		  <Member fullName="Windows.Media.Core.TimedTextBouten Windows.Media.Core.TimedTextStyle::Bouten()" reason="WinUI sync: returns removed type TimedTextBouten (Group 8b)" />
+		  <Member fullName="Windows.Media.Core.TimedTextRuby Windows.Media.Core.TimedTextStyle::Ruby()" reason="WinUI sync: returns removed type TimedTextRuby (Group 8b)" />
+
+		  <!-- Refs Group 8c: Windows.Media.Devices.CameraOcclusionInfo / DigitalWindowControl -->
+		  <Member fullName="Windows.Media.Devices.CameraOcclusionInfo Windows.Media.Devices.VideoDeviceController::CameraOcclusionInfo()" reason="WinUI sync: returns removed type CameraOcclusionInfo (Group 8c)" />
+		  <Member fullName="Windows.Media.Devices.DigitalWindowControl Windows.Media.Devices.VideoDeviceController::DigitalWindowControl()" reason="WinUI sync: returns removed type DigitalWindowControl (Group 8c)" />
+
+		  <!-- Refs Group 9a: Windows.Networking.NetworkOperators.MobileBroadbandCellNR / SlotManager -->
+		  <Member fullName="System\.Collections\.Generic\.IReadOnlyList`1&lt;Windows\.Networking\.NetworkOperators\.MobileBroadbandCellNR&gt; Windows\.Networking\.NetworkOperators\.MobileBroadbandCellsInfo::(Neighboring|Serving)CellsNR\(\)" reason="WinUI sync: returns list of removed type MobileBroadbandCellNR (Group 9a)" isRegex="true" />
+		  <Member fullName="Windows.Networking.NetworkOperators.MobileBroadbandSlotManager Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation::SlotManager()" reason="WinUI sync: returns removed type MobileBroadbandSlotManager (Group 9a)" />
+
+		  <!-- Refs Group 11c: Windows.UI.Notifications.ToastNotificationMode -->
+		  <Member fullName="Windows.UI.Notifications.ToastNotificationMode Windows.UI.Notifications.ToastNotificationManagerForUser::NotificationMode()" reason="WinUI sync: returns removed enum ToastNotificationMode (Group 11c)" />
+
+		  <!-- END WinUI sync (Category B): shadow property removals -->
+
+		  <!-- ====================================================================== -->
+		  <!-- BEGIN WinUI sync (Category C): independent property removals.          -->
+		  <!--                                                                        -->
+		  <!-- Properties trimmed from kept types that DON'T reference a removed type -->
+		  <!-- in their signature. Microsoft restructured/removed these in WinAppSDK  -->
+		  <!-- 1.8 directly. Each property is paired with its get_/set_ accessor in   -->
+		  <!-- the <Methods> Category C block below.                                  -->
+		  <!--                                                                        -->
+		  <!-- Verified all stub-only on master (zero non-Generated impls of the      -->
+		  <!-- specific members, even where the owner type has a real Uno impl).     -->
+		  <!-- ====================================================================== -->
+
+		  <!-- AppExtensions / AppInfo / AppListEntry / AppInstallerInfo: heavy preview restructure -->
+		  <Member fullName="System.String Windows.ApplicationModel.AppExtensions.AppExtension::AppUserModelId()" reason="WinUI sync: AppExtension.AppUserModelId removed by WinAppSDK 1.8" />
+		  <Member fullName="System.String[] Windows.ApplicationModel.AppInfo::SupportedFileExtensions()" reason="WinUI sync: AppInfo.SupportedFileExtensions removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.ApplicationModel.AppInfo Windows.ApplicationModel.Core.AppListEntry::AppInfo()" reason="WinUI sync: AppListEntry.AppInfo removed by WinAppSDK 1.8 (use Package.Current.Id)" />
+		  <!-- AppInstallerInfo: 15 properties trimmed in WinAppSDK 1.8 (preview install-policy/auto-update surface restructured). -->
+		  <Member fullName="System.Boolean Windows.ApplicationModel.AppInstallerInfo::AutomaticBackgroundTask()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
+		  <Member fullName="System.Boolean Windows.ApplicationModel.AppInstallerInfo::ForceUpdateFromAnyVersion()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
+		  <Member fullName="System.Boolean Windows.ApplicationModel.AppInstallerInfo::IsAutoRepairEnabled()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
+		  <Member fullName="System.Boolean Windows.ApplicationModel.AppInstallerInfo::OnLaunch()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
+		  <Member fullName="System.Boolean Windows.ApplicationModel.AppInstallerInfo::ShowPrompt()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
+		  <Member fullName="System.Boolean Windows.ApplicationModel.AppInstallerInfo::UpdateBlocksActivation()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
+		  <Member fullName="System\.Collections\.Generic\.IReadOnlyList`1&lt;System\.Uri&gt; Windows\.ApplicationModel\.AppInstallerInfo::(DependencyPackage|OptionalPackage|Repair|Update)Uris\(\)" reason="WinUI sync: AppInstallerInfo URI list properties removed (preview)" isRegex="true" />
+		  <Member fullName="System.DateTimeOffset Windows.ApplicationModel.AppInstallerInfo::LastChecked()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
+		  <Member fullName="System.Nullable`1&lt;System.DateTimeOffset&gt; Windows.ApplicationModel.AppInstallerInfo::PausedUntil()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
+		  <Member fullName="System.UInt32 Windows.ApplicationModel.AppInstallerInfo::HoursBetweenUpdateChecks()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
+		  <Member fullName="Windows.ApplicationModel.PackageVersion Windows.ApplicationModel.AppInstallerInfo::Version()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
+
+		  <!-- PhoneLineTransportDevice: paired with Cat B InBandRingingEnabledChanged event -->
+		  <Member fullName="System.Boolean Windows.ApplicationModel.Calls.PhoneLineTransportDevice::InBandRingingEnabled()" reason="WinUI sync: paired with removed InBandRingingEnabledChanged event (Group 2)" />
+
+		  <!-- ConversationalAgent: ActivationSignalDetector / ConversationalAgentSignal preview surface -->
+		  <Member fullName="System.String Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector::DetectorId()" reason="WinUI sync: ConversationalAgent preview restructured" />
+		  <Member fullName="System.UInt32 Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration::TrainingStepCompletionMaxAllowedTime()" reason="WinUI sync: ConversationalAgent preview restructured" />
+		  <Member fullName="System.String Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal::DetectorId()" reason="WinUI sync: ConversationalAgent preview restructured" />
+		  <Member fullName="Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectorKind Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal::DetectorKind()" reason="WinUI sync: ConversationalAgent preview restructured" />
+
+		  <!-- ResourceMapIterator / MapViewIterator: WinRT IIterator pattern dropped -->
+		  <Member fullName="System.Boolean Windows.ApplicationModel.Resources.Core.ResourceMapIterator::HasCurrent()" reason="WinUI sync: WinRT IIterator pattern removed (use IEnumerator)" />
+		  <Member fullName="System.Boolean Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator::HasCurrent()" reason="WinUI sync: WinRT IIterator pattern removed (use IEnumerator)" />
+
+		  <!-- Bluetooth/Display preview properties on kept types -->
+		  <Member fullName="System.Boolean Windows.Devices.Geolocation.Geocoordinate::IsRemoteSource()" reason="WinUI sync: preview Geocoordinate.IsRemoteSource removed by WinAppSDK 1.8" />
+		  <Member fullName="System\.Nullable`1&lt;System\.Double&gt; Windows\.Devices\.Geolocation\.GeocoordinateSatelliteData::(GeometricDilutionOfPrecision|TimeDilutionOfPrecision)\(\)" reason="WinUI sync: preview GNSS DOP properties removed by WinAppSDK 1.8" isRegex="true" />
+		  <Member fullName="System.Nullable`1&lt;Windows.Devices.Display.Core.DisplayPresentationRate&gt; Windows.Devices.Display.Core.DisplayPath::PhysicalPresentationRate()" reason="WinUI sync: preview DisplayPath.PhysicalPresentationRate removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.Devices.Display.Core.DisplayPresentationRate Windows.Devices.Display.Core.DisplayModeInfo::PhysicalPresentationRate()" reason="WinUI sync: preview DisplayModeInfo.PhysicalPresentationRate removed by WinAppSDK 1.8" />
+
+		  <!-- KnownSimpleHapticsControllerWaveforms: 10 preview waveform constants removed.
+		       Uno only ships 4 waveforms (BuzzContinuous, Click, Press, Release). -->
+		  <Member fullName="System\.UInt16 Windows\.Devices\.Haptics\.KnownSimpleHapticsControllerWaveforms::(BrushContinuous|ChiselMarkerContinuous|EraserContinuous|Error|GalaxyPenContinuous|Hover|InkContinuous|MarkerContinuous|PencilContinuous|Success)\(\)" reason="WinUI sync: preview KnownSimpleHapticsControllerWaveforms constants removed by WinAppSDK 1.8 (Uno keeps BuzzContinuous/Click/Press/Release)" isRegex="true" />
+
+		  <!-- PenDevice / Inking preview -->
+		  <Member fullName="Windows.Devices.Haptics.SimpleHapticsController Windows.Devices.Input.PenDevice::SimpleHapticsController()" reason="WinUI sync: preview PenDevice.SimpleHapticsController removed by WinAppSDK 1.8" />
+		  <Member fullName="System.UInt32 Windows.UI.Input.Inking.InkStroke::PointerId()" reason="WinUI sync: preview InkStroke.PointerId removed by WinAppSDK 1.8" />
+		  <Member fullName="System.Boolean Windows.UI.Input.Inking.InkInputConfiguration::IsPenHapticFeedbackEnabled()" reason="WinUI sync: preview pen-haptic-feedback removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.UI.Core.CoreCursor Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource::PointerCursor()" reason="WinUI sync: preview CoreInkIndependentInputSource.PointerCursor removed by WinAppSDK 1.8" />
+
+		  <!-- Capture session border-required preview -->
+		  <Member fullName="System.Boolean Windows.Graphics.Capture.GraphicsCaptureSession::IsBorderRequired()" reason="WinUI sync: preview GraphicsCaptureSession.IsBorderRequired removed by WinAppSDK 1.8" />
+
+		  <!-- TimedTextStyle: properties associated with removed Bouten/Ruby (Group 8b) but
+		       not directly returning those types -->
+		  <Member fullName="System.Boolean Windows.Media.Core.TimedTextStyle::IsTextCombined()" reason="WinUI sync: TimedTextStyle preview property removed alongside Bouten/Ruby surface (Group 8b)" />
+		  <Member fullName="System.Double Windows.Media.Core.TimedTextStyle::FontAngleInDegrees()" reason="WinUI sync: TimedTextStyle preview property removed alongside Bouten/Ruby surface (Group 8b)" />
+
+		  <!-- PlayReady iterator HasCurrent: WinRT IIterator pattern dropped -->
+		  <Member fullName="System\.Boolean Windows\.Media\.Protection\.PlayReady\.PlayReady(Domain|License|SecureStop)Iterator::HasCurrent\(\)" reason="WinUI sync: WinRT IIterator pattern removed (use IEnumerator)" isRegex="true" />
+
+		  <!-- AppUriHandlerHost / Registration / RegistrationManager preview -->
+		  <Member fullName="System.Boolean Windows.System.AppUriHandlerHost::IsEnabled()" reason="WinUI sync: AppUriHandlerHost preview property removed by WinAppSDK 1.8" />
+		  <Member fullName="System.String Windows.System.AppUriHandlerRegistration::PackageFamilyName()" reason="WinUI sync: AppUriHandlerRegistration preview property removed by WinAppSDK 1.8" />
+		  <Member fullName="System.String Windows.System.AppUriHandlerRegistrationManager::PackageFamilyName()" reason="WinUI sync: AppUriHandlerRegistrationManager preview property removed by WinAppSDK 1.8" />
+
+		  <!-- KnownUserProperties / AnalyticsVersionInfo / SystemDiagnosticInfo preview -->
+		  <Member fullName="System.String Windows.System.KnownUserProperties::AgeEnforcementRegion()" reason="WinUI sync: preview AgeEnforcementRegion known-user-property removed by WinAppSDK 1.8" />
+		  <Member fullName="System.String Windows.System.Profile.AnalyticsVersionInfo::ProductName()" reason="WinUI sync: preview AnalyticsVersionInfo.ProductName removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.System.ProcessorArchitecture Windows.System.Diagnostics.SystemDiagnosticInfo::PreferredArchitecture()" reason="WinUI sync: preview SystemDiagnosticInfo.PreferredArchitecture removed by WinAppSDK 1.8" />
+
+		  <!-- SpatialAudioFormatSubtype.DTSXForHomeTheater preview -->
+		  <Member fullName="System.String Windows.Media.Audio.SpatialAudioFormatSubtype::DTSXForHomeTheater()" reason="WinUI sync: preview DTSXForHomeTheater spatial-audio constant removed by WinAppSDK 1.8" />
+
+		  <!-- Windows.UI.Composition.Compositor.DispatcherQueue (legacy WinRT projection;
+		       Microsoft.UI.Composition.Compositor real impl uses Dispatching.DispatcherQueue.Main separately) -->
+		  <Member fullName="Windows.System.DispatcherQueue Windows.UI.Composition.Compositor::DispatcherQueue()" reason="WinUI sync: legacy Compositor.DispatcherQueue projection removed; Microsoft.UI.Composition.Compositor preserved" />
+
+		  <!-- Windows.UI.Composition.Visual: hit-test / pixel-snap properties.
+		       Verified zero impls in Uno's real Visual.cs across all platforms. -->
+		  <Member fullName="System.Boolean Windows.UI.Composition.Visual::IsHitTestVisible()" reason="WinUI sync: preview Visual.IsHitTestVisible removed by WinAppSDK 1.8 (no Uno impl)" />
+		  <Member fullName="System.Boolean Windows.UI.Composition.Visual::IsPixelSnappingEnabled()" reason="WinUI sync: preview Visual.IsPixelSnappingEnabled removed by WinAppSDK 1.8 (no Uno impl)" />
+
+		  <!-- StatusBar.ProgressIndicator: returns kept StatusBarProgressIndicator type
+		       but the getter itself was removed by the WinAppSDK 1.8 trim. -->
+		  <Member fullName="Windows.UI.ViewManagement.StatusBarProgressIndicator Windows.UI.ViewManagement.StatusBar::ProgressIndicator()" reason="WinUI sync: StatusBar.ProgressIndicator getter removed by WinAppSDK 1.8" />
+
+		  <!-- END WinUI sync (Category C): independent property removals -->
+	  </Properties>
 
 	  <Methods>
 		  <!-- BEGIN AutomationPeer API alignment -->
@@ -2167,7 +2544,361 @@
 
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Layout.InvalidateMeasure()" reason="protected to protected internal" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.SetSubMenuDirection(System.Boolean isSubMenuDirectionUp)" reason="Moved to explicit ISubMenuOwner interface implementation" />
+
+		  <!-- BEGIN WinUI sync: WinRT IVector.get_Size replaced by ICollection.Count -->
+		  <Member fullName="System.UInt32 Microsoft.UI.Composition.CompositionColorGradientStopCollection.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Composition.CompositionShapeCollection.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Composition.ImplicitAnimationCollection.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Composition.InitialValueExpressionCollection.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Composition.Scenes.SceneComponentCollection.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Composition.Scenes.SceneNodeCollection.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.ResourceDictionary.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Documents.InlineCollection.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Media.BrushCollection.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Media.DoubleCollection.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Media.PointCollection.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Media.TransformCollection.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Media.Animation.TransitionCollection.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <Member fullName="System.UInt32 Microsoft.UI.Xaml.Controls.HubSectionCollection.get_Size()" reason="WinUI sync: WinRT Size replaced by Count" />
+		  <!-- END WinUI sync: WinRT IVector.get_Size -->
+
+		  <!-- BEGIN WinUI sync (Category A): WinRT IVector.get_Size projection removed across Windows.* collections.
+		       Companion to the Properties-section regex above. Covers ~49 owner types across:
+		       Windows.ApplicationModel.Resources.Core.* (7), Windows.Web.Http(.Headers).* (17),
+		       Windows.UI.Composition.* incl. Scenes.* (8), Windows.Media.Playback.* (3),
+		       Windows.Data.Json (2), plus 12 misc (WwwFormUrlDecoder, BitmapPropertySet,
+		       DnssdServiceInstanceCollection, ApplicationDataContainerSettings, etc.).
+		       Verified all 49 stub-only on master (would throw NotImplementedException at runtime).
+		       Windows\. prefix prevents matching preserved Microsoft.UI.* real impls. -->
+		  <Member fullName="System\.UInt32 Windows\..+\.get_Size\(\)" reason="WinUI sync: WinRT IVector.get_Size projection removed across Windows.* collections (replaced by ICollection.Count)" isRegex="true" />
+		  <!-- END WinUI sync (Category A): Windows.* IVector.get_Size -->
+		  <!-- BEGIN WinUI sync: other removed methods -->
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.SizeHelper.Equals(Windows.Foundation.Size target, Windows.Foundation.Size value)" reason="WinUI sync: not in WinAppSDK 1.8" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.Block Microsoft.UI.Xaml.Documents.BlockCollection.get_Item(System.Int32 index)" reason="WinUI sync: indexer provided by base class" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.BlockCollection.set_Item(System.Int32 index, Microsoft.UI.Xaml.Documents.Block value)" reason="WinUI sync: indexer provided by base class" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.OnCleanUpVirtualizedItem(Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs e)" reason="WinUI sync: not in WinAppSDK 1.8" />
+		  <!-- END WinUI sync: other removed methods -->
+
+		  <!-- ====================================================================== -->
+		  <!-- BEGIN WinUI sync (Category B): shadow method removals.                 -->
+		  <!--                                                                        -->
+		  <!-- Methods on KEPT types whose signature references a removed type        -->
+		  <!-- (Group X entries in <Types>). These had to go from the kept type's     -->
+		  <!-- surface because the parameter or return type is gone.                  -->
+		  <!--                                                                        -->
+		  <!-- Includes: property accessors (get_/set_), event accessors (add_/      -->
+		  <!-- remove_), and regular methods. Each block is annotated with the Group  -->
+		  <!-- number from the <Types> section it depends on.                         -->
+		  <!--                                                                        -->
+		  <!-- All verified stub-only on master. Spot-checked owner types with real   -->
+		  <!-- Uno impls (Compositor, Visual, BluetoothLEDevice, etc.): the specific  -->
+		  <!-- removed members were never implemented.                                -->
+		  <!-- ====================================================================== -->
+
+		  <!-- Refs Group 4: Windows.ApplicationModel.AppExecutionContext -->
+		  <Member fullName="Windows.ApplicationModel.AppExecutionContext Windows.ApplicationModel.AppInfo.get_ExecutionContext()" reason="WinUI sync: returns removed type AppExecutionContext (Group 4)" />
+
+		  <!-- Refs Group 4: Windows.ApplicationModel.AppInstallerPolicySource -->
+		  <Member fullName="Windows.ApplicationModel.AppInstallerPolicySource Windows.ApplicationModel.AppInstallerInfo.get_PolicySource()" reason="WinUI sync: returns removed type AppInstallerPolicySource (Group 4)" />
+
+		  <!-- Refs Group 2: Windows.ApplicationModel.Calls.* legacy phone-call types.
+		       PhoneLine factory/dial methods returning removed result types, and
+		       PhoneLineTransportDevice members exposing the removed audio-routing-status enum. -->
+		  <Member fullName="Windows.ApplicationModel.Calls.PhoneCallsResult Windows.ApplicationModel.Calls.PhoneLine.GetAllActivePhoneCalls()" reason="WinUI sync: returns removed type PhoneCallsResult (Group 2)" />
+		  <Member fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.ApplicationModel.Calls.PhoneCallsResult&gt; Windows.ApplicationModel.Calls.PhoneLine.GetAllActivePhoneCallsAsync()" reason="WinUI sync: async returns removed type PhoneCallsResult (Group 2)" />
+		  <Member fullName="Windows.ApplicationModel.Calls.PhoneLineDialResult Windows.ApplicationModel.Calls.PhoneLine.DialWithResult(System.String number, System.String displayName)" reason="WinUI sync: returns removed type PhoneLineDialResult (Group 2)" />
+		  <Member fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.ApplicationModel.Calls.PhoneLineDialResult&gt; Windows.ApplicationModel.Calls.PhoneLine.DialWithResultAsync(System.String number, System.String displayName)" reason="WinUI sync: async returns removed type PhoneLineDialResult (Group 2)" />
+		  <Member fullName="Windows.ApplicationModel.Calls.TransportDeviceAudioRoutingStatus Windows.ApplicationModel.Calls.PhoneLineTransportDevice.get_AudioRoutingStatus()" reason="WinUI sync: returns removed enum TransportDeviceAudioRoutingStatus (Group 2)" />
+		  <!-- PhoneLineTransportDevice: the InBandRingingEnabled property and AudioRoutingStatusChanged/InBandRingingEnabledChanged event accessors below are paired with removed events (see <Events> Category B block). -->
+		  <Member fullName="System.Boolean Windows.ApplicationModel.Calls.PhoneLineTransportDevice.get_InBandRingingEnabled()" reason="WinUI sync: removed alongside InBandRingingEnabledChanged event (Group 2)" />
+		  <Member fullName="System\.Void Windows\.ApplicationModel\.Calls\.PhoneLineTransportDevice\.(add|remove)_(AudioRoutingStatusChanged|InBandRingingEnabledChanged)\(Windows\.Foundation\.TypedEventHandler`2&lt;Windows\.ApplicationModel\.Calls\.PhoneLineTransportDevice,System\.Object&gt; value\)" reason="WinUI sync: event accessors for removed PhoneLineTransportDevice events (Group 2)" isRegex="true" />
+
+		  <!-- Refs Group 3: ConversationalAgent result/configuration types -->
+		  <Member fullName="Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationCreationResult Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.CreateConfigurationWithResult(System.String signalId, System.String modelId, System.String displayName)" reason="WinUI sync: returns removed type ActivationSignalDetectionConfigurationCreationResult (Group 3)" />
+		  <Member fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationCreationResult&gt; Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.CreateConfigurationWithResultAsync(System.String signalId, System.String modelId, System.String displayName)" reason="WinUI sync: async returns removed type ActivationSignalDetectionConfigurationCreationResult (Group 3)" />
+		  <Member fullName="Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationRemovalResult Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.RemoveConfigurationWithResult(System.String signalId, System.String modelId)" reason="WinUI sync: returns removed type ActivationSignalDetectionConfigurationRemovalResult (Group 3)" />
+		  <Member fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationRemovalResult&gt; Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.RemoveConfigurationWithResultAsync(System.String signalId, System.String modelId)" reason="WinUI sync: async returns removed type ActivationSignalDetectionConfigurationRemovalResult (Group 3)" />
+		  <Member fullName="Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationSetModelDataResult Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.SetModelDataWithResult(System.String dataType, Windows.Storage.Streams.IInputStream data)" reason="WinUI sync: returns removed type ActivationSignalDetectionConfigurationSetModelDataResult (Group 3)" />
+		  <Member fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationSetModelDataResult&gt; Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.SetModelDataWithResultAsync(System.String dataType, Windows.Storage.Streams.IInputStream data)" reason="WinUI sync: async returns removed type (Group 3)" />
+		  <Member fullName="Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationStateChangeResult Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.SetEnabledWithResult(System.Boolean value)" reason="WinUI sync: returns removed type ActivationSignalDetectionConfigurationStateChangeResult (Group 3)" />
+		  <Member fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationStateChangeResult&gt; Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.SetEnabledWithResultAsync(System.Boolean value)" reason="WinUI sync: async returns removed type (Group 3)" />
+		  <Member fullName="Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationResult Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.RequestActivation(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationKind activationKind)" reason="WinUI sync: takes removed enum ConversationalAgentActivationKind / returns removed type (Group 3)" />
+		  <Member fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationResult&gt; Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.RequestActivationAsync(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationKind activationKind)" reason="WinUI sync: async takes/returns removed types (Group 3)" />
+		  <Member fullName="System.Collections.Generic.IReadOnlyList`1&lt;Windows.ApplicationModel.ConversationalAgent.ConversationalAgentVoiceActivationPrerequisiteKind&gt; Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.GetMissingPrerequisites()" reason="WinUI sync: returns list of removed enum ConversationalAgentVoiceActivationPrerequisiteKind (Group 3)" />
+		  <Member fullName="Windows.Foundation.IAsyncOperation`1&lt;System.Collections.Generic.IReadOnlyList`1&lt;Windows.ApplicationModel.ConversationalAgent.ConversationalAgentVoiceActivationPrerequisiteKind&gt;&gt; Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.GetMissingPrerequisitesAsync()" reason="WinUI sync: async returns list of removed enum (Group 3)" />
+		  <Member fullName="System.Collections.Generic.IReadOnlyList`1&lt;Windows.ApplicationModel.ConversationalAgent.SignalDetectorResourceKind&gt; Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.get_UnavailableSystemResources()" reason="WinUI sync: returns list of removed enum SignalDetectorResourceKind (Group 3)" />
+
+		  <!-- Refs Group 5a: Windows.Devices.Bluetooth.BluetoothLE PHY/preferred-connection types -->
+		  <Member fullName="Windows.Devices.Bluetooth.BluetoothLEConnectionParameters Windows.Devices.Bluetooth.BluetoothLEDevice.GetConnectionParameters()" reason="WinUI sync: returns removed BLE PHY type (Group 5a)" />
+		  <Member fullName="Windows.Devices.Bluetooth.BluetoothLEConnectionPhy Windows.Devices.Bluetooth.BluetoothLEDevice.GetConnectionPhy()" reason="WinUI sync: returns removed BLE PHY type (Group 5a)" />
+		  <Member fullName="Windows.Devices.Bluetooth.BluetoothLEPreferredConnectionParametersRequest Windows.Devices.Bluetooth.BluetoothLEDevice.RequestPreferredConnectionParameters(Windows.Devices.Bluetooth.BluetoothLEPreferredConnectionParameters preferredConnectionParameters)" reason="WinUI sync: takes/returns removed BLE PHY types (Group 5a)" />
+		  <Member fullName="System\.Void Windows\.Devices\.Bluetooth\.BluetoothLEDevice\.(add|remove)_(ConnectionParametersChanged|ConnectionPhyChanged)\(Windows\.Foundation\.TypedEventHandler`2&lt;Windows\.Devices\.Bluetooth\.BluetoothLEDevice,System\.Object&gt; value\)" reason="WinUI sync: event accessors for removed BLE PHY events (Group 5a)" isRegex="true" />
+
+		  <!-- Refs Group 5b: Windows.Devices.Display.Core.* preview status enums -->
+		  <Member fullName="Windows.Devices.Display.Core.DisplayScanout Windows.Devices.Display.Core.DisplayDevice.CreateSimpleScanoutWithDirtyRectsAndOptions(Windows.Devices.Display.Core.DisplaySource source, Windows.Devices.Display.Core.DisplaySurface surface, System.UInt32 subresourceIndex, System.UInt32 syncInterval, System.Collections.Generic.IEnumerable`1&lt;Windows.Graphics.RectInt32&gt; dirtyRects, Windows.Devices.Display.Core.DisplayScanoutOptions options)" reason="WinUI sync: takes removed enum DisplayScanoutOptions (Group 5b)" />
+		  <Member fullName="Windows.Devices.Display.Core.DisplaySourceStatus Windows.Devices.Display.Core.DisplaySource.get_Status()" reason="WinUI sync: returns removed enum DisplaySourceStatus (Group 5b)" />
+		  <Member fullName="Windows.Devices.Display.Core.DisplayTaskResult Windows.Devices.Display.Core.DisplayTaskPool.TryExecuteTask(Windows.Devices.Display.Core.DisplayTask task)" reason="WinUI sync: returns removed enum DisplayTaskResult (Group 5b)" />
+		  <Member fullName="System\.Void Windows\.Devices\.Display\.Core\.DisplaySource\.(add|remove)_StatusChanged\(Windows\.Foundation\.TypedEventHandler`2&lt;Windows\.Devices\.Display\.Core\.DisplaySource,System\.Object&gt; value\)" reason="WinUI sync: event accessors for removed StatusChanged event (Group 5b)" isRegex="true" />
+
+		  <!-- Refs Group 6: Windows.Graphics.Holographic.HolographicDepthReprojectionMethod -->
+		  <Member fullName="System.Collections.Generic.IReadOnlyList`1&lt;Windows.Graphics.Holographic.HolographicDepthReprojectionMethod&gt; Windows.Graphics.Holographic.HolographicViewConfiguration.get_SupportedDepthReprojectionMethods()" reason="WinUI sync: returns list of removed enum HolographicDepthReprojectionMethod (Group 6)" />
+		  <Member fullName="System.Void Windows.Graphics.Holographic.HolographicCameraRenderingParameters.set_DepthReprojectionMethod(Windows.Graphics.Holographic.HolographicDepthReprojectionMethod value)" reason="WinUI sync: takes removed enum HolographicDepthReprojectionMethod (Group 6)" />
+		  <Member fullName="Windows.Graphics.Holographic.HolographicDepthReprojectionMethod Windows.Graphics.Holographic.HolographicCameraRenderingParameters.get_DepthReprojectionMethod()" reason="WinUI sync: returns removed enum HolographicDepthReprojectionMethod (Group 6)" />
+
+		  <!-- Refs Group 6e: Windows.Graphics.Printing.Workflow types -->
+		  <Member fullName="System.Void Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.AbortPrintFlow(Windows.Graphics.Printing.Workflow.PrintWorkflowJobAbortReason reason)" reason="WinUI sync: takes removed enum PrintWorkflowJobAbortReason (Group 6e)" />
+		  <Member fullName="System.Void Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent..ctor(Windows.Storage.Streams.IInputStream xpsStream)" reason="WinUI sync: ctor on type from removed PrintWorkflow namespace (Group 6e)" />
+
+		  <!-- Refs Group 7: Windows.Management.Deployment.PackageAllUserProvisioningOptions -->
+		  <Member fullName="Windows.Foundation.IAsyncOperationWithProgress`2&lt;Windows.Management.Deployment.DeploymentResult,Windows.Management.Deployment.DeploymentProgress&gt; Windows.Management.Deployment.PackageManager.ProvisionPackageForAllUsersAsync(System.String mainPackageFamilyName, Windows.Management.Deployment.PackageAllUserProvisioningOptions options)" reason="WinUI sync: takes removed type PackageAllUserProvisioningOptions (Group 7)" />
+
+		  <!-- Refs Group 8b: Windows.Media.Core.TimedTextBouten / TimedTextRuby -->
+		  <Member fullName="Windows.Media.Core.TimedTextBouten Windows.Media.Core.TimedTextStyle.get_Bouten()" reason="WinUI sync: returns removed type TimedTextBouten (Group 8b)" />
+		  <Member fullName="Windows.Media.Core.TimedTextRuby Windows.Media.Core.TimedTextStyle.get_Ruby()" reason="WinUI sync: returns removed type TimedTextRuby (Group 8b)" />
+
+		  <!-- Refs Group 8c: Windows.Media.Devices.CameraOcclusionInfo / DigitalWindowControl -->
+		  <Member fullName="Windows.Media.Devices.CameraOcclusionInfo Windows.Media.Devices.VideoDeviceController.get_CameraOcclusionInfo()" reason="WinUI sync: returns removed type CameraOcclusionInfo (Group 8c)" />
+		  <Member fullName="Windows.Media.Devices.DigitalWindowControl Windows.Media.Devices.VideoDeviceController.get_DigitalWindowControl()" reason="WinUI sync: returns removed type DigitalWindowControl (Group 8c)" />
+
+		  <!-- Refs Group 9a: Windows.Networking.NetworkOperators.MobileBroadbandCellNR / SlotManager -->
+		  <Member fullName="System\.Collections\.Generic\.IReadOnlyList`1&lt;Windows\.Networking\.NetworkOperators\.MobileBroadbandCellNR&gt; Windows\.Networking\.NetworkOperators\.MobileBroadbandCellsInfo\.get_(Neighboring|Serving)CellsNR\(\)" reason="WinUI sync: returns list of removed type MobileBroadbandCellNR (Group 9a)" isRegex="true" />
+		  <Member fullName="Windows.Networking.NetworkOperators.MobileBroadbandSlotManager Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.get_SlotManager()" reason="WinUI sync: returns removed type MobileBroadbandSlotManager (Group 9a)" />
+
+		  <!-- Refs Group 10a: Windows.Storage.StorageLibraryChangeTrackerOptions -->
+		  <Member fullName="System.Void Windows.Storage.StorageLibraryChangeTracker.Enable(Windows.Storage.StorageLibraryChangeTrackerOptions options)" reason="WinUI sync: takes removed type StorageLibraryChangeTrackerOptions (Group 10a)" />
+
+		  <!-- Refs Group 10b: Windows.System.UserAge* -->
+		  <Member fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.System.UserAgeConsentResult&gt; Windows.System.User.CheckUserAgeConsentGroupAsync(Windows.System.UserAgeConsentGroup consentGroup)" reason="WinUI sync: takes removed enum UserAgeConsentGroup, returns removed UserAgeConsentResult (Group 10b)" />
+
+		  <!-- Refs Group 11a: Windows.UI.Composition easing-function factories.
+		       All Create*EasingFunction overloads on the legacy Windows.UI.Composition.CompositionEasingFunction
+		       static class return removed *EasingFunction types. The Microsoft.UI.Composition.CompositionEasingFunction
+		       equivalents are preserved on the branch (Uno's real impl). -->
+		  <Member fullName="Windows\.UI\.Composition\.(Back|Bounce|Circle|Elastic|Exponential|Power|Sine)EasingFunction Windows\.UI\.Composition\.CompositionEasingFunction\.Create(Back|Bounce|Circle|Elastic|Exponential|Power|Sine)EasingFunction\(Windows\.UI\.Composition\.Compositor owner(.+)?\)" reason="WinUI sync: factory returning removed Windows.UI.Composition.*EasingFunction (Group 11a; Microsoft.UI.Composition equivalents preserved)" isRegex="true" />
+
+		  <!-- Refs Group 11a: Windows.UI.Composition.RectangleClip factories on legacy Compositor.
+		       Microsoft.UI.Composition.Compositor.CreateRectangleClip(...) is the real implemented API
+		       (Uno: src/Uno.UI.Composition/Composition/Compositor.cs lines 123/126/135) and is preserved. -->
+		  <Member fullName="Windows\.UI\.Composition\.RectangleClip Windows\.UI\.Composition\.Compositor\.CreateRectangleClip(\(\)|\(System\.Single .+\))" reason="WinUI sync: legacy Compositor factory returning removed Windows.UI.Composition.RectangleClip (Group 11a; Microsoft.UI.Composition.Compositor.CreateRectangleClip preserved)" isRegex="true" />
+
+		  <!-- Refs Group 11c: Windows.UI.Notifications.ToastNotificationMode -->
+		  <Member fullName="Windows.UI.Notifications.ToastNotificationMode Windows.UI.Notifications.ToastNotificationManagerForUser.get_NotificationMode()" reason="WinUI sync: returns removed enum ToastNotificationMode (Group 11c)" />
+		  <Member fullName="System\.Void Windows\.UI\.Notifications\.ToastNotificationManagerForUser\.(add|remove)_NotificationModeChanged\(Windows\.Foundation\.TypedEventHandler`2&lt;Windows\.UI\.Notifications\.ToastNotificationManagerForUser,System\.Object&gt; value\)" reason="WinUI sync: event accessors for NotificationModeChanged paired with removed ToastNotificationMode (Group 11c)" isRegex="true" />
+
+		  <!-- Refs Group 11e: Windows.UI.ViewManagement.Core.CoreInputViewAnimationStartingEventArgs -->
+		  <Member fullName="System\.Void Windows\.UI\.ViewManagement\.Core\.CoreInputView\.(add|remove)_PrimaryViewAnimationStarting\(Windows\.Foundation\.TypedEventHandler`2&lt;Windows\.UI\.ViewManagement\.Core\.CoreInputView,Windows\.UI\.ViewManagement\.Core\.CoreInputViewAnimationStartingEventArgs&gt; value\)" reason="WinUI sync: event accessors using removed CoreInputViewAnimationStartingEventArgs (Group 11e)" isRegex="true" />
+
+		  <!-- END WinUI sync (Category B): shadow method removals -->
+
+		  <!-- ====================================================================== -->
+		  <!-- BEGIN WinUI sync (Category C): independent method removals.            -->
+		  <!--                                                                        -->
+		  <!-- Methods/accessors trimmed from kept types whose signatures DON'T       -->
+		  <!-- reference a removed type. Includes property accessors paired with the  -->
+		  <!-- Cat C properties above, plus standalone methods (Dispose, GetDefault,  -->
+		  <!-- factory methods restructured by Microsoft, etc.).                      -->
+		  <!--                                                                        -->
+		  <!-- Verified all stub-only on master.                                      -->
+		  <!-- ====================================================================== -->
+
+		  <!-- AppExtension / AppListEntry / AppInstallerInfo accessors (paired with Cat C properties) -->
+		  <Member fullName="System.String Windows.ApplicationModel.AppExtensions.AppExtension.get_AppUserModelId()" reason="WinUI sync: AppExtension.AppUserModelId removed by WinAppSDK 1.8" />
+		  <Member fullName="System.String[] Windows.ApplicationModel.AppInfo.get_SupportedFileExtensions()" reason="WinUI sync: AppInfo.SupportedFileExtensions removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.ApplicationModel.AppInfo Windows.ApplicationModel.Core.AppListEntry.get_AppInfo()" reason="WinUI sync: AppListEntry.AppInfo removed by WinAppSDK 1.8" />
+		  <Member fullName="System\.Boolean Windows\.ApplicationModel\.AppInstallerInfo\.get_(AutomaticBackgroundTask|ForceUpdateFromAnyVersion|IsAutoRepairEnabled|OnLaunch|ShowPrompt|UpdateBlocksActivation)\(\)" reason="WinUI sync: AppInstallerInfo bool getter trim (preview)" isRegex="true" />
+		  <Member fullName="System\.Collections\.Generic\.IReadOnlyList`1&lt;System\.Uri&gt; Windows\.ApplicationModel\.AppInstallerInfo\.get_(DependencyPackage|OptionalPackage|Repair|Update)Uris\(\)" reason="WinUI sync: AppInstallerInfo URI list getter trim (preview)" isRegex="true" />
+		  <Member fullName="System.DateTimeOffset Windows.ApplicationModel.AppInstallerInfo.get_LastChecked()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
+		  <Member fullName="System.Nullable`1&lt;System.DateTimeOffset&gt; Windows.ApplicationModel.AppInstallerInfo.get_PausedUntil()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
+		  <Member fullName="System.UInt32 Windows.ApplicationModel.AppInstallerInfo.get_HoursBetweenUpdateChecks()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
+		  <Member fullName="Windows.ApplicationModel.PackageVersion Windows.ApplicationModel.AppInstallerInfo.get_Version()" reason="WinUI sync: AppInstallerInfo trim (preview)" />
+
+		  <!-- BackgroundExecutionManager: preview modern-standby surface -->
+		  <Member fullName="Windows.ApplicationModel.Background.BackgroundAccessStatus Windows.ApplicationModel.Background.BackgroundExecutionManager.GetAccessStatusForModernStandby()" reason="WinUI sync: preview modern-standby API removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.ApplicationModel.Background.BackgroundAccessStatus Windows.ApplicationModel.Background.BackgroundExecutionManager.GetAccessStatusForModernStandby(System.String applicationId)" reason="WinUI sync: preview modern-standby API removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.Foundation.IAsyncOperation`1&lt;System.Boolean&gt; Windows.ApplicationModel.Background.BackgroundExecutionManager.RequestAccessKindForModernStandbyAsync(Windows.ApplicationModel.Background.BackgroundAccessRequestKind requestedAccess, System.String reason)" reason="WinUI sync: preview modern-standby API removed by WinAppSDK 1.8" />
+
+		  <!-- ConversationalAgent preview accessors / methods -->
+		  <Member fullName="System.String Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.get_DetectorId()" reason="WinUI sync: ConversationalAgent preview" />
+		  <Member fullName="System.Collections.Generic.IList`1&lt;System.String&gt; Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.GetAvailableModelIdsForSignalId(System.String signalId)" reason="WinUI sync: ConversationalAgent preview" />
+		  <Member fullName="Windows.Foundation.IAsyncOperation`1&lt;System.Collections.Generic.IList`1&lt;System.String&gt;&gt; Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.GetAvailableModelIdsForSignalIdAsync(System.String signalId)" reason="WinUI sync: ConversationalAgent preview" />
+		  <Member fullName="System.UInt32 Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.get_TrainingStepCompletionMaxAllowedTime()" reason="WinUI sync: ConversationalAgent preview" />
+		  <Member fullName="System.Void Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.Dispose()" reason="WinUI sync: Dispose removed (no IDisposable in WinAppSDK 1.8 surface)" />
+		  <Member fullName="Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.GetActivationSignalDetectorFromId(System.String detectorId)" reason="WinUI sync: ConversationalAgent preview" />
+		  <Member fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector&gt; Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.GetActivationSignalDetectorFromIdAsync(System.String detectorId)" reason="WinUI sync: ConversationalAgent preview" />
+		  <Member fullName="System.Void Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.SetSupportLockScreenActivation(System.Boolean lockScreenActivationSupported)" reason="WinUI sync: ConversationalAgent preview" />
+		  <Member fullName="Windows.Foundation.IAsyncAction Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession.SetSupportLockScreenActivationAsync(System.Boolean lockScreenActivationSupported)" reason="WinUI sync: ConversationalAgent preview" />
+		  <Member fullName="System.String Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.get_DetectorId()" reason="WinUI sync: ConversationalAgent preview" />
+		  <Member fullName="Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectorKind Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.get_DetectorKind()" reason="WinUI sync: ConversationalAgent preview" />
+
+		  <!-- ResourceMapIterator / MapViewIterator: WinRT IIterator (HasCurrent + GetMany) dropped -->
+		  <Member fullName="System.Boolean Windows.ApplicationModel.Resources.Core.ResourceMapIterator.get_HasCurrent()" reason="WinUI sync: WinRT IIterator pattern removed (use IEnumerator)" />
+		  <Member fullName="System.Boolean Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator.get_HasCurrent()" reason="WinUI sync: WinRT IIterator pattern removed (use IEnumerator)" />
+		  <Member fullName="System\.UInt32 Windows\.ApplicationModel\.Resources\.Core\.(ResourceMap|ResourceMapMapView)Iterator\.GetMany\(System\.Collections\.Generic\.KeyValuePair`2&lt;System\.String,Windows\.ApplicationModel\.Resources\.Core\.(NamedResource|ResourceMap)&gt;.*" reason="WinUI sync: WinRT IIterator GetMany dropped" isRegex="true" />
+		  <Member fullName="System.String Windows.ApplicationModel.Resources.ResourceLoader.GetDefaultPriPath(System.String packageFullName)" reason="WinUI sync: preview ResourceLoader.GetDefaultPriPath removed by WinAppSDK 1.8" />
+
+		  <!-- Geocoordinate / GeocoordinateSatelliteData preview -->
+		  <Member fullName="System.Boolean Windows.Devices.Geolocation.Geocoordinate.get_IsRemoteSource()" reason="WinUI sync: preview Geocoordinate.IsRemoteSource removed by WinAppSDK 1.8" />
+		  <Member fullName="System\.Nullable`1&lt;System\.Double&gt; Windows\.Devices\.Geolocation\.GeocoordinateSatelliteData\.get_(GeometricDilutionOfPrecision|TimeDilutionOfPrecision)\(\)" reason="WinUI sync: preview GNSS DOP getters removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- KnownSimpleHapticsControllerWaveforms: 10 preview waveform getters removed.
+		       Uno only ships 4 waveforms. -->
+		  <Member fullName="System\.UInt16 Windows\.Devices\.Haptics\.KnownSimpleHapticsControllerWaveforms\.get_(BrushContinuous|ChiselMarkerContinuous|EraserContinuous|Error|GalaxyPenContinuous|Hover|InkContinuous|MarkerContinuous|PencilContinuous|Success)\(\)" reason="WinUI sync: preview KnownSimpleHapticsControllerWaveforms getters removed (Uno keeps BuzzContinuous/Click/Press/Release)" isRegex="true" />
+
+		  <!-- PenDevice preview -->
+		  <Member fullName="Windows.Devices.Haptics.SimpleHapticsController Windows.Devices.Input.PenDevice.get_SimpleHapticsController()" reason="WinUI sync: preview PenDevice.SimpleHapticsController removed by WinAppSDK 1.8" />
+
+		  <!-- DisplayPath / DisplayModeInfo preview -->
+		  <Member fullName="System.Nullable`1&lt;Windows.Devices.Display.Core.DisplayPresentationRate&gt; Windows.Devices.Display.Core.DisplayPath.get_PhysicalPresentationRate()" reason="WinUI sync: preview DisplayPath.PhysicalPresentationRate removed by WinAppSDK 1.8" />
+		  <Member fullName="System.Void Windows.Devices.Display.Core.DisplayPath.set_PhysicalPresentationRate(System.Nullable`1&lt;Windows.Devices.Display.Core.DisplayPresentationRate&gt; value)" reason="WinUI sync: preview DisplayPath.PhysicalPresentationRate removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.Devices.Display.Core.DisplayPresentationRate Windows.Devices.Display.Core.DisplayModeInfo.get_PhysicalPresentationRate()" reason="WinUI sync: preview DisplayModeInfo.PhysicalPresentationRate removed by WinAppSDK 1.8" />
+
+		  <!-- DisplayTask.SetSignal: takes preview DisplayTaskSignalKind / DisplayFence -->
+		  <Member fullName="System.Void Windows.Devices.Display.Core.DisplayTask.SetSignal(Windows.Devices.Display.Core.DisplayTaskSignalKind signalKind, Windows.Devices.Display.Core.DisplayFence fence)" reason="WinUI sync: preview DisplayTask.SetSignal removed by WinAppSDK 1.8" />
+
+		  <!-- Capture session border-required preview accessors -->
+		  <Member fullName="System.Boolean Windows.Graphics.Capture.GraphicsCaptureSession.get_IsBorderRequired()" reason="WinUI sync: preview GraphicsCaptureSession.IsBorderRequired removed by WinAppSDK 1.8" />
+		  <Member fullName="System.Void Windows.Graphics.Capture.GraphicsCaptureSession.set_IsBorderRequired(System.Boolean value)" reason="WinUI sync: preview GraphicsCaptureSession.IsBorderRequired removed by WinAppSDK 1.8" />
+
+		  <!-- GraphicsCaptureItem.TryCreateFromDisplayId/WindowId: factory overloads restructured -->
+		  <Member fullName="Windows.Graphics.Capture.GraphicsCaptureItem Windows.Graphics.Capture.GraphicsCaptureItem.TryCreateFromDisplayId(Windows.Graphics.DisplayId displayId)" reason="WinUI sync: GraphicsCaptureItem factory restructured (Microsoft.UI.DisplayId is the modern surface)" />
+		  <Member fullName="Windows.Graphics.Capture.GraphicsCaptureItem Windows.Graphics.Capture.GraphicsCaptureItem.TryCreateFromWindowId(Windows.UI.WindowId windowId)" reason="WinUI sync: GraphicsCaptureItem factory restructured (Microsoft.UI.WindowId is the modern surface)" />
+
+		  <!-- TimedTextStyle preview accessors (paired with Cat C properties / Group 8b cleanup) -->
+		  <Member fullName="System.Boolean Windows.Media.Core.TimedTextStyle.get_IsTextCombined()" reason="WinUI sync: TimedTextStyle preview accessor removed (Group 8b cleanup)" />
+		  <Member fullName="System.Double Windows.Media.Core.TimedTextStyle.get_FontAngleInDegrees()" reason="WinUI sync: TimedTextStyle preview accessor removed (Group 8b cleanup)" />
+		  <Member fullName="System.Void Windows.Media.Core.TimedTextStyle.set_FontAngleInDegrees(System.Double value)" reason="WinUI sync: TimedTextStyle preview accessor removed (Group 8b cleanup)" />
+		  <Member fullName="System.Void Windows.Media.Core.TimedTextStyle.set_IsTextCombined(System.Boolean value)" reason="WinUI sync: TimedTextStyle preview accessor removed (Group 8b cleanup)" />
+
+		  <!-- SpatialAudioFormatSubtype preview -->
+		  <Member fullName="System.String Windows.Media.Audio.SpatialAudioFormatSubtype.get_DTSXForHomeTheater()" reason="WinUI sync: preview DTSXForHomeTheater removed by WinAppSDK 1.8" />
+
+		  <!-- PlayReady iterator pattern (HasCurrent + GetMany) -->
+		  <Member fullName="System\.Boolean Windows\.Media\.Protection\.PlayReady\.PlayReady(Domain|License|SecureStop)Iterator\.get_HasCurrent\(\)" reason="WinUI sync: WinRT IIterator pattern removed (use IEnumerator)" isRegex="true" />
+		  <Member fullName="System\.UInt32 Windows\.Media\.Protection\.PlayReady\.PlayReady(Domain|License|SecureStop)Iterator\.GetMany\(Windows\.Media\.Protection\.PlayReady\.IPlayReady(Domain|License|SecureStopServiceRequest).*" reason="WinUI sync: WinRT IIterator GetMany dropped" isRegex="true" />
+
+		  <!-- VpnChannel preview packet-buffer surface -->
+		  <Member fullName="Windows.Foundation.Collections.ValueSet Windows.Networking.Vpn.VpnChannel.ActivateForeground(System.String packageRelativeAppId, Windows.Foundation.Collections.ValueSet sharedContext)" reason="WinUI sync: preview VpnChannel.ActivateForeground removed by WinAppSDK 1.8" />
+		  <Member fullName="System\.Void Windows\.Networking\.Vpn\.VpnChannel\.(Append|Flush)Vpn(Receive|Send)PacketBuffer(s)?\(.*" reason="WinUI sync: preview VpnChannel packet-buffer methods removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- VibrationDevice.Cancel: legacy phone-vibration method removed (the VibrationDevice
+		       type itself is preserved by the branch via commit 81670705f0). -->
+		  <Member fullName="System.Void Windows.Phone.Devices.Notification.VibrationDevice.Cancel()" reason="WinUI sync: legacy VibrationDevice.Cancel removed by WinAppSDK 1.8 (type preserved)" />
+
+		  <!-- ApplicationData / ApplicationDataContainer / StorageLibraryChangeReader/Tracker: Dispose / change-id removals -->
+		  <Member fullName="System.Void Windows.Storage.ApplicationData.Dispose()" reason="WinUI sync: ApplicationData.Dispose removed (no IDisposable in WinAppSDK 1.8 surface)" />
+		  <Member fullName="System.Void Windows.Storage.ApplicationDataContainer.Dispose()" reason="WinUI sync: ApplicationDataContainer.Dispose removed (no IDisposable)" />
+		  <Member fullName="System.UInt64 Windows.Storage.StorageLibraryChangeReader.GetLastChangeId()" reason="WinUI sync: paired with removed StorageLibraryLastChangeId (Group 10a)" />
+		  <Member fullName="System.Void Windows.Storage.StorageLibraryChangeTracker.Disable()" reason="WinUI sync: preview StorageLibraryChangeTracker.Disable removed by WinAppSDK 1.8" />
+
+		  <!-- AppUriHandler{Host,Registration,RegistrationManager} preview -->
+		  <Member fullName="System.Boolean Windows.System.AppUriHandlerHost.get_IsEnabled()" reason="WinUI sync: AppUriHandlerHost preview accessor removed by WinAppSDK 1.8" />
+		  <Member fullName="System.Void Windows.System.AppUriHandlerHost.set_IsEnabled(System.Boolean value)" reason="WinUI sync: AppUriHandlerHost preview accessor removed by WinAppSDK 1.8" />
+		  <Member fullName="System.Collections.Generic.IList`1&lt;Windows.System.AppUriHandlerHost&gt; Windows.System.AppUriHandlerRegistration.GetAllHosts()" reason="WinUI sync: preview AppUriHandlerRegistration method removed by WinAppSDK 1.8" />
+		  <Member fullName="System.String Windows.System.AppUriHandlerRegistration.get_PackageFamilyName()" reason="WinUI sync: AppUriHandlerRegistration preview accessor removed by WinAppSDK 1.8" />
+		  <Member fullName="System.Void Windows.System.AppUriHandlerRegistration.UpdateHosts(System.Collections.Generic.IEnumerable`1&lt;Windows.System.AppUriHandlerHost&gt; hosts)" reason="WinUI sync: preview AppUriHandlerRegistration.UpdateHosts removed by WinAppSDK 1.8" />
+		  <Member fullName="System.String Windows.System.AppUriHandlerRegistrationManager.get_PackageFamilyName()" reason="WinUI sync: AppUriHandlerRegistrationManager preview accessor removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.System.AppUriHandlerRegistrationManager Windows.System.AppUriHandlerRegistrationManager.GetForPackage(System.String packageFamilyName)" reason="WinUI sync: AppUriHandlerRegistrationManager.GetForPackage factory removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.System.AppUriHandlerRegistrationManager Windows.System.AppUriHandlerRegistrationManager.GetForPackageForUser(System.String packageFamilyName, Windows.System.User user)" reason="WinUI sync: AppUriHandlerRegistrationManager.GetForPackageForUser factory removed by WinAppSDK 1.8" />
+
+		  <!-- KnownUserProperties / AnalyticsVersionInfo / SystemDiagnosticInfo / User accessors -->
+		  <Member fullName="System.String Windows.System.KnownUserProperties.get_AgeEnforcementRegion()" reason="WinUI sync: preview AgeEnforcementRegion removed by WinAppSDK 1.8" />
+		  <Member fullName="System.String Windows.System.Profile.AnalyticsVersionInfo.get_ProductName()" reason="WinUI sync: preview AnalyticsVersionInfo.ProductName removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.System.ProcessorArchitecture Windows.System.Diagnostics.SystemDiagnosticInfo.get_PreferredArchitecture()" reason="WinUI sync: preview SystemDiagnosticInfo.PreferredArchitecture removed by WinAppSDK 1.8" />
+		  <Member fullName="System.Boolean Windows.System.Diagnostics.SystemDiagnosticInfo.IsArchitectureSupported(Windows.System.ProcessorArchitecture type)" reason="WinUI sync: preview IsArchitectureSupported removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.System.User Windows.System.User.GetDefault()" reason="WinUI sync: preview User.GetDefault removed by WinAppSDK 1.8 (use User.FindAllAsync)" />
+
+		  <!-- Compositor: legacy Windows.UI.Composition projection accessors / factory methods.
+		       Microsoft.UI.Composition.Compositor.CreateRectangleClip(...) is the real implemented API
+		       and is preserved (src/Uno.UI.Composition/Composition/Compositor.cs:123/126/135).
+		       DispatcherQueue/CreateAnimationPropertyInfo/TryCreateBlurredWallpaperBackdropBrush are
+		       all stub-only on master across both Windows.* and Microsoft.* namespaces. -->
+		  <Member fullName="Windows.System.DispatcherQueue Windows.UI.Composition.Compositor.get_DispatcherQueue()" reason="WinUI sync: legacy Compositor.DispatcherQueue projection accessor removed" />
+		  <Member fullName="Windows.UI.Composition.AnimationPropertyInfo Windows.UI.Composition.Compositor.CreateAnimationPropertyInfo()" reason="WinUI sync: legacy Compositor.CreateAnimationPropertyInfo removed" />
+		  <Member fullName="Windows.UI.Composition.CompositionBackdropBrush Windows.UI.Composition.Compositor.TryCreateBlurredWallpaperBackdropBrush()" reason="WinUI sync: legacy Compositor.TryCreateBlurredWallpaperBackdropBrush removed" />
+
+		  <!-- Compositor preview Visual.IsHitTestVisible / IsPixelSnappingEnabled accessors -->
+		  <Member fullName="System.Boolean Windows.UI.Composition.Visual.get_IsHitTestVisible()" reason="WinUI sync: preview Visual.IsHitTestVisible accessor removed (no Uno impl)" />
+		  <Member fullName="System.Boolean Windows.UI.Composition.Visual.get_IsPixelSnappingEnabled()" reason="WinUI sync: preview Visual.IsPixelSnappingEnabled accessor removed (no Uno impl)" />
+		  <Member fullName="System.Void Windows.UI.Composition.Visual.set_IsHitTestVisible(System.Boolean value)" reason="WinUI sync: preview Visual.IsHitTestVisible accessor removed (no Uno impl)" />
+		  <Member fullName="System.Void Windows.UI.Composition.Visual.set_IsPixelSnappingEnabled(System.Boolean value)" reason="WinUI sync: preview Visual.IsPixelSnappingEnabled accessor removed (no Uno impl)" />
+
+		  <!-- AnimationPropertyInfo preview helpers -->
+		  <Member fullName="System.String Windows.UI.Composition.AnimationPropertyInfo.GetResolvedCompositionObjectProperty()" reason="WinUI sync: preview AnimationPropertyInfo helper removed by WinAppSDK 1.8" />
+		  <Member fullName="Windows.UI.Composition.CompositionObject Windows.UI.Composition.AnimationPropertyInfo.GetResolvedCompositionObject()" reason="WinUI sync: preview AnimationPropertyInfo helper removed by WinAppSDK 1.8" />
+
+		  <!-- CompositionGraphicsDevice.CaptureAsync(... sdrBoost): preview HDR overload removed -->
+		  <Member fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.UI.Composition.ICompositionSurface&gt; Windows.UI.Composition.CompositionGraphicsDevice.CaptureAsync(Windows.UI.Composition.Visual captureVisual, Windows.Graphics.SizeInt32 size, Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat, Windows.Graphics.DirectX.DirectXAlphaMode alphaMode, System.Single sdrBoost)" reason="WinUI sync: preview CaptureAsync sdrBoost overload removed by WinAppSDK 1.8" />
+
+		  <!-- CompositionEasingFunction: factories returning kept easing types (CubicBezier/Linear/Step)
+		       on the legacy Windows.UI.Composition surface. Microsoft.UI.Composition equivalents preserved. -->
+		  <Member fullName="Windows.UI.Composition.CubicBezierEasingFunction Windows.UI.Composition.CompositionEasingFunction.CreateCubicBezierEasingFunction(Windows.UI.Composition.Compositor owner, System.Numerics.Vector2 controlPoint1, System.Numerics.Vector2 controlPoint2)" reason="WinUI sync: legacy Windows.UI.Composition factory removed (Microsoft.UI.Composition preserved)" />
+		  <Member fullName="Windows.UI.Composition.LinearEasingFunction Windows.UI.Composition.CompositionEasingFunction.CreateLinearEasingFunction(Windows.UI.Composition.Compositor owner)" reason="WinUI sync: legacy Windows.UI.Composition factory removed (Microsoft.UI.Composition preserved)" />
+		  <Member fullName="Windows\.UI\.Composition\.StepEasingFunction Windows\.UI\.Composition\.CompositionEasingFunction\.CreateStepEasingFunction\(Windows\.UI\.Composition\.Compositor owner(, System\.Int32 stepCount)?\)" reason="WinUI sync: legacy Windows.UI.Composition factory removed (Microsoft.UI.Composition preserved)" isRegex="true" />
+
+		  <!-- CoreIndependentInputSource pointer-redirect events: paired with Cat B Events.
+		       These are the add_/remove_ method accessors orphaned when the events were trimmed. -->
+		  <Member fullName="System\.Void Windows\.UI\.Core\.CoreIndependentInputSource\.(add|remove)_PointerRouted(Away|Released|To)\(Windows\.Foundation\.TypedEventHandler`2&lt;Windows\.UI\.Core\.ICorePointerRedirector,Windows\.UI\.Core\.PointerEventArgs&gt; value\)" reason="WinUI sync: event accessors for preview pointer-redirect events (paired with Cat B events)" isRegex="true" />
+
+		  <!-- CoreInkIndependentInputSource pointer-cursor accessors -->
+		  <Member fullName="Windows.UI.Core.CoreCursor Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.get_PointerCursor()" reason="WinUI sync: preview CoreInkIndependentInputSource.PointerCursor accessor removed" />
+		  <Member fullName="System.Void Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.set_PointerCursor(Windows.UI.Core.CoreCursor value)" reason="WinUI sync: preview CoreInkIndependentInputSource.PointerCursor accessor removed" />
+
+		  <!-- InkInputConfiguration / InkStroke / PenAndInkSettings preview -->
+		  <Member fullName="System.Boolean Windows.UI.Input.Inking.InkInputConfiguration.get_IsPenHapticFeedbackEnabled()" reason="WinUI sync: preview pen-haptic-feedback accessor removed" />
+		  <Member fullName="System.Void Windows.UI.Input.Inking.InkInputConfiguration.set_IsPenHapticFeedbackEnabled(System.Boolean value)" reason="WinUI sync: preview pen-haptic-feedback accessor removed" />
+		  <Member fullName="System.UInt32 Windows.UI.Input.Inking.InkStroke.get_PointerId()" reason="WinUI sync: preview InkStroke.PointerId accessor removed" />
+		  <Member fullName="System.Void Windows.UI.Input.Inking.PenAndInkSettings.SetPenHandedness(Windows.UI.Input.Inking.PenHandedness value)" reason="WinUI sync: preview PenAndInkSettings.SetPenHandedness removed" />
+
+		  <!-- CoreInputView.SupportedKindsChanged event accessors (paired with Cat B event) and IsKindSupported -->
+		  <Member fullName="System\.Void Windows\.UI\.ViewManagement\.Core\.CoreInputView\.(add|remove)_SupportedKindsChanged\(Windows\.Foundation\.TypedEventHandler`2&lt;Windows\.UI\.ViewManagement\.Core\.CoreInputView,System\.Object&gt; value\)" reason="WinUI sync: event accessors for SupportedKindsChanged (paired with Cat B event)" isRegex="true" />
+		  <Member fullName="System.Boolean Windows.UI.ViewManagement.Core.CoreInputView.IsKindSupported(Windows.UI.ViewManagement.Core.CoreInputViewKind type)" reason="WinUI sync: paired with removed CoreInputViewKind enum members (Cat D)" />
+
+		  <!-- StatusBar.ProgressIndicator getter (paired with Cat C property) -->
+		  <Member fullName="Windows.UI.ViewManagement.StatusBarProgressIndicator Windows.UI.ViewManagement.StatusBar.get_ProgressIndicator()" reason="WinUI sync: StatusBar.ProgressIndicator getter removed by WinAppSDK 1.8" />
+
+		  <!-- END WinUI sync (Category C): independent method removals -->
 	  </Methods>
+
+	  <Events>
+		  <!-- ====================================================================== -->
+		  <!-- BEGIN WinUI sync (Category B): shadow event removals.                  -->
+		  <!--                                                                        -->
+		  <!-- Events on KEPT types removed because they expose removed types in the  -->
+		  <!-- handler signature, OR are paired with already-removed siblings (e.g.   -->
+		  <!-- the BLE PHY events, the ToastNotificationMode change event).           -->
+		  <!--                                                                        -->
+		  <!-- The corresponding add_/remove_ method accessors are in the <Methods>   -->
+		  <!-- Category B block above.                                                -->
+		  <!-- ====================================================================== -->
+
+		  <!-- Refs Group 2: PhoneLineTransportDevice events. AudioRoutingStatusChanged
+		       fires alongside the removed AudioRoutingStatus enum getter; InBandRingingEnabledChanged
+		       fires alongside the removed InBandRingingEnabled property. -->
+		  <Member fullName="Windows\.Foundation\.TypedEventHandler`2&lt;Windows\.ApplicationModel\.Calls\.PhoneLineTransportDevice,System\.Object&gt; Windows\.ApplicationModel\.Calls\.PhoneLineTransportDevice::(AudioRoutingStatusChanged|InBandRingingEnabledChanged)" reason="WinUI sync: removed alongside legacy phone-call control surface (Group 2)" isRegex="true" />
+
+		  <!-- Refs Group 5a: BLE PHY events expose removed BluetoothLEConnection{Parameters,Phy} types -->
+		  <Member fullName="Windows\.Foundation\.TypedEventHandler`2&lt;Windows\.Devices\.Bluetooth\.BluetoothLEDevice,System\.Object&gt; Windows\.Devices\.Bluetooth\.BluetoothLEDevice::Connection(Parameters|Phy)Changed" reason="WinUI sync: BLE PHY-change events removed alongside their data types (Group 5a)" isRegex="true" />
+
+		  <!-- Refs Group 5b: DisplaySource.StatusChanged exposes removed DisplaySourceStatus -->
+		  <Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Windows.Devices.Display.Core.DisplaySource,System.Object&gt; Windows.Devices.Display.Core.DisplaySource::StatusChanged" reason="WinUI sync: paired with removed DisplaySource.Status / DisplaySourceStatus (Group 5b)" />
+
+		  <!-- Preview pointer-redirect API: events on CoreIndependentInputSource using ICorePointerRedirector
+		       (preview interface dropped from WinAppSDK 1.8). -->
+		  <Member fullName="Windows\.Foundation\.TypedEventHandler`2&lt;Windows\.UI\.Core\.ICorePointerRedirector,Windows\.UI\.Core\.PointerEventArgs&gt; Windows\.UI\.Core\.CoreIndependentInputSource::PointerRouted(Away|Released|To)" reason="WinUI sync: preview pointer-redirect events removed by WinAppSDK 1.8" isRegex="true" />
+
+		  <!-- Refs Group 11c: ToastNotificationManagerForUser.NotificationModeChanged uses removed ToastNotificationMode -->
+		  <Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Notifications.ToastNotificationManagerForUser,System.Object&gt; Windows.UI.Notifications.ToastNotificationManagerForUser::NotificationModeChanged" reason="WinUI sync: paired with removed ToastNotificationMode (Group 11c)" />
+
+		  <!-- Refs Group 11e: CoreInputView events on view-management surface that's restructured.
+		       SupportedKindsChanged tracks removed CoreInputViewKind enum members; PrimaryViewAnimationStarting
+		       uses removed CoreInputViewAnimationStartingEventArgs. -->
+		  <Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.ViewManagement.Core.CoreInputView,System.Object&gt; Windows.UI.ViewManagement.Core.CoreInputView::SupportedKindsChanged" reason="WinUI sync: paired with removed CoreInputViewKind enum members (Group 11e / Cat D)" />
+		  <Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.ViewManagement.Core.CoreInputView,Windows.UI.ViewManagement.Core.CoreInputViewAnimationStartingEventArgs&gt; Windows.UI.ViewManagement.Core.CoreInputView::PrimaryViewAnimationStarting" reason="WinUI sync: uses removed CoreInputViewAnimationStartingEventArgs (Group 11e)" />
+
+		  <!-- END WinUI sync (Category B): shadow event removals -->
+	  </Events>
 	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 

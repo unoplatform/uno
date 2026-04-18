@@ -16,7 +16,6 @@ namespace Microsoft.UI.Xaml.Markup
 			typeof(global::Microsoft.UI.Xaml.Markup.XamlBindingHelper),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Markup.IDataTemplateComponent)));
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBindingHelper.DataTemplateComponentProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Markup.IDataTemplateComponent GetDataTemplateComponent(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -51,5 +50,6 @@ namespace Microsoft.UI.Xaml.Markup
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromByte(object, Microsoft.UI.Xaml.DependencyProperty, byte)
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromUri(object, Microsoft.UI.Xaml.DependencyProperty, System.Uri)
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromObject(object, Microsoft.UI.Xaml.DependencyProperty, object)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBindingHelper.DataTemplateComponentProperty.get
 	}
 }

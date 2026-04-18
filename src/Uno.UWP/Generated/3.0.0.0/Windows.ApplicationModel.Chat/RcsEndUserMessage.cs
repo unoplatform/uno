@@ -63,11 +63,6 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.TransportId.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.Title.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.Text.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.IsPinRequired.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.Actions.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SendResponseAsync(global::Windows.ApplicationModel.Chat.RcsEndUserMessageAction action)
@@ -82,5 +77,10 @@ namespace Windows.ApplicationModel.Chat
 			throw new global::System.NotImplementedException("The member IAsyncAction RcsEndUserMessage.SendResponseWithPinAsync(RcsEndUserMessageAction action, string pin) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20RcsEndUserMessage.SendResponseWithPinAsync%28RcsEndUserMessageAction%20action%2C%20string%20pin%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.Actions.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.IsPinRequired.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.Text.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.Title.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.TransportId.get
 	}
 }

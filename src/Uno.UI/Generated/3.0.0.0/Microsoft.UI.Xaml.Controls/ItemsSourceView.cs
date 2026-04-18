@@ -12,15 +12,15 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property HasKeyIndexMapping
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsSourceView.ItemsSourceView(object)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.ItemsSourceView(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.Count.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsSourceView.GetAt(int)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.HasKeyIndexMapping.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsSourceView.KeyFromIndex(int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsSourceView.IndexFromKey(string)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsSourceView.IndexOf(object)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.CollectionChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.CollectionChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.HasKeyIndexMapping.get
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemsSourceView.CollectionChanged
-		// Processing: Microsoft.UI.Xaml.Interop.INotifyCollectionChanged
+		// Processing: System.Collections.Specialized.INotifyCollectionChanged
 	}
 }

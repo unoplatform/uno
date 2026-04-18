@@ -43,30 +43,8 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double? GeometricDilutionOfPrecision
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double? GeocoordinateSatelliteData.GeometricDilutionOfPrecision is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20GeocoordinateSatelliteData.GeometricDilutionOfPrecision");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double? TimeDilutionOfPrecision
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double? GeocoordinateSatelliteData.TimeDilutionOfPrecision is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20GeocoordinateSatelliteData.TimeDilutionOfPrecision");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.PositionDilutionOfPrecision.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.HorizontalDilutionOfPrecision.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.PositionDilutionOfPrecision.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.VerticalDilutionOfPrecision.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.GeometricDilutionOfPrecision.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.TimeDilutionOfPrecision.get
 	}
 }

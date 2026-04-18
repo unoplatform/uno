@@ -44,7 +44,7 @@ namespace Windows.Media.Ocr
 		}
 #endif
 		// Forced skipping of method Windows.Media.Ocr.OcrResult.Lines.get
-		// Forced skipping of method Windows.Media.Ocr.OcrResult.TextAngle.get
 		// Forced skipping of method Windows.Media.Ocr.OcrResult.Text.get
+		// Forced skipping of method Windows.Media.Ocr.OcrResult.TextAngle.get
 	}
 }
