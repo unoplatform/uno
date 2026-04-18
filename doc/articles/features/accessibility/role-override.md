@@ -28,7 +28,7 @@ Add the `Uno.UI.Toolkit` namespace to your XAML, then set the `AutomationPropert
 </Page>
 ```
 
-When set, this value takes precedence over the role that would normally be derived from the element's type or its `AutomationPeer`.
+On elements that do **not** have an `AutomationPeer` (such as `Border` or `StackPanel`), this override takes precedence over any default role. On elements that **do** have a peer, the behavior is platform-dependent — see the table below.
 
 ## Clearing the override
 
@@ -51,13 +51,15 @@ Any standard [WAI-ARIA role](https://www.w3.org/TR/wai-aria-1.2/#role_definition
 
 ## Platform behavior
 
-| Platform | Behavior |
-|----------|----------|
-| Web (WASM) | Applied directly as the HTML `role` attribute on the semantic DOM element |
-| Windows (Win32) | Accepted but has no effect — UIAutomation exposes control type, not ARIA role strings |
-| macOS | Read at query time from the accessibility tree; mapped to the appropriate `NSAccessibility` role |
-| Android (WIP) | Routed through the Skia accessibility layer |
-| iOS (WIP) | Routed through the Skia accessibility layer |
+| Platform | Rendering | Behavior |
+|----------|-----------|----------|
+| Web (WASM) | Skia | For elements without a peer, applied as the `role` attribute on the semantic DOM element. For elements with a peer, the peer's control type determines the role; the override is used as a fallback. Also makes the element focusable in the accessibility tree. |
+| Web (WASM) | Native | Applied directly as the HTML `role` attribute on the real DOM element via `FindHtmlRole()` — takes precedence over the peer-derived role. |
+| Windows (Win32) | Skia | Makes the element focusable in the accessibility tree, but the role string itself has no effect — UIAutomation exposes control type, not ARIA role strings. |
+| macOS | Skia | Makes the element focusable in the accessibility tree, but the role string is not currently forwarded to VoiceOver. The native role comes from the peer's control type. |
+| Android (WIP) | Skia | Routed through the Skia accessibility layer. |
+| iOS (WIP) | Skia | Routed through the Skia accessibility layer. |
+| Android / iOS | Native | `AutomationPropertiesExtensions.Role` is not consulted by the native rendering accessibility layer. |
 
 ## When to use vs. AutomationProperties.LandmarkType
 

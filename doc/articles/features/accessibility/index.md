@@ -17,6 +17,12 @@ Uno Platform implements the WinUI [UI Automation](https://learn.microsoft.com/wi
 | Linux                  | Skia      | —                              | Planned |
 | Android                | Skia      | TalkBack                       | WIP    |
 | iOS                    | Skia      | VoiceOver                      | WIP    |
+| Android                | Native    | TalkBack                       | ✔      |
+| iOS                    | Native    | VoiceOver                      | ✔      |
+| Web (WASM)             | Native    | Any screen reader (via ARIA)   | ✔      |
+
+> [!NOTE]
+> This documentation focuses primarily on the **Skia rendering** accessibility implementation. Native rendering on Android, iOS, and WASM maps `AutomationProperties` directly to the platform's native accessibility APIs (e.g., `contentDescription` on Android, `accessibilityLabel` on iOS, `aria-label` on WASM).
 
 ## How it works
 

@@ -16,6 +16,9 @@ Please visit the updated pages:
 - **[Custom automation peers](accessibility/automation-peers.md)** — How to create peers for custom controls
 - **[Role override](accessibility/role-override.md)** — Uno-specific `AutomationPropertiesExtensions.Role`
 - **[Testing with screen readers](accessibility/testing-with-screen-readers.md)** — WASM activation, SamplesApp testing, and debugging
+
+## Legacy notes
+
 - You can disable accessibility focus of native elements using `android:ImportantForAccessibility="No"` and `ios:IsAccessibilityElement="False"`.
 - `ContentControl` based controls (`Button`, `CheckBox`, ...) automatically use the string representation of their `Content` property. In order for the `AutomationProperties.AutomationId` property to be selectable, add `AutomationProperties.AccessibilityView="Raw"` to the control as well.
 

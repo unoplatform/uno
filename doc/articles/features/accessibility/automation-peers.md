@@ -52,11 +52,12 @@ Automation patterns define the interaction capabilities of a control. All patter
 
 ## Skia accessibility architecture
 
-On all Skia targets (Win32, macOS, WASM, Android), the accessibility tree is built from automation peers by `SkiaAccessibilityBase`. This shared layer:
+On all Skia targets (Win32, macOS, WASM, Android), the accessibility tree is built from automation peers. A shared base layer (`SkiaAccessibilityBase`):
 
 - Queries each peer for its name, role, states, and patterns
 - Routes property changes and focus events to the platform-specific implementation
-- Prunes structural elements (like `Grid`, `Border`, `ContentPresenter`) that have no accessible information, to keep the tree compact
+
+Each platform applies its own pruning strategy. For example, WASM prunes structural elements (like `Grid`, `Border`, `ContentPresenter`) that have no accessible information, to keep the semantic DOM compact. macOS adds all elements but uses `NSAccessibilityUnknownRole` for those without meaningful roles so VoiceOver skips them.
 
 ### Platform-specific behavior
 

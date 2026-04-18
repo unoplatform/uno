@@ -18,62 +18,62 @@ The accessible name is resolved in this order:
 3. The control's plain text content (e.g., `Button.Content` when it is a string)
 4. Inner text of child elements (Skia targets)
 
-| Platform | Mapping |
-|----------|---------|
-| Windows (Win32) | UIAutomation `Name` property |
-| macOS | `NSAccessibility.accessibilityLabel` |
-| Web (WASM) | `aria-label` attribute on the semantic DOM element |
-| Android | `AccessibilityNodeInfo.contentDescription` |
-| iOS | `UIAccessibility.accessibilityLabel` |
+| Platform | Rendering | Mapping |
+|----------|-----------|---------|
+| Windows (Win32) | Skia | UIAutomation `Name` property |
+| macOS | Skia | `NSAccessibility.accessibilityLabel` |
+| Web (WASM) | Skia / Native | `aria-label` attribute on the semantic DOM element |
+| Android | Native | `AccessibilityNodeInfo.contentDescription` |
+| iOS | Native | `UIAccessibility.accessibilityLabel` |
 
 ## AutomationId
 
 > [!NOTE]
 > To avoid performance overhead, `AutomationId` only has an effect when the `IsUiAutomationMappingEnabled` MSBuild property is set to `true`, or when `Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled` is set in code.
 
-| Platform | Mapping |
-|----------|---------|
-| Windows (Win32) | UIAutomation `AutomationId` property |
-| macOS | `NSAccessibility.accessibilityIdentifier` |
-| Web (WASM) | `xamlautomationid` attribute + `aria-label` on the HTML element |
-| Android | `View.contentDescription` |
-| iOS | `UIAccessibility.accessibilityIdentifier` |
+| Platform | Rendering | Mapping |
+|----------|-----------|---------|
+| Windows (Win32) | Skia | UIAutomation `AutomationId` property |
+| macOS | Skia | `NSAccessibility.accessibilityIdentifier` |
+| Web (WASM) | Skia / Native | `xamlautomationid` attribute + `aria-label` on the HTML element |
+| Android | Native | `View.contentDescription` |
+| iOS | Native | `UIAccessibility.accessibilityIdentifier` |
 
 ## HelpText
 
-| Platform | Mapping |
-|----------|---------|
-| Windows (Win32) | UIAutomation `HelpText` property |
-| macOS | `NSAccessibility.accessibilityHelp` |
-| Web (WASM) | `aria-description` attribute |
+| Platform | Rendering | Mapping |
+|----------|-----------|---------|
+| Windows (Win32) | Skia | UIAutomation `HelpText` property |
+| macOS | Skia | `NSAccessibility.accessibilityHelp` |
+| Web (WASM) | Skia / Native | `aria-description` attribute |
 
 ## HeadingLevel
 
-| Platform | Mapping |
-|----------|---------|
-| Windows (Win32) | UIAutomation `HeadingLevel` property |
-| macOS | `NSAccessibility` heading trait |
-| Web (WASM) | Rendered as `<h1>`–`<h6>` semantic HTML elements |
+| Platform | Rendering | Mapping |
+|----------|-----------|---------|
+| Windows (Win32) | Skia | UIAutomation `HeadingLevel` property |
+| macOS | Skia | `NSAccessibility` heading trait |
+| Web (WASM) | Skia | Rendered as `<h1>`–`<h6>` semantic HTML elements |
 
 ## LandmarkType
 
 Supported values: `None` (default), `Custom`, `Form`, `Main`, `Navigation`, `Search`.
 
-| Platform | Mapping |
-|----------|---------|
-| Windows (Win32) | UIAutomation `LandmarkType` property |
-| macOS | `NSAccessibility` landmark |
-| Web (WASM) | ARIA landmark roles (`role="navigation"`, `role="main"`, `role="search"`, `role="form"`, `role="region"`) |
+| Platform | Rendering | Mapping |
+|----------|-----------|---------|
+| Windows (Win32) | Skia | UIAutomation `LandmarkType` property |
+| macOS | Skia | `NSAccessibility` landmark |
+| Web (WASM) | Skia / Native | ARIA landmark roles (`role="navigation"`, `role="main"`, `role="search"`, `role="form"`, `role="region"`) |
 
 When using `LandmarkType="Custom"`, provide a human-readable description with `LocalizedLandmarkType`.
 
 ## LiveSetting
 
-| Platform | Mapping |
-|----------|---------|
-| Windows (Win32) | UIAutomation `LiveSetting` property |
-| macOS | `NSAccessibility` notification |
-| Web (WASM) | `aria-live="polite"` or `aria-live="assertive"` attribute |
+| Platform | Rendering | Mapping |
+|----------|-----------|---------|
+| Windows (Win32) | Skia | UIAutomation `LiveSetting` property |
+| macOS | Skia | `NSAccessibility` notification |
+| Web (WASM) | Skia / Native | `aria-live="polite"` or `aria-live="assertive"` attribute |
 
 ## AccessibilityView
 
