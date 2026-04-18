@@ -389,6 +389,12 @@ internal class Win32Accessibility : IUnoAccessibility, IAutomationPeerListener
 					this.Log().Debug($"Failed to raise BoundingRectangle changed event: {ex.Message}");
 				}
 			}
+
+			// Also raise automatic property changes (IsOffscreen, IsEnabled, Name, ItemStatus)
+			// so UIA clients get notified when elements move on/off screen.
+			// Use CachedAutomationPeer to avoid creating peers eagerly on every layout pass,
+			// which would prevent elements from being garbage collected.
+			owner.CachedAutomationPeer?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
 		}
 	}
 

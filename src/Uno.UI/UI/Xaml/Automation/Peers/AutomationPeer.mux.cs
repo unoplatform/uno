@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 
@@ -253,27 +254,11 @@ partial class AutomationPeer
 	//------------------------------------------------------------------------
 	private bool IsKeyboardFocusableImpl()
 	{
-		// Get the owner element if this is a FrameworkElementAutomationPeer
+		// Delegate to UIElement.IsFocusable which matches WinUI's logic:
+		// IsVisible && (IsEnabled || AllowFocusWhenDisabled) && (IsTabStop || IsFocusableForFocusEngagement) && AreAllAncestorsVisible
 		if (this is FrameworkElementAutomationPeer feap && feap.Owner is UIElement owner)
 		{
-			// Check if the element is visible
-			if (owner.Visibility != Visibility.Visible)
-			{
-				return false;
-			}
-
-			// For Controls, check IsTabStop and IsEnabled
-			if (owner is Control control)
-			{
-				return control.IsTabStop && control.IsEnabled;
-			}
-
-			// For other focusable elements, check if they can receive focus
-			// AllowFocusOnInteraction is on FrameworkElement, not UIElement
-			if (owner is FrameworkElement fe && fe.AllowFocusOnInteraction)
-			{
-				return true;
-			}
+			return owner.IsFocusable;
 		}
 
 		return false;
@@ -290,12 +275,11 @@ partial class AutomationPeer
 	//------------------------------------------------------------------------
 	private bool IsOffscreenImpl(bool ignoreClippingOnScrollContentPresenters)
 	{
-		//TODO (DOTI): ActualWidth/Heigh doesn't seem to be supported on some platforms
 #if __SKIA__
 		// Get the owner element if this is a FrameworkElementAutomationPeer
 		if (this is FrameworkElementAutomationPeer feap && feap.Owner is UIElement owner)
 		{
-			// Check visibility
+			// Check visibility (WinUI: IsVisible on the element itself)
 			if (owner.Visibility != Visibility.Visible)
 			{
 				return true;
@@ -316,8 +300,19 @@ partial class AutomationPeer
 				}
 			}
 
-			// Check if element is clipped out of view
-			// Get the bounding rectangle - if it's empty, the element is offscreen
+			// Check if element is in the live visual tree (WinUI: IsActive on each ancestor)
+			if (!owner.IsInLiveTree)
+			{
+				return true;
+			}
+
+			// Check all ancestors are visible (WinUI: walks parent chain checking IsVisible)
+			if (!owner.AreAllAncestorsVisible())
+			{
+				return true;
+			}
+
+			// Check if element is clipped out of view via global bounds
 			var bounds = owner.GetGlobalBoundsWithOptions(
 				ignoreClipping: false,
 				ignoreClippingOnScrollContentPresenters: ignoreClippingOnScrollContentPresenters,
@@ -503,55 +498,82 @@ partial class AutomationPeer
 	internal void RaiseAutomaticPropertyChanges(bool firePropertyChangedEvents)
 	{
 #if HAS_UNO
-		var isEnabled = IsEnabledCore();
-		var isOffscreen = IsOffscreenCore();
-		var name = GetNameCore();
-		var itemStatus = GetItemStatusCore();
-
-		if (firePropertyChangedEvents)
+		// WinUI uses HRESULT hr = S_OK with WARNING_IGNORES_FAILURES and IFC/goto Cleanup
+		// pattern, which silently swallows any errors from the peer override calls.
+		// The try-catch here is the C# equivalent of that error-swallowing pattern.
+		try
 		{
-			if (_currentIsEnabled != isEnabled)
+			var isEnabled = IsEnabledCore();
+			var isOffscreen = IsOffscreenCore();
+			var name = GetNameCore();
+			var itemStatus = GetItemStatusCore();
+
+			if (firePropertyChangedEvents)
 			{
-				RaisePropertyChangedEvent(
-					AutomationElementIdentifiers.IsEnabledProperty,
-					_currentIsEnabled,
-					isEnabled);
+				if (_currentIsEnabled != isEnabled)
+				{
+					RaisePropertyChangedEvent(
+						AutomationElementIdentifiers.IsEnabledProperty,
+						_currentIsEnabled,
+						isEnabled);
+					_currentIsEnabled = isEnabled;
+				}
+
+				if (_currentIsOffscreen != isOffscreen)
+				{
+					RaisePropertyChangedEvent(
+						AutomationElementIdentifiers.IsOffscreenProperty,
+						_currentIsOffscreen,
+						isOffscreen);
+					_currentIsOffscreen = isOffscreen;
+				}
+
+				if (_currentName != name && (name is not null || _currentName is not null))
+				{
+					RaisePropertyChangedEvent(
+						AutomationElementIdentifiers.NameProperty,
+						_currentName ?? string.Empty,
+						name ?? string.Empty);
+					if (name is not null)
+					{
+						_currentName = name;
+					}
+				}
+
+				if (_currentItemStatus != itemStatus && (itemStatus is not null || _currentItemStatus is not null))
+				{
+					RaisePropertyChangedEvent(
+						AutomationElementIdentifiers.ItemStatusProperty,
+						_currentItemStatus ?? string.Empty,
+						itemStatus ?? string.Empty);
+					if (itemStatus is not null)
+					{
+						_currentItemStatus = itemStatus;
+					}
+				}
+			}
+			else
+			{
 				_currentIsEnabled = isEnabled;
-			}
-
-			if (_currentIsOffscreen != isOffscreen)
-			{
-				RaisePropertyChangedEvent(
-					AutomationElementIdentifiers.IsOffscreenProperty,
-					_currentIsOffscreen,
-					isOffscreen);
 				_currentIsOffscreen = isOffscreen;
-			}
 
-			if (_currentName != name && (name is not null || _currentName is not null))
-			{
-				RaisePropertyChangedEvent(
-					AutomationElementIdentifiers.NameProperty,
-					_currentName ?? string.Empty,
-					name ?? string.Empty);
-				_currentName = name;
-			}
+				if (name is not null)
+				{
+					_currentName = name;
+				}
 
-			if (_currentItemStatus != itemStatus && (itemStatus is not null || _currentItemStatus is not null))
-			{
-				RaisePropertyChangedEvent(
-					AutomationElementIdentifiers.ItemStatusProperty,
-					_currentItemStatus ?? string.Empty,
-					itemStatus ?? string.Empty);
-				_currentItemStatus = itemStatus;
+				if (itemStatus is not null)
+				{
+					_currentItemStatus = itemStatus;
+				}
 			}
 		}
-		else
+		catch (global::System.Exception ex)
 		{
-			_currentIsEnabled = isEnabled;
-			_currentIsOffscreen = isOffscreen;
-			_currentName = name;
-			_currentItemStatus = itemStatus;
+			if (typeof(AutomationPeer).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(AutomationPeer).Log().Debug($"RaiseAutomaticPropertyChanges failed for {GetType().Name}: {ex.Message}");
+			}
 		}
 #endif
 	}

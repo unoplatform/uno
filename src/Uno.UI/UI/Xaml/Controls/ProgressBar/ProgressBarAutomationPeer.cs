@@ -1,6 +1,7 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
@@ -35,15 +36,15 @@ public partial class ProgressBarAutomationPeer : RangeBaseAutomationPeer, IRange
 		{
 			if (progressBar.ShowError)
 			{
-				return "Error" + name;
+				return ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ProgressBarErrorStatus) + name;
 			}
 			else if (progressBar.ShowPaused)
 			{
-				return "Busy" + name;
+				return ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ProgressBarPausedStatus) + name;
 			}
 			else if (progressBar.IsIndeterminate)
 			{
-				return "Paused" + name;
+				return ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ProgressBarIndeterminateStatus) + name;
 			}
 		}
 		return name;
