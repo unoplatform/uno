@@ -34,6 +34,15 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	private AutomationControlType m_ControlType;
 
+	// Recursion guard for GetNameCore → GetLabeledBy → GetName cycle.
+	// Prevents StackOverflowException when elements have circular LabeledBy references.
+	[ThreadStatic]
+	private static HashSet<AutomationPeer> t_peersResolvingName;
+
+#if !__ANDROID__ && !__APPLE_UIKIT__
+	private const int MaxAutomationTreeDepth = 512;
+#endif
+
 	public UIElement Owner { get; }
 
 	public FrameworkElementAutomationPeer() { }
@@ -132,10 +141,20 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	private void GetAutomationPeerChildren(UIElement element, List<AutomationPeer> children)
 	{
+		GetAutomationPeerChildren(element, children, 0);
+	}
+
+	private void GetAutomationPeerChildren(UIElement element, List<AutomationPeer> children, int depth)
+	{
 		//UNO TODO: Properly implement GetAutomationPeerChildren on FrameworkElementAutomationPeer
 		//Temporarily disabled as android, ios, macos doesn't use UIElement
 
 #if !__ANDROID__ && !__APPLE_UIKIT__
+		if (depth > MaxAutomationTreeDepth)
+		{
+			return;
+		}
+
 		var childCount = element.GetChildren().Count;
 		if (childCount > 0)
 		{
@@ -154,7 +173,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 					}
 					else
 					{
-						GetAutomationPeerChildren(spChild, children);
+						GetAutomationPeerChildren(spChild, children, depth + 1);
 					}
 				}
 			}
@@ -241,9 +260,23 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 			return name;
 		}
 
-		if (GetLabeledBy() is AutomationPeer labelAutomationPeer && labelAutomationPeer.GetName() is string label && !string.IsNullOrEmpty(label))
+		// Guard against circular LabeledBy references (A→B→A) which would cause
+		// StackOverflowException. Track which peers are currently resolving their
+		// name so we can break cycles.
+		var resolving = t_peersResolvingName ??= new HashSet<AutomationPeer>(ReferenceEqualityComparer.Instance);
+		if (resolving.Add(this))
 		{
-			return label;
+			try
+			{
+				if (GetLabeledBy() is AutomationPeer labelAutomationPeer && labelAutomationPeer.GetName() is string label && !string.IsNullOrEmpty(label))
+				{
+					return label;
+				}
+			}
+			finally
+			{
+				resolving.Remove(this);
+			}
 		}
 
 		if ((Owner as FrameworkElement)?.GetPlainText() is string plainText && !string.IsNullOrEmpty(plainText))

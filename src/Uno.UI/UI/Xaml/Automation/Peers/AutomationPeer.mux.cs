@@ -20,6 +20,10 @@ partial class AutomationPeer
 	// Cached events source for ListItem/TabItem/TreeItem control types
 	private AutomationPeer? _eventsSource;
 
+	// Re-entrancy guard for GetAPEventsSource. Prevents StackOverflow when
+	// Navigate(Parent) triggers peer creation that calls GetAPEventsSource again.
+	private bool _isResolvingEventsSource;
+
 	//------------------------------------------------------------------------
 	//
 	//  Method:   GetAPEventsSource
@@ -33,6 +37,13 @@ partial class AutomationPeer
 	//------------------------------------------------------------------------
 	internal AutomationPeer? GetAPEventsSource()
 	{
+		// Guard against re-entrancy: Navigate(Parent) may trigger peer creation
+		// that calls GetAPEventsSource again on the same peer.
+		if (_isResolvingEventsSource)
+		{
+			return _eventsSource ?? EventsSource;
+		}
+
 		var controlType = GetAutomationControlType();
 
 		// Only generate EventsSource for ListItem, TabItem, and TreeItem control types
@@ -40,29 +51,37 @@ partial class AutomationPeer
 			controlType == AutomationControlType.TabItem ||
 			controlType == AutomationControlType.TreeItem)
 		{
-			// Navigate to parent to generate EventsSource
-			var parent = Navigate(AutomationNavigationDirection.Parent) as AutomationPeer;
-
-			if (parent is not null && this is FrameworkElementAutomationPeer)
+			_isResolvingEventsSource = true;
+			try
 			{
-				// Generate the events source using the parent
-				GenerateAutomationPeerEventsSource(parent);
+				// Navigate to parent to generate EventsSource
+				var parent = Navigate(AutomationNavigationDirection.Parent) as AutomationPeer;
 
-				if (_eventsSource is not null)
+				if (parent is not null && this is FrameworkElementAutomationPeer)
 				{
-					// This code path exists for one reason: for ListViewItems we need to make sure that
-					// their DataAutomationPeers, which are the EventsSource for the actual FrameworkElement
-					// derived AutomationPeers, return the correct parent. In List/ListItem peer implementations
-					// we hide all the controls between the ListViewItem and the ListView control.
-					//
-					// We make sure here that if m_pAPParent is already set, we leave it alone and don't override it.
-					// That indicates external code is trying to set the parent on a data automation peer.
-					// If not we perform this call, which does the same thing, but for internal automation peers.
-					if (!_eventsSource.HasParent())
+					// Generate the events source using the parent
+					GenerateAutomationPeerEventsSource(parent);
+
+					if (_eventsSource is not null)
 					{
-						_eventsSource.SetParent(parent);
+						// This code path exists for one reason: for ListViewItems we need to make sure that
+						// their DataAutomationPeers, which are the EventsSource for the actual FrameworkElement
+						// derived AutomationPeers, return the correct parent. In List/ListItem peer implementations
+						// we hide all the controls between the ListViewItem and the ListView control.
+						//
+						// We make sure here that if m_pAPParent is already set, we leave it alone and don't override it.
+						// That indicates external code is trying to set the parent on a data automation peer.
+						// If not we perform this call, which does the same thing, but for internal automation peers.
+						if (!_eventsSource.HasParent())
+						{
+							_eventsSource.SetParent(parent);
+						}
 					}
 				}
+			}
+			finally
+			{
+				_isResolvingEventsSource = false;
 			}
 		}
 
