@@ -100,6 +100,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => Win32TextBoxNotificationsProviderSingleton.Instance);
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new Win32NativeOpenGLWrapper(xamlRoot));
 
+		Win32AppTaskInfoExtension.Register();
 		Win32Accessibility.Register();
 	}
 

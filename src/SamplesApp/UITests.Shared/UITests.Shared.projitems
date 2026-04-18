@@ -1025,6 +1025,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+      <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Shell\AppTaskInfoTests.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+      </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_StartScreen\JumpListTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -6575,6 +6579,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Notifications\BadgeNotificationTests.xaml.cs">
       <DependentUpon>BadgeNotificationTests.xaml</DependentUpon>
     </Compile>
+      <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Shell\AppTaskInfoTests.xaml.cs">
+        <DependentUpon>AppTaskInfoTests.xaml</DependentUpon>
+      </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_StartScreen\JumpListTests.xaml.cs">
       <DependentUpon>JumpListTests.xaml</DependentUpon>
     </Compile>

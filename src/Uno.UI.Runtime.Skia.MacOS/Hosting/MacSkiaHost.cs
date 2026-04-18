@@ -36,6 +36,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		MacOSNativeWebViewProvider.Register();
 		MacOSMediaPlayerExtension.Register();
 		MacOSMediaPlayerPresenterExtension.Register();
+		MacOSAppTaskInfoExtension.Register();
 		MacOSAccessibility.Register();
 	}
 
