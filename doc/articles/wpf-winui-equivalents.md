@@ -337,6 +337,8 @@ RESOURCE RULES:
 
 CONTROL REPLACEMENTS:
 - Menu/MenuItem -> MenuBar/MenuBarItem/MenuFlyoutItem
+
+````
 - ContextMenu -> ContextFlyout with MenuFlyout
 - ToolBar -> CommandBar with AppBarButton
 - StatusBar -> Grid at bottom of layout
