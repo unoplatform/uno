@@ -79,9 +79,9 @@ jobs:
 
     - template: ../templates/dotnet-install.yml
 
-    - task: NodeTool@0
+    - task: UseNode@1
       inputs:
-        versionSpec: '18.x'
+        version: '18.x'
 
     - task: DownloadPipelineArtifact@2
       displayName: Restoring uitest binaries
@@ -198,9 +198,9 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - task: NodeTool@0
+  - task: UseNode@1
     inputs:
-      versionSpec: '18.x'
+      version: '18.x'
 
   - task: DownloadPipelineArtifact@2
     displayName: Restoring uitest binaries
