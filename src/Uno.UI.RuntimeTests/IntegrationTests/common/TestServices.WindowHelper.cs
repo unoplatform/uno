@@ -236,12 +236,14 @@ namespace Private.Infrastructure
 				}
 
 				var tcs = new TaskCompletionSource<object>();
-				dispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
+				Microsoft.UI.Dispatching.DispatcherQueueTimer timer = null;
+				global::Windows.Foundation.TypedEventHandler<Microsoft.UI.Dispatching.DispatcherQueueTimer, object> handler = null;
+
+				await RootElementDispatcher.RunAsync(() =>
 				{
-					var timer = dispatcherQueue.CreateTimer();
+					timer = dispatcherQueue.CreateTimer();
 					timer.Interval = TimeSpan.Zero;
 					timer.IsRepeating = false;
-					global::Windows.Foundation.TypedEventHandler<Microsoft.UI.Dispatching.DispatcherQueueTimer, object> handler = null;
 					handler = (t, _) =>
 					{
 						t.Tick -= handler;
@@ -251,9 +253,27 @@ namespace Private.Infrastructure
 					timer.Start();
 				});
 
-				// Safety net only — the timer should fire within a dispatcher cycle.
+				// Safety net only — a zero-interval DispatcherQueueTimer should tick within
+				// one dispatcher cycle. 10s means the dispatcher is genuinely stalled; fail
+				// loudly rather than proceeding with work items still pending.
 				var timeout = Task.Delay(TimeSpan.FromSeconds(10));
-				await Task.WhenAny(tcs.Task, timeout);
+				if (await Task.WhenAny(tcs.Task, timeout) == timeout)
+				{
+					await RootElementDispatcher.RunAsync(() =>
+					{
+						if (timer is not null)
+						{
+							timer.Stop();
+							if (handler is not null)
+							{
+								timer.Tick -= handler;
+							}
+						}
+					});
+					throw new TimeoutException(
+						"WaitForIdle: DispatcherQueue did not reach idle within 10s. " +
+						"A zero-interval DispatcherQueueTimer did not tick — the UI thread is stalled.");
+				}
 			}
 #endif
 
