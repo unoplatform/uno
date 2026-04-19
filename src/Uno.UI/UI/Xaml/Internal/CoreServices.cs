@@ -68,7 +68,7 @@ namespace Uno.UI.Xaml.Core
 
 			// Schedule a FrameTick for each CompositionTarget. FrameTick batches
 			// layout, loaded events, CompositionTarget.Rendering, and render into
-			// a single dispatcher item at Render priority.
+			// a single dispatcher item.
 
 #if __SKIA__
 			// Islands

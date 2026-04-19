@@ -155,9 +155,64 @@ namespace Private.Infrastructure
 
 			internal static async Task WaitForIdle()
 			{
+#if (HAS_UNO && __SKIA__) || WINAPPSDK
+				// Mirrors WinUI's IdleSynchronizer.SynchronouslyTickUIThread(1)
+				// (D:\Mux\Mux\Samples\AppTestAutomationHelpers\IdleSynchronizer.cpp:364):
+				// subscribe to CompositionTarget.Rendering, wait for the callback to fire.
+				// That proves a full FrameTick / NWDrawTree (layout, Loaded events, Rendering
+				// callbacks, render) has run end-to-end.
+				//
+				// On Uno Skia: required because layout is coupled into FrameTick, which can
+				// be deferred behind the render throttle (_waitingForPresent). A pure
+				// dispatcher-idle wait would miss this and return before layout had run.
+				//
+				// On WinAppSDK: the same Rendering-event idiom is what WinUI's own
+				// IdleSynchronizer uses, so we adopt it for consistency.
+				//
+				// The dispatcher-idle path below is intentionally skipped here — once the
+				// Rendering callback fires, the test continuation is posted to the dispatcher
+				// and naturally serialises after FrameTick completes (UpdateLayout + Render
+				// in the post-Rendering steps will have run by the time the test reads
+				// state). Adding RunIdleAsync would be redundant.
+				await ForceFrameTickAsync();
+#else
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+#endif
 			}
+
+#if (HAS_UNO && __SKIA__) || WINAPPSDK
+			private static async Task ForceFrameTickAsync()
+			{
+				var tcs = new TaskCompletionSource<object>();
+
+				// Subscription must run on the UI thread — Rendering.add asserts thread access
+				// and (on Uno) arms ScheduleFrameTick by calling RequestNewFrame on each
+				// known CompositionTarget. That guarantees a FrameTick will fire even if
+				// nothing else has requested one.
+				await RootElementDispatcher.RunAsync(() =>
+				{
+					EventHandler<object> handler = null;
+					handler = (_, _) =>
+					{
+						Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= handler;
+						tcs.TrySetResult(null);
+					};
+					Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += handler;
+				});
+
+				// 5s bound — a FrameTick at 60Hz takes ~16ms even when throttled, so 5s is
+				// generous. Tests with no content root won't tick at all; we don't fail loudly,
+				// the test will surface its own assertion failure on whatever it's checking.
+				var timeout = Task.Delay(TimeSpan.FromSeconds(5));
+				if (await Task.WhenAny(tcs.Task, timeout) == timeout)
+				{
+					global::System.Diagnostics.Debug.WriteLine(
+						"WaitForIdle: ForceFrameTickAsync timed out after 5s. " +
+						"FrameTick did not fire — likely no active CompositionTarget.");
+				}
+			}
+#endif
 
 			/// <summary>
 			/// Waits for <paramref name="element"/> to be loaded and measured in the visual tree.
