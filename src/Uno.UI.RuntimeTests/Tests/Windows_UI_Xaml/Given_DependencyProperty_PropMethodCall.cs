@@ -11,7 +11,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_DependencyProperty_PropMethodCall
+public partial class Given_DependencyProperty_PropMethodCall
 {
 	[TestMethod]
 	public void When_SetValue_GetValue_Roundtrip()
