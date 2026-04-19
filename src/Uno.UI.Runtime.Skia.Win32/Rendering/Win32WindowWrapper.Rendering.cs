@@ -56,15 +56,22 @@ internal partial class Win32WindowWrapper
 			},
 			onFramePresented: () =>
 			{
+				// High priority: the present-ack is a tiny internal operation that clears
+				// the throttle so the next FrameTick can begin. Posting at Normal would let
+				// it queue behind unrelated UI work, delaying the next frame by however long
+				// the dispatcher takes to drain those Normal items.
 				NativeDispatcher.Main.Enqueue(
 					OnFramePresented,
-					NativeDispatcherPriority.Render);
+					NativeDispatcherPriority.High);
 			});
 	}
 
 	/// <summary>
 	/// Called on the render thread. Replays the last recorded SKPicture to
 	/// the canvas and returns the clip path and client dimensions for CopyPixels.
+	/// Returns null when there is no frame to present yet — this avoids a wasted
+	/// CopyPixels (BitBlt + DwmFlush, or SwapBuffers presenting an uninitialised
+	/// back buffer) for WM_PAINT messages that arrive before the first SynchronousRender.
 	/// </summary>
 	private unsafe (SKPath clipPath, int width, int height)? DrawFrame()
 	{
@@ -80,6 +87,14 @@ internal partial class Win32WindowWrapper
 			_surface = _renderer.UpdateSize((int)size.Width, (int)size.Height);
 			return _surface.Canvas;
 		});
+
+		// _surface is created lazily inside the resizeFunc only when there's an actual
+		// frame to draw. If it's still null, the CompositionTarget has not recorded
+		// anything yet — nothing to present.
+		if (_surface is null)
+		{
+			return null;
+		}
 
 		if (!PInvoke.GetClientRect(_hwnd, out RECT clientRect))
 		{

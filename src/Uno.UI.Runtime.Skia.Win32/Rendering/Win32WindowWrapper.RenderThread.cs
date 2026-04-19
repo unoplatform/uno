@@ -90,7 +90,18 @@ internal partial class Win32WindowWrapper
 		{
 			_disposed = true;
 			_frameSignal.Set(); // Unblock if waiting
-			_thread.Join(timeout: TimeSpan.FromSeconds(2));
+
+			// 250 ms is enough for the thread to finish a present (~16 ms at 60 Hz) plus
+			// some slack. If the join times out the GPU is likely hung; warn and move on
+			// rather than blocking shutdown for the full original 2 s.
+			var joined = _thread.Join(timeout: TimeSpan.FromMilliseconds(250));
+			if (!joined)
+			{
+				typeof(RenderThread).LogWarn()?.Warn(
+					"Render thread did not exit within 250 ms during dispose; proceeding without join. " +
+					"This usually indicates a stuck GPU present (SwapBuffers/BitBlt blocked on VSync).");
+			}
+
 			_frameSignal.Dispose();
 			_presentedEvent.Dispose();
 		}

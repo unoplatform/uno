@@ -27,7 +27,6 @@ namespace Uno.UI.Dispatching
 		{
 			new Queue<Delegate>(), // High
 			new Queue<Delegate>(), // Normal
-			new Queue<Delegate>(), // Render
 			new Queue<Delegate>(), // Low
 			new Queue<Delegate>(), // Idle
 		};
@@ -48,10 +47,9 @@ namespace Uno.UI.Dispatching
 			Debug.Assert(
 				(int)NativeDispatcherPriority.High == 0 &&
 				(int)NativeDispatcherPriority.Normal == 1 &&
-				(int)NativeDispatcherPriority.Render == 2 &&
-				(int)NativeDispatcherPriority.Low == 3 &&
-				(int)NativeDispatcherPriority.Idle == 4 &&
-				Enum.GetValues<NativeDispatcherPriority>().Length == 5);
+				(int)NativeDispatcherPriority.Low == 2 &&
+				(int)NativeDispatcherPriority.Idle == 3 &&
+				Enum.GetValues<NativeDispatcherPriority>().Length == 4);
 
 			_currentPriority = NativeDispatcherPriority.Normal;
 
@@ -82,7 +80,7 @@ namespace Uno.UI.Dispatching
 
 			Action? action = null;
 
-			for (var p = 0; p <= 4; p++)
+			for (var p = 0; p <= 3; p++)
 			{
 				var queue = @this._queues[p];
 
@@ -355,7 +353,7 @@ namespace Uno.UI.Dispatching
 
 		private void EnqueueCore(Delegate handler, NativeDispatcherPriority priority)
 		{
-			Debug.Assert((int)priority >= 0 && (int)priority <= 4);
+			Debug.Assert((int)priority >= 0 && (int)priority <= 3);
 
 			bool shouldEnqueue;
 
@@ -414,7 +412,6 @@ namespace Uno.UI.Dispatching
 		internal bool HasThreadAccess => _hasThreadAccess ??= GetHasThreadAccess();
 
 		internal bool IsIdle => _queues[(int)NativeDispatcherPriority.High].Count +
-								_queues[(int)NativeDispatcherPriority.Render].Count +
 								_queues[(int)NativeDispatcherPriority.Normal].Count +
 								_queues[(int)NativeDispatcherPriority.Low].Count == 0;
 

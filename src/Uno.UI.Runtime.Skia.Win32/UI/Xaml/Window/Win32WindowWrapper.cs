@@ -390,11 +390,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		{
 			OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
 		}
-		// Use SynchronousRender (layout + render) instead of full FrameTick to avoid re-entrancy:
-		// SynchronousRenderAndDraw can be called from within loaded event processing (Window.Show
-		// triggered by a Loaded handler), and FrameTick's RaiseLoadedEvent would corrupt the
-		// iteration of the loaded event list.
-		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.SynchronousRender(forceLayout: sizeChanged);
+		// Run the full FrameTick (layout + Loaded + Rendering + render). This is reachable from
+		// ShowCore via the deferred TryActivate in BaseWindowImplementation.NotifyContentLoaded —
+		// the deferral guarantees we're outside any in-progress Loaded iteration when ShowCore
+		// runs, so FrameTick is safe here. Using FrameTick (instead of SynchronousRender, which
+		// skips Loaded) ensures the first painted frame reflects post-Loaded state.
+		// FrameTick's _inFrameTick guard still catches the unlikely case of re-entry (e.g. a
+		// Win32 modal pump from a Rendering handler).
+		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.FrameTick();
 		_renderThread?.SignalNewFrame();
 		_renderThread?.WaitForNextPresent(TimeSpan.FromMilliseconds(100));
 	}

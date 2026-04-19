@@ -25,7 +25,7 @@ public partial class CompositionTarget
 	//                           | RequestNewFrame                       |
 	//                           |-------------------------------------->|
 	//                           |                                       |
-	//                           |                                       | ScheduleFrameTick (at Render priority)
+	//                           |                                       | ScheduleFrameTick (at Normal priority, coalesced)
 	//                           |                                       |----.
 	//                           |                                       |    |
 	//                           |                                       |<---'
@@ -48,7 +48,7 @@ public partial class CompositionTarget
 	//                           |                                       |
 
 	/// <summary>
-	/// Guards against scheduling duplicate frame ticks. Thread-safe via Interlocked.
+	/// Guards against scheduling duplicate frame ticks. Read/written under <see cref="_scheduleGate"/>.
 	/// </summary>
 	private bool _frameTickScheduled;
 
@@ -59,26 +59,41 @@ public partial class CompositionTarget
 	private bool _inFrameTick;
 
 	/// <summary>
+	/// Protects <see cref="_waitingForPresent"/> + <see cref="_pendingFrameRequest"/> reads
+	/// in <see cref="ScheduleFrameTick"/> against UI-thread writes in <see cref="FrameTick"/> /
+	/// <see cref="OnFramePresented"/>. <see cref="ICompositionTarget.RequestNewFrame"/> can be
+	/// called from non-UI threads, so a lock is needed (volatile alone leaves a check-then-act
+	/// race that drops or duplicates schedules).
+	/// </summary>
+	private readonly Lock _scheduleGate = new();
+
+	/// <summary>
 	/// Throttle flag: when true, ScheduleFrameTick defers until OnFramePresented clears it.
 	/// Only set on hosts with a render thread (SupportsRenderThrottle == true).
 	/// Prevents the UI thread from recording frames faster than the render thread presents.
-	/// Volatile: written on UI thread (FrameTick / OnFramePresented), read in ScheduleFrameTick
-	/// which may be called from a non-UI thread via RequestNewFrame.
+	/// Read/written under <see cref="_scheduleGate"/>.
 	/// </summary>
-	private volatile bool _waitingForPresent;
+	private bool _waitingForPresent;
 
 	/// <summary>
 	/// Set when ScheduleFrameTick is called while throttled. OnFramePresented schedules
 	/// the deferred FrameTick when it clears the throttle.
-	/// Volatile: written in ScheduleFrameTick (any thread), read in OnFramePresented (UI thread).
+	/// Read/written under <see cref="_scheduleGate"/>.
 	/// </summary>
-	private volatile bool _pendingFrameRequest;
+	private bool _pendingFrameRequest;
 
 	/// <summary>
 	/// Set when FrameTick is called re-entrantly (e.g. loaded event → Window.Show → SynchronousRenderAndDraw).
 	/// The outer FrameTick schedules another tick after completing if this is set.
 	/// </summary>
 	private bool _reentrantFrameRequested;
+
+	/// <summary>
+	/// Cached entry-point delegate for the dispatcher. Lazy-initialised once per
+	/// CompositionTarget to avoid per-frame closure allocation
+	/// (~3,600/min during 60 fps animation).
+	/// </summary>
+	private Action? _frameTickEntry;
 
 	void ICompositionTarget.RequestNewFrame()
 	{
@@ -94,42 +109,71 @@ public partial class CompositionTarget
 	internal void OnFramePresented()
 	{
 		NativeDispatcher.CheckThreadAccess();
-		_waitingForPresent = false;
-		if (_pendingFrameRequest)
+		bool reschedule;
+		lock (_scheduleGate)
 		{
+			_waitingForPresent = false;
+			reschedule = _pendingFrameRequest;
 			_pendingFrameRequest = false;
+		}
+		if (reschedule)
+		{
 			ScheduleFrameTick();
 		}
 	}
 
 	/// <summary>
-	/// Schedules a single batched frame tick at Render priority if one is not already scheduled.
+	/// Schedules a single batched frame tick if one is not already scheduled.
 	/// Thread-safe: can be called from the UI thread or the native render thread.
 	/// </summary>
 	internal void ScheduleFrameTick()
 	{
-		if (_waitingForPresent)
+		lock (_scheduleGate)
 		{
-			// Render thread hasn't finished presenting the previous frame.
-			// Remember the request — it will be scheduled when OnFramePresented fires.
-			_pendingFrameRequest = true;
-			return;
+			if (_waitingForPresent)
+			{
+				// Render thread hasn't finished presenting the previous frame.
+				// Remember the request — it will be scheduled when OnFramePresented fires.
+				_pendingFrameRequest = true;
+				return;
+			}
+
+			if (_frameTickScheduled)
+			{
+				return;
+			}
+
+			_frameTickScheduled = true;
 		}
 
-		if (!Interlocked.Exchange(ref _frameTickScheduled, true))
+		// Schedule at Normal priority. Coalescing (above) plus the per-host throttle
+		// (_waitingForPresent on hosts with a render thread) bound frame production to
+		// one in-flight tick per present, so the priority value doesn't need to outrun
+		// other UI work — putting FrameTick above or below Normal trades freezes for
+		// UI lock during animation. Equal priority + FIFO leaves neither side starved.
+		NativeDispatcher.Main.Enqueue(_frameTickEntry ??= RunFrameTickEntry, NativeDispatcherPriority.Normal);
+	}
+
+	private void RunFrameTickEntry()
+	{
+		lock (_scheduleGate)
 		{
-			NativeDispatcher.Main.Enqueue(() =>
-			{
-				Interlocked.Exchange(ref _frameTickScheduled, false);
-				FrameTick();
-			}, NativeDispatcherPriority.Render);
+			_frameTickScheduled = false;
 		}
+		FrameTick();
 	}
 
 	/// <summary>
-	/// Single batched frame tick, posted to the dispatcher as one operation at Render priority.
+	/// Single batched frame tick, posted to the dispatcher as one operation.
 	/// Sequences: Layout -> Loaded events -> Layout -> CompositionTarget.Rendering -> Layout -> Render.
 	/// Matches WPF MediaContext.RenderMessageHandlerCore / WinUI NWDrawTree OnTick pattern.
+	///
+	/// Trade-off: layout always runs before render here, which is structurally cleaner
+	/// but means composition-only animations (e.g. CompositionTarget.Rendering subscribers
+	/// that mutate composition-layer properties without dirtying layout) still pay one
+	/// UpdateLayout walk per frame. UpdateLayout short-circuits on a clean tree so the
+	/// cost is tolerable. The longer-term fix is the FrameScheduler abstraction (see
+	/// follow-up F1) which lets composition-only frames bypass layout entirely.
 	/// </summary>
 	internal void FrameTick()
 	{
@@ -137,10 +181,23 @@ public partial class CompositionTarget
 
 		if (_inFrameTick)
 		{
-			// Re-entrant call (e.g. loaded event handler → Window.Show → SynchronousRenderAndDraw).
+			// Re-entrant call (e.g. loaded event handler → Window.Show → SynchronousRenderAndDraw,
+			// or a third-party Loaded handler that pumps the message loop).
 			// Skip to avoid corrupting the loaded event list iteration. The outer FrameTick
 			// will schedule another tick after completing.
 			_reentrantFrameRequested = true;
+
+			// WinUI fail-fasts on tick re-entry (XAML_FAIL_FAST in NWDrawTree). We're more
+			// lenient because shipping fail-fast on user-handler re-entry would be too
+			// aggressive, but it's still a sign of a third-party handler doing something
+			// unexpected — log so the divergence is observable.
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn(
+					$"CompositionTarget#{GetHashCode()}: FrameTick re-entered. " +
+					"A handler invoked during Loaded or CompositionTarget.Rendering pumped the message loop " +
+					"(e.g. modal dialog, blocking Win32 call). Deferring the inner tick.");
+			}
 			return;
 		}
 
@@ -152,7 +209,7 @@ public partial class CompositionTarget
 		_inFrameTick = true;
 		try
 		{
-			// Resolve the host once for this tick (used for throttle + VSync timestamp).
+			// Resolve the host once for this tick (used for throttle).
 			var host = ContentRoot.XamlRoot is { } xr
 				? XamlRootMap.GetHostForRoot(xr)
 				: null;
@@ -167,13 +224,10 @@ public partial class CompositionTarget
 				rootElement.UpdateLayout();
 			}
 
-			// 3. CompositionTarget.Rendering event (may dirty layout).
-			//    Use the host's VSync timestamp when available (e.g. Android Choreographer)
-			//    for accurate animation timing; fall back to wall clock otherwise.
-			var vsync = host?.FrameVsyncTimestamp ?? 0;
-			InvokeRendering(vsync != 0
-				? Stopwatch.GetElapsedTime(_start, vsync)
-				: Stopwatch.GetElapsedTime(_start));
+			// 3. CompositionTarget.Rendering event (may dirty layout). Wall-clock based;
+			//    a vsync-aligned timestamp would be more accurate but no host plumbs one
+			//    through yet — see follow-up F2.
+			InvokeRendering(Stopwatch.GetElapsedTime(_start));
 
 			// 4. Re-layout after Rendering callbacks (matches WinUI NWDrawTree which runs
 			//    UpdateLayout after CallPerFrameCallback). Without this, Rendering handlers
@@ -189,7 +243,10 @@ public partial class CompositionTarget
 				// displayed frame during continuous animations, doubling CPU work.
 				if (host is { SupportsRenderThrottle: true })
 				{
-					_waitingForPresent = true;
+					lock (_scheduleGate)
+					{
+						_waitingForPresent = true;
+					}
 				}
 
 				Render();
