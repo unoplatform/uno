@@ -56,12 +56,28 @@ public partial class TextBox
 
 	private void StartImeSession()
 	{
+		// Don't route IME composition events to PasswordBox — password text
+		// must not be processed as composition text, even if the extension
+		// no-ops for PasswordBox (any later global composition event would
+		// otherwise be forwarded to this PasswordBox via _activeImeTextBox).
+		if (this is PasswordBox)
+		{
+			return;
+		}
+
 		_activeImeTextBox = this;
 		_imeExtension?.StartImeSession(this);
 	}
 
 	private void EndImeSession()
 	{
+		// Symmetric with StartImeSession — PasswordBoxes never activate the
+		// IME session, so don't tear it down (which would clobber _activeImeTextBox).
+		if (this is PasswordBox)
+		{
+			return;
+		}
+
 		_imeExtension?.EndImeSession();
 		_activeImeTextBox = null;
 

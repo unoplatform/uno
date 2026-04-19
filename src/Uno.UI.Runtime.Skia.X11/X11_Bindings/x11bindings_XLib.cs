@@ -268,7 +268,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		// XIM (X Input Method) APIs
 		[LibraryImport(libX11, StringMarshallingCustomType = typeof(AnsiStringMarshaller))]
-		public static partial IntPtr XOpenIM(IntPtr display, IntPtr rdb, string res_name, string res_class);
+		public static partial IntPtr XOpenIM(IntPtr display, IntPtr rdb, string? res_name, string? res_class);
 
 		[LibraryImport(libX11)]
 		public static partial int XCloseIM(IntPtr im);
