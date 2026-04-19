@@ -156,25 +156,29 @@ namespace Private.Infrastructure
 			internal static async Task WaitForIdle()
 			{
 #if (HAS_UNO && __SKIA__) || WINAPPSDK
-				// Mirrors WinUI's IdleSynchronizer.SynchronouslyTickUIThread(1)
-				// (D:\Mux\Mux\Samples\AppTestAutomationHelpers\IdleSynchronizer.cpp:364):
-				// subscribe to CompositionTarget.Rendering, wait for the callback to fire.
-				// That proves a full FrameTick / NWDrawTree (layout, Loaded events, Rendering
-				// callbacks, render) has run end-to-end.
+				// Mirrors WinUI's IdleSynchronizer::WaitInternal
+				// (D:\Mux\Mux\Samples\AppTestAutomationHelpers\IdleSynchronizer.cpp:115-174)
+				// by running both load-bearing steps per iteration:
 				//
-				// On Uno Skia: required because layout is coupled into FrameTick, which can
-				// be deferred behind the render throttle (_waitingForPresent). A pure
-				// dispatcher-idle wait would miss this and return before layout had run.
+				//   1. SynchronouslyTickUIThread(1) (IdleSynchronizer.cpp:364) — subscribe to
+				//      CompositionTarget.Rendering inside a dispatcher work item, wait for
+				//      the callback. On Uno Skia, Rendering.add arms ScheduleFrameTick via
+				//      RequestNewFrame, so a FrameTick (UpdateLayout + Loaded events +
+				//      Rendering callbacks + Draw) is guaranteed to run end-to-end.
 				//
-				// On WinAppSDK: the same Rendering-event idiom is what WinUI's own
-				// IdleSynchronizer uses, so we adopt it for consistency.
+				//   2. WaitForIdleDispatcher (IdleSynchronizer.cpp:212) — a non-repeating
+				//      DispatcherQueueTimer with zero Interval fires once the normal queue
+				//      has drained. Tick alone leaves normal-priority work items (Loaded
+				//      handlers, COM/clipboard continuations, awaited async completions)
+				//      pending when the Rendering callback returns.
 				//
-				// The dispatcher-idle path below is intentionally skipped here — once the
-				// Rendering callback fires, the test continuation is posted to the dispatcher
-				// and naturally serialises after FrameTick completes (UpdateLayout + Render
-				// in the post-Rendering steps will have run by the time the test reads
-				// state). Adding RunIdleAsync would be redundant.
+				// WinUI itself uses an infinite wait per tick (IdleSynchronizer.cpp:385 →
+				// Event.h:52). We keep a 30 s safety net in ForceFrameTickAsync that throws
+				// rather than silently proceeding — hangs in CI are worse than a visible
+				// failure, but silent "idle" skew on every subsequent assertion is worse
+				// still.
 				await ForceFrameTickAsync();
+				await WaitForIdleDispatcherAsync();
 #else
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
@@ -185,6 +189,7 @@ namespace Private.Infrastructure
 			private static async Task ForceFrameTickAsync()
 			{
 				var tcs = new TaskCompletionSource<object>();
+				EventHandler<object> handler = null;
 
 				// Subscription must run on the UI thread — Rendering.add asserts thread access
 				// and (on Uno) arms ScheduleFrameTick by calling RequestNewFrame on each
@@ -192,7 +197,6 @@ namespace Private.Infrastructure
 				// nothing else has requested one.
 				await RootElementDispatcher.RunAsync(() =>
 				{
-					EventHandler<object> handler = null;
 					handler = (_, _) =>
 					{
 						Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= handler;
@@ -201,16 +205,55 @@ namespace Private.Infrastructure
 					Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += handler;
 				});
 
-				// 5s bound — a FrameTick at 60Hz takes ~16ms even when throttled, so 5s is
-				// generous. Tests with no content root won't tick at all; we don't fail loudly,
-				// the test will surface its own assertion failure on whatever it's checking.
-				var timeout = Task.Delay(TimeSpan.FromSeconds(5));
+				// 30s bound — purely a safety net for a stalled composition/render pipeline.
+				// WinUI's SynchronouslyTickUIThread waits infinitely (IdleSynchronizer.cpp:385);
+				// we prefer a loud failure over a hang in CI, but silently proceeding on a
+				// missed tick would skew every subsequent assertion.
+				var timeout = Task.Delay(TimeSpan.FromSeconds(30));
 				if (await Task.WhenAny(tcs.Task, timeout) == timeout)
 				{
-					global::System.Diagnostics.Debug.WriteLine(
-						"WaitForIdle: ForceFrameTickAsync timed out after 5s. " +
-						"FrameTick did not fire — likely no active CompositionTarget.");
+					await RootElementDispatcher.RunAsync(() =>
+					{
+						Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= handler;
+					});
+					throw new TimeoutException(
+						"WaitForIdle: CompositionTarget.Rendering did not fire within 30s. " +
+						"No active CompositionTarget, or the composition/render pipeline is stalled.");
 				}
+			}
+
+			private static async Task WaitForIdleDispatcherAsync()
+			{
+				// Mirrors WinUI's IdleSynchronizer::WaitForIdleDispatcher
+				// (D:\Mux\Mux\Samples\AppTestAutomationHelpers\IdleSynchronizer.cpp:212):
+				// a non-repeating DispatcherQueueTimer with zero Interval ticks once the
+				// normal-priority queue has drained.
+				var dispatcherQueue = CurrentTestWindow?.DispatcherQueue
+					?? Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+				if (dispatcherQueue is null)
+				{
+					return;
+				}
+
+				var tcs = new TaskCompletionSource<object>();
+				dispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
+				{
+					var timer = dispatcherQueue.CreateTimer();
+					timer.Interval = TimeSpan.Zero;
+					timer.IsRepeating = false;
+					global::Windows.Foundation.TypedEventHandler<Microsoft.UI.Dispatching.DispatcherQueueTimer, object> handler = null;
+					handler = (t, _) =>
+					{
+						t.Tick -= handler;
+						tcs.TrySetResult(null);
+					};
+					timer.Tick += handler;
+					timer.Start();
+				});
+
+				// Safety net only — the timer should fire within a dispatcher cycle.
+				var timeout = Task.Delay(TimeSpan.FromSeconds(10));
+				await Task.WhenAny(tcs.Task, timeout);
 			}
 #endif
 
