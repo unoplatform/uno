@@ -138,19 +138,19 @@ public partial class CompositionTarget
 	/// <summary>
 	/// Schedules a single batched frame tick if one is not already scheduled.
 	/// Thread-safe: can be called from the UI thread or the native render thread.
+	///
+	/// FrameTick is ALWAYS enqueued when scheduled — the render throttle
+	/// (<see cref="_waitingForPresent"/>) is NOT checked here. This matches WinUI's
+	/// NWDrawTree which is always dispatched via DispatcherQueueTimer
+	/// (xcpwindow.cpp:1287-1289 — "ticking will be interleaved with input").
+	/// Keeping FrameTick visible to the dispatcher means Low-priority work like
+	/// <c>RunIdleAsync</c> naturally waits for it. The throttle is enforced inside
+	/// <see cref="FrameTick"/> instead, around the Rendering event + Render call.
 	/// </summary>
 	internal void ScheduleFrameTick()
 	{
 		lock (_scheduleGate)
 		{
-			if (_waitingForPresent)
-			{
-				// Render thread hasn't finished presenting the previous frame.
-				// Remember the request — it will be scheduled when OnFramePresented fires.
-				_pendingFrameRequest = true;
-				return;
-			}
-
 			if (_frameTickScheduled)
 			{
 				return;
@@ -159,11 +159,11 @@ public partial class CompositionTarget
 			_frameTickScheduled = true;
 		}
 
-		// Schedule at Normal priority. Coalescing (above) plus the per-host throttle
-		// (_waitingForPresent on hosts with a render thread) bound frame production to
-		// one in-flight tick per present, so the priority value doesn't need to outrun
-		// other UI work — putting FrameTick above or below Normal trades freezes for
-		// UI lock during animation. Equal priority + FIFO leaves neither side starved.
+		// Schedule at Normal priority. Coalescing (above) plus the in-FrameTick render
+		// throttle bound frame production to one Render() per present, so the priority
+		// value doesn't need to outrun other UI work — putting FrameTick above or below
+		// Normal trades freezes for UI lock during animation. Equal priority + FIFO leaves
+		// neither side starved.
 		NativeDispatcher.Main.Enqueue(_frameTickEntry ??= RunFrameTickEntry, NativeDispatcherPriority.Normal);
 	}
 
@@ -249,45 +249,60 @@ public partial class CompositionTarget
 		_inFrameTick = true;
 		try
 		{
-			// 1. Layout pass
+			// 1. Layout pass — ALWAYS runs (visible to dispatcher / WaitForIdle).
 			rootElement.UpdateLayout();
 
-			// 2. Loaded events (may dirty layout again)
+			// 2. Loaded events — ALWAYS run (may dirty layout again).
 			if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
 			{
 				CoreServices.Instance.EventManager.RaiseLoadedEvent();
 				rootElement.UpdateLayout();
 			}
 
-			// 3. CompositionTarget.Rendering event (may dirty layout). Wall-clock based;
-			//    a vsync-aligned timestamp would be more accurate but no host plumbs one
-			//    through yet — see follow-up F2.
-			InvokeRendering(Stopwatch.GetElapsedTime(_start));
-
-			// 4. Re-layout after Rendering callbacks (matches WinUI NWDrawTree which runs
-			//    UpdateLayout after CallPerFrameCallback). Without this, Rendering handlers
-			//    that modify layout-affecting properties would render with stale layout.
-			rootElement.UpdateLayout();
-
-			// 5. Record SKPicture from visual tree
+			// 3-5. Render-side work (CompositionTarget.Rendering + post-Rendering layout
+			//      + Render). Gated by the throttle: if a previous frame hasn't been
+			//      presented yet, skip render-side work this tick. OnFramePresented will
+			//      reschedule when the throttle clears.
+			//
+			//      Why gated *here* rather than at ScheduleFrameTick: gating at scheduling
+			//      time would defer FrameTick outside the dispatcher queue, hiding it from
+			//      RunIdleAsync. WinUI never does that (xcpwindow.cpp:1287-1289 — its tick
+			//      is always dispatched via DispatcherQueueTimer). By keeping FrameTick
+			//      visible to the dispatcher and gating only Rendering+Render, layout/Loaded
+			//      always settle on time for tests while animation rate stays vsync-paced
+			//      (Rendering only fires when not throttled, so animations advance once per
+			//      displayed frame).
 			if (SkiaRenderHelper.CanRecordPicture(rootElement))
 			{
-				// Arm the throttle BEFORE Render(). This prevents RequestNewFrame() inside
-				// Render() (called when CompositionTarget.Rendering has subscribers) from
-				// immediately enqueueing another FrameTick. The throttle is cleared when
-				// OnFramePresented fires:
-				//  - Win32 (SupportsRenderThrottle == true): the render thread calls it
-				//    after SwapBuffers/BitBlt completes.
-				//  - All other hosts: OnNativePlatformFrameRequested calls it
-				//    automatically after Draw() — that's the platform's vsync callback.
-				// Either way, frame production is paced 1:1 with the platform's vsync
-				// instead of the dispatcher pump rate.
+				bool shouldRender;
 				lock (_scheduleGate)
 				{
-					_waitingForPresent = true;
+					if (_waitingForPresent)
+					{
+						_pendingFrameRequest = true;
+						shouldRender = false;
+					}
+					else
+					{
+						_waitingForPresent = true;
+						shouldRender = true;
+					}
 				}
 
-				Render();
+				if (shouldRender)
+				{
+					// CompositionTarget.Rendering event (may dirty layout). Wall-clock based;
+					// a vsync-aligned timestamp would be more accurate but no host plumbs one
+					// through yet.
+					InvokeRendering(Stopwatch.GetElapsedTime(_start));
+
+					// Re-layout after Rendering callbacks (matches WinUI NWDrawTree which runs
+					// UpdateLayout after CallPerFrameCallback). Without this, Rendering handlers
+					// that modify layout-affecting properties would render with stale layout.
+					rootElement.UpdateLayout();
+
+					Render();
+				}
 			}
 		}
 		finally
