@@ -67,13 +67,7 @@ namespace Windows.System
 
 		public bool TryEnqueue(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
 		{
-			var native = priority switch
-			{
-				DispatcherQueuePriority.High => NativeDispatcherPriority.High,
-				DispatcherQueuePriority.Low => NativeDispatcherPriority.Low,
-				_ => NativeDispatcherPriority.Normal,
-			};
-			NativeDispatcher.Main.Enqueue(Unsafe.As<Action>(callback), native);
+			NativeDispatcher.Main.Enqueue(Unsafe.As<Action>(callback), (NativeDispatcherPriority)(~((int)priority - 11) >> 3));
 
 			return true;
 		}
