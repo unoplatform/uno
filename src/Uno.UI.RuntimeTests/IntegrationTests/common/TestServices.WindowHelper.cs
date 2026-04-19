@@ -519,7 +519,7 @@ namespace Private.Infrastructure
 #endif
 			}
 
-			internal static Task WaitForOpened(BitmapImage source)
+			internal static async Task WaitForOpened(BitmapImage source, int timeoutMS = 10000)
 			{
 				var tcs = new TaskCompletionSource<bool>();
 
@@ -540,7 +540,19 @@ namespace Private.Infrastructure
 				}
 #endif
 
-				return tcs.Task;
+				// Bound the wait so a stuck image-load (e.g. dispatcher starvation, thread-pool
+				// exhaustion, BitmapImage chain not reaching RaiseImageOpened/RaiseImageFailed)
+				// surfaces as an actionable test failure instead of hanging CI for the job timeout.
+				var timeout = Task.Delay(timeoutMS);
+				if (await Task.WhenAny(tcs.Task, timeout) == timeout)
+				{
+					throw new TimeoutException(
+						$"WaitForOpened(BitmapImage) timed out after {timeoutMS}ms. " +
+						$"UriSource: {source.UriSource}. " +
+						"Neither ImageOpened nor ImageFailed fired and IsOpened stayed false.");
+				}
+
+				await tcs.Task; // surface any ImageFailed exception
 			}
 
 #if HAS_UNO
@@ -576,7 +588,7 @@ namespace Private.Infrastructure
 				WindowHelper.XamlRoot.VisualTree.RootScale.SetTestOverride(0.0f);
 			}
 
-			internal static Task WaitForOpened(ImageBrush source)
+			internal static async Task WaitForOpened(ImageBrush source, int timeoutMS = 10000)
 			{
 				var tcs = new TaskCompletionSource<bool>();
 
@@ -590,7 +602,17 @@ namespace Private.Infrastructure
 					tcs.TrySetException(new Exception(e.ErrorMessage));
 				};
 
-				return tcs.Task;
+				// Bound the wait so a stuck image-load surfaces as an actionable test failure
+				// instead of hanging CI for the job timeout. See BitmapImage overload above.
+				var timeout = Task.Delay(timeoutMS);
+				if (await Task.WhenAny(tcs.Task, timeout) == timeout)
+				{
+					throw new TimeoutException(
+						$"WaitForOpened(ImageBrush) timed out after {timeoutMS}ms. " +
+						"Neither ImageOpened nor ImageFailed fired.");
+				}
+
+				await tcs.Task; // surface any ImageFailed exception
 			}
 #endif
 		}
