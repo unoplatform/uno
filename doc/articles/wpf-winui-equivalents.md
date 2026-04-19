@@ -272,10 +272,27 @@ Always use `BasedOn` when overriding default control styles. Without it, your st
 
 | WPF Code | WinUI Replacement | Notes |
 |---|---|---|
-| `Application.Current.Dispatcher.Invoke(...)` | `App.MainWindow.DispatcherQueue.TryEnqueue(...)` | Fire-and-forget; no synchronous `Invoke`. For awaitable dispatch, wrap with a `TaskCompletionSource`: `var tcs = new TaskCompletionSource<bool>(); if (!App.MainWindow.DispatcherQueue.TryEnqueue(() => { /* work */ tcs.SetResult(true); })) { tcs.SetException(new InvalidOperationException("Failed to enqueue work on the DispatcherQueue.")); } await tcs.Task;` |
+| `Application.Current.Dispatcher.Invoke(...)` | `App.MainWindow.DispatcherQueue.TryEnqueue(...)` | Fire-and-forget; no synchronous `Invoke`. See awaitable example below. |
 | `Window.Current` | `App.MainWindow` (captured at startup) | Not supported in Windows App SDK |
 | `Clipboard` (System.Windows) | `Windows.ApplicationModel.DataTransfer.Clipboard` | Different API surface |
 | `MessageBox.Show()` | `ContentDialog` with `XamlRoot` | No MessageBox in WinUI |
+
+For awaitable dispatch, wrap `DispatcherQueue.TryEnqueue(...)` with a `TaskCompletionSource`:
+
+```csharp
+var tcs = new TaskCompletionSource<bool>();
+
+if (!App.MainWindow.DispatcherQueue.TryEnqueue(() =>
+{
+    /* work */
+    tcs.SetResult(true);
+}))
+{
+    tcs.SetException(new InvalidOperationException("Failed to enqueue work on the DispatcherQueue."));
+}
+
+await tcs.Task;
+```
 
 ## Find-and-Replace Quick Reference
 
@@ -338,7 +355,6 @@ RESOURCE RULES:
 CONTROL REPLACEMENTS:
 - Menu/MenuItem -> MenuBar/MenuBarItem/MenuFlyoutItem
 
-````
 - ContextMenu -> ContextFlyout with MenuFlyout
 - ToolBar -> CommandBar with AppBarButton
 - StatusBar -> Grid at bottom of layout
@@ -353,6 +369,7 @@ PROPERTY REPLACEMENTS:
 - Focusable -> IsTabStop
 
 EVENT REPLACEMENTS:
+````
 - Mouse* events -> Pointer* equivalents
 - Remove Preview* tunneling events
 
