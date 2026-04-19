@@ -116,6 +116,12 @@ public partial class CompositionTarget
 			reschedule = _pendingFrameRequest;
 			_pendingFrameRequest = false;
 		}
+
+		// Throttled hosts (Win32) fire FrameRendered here — this is the actual "frame on screen"
+		// moment, matching WinUI's CompositionTarget.Rendered semantics. Unthrottled hosts fire
+		// it from inside Render() since they have no present-completion callback to hook.
+		FrameRendered?.Invoke();
+
 		if (reschedule)
 		{
 			ScheduleFrameTick();
@@ -172,8 +178,35 @@ public partial class CompositionTarget
 	/// but means composition-only animations (e.g. CompositionTarget.Rendering subscribers
 	/// that mutate composition-layer properties without dirtying layout) still pay one
 	/// UpdateLayout walk per frame. UpdateLayout short-circuits on a clean tree so the
-	/// cost is tolerable. The longer-term fix is the FrameScheduler abstraction (see
-	/// follow-up F1) which lets composition-only frames bypass layout entirely.
+	/// cost is tolerable. The longer-term fix is the FrameScheduler abstraction (which
+	/// lets composition-only frames bypass layout entirely).
+	///
+	/// Known divergences from WinUI's NWDrawTree (xcpcore.cpp:6036) that are NOT addressed here:
+	///
+	///  • Animation tick ordering. WinUI ticks its TimeManager FIRST (advancing storyboard
+	///    values to the current frame's time), THEN runs layout. Uno's CPUBoundAnimator-derived
+	///    animators (the path Storyboards use) advance their values from a CompositionTarget.Rendering
+	///    subscription, which fires AFTER the first layout in this method. Effect: the first
+	///    UpdateLayout above sees stale animation values; the second UpdateLayout (after Rendering)
+	///    catches up. The visible rendering is correct, but the first layout pass is wasted work
+	///    during continuous animation. Fixing this requires moving the animation tick to a
+	///    pre-layout hook — outside the scope of this branch because it touches the animation
+	///    system's subscription model.
+	///
+	///  • No second animation tick after layout. WinUI does TimeManager.Tick(newTimelinesOnly=TRUE)
+	///    after layout (xcpcore.cpp:6331) to pick up storyboards spawned during layout (e.g. a
+	///    VisualState transition triggered by a measured size). Uno does not, so such storyboards
+	///    start one frame late.
+	///
+	///  • Wall-clock vs tick-aligned time. WinUI passes m_pTimeManager->GetLastTickTime() to the
+	///    Rendering event, so subscribers and the animation system see the same "now". We pass
+	///    Stopwatch.GetElapsedTime(_start), which drifts by however long the tick has taken to
+	///    reach this point. Becomes consistent once a vsync-aligned timestamp is plumbed through
+	///    via a future FrameVsyncTimestamp / FrameScheduler.
+	///
+	///  • No frame-skip backpressure. WinUI's m_framesToSkip mechanism advances state without
+	///    rendering when the GPU is behind. Our throttle is binary (waiting/not). Acceptable
+	///    on Win32 (vsync is reliable); could matter for hosts with variable present latency.
 	/// </summary>
 	internal void FrameTick()
 	{
