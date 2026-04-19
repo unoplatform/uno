@@ -69,8 +69,15 @@ public partial class CompositionTarget
 
 	/// <summary>
 	/// Throttle flag: when true, ScheduleFrameTick defers until OnFramePresented clears it.
-	/// Only set on hosts with a render thread (SupportsRenderThrottle == true).
-	/// Prevents the UI thread from recording frames faster than the render thread presents.
+	/// Set unconditionally after Render() in FrameTick. Cleared by:
+	///  - Win32 (SupportsRenderThrottle == true): the render thread calls OnFramePresented
+	///    after SwapBuffers/BitBlt completes.
+	///  - All other hosts: OnNativePlatformFrameRequested calls OnFramePresented automatically
+	///    after Draw() — that's the platform's vsync callback (Choreographer on Android,
+	///    requestAnimationFrame on WASM, etc).
+	/// Together with the throttle, this paces UI thread render production at vsync rate
+	/// instead of the dispatcher pump rate, preventing wasted SKPicture records and
+	/// idle-queue starvation during continuous animation.
 	/// Read/written under <see cref="_scheduleGate"/>.
 	/// </summary>
 	private bool _waitingForPresent;
@@ -242,11 +249,6 @@ public partial class CompositionTarget
 		_inFrameTick = true;
 		try
 		{
-			// Resolve the host once for this tick (used for throttle).
-			var host = ContentRoot.XamlRoot is { } xr
-				? XamlRootMap.GetHostForRoot(xr)
-				: null;
-
 			// 1. Layout pass
 			rootElement.UpdateLayout();
 
@@ -270,16 +272,19 @@ public partial class CompositionTarget
 			// 5. Record SKPicture from visual tree
 			if (SkiaRenderHelper.CanRecordPicture(rootElement))
 			{
-				// Set throttle BEFORE Render() to prevent RequestNewFrame() inside Render()
-				// (called when CompositionTarget.Rendering has subscribers) from scheduling
-				// another FrameTick immediately. Without this, one extra FrameTick fires per
-				// displayed frame during continuous animations, doubling CPU work.
-				if (host is { SupportsRenderThrottle: true })
+				// Arm the throttle BEFORE Render(). This prevents RequestNewFrame() inside
+				// Render() (called when CompositionTarget.Rendering has subscribers) from
+				// immediately enqueueing another FrameTick. The throttle is cleared when
+				// OnFramePresented fires:
+				//  - Win32 (SupportsRenderThrottle == true): the render thread calls it
+				//    after SwapBuffers/BitBlt completes.
+				//  - All other hosts: OnNativePlatformFrameRequested calls it
+				//    automatically after Draw() — that's the platform's vsync callback.
+				// Either way, frame production is paced 1:1 with the platform's vsync
+				// instead of the dispatcher pump rate.
+				lock (_scheduleGate)
 				{
-					lock (_scheduleGate)
-					{
-						_waitingForPresent = true;
-					}
+					_waitingForPresent = true;
 				}
 
 				Render();
@@ -328,13 +333,48 @@ public partial class CompositionTarget
 	/// <summary>
 	/// Called from each platform's rendering logic in response to the native windowing/composition
 	/// engine's signal requesting the Uno app to draw something _right now_, usually synced to the
-	/// refresh rate of the screen (e.g. Android's IRenderer.OnDrawFrame).
+	/// refresh rate of the screen (e.g. Android's IRenderer.OnDrawFrame, WASM's requestAnimationFrame).
+	/// May be called on the UI thread (WASM) or on a background thread (Android GL thread).
 	/// </summary>
 	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");
 
 		// Draw previous frame's SKPicture on render/GL thread
-		return Draw(canvas, resizeFunc);
+		var path = Draw(canvas, resizeFunc);
+
+		// On non-Win32 hosts, OnNativePlatformFrameRequested IS the vsync callback that
+		// signals "previous frame is on its way to the display, you can prepare the next".
+		// Forward it to OnFramePresented to release the throttle armed in FrameTick — this
+		// gives those hosts the same 1-FrameTick-per-vsync pacing Win32 gets via its render
+		// thread, and prevents the dispatcher from being saturated by FrameTicks during
+		// continuous animation (which would also starve idle work).
+		//
+		// Win32 (SupportsRenderThrottle == true) is excluded because its render thread
+		// already calls OnFramePresented after SwapBuffers/BitBlt completes — auto-calling
+		// here would be a redundant clear (and might fire from a non-vsync moment like
+		// a WM_PAINT for window uncovering).
+		//
+		// Note: if the platform stops calling OnNativePlatformFrameRequested (window
+		// minimised / hidden), the throttle stays armed and FrameTicks halt. That matches
+		// the pre-branch behaviour where the platform vsync callback was the only thing
+		// driving Render() — no callback, no render. Animations resume when the platform
+		// resumes vsync delivery.
+		var host = ContentRoot.XamlRoot is { } xr
+			? XamlRootMap.GetHostForRoot(xr)
+			: null;
+		if (host is not { SupportsRenderThrottle: true })
+		{
+			if (NativeDispatcher.Main.HasThreadAccess)
+			{
+				OnFramePresented();
+			}
+			else
+			{
+				NativeDispatcher.Main.Enqueue(OnFramePresented, NativeDispatcherPriority.High);
+			}
+		}
+
+		return path;
 	}
 }

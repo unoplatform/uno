@@ -122,11 +122,10 @@ public partial class CompositionTarget
 			((ICompositionTarget)this).RequestNewFrame();
 		}
 
-		var host = rootElement.XamlRoot is { } xr
-			? XamlRootMap.GetHostForRoot(xr)
-			: null;
-
-		host?.InvalidateRender();
+		if (rootElement.XamlRoot is not null)
+		{
+			XamlRootMap.GetHostForRoot(rootElement.XamlRoot)?.InvalidateRender();
+		}
 
 		var nativeVisualsZOrderChanged = _nativeVisualsInZOrder.Count != nativeVisualsInZOrder.Count;
 		if (!nativeVisualsZOrderChanged)
@@ -147,15 +146,9 @@ public partial class CompositionTarget
 			ContentPresenter.OnNativeHostsRenderOrderChanged(nativeVisualsInZOrder);
 		}
 
-		// Fire FrameRendered ("post-present" signal) only for unthrottled hosts here.
-		// For throttled hosts (Win32) it fires from OnFramePresented after the render thread
-		// actually presents — that's the moment WinUI's CompositionTarget.Rendered conceptually
-		// corresponds to. Firing here for throttled hosts would be "after record" not "after present".
-		if (host is not { SupportsRenderThrottle: true })
-		{
-			FrameRendered?.Invoke();
-		}
-
+		// FrameRendered fires from OnFramePresented (post-present) for all hosts now —
+		// either the render thread (Win32) or OnNativePlatformFrameRequested (others)
+		// will trigger it at the right moment. Don't fire here.
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
