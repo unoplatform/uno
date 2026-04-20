@@ -284,8 +284,15 @@ var tcs = new TaskCompletionSource<bool>();
 
 if (!App.MainWindow.DispatcherQueue.TryEnqueue(() =>
 {
-    /* work */
-    tcs.SetResult(true);
+    try
+    {
+        /* work */
+        tcs.SetResult(true);
+    }
+    catch (Exception ex)
+    {
+        tcs.SetException(ex);
+    }
 }))
 {
     tcs.SetException(new InvalidOperationException("Failed to enqueue work on the DispatcherQueue."));
@@ -369,7 +376,6 @@ PROPERTY REPLACEMENTS:
 - Focusable -> IsTabStop
 
 EVENT REPLACEMENTS:
-````
 - Mouse* events -> Pointer* equivalents
 - Remove Preview* tunneling events
 
@@ -388,6 +394,7 @@ WPF XAML to translate:
 <!-- Paste WPF XAML here -->
 <PASTE WPF XAML HERE>
 ```
+````
 
 ## FAQ
 
