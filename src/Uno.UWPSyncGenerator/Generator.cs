@@ -351,49 +351,27 @@ namespace Uno.UWPSyncGenerator
 
 		private static void InitializeRoslyn()
 		{
-			var installPath = Environment.GetEnvironmentVariable("VSINSTALLDIR");
-
-			if (string.IsNullOrEmpty(installPath))
-			{
-				var pi = new System.Diagnostics.ProcessStartInfo(
-					"cmd.exe",
-					@"/c ""C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"" -property installationPath -prerelease"
-				)
-				{
-					RedirectStandardOutput = true,
-					UseShellExecute = false,
-					CreateNoWindow = true
-				};
-
-				var process = System.Diagnostics.Process.Start(pi);
-				process.WaitForExit();
-				installPath = process.StandardOutput.ReadToEnd().Split('\r').First();
-			}
-
-			SetupMSBuildLookupPath(installPath);
-		}
-
-		private static void SetupMSBuildLookupPath(string installPath)
-		{
+			// MSBuildWorkspace resolves its MSBuild assemblies from the .NET SDK base path,
+			// so the sync tool only needs `dotnet` on PATH — Visual Studio / Developer Command
+			// Prompt is not required.
 			var result = ProcessHelper.RunProcess("dotnet.exe", "--info");
 
-			if (result.exitCode == 0)
+			if (result.exitCode != 0)
 			{
-				var reader = new StringReader(result.output);
-
-				while (reader.ReadLine() is string line)
-				{
-					if (line.Contains("Base Path:"))
-					{
-						MSBuildBasePath = line.Substring(line.IndexOf(':') + 1).Trim();
-						return;
-					}
-				}
-
-				throw new InvalidOperationException($"Unable to find dotnet SDK base path in:\n {result.output}");
+				throw new InvalidOperationException($"Unable to find dotnet SDK base path (Exit code: {result.exitCode})");
 			}
 
-			throw new InvalidOperationException($"Unable to find dotnet SDK base path (Exit code: {result.exitCode})");
+			var reader = new StringReader(result.output);
+			while (reader.ReadLine() is string line)
+			{
+				if (line.Contains("Base Path:"))
+				{
+					MSBuildBasePath = line.Substring(line.IndexOf(':') + 1).Trim();
+					return;
+				}
+			}
+
+			throw new InvalidOperationException($"Unable to find dotnet SDK base path in:\n {result.output}");
 		}
 
 		protected string GetNamespaceBasePath(INamedTypeSymbol type)
