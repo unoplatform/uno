@@ -1601,6 +1601,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public TType GetAt(int index) => this[index];
 		}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17982")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_ItemCollection_Out_Of_Bounds_Returns_Null()
+	{
+		var comboBox = new ComboBox();
+
+		object result = null;
+		Action act = () => result = comboBox.Items[2523];
+
+		act.Should().NotThrow("ItemCollection should not throw when accessing an out-of-bounds index. Issue #17982.");
+		Assert.IsNull(result, "ItemCollection should return null for out-of-bounds index.");
+	}
+
 	}
 
 
