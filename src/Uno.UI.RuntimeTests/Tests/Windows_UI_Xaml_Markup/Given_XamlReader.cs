@@ -14,6 +14,8 @@ using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Automation;
+using SamplesApp.UITests;
 using XamlParseException = Uno.Xaml.XamlParseException;
 using static Private.Infrastructure.TestServices;
 using System.Threading.Tasks;
@@ -1116,6 +1118,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 
 			WindowHelper.WindowContent = sut;
 			await WindowHelper.WaitForLoaded(sut);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14256")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_XamlReader_Sets_AutomationProperties_Name()
+		{
+			var root = (StackPanel)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+				            xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
+				    <TextBlock x:Name='tb' AutomationProperties.Name='TestName' Text='Hello' />
+				</StackPanel>
+				""");
+
+			var tb = root.Children.OfType<TextBlock>().First();
+			var automationName = AutomationProperties.GetName(tb);
+
+			Assert.AreEqual("TestName", automationName,
+				"AutomationProperties.Name set via XamlReader should be accessible. Issue #14256.");
 		}
 	}
 
