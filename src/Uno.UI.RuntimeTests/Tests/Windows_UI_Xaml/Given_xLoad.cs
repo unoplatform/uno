@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
 using SamplesApp.UITests;
+using Uno.Disposables;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -487,6 +488,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(1, SUT.GetChildren().Count(c => c is ElementStub));
 			Assert.AreEqual(0, SUT.GetChildren().Count(c => c is Border));
 		}
+
+#if HAS_UNO // need to access uno internal&specific: DepObjStore ResourceBinding
+		// Regression test for https://github.com/unoplatform/uno/issues/23088
+		// {StaticResource} on a lazily loaded element must resolve eagerly (without a ResourceBinding
+		// fallback) once the element is materialized.
+		[TestMethod]
+		public async Task When_xLoad_False_StaticResource_Resolves()
+		{
+			// ForceHotReloadDisabled is altering the execute logics, forcing ResourceBinding to always be created
+			var previousFlag = FeatureConfiguration.Xaml.ForceHotReloadDisabled;
+			FeatureConfiguration.Xaml.ForceHotReloadDisabled = true;
+			using var restoreFlag = Disposable.Create(() => FeatureConfiguration.Xaml.ForceHotReloadDisabled = previousFlag);
+
+			var setup = new xLoad_StaticResource();
+			TestServices.WindowHelper.WindowContent = setup;
+			await TestServices.WindowHelper.WaitForLoaded(setup, x => x.IsLoaded);
+
+			// Before materialisation the field is null (stub placeholder).
+			Assert.IsNull(setup.LazyControl, "Expected LazyControl to be null initially");
+
+			// force materialize by calling .FindName
+			setup.FindName(nameof(setup.LazyControl));
+			Assert.IsNotNull(setup.LazyControl, "LazyControl should be resolved by FindName('LazyControl')");
+
+			// note: we dont .WaitForIdle() because that will let ResourceBinding kicks in, if present.
+			var dos = (setup.LazyControl as IDependencyObjectStoreProvider)?.Store!;
+			var bindings = dos.GetResourceBindingsForProperty(ContentControl.ContentProperty).ToArray();
+			Assert.IsEmpty(bindings, "There is should be non ResourceBinding on the LazyControl.Content, if it resolved statically(still runtime).");
+			Assert.IsNotNull(setup.LazyControl);
+			Assert.AreEqual("RESOLVED", setup.LazyControl.Content);
+
+		}
+#endif
 	}
 }
 #endif
