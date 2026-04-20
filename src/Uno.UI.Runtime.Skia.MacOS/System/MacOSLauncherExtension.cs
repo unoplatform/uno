@@ -32,7 +32,7 @@ internal class MacOSLauncherExtension : ILauncherExtension
 
 	public Task<bool> LaunchFileAsync(IStorageFile file)
 	{
-		var fileUri = new Uri(file.Path).AbsoluteUri;
+		var fileUri = new Uri(file.Path, UriKind.Absolute).AbsoluteUri;
 		return Task.FromResult(NativeUno.uno_application_open_url(fileUri));
 	}
 
