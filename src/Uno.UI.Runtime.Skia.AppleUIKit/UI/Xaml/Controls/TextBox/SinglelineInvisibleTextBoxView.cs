@@ -1,4 +1,5 @@
 ﻿using System;
+using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Xaml.Controls;
 using ObjCRuntime;
@@ -41,6 +42,34 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	}
 
 	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => !textBox.AcceptsReturn;
+
+	// UIKit uses the first-responder's firstRect/caretRect (UITextInput) to
+	// position the iPad floating numeric keypad. Returning the view's full
+	// Bounds makes the keypad anchor adjacent to the whole NumberBox rather
+	// than overlapping it when the field has non-default Padding or sits
+	// near a screen edge. Only applied on iPad + numeric keyboard types —
+	// the same condition the extension uses to anchor the native view —
+	// so other scenarios (iPhone, text entry) keep native caret/selection
+	// behavior.
+	public override CGRect GetFirstRectForRange(UITextRange range)
+		=> ShouldAnchorToBounds() ? Bounds : base.GetFirstRectForRange(range);
+
+	public override CGRect GetCaretRectForPosition(UITextPosition? position)
+		=> ShouldAnchorToBounds() ? Bounds : base.GetCaretRectForPosition(position);
+
+	private bool ShouldAnchorToBounds()
+	{
+		if (UIDevice.CurrentDevice.UserInterfaceIdiom != UIUserInterfaceIdiom.Pad)
+		{
+			return false;
+		}
+
+		return KeyboardType is
+			UIKeyboardType.NumberPad or
+			UIKeyboardType.DecimalPad or
+			UIKeyboardType.NumbersAndPunctuation or
+			UIKeyboardType.PhonePad;
+	}
 
 	public override void Paste(NSObject? sender) => HandlePaste(() => base.Paste(sender));
 
