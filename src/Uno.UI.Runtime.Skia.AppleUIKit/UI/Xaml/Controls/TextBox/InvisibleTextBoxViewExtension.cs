@@ -329,13 +329,21 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	}
 
 	private bool ShouldAnchorToTextBox()
+		=> _textBoxView is { } view && IsFloatingNumericKeypad(view.KeyboardType);
+
+	// Single source of truth for "should we anchor/expand the caret rect so
+	// iPad's floating numeric keypad positions adjacent to the full control?"
+	// Also consumed by SinglelineInvisibleTextBoxView.GetFirstRectForRange /
+	// GetCaretRectForPosition. Keep the two call sites in sync by routing
+	// through this helper.
+	internal static bool IsFloatingNumericKeypad(UIKeyboardType keyboardType)
 	{
 		if (UIDevice.CurrentDevice.UserInterfaceIdiom != UIUserInterfaceIdiom.Pad)
 		{
 			return false;
 		}
 
-		return _textBoxView?.KeyboardType is
+		return keyboardType is
 			UIKeyboardType.NumberPad or
 			UIKeyboardType.DecimalPad or
 			UIKeyboardType.NumbersAndPunctuation or
