@@ -1,0 +1,38 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml.SkiaNamespaceTests.SkiaNamespaceConflict"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:skia="using:Microsoft.UI.Xaml.Controls"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+    <!--
+        Repro for https://github.com/unoplatform/uno/issues/14004
+        A XAML namespace prefix named "skia" may be confused with the conditional XAML "skia" namespace
+        that Uno uses to include elements only when building for Skia targets.
+        
+        BUG: On non-Skia targets (WASM, Android, iOS), the elements using the "skia:" prefix below
+        are EXCLUDED by the XAML code generator, even though the namespace points to
+        Microsoft.UI.Xaml.Controls (a cross-platform namespace, not Skia-specific).
+        
+        Expected: Both TextBoxes should appear on all platforms.
+        Actual: On non-Skia targets, the TextBox using "skia:" prefix is missing.
+    -->
+    <StackPanel Padding="16" Spacing="8">
+        <TextBlock
+            FontWeight="Bold"
+            Text="Skia Namespace Conflict Repro (#14004)"
+            TextWrapping="Wrap" />
+        <TextBlock Text="Both TextBoxes below should appear on all platforms:" TextWrapping="Wrap" />
+        <TextBlock Foreground="{ThemeResource SystemAccentColor}" Text="TextBox via default xmlns (should always appear):" />
+        <TextBox x:Name="DefaultTextBox" PlaceholderText="Default xmlns TextBox" />
+        <TextBlock Foreground="{ThemeResource SystemAccentColor}" Text="TextBox via 'skia' xmlns prefix (bug: may be missing on non-Skia targets):" />
+        <skia:TextBox x:Name="SkiaPrefixTextBox" PlaceholderText="skia: prefix TextBox - if this is missing, the bug is reproduced" />
+        <TextBlock
+            FontStyle="Italic"
+            Text="If the second TextBox is absent on your platform, the 'skia' namespace prefix is incorrectly treated as conditional."
+            TextWrapping="Wrap" />
+    </StackPanel>
+</UserControl>
