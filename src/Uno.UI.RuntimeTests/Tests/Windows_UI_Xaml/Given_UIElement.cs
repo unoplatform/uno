@@ -1768,6 +1768,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(inner, holdingOriginalSource);
 			Assert.IsTrue(outer.GetAbsoluteBoundsRect().Contains(holdingPos), $"holdingPos: {holdingPos}, outer absolute bounds: {outer.GetAbsoluteBoundsRect()}");
 		}
+
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20308")]
+		public async Task When_Touch_DoubleTap_DoubleTapped_Fires()
+		{
+			var SUT = new Border
+			{
+				Width = 200,
+				Height = 200,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.DeepSkyBlue),
+			};
+
+			var doubleTappedCount = 0;
+			var tappedCount = 0;
+			SUT.DoubleTapped += (_, _) => doubleTappedCount++;
+			SUT.Tapped += (_, _) => tappedCount++;
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var center = SUT.GetAbsoluteBoundsRect().GetCenter();
+
+			finger.Press(center);
+			finger.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			finger.Press(center);
+			finger.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(tappedCount >= 1, $"Expected at least 1 Tapped event, got {tappedCount}");
+			Assert.AreEqual(1, doubleTappedCount, $"Expected 1 DoubleTapped event from touch double-tap, got {doubleTappedCount}. Issue #20308: DoubleTapped doesn't fire for Skia touch input.");
+		}
 #endif
 
 #if HAS_UNO
