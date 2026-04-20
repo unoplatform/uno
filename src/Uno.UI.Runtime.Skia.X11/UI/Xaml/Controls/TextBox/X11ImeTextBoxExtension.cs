@@ -105,7 +105,7 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 		{
 			if (_xim == IntPtr.Zero)
 			{
-				_xim = XLib.XOpenIM(_currentDisplay, IntPtr.Zero, null, null);
+				_xim = XLib.XOpenIM(_currentDisplay, IntPtr.Zero, null!, null!);
 				if (_xim == IntPtr.Zero)
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
