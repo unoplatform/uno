@@ -1,5 +1,9 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using SamplesApp.UITests;
+using Windows.UI;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
@@ -73,5 +77,32 @@ public partial class Given_DependencyProperty
 		Assert.IsTrue((bool)Control.IsTabStopProperty.GetMetadata(typeof(CustomControl)).DefaultValue);
 		Assert.IsFalse((bool)Control.IsTabStopProperty.GetMetadata(typeof(UserControl)).DefaultValue);
 		Assert.IsFalse((bool)Control.IsTabStopProperty.GetMetadata(typeof(CustomUserControl)).DefaultValue);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15437")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_RegisterPropertyChangedCallback_Not_Fired_On_Inherited_Property()
+	{
+		var sp = new StackPanel
+		{
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			XYFocusKeyboardNavigation = XYFocusKeyboardNavigationMode.Disabled,
+			FlowDirection = FlowDirection.RightToLeft,
+		};
+
+		var xyFocusCallbackCount = 0;
+		var flowDirectionCallbackCount = 0;
+
+		var tb = new TextBlock();
+		tb.RegisterPropertyChangedCallback(UIElement.XYFocusKeyboardNavigationProperty, (_, _) => xyFocusCallbackCount++);
+		tb.RegisterPropertyChangedCallback(FrameworkElement.FlowDirectionProperty, (_, _) => flowDirectionCallbackCount++);
+
+		sp.Children.Add(tb);
+
+		Assert.AreEqual(0, xyFocusCallbackCount,
+			"XYFocusKeyboardNavigation callback should NOT fire when child inherits the property. Issue #15437.");
+		Assert.AreEqual(0, flowDirectionCallbackCount,
+			"FlowDirection callback should NOT fire when child inherits the property. Issue #15437.");
 	}
 }
