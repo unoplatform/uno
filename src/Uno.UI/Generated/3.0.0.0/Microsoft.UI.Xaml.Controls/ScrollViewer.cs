@@ -21,14 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ComputedVerticalScrollBarVisibilityProperty
 		// Skipping already declared property ExtentHeightProperty
 		// Skipping already declared property ExtentWidthProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HorizontalAnchorRatioProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalAnchorRatio), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
+		// Skipping already declared property HorizontalAnchorRatioProperty
 		// Skipping already declared property HorizontalOffsetProperty
 		// Skipping already declared property HorizontalScrollBarVisibilityProperty
 		// Skipping already declared property HorizontalScrollModeProperty
@@ -134,14 +127,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty VerticalAnchorRatioProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(VerticalAnchorRatio), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
+		// Skipping already declared property VerticalAnchorRatioProperty
 		// Skipping already declared property VerticalOffsetProperty
 		// Skipping already declared property VerticalScrollBarVisibilityProperty
 		// Skipping already declared property VerticalScrollModeProperty
@@ -187,20 +173,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property CurrentAnchor
 		// Skipping already declared property ExtentHeight
 		// Skipping already declared property ExtentWidth
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double HorizontalAnchorRatio
-		{
-			get
-			{
-				return (double)this.GetValue(HorizontalAnchorRatioProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalAnchorRatioProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property HorizontalAnchorRatio
 		// Skipping already declared property HorizontalOffset
 		// Skipping already declared property HorizontalScrollBarVisibility
 		// Skipping already declared property HorizontalScrollMode
@@ -378,20 +351,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double VerticalAnchorRatio
-		{
-			get
-			{
-				return (double)this.GetValue(VerticalAnchorRatioProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalAnchorRatioProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property VerticalAnchorRatio
 		// Skipping already declared property VerticalOffset
 		// Skipping already declared property VerticalScrollBarVisibility
 		// Skipping already declared property VerticalScrollMode

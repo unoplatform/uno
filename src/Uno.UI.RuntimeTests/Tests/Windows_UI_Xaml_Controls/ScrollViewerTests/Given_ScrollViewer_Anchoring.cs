@@ -85,6 +85,13 @@ public class Given_ScrollViewer_Anchoring
 
 	private static async Task ScrollToVerticalAsync(ScrollViewer sv, double offset)
 	{
+		// ChangeView to the current offset is a no-op and doesn't raise ViewChanged, so skip the wait.
+		if (Math.Abs(sv.VerticalOffset - offset) < 0.5)
+		{
+			await WindowHelper.WaitForIdle();
+			return;
+		}
+
 		var tcs = new TaskCompletionSource<bool>();
 		void OnChanged(object s, ScrollViewerViewChangedEventArgs e)
 		{
@@ -97,7 +104,11 @@ public class Given_ScrollViewer_Anchoring
 		try
 		{
 			sv.ChangeView(null, offset, null, disableAnimation: true);
-			await Task.WhenAny(tcs.Task, Task.Delay(2000));
+			var completed = await Task.WhenAny(tcs.Task, Task.Delay(2000));
+			if (completed != tcs.Task)
+			{
+				Assert.Fail($"Timed out waiting for vertical scroll to complete. Requested offset: {offset}, current VerticalOffset: {sv.VerticalOffset}.");
+			}
 		}
 		finally
 		{
@@ -108,6 +119,13 @@ public class Given_ScrollViewer_Anchoring
 
 	private static async Task ScrollToHorizontalAsync(ScrollViewer sv, double offset)
 	{
+		// ChangeView to the current offset is a no-op and doesn't raise ViewChanged, so skip the wait.
+		if (Math.Abs(sv.HorizontalOffset - offset) < 0.5)
+		{
+			await WindowHelper.WaitForIdle();
+			return;
+		}
+
 		var tcs = new TaskCompletionSource<bool>();
 		void OnChanged(object s, ScrollViewerViewChangedEventArgs e)
 		{
@@ -120,7 +138,11 @@ public class Given_ScrollViewer_Anchoring
 		try
 		{
 			sv.ChangeView(offset, null, null, disableAnimation: true);
-			await Task.WhenAny(tcs.Task, Task.Delay(2000));
+			var completed = await Task.WhenAny(tcs.Task, Task.Delay(2000));
+			if (completed != tcs.Task)
+			{
+				Assert.Fail($"Timed out waiting for horizontal scroll to complete. Requested offset: {offset}, current HorizontalOffset: {sv.HorizontalOffset}.");
+			}
 		}
 		finally
 		{

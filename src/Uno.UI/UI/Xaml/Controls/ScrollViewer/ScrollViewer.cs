@@ -702,7 +702,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnLayoutUpdated();
 #endif
-			UpdateDimensionProperties();
+			if (m_dimensionsUpdatedInArrange)
+			{
+				m_dimensionsUpdatedInArrange = false;
+			}
+			else
+			{
+				UpdateDimensionProperties();
+			}
 			UpdateZoomedContentAlignment();
 		}
 

@@ -21,8 +21,11 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 				ContentPanel.Children.Add(CreateItem());
 			}
 
+			TargetScrollViewer.ViewChanged += OnViewChanged;
 			Loaded += OnLoaded;
 		}
+
+		private void OnViewChanged(object sender, ScrollViewerViewChangedEventArgs e) => UpdateStatus();
 
 		private Border CreateItem()
 		{
@@ -47,7 +50,6 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-			TargetScrollViewer.ViewChanged += (_, _) => UpdateStatus();
 			UpdateStatus();
 		}
 

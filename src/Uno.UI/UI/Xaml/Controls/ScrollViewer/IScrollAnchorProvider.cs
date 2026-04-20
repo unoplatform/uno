@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
@@ -25,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// or <c>null</c>. If there are no anchor candidates registered with the
 		/// <see cref="IScrollAnchorProvider"/> or none have been chosen, then CurrentAnchor is <c>null</c>.
 		/// </value>
-		UIElement CurrentAnchor { get; }
+		UIElement? CurrentAnchor { get; }
 
 		/// <summary>
 		/// Registers a <see cref="UIElement"/> as a potential scroll anchor candidate.
@@ -34,14 +36,14 @@ namespace Microsoft.UI.Xaml.Controls
 		/// A <see cref="UIElement"/> within the subtree of the <see cref="IScrollAnchorProvider"/>.
 		/// </param>
 		/// <remarks>
-		/// When an element has <see cref="UIElement.CanBeScrollAnchor"/> set to <c>true</c>, the
-		/// framework locates the first <see cref="IScrollAnchorProvider"/> in that element's chain
-		/// of ancestors and automatically calls its <see cref="RegisterAnchorCandidate"/> method.
-		/// This occurs both when the property is set on an existing element or an element is added
-		/// to the live tree with the property already set.
-		/// Similarly, when the property is set to <c>false</c> (or an element is removed from the
-		/// visual tree with the property set to <c>true</c>), the framework calls
-		/// <see cref="UnregisterAnchorCandidate"/> on the first <see cref="IScrollAnchorProvider"/>.
+		/// In the current Uno implementation, callers must invoke this method explicitly. Automatic
+		/// registration driven by <see cref="UIElement.CanBeScrollAnchor"/> is not yet wired up
+		/// (see <c>UpdateAnchorCandidateOnParentScrollProvider</c> in <c>UIElement.mux.cs</c>).
+		/// On WinUI, when an element has <see cref="UIElement.CanBeScrollAnchor"/> set to <c>true</c>,
+		/// the framework locates the first <see cref="IScrollAnchorProvider"/> in that element's chain
+		/// of ancestors and automatically calls its <see cref="RegisterAnchorCandidate"/> method,
+		/// both when the property is set on an existing element and when an element is added to the
+		/// live tree with the property already set.
 		/// </remarks>
 		void RegisterAnchorCandidate(UIElement element);
 
@@ -52,10 +54,12 @@ namespace Microsoft.UI.Xaml.Controls
 		/// A <see cref="UIElement"/> within the subtree of the <see cref="IScrollAnchorProvider"/>.
 		/// </param>
 		/// <remarks>
-		/// When an element's <see cref="UIElement.CanBeScrollAnchor"/> property changes to <c>false</c>
-		/// (or the element is removed from the visual tree), the framework locates the first
-		/// <see cref="IScrollAnchorProvider"/> in that element's chain of ancestors and automatically
-		/// calls its <see cref="UnregisterAnchorCandidate"/> method.
+		/// In the current Uno implementation, callers must invoke this method explicitly. Automatic
+		/// unregistration driven by <see cref="UIElement.CanBeScrollAnchor"/> (or by an element
+		/// leaving the visual tree) is not yet wired up. On WinUI, when the property changes to
+		/// <c>false</c> (or the element is removed from the visual tree), the framework locates the
+		/// first <see cref="IScrollAnchorProvider"/> in that element's chain of ancestors and
+		/// automatically calls its <see cref="UnregisterAnchorCandidate"/> method.
 		/// </remarks>
 		void UnregisterAnchorCandidate(UIElement element);
 	}

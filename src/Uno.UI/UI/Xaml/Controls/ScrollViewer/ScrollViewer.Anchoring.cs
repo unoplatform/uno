@@ -26,6 +26,9 @@ public partial class ScrollViewer
 	private bool m_isAnchorElementDirty;
 
 	private AnchorRequestedEventArgs? m_anchorRequestedEventArgs;
+	// Matches WinUI's m_useCandidatesFromArgs flag (ScrollViewer_Partial.cpp:16169/16173/16520).
+	// Without it, Anchor/AnchorCandidates from a prior handler persist after handlers detach.
+	private bool m_useCandidatesFromArgs;
 
 	// Cached post-arrange state used for far-edge anchoring comparisons.
 	private double m_unzoomedExtentWidth;
@@ -35,6 +38,33 @@ public partial class ScrollViewer
 
 	private double m_pendingViewportShiftX;
 	private double m_pendingViewportShiftY;
+
+	// Set when AnchoringArrangeOverride eagerly syncs dimension DPs, so AfterArrange can skip the duplicate call.
+	private bool m_dimensionsUpdatedInArrange;
+
+	public static DependencyProperty HorizontalAnchorRatioProperty { get; } =
+		DependencyProperty.Register(
+			nameof(HorizontalAnchorRatio), typeof(double),
+			typeof(ScrollViewer),
+			new FrameworkPropertyMetadata(double.NaN));
+
+	public double HorizontalAnchorRatio
+	{
+		get => (double)GetValue(HorizontalAnchorRatioProperty);
+		set => SetValue(HorizontalAnchorRatioProperty, value);
+	}
+
+	public static DependencyProperty VerticalAnchorRatioProperty { get; } =
+		DependencyProperty.Register(
+			nameof(VerticalAnchorRatio), typeof(double),
+			typeof(ScrollViewer),
+			new FrameworkPropertyMetadata(double.NaN));
+
+	public double VerticalAnchorRatio
+	{
+		get => (double)GetValue(VerticalAnchorRatioProperty);
+		set => SetValue(VerticalAnchorRatioProperty, value);
+	}
 
 	public event global::Windows.Foundation.TypedEventHandler<ScrollViewer, AnchorRequestedEventArgs>? AnchorRequested;
 
@@ -125,7 +155,7 @@ public partial class ScrollViewer
 		var horizontalAnchorRatio = HorizontalAnchorRatio;
 		var verticalAnchorRatio = VerticalAnchorRatio;
 
-		if (!double.IsNaN(horizontalAnchorRatio))
+		if (!double.IsNaN(horizontalAnchorRatio) && !double.IsPositiveInfinity(ViewportWidth))
 		{
 			if (horizontalAnchorRatio == 0.0 || horizontalAnchorRatio == 1.0)
 			{
@@ -145,7 +175,7 @@ public partial class ScrollViewer
 			}
 		}
 
-		if (!double.IsNaN(verticalAnchorRatio))
+		if (!double.IsNaN(verticalAnchorRatio) && !double.IsPositiveInfinity(ViewportHeight))
 		{
 			if (verticalAnchorRatio == 0.0 || verticalAnchorRatio == 1.0)
 			{
@@ -251,12 +281,14 @@ public partial class ScrollViewer
 	{
 		if (AnchorRequested is null)
 		{
+			m_useCandidatesFromArgs = false;
 			return;
 		}
 
 		m_anchorRequestedEventArgs ??= new AnchorRequestedEventArgs();
 		m_anchorRequestedEventArgs.Reset(m_anchorCandidates);
 		AnchorRequested.Invoke(this, m_anchorRequestedEventArgs);
+		m_useCandidatesFromArgs = true;
 	}
 
 	// Raises AnchorRequested and selects an anchor based on either the handler's Anchor
@@ -284,8 +316,8 @@ public partial class ScrollViewer
 
 		RaiseAnchorRequested();
 
-		UIElement? requestedAnchor = m_anchorRequestedEventArgs?.Anchor;
-		IList<UIElement>? candidateOverride = m_anchorRequestedEventArgs?.AnchorCandidates;
+		UIElement? requestedAnchor = m_useCandidatesFromArgs ? m_anchorRequestedEventArgs?.Anchor : null;
+		IList<UIElement>? candidateOverride = m_useCandidatesFromArgs ? m_anchorRequestedEventArgs?.AnchorCandidates : null;
 
 		if (requestedAnchor is not null && IsElementValidAnchor(requestedAnchor, content))
 		{
@@ -472,6 +504,7 @@ public partial class ScrollViewer
 		// update until AfterArrange, which means PerformPositionAdjustment's clamping sees stale
 		// values. Eagerly sync now so the anchor offset correction uses post-arrange state.
 		UpdateDimensionProperties();
+		m_dimensionsUpdatedInArrange = true;
 
 		m_pendingViewportShiftX = 0;
 		m_pendingViewportShiftY = 0;
