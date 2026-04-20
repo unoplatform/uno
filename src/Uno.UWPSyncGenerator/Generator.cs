@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Build.Logging;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
 using Uno.Extensions;
 using Uno.UWPSyncGenerator.Helpers;
@@ -2424,7 +2425,76 @@ namespace Uno.UWPSyncGenerator
 				);
 			}
 
-			return await project.GetCompilationAsync();
+			var compilation = await project.GetCompilationAsync();
+			return RunMixinGenerators(compilation, project.ParseOptions as CSharpParseOptions);
+		}
+
+		private static ISourceGenerator[] _mixinGenerators;
+
+		/// <summary>
+		/// Runs the mixin source generators from Uno.UI.SourceGenerators.Internal so the
+		/// members they emit (Border.Background, Popup.IsOpen, etc.) are present in the
+		/// compilation consumed by GetNonGeneratedMembers. Without this, the sync tool
+		/// would re-emit NotImplemented stubs that conflict with the generator output.
+		/// </summary>
+		private static Compilation RunMixinGenerators(Compilation compilation, CSharpParseOptions parseOptions)
+		{
+			if (compilation is not CSharpCompilation)
+			{
+				return compilation;
+			}
+
+			var generators = _mixinGenerators ??= LoadMixinGenerators();
+			if (generators.Length == 0)
+			{
+				return compilation;
+			}
+
+			var driver = CSharpGeneratorDriver.Create(generators, parseOptions: parseOptions);
+			driver.RunGeneratorsAndUpdateCompilation(compilation, out var updatedCompilation, out var diagnostics);
+
+			foreach (var diagnostic in diagnostics)
+			{
+				if (diagnostic.Severity >= DiagnosticSeverity.Warning)
+				{
+					Console.WriteLine($"[mixin] {diagnostic}");
+				}
+			}
+
+			return updatedCompilation;
+		}
+
+		private static ISourceGenerator[] LoadMixinGenerators()
+		{
+			// Pull the generator assembly via a known type. Uno.UI.SourceGenerators.Internal
+			// is referenced from Uno.UWPSyncGenerator.csproj so this type is resolvable.
+			var mixinAssembly = Assembly.Load("Uno.UI.SourceGenerators.Internal");
+
+			var generators = new List<ISourceGenerator>();
+			foreach (var type in mixinAssembly.GetTypes())
+			{
+				if (type.Namespace != "Uno.UI.SourceGenerators.Mixins")
+				{
+					continue;
+				}
+
+				if (type.GetCustomAttribute<GeneratorAttribute>() == null)
+				{
+					continue;
+				}
+
+				var instance = Activator.CreateInstance(type);
+				if (instance is IIncrementalGenerator incremental)
+				{
+					generators.Add(incremental.AsSourceGenerator());
+				}
+				else if (instance is ISourceGenerator sourceGen)
+				{
+					generators.Add(sourceGen);
+				}
+			}
+
+			return generators.ToArray();
 		}
 
 		public static IEnumerable<INamedTypeSymbol> GetNamespaceTypes(INamespaceSymbol sym)
