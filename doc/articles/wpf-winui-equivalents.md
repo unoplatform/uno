@@ -273,7 +273,7 @@ Always use `BasedOn` when overriding default control styles. Without it, your st
 | WPF Code | WinUI Replacement | Notes |
 |---|---|---|
 | `Application.Current.Dispatcher.Invoke(...)` | `App.MainWindow.DispatcherQueue.TryEnqueue(...)` | Fire-and-forget; no synchronous `Invoke`. See awaitable example below. |
-| `Window.Current` | `App.MainWindow` (captured at startup) | Not supported in Windows App SDK |
+| `Application.Current.MainWindow` | `App.MainWindow` (captured at startup) | Use the app's main window reference in WinUI/Uno. |
 | `Clipboard` (System.Windows) | `Windows.ApplicationModel.DataTransfer.Clipboard` | Different API surface |
 | `MessageBox.Show()` | `ContentDialog` with `XamlRoot` | No MessageBox in WinUI |
 
