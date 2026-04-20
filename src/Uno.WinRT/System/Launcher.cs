@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Storage;
 using Uno.Foundation.Logging;
 using Uno.Extensions;
 
@@ -50,6 +51,47 @@ namespace Windows.System
 
 			return Task.FromResult(false).AsAsyncOperation();
 #endif
+		}
+
+		public static IAsyncOperation<bool> LaunchFileAsync(IStorageFile file)
+		{
+#if __IOS__ || __ANDROID__ || __WASM__ || __SKIA__
+
+			if (file == null)
+			{
+				throw new ArgumentNullException(nameof(file));
+			}
+
+#if !__WASM__
+			if (CoreDispatcher.Main.HasThreadAccess)
+			{
+				return LaunchFilePlatformAsync(file).AsAsyncOperation();
+			}
+			else
+			{
+				return CoreDispatcher.Main.RunWithResultAsync(
+					priority: CoreDispatcherPriority.Normal,
+					task: async () => await LaunchFilePlatformAsync(file)
+				).AsAsyncOperation();
+			}
+#else
+			return LaunchFilePlatformAsync(file).AsAsyncOperation();
+#endif
+
+#else
+			if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(Launcher).Log().Error($"{nameof(LaunchFileAsync)} is not implemented on this platform.");
+			}
+
+			return Task.FromResult(false).AsAsyncOperation();
+#endif
+		}
+
+		public static IAsyncOperation<bool> LaunchFileAsync(IStorageFile file, LauncherOptions options)
+		{
+			// LauncherOptions are not currently used, delegate to the main overload.
+			return LaunchFileAsync(file);
 		}
 
 #if __ANDROID__ || __IOS__ || __TVOS__ || __SKIA__
