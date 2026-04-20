@@ -67,20 +67,21 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
-  - task: PublishBuildArtifacts@1
-    condition: always()
-    retryCountOnTaskFailure: 10
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-android-netcoremobile-build
-      ArtifactType: Container
-
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Android Native Package'
     retryCountOnTaskFailure: 3
     inputs:
       targetPath: $(build.artifactstagingdirectory)/android
       artifactName: samplesapp-android-native
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Android Native build logs'
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
+      ArtifactName: samplesapp-android-native-logs
+      ArtifactType: Container
 
 - job: Android_Tests
   displayName: ' ' ## Name is concatenated with the matrix group name
@@ -112,6 +113,7 @@ jobs:
           ANDROID_SIMULATOR_APILEVEL: 28
           UITEST_TEST_MODE_DISPLAY_NAME: 'Automated Tests ${{ testBucket }}'
           UITEST_TEST_MODE_NAME: Automated
+          TEST_KIND: ui
           UNO_UITEST_BUCKET_ID: ${{ testBucket }} ## Note: Align with UNO_UITEST_BUCKET_COUNT
           SAMPLEAPP_ARTIFACT_NAME: samplesapp-android-native
           TARGETPLATFORM_NAME: net9
@@ -124,6 +126,7 @@ jobs:
           ANDROID_SIMULATOR_APILEVEL: 28
           UITEST_TEST_MODE_DISPLAY_NAME: 'Runtime Tests ${{ testGroup }}'
           UITEST_TEST_MODE_NAME: RuntimeTests
+          TEST_KIND: runtime
           UNO_UITEST_BUCKET_ID: RuntimeTests
           UITEST_RUNTIME_TEST_GROUP: ${{ testGroup }}
           UITEST_RUNTIME_TEST_GROUP_COUNT: 5
@@ -138,6 +141,7 @@ jobs:
           ANDROID_SIMULATOR_APILEVEL: 28
           UITEST_TEST_MODE_DISPLAY_NAME: 'Snapshot Tests'
           UITEST_TEST_MODE_NAME: Snapshots
+          TEST_KIND: screenshot
           UNO_UITEST_BUCKET_ID: Snapshot
           SAMPLEAPP_ARTIFACT_NAME: samplesapp-android-native
           TARGETPLATFORM_NAME: net9
@@ -166,13 +170,13 @@ jobs:
       artifact: $(SAMPLEAPP_ARTIFACT_NAME)
       path: '$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android'
 
-  - task: DownloadBuildArtifacts@0
+  - task: DownloadPipelineArtifact@2
     condition: gt(variables['System.JobAttempt'], 1)
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-        artifactName: uitests-failure-results
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: $(TEST_KIND)-tests-android-native-failures
+      path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
   - template: ../templates/dotnet-install.yml
 
@@ -245,7 +249,7 @@ jobs:
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-results
+      ArtifactName: $(TEST_KIND)-tests-android-native-results
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
@@ -254,5 +258,5 @@ jobs:
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: uitests-failure-results
+      ArtifactName: $(TEST_KIND)-tests-android-native-failures
       ArtifactType: Container

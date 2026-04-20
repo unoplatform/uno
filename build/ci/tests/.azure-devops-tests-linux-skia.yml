@@ -60,7 +60,7 @@ jobs:
       retryCountOnTaskFailure: 3
       inputs:
         PathtoPublish: $(build.artifactstagingdirectory)
-        ArtifactName: uitests-results
+        ArtifactName: screenshot-tests-results
         ArtifactType: Container
 
 - job: ${{ parameters.jobPrefix }}_Runtime_Tests_Build
@@ -86,13 +86,13 @@ jobs:
       artifact: $(SamplesAppArtifactName)
       path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-  - task: DownloadBuildArtifacts@0
+  - task: DownloadPipelineArtifact@2
     condition: gt(variables['System.JobAttempt'], 1)
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-        artifactName: uitests-failure-results
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: runtime-tests-desktop-skia-linux-failures
+      path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
   - template: ../templates/dotnet-install.yml
   - template: ../templates/linux-install-deps.yml
@@ -121,5 +121,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: uitests-failure-results
+      ArtifactName: runtime-tests-desktop-skia-linux-failures
       ArtifactType: Container
