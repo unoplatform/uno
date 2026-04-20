@@ -98,9 +98,8 @@ jobs:
           global-json-file: global.json
 
       - name: Install required .NET workloads
-        working-directory: build
         shell: bash
-        run: dotnet workload restore filters/Uno.UI-top-projects-for-sync-gen.slnf
+        run: dotnet workload install android ios maccatalyst tvos
 
       - name: Restore sync generator solution filter
         working-directory: build
