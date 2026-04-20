@@ -127,11 +127,11 @@ Package guidance for Community Toolkit controls in this table: in WinUI 3 (Windo
 
 ### Mouse Capture
 
-| WPF | WinUI |
-|---|---|
-| `element.CaptureMouse()` | `element.CapturePointer(e.Pointer)` |
-| `element.ReleaseMouseCapture()` | `element.ReleasePointerCapture(e.Pointer)` |
-| `Mouse.GetPosition(element)` | `e.GetCurrentPoint(element).Position` |
+| WPF | WinUI | Notes |
+|---|---|---|
+| `element.CaptureMouse()` | `element.CapturePointer(e.Pointer)` | Typically used inside a pointer event where `e.Pointer` is available |
+| `element.ReleaseMouseCapture()` | `element.ReleasePointerCaptures()` | General equivalent when you do not have the original `Pointer`; if you need to release a specific pointer later, store it and call `element.ReleasePointerCapture(pointer)` |
+| `Mouse.GetPosition(element)` | `e.GetCurrentPoint(element).Position` | Use within pointer event handling |
 
 ## XAML Syntax Translations
 
