@@ -5,15 +5,9 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial interface IScrollAnchorProvider
 	{
-		global::Microsoft.UI.Xaml.UIElement CurrentAnchor
-		{
-			get;
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		void RegisterAnchorCandidate(global::Microsoft.UI.Xaml.UIElement element);
-		void UnregisterAnchorCandidate(global::Microsoft.UI.Xaml.UIElement element);
-#endif
+		// Skipping already declared property CurrentAnchor
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.IScrollAnchorProvider.RegisterAnchorCandidate(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.IScrollAnchorProvider.UnregisterAnchorCandidate(Microsoft.UI.Xaml.UIElement)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.IScrollAnchorProvider.CurrentAnchor.get
 	}
 }

@@ -633,20 +633,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ViewChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ViewChanging.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ViewChanging.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RegisterAnchorCandidate(global::Microsoft.UI.Xaml.UIElement element)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "void ScrollViewer.RegisterAnchorCandidate(UIElement element)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void UnregisterAnchorCandidate(global::Microsoft.UI.Xaml.UIElement element)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "void ScrollViewer.UnregisterAnchorCandidate(UIElement element)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.RegisterAnchorCandidate(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.UnregisterAnchorCandidate(Microsoft.UI.Xaml.UIElement)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.BringIntoViewOnFocusChange.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.BringIntoViewOnFocusChange.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.CanContentRenderOutsideBounds.get
@@ -716,22 +704,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomSnapPoints.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomSnapPointsType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomSnapPointsType.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ScrollViewer, global::Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs> AnchorRequested
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event TypedEventHandler<ScrollViewer, AnchorRequestedEventArgs> ScrollViewer.AnchorRequested");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event TypedEventHandler<ScrollViewer, AnchorRequestedEventArgs> ScrollViewer.AnchorRequested");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollViewer.AnchorRequested
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::System.EventHandler<object> DirectManipulationCompleted
