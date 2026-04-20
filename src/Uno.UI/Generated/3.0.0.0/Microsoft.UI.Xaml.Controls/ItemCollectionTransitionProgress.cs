@@ -10,8 +10,8 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Element
 		// Skipping already declared property Transition
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProgress.Transition.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProgress.Element.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProgress.Complete()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProgress.Element.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProgress.Transition.get
 	}
 }
