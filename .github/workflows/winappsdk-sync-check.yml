@@ -49,11 +49,11 @@ jobs:
 
       - name: Build WinAppSDKSyncGenerator
         shell: bash
-        run: dotnet build src/Uno.WinAppSDKSyncGenerator/Uno.WinAppSDKSyncGenerator.csproj -c Release --no-restore
+        run: dotnet build src/Uno.WinAppSDKSyncGenerator/Uno.WinAppSDKSyncGenerator.csproj -c Release
 
       - name: Build WinAppSDKSyncGenerator.References
         shell: bash
-        run: dotnet build src/Uno.WinAppSDKSyncGenerator.References/Uno.WinAppSDKSyncGenerator.References.csproj -c Release --no-restore
+        run: dotnet build src/Uno.WinAppSDKSyncGenerator.References/Uno.WinAppSDKSyncGenerator.References.csproj -c Release
 
       - name: Run WinAppSDKSyncGenerator (sync)
         shell: bash
