@@ -33,6 +33,11 @@ jobs:
         with:
           global-json-file: global.json
 
+      - name: Install required .NET workloads
+        working-directory: build
+        shell: bash
+        run: dotnet workload restore filters/Uno.UI-top-projects-for-sync-gen.slnf
+
       - name: Restore sync generator solution filter
         working-directory: build
         shell: bash
@@ -85,35 +90,39 @@ jobs:
           path: sync-generator.patch
           if-no-files-found: error
 
-      - name: Post or update drift comment
+      - name: Post drift comment
         if: steps.drift.outputs.drift == 'true' && github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: actions/github-script@v7
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         with:
-          header: sync-generator-drift
-          message: |
-            ### WinAppSDK sync generator drift detected
-
-            The `Uno.WinAppSDKSyncGenerator` produced changes that are not committed on this PR.
-
-            **To apply automatically** (PRs from branches in this repo only): comment `/apply-sync-gen` on this PR and a bot will push `chore: Sync generator run` to the head branch.
-
-            **To apply manually** (required for PRs from forks):
-            1. Download the `sync-generator-patch` artifact from [this run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
-            2. In your local checkout of the PR branch:
-               ```
-               git apply sync-generator.patch
-               git commit -am "chore: Sync generator run"
-               git push
-               ```
-
-            Or re-run the generator locally on Windows via `build\run-api-sync-tool.cmd`.
-
-      - name: Remove drift comment if clean
-        if: steps.drift.outputs.drift == 'false' && github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: sync-generator-drift
-          delete: true
+          script: |
+            const shortSha = process.env.HEAD_SHA.slice(0, 7);
+            const body = [
+              `### WinAppSDK sync generator drift detected on \`${shortSha}\``,
+              '',
+              'The `Uno.WinAppSDKSyncGenerator` produced changes that are not committed on this PR.',
+              '',
+              '**To apply automatically** (PRs from branches in this repo only): comment `/apply-sync-gen` on this PR and a bot will push `chore: Sync generator run` to the head branch.',
+              '',
+              '**To apply manually** (required for PRs from forks):',
+              `1. Download the \`sync-generator-patch\` artifact from [this run](${process.env.RUN_URL}).`,
+              '2. In your local checkout of the PR branch:',
+              '   ```',
+              '   git apply sync-generator.patch',
+              '   git commit -am "chore: Sync generator run"',
+              '   git push',
+              '   ```',
+              '',
+              'Or re-run the generator locally on Windows via `build\\run-api-sync-tool.cmd`.',
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
 
       - name: Fail if drift detected
         if: steps.drift.outputs.drift == 'true'
