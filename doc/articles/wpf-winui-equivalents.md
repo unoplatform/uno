@@ -280,22 +280,22 @@ Always use `BasedOn` when overriding default control styles. Without it, your st
 For awaitable dispatch, wrap `DispatcherQueue.TryEnqueue(...)` with a `TaskCompletionSource`:
 
 ```csharp
-var tcs = new TaskCompletionSource<bool>();
+var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
 if (!App.MainWindow.DispatcherQueue.TryEnqueue(() =>
 {
     try
     {
         /* work */
-        tcs.SetResult(true);
+        tcs.TrySetResult(true);
     }
     catch (Exception ex)
     {
-        tcs.SetException(ex);
+        tcs.TrySetException(ex);
     }
 }))
 {
-    tcs.SetException(new InvalidOperationException("Failed to enqueue work on the DispatcherQueue."));
+    tcs.TrySetException(new InvalidOperationException("Failed to enqueue work on the DispatcherQueue."));
 }
 
 await tcs.Task;
