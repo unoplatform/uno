@@ -55,6 +55,11 @@ namespace Windows.System
 				}
 
 				var javaFile = new Java.IO.File(file.Path);
+
+				// Note: On Android 7.0+ (API 24+), using file:// URIs with other apps
+				// may throw FileUriExposedException. For full support on API 24+, the app
+				// should configure an AndroidX FileProvider. The exception is caught below
+				// and the method returns false in that case.
 				var uri = Android.Net.Uri.FromFile(javaFile);
 
 				var intent = new Intent(Intent.ActionView);
