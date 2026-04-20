@@ -150,7 +150,7 @@ Package guidance for Community Toolkit controls in this table: in WinUI 3 (Windo
 | Feature | `{Binding}` | `{x:Bind}` |
 |---|---|---|
 | Compile-time validation | No | Yes |
-| Default mode | OneWay | **OneTime** |
+| Default mode | Depends on target property metadata (often OneWay; some are TwoWay) | **OneTime** |
 | Default source | DataContext | Page / UserControl code-behind |
 | Function binding | No | Yes |
 | Performance | Reflection-based | Compiled, no reflection |
@@ -305,24 +305,24 @@ await tcs.Task;
 
 ### XAML Attribute Replacements
 
-| Find | Replace With |
-|---|---|
-| `ContextMenu=` | `ContextFlyout=` |
-| `{DynamicResource` | `{ThemeResource` |
-| `{x:Static` | `{x:Bind` |
+| Find | Replace With | Notes |
+|---|---|---|
+| `ContextMenu=` | `ContextFlyout=` | |
+| `{DynamicResource` | `{ThemeResource` | |
+| `{x:Static` | `{x:Bind` | |
 | `Visibility="Hidden"` (layout-preserving) | `Opacity="0"` with `IsHitTestVisible="False"` | Keeps layout space; combine with `IsTabStop="False"` for focusable controls |
 | `Visibility="Hidden"` (remove from layout) | `Visibility="Collapsed"` | Collapses space like WPF `Visibility="Collapsed"` |
-| `MouseLeftButtonDown` | `PointerPressed` |
-| `MouseLeftButtonUp` | `PointerReleased` |
-| `MouseEnter` | `PointerEntered` |
-| `MouseLeave` | `PointerExited` |
-| `MouseMove` | `PointerMoved` |
-| `MouseWheel` | `PointerWheelChanged` |
-| `Focusable="True"` | `IsTabStop="True"` |
-| `TextWrapping="WrapWithOverflow"` | `TextWrapping="Wrap"` |
-| `MediaElement` | `MediaPlayerElement` |
-| `InputBindings` | `KeyboardAccelerators` |
-| `KeyBinding` | `KeyboardAccelerator` |
+| `MouseLeftButtonDown` | `PointerPressed` | |
+| `MouseLeftButtonUp` | `PointerReleased` | |
+| `MouseEnter` | `PointerEntered` | |
+| `MouseLeave` | `PointerExited` | |
+| `MouseMove` | `PointerMoved` | |
+| `MouseWheel` | `PointerWheelChanged` | |
+| `Focusable="True"` | `IsTabStop="True"` | |
+| `TextWrapping="WrapWithOverflow"` | `TextWrapping="Wrap"` | |
+| `MediaElement` | `MediaPlayerElement` | |
+| `InputBindings` | `KeyboardAccelerators` | |
+| `KeyBinding` | `KeyboardAccelerator` | |
 
 ### Code-Behind Replacements
 
