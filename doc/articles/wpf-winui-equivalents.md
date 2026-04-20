@@ -371,7 +371,7 @@ CONTROL REPLACEMENTS:
 - MediaElement -> MediaPlayerElement
 
 PROPERTY REPLACEMENTS:
-- Visibility="Hidden" -> use `Opacity="0"` with `Visibility="Visible"` when layout must be preserved; use `Visibility="Collapsed"` only when removing the element from layout is acceptable
+- Visibility="Hidden" -> WinUI has no direct `Hidden` state; when layout must be preserved, use `Opacity="0"` with `Visibility="Visible"` and also set `IsHitTestVisible="False"`; for focusable controls also set `IsTabStop="False"` and `AllowFocusOnInteraction="False"` so the element is not invisible-but-interactive; use `Visibility="Collapsed"` only when removing the element from layout is acceptable
 - TextWrapping="WrapWithOverflow" -> TextWrapping="Wrap"
 - Focusable -> IsTabStop
 
@@ -408,7 +408,7 @@ No. The majority of WPF XAML transfers with namespace changes and minor property
 
 **What replaces Visibility.Hidden?**
 
-WinUI only has `Visible` and `Collapsed`. For invisible-but-layout-occupying behavior, set `Opacity="0"` while keeping `Visibility="Visible"`.
+WinUI only has `Visible` and `Collapsed`. For invisible-but-layout-occupying behavior, set `Opacity="0"` while keeping `Visibility="Visible"`, and also set `IsHitTestVisible="False"`. If the control can receive focus, also set `IsTabStop="False"` and `AllowFocusOnInteraction="False"` so it does not remain invisible but interactive.
 
 **How do I handle preview/tunneling events?**
 
