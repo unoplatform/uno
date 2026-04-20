@@ -19,6 +19,7 @@ using Color = Windows.UI.Color;
 using Microsoft.UI.Xaml.Data;
 using Combinatorial.MSTest;
 using Uno.UI.Toolkit.DevTools.Input;
+using SamplesApp.UITests;
 
 
 #if HAS_UNO_WINUI || WINAPPSDK || WINUI
@@ -468,6 +469,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		public class NoopCommand() : DelegateCommand(null, null) { }
+
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20366")]
+		public async Task When_Command_CanExecute_Returns_False_After_Click_Button_Appears_Disabled()
+		{
+			var executeCount = 0;
+			var command = new DelegateCommand(
+				canExecute: _ => executeCount == 0,
+				execute: _ => executeCount++
+			);
+
+			var button = new Button
+			{
+				Content = "Click Me",
+				Command = command,
+			};
+
+			await UITestHelper.Load(button);
+
+			Assert.IsTrue(button.IsEnabled, "Button should start enabled");
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to create InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var center = button.GetAbsoluteBounds().GetCenter();
+
+			mouse.Press(center);
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			command.RaiseCanExecuteChanged();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, executeCount, "Execute should have been called exactly once");
+			Assert.IsFalse(button.IsEnabled, "Button should be disabled after CanExecute returns false");
+
+			mouse.Press(center);
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, executeCount,
+				"Execute should NOT be called a second time. Button should be disabled and non-interactive. Issue #20366: Button doesn't update visual state to disabled after ICommand.Execute + CanExecuteChanged.");
+		}
 
 		[TestMethod]
 		public async Task When_AccentButtonStyle_Has_Same_Height_As_Default()
