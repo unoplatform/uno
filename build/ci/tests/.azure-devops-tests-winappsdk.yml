@@ -84,7 +84,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       targetPath: $(build.artifactstagingdirectory)/AppPackages
-      artifactName: samplesapp-windows-winappsdk
+      artifactName: samplesapp-winappsdk
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish WinAppSDK build logs'
@@ -92,7 +92,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)/build-wasdk.binlog
-      ArtifactName: samplesapp-windows-winappsdk-logs
+      ArtifactName: samplesapp-winappsdk-logs
       ArtifactType: Container
 
 ##
@@ -117,7 +117,7 @@ jobs:
     vmImage: 'windows-latest'
 
   variables:
-    SamplesAppArtifactName: samplesapp-windows-winappsdk
+    SamplesAppArtifactName: samplesapp-winappsdk
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   steps:
