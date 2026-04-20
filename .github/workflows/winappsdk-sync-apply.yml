@@ -1,0 +1,190 @@
+name: WinAppSDK Sync Generator Apply
+
+# Responds to `/apply-sync-gen` PR comments. Re-runs the sync generator and
+# pushes `chore: Sync generator run` to the PR's head branch. Only works for
+# PRs from branches in this repo — fork PRs must apply the patch manually.
+#
+# Safety:
+#   - `startsWith` on the comment body (not `contains`) so the drift-check
+#     workflow's instructional comment (which mentions `/apply-sync-gen`
+#     further down in its body) cannot self-trigger this workflow.
+#   - Bot comments are excluded via `comment.user.type`.
+#   - As an additional safety net, events caused by the default GITHUB_TOKEN
+#     do not trigger further workflow runs.
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  apply:
+    if: >-
+      github.repository == 'unoplatform/uno' &&
+      github.event.issue.pull_request != null &&
+      github.event.comment.user.type != 'Bot' &&
+      startsWith(github.event.comment.body, '/apply-sync-gen')
+    name: Apply WinAppSDK Sync Generator
+    runs-on: windows-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Resolve PR and authorize commenter
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+            const head = pr.data.head;
+            const baseFullName = `${context.repo.owner}/${context.repo.repo}`;
+            const isFork = !head.repo || head.repo.full_name !== baseFullName;
+
+            const commenter = context.payload.comment.user.login;
+            const assoc = context.payload.comment.author_association;
+            const allowedAssoc = ['OWNER', 'MEMBER', 'COLLABORATOR'];
+            const isAuthor = commenter === pr.data.user.login;
+            if (!isAuthor && !allowedAssoc.includes(assoc)) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: `@${commenter} you are not permitted to trigger \`/apply-sync-gen\` on this PR (only the PR author or repo collaborators can).`,
+              });
+              core.setFailed(`User ${commenter} (${assoc}) is not permitted to trigger /apply-sync-gen.`);
+              return;
+            }
+
+            if (isFork) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: 'Cannot auto-apply to a fork branch. Please download the `sync-generator-patch` artifact from the latest **WinAppSDK Sync Generator Check** run and apply it locally (`git apply` + commit + push).',
+              });
+              core.setFailed('Fork PR — cannot auto-apply.');
+              return;
+            }
+
+            core.setOutput('ref', head.ref);
+            core.setOutput('sha', head.sha);
+
+      - name: Acknowledge with reaction
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              content: 'eyes',
+            });
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.pr.outputs.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pin .NET Version
+        shell: bash
+        run: cp build/ci/net10/_global.json global.json
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore sync generator solution filter
+        working-directory: build
+        shell: bash
+        run: >
+          dotnet restore filters/Uno.UI-top-projects-for-sync-gen.slnf
+          -p:Configuration=Release
+          -p:CI_Build=true
+          -p:_IsCIBuild=true
+          -p:SyncGeneratorRunning=true
+
+      - name: Build WinAppSDKSyncGenerator
+        shell: bash
+        run: dotnet build src/Uno.WinAppSDKSyncGenerator/Uno.WinAppSDKSyncGenerator.csproj -c Release --no-restore
+
+      - name: Build WinAppSDKSyncGenerator.References
+        shell: bash
+        run: dotnet build src/Uno.WinAppSDKSyncGenerator.References/Uno.WinAppSDKSyncGenerator.References.csproj -c Release --no-restore
+
+      - name: Run WinAppSDKSyncGenerator (sync)
+        shell: bash
+        run: src/Uno.WinAppSDKSyncGenerator/bin/Release/net10.0/Uno.WinAppSDKSyncGenerator.exe sync
+
+      - name: Restore pinned global.json so it is not committed
+        shell: bash
+        run: git checkout -- global.json
+
+      - name: Commit and push if drift
+        id: commit
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No drift — nothing to commit."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git add -A
+          git commit -m 'chore: Sync generator run'
+          git push origin HEAD:${{ steps.pr.outputs.ref }}
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Comment with outcome
+        if: always() && steps.pr.outputs.ref != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pushed = '${{ steps.commit.outputs.pushed }}' === 'true';
+            const jobStatus = '${{ job.status }}';
+            let body;
+            if (jobStatus === 'success' && pushed) {
+              body = [
+                'Pushed `chore: Sync generator run` to this PR branch.',
+                '',
+                'GitHub does not re-trigger workflows for commits pushed by the default bot, so the **WinAppSDK Sync Generator Check** will not automatically re-run. To turn it green, push any additional commit (for example `git commit --allow-empty -m "ci: re-run"`) or ask a maintainer to re-run the check.',
+              ].join('\n');
+            } else if (jobStatus === 'success' && !pushed) {
+              body = 'Ran the sync generator — no drift detected, nothing to commit.';
+            } else {
+              body = 'The apply workflow failed. See the workflow logs for details.';
+            }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+      - name: React success
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              content: '+1',
+            });
+
+      - name: React failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              content: '-1',
+            });
