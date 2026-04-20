@@ -5054,6 +5054,96 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(4, sut.ItemsPanelRoot.Children.OfType<ListViewItem>().Count(), "There should be only 4 materialized container.");
 #endif
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14080")]
+		public async Task When_ListView_Scrolled_Past_First_Item_First_Container_Not_Recycled()
+		{
+			// WinUI: the first item's container is never recycled, regardless of scroll position or CacheLength.
+			// Uno bug: when item 0 scrolls past CacheLength, its container is recycled (ContainerFromIndex(0) returns null).
+			const int itemCount = 50;
+			const int itemHeight = 100;
+			const int listHeight = 300; // Shows ~3 items
+
+			var list = new ListView
+			{
+				Height = listHeight,
+				ItemsSource = Enumerable.Range(0, itemCount).ToArray(),
+				ItemsPanel = NoCacheItemsStackPanel, // CacheLength = 0 to force recycling of off-screen items
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding());
+					return new Border { Height = itemHeight, Child = tb };
+				}),
+			};
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitForIdle();
+
+			// Confirm item 0 container exists initially
+			Assert.IsNotNull(list.ContainerFromIndex(0), "ContainerFromIndex(0) should exist before scrolling");
+
+			// Scroll far past item 0 (well beyond CacheLength=0 viewport)
+			ScrollTo(list, itemCount * itemHeight);
+			await Task.Delay(300);
+			await WindowHelper.WaitForIdle();
+
+			// WinUI invariant: first item's container is never recycled
+			Assert.IsNotNull(list.ContainerFromIndex(0),
+				"ContainerFromIndex(0) should not be null — the first item should never be recycled, even when scrolled far past it (WinUI parity, issue #14080)");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14080")]
+		public async Task When_ListView_Item_Focused_And_Scrolled_Away_Container_Not_Recycled()
+		{
+			// WinUI: a focused item's container is never recycled until the item loses focus.
+			// Uno bug: focused items scrolled past CacheLength get recycled, losing focus.
+			const int itemCount = 50;
+			const int itemHeight = 100;
+			const int listHeight = 300;
+			const int focusedIndex = 1;
+
+			var list = new ListView
+			{
+				Height = listHeight,
+				ItemsSource = Enumerable.Range(0, itemCount).ToArray(),
+				ItemsPanel = NoCacheItemsStackPanel,
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding());
+					return new Border { Height = itemHeight, Child = tb };
+				}),
+			};
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitForIdle();
+
+			// Focus item at focusedIndex
+			var focusedContainer = list.ContainerFromIndex(focusedIndex) as ListViewItem;
+			Assert.IsNotNull(focusedContainer, $"ContainerFromIndex({focusedIndex}) should exist before scrolling");
+
+			var focusResult = await FocusManager.TryFocusAsync(focusedContainer, FocusState.Keyboard);
+			Assert.IsTrue(focusResult.Succeeded, $"Focus on item {focusedIndex} should succeed");
+			await WindowHelper.WaitForIdle();
+
+			// Scroll far past the focused item
+			ScrollTo(list, itemCount * itemHeight);
+			await Task.Delay(300);
+			await WindowHelper.WaitForIdle();
+
+			// WinUI invariant: focused item should not be recycled while focused
+			Assert.IsNotNull(list.ContainerFromIndex(focusedIndex),
+				$"ContainerFromIndex({focusedIndex}) should not be null — a focused item should never be recycled (WinUI parity, issue #14080)");
+		}
+#endif
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
