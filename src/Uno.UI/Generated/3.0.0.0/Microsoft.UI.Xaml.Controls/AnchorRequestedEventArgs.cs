@@ -3,5 +3,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-	// Skipping already declared type Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs
+#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
+#endif
+	public partial class AnchorRequestedEventArgs
+	{
+		// Skipping already declared property Anchor
+		// Skipping already declared property AnchorCandidates
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.Anchor.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.Anchor.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.AnchorCandidates.get
+	}
 }
