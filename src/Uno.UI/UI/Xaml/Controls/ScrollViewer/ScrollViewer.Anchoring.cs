@@ -5,7 +5,7 @@
 //  ComputeViewportToElementAnchorPointsDistance, PerformPositionAdjustment,
 //  IsAnchoring, IsElementValidAnchor, GetDescendantBounds,
 //  RegisterAnchorCandidateImpl, UnregisterAnchorCandidateImpl, RaiseAnchorRequested,
-//  ResetAnchorElement, ClearAnchorCandidates, get_CurrentAnchorImpl).
+//  ResetAnchorElement, get_CurrentAnchorImpl).
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Helpers.WinUI;
@@ -122,12 +122,6 @@ public partial class ScrollViewer
 			m_anchorCandidates.RemoveAt(index);
 			m_isAnchorElementDirty = true;
 		}
-	}
-
-	private void ClearAnchorCandidates()
-	{
-		m_anchorCandidates.Clear();
-		m_isAnchorElementDirty = true;
 	}
 
 	private void ResetAnchorElement()
