@@ -57,7 +57,7 @@ jobs:
 
       - name: Run WinAppSDKSyncGenerator (sync)
         shell: bash
-        run: src/Uno.WinAppSDKSyncGenerator/bin/Release/net10.0/Uno.WinAppSDKSyncGenerator.exe sync
+        run: src/Uno.WinAppSDKSyncGenerator/bin/Release/Uno.WinAppSDKSyncGenerator.exe sync
 
       - name: Restore pinned global.json
         shell: bash
