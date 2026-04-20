@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Uno.UWPSyncGenerator": {
+    "Uno.WinAppSDKSyncGenerator": {
       "commandName": "Project",
       "commandLineArgs": "sync"
     }

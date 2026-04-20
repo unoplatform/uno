@@ -15,7 +15,7 @@ using System.Linq;
 using System.Collections.Concurrent;
 using Uno.Extensions;
 using Uno.Logging;
-using Uno.UWPSyncGenerator;
+using Uno.WinAppSDKSyncGenerator;
 
 namespace Uno.SourceGeneration.Host
 {

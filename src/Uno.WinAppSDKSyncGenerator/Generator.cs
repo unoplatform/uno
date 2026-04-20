@@ -10,9 +10,9 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
 using Uno.Extensions;
-using Uno.UWPSyncGenerator.Helpers;
+using Uno.WinAppSDKSyncGenerator.Helpers;
 
-namespace Uno.UWPSyncGenerator
+namespace Uno.WinAppSDKSyncGenerator
 {
 	abstract class Generator
 	{
@@ -161,8 +161,8 @@ namespace Uno.UWPSyncGenerator
 
 		public virtual async Task Build()
 		{
-			const string referencesPath = @"..\..\..\Uno.UWPSyncGenerator.Reference.WinUI\references.txt";
-			s_referenceCompilation ??= await LoadUWPReferenceProject(referencesPath);
+			const string referencesPath = @"..\..\..\Uno.WinAppSDKSyncGenerator.References\references.txt";
+			s_referenceCompilation ??= await LoadWinAppSDKReferenceProject(referencesPath);
 
 			_dependencyPropertySymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
 
@@ -899,7 +899,7 @@ namespace Uno.UWPSyncGenerator
 						&& m.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == method.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
 					);
 
-				if (isAlreadyGenerated || !IsNotUWPMapping(ownerType, method))
+				if (isAlreadyGenerated || !IsNotWinAppSDKMapping(ownerType, method))
 				{
 					continue;
 				}
@@ -938,7 +938,7 @@ namespace Uno.UWPSyncGenerator
 				if (ownerType.GetMembers(property.Name).OfType<IPropertySymbol>().Any(p =>
 					   p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == property.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
 					)
-					|| !IsNotUWPMapping(ownerType, property))
+					|| !IsNotWinAppSDKMapping(ownerType, property))
 				{
 					continue;
 				}
@@ -1116,7 +1116,7 @@ namespace Uno.UWPSyncGenerator
 					&& iface.MetadataName != "Windows.Foundation.IStringable"
 					&& iface.MetadataName != "IWinRTObject")
 				{
-					ifaces.Add(MapUWPTypes(SanitizeType(iface)));
+					ifaces.Add(MapWinAppSDKTypes(SanitizeType(iface)));
 				}
 			}
 
@@ -1332,7 +1332,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var eventMember in type.GetMembers().OfType<IEventSymbol>())
 			{
-				if (!IsNotUWPMapping(type, eventMember) || SkipEvent(eventMember))
+				if (!IsNotWinAppSDKMapping(type, eventMember) || SkipEvent(eventMember))
 				{
 					continue;
 				}
@@ -1347,7 +1347,7 @@ namespace Uno.UWPSyncGenerator
 
 					if (type.TypeKind == TypeKind.Interface)
 					{
-						b.AppendLineInvariant($"{staticQualifier}event {MapUWPTypes(SanitizeType(eventMember.Type))} {eventMember.Name};");
+						b.AppendLineInvariant($"{staticQualifier}event {MapWinAppSDKTypes(SanitizeType(eventMember.Type))} {eventMember.Name};");
 					}
 					else
 					{
@@ -1365,11 +1365,11 @@ namespace Uno.UWPSyncGenerator
 						{
 							var explicitImpl = eventMember.ExplicitInterfaceImplementations.Single();
 							var interfaceSymbol = (INamedTypeSymbol)explicitImpl.ContainingSymbol;
-							eventName = $"{MapUWPTypes(SanitizeType(interfaceSymbol))}.{explicitImpl.Name}";
+							eventName = $"{MapWinAppSDKTypes(SanitizeType(interfaceSymbol))}.{explicitImpl.Name}";
 							accessModifier = string.Empty;
 						}
 
-						string declaration = $"{accessModifier}{staticQualifier}event {MapUWPTypes(SanitizeType(eventMember.Type))} {eventName}";
+						string declaration = $"{accessModifier}{staticQualifier}event {MapWinAppSDKTypes(SanitizeType(eventMember.Type))} {eventName}";
 
 						using (b.BlockInvariant(declaration))
 						{
@@ -1490,7 +1490,7 @@ namespace Uno.UWPSyncGenerator
 				if (
 						method.MethodKind == MethodKind.Ordinary
 						&& !SkipMethod(type, method)
-						&& IsNotUWPMapping(type, method)
+						&& IsNotWinAppSDKMapping(type, method)
 						&& (
 							method.DeclaredAccessibility == Accessibility.Public
 							|| method.DeclaredAccessibility == Accessibility.Protected
@@ -1768,16 +1768,16 @@ namespace Uno.UWPSyncGenerator
 		private static string GetParameterRefKind(IParameterSymbol p)
 			=> p.RefKind != RefKind.None ? $"{p.RefKind.ToString().ToLowerInvariant()} " : "";
 
-		private bool IsNotUWPMapping(INamedTypeSymbol type, IEventSymbol eventMember)
+		private bool IsNotWinAppSDKMapping(INamedTypeSymbol type, IEventSymbol eventMember)
 		{
 			foreach (var iface in type.Interfaces.SelectMany(GetAllInterfaces))
 			{
-				var uwpIface = GetUWPIFace(iface);
+				var winAppSDKInterface = GetWinAppSDKInterface(iface);
 
-				if (uwpIface != null)
+				if (winAppSDKInterface != null)
 				{
 					if (
-							uwpIface == BaseXamlNamespace + ".Input.ICommand"
+							winAppSDKInterface == BaseXamlNamespace + ".Input.ICommand"
 							&& eventMember.Name == "CanExecuteChanged"
 						)
 					{
@@ -1789,17 +1789,17 @@ namespace Uno.UWPSyncGenerator
 			return true;
 		}
 
-		private bool IsNotUWPMapping(INamedTypeSymbol type, IMethodSymbol method)
+		private bool IsNotWinAppSDKMapping(INamedTypeSymbol type, IMethodSymbol method)
 		{
 			foreach (var iface in type.Interfaces.SelectMany(GetAllInterfaces))
 			{
-				var uwpIface = GetUWPIFace(iface);
+				var winAppSDKInterface = GetWinAppSDKInterface(iface);
 
-				if (uwpIface != null)
+				if (winAppSDKInterface != null)
 				{
 					if (
 						(
-							uwpIface == "Windows.Foundation.Collections.IMap`2"
+							winAppSDKInterface == "Windows.Foundation.Collections.IMap`2"
 							&& (
 								method.Name == "Clear"
 								|| (method.Name == "Remove" && method.ReturnType.Name == "Boolean")
@@ -1807,7 +1807,7 @@ namespace Uno.UWPSyncGenerator
 						)
 						||
 						(
-							uwpIface == "Windows.Foundation.Collections.IVector`1"
+							winAppSDKInterface == "Windows.Foundation.Collections.IVector`1"
 							&& method.Name == "Clear"
 						)
 					)
@@ -1815,7 +1815,7 @@ namespace Uno.UWPSyncGenerator
 						return true;
 					}
 					else if (
-							uwpIface == "Windows.Foundation.Collections.IVectorView`1"
+							winAppSDKInterface == "Windows.Foundation.Collections.IVectorView`1"
 							&& method.Name == "Item"
 						)
 					{
@@ -1823,7 +1823,7 @@ namespace Uno.UWPSyncGenerator
 					}
 					else
 					{
-						var type2 = s_referenceCompilation.GetTypeByMetadataName(uwpIface);
+						var type2 = s_referenceCompilation.GetTypeByMetadataName(winAppSDKInterface);
 
 						if (type2 == null)
 						{
@@ -1858,17 +1858,17 @@ namespace Uno.UWPSyncGenerator
 			return true;
 		}
 
-		private bool IsNotUWPMapping(INamedTypeSymbol type, IPropertySymbol property)
+		private bool IsNotWinAppSDKMapping(INamedTypeSymbol type, IPropertySymbol property)
 		{
 			try
 			{
 				foreach (var iface in type.Interfaces.SelectMany(GetAllInterfaces))
 				{
-					var uwpIface = GetUWPIFace(iface);
+					var winAppSDKInterface = GetWinAppSDKInterface(iface);
 
-					if (uwpIface != null)
+					if (winAppSDKInterface != null)
 					{
-						var type2 = s_referenceCompilation.GetTypeByMetadataName(uwpIface);
+						var type2 = s_referenceCompilation.GetTypeByMetadataName(winAppSDKInterface);
 
 						var t3 = type2.Construct(iface.TypeArguments.ToArray());
 
@@ -1892,7 +1892,7 @@ namespace Uno.UWPSyncGenerator
 			}
 		}
 
-		private string GetUWPIFace(INamedTypeSymbol iface)
+		private string GetWinAppSDKInterface(INamedTypeSymbol iface)
 		{
 			switch (iface.ConstructedFrom.ToDisplayString())
 			{
@@ -1945,7 +1945,7 @@ namespace Uno.UWPSyncGenerator
 
 					if (type.TypeKind == TypeKind.Interface)
 					{
-						using (b.BlockInvariant($"{MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
+						using (b.BlockInvariant($"{MapWinAppSDKTypes(SanitizeType(property.Type))} {property.Name}"))
 						{
 							if (property.GetMethod != null)
 							{
@@ -1976,7 +1976,7 @@ namespace Uno.UWPSyncGenerator
 							if (getLocal != null || getAttached != null)
 							{
 								var attachedModifier = getAttached != null ? "Attached" : "";
-								var propertyDisplayType = MapUWPTypes((getAttached?.ReturnType ?? getLocal?.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+								var propertyDisplayType = MapWinAppSDKTypes((getAttached?.ReturnType ?? getLocal?.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 
 								b.AppendLineInvariant($"public {staticQualifier}{SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} =");
 
@@ -2006,13 +2006,13 @@ namespace Uno.UWPSyncGenerator
 							&& property.ContainingType.GetMembers(property.Name + "Property").Any()
 						)
 						{
-							using (b.BlockInvariant($"public {staticQualifier}{MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
+							using (b.BlockInvariant($"public {staticQualifier}{MapWinAppSDKTypes(SanitizeType(property.Type))} {property.Name}"))
 							{
 								if (property.GetMethod != null)
 								{
 									using (b.BlockInvariant($"get"))
 									{
-										b.AppendLineInvariant($"return ({MapUWPTypes(SanitizeType(property.Type))})this.GetValue({property.Name}Property);");
+										b.AppendLineInvariant($"return ({MapWinAppSDKTypes(SanitizeType(property.Type))})this.GetValue({property.Name}Property);");
 									}
 								}
 
@@ -2045,11 +2045,11 @@ namespace Uno.UWPSyncGenerator
 								{
 									var explicitImpl = property.ExplicitInterfaceImplementations.Single();
 									var interfaceSymbol = (INamedTypeSymbol)explicitImpl.ContainingSymbol;
-									propertyName = $"{MapUWPTypes(SanitizeType(interfaceSymbol))}.{explicitImpl.Name}";
+									propertyName = $"{MapWinAppSDKTypes(SanitizeType(interfaceSymbol))}.{explicitImpl.Name}";
 								}
 							}
 
-							using (b.BlockInvariant($"{accessModifier}{staticQualifier}{MapUWPTypes(SanitizeType(property.Type))} {propertyName}"))
+							using (b.BlockInvariant($"{accessModifier}{staticQualifier}{MapWinAppSDKTypes(SanitizeType(property.Type))} {propertyName}"))
 							{
 								if (property.GetMethod != null)
 								{
@@ -2224,7 +2224,7 @@ namespace Uno.UWPSyncGenerator
 			return result;
 		}
 
-		private static string MapUWPTypes(string typeName)
+		private static string MapWinAppSDKTypes(string typeName)
 		{
 			return typeName switch
 			{
@@ -2324,11 +2324,11 @@ namespace Uno.UWPSyncGenerator
 			return compilation;
 		}
 
-		private static async Task<Compilation> LoadUWPReferenceProject(string referencesFile)
+		private static async Task<Compilation> LoadWinAppSDKReferenceProject(string referencesFile)
 		{
 			var ws = new AdhocWorkspace();
 
-			var p = ws.AddProject("uwpref", LanguageNames.CSharp);
+			var p = ws.AddProject("winappsdkref", LanguageNames.CSharp);
 			_winuiReferences = File.ReadAllLines(referencesFile).Select(reference => MetadataReference.CreateFromFile(reference));
 			// Add .NET ref assemblies to make sure things like System.Object are properly resolved and are not error symbols.
 			p = p.AddMetadataReferences(_winuiReferences.Concat(Basic.Reference.Assemblies.Net100.References.All));
@@ -2445,7 +2445,7 @@ namespace Uno.UWPSyncGenerator
 		private static ISourceGenerator[] LoadMixinGenerators()
 		{
 			// Pull the generator assembly via a known type. Uno.UI.SourceGenerators.Internal
-			// is referenced from Uno.UWPSyncGenerator.csproj so this type is resolvable.
+			// is referenced from Uno.WinAppSDKSyncGenerator.csproj so this type is resolvable.
 			var mixinAssembly = Assembly.Load("Uno.UI.SourceGenerators.Internal");
 
 			var generators = new List<ISourceGenerator>();

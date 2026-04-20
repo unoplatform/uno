@@ -2,7 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
-namespace Uno.UWPSyncGenerator.AttributeGeneration;
+namespace Uno.WinAppSDKSyncGenerator.AttributeGeneration;
 
 internal class BindableAttributeDescription : AttributeDescriptionBase
 {

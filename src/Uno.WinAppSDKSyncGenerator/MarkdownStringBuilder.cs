@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 
-namespace Uno.UWPSyncGenerator
+namespace Uno.WinAppSDKSyncGenerator
 {
 	/// <summary>
 	/// Builder for a (GitHub-flavoured) Markdown-formatted document.

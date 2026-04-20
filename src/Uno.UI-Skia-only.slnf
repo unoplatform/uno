@@ -89,7 +89,7 @@
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.Skia.csproj",
       "Uno.UI\\Uno.UI.Reference.csproj",
       "Uno.UI\\Uno.UI.Skia.csproj",
-      "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj",
+      "Uno.WinAppSDKSyncGenerator\\Uno.WinAppSDKSyncGenerator.csproj",
       "Uno.UWP\\Uno.netcoremobile.csproj",
       "Uno.UWP\\Uno.Reference.csproj",
       "Uno.UWP\\Uno.Skia.csproj",

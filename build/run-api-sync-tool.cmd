@@ -27,10 +27,10 @@ if exist "%OVERRIDE_PATH%" (
 set SYNC_EXITCODE=0
 
 dotnet restore filters\Uno.UI-top-projects-for-sync-gen.slnf -p:Configuration=Release -p:CI_Build=true -p:_IsCIBuild=true -p:SyncGeneratorRunning=true || goto :failed_step
-dotnet build ..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj -c Release || goto :failed_step
-dotnet build ..\src\Uno.UWPSyncGenerator.Reference.WinUI\Uno.UWPSyncGenerator.Reference.WinUI.csproj -c Release || goto :failed_step
+dotnet build ..\src\Uno.WinAppSDKSyncGenerator\Uno.WinAppSDKSyncGenerator.csproj -c Release || goto :failed_step
+dotnet build ..\src\Uno.WinAppSDKSyncGenerator.References\Uno.WinAppSDKSyncGenerator.References.csproj -c Release || goto :failed_step
 
-..\src\Uno.UWPSyncGenerator\bin\Release\Uno.UWPSyncGenerator.exe sync
+..\src\Uno.WinAppSDKSyncGenerator\bin\Release\Uno.WinAppSDKSyncGenerator.exe sync
 set SYNC_EXITCODE=%ERRORLEVEL%
 goto :restore
 

@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace Uno.UWPSyncGenerator.AttributeGeneration;
+namespace Uno.WinAppSDKSyncGenerator.AttributeGeneration;
 
 internal sealed class ContentPropertyAttributeDescription : AttributeDescriptionBase
 {

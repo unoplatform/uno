@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using static Uno.UWPSyncGenerator.MarkdownStringBuilder;
+using static Uno.WinAppSDKSyncGenerator.MarkdownStringBuilder;
 
-namespace Uno.UWPSyncGenerator
+namespace Uno.WinAppSDKSyncGenerator
 {
 	/// <summary>
 	/// Generates documentation about what parts of the UWP contract are currently implemented by Uno.

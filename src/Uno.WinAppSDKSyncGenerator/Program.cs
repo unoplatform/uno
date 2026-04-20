@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Uno.UWPSyncGenerator
+namespace Uno.WinAppSDKSyncGenerator
 {
 	class Program
 	{

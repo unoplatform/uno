@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 
-namespace Uno.UWPSyncGenerator.Helpers;
+namespace Uno.WinAppSDKSyncGenerator.Helpers;
 
 internal static class SymbolMatchingHelpers
 {
