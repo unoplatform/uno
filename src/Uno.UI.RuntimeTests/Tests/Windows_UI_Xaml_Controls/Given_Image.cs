@@ -20,6 +20,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
+using SamplesApp.UITests;
 
 #if __SKIA__
 using SkiaSharp;
@@ -886,5 +887,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(changed, "Animated WebP should show different frames over time");
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19203")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_AnimatedGif_Stop_Stops_Playback()
+		{
+			var bitmapImage = new BitmapImage(new Uri("ms-appx:///Assets/Formats/animated.gif"))
+			{
+				AutoPlay = true,
+			};
+
+			var image = new Image
+			{
+				Width = 100,
+				Height = 100,
+				Source = bitmapImage,
+			};
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(bitmapImage.IsPlaying, "Animated GIF should be playing by default with AutoPlay=true. Issue #19203: IsPlaying/AutoPlay not implemented on Skia.");
+
+			bitmapImage.Stop();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(bitmapImage.IsPlaying,
+				"Animated GIF should stop playing after BitmapImage.Stop() is called. Issue #19203: Stop() has no effect on Skia.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19203")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_AnimatedGif_Play_After_Stop_Resumes_Playback()
+		{
+			var bitmapImage = new BitmapImage(new Uri("ms-appx:///Assets/Formats/animated.gif"))
+			{
+				AutoPlay = false,
+			};
+
+			var image = new Image
+			{
+				Width = 100,
+				Height = 100,
+				Source = bitmapImage,
+			};
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(bitmapImage.IsPlaying, "GIF should not be playing when AutoPlay=false. Issue #19203: AutoPlay not implemented on Skia.");
+
+			bitmapImage.Play();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(bitmapImage.IsPlaying,
+				"Animated GIF should start playing after BitmapImage.Play() is called. Issue #19203: Play() has no effect on Skia.");
+		}
 	}
 }
