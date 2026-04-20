@@ -1,9 +1,11 @@
 using System.Threading.Tasks;
 using Combinatorial.MSTest;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
+using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
@@ -629,5 +631,35 @@ public class Given_BindingExpression
 		{
 			Assert.Fail($"Invalid expectation: [{sut.Name}]{sut.Text}");
 		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19420")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_ElementName_Binding_Resolves_For_Programmatically_Added_Element()
+	{
+		var boundTextBlock = new TextBlock
+		{
+			Name = "BoundTextBlock",
+		};
+		boundTextBlock.SetBinding(TextBlock.TextProperty, new Binding { ElementName = "SourceTextBlock", Path = new PropertyPath("Text") });
+
+		var sp = new StackPanel();
+		sp.Children.Add(boundTextBlock);
+
+		await UITestHelper.Load(sp, x => x.IsLoaded);
+
+		var sourceTextBlock = new TextBlock
+		{
+			Name = "SourceTextBlock",
+			Text = "Hello, World!",
+		};
+		sp.Children.Add(sourceTextBlock);
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("Hello, World!", boundTextBlock.Text,
+			"ElementName binding should resolve when the source element is programmatically added. Issue #19420.");
 	}
 }
