@@ -28,6 +28,21 @@
                 TextAlignment="Center"
                 TextWrapping="Wrap" />
 
+            <!--  Top spacer to force scrolling so a NumberBox can be positioned near the top of the viewport. Repro for keypad popup showing at (0,0) covering the NumberBox when it is too close to the top of the page.  -->
+            <Border
+                Height="800"
+                Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                CornerRadius="8">
+                <TextBlock
+                    Margin="16"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                    Text="Scroll down, then tap a NumberBox while it sits near the top of the viewport to reproduce the keypad-popup placement issue."
+                    TextAlignment="Center"
+                    TextWrapping="Wrap" />
+            </Border>
+
             <!--  Decimal Pad section  -->
             <StackPanel
                 Padding="16"
@@ -262,6 +277,49 @@
                         Value="3" />
                 </Grid>
             </StackPanel>
+
+            <!--  Left-aligned, unlabeled NumberBoxes with 6px padding. Repro for the native number pad flyout being positioned on top of the NumberBox, covering its visible area.  -->
+            <StackPanel
+                Padding="16"
+                Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                CornerRadius="8"
+                Spacing="12">
+
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="Left-Aligned NumberBoxes (Padding 15)" />
+
+                <controls:NumberBox
+                    x:Name="LeftAlignedNumberBox1"
+                    Padding="15"
+                    HorizontalAlignment="Left"
+                    AutomationProperties.Name="LeftAlignedNumberBox1"
+                    PlaceholderText="0"
+                    Value="0" />
+
+                <controls:NumberBox
+                    x:Name="LeftAlignedNumberBox2"
+                    Padding="15"
+                    HorizontalAlignment="Left"
+                    AutomationProperties.Name="LeftAlignedNumberBox2"
+                    PlaceholderText="0"
+                    Value="0" />
+
+                <controls:NumberBox
+                    x:Name="LeftAlignedNumberBox3"
+                    Padding="15"
+                    HorizontalAlignment="Left"
+                    AutomationProperties.Name="LeftAlignedNumberBox3"
+                    PlaceholderText="0"
+                    Value="0" />
+            </StackPanel>
+
+            <!--  Bottom spacer so any NumberBox above can be scrolled up to the top of the viewport.  -->
+            <Border
+                Height="800"
+                Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                CornerRadius="8" />
 
         </StackPanel>
     </ScrollViewer>
