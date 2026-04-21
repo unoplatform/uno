@@ -77,7 +77,10 @@ internal class Program
 
 		// In MCP mode, stdout is reserved for MCP protocol messages (JSON-RPC),
 		// so all diagnostic logging must go to stderr.
-		// For non-MCP commands, use the default behavior (only errors to stderr).
+		// For non-MCP commands, route errors to stderr and keep stdout clean for
+		// structured output (e.g. `disco --json`, `health --json`). The default
+		// LogToStandardErrorThreshold is LogLevel.None, which would send everything
+		// (including errors) to stdout and corrupt JSON output.
 		var isMcpMode = IsMcpMode(args);
 
 		var services = new ServiceCollection();
@@ -86,10 +89,7 @@ internal class Program
 			builder.AddConsole(options =>
 			{
 				options.FormatterName = "clean";
-				if (isMcpMode)
-				{
-					options.LogToStandardErrorThreshold = LogLevel.Trace;
-				}
+				options.LogToStandardErrorThreshold = isMcpMode ? LogLevel.Trace : LogLevel.Error;
 			});
 			builder.AddConsoleFormatter<CleanConsoleFormatter, ConsoleFormatterOptions>();
 

@@ -27,9 +27,11 @@ public class Given_Program
 	[TestMethod]
 	public void IsMcpMode_WhenMcpAppFlagCasingDiffers_ReturnsFalse()
 	{
-		// --mcp-app is matched via args.Contains (ordinal, case-sensitive).
-		// This locks in the current contract so an accidental case-folding change
-		// would trip the test.
+		// --mcp-app is matched via args.Contains (ordinal, case-sensitive) to stay
+		// aligned with CliManager.RunAsync, which dispatches MCP STDIO mode using
+		// the same case-sensitive check (originalArgs.Contains("--mcp-app")). A
+		// case-insensitive match here would claim MCP mode without CliManager
+		// actually routing into the proxy, breaking the stdout/stderr contract.
 		Program.IsMcpMode(new[] { "--MCP-APP" }).Should().BeFalse();
 	}
 
