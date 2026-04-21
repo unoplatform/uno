@@ -117,7 +117,13 @@ namespace Uno.UI.Xaml.Core
 
 		public UIElement? PublicRootVisual { get; private set; }
 
-		public ScrollViewer? RootScrollViewer { get; private set; }
+		public
+#if __SKIA__
+			RootScrollViewer?
+#else
+			ScrollViewer?
+#endif
+			RootScrollViewer { get; private set; }
 
 		public ContentPresenter? RootContentPresenter { get; private set; }
 
@@ -174,7 +180,13 @@ namespace Uno.UI.Xaml.Core
 			}
 		}
 
-		internal void SetPublicRootVisual(UIElement? publicRootVisual, ScrollViewer? rootScrollViewer, ContentPresenter? rootContentPresenter)
+		internal void SetPublicRootVisual(UIElement? publicRootVisual,
+#if __SKIA__
+			RootScrollViewer?
+#else
+			ScrollViewer?
+#endif
+			rootScrollViewer, ContentPresenter? rootContentPresenter)
 		{
 			// NOTE: This doesn't check for the root scroll viewer changing independently of the root visual.
 			if (publicRootVisual == PublicRootVisual)
@@ -226,18 +238,10 @@ namespace Uno.UI.Xaml.Core
 			{
 				if (RootScrollViewer != null)
 				{
-					//// A visual set as the root SV of the tree implicitly becomes a permanent
-					//// namescope owner, and will always have a name store.
-					//_rootScrollViewer.tIsStandardNameScopeOwner = true;
-					//_rootScrollViewer.IsStandardNameScopeMember = false;
-
-					//// Add the visual root as the child of the root ScrollViwer
-					//AddVisualRootToRootScrollViewer(PublicRootVisual);
-
-					//// Add the root ScrollViewer to the hidden root visual
-					//AddRootScrollViewer(RootScrollViewer);
-
-					//_bIsRootScrollViewerAddedToRoot = true;
+					// RSV already has PublicRootVisual as its Content (set by XamlIslandRoot).
+					// Add the RootScrollViewer to the root element - PublicRootVisual is
+					// a child of RSV's content, so it enters the tree via the RSV.
+					AddRoot(RootScrollViewer);
 				}
 				else
 				{
