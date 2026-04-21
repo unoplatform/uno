@@ -29,6 +29,7 @@ namespace Microsoft.UI.Xaml
 		private readonly SerialDisposable _parentLoadedDisposable = new();
 
 		private (VisualState state, VisualTransition transition) _current;
+		private bool _hasEvaluatedTriggers;
 
 		public event VisualStateChangedEventHandler CurrentStateChanging;
 
@@ -607,8 +608,15 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var parent = this.GetParent() as IFrameworkElement;
+
+			// Match WinUI: trigger-driven state changes run VisualTransitions only on re-evaluation.
+			// The initial evaluation applies the state without animation.
+			// See CVisualStateManager2::AssignStateTriggerChangedCallback (uses !isInitialEvaluation).
+			var useTransitions = _hasEvaluatedTriggers;
+			_hasEvaluatedTriggers = true;
+
 			RaiseCurrentStateChanging(oldState, newState);
-			GoToState(parent, newState, true, OnStateChanged);
+			GoToState(parent, newState, useTransitions, OnStateChanged);
 		}
 
 		private bool HasStateTriggers()
