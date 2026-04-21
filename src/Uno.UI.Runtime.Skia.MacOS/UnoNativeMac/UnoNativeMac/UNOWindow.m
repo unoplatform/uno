@@ -1284,7 +1284,7 @@ NSOperatingSystemVersion _osVersion;
 - (NSArray *)accessibilityChildren {
     // Merge the native view children with our custom accessibility tree elements
     NSMutableArray *children = [NSMutableArray arrayWithArray:[super accessibilityChildren]];
-    NSArray *a11yChildren = uno_accessibility_get_root_children();
+    NSArray *a11yChildren = uno_accessibility_get_root_children(self);
     if (a11yChildren) {
         [children addObjectsFromArray:a11yChildren];
     }
@@ -1293,7 +1293,7 @@ NSOperatingSystemVersion _osVersion;
 
 - (id)accessibilityFocusedUIElement {
     // Return the currently focused accessibility element for VoiceOver
-    id focusedElement = uno_accessibility_get_focused_element();
+    id focusedElement = uno_accessibility_get_focused_element(self);
     if (focusedElement) {
         return focusedElement;
     }
@@ -1303,7 +1303,7 @@ NSOperatingSystemVersion _osVersion;
 
 - (id)accessibilityHitTest:(NSPoint)point {
     // First check if the point hits any of our custom accessibility elements
-    NSArray *a11yChildren = uno_accessibility_get_root_children();
+    NSArray *a11yChildren = uno_accessibility_get_root_children(self);
     if (a11yChildren) {
         for (id child in [a11yChildren reverseObjectEnumerator]) {
             if ([child respondsToSelector:@selector(accessibilityHitTest:)]) {
