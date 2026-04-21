@@ -4,7 +4,7 @@
 		private static _imeExports: any;
 		private static readonly inputElementId = "uno-input";
 		private static readonly isMacOS = navigator?.platform.toUpperCase().includes('MAC') ?? false;
-		private static inputElement: HTMLInputElement | HTMLTextAreaElement;
+		private static inputElement: HTMLInputElement | HTMLTextAreaElement | null;
 		private static isInSelectionChange: boolean;
 		private static acceptsReturn: boolean;
 		private static isComposing: boolean;
@@ -111,48 +111,7 @@
 				}
 			});
 
-			input.onkeydown = ev => {
-				// During IME composition, let the browser/IME handle all keys.
-				// stopPropagation prevents BrowserKeyboardInputSource from calling preventDefault.
-				if (ev.isComposing) {
-					ev.stopPropagation();
-					return;
-				}
-
-				if (ev.ctrlKey || (ev.metaKey && BrowserInvisibleTextBoxViewExtension.isMacOS)) {
-					// Due to browser security considerations, we need to let the clipboard operations be handled natively.
-					// So, we do stopPropagation instead of preventDefault
-					if (ev.key == "c" || ev.key == "C" || ev.key == "v" || ev.key == "V" || ev.key == "x" || ev.key == "X") {
-						ev.stopPropagation();
-						return;
-					}
-				}
-
-				// Allow Enter key to propagate when the TextBox doesn't accept returns
-				// This enables focus navigation (e.g., Uno.Toolkit's AutoFocusNext) on mobile browsers
-				if ((ev.key === "Enter" || ev.keyCode === 13) && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
-					// Don't call preventDefault() to allow the key event to propagate to document listeners
-					return;
-				}
-
-				// Android soft keyboards fire all keys as keyCode 229 / key "Unidentified".
-				// The C# side cannot identify these (maps to VirtualKey.None), so let the browser
-				// handle them natively. Text changes sync via the oninput handler.
-				// stopPropagation prevents the document-level BrowserKeyboardInputSource from
-				// calling preventDefault() on the event.
-				if (ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
-					ev.stopPropagation();
-					return;
-				}
-
-				ev.preventDefault();
-			};
-
-			input.onkeyup = ev => {
-				if (BrowserInvisibleTextBoxViewExtension.isComposing || ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
-					ev.stopPropagation();
-				}
-			};
+			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(input, acceptsReturn);
 
 			input.addEventListener("compositionstart", () => {
 				BrowserInvisibleTextBoxViewExtension.isComposing = true;
@@ -185,6 +144,55 @@
 			BrowserInvisibleTextBoxViewExtension.inputElement = input;
 		}
 
+		// Applies the same keydown/keyup guards used on the invisible <input> to any text input
+		// that must delegate character insertion to managed TextBox KeyDown handling.
+		// Without these guards, focused text inputs (e.g. the a11y semantic <input>) would insert
+		// the character natively AND via the managed path, producing duplicated input.
+		public static attachTextInputKeyHandlers(input: HTMLInputElement | HTMLTextAreaElement, acceptsReturn: boolean) {
+			input.addEventListener("keydown", (ev: KeyboardEvent) => {
+				// During IME composition, let the browser/IME handle all keys.
+				// stopPropagation prevents BrowserKeyboardInputSource from calling preventDefault.
+				if (ev.isComposing) {
+					ev.stopPropagation();
+					return;
+				}
+
+				if (ev.ctrlKey || (ev.metaKey && BrowserInvisibleTextBoxViewExtension.isMacOS)) {
+					// Due to browser security considerations, we need to let the clipboard operations be handled natively.
+					// So, we do stopPropagation instead of preventDefault
+					if (ev.key == "c" || ev.key == "C" || ev.key == "v" || ev.key == "V" || ev.key == "x" || ev.key == "X") {
+						ev.stopPropagation();
+						return;
+					}
+				}
+
+				// Allow Enter key to propagate when the TextBox doesn't accept returns
+				// This enables focus navigation (e.g., Uno.Toolkit's AutoFocusNext) on mobile browsers
+				if ((ev.key === "Enter" || ev.keyCode === 13) && !acceptsReturn) {
+					// Don't call preventDefault() to allow the key event to propagate to document listeners
+					return;
+				}
+
+				// Android soft keyboards fire all keys as keyCode 229 / key "Unidentified".
+				// The C# side cannot identify these (maps to VirtualKey.None), so let the browser
+				// handle them natively. Text changes sync via the oninput handler.
+				// stopPropagation prevents the document-level BrowserKeyboardInputSource from
+				// calling preventDefault() on the event.
+				if (ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
+					ev.stopPropagation();
+					return;
+				}
+
+				ev.preventDefault();
+			});
+
+			input.addEventListener("keyup", (ev: KeyboardEvent) => {
+				if (BrowserInvisibleTextBoxViewExtension.isComposing || ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
+					ev.stopPropagation();
+				}
+			});
+		}
+
 		public static setEnterKeyHint(enterKeyHint: string) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input) {
@@ -199,7 +207,13 @@
 			}
 		}
 
-		public static focus(isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
+		public static focus(handle: number, isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string): boolean {
+			const semanticElement = document.getElementById(`uno-semantics-${handle}`);
+			if (semanticElement && document.activeElement === semanticElement) {
+				BrowserInvisibleTextBoxViewExtension.detach();
+				return false;
+			}
+
 			// NOTE: We can get focused as true while we have inputElement.
 			// This happens when TextBox is focused twice with different FocusStates (e.g, Pointer, Programmatic, Keyboard)
 			// For such case, we do call StartEntry twice without any EndEntry in between.
@@ -211,12 +225,22 @@
 			// important to mobile browsers (to open the software keyboard) and for assistive technology to not steal
 			// events and properly recognize password inputs to not read it.
 			BrowserInvisibleTextBoxViewExtension.inputElement.focus();
+			return true;
 		}
 
 		public static blur() {
 			// reset focus
 			(document.activeElement as HTMLElement)?.blur();
+			BrowserInvisibleTextBoxViewExtension.detach();
+		}
+
+		public static detach() {
 			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
+			BrowserInvisibleTextBoxViewExtension.inputElement = null;
+		}
+
+		public static hasInput(): boolean {
+			return BrowserInvisibleTextBoxViewExtension.inputElement != null;
 		}
 
 		public static setText(text: string) {
