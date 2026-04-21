@@ -22,12 +22,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 /// assemblies because the RuntimeTests project does not take a compile-time
 /// dependency on those runtime assemblies — only the Skia Desktop host loads them.
 ///
-/// Scoped to Skia Desktop Windows for PR 1. PR 2 lifts the condition to full
-/// Skia Desktop coverage after macOS gets its own per-window native context.
+/// Scoped to Skia Desktop (Win32 + macOS) after PR 2 landed the per-window
+/// UNOAccessibilityContext on macOS.
 /// </summary>
 [TestClass]
 [RunsOnUIThread]
-[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)]
 public class Given_MultiWindowAccessibility
 {
 	[TestMethod]
@@ -182,6 +182,116 @@ public class Given_MultiWindowAccessibility
 		}
 	}
 
+	[TestMethod]
+	public async Task When_SameText_AnnouncedInBothWindows_Then_Each_TracksOwnState()
+	{
+		// FR-009: debouncer / duplicate-suppression state is per-window.
+		var primaryOwner = GetPrimaryAccessibilityOwner()
+			?? throw new InvalidOperationException("Primary owner missing.");
+		var primaryAccessibility = GetAccessibility(primaryOwner)
+			?? throw new InvalidOperationException("Primary accessibility missing.");
+
+		var secondary = new Window();
+		try
+		{
+			var secondaryButton = new Button { Content = "Announcer" };
+			secondary.Content = secondaryButton;
+
+			var activated = false;
+			secondary.Activated += (_, _) => activated = true;
+			secondary.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+			await TestServices.WindowHelper.WaitForLoaded(secondaryButton);
+
+			var secondaryOwner = GetAccessibilityOwnerForXamlRoot(secondary.Content.XamlRoot)
+				?? throw new InvalidOperationException("Secondary owner missing.");
+			var secondaryAccessibility = GetAccessibility(secondaryOwner)
+				?? throw new InvalidOperationException("Secondary accessibility missing.");
+
+			const string sameText = "Saved";
+
+			// Raise AnnouncePolite via the shared base-class method on each instance.
+			InvokeAnnouncePolite(primaryAccessibility, sameText);
+			InvokeAnnouncePolite(secondaryAccessibility, sameText);
+
+			// Give the debouncer timers time to flush (base class uses a 100 ms
+			// debounce + platform-specific flush; wait beyond that).
+			await Task.Delay(400);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Each instance's _lastAnnouncedPoliteContent should hold the text,
+			// proving that one window's dedup did not suppress the other.
+			AssertPerInstanceString(primaryAccessibility, "_lastAnnouncedPoliteContent", sameText);
+			AssertPerInstanceString(secondaryAccessibility, "_lastAnnouncedPoliteContent", sameText);
+		}
+		finally
+		{
+			await TestServices.RunOnUIThread(() => secondary.Close());
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Focus_Set_In_SecondaryWindow_Then_PrimaryTracker_Untouched()
+	{
+		// FR-010/FR-011: focus tracking is per-window. Focusing an element in
+		// window B must not disturb window A's `_trackedFocusedElement`.
+		var primaryOwner = GetPrimaryAccessibilityOwner()
+			?? throw new InvalidOperationException("Primary owner missing.");
+		var primaryAccessibility = GetAccessibility(primaryOwner)
+			?? throw new InvalidOperationException("Primary accessibility missing.");
+
+		var primaryButton = new Button { Content = "Primary button" };
+		var originalContent = TestServices.WindowHelper.CurrentTestWindow.Content;
+		TestServices.WindowHelper.CurrentTestWindow.Content = primaryButton;
+		try
+		{
+			await TestServices.WindowHelper.WaitForLoaded(primaryButton);
+			primaryButton.Focus(FocusState.Programmatic);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			InvokeTrackFocusedElement(primaryAccessibility, primaryButton);
+			var primaryTracked = GetTrackedFocusedElement(primaryAccessibility);
+			Assert.AreSame(primaryButton, primaryTracked,
+				"Primary window's tracker must point at the primary-window button after focus.");
+
+			var secondary = new Window();
+			try
+			{
+				var secondaryButton = new Button { Content = "Secondary button" };
+				secondary.Content = secondaryButton;
+
+				var activated = false;
+				secondary.Activated += (_, _) => activated = true;
+				secondary.Activate();
+				await TestServices.WindowHelper.WaitFor(() => activated);
+				await TestServices.WindowHelper.WaitForLoaded(secondaryButton);
+
+				var secondaryOwner = GetAccessibilityOwnerForXamlRoot(secondary.Content.XamlRoot)
+					?? throw new InvalidOperationException("Secondary owner missing.");
+				var secondaryAccessibility = GetAccessibility(secondaryOwner)
+					?? throw new InvalidOperationException("Secondary accessibility missing.");
+
+				InvokeTrackFocusedElement(secondaryAccessibility, secondaryButton);
+
+				// Primary window's tracker must still hold primary-window element.
+				var primaryTrackedAfter = GetTrackedFocusedElement(primaryAccessibility);
+				Assert.AreSame(primaryButton, primaryTrackedAfter,
+					"Primary window's tracker must be unaffected by focus changes in the secondary window (FR-010).");
+			}
+			finally
+			{
+				await TestServices.RunOnUIThread(() => secondary.Close());
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+		}
+		finally
+		{
+			TestServices.WindowHelper.CurrentTestWindow.Content = originalContent;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
 	// ──────────────────────────────────────────────────────────────
 	//  Reflection helpers — access internal types in Uno.UI.Runtime.Skia
 	//  and the host assembly without taking a compile-time reference.
@@ -328,6 +438,89 @@ public class Given_MultiWindowAccessibility
 			{
 				return type;
 			}
+		}
+		return null;
+	}
+
+	private static void InvokeAnnouncePolite(object accessibility, string text)
+	{
+		var method = FindMethodUpChain(accessibility.GetType(), "AnnouncePolite",
+			BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+			new[] { typeof(string) });
+		if (method is null)
+		{
+			Assert.Inconclusive("AnnouncePolite not found on SkiaAccessibilityBase — base class may have evolved.");
+			return;
+		}
+		method.Invoke(accessibility, new object[] { text });
+	}
+
+	private static void InvokeTrackFocusedElement(object accessibility, UIElement element)
+	{
+		var method = FindMethodUpChain(accessibility.GetType(), "TrackFocusedElement",
+			BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+			new[] { typeof(UIElement) });
+		if (method is null)
+		{
+			Assert.Inconclusive("TrackFocusedElement not found on SkiaAccessibilityBase — base class may have evolved.");
+			return;
+		}
+		method.Invoke(accessibility, new object[] { element });
+	}
+
+	private static UIElement? GetTrackedFocusedElement(object accessibility)
+	{
+		var property = FindPropertyUpChain(accessibility.GetType(), "TrackedFocusedElement",
+			BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+		return property?.GetValue(accessibility) as UIElement;
+	}
+
+	private static void AssertPerInstanceString(object accessibility, string fieldName, string expected)
+	{
+		var type = accessibility.GetType();
+		FieldInfo? field = null;
+		while (type is not null && field is null)
+		{
+			field = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+			type = type.BaseType;
+		}
+		if (field is null)
+		{
+			Assert.Inconclusive($"Field '{fieldName}' not found on SkiaAccessibilityBase — base class may have evolved.");
+			return;
+		}
+
+		var actual = field.GetValue(accessibility) as string;
+		Assert.AreEqual(expected, actual,
+			$"Per-instance '{fieldName}' should reflect the announcement text (FR-009).");
+	}
+
+	private static MethodInfo? FindMethodUpChain(Type? start, string name, BindingFlags flags, Type[] parameters)
+	{
+		var type = start;
+		while (type is not null)
+		{
+			var method = type.GetMethod(name, flags, binder: null, types: parameters, modifiers: null);
+			if (method is not null)
+			{
+				return method;
+			}
+			type = type.BaseType;
+		}
+		return null;
+	}
+
+	private static PropertyInfo? FindPropertyUpChain(Type? start, string name, BindingFlags flags)
+	{
+		var type = start;
+		while (type is not null)
+		{
+			var property = type.GetProperty(name, flags);
+			if (property is not null)
+			{
+				return property;
+			}
+			type = type.BaseType;
 		}
 		return null;
 	}
