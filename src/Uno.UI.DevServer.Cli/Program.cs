@@ -177,7 +177,7 @@ internal class Program
 		return null;
 	}
 
-	private static bool IsMcpMode(string[] args)
+	internal static bool IsMcpMode(string[] args)
 	{
 		if (args.Contains("--mcp-app"))
 		{
