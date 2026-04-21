@@ -612,8 +612,14 @@ namespace Microsoft.UI.Xaml
 			// Match WinUI: trigger-driven state changes run VisualTransitions only on re-evaluation.
 			// The initial evaluation applies the state without animation.
 			// See CVisualStateManager2::AssignStateTriggerChangedCallback (uses !isInitialEvaluation).
-			var useTransitions = _hasEvaluatedTriggers;
-			_hasEvaluatedTriggers = true;
+			// A refresh that fires before the group has a real owner must not consume the initial
+			// evaluation, otherwise the first real trigger evaluation after attach would animate.
+			var hasParent = parent is not null;
+			var useTransitions = hasParent && _hasEvaluatedTriggers;
+			if (hasParent)
+			{
+				_hasEvaluatedTriggers = true;
+			}
 
 			RaiseCurrentStateChanging(oldState, newState);
 			GoToState(parent, newState, useTransitions, OnStateChanged);

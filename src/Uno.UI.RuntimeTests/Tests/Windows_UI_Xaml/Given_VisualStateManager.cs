@@ -349,14 +349,14 @@ public partial class Given_VisualStateManager
 
 		// During the transition (well before the 400ms duration completes), the animated Opacity
 		// should be heading toward 0.2 — i.e. NOT equal to the setter's final value of 1.0.
-		await Task.Delay(100);
+		await TestServices.WindowHelper.WaitFor(() => border.Opacity < 0.95, timeoutMS: 1000);
 		Assert.IsTrue(
 			border.Opacity < 0.95,
 			$"Opacity should be animating toward 0.2 during the transition, but was {border.Opacity}. " +
 			"This indicates the VisualTransition storyboard is not running.");
 
-		// After the transition duration, the setter should have been applied.
-		await Task.Delay(600);
+		// After the transition completes, the setter should have been applied.
+		await TestServices.WindowHelper.WaitFor(() => transitionCompleted, timeoutMS: 2000);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.AreEqual("WideState", group.CurrentState?.Name);
