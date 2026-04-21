@@ -166,7 +166,7 @@ Choosing the right agent for your development depends on your needs and environm
 | VS Code Copilot      | 1.105.1      | ✅    | ✅     | ✅         | ✅       | iOS, Android, Desktop, Web ||
 | GitHub Copilot CLI   | 0.0.349      | ✅    | ❌     | ✅         | ❌         | Desktop, Web | |
 | Cursor               | 2.0.34       | ✅    | ✅     | ✅         | ✅        | Desktop, Web ||
-| Google Antigravity   | Preview      | ✅    | ❌    | ✅         | ❌        | Desktop, Web | Requires `--force-roots-fallback` |
+| Google Antigravity   | Preview      | ✅    | ❌    | ✅         | ❌        | Desktop, Web | Roots fallback auto-detected |
 | Rider                | 2025.2       | ❌    | ❌     | ❌         | ❌         | ❌ |[Support coming soon](https://youtrack.jetbrains.com/issue/JUNIE-461/MCP-Remote-Server-Support)|
 | Codex CLI            | 0.50.0       | ✅    | ❌     | ✅         | ❌      | Desktop, Web | [mcp.json](https://github.com/openai/codex/issues/2628)|
 | Claude Code          | 2.0.25       | ✅    | ✅     | ✅         | ✅        | Desktop, Web | |

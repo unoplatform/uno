@@ -49,7 +49,6 @@ This guide walks you through configuring the Uno Platform MCPs for Google Antigr
                         "-y",
                         "uno.devserver",
                         "--mcp-app",
-                        "--force-roots-fallback",
                         "--mcp-wait-tools-list"
                     ]
                 }
@@ -58,7 +57,7 @@ This guide walks you through configuring the Uno Platform MCPs for Google Antigr
         ```
 
     > [!NOTE]
-    > `--force-roots-fallback` is optional. The DevServer auto-detects when the client does not advertise the MCP roots capability and exposes the `uno_app_initialize` tool automatically. The flag is still accepted for explicit override.
+    > The DevServer auto-detects when the client does not advertise the MCP roots capability and exposes the `uno_app_initialize` tool automatically. `--force-roots-fallback` is a legacy override and is rarely needed.
 
     You can verify the registration state at any time:
 
