@@ -149,7 +149,7 @@ This feature is localized to the Skia desktop runtime assemblies:
 
 **Independent Test**: Run the existing accessibility runtime test suite (`Given_AccessibleButton`, `Given_AccessibleCheckBox`, `Given_AccessibleSlider`, `Given_AccessibleTextBox`, `Given_AccessibilityAnnouncements`, `Given_AccessibilityFocus`, `Given_AccessibleComboBox`, `Given_AccessibleListView`, `Given_AutomationPeer`) against the refactored implementation. All tests pass unmodified.
 
-- [ ] T039 [US5] Run full accessibility test suite against the refactored implementation with `/runtime-tests Windows_UI_Xaml_Automation` on Skia Desktop (Windows); confirm all existing tests listed in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/` pass without modification (SC-006).
+- [X] T039 [US5] Run full accessibility test suite against the refactored implementation with `/runtime-tests Windows_UI_Xaml_Automation` on Skia Desktop (Windows); confirm all existing tests listed in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/` pass without modification (SC-006).
 - [ ] T040 [US5] Run the same full accessibility test suite against Skia Desktop (Mac) after PR 2 work lands; confirm unmodified pass rate (SC-006 across platforms).
 - [ ] T041 [US5] Profile per-callback router overhead on a single-window scenario (e.g., using the Win32 SamplesApp's accessibility hot path) — confirm router dispatch adds at most one dictionary lookup per callback as stated in plan.md performance constraints; record a qualitative measurement in the PR description.
 
@@ -161,11 +161,11 @@ This feature is localized to the Skia desktop runtime assemblies:
 
 **Purpose**: Documentation, manual validation, and rollout hygiene spanning both PRs.
 
-- [ ] T042 [P] Verify diagnostic traces land in the categories listed in `specs/004-multi-window-a11y/quickstart.md` "Diagnostic traces to watch for" — `Uno.UI.Runtime.Skia.Accessibility.AccessibilityRouter`, `Uno.UI.Runtime.Skia.SkiaAccessibilityBase`, `Uno.UI.Runtime.Skia.Win32.Win32Accessibility` — by enabling `LogLevel.Debug` during a test run and confirming each drop path (source-less announcement with no active owner, callback for peer with no XamlRoot, pre-init event on a new instance) produces a trace.
+- [X] T042 [P] Verify diagnostic traces land in the categories listed in `specs/004-multi-window-a11y/quickstart.md` "Diagnostic traces to watch for" — `Uno.UI.Runtime.Skia.Accessibility.AccessibilityRouter`, `Uno.UI.Runtime.Skia.SkiaAccessibilityBase`, `Uno.UI.Runtime.Skia.Win32.Win32Accessibility` — by enabling `LogLevel.Debug` during a test run and confirming each drop path (source-less announcement with no active owner, callback for peer with no XamlRoot, pre-init event on a new instance) produces a trace.
 - [ ] T043 [P] Execute the Windows / Narrator manual validation checklist in `specs/004-multi-window-a11y/quickstart.md` and record completion in the PR 1 description (SC-008).
 - [ ] T044 Execute the macOS / VoiceOver manual validation checklist in `specs/004-multi-window-a11y/quickstart.md` (including the CRITICAL rapid create/destroy stress block) and record completion in the PR 2 description (SC-008, SC-004).
-- [ ] T045 [P] Author the PR 1 description documenting the macOS primary-window-only interim limitation required by FR-024 (link the upcoming PR 2 scope inline without referencing private trackers, per AGENTS.md "Public Documentation and Spec References").
-- [ ] T046 [P] Author the PR 2 description documenting removal of the interim limitation and the full macOS multi-window accessibility support; reference the automated `Given_MultiWindowAccessibility` coverage expansion and the manual VoiceOver stress-test evidence.
+- [X] T045 [P] Author the PR 1 description documenting the macOS primary-window-only interim limitation required by FR-024 (link the upcoming PR 2 scope inline without referencing private trackers, per AGENTS.md "Public Documentation and Spec References").
+- [X] T046 [P] Author the PR 2 description documenting removal of the interim limitation and the full macOS multi-window accessibility support; reference the automated `Given_MultiWindowAccessibility` coverage expansion and the manual VoiceOver stress-test evidence.
 - [ ] T047 Final cross-platform gate: `cd src && dotnet build Uno.UI-Skia-only.slnf --no-restore`, `/runtime-tests Given_MultiWindowAccessibility`, `/runtime-tests Windows_UI_Xaml_Automation` — all green before merging each PR.
 
 ---
