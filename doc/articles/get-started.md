@@ -167,13 +167,16 @@ Choosing the right agent for your development depends on your needs and environm
 | GitHub Copilot CLI   | 0.0.349      | ✅    | ❌     | ✅         | ❌         | Desktop, Web | |
 | Cursor               | 2.0.34       | ✅    | ✅     | ✅         | ✅        | Desktop, Web ||
 | Google Antigravity   | Preview      | ✅    | ❌    | ✅         | ❌        | Desktop, Web | Roots fallback auto-detected |
-| Rider                | 2025.2       | ❌    | ❌     | ❌         | ❌         | ❌ |[Support coming soon](https://youtrack.jetbrains.com/issue/JUNIE-461/MCP-Remote-Server-Support)|
+| Rider                | 2025.2       | ✅²   | ❌      | ❌         | ✅²            | Desktop, Web | Uno App MCP (stdio) only — Uno Docs (HTTP) tracked in [JUNIE-461](https://youtrack.jetbrains.com/issue/JUNIE-461/MCP-Remote-Server-Support) |
 | Codex CLI            | 0.50.0       | ✅    | ❌     | ✅         | ❌      | Desktop, Web | [mcp.json](https://github.com/openai/codex/issues/2628)|
 | Claude Code          | 2.0.25       | ✅    | ✅     | ✅         | ✅        | Desktop, Web | |
 
 **Notes:**
 
 1. VS Hot Reload support in agents is coming soon
+2. Rider (via Junie) supports stdio MCP servers only; HTTP/remote MCP servers (used by Uno Docs) are not yet supported — see [JUNIE-461](https://youtrack.jetbrains.com/issue/JUNIE-461/MCP-Remote-Server-Support).
+
+For registration, inspection, and diagnostics of Uno MCPs across these agents, see [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs) and the [Dev Server reference](xref:Uno.DevServer).
 
 ## Questions
 

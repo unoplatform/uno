@@ -23,7 +23,7 @@ This guide walks you through configuring the Uno Platform MCPs for Google Antigr
 1. Install [Google Antigravity](https://antigravity.google/) by following Google's official instructions for your operating system.
 1. Configure [Antigravity MCPs](https://antigravity.google/docs/mcp):
 
-    You can either use `dnx -y uno.devserver mcp install gemini-antigravity` to write the supported registration for you, or edit the raw config manually.
+    You can either use `dnx -y uno.devserver mcp install gemini-antigravity` to write the supported registration for you, or edit the raw config manually. See the [Dev Server reference](xref:Uno.DevServer) for the full CLI surface.
 
     Example using the Dev Server CLI:
 

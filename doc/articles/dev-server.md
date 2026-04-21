@@ -125,3 +125,11 @@ The Dev Server enables Hot Reload for a faster inner loop:
        ![Level output drop-down](Assets/features/hotreload/rider-output-level-trace.png)
 
 ---
+
+## See also
+
+- [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs) — how to register, inspect, and uninstall Uno MCP entries across supported agents.
+- [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) — inspect your environment and tool resolution.
+- [Supported agents and features](xref:Uno.GetStarted#supported-agents-features) — per-agent capability summary.
+- Per-agent setup guides: [Claude Code](xref:Uno.GetStarted.AI.Claude), [Codex CLI](xref:Uno.GetStarted.AI.Codex), [Cursor](xref:Uno.GetStarted.AI.Cursor), [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI), [Google Antigravity](xref:Uno.GetStarted.AI.GoogleAntigravity).
+- [Troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents).

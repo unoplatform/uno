@@ -79,7 +79,7 @@ The Pro license App MCP app tools are:
 
 ## Registering and diagnosing Uno MCPs
 
-The `uno-devserver mcp install` command automatically picks the best registration strategy for each agent:
+The `uno-devserver` CLI (see the full [Dev Server reference](xref:Uno.DevServer)) is the recommended way to register Uno MCPs. The `uno-devserver mcp install` command automatically picks the best registration strategy for each agent:
 
 - **CLI-first**: For agents that provide their own MCP CLI (`claude`, `codex`, `gemini`), the tool delegates registration to the agent's own command. This ensures the config format is always correct and forward-compatible.
 - **File-based fallback**: For agents without a CLI (or when the CLI is not installed), the tool writes directly to the agent's config file.
@@ -108,6 +108,8 @@ The `uno-devserver mcp` commands are useful when you want to:
 - Register Uno MCPs across multiple agents at once (`--all-ides`)
 - Inspect the current registration state across all supported clients
 - Remove Uno MCP entries that were previously written
+
+For the full list of Dev Server commands and flags, see the [Dev Server reference](xref:Uno.DevServer). To diagnose environment issues, see [Diagnostics (disco)](xref:Uno.Features.DevServerDisco).
 
 The `Uno.DevServer` tool exposes the following MCP setup commands:
 
@@ -227,4 +229,12 @@ For agents without roots support, the DevServer CLI auto-detects the missing cap
 
 ## Troubleshooting MCP Servers
 
-You can find additional information about [troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents) in our docs.
+You can find additional information about [troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents) in our docs. For environment diagnostics, run `uno-devserver disco` — see [Diagnostics (disco)](xref:Uno.Features.DevServerDisco).
+
+## See also
+
+- [Dev Server](xref:Uno.DevServer) — the Dev Server CLI reference covering `disco`, `mcp`, and runtime flags.
+- [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) — inspect your local environment and Uno tool resolution.
+- [Supported agents and features](xref:Uno.GetStarted#supported-agents-features) — per-agent capability summary.
+- Per-agent setup guides: [Claude Code](xref:Uno.GetStarted.AI.Claude), [Codex CLI](xref:Uno.GetStarted.AI.Codex), [Cursor](xref:Uno.GetStarted.AI.Cursor), [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI), [Google Antigravity](xref:Uno.GetStarted.AI.GoogleAntigravity).
+- [Troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents).
