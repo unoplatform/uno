@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 
-namespace Uno.UWPSyncGenerator.AttributeGeneration;
+namespace Uno.WinAppSDKSyncGenerator.AttributeGeneration;
 
 internal sealed class AttributeDataClassComparer : IEqualityComparer<AttributeData>
 {

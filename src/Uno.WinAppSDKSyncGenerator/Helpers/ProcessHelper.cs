@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Uno.UWPSyncGenerator
+namespace Uno.WinAppSDKSyncGenerator
 {
 	internal class ProcessHelper
 	{

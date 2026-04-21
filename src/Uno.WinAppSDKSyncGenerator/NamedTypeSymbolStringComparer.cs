@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 
-namespace Uno.UWPSyncGenerator
+namespace Uno.WinAppSDKSyncGenerator
 {
 	internal class NamedTypeSymbolStringComparer : IEqualityComparer<INamedTypeSymbol>
 	{

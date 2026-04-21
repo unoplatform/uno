@@ -30,6 +30,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!--
+			Referenced so the sync tool can instantiate the mixin source generators
+			and run them against each loaded compilation. Without this, members
+			emitted by the generators (e.g. Border.Background, Popup.IsOpen) look
+			absent to the tool and get re-stubbed under Generated/3.0.0.0/.
+		-->
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj">
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
 		<Folder Include="Properties\" />
 	</ItemGroup>
 

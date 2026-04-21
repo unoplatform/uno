@@ -8,9 +8,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.UWPSyncGenerator.AttributeGeneration;
+using Uno.WinAppSDKSyncGenerator.AttributeGeneration;
 
-namespace Uno.UWPSyncGenerator
+namespace Uno.WinAppSDKSyncGenerator
 {
 	class SyncGenerator : Generator
 	{
@@ -77,7 +77,7 @@ namespace Uno.UWPSyncGenerator
 
 			var writtenMethods = new List<IMethodSymbol>();
 
-			var uwpAttributes = type.GetAttributes().Where(a => !IsIgnoredAttribute(a)).ToList();
+			var winAppSDKAttributes = type.GetAttributes().Where(a => !IsIgnoredAttribute(a)).ToList();
 
 			// Determine which platforms are missing each attribute so we can
 			// wrap with #if guards and avoid duplicate attribute errors (CS0579)
@@ -94,7 +94,7 @@ namespace Uno.UWPSyncGenerator
 			};
 
 			var perPlatformMissing = platformMissingSets
-				.Select(p => (p.define, missing: GetMissingAttributes(uwpAttributes, p.symbol).ToHashSet(AttributeDataClassComparer.Instance)))
+				.Select(p => (p.define, missing: GetMissingAttributes(winAppSDKAttributes, p.symbol).ToHashSet(AttributeDataClassComparer.Instance)))
 				.ToList();
 
 			// Collect all attributes that are missing from at least one platform

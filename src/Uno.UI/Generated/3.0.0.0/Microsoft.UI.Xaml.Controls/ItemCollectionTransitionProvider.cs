@@ -10,12 +10,12 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.ItemCollectionTransitionProvider()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.ItemCollectionTransitionProvider()
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.ShouldAnimate(ItemCollectionTransition)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.QueueTransition(ItemCollectionTransition)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.ShouldAnimate(Microsoft.UI.Xaml.Controls.ItemCollectionTransition)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.QueueTransition(Microsoft.UI.Xaml.Controls.ItemCollectionTransition)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.TransitionCompleted.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.TransitionCompleted.remove
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.ShouldAnimateCore(ItemCollectionTransition)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.StartTransitions(IList<ItemCollectionTransition>)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.ShouldAnimateCore(Microsoft.UI.Xaml.Controls.ItemCollectionTransition)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.StartTransitions(System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.ItemCollectionTransition>)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.TransitionCompleted
 	}
 }
