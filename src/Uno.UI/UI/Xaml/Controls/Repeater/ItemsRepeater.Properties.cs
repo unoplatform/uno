@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.UI.Xaml;
-using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -75,25 +74,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get => (ItemCollectionTransitionProvider)GetValue(ItemTransitionProviderProperty);
 			set => SetValue(ItemTransitionProviderProperty, value);
-		}
-		#endregion
-
-		#region Animator (DP - With default callback) [Obsolete]
-		/// <summary>
-		/// Identifies the Animator dependency property.
-		/// </summary>
-		[Obsolete("Use ItemTransitionProviderProperty instead. Animator is deprecated and will be removed in a future version.")]
-		public static DependencyProperty AnimatorProperty { get; } = DependencyProperty.Register(
-			"Animator", typeof(ElementAnimator), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(ElementAnimator), OnPropertyChanged));
-
-		/// <summary>
-		/// Gets or sets the animation provider for the repeater.
-		/// </summary>
-		[Obsolete("Use ItemTransitionProvider instead. Animator is deprecated and will be removed in a future version.")]
-		public ElementAnimator Animator
-		{
-			get => (ElementAnimator)GetValue(AnimatorProperty);
-			set => SetValue(AnimatorProperty, value);
 		}
 		#endregion
 

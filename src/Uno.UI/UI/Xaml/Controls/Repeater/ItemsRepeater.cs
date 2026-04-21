@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ItemsRepeater.cpp, tag winui3/release/1.8.1
+// ItemsRepeater.cpp, commit 3f3e328
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -80,17 +80,9 @@ namespace Microsoft.UI.Xaml.Controls
 		internal ViewManager ViewManager => m_viewManager;
 		internal TransitionManager TransitionManager => m_transitionManager;
 
-#pragma warning disable CS0618 // Type or member is obsolete
-		[Obsolete("Use TransitionManager instead. AnimationManager is deprecated and will be removed in a future version.")]
-		internal AnimationManager AnimationManager => m_animationManager;
-#pragma warning restore CS0618
-
 		private bool IsProcessingCollectionChange => m_processingItemsSourceChange != null;
 
 		TransitionManager m_transitionManager;
-#pragma warning disable CS0618 // Type or member is obsolete
-		AnimationManager m_animationManager;
-#pragma warning restore CS0618
 		ViewManager m_viewManager;
 		ViewportManager m_viewportManager;
 
@@ -122,7 +114,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// UIAffinityQueue cleanup. To avoid that bug, take a strong ref
 		IElementFactory m_itemTemplate;
 		Layout m_layout;
-		ElementAnimator m_animator;
 
 		// If no ItemCollectionTransitionProvider is explicitly provided, we'll retrieve a default one
 		// from the Layout object. In that case, we'll want to know that we own that object and can
@@ -144,9 +135,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_repeaterChildren = new UIElementCollection(this);
 			m_transitionManager = new TransitionManager(this);
-#pragma warning disable CS0618 // Type or member is obsolete
-			m_animationManager = new AnimationManager(this);
-#pragma warning restore CS0618
 			m_viewManager = new ViewManager(this);
 			//if (SharedHelpers.IsRS5OrHigher())
 			{
@@ -176,7 +164,6 @@ namespace Microsoft.UI.Xaml.Controls
 		~ItemsRepeater()
 		{
 			m_itemTemplate = null;
-			m_animator = null;
 			m_layout = null;
 		}
 
@@ -547,12 +534,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				OnTransitionProviderChanged(args.OldValue as ItemCollectionTransitionProvider, args.NewValue as ItemCollectionTransitionProvider);
 			}
-#pragma warning disable CS0618 // Type or member is obsolete
-			else if (property == AnimatorProperty)
-			{
-				OnAnimatorChanged(args.OldValue as ElementAnimator, args.NewValue as ElementAnimator);
-			}
-#pragma warning restore CS0618
 			else if (property == HorizontalCacheLengthProperty)
 			{
 				m_viewportManager.HorizontalCacheLength = (double)args.NewValue;
@@ -928,20 +909,6 @@ namespace Microsoft.UI.Xaml.Controls
 			m_ownsTransitionProvider = false;
 			m_transitionManager.OnTransitionProviderChanged(newValue);
 		}
-
-#pragma warning disable CS0618 // Type or member is obsolete
-		[Obsolete("Use OnTransitionProviderChanged instead.")]
-		void OnAnimatorChanged(ElementAnimator oldValue, ElementAnimator newValue)
-		{
-			m_animationManager.OnAnimatorChanged(newValue);
-			if (!SharedHelpers.IsRS5OrHigher())
-			{
-				// Bug in framework's reference tracking causes crash during
-				// UIAffinityQueue cleanup. To avoid that bug, take a strong ref
-				m_animator = newValue;
-			}
-		}
-#pragma warning restore CS0618
 
 		void OnItemsSourceViewChanged(object sender, NotifyCollectionChangedEventArgs args)
 		{
