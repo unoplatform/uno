@@ -8,6 +8,7 @@ using System.Threading;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -36,6 +37,26 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private GestureRecognizer.Manipulation? _touchInertia;
 		private (double hOffset, double vOffset, bool isIntermediate) _lastScrolledEvent;
+
+		// Batching: during active touch scrolling, we set AnchorPoint immediately (cheap) but
+		// defer the expensive Updated() call (OnPresenterScrolled + InvalidateViewport + EVP propagation)
+		// to once per frame via CompositionTarget.Rendering. This collapses N pointer moves
+		// per frame into 1 Updated() call while keeping the visual perfectly in sync.
+		private bool _hasPendingTouchUpdate;
+		private double _pendingTouchHOffset;
+		private double _pendingTouchVOffset;
+		private bool _pendingTouchIsIntermediate;
+		private EventHandler<object>? _touchUpdateHandler;
+
+		// Inertia viewport throttle: PropagateEffectiveViewportChange() can trigger
+		// heavy layout (ItemsRepeater measure, item recycling). If that layout doesn't
+		// fully resolve in one UpdateLayout() pass, CanRecordPicture returns false and
+		// the frame is SKIPPED, causing visible ghosting. By throttling EVP to every Nth
+		// inertia frame, most frames are lightweight (just AnchorPoint + scroll offset DPs)
+		// and always render. Items still materialize at ~20fps which is imperceptible.
+		private int _inertiaFrameCount;
+		private const int InertiaViewportUpdateInterval = 3;
+
 #nullable restore
 
 		private bool _canHorizontallyScroll;
@@ -128,6 +149,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				UnhookScrollEvents(sv);
 			}
+			FlushPendingTouchUpdate();
+
 			_touchInertia?.Complete();
 			_touchInertia = null;
 		}
@@ -317,9 +340,58 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (options is { DisableAnimation: true } or { IsTouch: true })
 			{
-				visual.StopAnimation(nameof(Visual.AnchorPoint));
-				visual.AnchorPoint = target;
-				Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
+				// Only stop a running animation — during inertia no animation is active,
+				// so calling StopAnimation every tick wastes time on dictionary lookups.
+				if (visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is not null)
+				{
+					visual.StopAnimation(nameof(Visual.AnchorPoint));
+				}
+
+				// Always set AnchorPoint immediately — this is cheap (just a field write + RequestNewFrame).
+				// Multiple writes per frame are fine; only the last value is used at render time.
+				// Pixel-snap to integer values to avoid subpixel text rendering artifacts
+				// (shimmer/ghosting from fractional offsets during inertia decay).
+				visual.AnchorPoint = new Vector2(MathF.Round(target.X), MathF.Round(target.Y));
+
+				if (options.IsTouch && options.IsIntermediate && _touchInertia is null)
+				{
+					// During active touch scrolling (finger on screen, NOT inertia), defer the expensive
+					// Updated() call to once per frame. This batches N pointer moves into 1 Updated().
+					ScheduleDeferredTouchUpdate(horizontalOffset, verticalOffset, options.IsIntermediate);
+				}
+				else if (options.IsTouch && options.IsIntermediate && _touchInertia is not null)
+				{
+					// Inertia: update immediately but throttle viewport propagation.
+					// PropagateEffectiveViewportChange() can trigger heavy layout (ItemsRepeater
+					// measure, item recycling). If layout doesn't fully resolve in one pass,
+					// CanRecordPicture returns false → frame skipped → visible ghosting.
+					// By only doing the full EVP every Nth frame, most frames are guaranteed
+					// to render. Items materialize at ~20fps which is imperceptible.
+					FlushPendingTouchUpdate();
+					_inertiaFrameCount++;
+					if (_inertiaFrameCount % InertiaViewportUpdateInterval == 0)
+					{
+						// Full update: scroll offsets + OnPresenterScrolled + InvalidateViewport
+						Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
+					}
+					else
+					{
+						// Lightweight update: scroll offsets + scrollbar DPs only (no EVP tree walk).
+						// AnchorPoint was already set above, so the visual moves at 60fps.
+						if (_lastScrolledEvent != (horizontalOffset, verticalOffset, true))
+						{
+							_lastScrolledEvent = (horizontalOffset, verticalOffset, true);
+							Scroller?.OnPresenterScrolled(horizontalOffset, verticalOffset, isIntermediate: true);
+						}
+						ScrollOffsets = new Point(horizontalOffset, verticalOffset);
+					}
+				}
+				else
+				{
+					// Non-intermediate (final) or non-touch: flush immediately with full update.
+					FlushPendingTouchUpdate();
+					Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
+				}
 			}
 			else
 			{
@@ -344,6 +416,35 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private void ScheduleDeferredTouchUpdate(double hOffset, double vOffset, bool isIntermediate)
+		{
+			_pendingTouchHOffset = hOffset;
+			_pendingTouchVOffset = vOffset;
+			_pendingTouchIsIntermediate = isIntermediate;
+
+			if (!_hasPendingTouchUpdate)
+			{
+				_hasPendingTouchUpdate = true;
+				_touchUpdateHandler ??= OnRenderingFlushTouchUpdate;
+				CompositionTarget.Rendering += _touchUpdateHandler;
+			}
+		}
+
+		private void OnRenderingFlushTouchUpdate(object? sender, object e)
+		{
+			// Unsubscribe immediately — we re-subscribe on next touch move if needed.
+			CompositionTarget.Rendering -= _touchUpdateHandler;
+			FlushPendingTouchUpdate();
+		}
+
+		private void FlushPendingTouchUpdate()
+		{
+			if (_hasPendingTouchUpdate)
+			{
+				_hasPendingTouchUpdate = false;
+				Updated(_pendingTouchHOffset, _pendingTouchVOffset, _pendingTouchIsIntermediate);
+			}
+		}
 
 		private void TryEnableDirectManipulation(object sender, PointerRoutedEventArgs args)
 		{
@@ -363,6 +464,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// If a previous inertia is still tracked, clear it immediately so old inertial deltas
 			// cannot fight with the new manipulation's direction.
 			_touchInertia = null;
+
+			// Stop any running composition-driven inertia animation (user touched during fling).
+
 
 			var mode = ManipulationModes.None;
 			var scrollable = GetScrollableOffsets();
@@ -404,6 +508,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			Debug.Assert(_touchInertia is null || isResuming, "Inertia should already be null instead if we are resuming from a previous manipulation.");
 			_touchInertia = null;
+#if __SKIA__
+			Scroller?.EnterIntermediateViewChangedMode();
+#endif
 		}
 
 		/// <inheritdoc />
@@ -516,8 +623,8 @@ namespace Microsoft.UI.Xaml.Controls
 					_ => 0
 				};
 
-				// calculate the duration based on PKScrollView.prototype.stepThroughDecelerationAnimation from https://github.com/jimeh/PastryKit
-				// momentum should decay by 5% each frame, at 60fps, until the minimum threshold is reached.
+				// PastryKit-inspired iOS scroll physics: 0.95 friction factor per frame at 60fps.
+				// This maps directly to the exponential decay model: k = -ln(0.95)/16.67 ≈ 0.003
 				const double PKScrollViewDecelerationFrictionFactor = 0.95;
 				const double PKScrollViewDesiredAnimationFrameRate = 1000 / 60.0;
 				const double PKScrollViewMinimumVelocity = 0.01;
@@ -528,10 +635,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (OperatingSystem.IsAndroid())
 			{
-				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration / 2;
+				// Gentler decay for Android, matching the longer fling feel of native Android OverScroller.
+				// 0.0025 ≈ 0.96 decay per 16.67ms frame (vs WinUI's 0.95).
+				inertia.DesiredDisplacementDeceleration = 0.0025;
 			}
 			else
 			{
+				// Desktop/other: match WinUI InteractionTracker default (0.95 decay per frame).
 				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration;
 			}
 
@@ -578,6 +688,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// We can handle the inertia scrolling, configure to accept allow it by assigning the _touchInertia field.
 				_touchInertia = args.Manipulation;
+				_inertiaFrameCount = 0;
 
 				// Even if usually empty, make sure to apply the delta
 				var deltaX = Math.Clamp(-args.Delta.Translation.X, scrollable.Left, scrollable.Right);
@@ -598,6 +709,9 @@ namespace Microsoft.UI.Xaml.Controls
 			if (args?.IsInertial is true && _touchInertia is null)
 			{
 				// Inertia has been aborted (external ChangeView request?) or was not even allowed, do not try to apply the final value.
+#if __SKIA__
+				Scroller?.LeaveIntermediateViewChangedMode(raiseFinalViewChanged: false);
+#endif
 				return;
 			}
 
@@ -605,6 +719,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			//Set(disableAnimation: true, isIntermediate: false);
 			Set(options: new ScrollOptions(DisableAnimation: true, IsTouch: true, IsIntermediate: false));
+#if __SKIA__
+			Scroller?.LeaveIntermediateViewChangedMode(raiseFinalViewChanged: true);
+#endif
 		}
 
 		private ScrollDirection GetDirection(ManipulationVelocities velocities)

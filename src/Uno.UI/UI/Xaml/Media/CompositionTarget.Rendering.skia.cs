@@ -28,6 +28,7 @@ public partial class CompositionTarget
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly Lock _frameGate = new();
 	private readonly Lock _xamlRootBoundsGate = new();
+	private static readonly SKPath _emptyPath = new();
 
 	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
 	private Size _lastCanvasSize = Size.Empty;
@@ -151,7 +152,7 @@ public partial class CompositionTarget
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
 		{
-			return new SKPath();
+			return _emptyPath;
 		}
 		else
 		{
@@ -191,8 +192,6 @@ public partial class CompositionTarget
 			canvas.Restore();
 
 			ReturnFrame(lastRenderedFrame);
-
-			InvokeRendering();
 
 			if (FrameRenderingOptions.applyScalingToNativeElementClipPath && rasterizationScale != 1)
 			{
@@ -238,18 +237,17 @@ public partial class CompositionTarget
 		}
 	}
 
-	internal static void InvokeRendering()
+	/// <summary>
+	/// Fires the <see cref="Rendering"/> event.
+	/// </summary>
+	/// <param name="renderingTime">
+	/// Elapsed time since application start. When a VSync-aligned timestamp is available
+	/// (e.g. Android Choreographer), this reflects the VSync time rather than wall clock,
+	/// giving animations a stable time base even if the tick is delayed by GC or layout.
+	/// </param>
+	internal static void InvokeRendering(TimeSpan renderingTime)
 	{
-		if (NativeDispatcher.Main.HasThreadAccess)
-		{
-			_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
-		}
-		else
-		{
-			NativeDispatcher.Main.Enqueue(() =>
-			{
-				_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
-			}, NativeDispatcherPriority.High);
-		}
+		NativeDispatcher.CheckThreadAccess();
+		_rendering?.Invoke(null, new RenderingEventArgs(renderingTime));
 	}
 }
