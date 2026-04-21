@@ -47,12 +47,12 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       targetPath: $(build.artifactstagingdirectory)
-      ArtifactName: DocumentationArtifacts
+      ArtifactName: docs
 
   - task: PublishBuildArtifacts@1
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(Agent.TempDirectory)/unobinlog
-      ArtifactName: DocumentationBuildLogs
+      ArtifactName: docs-logs
       ArtifactType: Container

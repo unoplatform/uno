@@ -79,20 +79,21 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
-  - task: PublishBuildArtifacts@1
-    condition: always()
-    retryCountOnTaskFailure: 3
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: WinAppSDK-Package
-      ArtifactType: Container
-
   - task: PublishPipelineArtifact@1
     displayName: 'Publish WinAppSDK Package'
     retryCountOnTaskFailure: 3
     inputs:
       targetPath: $(build.artifactstagingdirectory)/AppPackages
-      artifactName: samplesapp-windows-winappsdk
+      artifactName: samplesapp-winappsdk
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish WinAppSDK build logs'
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)/build-wasdk.binlog
+      ArtifactName: samplesapp-winappsdk-logs
+      ArtifactType: Container
 
 ##
 ## WinUI Runtime Tests
@@ -116,7 +117,7 @@ jobs:
     vmImage: 'windows-latest'
 
   variables:
-    SamplesAppArtifactName: samplesapp-windows-winappsdk
+    SamplesAppArtifactName: samplesapp-winappsdk
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   steps:
@@ -129,13 +130,13 @@ jobs:
       artifact: $(SamplesAppArtifactName)
       path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-  - task: DownloadBuildArtifacts@0
+  - task: DownloadPipelineArtifact@2
     condition: gt(variables['System.JobAttempt'], 1)
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-        artifactName: uitests-failure-results
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: runtime-tests-winappsdk-failures
+      path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
   - template: ../templates/dotnet-install.yml
 
@@ -205,5 +206,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: uitests-failure-results
+      ArtifactName: runtime-tests-winappsdk-failures
       ArtifactType: Container
