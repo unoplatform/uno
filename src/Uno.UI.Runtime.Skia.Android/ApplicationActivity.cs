@@ -407,6 +407,7 @@ namespace Microsoft.UI.Xaml
 			//ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 			SystemThemeHelper.RefreshSystemTheme();
+			SystemThemeHelper.RefreshHighContrast();
 		}
 
 #pragma warning disable CS0618 // deprecated members

@@ -268,3 +268,10 @@ wglGetCurrentContext
 wglGetCurrentDC
 wglGetProcAddress
 wglMakeCurrent
+
+// TODO: put in the correct place, for now: High contrast / system theme
+SystemParametersInfo
+HIGHCONTRASTW
+GetSysColor
+SYSTEM_PARAMETERS_INFO_ACTION
+SYS_COLOR_INDEX

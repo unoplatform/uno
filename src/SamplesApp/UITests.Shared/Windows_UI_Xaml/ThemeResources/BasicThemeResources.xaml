@@ -7,140 +7,181 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <Page.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.ThemeDictionaries>
-                <ResourceDictionary x:Key="HighContrast">
-                    <SolidColorBrush x:Key="LocalThemeColor" Color="Red" />
-                </ResourceDictionary>
-                <ResourceDictionary x:Key="Default">
-                    <SolidColorBrush x:Key="LocalThemeColor" Color="Gray" />
-                </ResourceDictionary>
-                <ResourceDictionary x:Key="Dark">
-                    <SolidColorBrush x:Key="LocalThemeColor" Color="Blue" />
+	<Page.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.ThemeDictionaries>
+				<ResourceDictionary x:Key="HighContrast">
+					<SolidColorBrush x:Key="LocalThemeColor"
+									 Color="{ThemeResource SystemColorWindowColor}" />
+					<SolidColorBrush x:Key="LocalThemeTextColor"
+									 Color="{ThemeResource SystemColorWindowTextColor}" />
+					<SolidColorBrush x:Key="LocalThemeAccentColor"
+									 Color="{ThemeResource SystemColorHighlightColor}" />
+					<SolidColorBrush x:Key="LocalThemeAccentTextColor"
+									 Color="{ThemeResource SystemColorHighlightTextColor}" />
+					<SolidColorBrush x:Key="LocalHyperlinkColor"
+									 Color="{ThemeResource SystemColorHotlightColor}" />
+				</ResourceDictionary>
+				<ResourceDictionary x:Key="Default">
+					<SolidColorBrush x:Key="LocalThemeColor"
+					                 Color="Gray" />
+					<SolidColorBrush x:Key="LocalThemeTextColor"
+					                 Color="White" />
+					<SolidColorBrush x:Key="LocalThemeAccentColor"
+					                 Color="ForestGreen" />
+					<SolidColorBrush x:Key="LocalThemeAccentTextColor"
+					                 Color="White" />
+					<SolidColorBrush x:Key="LocalHyperlinkColor"
+					                 Color="DodgerBlue" />
+				</ResourceDictionary>
+				<ResourceDictionary x:Key="Dark">
+					<SolidColorBrush x:Key="LocalThemeColor"
+									 Color="Blue" />
+					<SolidColorBrush x:Key="LocalThemeTextColor"
+									 Color="White" />
+					<SolidColorBrush x:Key="LocalThemeAccentColor"
+									 Color="CornflowerBlue" />
+					<SolidColorBrush x:Key="LocalThemeAccentTextColor"
+									 Color="White" />
+					<SolidColorBrush x:Key="LocalHyperlinkColor"
+									 Color="LightSkyBlue" />
 
-                </ResourceDictionary>
-                <ResourceDictionary x:Key="Light">
-                    <SolidColorBrush x:Key="LocalThemeColor" Color="Yellow" />
-                </ResourceDictionary>
-            </ResourceDictionary.ThemeDictionaries>
+				</ResourceDictionary>
+				<ResourceDictionary x:Key="Light">
+					<SolidColorBrush x:Key="LocalThemeColor"
+									 Color="Yellow" />
+					<SolidColorBrush x:Key="LocalThemeTextColor"
+									 Color="Black" />
+					<SolidColorBrush x:Key="LocalThemeAccentColor"
+									 Color="Orange" />
+					<SolidColorBrush x:Key="LocalThemeAccentTextColor"
+									 Color="Black" />
+					<SolidColorBrush x:Key="LocalHyperlinkColor"
+									 Color="Blue" />
+				</ResourceDictionary>
+			</ResourceDictionary.ThemeDictionaries>
+		</ResourceDictionary>
+	</Page.Resources>
 
-            <SolidColorBrush x:Key="LocalThemeColor2" Color="Green" />
-        </ResourceDictionary>
-    </Page.Resources>
-
-    <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Spacing="10">
-        <TextBlock>
-            ApplicationTheme=<Run Text="{x:Bind ApplicationTheme}" />
-            <LineBreak />
-            LocalTheme=<Run Text="{Binding LocalTheme}" />
-            <LineBreak />
-            ParentTheme=<Run Text="{Binding ParentTheme}" />
-        </TextBlock>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <StackPanel RequestedTheme="Default" Spacing="10">
-                <Border
-                    Width="300"
-                    Height="50"
-                    Background="{ThemeResource LocalThemeColor}">
-                    <TextBlock>{ThemeResource} on a themed resource</TextBlock>
-                </Border>
-                <Border
-                    Width="300"
-                    Height="50"
-                    Background="{StaticResource LocalThemeColor}">
-                    <TextBlock>{StaticResource} on a themed resource</TextBlock>
-                </Border>
-                <Border
-                    Width="300"
-                    Height="50"
-                    Background="{ThemeResource LocalThemeColor2}">
-                    <TextBlock>{ThemeResource} on a static resource (green)</TextBlock>
-                </Border>
-                <Border
-                    Width="300"
-                    Height="50"
-                    Background="{StaticResource LocalThemeColor2}">
-                    <TextBlock>{StaticResource} on a static resource (green)</TextBlock>
-                </Border>
-            </StackPanel>
-            <StackPanel
-                Grid.Column="1"
-                RequestedTheme="Dark"
-                Spacing="10">
-                <Border
-                    Width="300"
-                    Height="50"
-                    Background="{ThemeResource LocalThemeColor}">
-                    <TextBlock>{ThemeResource} on a themed resource</TextBlock>
-                </Border>
-                <Border
-                    Width="300"
-                    Height="50"
-                    Background="{StaticResource LocalThemeColor}">
-                    <TextBlock>{StaticResource} on a themed resource</TextBlock>
-                </Border>
-                <Border
-                    Width="300"
-                    Height="50"
-                    Background="{ThemeResource LocalThemeColor2}">
-                    <TextBlock>{ThemeResource} on a static resource (green)</TextBlock>
-                </Border>
-                <Border
-                    Width="300"
-                    Height="50"
-                    Background="{StaticResource LocalThemeColor2}">
-                    <TextBlock>{StaticResource} on a static resource (green)</TextBlock>
-                </Border>
-            </StackPanel>
-            <StackPanel
-                Grid.Column="2"
-                RequestedTheme="Light"
-                Spacing="10">
-                <Border
-                    Width="300"
-                    Height="50"
-                    Background="{ThemeResource LocalThemeColor}">
-                    <TextBlock>{ThemeResource} on a themed resource</TextBlock>
-                </Border>
-                <Border
-                    Width="300"
-                    Height="50"
-                    Background="{StaticResource LocalThemeColor}">
-                    <TextBlock>{StaticResource} on a themed resource</TextBlock>
-                </Border>
-                <Border
-                    Width="300"
-                    Height="50"
-                    Background="{ThemeResource LocalThemeColor2}">
-                    <TextBlock>{ThemeResource} on a static resource (green)</TextBlock>
-                </Border>
-                <Border
-                    Width="300"
-                    Height="50"
-                    Background="{StaticResource LocalThemeColor2}">
-                    <TextBlock>{StaticResource} on a static resource (green)</TextBlock>
-                </Border>
-            </StackPanel>
-        </Grid>
-        <Image
-            Width="200"
-            Source="ms-appx:///Assets/ThemeTestImage.png"
-            Stretch="UniformToFill" />
-        <TextBlock>Blue=dark, Yellow=Light, Red=High Contrast</TextBlock>
-        <StackPanel Orientation="Horizontal">
-            <Button Click="LocalDefault">Local Default</Button>
-            <Button Click="LocalDark">Local Dark</Button>
-            <Button Click="LocalLight">Local Light</Button>
-            <Button Click="ParentDefault">Parent Default</Button>
-            <Button Click="ParentDark">Parent Dark</Button>
-            <Button Click="ParentLight">Parent Light</Button>
-        </StackPanel>
+	<StackPanel Spacing="10" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<TextBlock>
+			ApplicationTheme=<Run Text="{x:Bind ApplicationTheme}" />
+			<LineBreak />
+			LocalTheme=<Run Text="{Binding LocalTheme}" />
+			<LineBreak />
+			ParentTheme=<Run Text="{Binding ParentTheme}" />
+		</TextBlock>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+			<StackPanel Spacing="10"
+						RequestedTheme="Default">
+				<Border Width="300"
+						Height="50"
+						Background="{ThemeResource LocalThemeColor}">
+					<TextBlock Foreground="{ThemeResource LocalThemeTextColor}">{ThemeResource} on a themed resource</TextBlock>
+				</Border>
+				<Border Width="300"
+						Height="50"
+						Background="{StaticResource LocalThemeColor}">
+					<TextBlock Foreground="{StaticResource LocalThemeTextColor}">{StaticResource} on a themed resource</TextBlock>
+				</Border>
+				<Border Width="300"
+						Height="50"
+						Background="{ThemeResource LocalThemeAccentColor}">
+					<TextBlock Foreground="{ThemeResource LocalThemeAccentTextColor}">{ThemeResource} on an accent resource</TextBlock>
+				</Border>
+				<Border Width="300"
+						Height="50"
+						Background="{StaticResource LocalThemeAccentColor}">
+					<TextBlock Foreground="{StaticResource LocalThemeAccentTextColor}">{StaticResource} on an accent resource</TextBlock>
+				</Border>
+			</StackPanel>
+			<StackPanel Spacing="10"
+						RequestedTheme="Dark"
+						Grid.Column="1">
+				<Border Width="300"
+						Height="50"
+						Background="{ThemeResource LocalThemeColor}">
+					<TextBlock Foreground="{ThemeResource LocalThemeTextColor}">{ThemeResource} on a themed resource</TextBlock>
+				</Border>
+				<Border Width="300"
+						Height="50"
+						Background="{StaticResource LocalThemeColor}">
+					<TextBlock Foreground="{StaticResource LocalThemeTextColor}">{StaticResource} on a themed resource</TextBlock>
+				</Border>
+				<Border Width="300"
+						Height="50"
+						Background="{ThemeResource LocalThemeAccentColor}">
+					<TextBlock Foreground="{ThemeResource LocalThemeAccentTextColor}">{ThemeResource} on an accent resource</TextBlock>
+				</Border>
+				<Border Width="300"
+						Height="50"
+						Background="{StaticResource LocalThemeAccentColor}">
+					<TextBlock Foreground="{StaticResource LocalThemeAccentTextColor}">{StaticResource} on an accent resource</TextBlock>
+				</Border>
+			</StackPanel>
+			<StackPanel Spacing="10"
+						RequestedTheme="Light"
+						Grid.Column="2">
+				<Border Width="300"
+						Height="50"
+						Background="{ThemeResource LocalThemeColor}">
+					<TextBlock Foreground="{ThemeResource LocalThemeTextColor}">{ThemeResource} on a themed resource</TextBlock>
+				</Border>
+				<Border Width="300"
+						Height="50"
+						Background="{StaticResource LocalThemeColor}">
+					<TextBlock Foreground="{StaticResource LocalThemeTextColor}">{StaticResource} on a themed resource</TextBlock>
+				</Border>
+				<Border Width="300"
+						Height="50"
+						Background="{ThemeResource LocalThemeAccentColor}">
+					<TextBlock Foreground="{ThemeResource LocalThemeAccentTextColor}">{ThemeResource} on an accent resource</TextBlock>
+				</Border>
+				<Border Width="300"
+						Height="50"
+						Background="{StaticResource LocalThemeAccentColor}">
+					<TextBlock Foreground="{StaticResource LocalThemeAccentTextColor}">{StaticResource} on an accent resource</TextBlock>
+				</Border>
+			</StackPanel>
+		</Grid>
+		<Border Padding="12"
+				Background="{ThemeResource LocalThemeColor}"
+				BorderBrush="{ThemeResource LocalThemeAccentColor}"
+				BorderThickness="1">
+			<StackPanel Spacing="8">
+				<TextBlock Foreground="{ThemeResource LocalThemeTextColor}"
+						   TextWrapping="Wrap">
+					The HighContrast dictionary uses SystemColor* resources. Text that already uses those system-aware brushes should opt out with HighContrastAdjustment='None'.
+				</TextBlock>
+				<TextBlock Foreground="OrangeRed"
+						   Opacity="0.35"
+						   Text="Auto adjustment example (explicit foreground and non-zero opacity)." />
+				<TextBlock Foreground="{ThemeResource LocalThemeTextColor}"
+						   HighContrastAdjustment="None"
+						   Opacity="0.35"
+						   TextWrapping="Wrap"
+						   Text="System-aware text opts out with HighContrastAdjustment='None'." />
+				<HyperlinkButton Content="SystemColorHotlightColor hyperlink"
+								 Foreground="{ThemeResource LocalHyperlinkColor}"
+								 HighContrastAdjustment="None"
+								 NavigateUri="https://platform.uno" />
+			</StackPanel>
+		</Border>
+		<Image Source="ms-appx:///Assets/ThemeTestImage.png" Width="200" Stretch="UniformToFill"/>
+		<TextBlock TextWrapping="Wrap">Blue and yellow still demonstrate explicit dark/light overrides. High Contrast now uses system colors instead of a hard-coded red brush.</TextBlock>
+		<StackPanel Orientation="Horizontal">
+			<Button Click="LocalDefault">Local Default</Button>
+			<Button Click="LocalDark">Local Dark</Button>
+			<Button Click="LocalLight">Local Light</Button>
+			<Button Click="ParentDefault">Parent Default</Button>
+			<Button Click="ParentDark">Parent Dark</Button>
+			<Button Click="ParentLight">Parent Light</Button>
+		</StackPanel>
 
     </StackPanel>
 </Page>

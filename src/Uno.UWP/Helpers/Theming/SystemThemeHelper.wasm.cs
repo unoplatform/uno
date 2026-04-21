@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Runtime.InteropServices.JavaScript;
@@ -40,9 +40,15 @@ internal static partial class SystemThemeHelper
 		return SystemTheme.Light;
 	}
 
+	static partial void GetIsHighContrastEnabledPlatform(ref bool result)
+	{
+		result = NativeMethods.GetHighContrast();
+	}
+
 	static partial void ObserveThemeChangesPlatform()
 	{
 		NativeMethods.ObserveSystemTheme();
+		NativeMethods.ObserveHighContrast();
 	}
 
 	[JSExport]
@@ -51,4 +57,12 @@ internal static partial class SystemThemeHelper
 		RefreshSystemTheme();
 		return 0;
 	}
+
+	[JSExport]
+	public static int DispatchHighContrastChange()
+	{
+		RefreshHighContrast();
+		return 0;
+	}
 }
+

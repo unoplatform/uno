@@ -4,9 +4,13 @@ using System.Threading.Tasks;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.System.Registry;
+using Windows.Win32.UI.Accessibility;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI.Dispatching;
+using Windows.UI;
+using Windows.Win32.UI.WindowsAndMessaging;
+using Windows.Win32.Graphics.Gdi;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -17,6 +21,7 @@ internal class Win32SystemThemeHelperExtension : ISystemThemeHelperExtension
 	public static Win32SystemThemeHelperExtension Instance { get; } = new();
 
 	public event EventHandler? SystemThemeChanged;
+	public event EventHandler? HighContrastChanged;
 
 	private unsafe Win32SystemThemeHelperExtension()
 	{
@@ -43,7 +48,12 @@ internal class Win32SystemThemeHelperExtension : ISystemThemeHelperExtension
 						return;
 					}
 
-					NativeDispatcher.Main.Enqueue(() => SystemThemeChanged?.Invoke(this, EventArgs.Empty));
+					NativeDispatcher.Main.Enqueue(() =>
+					{
+						SystemThemeChanged?.Invoke(this, EventArgs.Empty);
+						// HC changes also modify registry, so we always check
+						HighContrastChanged?.Invoke(this, EventArgs.Empty);
+					});
 				}
 			}
 			catch (Exception e)
@@ -74,4 +84,85 @@ internal class Win32SystemThemeHelperExtension : ISystemThemeHelperExtension
 
 		return value == 1 ? SystemTheme.Light : SystemTheme.Dark;
 	}
+
+	public unsafe bool IsHighContrastEnabled()
+	{
+		var hc = new HIGHCONTRASTW();
+		hc.cbSize = (uint)sizeof(HIGHCONTRASTW);
+
+		if (PInvoke.SystemParametersInfo(SYSTEM_PARAMETERS_INFO_ACTION.SPI_GETHIGHCONTRAST, hc.cbSize, &hc, 0))
+		{
+			return (hc.dwFlags & HIGHCONTRASTW_FLAGS.HCF_HIGHCONTRASTON) != 0;
+		}
+
+		return false;
+	}
+
+	public unsafe string GetHighContrastSchemeName()
+	{
+		if (!IsHighContrastEnabled())
+		{
+			return "High Contrast Black";
+		}
+
+		// Determine the HC scheme by comparing system window and text colors,
+		// matching the WinUI SystemThemingInterop logic.
+		uint windowColor = PInvoke.GetSysColor(SYS_COLOR_INDEX.COLOR_WINDOW);
+		uint textColor = PInvoke.GetSysColor(SYS_COLOR_INDEX.COLOR_WINDOWTEXT);
+
+		byte windowR = (byte)(windowColor & 0xFF);
+		byte windowG = (byte)((windowColor >> 8) & 0xFF);
+		byte windowB = (byte)((windowColor >> 16) & 0xFF);
+		byte textR = (byte)(textColor & 0xFF);
+		byte textG = (byte)((textColor >> 8) & 0xFF);
+		byte textB = (byte)((textColor >> 16) & 0xFF);
+
+		bool isWhiteBg = windowR == 255 && windowG == 255 && windowB == 255;
+		bool isBlackBg = windowR == 0 && windowG == 0 && windowB == 0;
+		bool isWhiteText = textR == 255 && textG == 255 && textB == 255;
+		bool isBlackText = textR == 0 && textG == 0 && textB == 0;
+
+		if (isWhiteBg && isBlackText)
+		{
+			return "High Contrast White";
+		}
+		else if (isBlackBg && isWhiteText)
+		{
+			return "High Contrast Black";
+		}
+		else
+		{
+			return "High Contrast #1";
+		}
+	}
+
+	public HighContrastSystemColors? GetHighContrastSystemColors()
+	{
+		if (!IsHighContrastEnabled())
+		{
+			return null;
+		}
+
+		return new HighContrastSystemColors(
+			ButtonFaceColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_3DFACE),
+			ButtonTextColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_BTNTEXT),
+			GrayTextColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_GRAYTEXT),
+			HighlightColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_HIGHLIGHT),
+			HighlightTextColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_HIGHLIGHTTEXT),
+			HotlightColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_HOTLIGHT),
+			WindowColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_WINDOW),
+			WindowTextColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_WINDOWTEXT));
+	}
+
+	private static Color GetSystemColor(SYS_COLOR_INDEX colorIndex)
+	{
+		var colorRef = PInvoke.GetSysColor(colorIndex);
+
+		return Color.FromArgb(
+			255,
+			(byte)(colorRef & 0xFF),
+			(byte)((colorRef >> 8) & 0xFF),
+			(byte)((colorRef >> 16) & 0xFF));
+	}
 }
+

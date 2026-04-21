@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Helpers.Theming;
+using Uno.UI;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
 using Uno.UI.Tests.ViewLibrary;
@@ -962,6 +964,127 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			dictionary.ThemeDictionaries.Add("Light", lightDictionary);
 			Assert.IsTrue(dictionary.TryGetValue("TestKey", out testValue));
 			Assert.AreEqual("TestValueFromLightDictionary", testValue);
+		}
+
+		[TestMethod]
+		public void When_HighContrast_State_Changes_Theme_Dictionary_Cache_Is_Refreshed()
+		{
+			UnitTestsApp.App.EnsureApplication();
+
+#if !NETFX_CORE
+			using var _ = ThemeHelper.SetExplicitRequestedTheme(ApplicationTheme.Light);
+#else
+			Assert.AreEqual(ApplicationTheme.Light, Application.Current.RequestedTheme);
+#endif
+
+			var originalHighContrast = Uno.WinRTFeatureConfiguration.Accessibility.HighContrast;
+
+			try
+			{
+				Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = false;
+
+				var dictionary = new ResourceDictionary();
+				var lightDictionary = new ResourceDictionary();
+				lightDictionary.Add("TestKey", "TestValueFromLightDictionary");
+				var highContrastDictionary = new ResourceDictionary();
+				highContrastDictionary.Add("TestKey", "TestValueFromHighContrastDictionary");
+
+				dictionary.ThemeDictionaries.Add("Light", lightDictionary);
+				dictionary.ThemeDictionaries.Add("HighContrast", highContrastDictionary);
+
+				Assert.IsTrue(dictionary.TryGetValue("TestKey", out var testValue));
+				Assert.AreEqual("TestValueFromLightDictionary", testValue);
+
+				Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = true;
+
+				Assert.IsTrue(dictionary.TryGetValue("TestKey", out testValue));
+				Assert.AreEqual("TestValueFromHighContrastDictionary", testValue);
+
+				Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = false;
+
+				Assert.IsTrue(dictionary.TryGetValue("TestKey", out testValue));
+				Assert.AreEqual("TestValueFromLightDictionary", testValue);
+			}
+			finally
+			{
+				Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = originalHighContrast;
+			}
+		}
+
+		[TestMethod]
+		public void When_HighContrast_System_Colors_Change_Theme_Resources_Are_Reapplied()
+		{
+			UnitTestsApp.App.EnsureApplication();
+
+#if !NETFX_CORE
+			using var _ = ThemeHelper.SetExplicitRequestedTheme(ApplicationTheme.Light);
+#else
+			Assert.AreEqual(ApplicationTheme.Light, Application.Current.RequestedTheme);
+#endif
+
+			var originalHighContrast = Uno.WinRTFeatureConfiguration.Accessibility.HighContrast;
+			var originalHighContrastSystemColorsOverride = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride;
+
+			try
+			{
+				Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = true;
+				Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride = null;
+				ApplicationHelper.ReapplyApplicationTheme();
+
+				var dictionary = new ResourceDictionary();
+				var foregroundBrush = (SolidColorBrush)dictionary["ApplicationForegroundThemeBrush"];
+				var baselineWindowTextColor = (Color)dictionary["SystemColorWindowTextColor"];
+				var baselineHighlightColor = (Color)dictionary["SystemColorHighlightColor"];
+
+				Assert.AreEqual(baselineWindowTextColor, foregroundBrush.Color);
+
+				var firstColors = new HighContrastSystemColors(
+					ButtonFaceColor: Color.FromArgb(255, 12, 34, 56),
+					ButtonTextColor: Color.FromArgb(255, 78, 90, 123),
+					GrayTextColor: Color.FromArgb(255, 145, 156, 167),
+					HighlightColor: Color.FromArgb(255, 210, 22, 133),
+					HighlightTextColor: Color.FromArgb(255, 240, 241, 242),
+					HotlightColor: Color.FromArgb(255, 17, 181, 203),
+					WindowColor: Color.FromArgb(255, 11, 12, 13),
+					WindowTextColor: Color.FromArgb(255, 244, 245, 246));
+
+				Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride = firstColors;
+				ApplicationHelper.ReapplyApplicationTheme();
+
+				Assert.AreEqual(firstColors.WindowTextColor, (Color)dictionary["SystemColorWindowTextColor"]);
+				Assert.AreEqual(firstColors.HighlightColor, (Color)dictionary["SystemColorHighlightColor"]);
+				Assert.AreEqual(firstColors.WindowTextColor, foregroundBrush.Color);
+
+				var secondColors = new HighContrastSystemColors(
+					ButtonFaceColor: Color.FromArgb(255, 200, 10, 20),
+					ButtonTextColor: Color.FromArgb(255, 30, 220, 40),
+					GrayTextColor: Color.FromArgb(255, 50, 60, 70),
+					HighlightColor: Color.FromArgb(255, 80, 90, 100),
+					HighlightTextColor: Color.FromArgb(255, 110, 120, 130),
+					HotlightColor: Color.FromArgb(255, 140, 150, 160),
+					WindowColor: Color.FromArgb(255, 170, 180, 190),
+					WindowTextColor: Color.FromArgb(255, 210, 220, 230));
+
+				Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride = secondColors;
+				ApplicationHelper.ReapplyApplicationTheme();
+
+				Assert.AreEqual(secondColors.WindowTextColor, (Color)dictionary["SystemColorWindowTextColor"]);
+				Assert.AreEqual(secondColors.HighlightColor, (Color)dictionary["SystemColorHighlightColor"]);
+				Assert.AreEqual(secondColors.WindowTextColor, foregroundBrush.Color);
+
+				Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride = null;
+				ApplicationHelper.ReapplyApplicationTheme();
+
+				Assert.AreEqual(baselineWindowTextColor, (Color)dictionary["SystemColorWindowTextColor"]);
+				Assert.AreEqual(baselineHighlightColor, (Color)dictionary["SystemColorHighlightColor"]);
+				Assert.AreEqual(baselineWindowTextColor, foregroundBrush.Color);
+			}
+			finally
+			{
+				Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride = originalHighContrastSystemColorsOverride;
+				Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = originalHighContrast;
+				ApplicationHelper.ReapplyApplicationTheme();
+			}
 		}
 
 		[TestMethod]

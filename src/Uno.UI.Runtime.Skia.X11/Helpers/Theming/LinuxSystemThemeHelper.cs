@@ -16,8 +16,11 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 	private const string ObjectPath = "/org/freedesktop/portal/desktop";
 
 	public event EventHandler? SystemThemeChanged;
+	public event EventHandler? HighContrastChanged;
 
 	private SystemTheme _currentTheme = SystemTheme.Light;
+	private bool _currentHighContrast;
+
 	private SystemTheme CurrentTheme
 	{
 		get => _currentTheme;
@@ -38,7 +41,29 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 		}
 	}
 
+	private bool CurrentHighContrast
+	{
+		get => _currentHighContrast;
+		set
+		{
+			if (NativeDispatcher.Main.HasThreadAccess)
+			{
+				if (_currentHighContrast != value)
+				{
+					_currentHighContrast = value;
+					HighContrastChanged?.Invoke(this, EventArgs.Empty);
+				}
+			}
+			else
+			{
+				NativeDispatcher.Main.Enqueue(() => CurrentHighContrast = value);
+			}
+		}
+	}
+
 	public SystemTheme GetSystemTheme() => CurrentTheme;
+	public bool IsHighContrastEnabled() => CurrentHighContrast;
+	public string GetHighContrastSchemeName() => "High Contrast Black";
 
 	public static LinuxSystemThemeHelper Instance { get; } = new();
 
@@ -80,6 +105,30 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 			var result = await settings.ReadOneAsync("org.freedesktop.appearance", "color-scheme");
 			CurrentTheme = result.GetUInt32() == 1 ? SystemTheme.Dark : SystemTheme.Light;
 
+			// Try to read contrast setting (freedesktop portal v2)
+			try
+			{
+				var contrastResult = await settings.ReadOneAsync("org.freedesktop.appearance", "contrast");
+				_currentHighContrast = contrastResult.GetUInt32() == 1;
+			}
+			catch
+			{
+				// Not all desktops support the contrast setting.
+				// Fall back to checking gtk-theme-name for "HighContrast" pattern.
+				try
+				{
+					var themeResult = await settings.ReadOneAsync("org.gnome.desktop.interface", "gtk-theme");
+					var themeName = themeResult.GetString();
+					_currentHighContrast = themeName?.Contains("HighContrast", StringComparison.OrdinalIgnoreCase) == true ||
+											themeName?.Contains("high-contrast", StringComparison.OrdinalIgnoreCase) == true;
+				}
+				catch
+				{
+					// Neither approach worked — HC not available
+					_currentHighContrast = false;
+				}
+			}
+
 			// ignoring IDisposable return value here since we're watching for the lifetime of the app
 			await settings.WatchSettingChangedAsync((exception, tuple) =>
 			{
@@ -96,6 +145,10 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 				{
 					CurrentTheme = tuple.Value.GetUInt32() == 1 ? SystemTheme.Dark : SystemTheme.Light;
 				}
+				else if (tuple is { Namespace: "org.freedesktop.appearance", Key: "contrast" })
+				{
+					CurrentHighContrast = tuple.Value.GetUInt32() == 1;
+				}
 			});
 		}
 		catch (Exception e)
@@ -107,3 +160,4 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 		}
 	}
 }
+

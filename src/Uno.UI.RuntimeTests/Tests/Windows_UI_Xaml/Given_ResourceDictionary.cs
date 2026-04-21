@@ -246,6 +246,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_UpdateThemeBindings_Materializes_Lazy_Theme_Dictionary()
+		{
+			const string TestBrush = nameof(TestBrush);
+			const string TestThemeColor = nameof(TestThemeColor);
+			const string Light = nameof(Light);
+
+			var theme = ResourceDictionary.GetActiveTheme();
+			try
+			{
+				ResourceDictionary.SetActiveTheme(Light);
+
+				var parserContext = new XamlParseContext();
+				var dontcare = new object();
+				var dictionary = new ResourceDictionary()
+				{
+					IsParsing = true,
+					ThemeDictionaries =
+					{
+						[Light] = new WeakResourceInitializer(dontcare, that => new ResourceDictionary
+						{
+							[TestThemeColor] = Colors.Red,
+						}),
+					},
+					[TestBrush] = new WeakResourceInitializer(dontcare, that =>
+					{
+						var brush = new SolidColorBrush();
+						ResourceResolverSingleton.Instance.ApplyResource(brush, SolidColorBrush.ColorProperty, TestThemeColor, true, false, parserContext);
+
+						return brush;
+					})
+				};
+				dictionary.CreationComplete();
+
+				var brush = (SolidColorBrush)dictionary[TestBrush];
+
+				dictionary.UpdateThemeBindings(Microsoft.UI.Xaml.Data.ResourceUpdateReason.ThemeResource);
+
+				Assert.AreEqual(Colors.Red, brush.Color);
+			}
+			finally
+			{
+				ResourceDictionary.SetActiveTheme(theme);
+			}
+		}
+
+		[TestMethod]
 		public void When_Key_Added_Then_NotFound_Cleared()
 		{
 			var resourceDictionary = new ResourceDictionary();

@@ -13,6 +13,11 @@ system_theme_change_fn_ptr uno_get_system_theme_change_callback(void);
 void uno_set_system_theme_change_callback(system_theme_change_fn_ptr p);
 uint32 uno_get_system_theme(void);
 
+typedef void (*high_contrast_change_fn_ptr)(void);
+high_contrast_change_fn_ptr uno_get_high_contrast_change_callback(void);
+void uno_set_high_contrast_change_callback(high_contrast_change_fn_ptr p);
+bool uno_get_high_contrast(void);
+
 bool uno_app_initialize(bool *supportsMetal);
 NSWindow* uno_app_get_main_window(void);
 

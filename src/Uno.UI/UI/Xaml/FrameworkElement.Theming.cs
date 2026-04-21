@@ -220,7 +220,12 @@ public partial class FrameworkElement
 		var oldBase = oldTheme == Theme.None ? appBaseTheme : Theming.GetBaseValue(oldTheme);
 		var newBase = Theming.GetBaseValue(theme);
 
-		bool themeChanged = oldBase != newBase || forceRefresh;
+		// Check for HC state transitions
+		bool isHighContrast = (theme & Theme.HighContrastMask) != Theme.HighContrastNone;
+		bool wasHighContrast = (oldTheme & Theme.HighContrastMask) != Theme.HighContrastNone;
+		bool hcChanged = isHighContrast != wasHighContrast;
+
+		bool themeChanged = oldBase != newBase || hcChanged || forceRefresh;
 
 		// 2. PUSH this element's theme to global context
 		// The push/pop is still needed because ResourceDictionary.GetActiveThemeDictionary()
@@ -230,14 +235,18 @@ public partial class FrameworkElement
 		var currentActiveTheme = ResourceDictionary.GetActiveTheme();
 		string themeKey;
 		bool needsPush;
-		if (newBase == Theme.None)
+		if (newBase == Theme.None && !isHighContrast)
 		{
 			themeKey = currentActiveTheme.Key;
 			needsPush = false;
 		}
 		else
 		{
-			themeKey = newBase == Theme.Light ? "Light" : "Dark";
+			// When HC is active, push "HighContrast" so HC dictionaries are resolved.
+			// Otherwise push the base theme key.
+			themeKey = isHighContrast
+				? "HighContrast"
+				: (newBase == Theme.Light ? "Light" : "Dark");
 			needsPush = !themeKey.Equals(currentActiveTheme.Key);
 		}
 
@@ -441,7 +450,10 @@ public partial class FrameworkElement
 			}
 
 			// Resolve the theme's default text foreground brush
-			var themeKey = Theming.GetBaseValue(theme) == Theme.Light ? "Light" : "Dark";
+			bool isHighContrast = (theme & Theme.HighContrastMask) != Theme.HighContrastNone;
+			var themeKey = isHighContrast
+				? "HighContrast"
+				: (Theming.GetBaseValue(theme) == Theme.Light ? "Light" : "Dark");
 			ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
 			try
 			{
