@@ -69,7 +69,7 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 | `UniformGrid` | Community Toolkit `UniformGrid` | Not in WinUI by default; see package guidance below. |
 | `DockPanel` | Community Toolkit `DockPanel` | Not in WinUI by default; see package guidance below. |
 | `GroupBox` | `Expander` or a custom `UserControl`/templated `ContentControl` | No built-in GroupBox in WinUI; use a custom header + border presentation when needed |
-| `Label` | `TextBlock` | Use `TextBlock` + `AccessKey` property |
+| `Label` | `TextBlock` | Use `TextBlock` for the visual label; for WPF `Label.Target`-style association, use `AutomationProperties.LabeledBy` on the labeled control. `AccessKey` can be added separately for keyboard access. |
 | `MediaElement` | `MediaPlayerElement` | Different API surface |
 | `Window` (standalone) | `Window` | Window host; content is typically a `Page`/root `UIElement`. Use `ContentDialog` for modal windows. |
 | `GridSplitter` | Community Toolkit `GridSplitter` | See package guidance below. |
