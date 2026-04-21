@@ -22,7 +22,7 @@ using Window = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCorePointerInputSource
+internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCorePointerInputSource, IAccessibilityOwner
 {
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly MacOSWindowNative _nativeWindow;
@@ -201,6 +201,16 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	}
 
 	public UIElement? RootElement => _winUIWindow.RootElement;
+
+	// PR 1 compatibility bridge: macOS still uses the MacOSAccessibility singleton
+	// and only the primary/initial window has an active accessibility tree. The router
+	// resolves this primary window to the singleton; secondary windows return null and
+	// the router will either find the active owner (primary) as fallback or drop the
+	// callback with a diagnostic trace. Full per-window support lands in PR 2.
+	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility =>
+		ReferenceEquals(MacSkiaHost.Current.InitialWindow, _nativeWindow)
+			? MacOSAccessibility.Instance
+			: null;
 
 	void IXamlRootHost.InvalidateRender() => NativeUno.uno_window_invalidate(_nativeWindow.Handle);
 

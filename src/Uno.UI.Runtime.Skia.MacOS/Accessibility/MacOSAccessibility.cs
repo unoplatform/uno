@@ -47,7 +47,16 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 			this.Log().Trace($"Initializing {nameof(MacOSAccessibility)}");
 		}
 
-		RegisterCallbacks();
+		// Router owns the framework's single-slot registrations and fans out to
+		// this instance via the per-window IAccessibilityOwner returned by the
+		// primary window's host. Multi-window per-instance construction lands in PR 2.
+	}
+
+	protected override void DisposeCore()
+	{
+		// PR 1 keeps macOS on the singleton model (primary window only). The full
+		// per-window native context teardown lands in PR 2; for now disposal is a
+		// no-op so the base-class lifecycle contract still holds.
 	}
 
 	internal static unsafe void Register()
