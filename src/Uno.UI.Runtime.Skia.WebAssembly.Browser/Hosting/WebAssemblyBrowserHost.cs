@@ -63,6 +63,7 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new BrowserWebViewProvider(o));
 		ApiExtensibility.Register(typeof(IDragDropExtension), _ => BrowserDragDropExtension.Instance);
 		ApiExtensibility.Register(typeof(IFontFallbackService), _ => NotoFontFallbackService.Instance);
+		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IInputPaneExtension), _ => new BrowserInputPaneExtension());
 
 		await WebAssemblyWindowWrapper.Initialize();
 

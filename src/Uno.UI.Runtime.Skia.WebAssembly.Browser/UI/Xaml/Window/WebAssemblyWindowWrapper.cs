@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls;
 using FontFamilyHelper = Microsoft.UI.Xaml.FontFamilyHelper;
 using Windows.Graphics;
+using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.Dispatching;
@@ -91,6 +92,18 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		else
 		{
 			Console.WriteLine($"RaiseNativeSizeChanged target for {instance} does not exist");
+		}
+	}
+
+	[JSExport]
+	private static void OnInputPaneChanged([JSMarshalAs<JSType.Any>] object instance, double x, double y, double width, double height)
+	{
+		if (instance is WebAssemblyWindowWrapper windowWrapper)
+		{
+			var inputPane = InputPane.GetForCurrentView();
+			inputPane.OccludedRect = height > 0
+				? new Rect(x, y, width, height)
+				: new Rect(0, 0, 0, 0);
 		}
 	}
 
