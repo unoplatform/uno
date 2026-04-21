@@ -46,8 +46,8 @@ public class Given_McpSetupOrchestrator
 				JsonRootKey: "mcpServers",
 				UrlKey: "serverUrl"),
 			["junie-rider"] = new(
-				ConfigPaths: ["{workspace}/.idea/mcpServers.json"],
-				WriteTarget: "{workspace}/.idea/mcpServers.json",
+				ConfigPaths: ["{workspace}/.junie/mcp/mcp.json", "{home}/.junie/mcp/mcp.json"],
+				WriteTarget: "{workspace}/.junie/mcp/mcp.json",
 				JsonRootKey: "mcpServers"),
 			["opencode"] = new(
 				ConfigPaths: ["{workspace}/opencode.json", "{workspace}/opencode.jsonc"],
