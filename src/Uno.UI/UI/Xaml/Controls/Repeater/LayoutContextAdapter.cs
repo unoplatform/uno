@@ -64,6 +64,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
+		protected override Rect VisibleRectCore() => new Rect(0, 0, double.PositiveInfinity, double.PositiveInfinity);
+
 		protected override Rect RealizationRectCore() => new Rect(0, 0, double.PositiveInfinity, double.PositiveInfinity);
 
 		protected override int RecommendedAnchorIndexCore => -1;
