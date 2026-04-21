@@ -355,12 +355,31 @@ void uno_set_window_screen_change_callbacks(window_did_change_screen_fn_ptr scre
 
 void uno_window_notify_screen_change(NSWindow *window);
 
+// IME (Input Method Editor) callbacks for NSTextInputClient protocol support
+typedef void (*ime_insert_text_callback_fn_ptr)(UNOWindow* window, const unichar* text, int32_t length);
+typedef void (*ime_set_marked_text_callback_fn_ptr)(UNOWindow* window, const unichar* text, int32_t length, int32_t selectedStart, int32_t selectedLength);
+typedef void (*ime_unmark_text_callback_fn_ptr)(UNOWindow* window);
+typedef void (*ime_get_caret_rect_callback_fn_ptr)(UNOWindow* window, double* x, double* y, double* width, double* height);
 
-@interface UNOMetalFlippedView : MTKView
+void uno_set_ime_callbacks(ime_insert_text_callback_fn_ptr insertText,
+                           ime_set_marked_text_callback_fn_ptr setMarkedText,
+                           ime_unmark_text_callback_fn_ptr unmarkText,
+                           ime_get_caret_rect_callback_fn_ptr getCaretRect);
+void uno_set_ime_active(UNOWindow* window, bool active);
+
+ime_insert_text_callback_fn_ptr uno_get_ime_insert_text_callback(void);
+ime_set_marked_text_callback_fn_ptr uno_get_ime_set_marked_text_callback(void);
+ime_unmark_text_callback_fn_ptr uno_get_ime_unmark_text_callback(void);
+ime_get_caret_rect_callback_fn_ptr uno_get_ime_get_caret_rect_callback(void);
+
+@interface UNOMetalFlippedView : MTKView <NSTextInputClient>
 
 @property(getter=isFlipped, readonly) BOOL flipped;
 
 @property CAShapeLayer *clipLayer;
+
+@property (nonatomic) BOOL imeActive;
+@property (nonatomic, readonly) BOOL keyEventHandledByIME;
 
 @end
 
