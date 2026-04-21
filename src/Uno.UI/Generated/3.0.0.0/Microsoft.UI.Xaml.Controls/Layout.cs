@@ -8,16 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class Layout : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.IndexBasedLayoutOrientation IndexBasedLayoutOrientation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IndexBasedLayoutOrientation Layout.IndexBasedLayoutOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IndexBasedLayoutOrientation%20Layout.IndexBasedLayoutOrientation");
-			}
-		}
-#endif
+		// Skipping already declared property IndexBasedLayoutOrientation
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.InitializeForContext(Microsoft.UI.Xaml.Controls.LayoutContext)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.UninitializeForContext(Microsoft.UI.Xaml.Controls.LayoutContext)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.Measure(Microsoft.UI.Xaml.Controls.LayoutContext, Windows.Foundation.Size)
@@ -28,13 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.MeasureInvalidated.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.InvalidateMeasure()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.InvalidateArrange()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected void SetIndexBasedLayoutOrientation(global::Microsoft.UI.Xaml.Controls.IndexBasedLayoutOrientation orientation)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Layout", "void Layout.SetIndexBasedLayoutOrientation(IndexBasedLayoutOrientation orientation)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.SetIndexBasedLayoutOrientation(Microsoft.UI.Xaml.Controls.IndexBasedLayoutOrientation)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.CreateDefaultItemTransitionProvider()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.IndexBasedLayoutOrientation.get
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Layout.ArrangeInvalidated
