@@ -303,7 +303,7 @@ public partial class Given_VisualStateManager
 
 		var narrowState = new VisualState { Name = "NarrowState" };
 		narrowState.StateTriggers.Add(narrowTrigger);
-		narrowState.Setters.Add(new Setter { Target = new TargetPropertyPath(border, new PropertyPath("Opacity")), Value = 1.0 });
+		narrowState.Setters.Add(new Setter { Target = new TargetPropertyPath(border, new PropertyPath("Opacity")), Value = 0.5 });
 
 		var wideState = new VisualState { Name = "WideState" };
 		wideState.StateTriggers.Add(wideTrigger);
@@ -343,25 +343,29 @@ public partial class Given_VisualStateManager
 
 		Assert.AreEqual("NarrowState", group.CurrentState?.Name, "Should start in NarrowState");
 		Assert.IsFalse(transitionCompleted, "Transition should not run on initial evaluation");
+		Assert.AreEqual(0.5, border.Opacity, 0.01, "NarrowState setter should apply on initial evaluation");
 
 		// Trigger the transition
 		wideTrigger.MinWindowWidth = 1;
 
 		// During the transition (well before the 400ms duration completes), the animated Opacity
-		// should be heading toward 0.2 — i.e. NOT equal to the setter's final value of 1.0.
-		await TestServices.WindowHelper.WaitFor(() => border.Opacity < 0.95, timeoutMS: 1000);
+		// should be heading toward 0.2 — i.e. deviating below NarrowState's setter value (0.5).
+		await TestServices.WindowHelper.WaitFor(() => border.Opacity < 0.45, timeoutMS: 1000);
 		Assert.IsTrue(
-			border.Opacity < 0.95,
+			border.Opacity < 0.45,
 			$"Opacity should be animating toward 0.2 during the transition, but was {border.Opacity}. " +
 			"This indicates the VisualTransition storyboard is not running.");
 
-		// After the transition completes, the setter should have been applied.
+		// After the transition completes, the WideState setter should have been applied.
+		// The setter value (1.0) is distinct from both the pre-transition value (0.5)
+		// and the transition animation's target (0.2), so this assertion genuinely validates
+		// that the target state's setters run after the transition.
 		await TestServices.WindowHelper.WaitFor(() => transitionCompleted, timeoutMS: 2000);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.AreEqual("WideState", group.CurrentState?.Name);
 		Assert.IsTrue(transitionCompleted, "VisualTransition storyboard should have completed");
-		Assert.AreEqual(1.0, border.Opacity, 0.01, "Setter's final Opacity value should be applied after the transition");
+		Assert.AreEqual(1.0, border.Opacity, 0.01, "WideState setter should be applied after the transition");
 	}
 
 	[TestMethod]
@@ -416,12 +420,31 @@ public partial class Given_VisualStateManager
 		await UITestHelper.Load(grid);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		// Shortly after load (well before the 2s transition would complete), Opacity should be
-		// the setter value (1.0), NOT animating toward 0.1. If it animated, Opacity would be < 1.0.
-		await Task.Delay(200);
 		Assert.AreEqual("NarrowState", group.CurrentState?.Name);
-		Assert.AreEqual(1.0, border.Opacity, 0.01,
-			$"Opacity should be the setter's value (1.0) on initial evaluation, not animating. Actual: {border.Opacity}");
+
+		// Pump the dispatcher for a short period and assert the property never starts
+		// animating away from the state's setter value during initial evaluation.
+		for (var i = 0; i < 5; i++)
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(1.0, border.Opacity, 0.01,
+				$"Opacity should remain the setter's value (1.0) on initial evaluation, not animating. Actual: {border.Opacity}");
+		}
+
+		// Also poll for any deviation from the setter value within a larger observation window.
+		// WaitFor throws AssertFailedException("Timed out ...") when the condition never becomes true,
+		// which is what we want here — the condition (opacity deviated) should never become true.
+		try
+		{
+			await TestServices.WindowHelper.WaitFor(() => border.Opacity < 0.99, timeoutMS: 500);
+			Assert.Fail(
+				$"Transition storyboard should not start on initial evaluation. Opacity deviated from the setter value and became {border.Opacity}.");
+		}
+		catch (AssertFailedException ex) when (ex.Message.Contains("Timed out"))
+		{
+			// Expected: opacity never deviated from the setter value within the observation window.
+		}
+
 		Assert.IsFalse(transitionCompleted,
 			"Transition storyboard should not have been started on initial evaluation.");
 	}
