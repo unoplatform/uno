@@ -1,0 +1,34 @@
+<Page
+	x:Class="UITests.Windows_UI_ViewManagement.SoftInputTests_InScrollViewer"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+	mc:Ignorable="d">
+
+	<!-- Test: TextBox at bottom of tall content inside a ScrollViewer.
+		 Expected: ScrollViewer scrolls to bring TextBox into visible area above keyboard. -->
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<StackPanel Grid.Row="0" Padding="12" Spacing="4">
+			<TextBlock Text="Soft Input: Inside ScrollViewer" FontSize="18" FontWeight="Bold" />
+			<TextBlock Text="Scroll down and tap the TextBox. When the keyboard appears, the ScrollViewer should scroll to keep it visible." TextWrapping="Wrap" />
+			<TextBlock x:Name="StatusText" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+		</StackPanel>
+
+		<ScrollViewer Grid.Row="1" Padding="12">
+			<StackPanel Spacing="8">
+				<Rectangle Height="800" Fill="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
+				<TextBlock Text="Almost there... keep scrolling" HorizontalAlignment="Center" />
+				<Rectangle Height="800" Fill="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" />
+				<TextBox PlaceholderText="Tap here to open keyboard..." />
+				<Rectangle Height="200" Fill="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
+			</StackPanel>
+		</ScrollViewer>
+	</Grid>
+</Page>
