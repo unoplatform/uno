@@ -171,8 +171,13 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		return false;
 	}
 
-	protected override void OnPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat node)
+	protected override void OnPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat? node)
 	{
+		if (node is null)
+		{
+			return;
+		}
+
 		// TODO: What about non-UIElements? e.g, Hyperlinks?
 		// In WinUI, `TextElement`s can have automation peers. We need to support that in Uno.
 		if (_idToElement.TryGetValue(virtualViewId, out var element) &&
@@ -215,7 +220,13 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				node.ContentDescription = peer.GetName() ?? "";
 				node.Password = peer.IsPassword();
 				node.Enabled = peer.IsEnabled();
-				node.IsChecked = peer is IToggleProvider toggleProvider && toggleProvider.ToggleState == ToggleState.On;
+				// 0 = CHECKED_STATE_FALSE, 1 = CHECKED_STATE_TRUE, 2 = CHECKED_STATE_PARTIAL (AndroidX Core 1.17+)
+				node.Checked = peer switch
+				{
+					IToggleProvider { ToggleState: ToggleState.On } => 1,
+					IToggleProvider { ToggleState: ToggleState.Indeterminate } => 2,
+					_ => 0,
+				};
 				node.Checkable = peer is IToggleProvider;
 				node.Clickable = isClickable;
 				node.Editable = automationControlType == AutomationControlType.Edit;
@@ -223,7 +234,9 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				if (peer.GetLabeledBy() is FrameworkElementAutomationPeer labeledByPeer &&
 					_cwtElementToId.TryGetValue(labeledByPeer.Owner, out var labeledByVirtualId))
 				{
+#pragma warning disable CS0618 // SetLabeledBy is deprecated; the non-deprecated AddLabeledBy only works on API 36+, and virtual-view labeling via ExploreByTouchHelper has no equivalent list-based API
 					node.SetLabeledBy(_host, (int)labeledByVirtualId);
+#pragma warning restore CS0618
 				}
 
 				node.Heading = peer.GetHeadingLevel() != AutomationHeadingLevel.None;
