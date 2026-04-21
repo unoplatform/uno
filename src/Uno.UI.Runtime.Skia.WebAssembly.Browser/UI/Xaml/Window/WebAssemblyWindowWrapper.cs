@@ -100,7 +100,11 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 	{
 		if (instance is WebAssemblyWindowWrapper windowWrapper)
 		{
-			var inputPane = InputPane.GetForCurrentView();
+			var xamlRoot = windowWrapper.XamlRoot;
+			var inputPane = xamlRoot is not null
+				? InputPane.GetForXamlRoot(xamlRoot)
+				: InputPane.GetForCurrentView();
+
 			inputPane.OccludedRect = height > 0
 				? new Rect(x, y, width, height)
 				: new Rect(0, 0, 0, 0);

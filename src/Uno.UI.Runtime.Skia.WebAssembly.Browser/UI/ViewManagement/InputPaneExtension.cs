@@ -1,10 +1,11 @@
 #nullable enable
 
+using System.Runtime.InteropServices.JavaScript;
 using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
-internal class BrowserInputPaneExtension : IInputPaneExtension
+internal partial class BrowserInputPaneExtension : IInputPaneExtension
 {
 	public bool TryShow()
 	{
@@ -26,7 +27,7 @@ internal class BrowserInputPaneExtension : IInputPaneExtension
 
 	private static partial class NativeMethods
 	{
-		[System.Runtime.InteropServices.JavaScript.JSImport("globalThis.Uno.UI.Runtime.Skia.InputPaneExtension.blurActiveElement")]
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.InputPaneExtension.blurActiveElement")]
 		public static partial bool BlurActiveElement();
 	}
 }
