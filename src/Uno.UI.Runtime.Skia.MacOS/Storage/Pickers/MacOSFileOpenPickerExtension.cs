@@ -47,33 +47,31 @@ internal class MacOSFileOpenPickerExtension : IFileOpenPickerExtension
 
 	public async Task<IReadOnlyList<StorageFile>> PickMultipleFilesAsync(CancellationToken token)
 	{
-		IntPtr array;
-		if (NativeDispatcher.Main.HasThreadAccess)
+		// Always dispatch to the main thread via Enqueue (never call synchronously, even
+		// when already on the main thread). NSOpenPanel.runModal pumps the Cocoa event
+		// loop, and running it reentrantly from inside an in-flight pointer/click handler
+		// crashes the managed InputManager ("A pointer is already being processed") and
+		// can leave the returned char** pointer in a corrupt state, triggering an
+		// AccessViolationException when the C# side walks the array.
+		var tcs = new TaskCompletionSource<IntPtr>(TaskCreationOptions.RunContinuationsAsynchronously);
+		using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
+		NativeDispatcher.Main.Enqueue(() =>
 		{
-			array = NativeUno.uno_pick_multiple_files(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length);
-		}
-		else
-		{
-			var tcs = new TaskCompletionSource<IntPtr>(TaskCreationOptions.RunContinuationsAsynchronously);
-			using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
-			NativeDispatcher.Main.Enqueue(() =>
+			if (token.IsCancellationRequested)
 			{
-				if (token.IsCancellationRequested)
-				{
-					tcs.TrySetCanceled(token);
-					return;
-				}
-				try
-				{
-					tcs.TrySetResult(NativeUno.uno_pick_multiple_files(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length));
-				}
-				catch (Exception ex)
-				{
-					tcs.TrySetException(ex);
-				}
-			});
-			array = await tcs.Task;
-		}
+				tcs.TrySetCanceled(token);
+				return;
+			}
+			try
+			{
+				tcs.TrySetResult(NativeUno.uno_pick_multiple_files(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length));
+			}
+			catch (Exception ex)
+			{
+				tcs.TrySetException(ex);
+			}
+		});
+		var array = await tcs.Task;
 
 		if (array == IntPtr.Zero)
 		{
@@ -97,33 +95,26 @@ internal class MacOSFileOpenPickerExtension : IFileOpenPickerExtension
 
 	public async Task<StorageFile?> PickSingleFileAsync(CancellationToken token)
 	{
-		string? file;
-		if (NativeDispatcher.Main.HasThreadAccess)
+		// See PickMultipleFilesAsync for why we always Enqueue instead of branching on HasThreadAccess.
+		var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+		using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
+		NativeDispatcher.Main.Enqueue(() =>
 		{
-			file = NativeUno.uno_pick_single_file(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length);
-		}
-		else
-		{
-			var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
-			using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
-			NativeDispatcher.Main.Enqueue(() =>
+			if (token.IsCancellationRequested)
 			{
-				if (token.IsCancellationRequested)
-				{
-					tcs.TrySetCanceled(token);
-					return;
-				}
-				try
-				{
-					tcs.TrySetResult(NativeUno.uno_pick_single_file(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length));
-				}
-				catch (Exception ex)
-				{
-					tcs.TrySetException(ex);
-				}
-			});
-			file = await tcs.Task;
-		}
+				tcs.TrySetCanceled(token);
+				return;
+			}
+			try
+			{
+				tcs.TrySetResult(NativeUno.uno_pick_single_file(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length));
+			}
+			catch (Exception ex)
+			{
+				tcs.TrySetException(ex);
+			}
+		});
+		var file = await tcs.Task;
 
 		return file is null ? null : await StorageFile.GetFileFromPathAsync(file);
 	}
