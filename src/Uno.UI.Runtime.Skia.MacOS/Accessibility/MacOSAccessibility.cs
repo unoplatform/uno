@@ -1,13 +1,12 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Threading;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -15,63 +14,59 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
-using Uno.Extensions;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
 /// <summary>
-/// Manages the macOS VoiceOver accessibility tree for Skia-rendered Uno applications.
-/// Creates a parallel native accessibility tree (UNOAccessibilityElement objects) that
-/// mirrors the XAML visual tree.
+/// Manages the macOS VoiceOver accessibility tree for a single Skia-rendered
+/// Uno top-level window. Creates a parallel native accessibility tree
+/// (UNOAccessibilityElement objects inside a per-window UNOAccessibilityContext)
+/// that mirrors the XAML visual tree.
 ///
 /// Uses the shared <see cref="AriaMapper"/> to resolve attributes from
 /// automation peers, with macOS-specific attribute resolution for VoiceOver.
 /// </summary>
-internal class MacOSAccessibility : SkiaAccessibilityBase
+internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 {
-	private static MacOSAccessibility? _instance;
 	private nint _windowHandle;
 	private bool _accessibilityTreeInitialized;
 	private bool _isCreatingAOM;
 	private nint _activeModalHandle;
 	private nint _modalTriggerHandle;
 
-	internal static MacOSAccessibility Instance => _instance ??= new MacOSAccessibility();
-
-	private MacOSAccessibility()
+	/// <summary>
+	/// Registers the process-wide native callbacks. Must be called once from
+	/// <c>MacSkiaHost</c> static construction before any window is created.
+	/// </summary>
+	internal static unsafe void RegisterCallbacks()
 	{
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"Initializing {nameof(MacOSAccessibility)}");
-		}
-
-		// Router owns the framework's single-slot registrations and fans out to
-		// this instance via the per-window IAccessibilityOwner returned by the
-		// primary window's host. Multi-window per-instance construction lands in PR 2.
-	}
-
-	protected override void DisposeCore()
-	{
-		// PR 1 keeps macOS on the singleton model (primary window only). The full
-		// per-window native context teardown lands in PR 2; for now disposal is a
-		// no-op so the base-class lifecycle contract still holds.
-	}
-
-	internal static unsafe void Register()
-	{
-		_ = Instance;
-
 		NativeUno.uno_accessibility_set_callbacks(&OnNativeInvoke, &OnNativeFocus);
 		NativeUno.uno_accessibility_set_range_callbacks(&OnNativeIncrement, &OnNativeDecrement);
 		NativeUno.uno_accessibility_set_expand_collapse_callback(&OnNativeExpandCollapse);
 		NativeUno.uno_accessibility_set_value_callback(&OnNativeSetValue);
-
-		MacOSWindowNative.NativeWindowReady += Instance.OnNativeWindowReady;
 	}
 
-	// Called from native code when VoiceOver triggers a press action on an element
+	internal MacOSAccessibility(nint windowHandle)
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"Initializing {nameof(MacOSAccessibility)} for window 0x{windowHandle:X}");
+		}
+
+		_windowHandle = windowHandle;
+		NativeUno.uno_accessibility_init_context(_windowHandle);
+	}
+
+	internal nint WindowHandle => _windowHandle;
+
+	public override bool IsAccessibilityEnabled => !IsDisposed && _windowHandle != nint.Zero;
+
+	// Called from native code when VoiceOver triggers a press action on an element.
+	// The GCHandle target carries the UIElement directly so there's no per-instance
+	// ambiguity — the handle intptr is unique across all open windows.
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void OnNativeInvoke(nint handle)
 	{
@@ -84,9 +79,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		{
 			if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 			{
-				// WinUI 3 pattern implementations (e.g., ButtonAutomationPeer::InvokeImpl)
-				// check IsEnabled and return UIA_E_ELEMENTNOTENABLED if disabled.
-				// Guard here as well so all patterns are protected uniformly.
 				if (owner is Control { IsEnabled: false })
 				{
 					return;
@@ -124,7 +116,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		}
 	}
 
-	// Called from native code when VoiceOver sets focus on an element
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void OnNativeFocus(nint handle)
 	{
@@ -233,7 +224,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		}
 	}
 
-	// Called from native code when VoiceOver sets a text value on an element
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void OnNativeSetValue(nint handle, nint valuePtr)
 	{
@@ -262,61 +252,20 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		}
 	}
 
-	public override bool IsAccessibilityEnabled => _windowHandle != nint.Zero;
-
-	internal void Initialize(nint windowHandle)
+	/// <summary>
+	/// Builds the initial accessibility tree for this window. Called by the
+	/// host wrapper after the root <see cref="UIElement"/> is set.
+	/// </summary>
+	internal void BuildTree(UIElement rootElement)
 	{
-		_windowHandle = windowHandle;
-		// Reset _accessibilityTreeInitialized so TryInitializeAccessibilityTree
-		// will rebuild the tree for the new window. Without this, the native
-		// g_elements dict is cleared by uno_accessibility_init but the managed
-		// side thinks the tree is already initialized and never repopulates it.
-		_accessibilityTreeInitialized = false;
-		NativeUno.uno_accessibility_init(windowHandle);
-
-		if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"MacOSAccessibility initialized for window 0x{windowHandle:X}");
-		}
-	}
-
-	private void OnNativeWindowReady(object? sender, MacOSWindowNative nativeWindow)
-	{
-		// Only initialize the accessibility tree for the window that owns the current
-		// accessibility singleton handle. Secondary windows do not call Initialize() so
-		// their handle will never match _windowHandle, and we skip them safely.
-		if (nativeWindow.Handle != _windowHandle)
-		{
-			return;
-		}
-
-		var capturedHandle = _windowHandle;
-		_ = nativeWindow.Host.RootElement?.Dispatcher.RunAsync(
-			Windows.UI.Core.CoreDispatcherPriority.Low,
-			() =>
-			{
-				// Bail out if the window handle changed while we were queued
-				// (e.g. another window was created and reinitialized the singleton).
-				if (_windowHandle != capturedHandle)
-				{
-					return;
-				}
-
-				TryInitializeAccessibilityTree(nativeWindow.Host.RootElement);
-			});
-	}
-
-	private void TryInitializeAccessibilityTree(UIElement? rootElement)
-	{
-		if (_accessibilityTreeInitialized || !IsAccessibilityEnabled || rootElement is null)
+		if (_accessibilityTreeInitialized || !IsAccessibilityEnabled)
 		{
 			return;
 		}
 
 		_accessibilityTreeInitialized = true;
 		InitializeAccessibilityTree(rootElement);
-
-		NativeUno.uno_accessibility_post_layout_changed();
+		NativeUno.uno_accessibility_post_layout_changed(_windowHandle);
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -324,7 +273,7 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		}
 	}
 
-	internal void InitializeAccessibilityTree(UIElement rootElement)
+	private void InitializeAccessibilityTree(UIElement rootElement)
 	{
 		if (!IsAccessibilityEnabled)
 		{
@@ -343,13 +292,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		Control.OnIsFocusableChangedCallback = UpdateIsFocusable;
 	}
 
-	/// <summary>
-	/// Gets the absolute position of a visual within the window by walking up
-	/// the parent chain and accumulating all local offsets. This is necessary
-	/// because TotalMatrix may be stale when called from property-change callbacks
-	/// (the dirty flag hasn't been set yet at that point).
-	/// VoiceOver needs absolute window coordinates for the accessibility frame.
-	/// </summary>
 	private static Vector3 GetAbsoluteOffset(Visual visual)
 	{
 		var x = 0f;
@@ -369,11 +311,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 	{
 		if (_accessibilityTreeInitialized && !_isCreatingAOM)
 		{
-			// Only process elements that are part of the live visual tree.
-			// ExternalOnChildAdded fires for ANY AddChild call, including during
-			// element construction before the parent is in the visual tree.
-			// Adding elements prematurely corrupts the native accessibility tree
-			// (e.g., incorrectly overwriting g_rootElement).
 			if (!parent.IsActiveInVisualTree)
 			{
 				return;
@@ -381,8 +318,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 
 			try
 			{
-				// Skip elements with AccessibilityView=Raw, but process their children
-				// under the Raw element's parent to maintain the semantic tree.
 				var accessibilityView = AutomationProperties.GetAccessibilityView(child);
 				if (accessibilityView == AccessibilityView.Raw)
 				{
@@ -414,9 +349,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 	{
 		if (_accessibilityTreeInitialized && !_isCreatingAOM)
 		{
-			// If the child had AccessibilityView=Raw when added, it was skipped
-			// in the native tree but its children were reparented to the semantic
-			// parent. Remove those reparented children from the native tree.
 			var accessibilityView = AutomationProperties.GetAccessibilityView(child);
 			if (accessibilityView == AccessibilityView.Raw)
 			{
@@ -427,11 +359,7 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 				return;
 			}
 
-			// Always attempt removal — the native side handles missing elements
-			// gracefully via dictionary lookup. Skipping removal when the parent
-			// is no longer in the visual tree would leak elements because during
-			// teardown, parents are removed before children.
-			NativeUno.uno_accessibility_remove_element(parent.Visual.Handle, child.Visual.Handle);
+			NativeUno.uno_accessibility_remove_element(_windowHandle, parent.Visual.Handle, child.Visual.Handle);
 		}
 	}
 
@@ -470,10 +398,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 			IsAccessibilityFocusable(control, isFocusable));
 	}
 
-
-	/// <summary>
-	/// Creates the Accessibility Object Model (AOM) from the root element.
-	/// </summary>
 	internal void CreateAOM(UIElement rootElement)
 	{
 		Debug.Assert(IsAccessibilityEnabled);
@@ -485,6 +409,7 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		var label = peer != null ? ResolveLabel(peer) : null;
 
 		NativeUno.uno_accessibility_add_element(
+			_windowHandle,
 			nint.Zero, rootHandle, -1,
 			rootElement.Visual.Size.X, rootElement.Visual.Size.Y,
 			totalOffset.X, totalOffset.Y,
@@ -507,10 +432,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 	{
 		Debug.Assert(IsAccessibilityEnabled);
 
-		// Skip elements with AccessibilityView=Raw - they should be completely
-		// hidden from the accessibility tree (VoiceOver skips them).
-		// Their children are still added under the Raw element's parent,
-		// preserving the semantic tree structure.
 		var accessibilityView = AutomationProperties.GetAccessibilityView(child);
 		if (accessibilityView == AccessibilityView.Raw)
 		{
@@ -529,9 +450,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		}
 	}
 
-	/// <summary>
-	/// Adds a single accessibility element to the native macOS accessibility tree.
-	/// </summary>
 	private void AddAccessibilityElement(nint parentHandle, UIElement child, int? index)
 	{
 		var totalOffset = GetAbsoluteOffset(child.Visual);
@@ -555,8 +473,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 				}
 			}
 
-			// Log when a peer has no role — this causes the native layer to fall back
-			// to NSAccessibilityGroupRole which makes VoiceOver announce "group"
 			if (role == null && this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug($"[A11y] No role resolved for {child.GetType().Name} handle={child.Visual.Handle} peer={peer.GetType().Name} — will default to group in native layer");
@@ -576,6 +492,7 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		}
 
 		NativeUno.uno_accessibility_add_element(
+			_windowHandle,
 			parentHandle, child.Visual.Handle,
 			index ?? -1,
 			child.Visual.Size.X, child.Visual.Size.Y,
@@ -604,7 +521,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 			NativeUno.uno_accessibility_update_enabled(child.Visual.Handle, control.IsEnabled);
 		}
 
-		// Fire AXLiveRegionCreated for elements with a live setting
 		if (peer != null)
 		{
 			var liveSetting = AutomationProperties.GetLiveSetting(child);
@@ -615,24 +531,15 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		}
 	}
 
-	/// <summary>
-	/// Applies accessibility attributes to the native element using the shared
-	/// AriaAttributes from <see cref="AriaMapper"/>. All semantic resolution is
-	/// centralized in the shared mapper; this method only translates to native calls.
-	/// </summary>
 	private static void ApplyAttributes(nint handle, AutomationPeer peer, UIElement? owner = null)
 	{
 		var attributes = AriaMapper.GetAriaAttributes(peer);
 
-		// Description → accessibilityHelp (VoiceOver reads this as secondary context)
-		// AriaMapper resolves FullDescription > HelpText.
 		if (!string.IsNullOrEmpty(attributes.Description))
 		{
 			NativeUno.uno_accessibility_update_help(handle, attributes.Description);
 		}
 
-		// PlaceholderText is surfaced as the empty-field description when a Header already
-		// provides the primary label. VoiceOver reads this via accessibilityPlaceholderValue.
 		if (peer is FrameworkElementAutomationPeer feap)
 		{
 			if (feap.Owner is TextBox tb && !string.IsNullOrEmpty(tb.Header?.ToString()) && !string.IsNullOrEmpty(tb.PlaceholderText))
@@ -660,8 +567,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 			NativeUno.uno_accessibility_update_is_password(handle, true);
 		}
 
-		// Non-editable ComboBox does not expose ValuePattern in WinUI, but VoiceOver still
-		// expects the current selection to be surfaced as the native accessibility value.
 		if (owner is ComboBox comboBox && peer.GetPattern(PatternInterface.Value) is not IValueProvider)
 		{
 			var selectedValue = FrameworkElement.GetStringFromObject(comboBox.SelectionBoxItem);
@@ -671,7 +576,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 			}
 		}
 
-		// Read-only state for text fields (VoiceOver uses this to determine editability)
 		if (peer.GetPattern(PatternInterface.Value) is IValueProvider vp)
 		{
 			NativeUno.uno_accessibility_update_read_only(handle, vp.IsReadOnly);
@@ -682,13 +586,11 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 			NativeUno.uno_accessibility_update_required(handle, true);
 		}
 
-		// Toggle state (checkbox, radio, toggle button, switch)
 		if (attributes.Checked != null)
 		{
 			NativeUno.uno_accessibility_update_value(handle, ConvertCheckedToNativeValue(attributes.Checked));
 		}
 
-		// Range value (slider, progress bar)
 		if (attributes.ValueNow != null)
 		{
 			NativeUno.uno_accessibility_update_has_range_value(handle, true);
@@ -699,7 +601,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 			}
 		}
 
-		// Text value from IValueProvider (TextBox text)
 		if (attributes.ValueNow == null && attributes.Checked == null &&
 			peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider &&
 			valueProvider.Value != null)
@@ -735,10 +636,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		}
 	}
 
-	/// <summary>
-	/// Converts ARIA-style checked values ("true"/"false"/"mixed") to VoiceOver-style
-	/// values ("1"/"0"/"mixed") for NSAccessibilityCheckBoxRole.
-	/// </summary>
 	private static string ConvertCheckedToNativeValue(string ariaChecked) => ariaChecked switch
 	{
 		"true" => "1",
@@ -747,11 +644,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		_ => "0",
 	};
 
-	/// <summary>
-	/// Resolves the native accessibility role string for a peer, with macOS-specific
-	/// overrides for controls that need different roles than the ARIA mapper provides
-	/// (e.g. ToggleSwitch → "switch", Text → "text").
-	/// </summary>
 	protected override string? ResolveRole(AutomationPeer peer, UIElement owner)
 	{
 		var controlType = peer.GetAutomationControlType();
@@ -766,21 +658,16 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 			return "option";
 		}
 
-		// ToggleSwitch has AutomationControlType.Button but should be "switch" for VoiceOver
 		if (controlType == AutomationControlType.Button && owner is ToggleSwitch)
 		{
 			return "switch";
 		}
 
-		// AutomationControlType.Text is not mapped in the shared AriaMapper (no ARIA role
-		// for plain text), but macOS needs "text" for NSAccessibilityStaticTextRole
 		if (controlType == AutomationControlType.Text)
 		{
 			return "text";
 		}
 
-		// Multi-line TextBox (AcceptsReturn=true) should be "textarea" so VoiceOver
-		// announces it as "text area" instead of "text field"
 		if (controlType == AutomationControlType.Edit && owner is TextBox textBox && textBox.AcceptsReturn)
 		{
 			return "textarea";
@@ -789,10 +676,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		return base.ResolveRole(peer, owner);
 	}
 
-	/// <summary>
-	/// Resolves a label for an automation peer with macOS-specific fallbacks.
-	/// Extends the shared mapper with Header/PlaceholderText fallbacks used by VoiceOver.
-	/// </summary>
 	private new static string? ResolveLabel(AutomationPeer peer)
 	{
 		var label = AriaMapper.ResolveLabel(peer);
@@ -891,7 +774,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 	protected override void UpdateIsOffscreen(nint handle, bool isOffscreen)
 		=> NativeUno.uno_accessibility_update_visibility(handle, !isOffscreen);
 
-	// Override event routing from base to add macOS-specific events
 	public override void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 	{
 		if (!_accessibilityTreeInitialized)
@@ -899,16 +781,14 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		// Let base handle common events (focus, text changes, structure)
 		base.NotifyAutomationEvent(peer, eventId);
 
-		// macOS-specific event handling
 		switch (eventId)
 		{
 			case AutomationEvents.InvokePatternOnInvoked when TryGetPeerOwner(peer, out _):
 			case AutomationEvents.SelectionItemPatternOnElementSelected when TryGetPeerOwner(peer, out _):
 			case AutomationEvents.SelectionPatternOnInvalidated:
-				NativeUno.uno_accessibility_post_layout_changed();
+				NativeUno.uno_accessibility_post_layout_changed(_windowHandle);
 				break;
 
 			case AutomationEvents.TextPatternOnTextSelectionChanged when TryGetPeerOwner(peer, out var textElement):
@@ -950,10 +830,43 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 		=> NativeUno.uno_accessibility_set_focused(handle);
 
 	protected override void OnNativeStructureChanged()
-		=> NativeUno.uno_accessibility_post_children_changed();
+		=> NativeUno.uno_accessibility_post_children_changed(_windowHandle);
 
 	protected override void AnnounceOnPlatform(string text, bool assertive)
-		=> NativeUno.uno_accessibility_announce(text, assertive);
+		=> NativeUno.uno_accessibility_announce(_windowHandle, text, assertive);
+
+	protected override void DisposeCore()
+	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"[A11y] Disposing MacOSAccessibility for window 0x{_windowHandle:X}");
+		}
+
+		// Destroy the native per-window context BEFORE MacOSWindowNative.Handle
+		// is cleared to zero (order matters — research Decision 6). Pending
+		// VoiceOver queries then observe a detached element rather than following
+		// a stale context back-pointer.
+		var windowHandle = _windowHandle;
+		_windowHandle = nint.Zero;
+		_accessibilityTreeInitialized = false;
+		_activeModalHandle = nint.Zero;
+		_modalTriggerHandle = nint.Zero;
+
+		if (windowHandle != nint.Zero)
+		{
+			try
+			{
+				NativeUno.uno_accessibility_destroy_context(windowHandle);
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"[A11y] uno_accessibility_destroy_context failed: {ex.Message}");
+				}
+			}
+		}
+	}
 
 	// Modal dialog support: ContentDialog gets modal focus trapping for VoiceOver.
 
@@ -968,25 +881,18 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 					return;
 				}
 
-				// Remember what had focus before the dialog opened
 				_modalTriggerHandle = TrackedFocusedElement?.Visual.Handle ?? nint.Zero;
 				_activeModalHandle = dialog.Visual.Handle;
 
-				// ContentDialog does not currently provide a dedicated dialog peer on Uno,
-				// so ensure the native accessibility node keeps explicit dialog semantics.
 				NativeUno.uno_accessibility_update_role(dialog.Visual.Handle, "dialog");
-
-				// Mark the dialog as modal so VoiceOver restricts navigation
 				NativeUno.uno_accessibility_update_modal(dialog.Visual.Handle, true);
 
-				// Announce the dialog title so VoiceOver users know a dialog appeared
 				var dialogPeer = dialog.GetOrCreateAutomationPeer();
 				var dialogTitle = dialogPeer?.GetName();
 				if (!string.IsNullOrEmpty(dialogTitle))
 				{
 					AnnounceAssertive(dialogTitle);
 				}
-
 			};
 
 			dialog.Closed += (s, e) =>
@@ -996,18 +902,14 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 					return;
 				}
 
-				// Remove modal flag
 				NativeUno.uno_accessibility_update_modal(dialog.Visual.Handle, false);
 
-				// Restore focus to the element that triggered the dialog,
-				// or fall back to the root element if nothing was focused before.
 				if (_modalTriggerHandle != nint.Zero)
 				{
 					NativeUno.uno_accessibility_set_focused(_modalTriggerHandle);
 				}
 				else
 				{
-					// No trigger element — try focusing the root element
 					var rootElement = Microsoft.UI.Xaml.Window.CurrentSafe?.RootElement;
 					if (rootElement is not null)
 					{
@@ -1022,7 +924,6 @@ internal class MacOSAccessibility : SkiaAccessibilityBase
 				_activeModalHandle = nint.Zero;
 				_modalTriggerHandle = nint.Zero;
 
-				// Clear duplicate tracking so the next announcement always goes through
 				ResetAnnouncementTracking();
 			};
 		}

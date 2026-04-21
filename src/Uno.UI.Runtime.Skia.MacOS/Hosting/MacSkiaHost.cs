@@ -37,7 +37,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		MacOSMediaPlayerExtension.Register();
 		MacOSMediaPlayerPresenterExtension.Register();
 		AccessibilityRouter.EnsureInitialized();
-		MacOSAccessibility.Register();
+		MacOSAccessibility.RegisterCallbacks();
 	}
 
 	public MacSkiaHost(Func<Application> appBuilder)

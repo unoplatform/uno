@@ -514,10 +514,13 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_mediaplayer_set_view(nint media, nint view, nint window);
 
-	// Accessibility
+	// Accessibility — per-window context lifecycle
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_accessibility_init(nint window);
+	internal static partial void uno_accessibility_init_context(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_destroy_context(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_accessibility_set_callbacks(
@@ -539,6 +542,7 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial void uno_accessibility_add_element(
+		nint window,
 		nint parentHandle, nint handle, int index,
 		float width, float height, float x, float y,
 		string? role, string? label,
@@ -546,7 +550,7 @@ internal static partial class NativeUno
 		[MarshalAs(UnmanagedType.I1)] bool visible);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_accessibility_remove_element(nint parentHandle, nint handle);
+	internal static partial void uno_accessibility_remove_element(nint window, nint parentHandle, nint handle);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial void uno_accessibility_update_label(nint handle, string? label);
@@ -618,13 +622,13 @@ internal static partial class NativeUno
 	internal static partial void uno_accessibility_set_focused(nint handle);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial void uno_accessibility_announce(string text, [MarshalAs(UnmanagedType.I1)] bool assertive);
+	internal static partial void uno_accessibility_announce(nint window, string text, [MarshalAs(UnmanagedType.I1)] bool assertive);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_accessibility_post_layout_changed();
+	internal static partial void uno_accessibility_post_layout_changed(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_accessibility_post_children_changed();
+	internal static partial void uno_accessibility_post_children_changed(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_accessibility_post_live_region_created(nint handle);
