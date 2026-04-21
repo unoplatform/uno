@@ -62,7 +62,7 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 | `ToolBar` / `ToolBarTray` | `CommandBar` + `AppBarButton` | |
 | `StatusBar` | Custom `Grid` / `StackPanel` or `InfoBar` | No StatusBar control in WinUI |
 | `TabControl` | `TabView` or `NavigationView` (Top mode) | `TabView` supports closable tabs |
-| `DocumentViewer` | `WebView2` | Render PDFs/XPS inside WebView2 |
+| `DocumentViewer` | `WebView2` | Can display PDFs in WebView2; XPS requires conversion or a dedicated/third-party viewer |
 | `FlowDocument` | `RichTextBlock` | Partial replacement only |
 | `RichTextBox` | `RichEditBox` | Rich text editing |
 | `WrapPanel` | `WrapPanel` (built-in on Uno Platform) or Community Toolkit `WrapPanel` | Built-in on Uno Platform; otherwise see package guidance below. |
