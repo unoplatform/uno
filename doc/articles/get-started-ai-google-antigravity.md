@@ -23,12 +23,12 @@ This guide walks you through configuring the Uno Platform MCPs for Google Antigr
 1. Install [Google Antigravity](https://antigravity.google/) by following Google's official instructions for your operating system.
 1. Configure [Antigravity MCPs](https://antigravity.google/docs/mcp):
 
-    You can either use `dnx -y uno.devserver mcp install gemini-antigravity` to write the supported registration for you, or edit the raw config manually. See the [Dev Server reference](xref:Uno.DevServer) for the full CLI surface.
+    You can either use `dotnet dnx -y uno.devserver mcp install gemini-antigravity` to write the supported registration for you, or edit the raw config manually. See the [Dev Server reference](xref:Uno.DevServer) for the full CLI surface.
 
     Example using the Dev Server CLI:
 
     ```bash
-    dnx -y uno.devserver mcp install gemini-antigravity
+    dotnet dnx -y uno.devserver mcp install gemini-antigravity
     ```
 
     1. Open the MCP store via the "..." dropdown at the top of the editor's agent panel.
@@ -62,13 +62,13 @@ This guide walks you through configuring the Uno Platform MCPs for Google Antigr
     You can verify the registration state at any time:
 
     ```bash
-    dnx -y uno.devserver mcp status gemini-antigravity
+    dotnet dnx -y uno.devserver mcp status gemini-antigravity
     ```
 
     To remove the Uno MCP entries from Antigravity's config:
 
     ```bash
-    dnx -y uno.devserver mcp uninstall gemini-antigravity
+    dotnet dnx -y uno.devserver mcp uninstall gemini-antigravity
     ```
 
     See [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs) for additional details about MCP registration and diagnostics.

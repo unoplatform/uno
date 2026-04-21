@@ -121,7 +121,7 @@ The `Uno.DevServer` tool exposes the following MCP setup commands:
 
 When running `mcp status`, the tool reports the detected clients, the config file path, transport, and the currently detected variant for each Uno MCP entry.
 
-If you do not have `uno-devserver` installed globally, you can run the same commands transiently with `dnx -y uno.devserver`.
+If you do not have `uno-devserver` installed globally, you can run the same commands transiently with `dotnet dnx -y uno.devserver`.
 
 > [!NOTE]
 > `uno-devserver mcp install <client>` is an alternative to manual JSON editing for supported file-backed clients. Native client-specific flows documented elsewhere in the docs remain fully valid.
@@ -153,8 +153,8 @@ uno-devserver mcp status --json
 Equivalent transient usage (when `uno-devserver` is not installed globally):
 
 ```bash
-dnx -y uno.devserver mcp status
-dnx -y uno.devserver mcp install copilot-vscode
+dotnet dnx -y uno.devserver mcp status
+dotnet dnx -y uno.devserver mcp install copilot-vscode
 ```
 
 You can also control which Uno Dev Server package variant is expected when comparing or writing definitions:

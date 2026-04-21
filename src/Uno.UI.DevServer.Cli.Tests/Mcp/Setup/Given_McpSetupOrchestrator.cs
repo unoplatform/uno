@@ -63,13 +63,13 @@ public class Given_McpSetupOrchestrator
 				Transport: "stdio",
 				Variants: new Dictionary<string, JsonObject>
 				{
-					["stable"] = JsonNode.Parse("""{"command":"dnx","args":["-y","uno.devserver","--mcp-app"]}""")!.AsObject(),
-					["prerelease"] = JsonNode.Parse("""{"command":"dnx","args":["-y","--prerelease","uno.devserver","--mcp-app"]}""")!.AsObject(),
-					["pinned"] = JsonNode.Parse("""{"command":"dnx","args":["-y","--version","{version}","uno.devserver","--mcp-app"]}""")!.AsObject(),
+					["stable"] = JsonNode.Parse("""{"command":"dotnet","args":["dnx","-y","uno.devserver","--mcp-app"]}""")!.AsObject(),
+					["prerelease"] = JsonNode.Parse("""{"command":"dotnet","args":["dnx","-y","--prerelease","uno.devserver","--mcp-app"]}""")!.AsObject(),
+					["pinned"] = JsonNode.Parse("""{"command":"dotnet","args":["dnx","-y","--version","{version}","uno.devserver","--mcp-app"]}""")!.AsObject(),
 				},
 				Detection: new(
 					KeyPatterns: ["^UnoApp$"],
-					CommandPatterns: [@"dnx.*uno\.devserver.*--mcp-app"],
+					CommandPatterns: [@"dnx.*uno\.devserver.*--mcp-app", @"dotnet\s+dnx.*uno\.devserver.*--mcp-app"],
 					UrlPatterns: [@"localhost:\d+/mcp"])),
 			["UnoDocs"] = new(
 				Transport: "http",
@@ -120,7 +120,7 @@ public class Given_McpSetupOrchestrator
 		fs.AddFile("/project/.cursor/mcp.json", """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]}
 		  }
 		}
 		""");
@@ -156,7 +156,7 @@ public class Given_McpSetupOrchestrator
 		fs.AddFile("/project/.cursor/mcp.json", """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]}
 		  }
 		}
 		""");
@@ -189,7 +189,7 @@ public class Given_McpSetupOrchestrator
 		fs.AddFile("/project/.vscode/mcp.json", """
 		{
 		  "servers": {
-		    "UnoApp": {"type": "stdio", "command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		    "UnoApp": {"type": "stdio", "command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]}
 		  }
 		}
 		""");
@@ -226,7 +226,8 @@ public class Given_McpSetupOrchestrator
 		var content = fs.GetFileContent("/project/.cursor/mcp.json");
 		content.Should().NotBeNull();
 		var parsed = JsonNode.Parse(content!)!.AsObject();
-		parsed["mcpServers"]!["UnoApp"]!["command"]!.GetValue<string>().Should().Be("dnx");
+		parsed["mcpServers"]!["UnoApp"]!["command"]!.GetValue<string>().Should().Be("dotnet");
+		parsed["mcpServers"]!["UnoApp"]!["args"]!.AsArray()[0]!.GetValue<string>().Should().Be("dnx");
 		parsed["mcpServers"]!["UnoDocs"]!["url"]!.GetValue<string>().Should().Be("https://mcp.platform.uno/v1");
 	}
 
@@ -237,7 +238,7 @@ public class Given_McpSetupOrchestrator
 		fs.AddFile("/project/.cursor/mcp.json", """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]}
 		  }
 		}
 		""");
@@ -261,7 +262,7 @@ public class Given_McpSetupOrchestrator
 		fs.AddFile("/project/.cursor/mcp.json", """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]},
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]},
 		    "UnoDocs": {"url": "https://mcp.platform.uno/v1"}
 		  }
 		}
@@ -374,7 +375,8 @@ public class Given_McpSetupOrchestrator
 		var content = fs.GetFileContent("/project/.windsurf/mcp.json")!;
 		var parsed = JsonNode.Parse(content)!.AsObject();
 		var entry = parsed["mcpServers"]!["UnoApp"]!.AsObject();
-		entry["command"]!.GetValue<string>().Should().Be("dnx");
+		entry["command"]!.GetValue<string>().Should().Be("dotnet");
+		entry["args"]!.AsArray()[0]!.GetValue<string>().Should().Be("dnx");
 		entry.ContainsKey("type").Should().BeFalse();
 	}
 
@@ -460,8 +462,8 @@ public class Given_McpSetupOrchestrator
 		{
 		  "mcpServers": {
 		    "UnoApp": {
-		      "command": "dnx",
-		      "args": ["-y", "uno.devserver", "--mcp-app"],
+		      "command": "dotnet",
+		      "args": ["dnx", "-y", "uno.devserver", "--mcp-app"],
 		      "env": {"MY_VAR": "test"},
 		      "disabled": false
 		    }
@@ -513,7 +515,8 @@ public class Given_McpSetupOrchestrator
 		entry["type"]!.GetValue<string>().Should().Be("local");
 		entry["command"].Should().BeOfType<JsonArray>();
 		var cmdArray = entry["command"]!.AsArray();
-		cmdArray[0]!.GetValue<string>().Should().Be("dnx");
+		cmdArray[0]!.GetValue<string>().Should().Be("dotnet");
+		cmdArray[1]!.GetValue<string>().Should().Be("dnx");
 		cmdArray.Select(a => a!.GetValue<string>()).Should().Contain("uno.devserver");
 		entry.ContainsKey("args").Should().BeFalse();
 	}
@@ -527,7 +530,7 @@ public class Given_McpSetupOrchestrator
 		  "mcp": {
 		    "UnoApp": {
 		      "type": "local",
-		      "command": ["dnx", "-y", "uno.devserver", "--mcp-app"],
+		      "command": ["dotnet", "dnx", "-y", "uno.devserver", "--mcp-app"],
 		      "environment": {"MY_VAR": "test"},
 		      "enabled": true
 		    }
@@ -557,7 +560,7 @@ public class Given_McpSetupOrchestrator
 		fs.AddFile("/project/.cursor/mcp.json", """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]},
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]},
 		    "OtherServer": {"command": "other"}
 		  }
 		}
@@ -594,14 +597,14 @@ public class Given_McpSetupOrchestrator
 		fs.AddFile("/project/.cursor/mcp.json", """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]}
 		  }
 		}
 		""");
 		fs.AddFile("/home/user/.cursor/mcp.json", """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]}
 		  }
 		}
 		""");
@@ -622,14 +625,14 @@ public class Given_McpSetupOrchestrator
 		fs.AddFile("/project/.cursor/mcp.json", """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]}
 		  }
 		}
 		""");
 		fs.AddFile("/home/user/.cursor/mcp.json", """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]}
 		  }
 		}
 		""");
@@ -662,7 +665,7 @@ public class Given_McpSetupOrchestrator
 		fs.AddFile("/project/.cursor/mcp.json", """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]}
 		  }
 		}
 		""");
@@ -693,7 +696,7 @@ public class Given_McpSetupOrchestrator
 		fs.AddFile("/project/.cursor/mcp.json", """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]}
 		  }
 		}
 		""");
@@ -739,7 +742,7 @@ public class Given_McpSetupOrchestrator
 		fs.AddFile("/project/.cursor/mcp.json", """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]}
 		  }
 		}
 		""");
@@ -784,7 +787,7 @@ public class Given_McpSetupOrchestrator
 		fs.AddFile("/project/.cursor/mcp.json", """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]}
 		  }
 		}
 		""");
@@ -807,8 +810,8 @@ public class Given_McpSetupOrchestrator
 		fs.AddFile("/project/.cursor/mcp.json", """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]},
-		    "uno-app-alias": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]},
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]},
+		    "uno-app-alias": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]},
 		    "Other": {"command": "echo", "args": ["hello"]}
 		  }
 		}
@@ -891,7 +894,7 @@ public class Given_McpSetupOrchestrator
 		var originalContent = """
 		{
 		  "mcpServers": {
-		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		    "UnoApp": {"command": "dotnet", "args": ["dnx", "-y", "uno.devserver", "--mcp-app"]}
 		  }
 		}
 		""";
