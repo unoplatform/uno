@@ -4,7 +4,11 @@ namespace Uno.UI.Runtime.Skia {
 		private containerElement: HTMLDivElement;
 		private canvasElement: HTMLCanvasElement;
 		private onResize: any;
+		private onInputPaneChanged: any;
 		private owner: any;
+		private _isKeyboardShowing: boolean = false;
+		private _lastLayoutWidth: number = 0;
+		private _lastLayoutHeight: number = 0;
 		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
 		private static readonly loadingElementId = "uno-loading";
 		private static readonly unoKeepLoaderClassName = "uno-keep-loader";
@@ -38,6 +42,7 @@ namespace Uno.UI.Runtime.Skia {
 		private async build() {
 			WebAssemblyWindowWrapper.assemblyExports = await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
 			this.onResize = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnResize;
+			this.onInputPaneChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnInputPaneChanged;
 
 			this.containerElement = (document.getElementById("uno-body") as HTMLDivElement);
 
@@ -57,6 +62,13 @@ namespace Uno.UI.Runtime.Skia {
 			Accessibility.setup();
 
 			window.addEventListener("resize", x => this.resize());
+
+			// Subscribe to visualViewport resize for soft keyboard detection on mobile browsers.
+			// The visualViewport shrinks when the soft keyboard appears, while window.innerHeight
+			// may or may not change depending on the browser.
+			if (window.visualViewport) {
+				window.visualViewport.addEventListener("resize", () => this.onVisualViewportResize());
+			}
 
 			window.addEventListener("contextmenu", x => {
 				x.preventDefault();
@@ -96,7 +108,48 @@ namespace Uno.UI.Runtime.Skia {
 
 		private resize() {
 			var rect = document.documentElement.getBoundingClientRect();
-			this.onResize(this.owner, rect.width, rect.height, globalThis.devicePixelRatio);
+
+			// When the soft keyboard is showing on mobile browsers, some browsers shrink
+			// the layout viewport (triggering window.resize). We suppress this by reporting
+			// the pre-keyboard layout size, preventing XAML from re-laying out (which would
+			// cause flyouts to dismiss/reposition).
+			if (this._isKeyboardShowing) {
+				this.onResize(this.owner, this._lastLayoutWidth, this._lastLayoutHeight, globalThis.devicePixelRatio);
+			} else {
+				this._lastLayoutWidth = rect.width;
+				this._lastLayoutHeight = rect.height;
+				this.onResize(this.owner, rect.width, rect.height, globalThis.devicePixelRatio);
+			}
+		}
+
+		// Dual-signal soft keyboard detection:
+		// Signal 1: Our invisible text <input>/<textarea> is focused
+		// Signal 2: visualViewport.height < window.innerHeight
+		// When both are true, the soft keyboard is showing.
+		private onVisualViewportResize() {
+			const vv = window.visualViewport;
+			if (!vv) {
+				return;
+			}
+
+			const hasInputFocus =
+				document.activeElement instanceof HTMLInputElement ||
+				document.activeElement instanceof HTMLTextAreaElement;
+
+			const keyboardHeight = window.innerHeight - vv.height;
+
+			if (hasInputFocus && keyboardHeight > 0) {
+				// Keyboard is showing
+				if (!this._isKeyboardShowing) {
+					this._isKeyboardShowing = true;
+				}
+				// Report occluded rect: x=0, y=top of keyboard, width=viewport width, height=keyboard height
+				this.onInputPaneChanged(this.owner, 0, vv.height, vv.width, keyboardHeight);
+			} else if (this._isKeyboardShowing) {
+				// Keyboard is hiding
+				this._isKeyboardShowing = false;
+				this.onInputPaneChanged(this.owner, 0, 0, 0, 0);
+			}
 		}
 
 		public static setCursor(cssCursor: string) {
