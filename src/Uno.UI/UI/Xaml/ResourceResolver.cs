@@ -627,7 +627,18 @@ namespace Uno.UI
 				{
 					foreach (var kvp in assemblyDict)
 					{
-						var rd = kvp.Value as ResourceDictionary;
+						// `kvp.Value` is a ResourceDictionary.ResourceInitializer that materializes
+						// lazily into a ResourceDictionary. If the underlying Func targets code from
+						// an unloaded non-default AssemblyLoadContext, the materialization returns
+						// null and the `as` cast silently yields null, leading to an NRE below if
+						// left unchecked. Skip such stale entries instead of crashing the measure
+						// pass (a null rd here also signals that no further resource can be
+						// resolved through this initializer, so `continue` is the correct behavior).
+						if (kvp.Value is not ResourceDictionary rd)
+						{
+							continue;
+						}
+
 						if (rd.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 						{
 							return true;
