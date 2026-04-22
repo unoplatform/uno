@@ -15,6 +15,7 @@ using Windows.Foundation;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 
 using Colors = Microsoft.UI.Colors;
@@ -302,6 +303,88 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 #if !NETFX_CORE
+		// When an app-level Style containing a {ThemeResource} setter is applied programmatically
+		// to a control, the setter must resolve against the current app theme AND stay in sync when
+		// the app theme changes. Prior to the fix in ResourceResolver.ApplyResource /
+		// DependencyObjectStore.Theming.cs, the programmatic path created a ThemeResourceReference
+		// without pinning the providing dictionary, so subsequent theme changes did not re-resolve
+		// against the correct theme sub-dictionary.
+		[TestMethod]
+		public void When_AppLevel_Style_With_ThemeResource_Applied_Programmatically()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			// App-level ResourceDictionary with theme sub-dictionaries.
+			var themedBrushes = new ResourceDictionary();
+			var lightDict = new ResourceDictionary();
+			lightDict["Issue455_Foreground"] = new SolidColorBrush(Colors.Red);
+			var darkDict = new ResourceDictionary();
+			darkDict["Issue455_Foreground"] = new SolidColorBrush(Colors.Blue);
+			themedBrushes.ThemeDictionaries["Light"] = lightDict;
+			themedBrushes.ThemeDictionaries["Dark"] = darkDict;
+
+			// App-level Style referencing the themed brush via {ThemeResource}.
+			var style = new Style(typeof(TextBlock));
+			var themedSetter = new Setter();
+			themedSetter.Property = TextBlock.ForegroundProperty;
+			// Register the setter's value as a ThemeResource binding so ApplyResource is used.
+			Uno.UI.Helpers.Xaml.SetterExtensions.ApplyThemeResourceUpdateValues(
+				themedSetter, "Issue455_Foreground", parseContext: null);
+			style.Setters.Add(themedSetter);
+
+			Application.Current.Resources.MergedDictionaries.Add(themedBrushes);
+			Application.Current.Resources["Issue455_TextBlockStyle"] = style;
+
+			try
+			{
+				using var darkScope = ThemeHelper.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+
+				// Control is created and style assigned programmatically.
+				var textBlock = new TextBlock();
+				var retrievedStyle = Application.Current.Resources["Issue455_TextBlockStyle"] as Style;
+				Assert.IsNotNull(retrievedStyle);
+
+				textBlock.Style = retrievedStyle;
+
+				var foreground = textBlock.Foreground as SolidColorBrush;
+				Assert.IsNotNull(foreground, "Foreground should be set by the Style's ThemeResource Setter.");
+				Assert.AreEqual(Colors.Blue, foreground.Color,
+					"Under Dark theme, the programmatic Style's {ThemeResource} setter must resolve to the Dark brush (Blue).");
+
+				// Switch the application theme to Light, then directly trigger the
+				// resource-binding update on the TextBlock (unit tests have no visual tree
+				// walk, so we simulate the walk that the framework performs at runtime).
+				// The fix's pinned providing dictionary must cause the setter to re-resolve
+				// to the Light brush.
+				using (ThemeHelper.SetExplicitRequestedTheme(ApplicationTheme.Light))
+				{
+					((IDependencyObjectStoreProvider)textBlock).Store.UpdateResourceBindings(
+						ResourceUpdateReason.ThemeResource);
+
+					foreground = textBlock.Foreground as SolidColorBrush;
+					Assert.IsNotNull(foreground, "Foreground should still be present after theme change.");
+					Assert.AreEqual(Colors.Red, foreground.Color,
+						"After app theme change to Light, the programmatically-applied Style's " +
+						"{ThemeResource} setter must re-resolve to the Light brush (Red). A null pinned " +
+						"dictionary on the ThemeResourceReference would leave the value stuck at Blue.");
+				}
+
+				// Back to Dark, trigger refresh, verify round-trip correctness.
+				((IDependencyObjectStoreProvider)textBlock).Store.UpdateResourceBindings(
+					ResourceUpdateReason.ThemeResource);
+
+				foreground = textBlock.Foreground as SolidColorBrush;
+				Assert.IsNotNull(foreground);
+				Assert.AreEqual(Colors.Blue, foreground.Color,
+					"After switching back to Dark, the programmatically-applied Style's ThemeResource must re-resolve to Blue.");
+			}
+			finally
+			{
+				Application.Current.Resources.Remove("Issue455_TextBlockStyle");
+				Application.Current.Resources.MergedDictionaries.Remove(themedBrushes);
+			}
+		}
+
 		// Application's _requestedTheme field defaults to ApplicationTheme.Dark. When
 		// App.xaml declares RequestedTheme="Dark", the equality check in SetRequestedTheme
 		// turns the call into a no-op — which also skips UpdateRequestedThemesForResources,
