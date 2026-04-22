@@ -87,7 +87,11 @@ internal partial class Win32WindowWrapper
 			// Without this, BitBlt returns instantly (unlike GL's SwapBuffers
 			// which blocks for VSync), causing the render loop to spin at
 			// hundreds of fps — wasting CPU and reporting misleading frame rates.
-			PInvoke.DwmFlush();
+			var dwmFlushResult = PInvoke.DwmFlush();
+			if (dwmFlushResult.Failed)
+			{
+				this.LogError()?.Error($"{nameof(PInvoke.DwmFlush)} failed: {dwmFlushResult}");
+			}
 		}
 
 		bool IRenderer.IsSoftware() => true;

@@ -396,10 +396,18 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// runs, so FrameTick is safe here. Using FrameTick (instead of SynchronousRender, which
 		// skips Loaded) ensures the first painted frame reflects post-Loaded state.
 		// FrameTick's _inFrameTick guard still catches the unlikely case of re-entry (e.g. a
-		// Win32 modal pump from a Rendering handler).
+		// Win32 modal pump from a Rendering handler). After signaling the render thread, perform
+		// a bounded best-effort wait for the next present so startup usually shows painted content
+		// immediately, while still avoiding an unbounded stall if presentation is delayed.
 		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.FrameTick();
 		_renderThread?.SignalNewFrame();
-		_renderThread?.WaitForNextPresent(TimeSpan.FromMilliseconds(100));
+		var presentCompleted = _renderThread?.WaitForNextPresent(TimeSpan.FromMilliseconds(100));
+		if (presentCompleted == false)
+		{
+			this.LogWarn()?.Warn(
+				"Timed out waiting for the next present during synchronous render; " +
+				"the window may be shown before the first frame is displayed.");
+		}
 	}
 
 	private static System.Drawing.Point PointFromLParam(LPARAM lParam)

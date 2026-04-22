@@ -80,7 +80,7 @@ namespace Uno.UI.Dispatching
 
 			Action? action = null;
 
-			for (var p = 0; p <= 3; p++)
+			for (var p = 0; p < @this._queues.Length; p++)
 			{
 				var queue = @this._queues[p];
 

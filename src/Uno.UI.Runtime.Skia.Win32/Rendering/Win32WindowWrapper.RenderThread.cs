@@ -41,15 +41,22 @@ internal partial class Win32WindowWrapper
 		/// <summary>
 		/// Signals the render thread that a new frame is available for presentation.
 		/// Multiple calls while the thread is busy coalesce into a single wake-up
-		/// (AutoResetEvent semantics).
+		/// (AutoResetEvent semantics). Resets the present-completion event before
+		/// signaling so a subsequent <see cref="WaitForNextPresent"/> always observes
+		/// the next presentation, never a stale one from a prior frame.
 		/// </summary>
-		internal void SignalNewFrame() => _frameSignal.Set();
+		internal void SignalNewFrame()
+		{
+			_presentedEvent.Reset();
+			_frameSignal.Set();
+		}
 
 		/// <summary>
 		/// Blocks the calling thread until the render thread finishes presenting a frame.
 		/// Used by ShowCore to ensure the first frame is painted before the window is shown.
+		/// Returns true if a present completed within the timeout, false otherwise.
 		/// </summary>
-		internal void WaitForNextPresent(TimeSpan timeout) => _presentedEvent.Wait(timeout);
+		internal bool WaitForNextPresent(TimeSpan timeout) => _presentedEvent.Wait(timeout);
 
 		private void RenderLoop()
 		{
@@ -61,15 +68,22 @@ internal partial class Win32WindowWrapper
 					break;
 				}
 
-				_presentedEvent.Reset();
 				_renderer.StartPaint();
 				try
 				{
 					var result = _drawFrame();
-					if (result is var (clipPath, width, height))
+					if (result is { } frame)
 					{
+						var (clipPath, width, height) = frame;
 						_onClipPathUpdated(clipPath);
 						_renderer.CopyPixels(width, height); // SwapBuffers/BitBlt — may block for VSync
+
+						// Only signal "presented" when an actual frame was drawn and copied.
+						// WM_PAINT delivered before the first SynchronousRender produces a null
+						// result; firing OnFramePresented in that case would surface a phantom
+						// CompositionTarget.FrameRendered with no actual present behind it.
+						_presentedEvent.Set();
+						_onFramePresented();
 					}
 				}
 				catch (Exception ex)
@@ -80,9 +94,6 @@ internal partial class Win32WindowWrapper
 				{
 					_renderer.EndPaint();
 				}
-
-				_presentedEvent.Set();
-				_onFramePresented();
 			}
 		}
 
@@ -92,14 +103,17 @@ internal partial class Win32WindowWrapper
 			_frameSignal.Set(); // Unblock if waiting
 
 			// 250 ms is enough for the thread to finish a present (~16 ms at 60 Hz) plus
-			// some slack. If the join times out the GPU is likely hung; warn and move on
-			// rather than blocking shutdown for the full original 2 s.
+			// some slack. If the join times out the GPU is likely hung — warn and then
+			// keep waiting so we never dispose synchronization primitives (or let the
+			// caller dispose _renderer next) while the render thread can still touch them.
 			var joined = _thread.Join(timeout: TimeSpan.FromMilliseconds(250));
 			if (!joined)
 			{
 				typeof(RenderThread).LogWarn()?.Warn(
-					"Render thread did not exit within 250 ms during dispose; proceeding without join. " +
-					"This usually indicates a stuck GPU present (SwapBuffers/BitBlt blocked on VSync).");
+					"Render thread did not exit within 250 ms during dispose; waiting for it to exit " +
+					"before releasing shared resources. This usually indicates a stuck GPU present " +
+					"(SwapBuffers/BitBlt blocked on VSync).");
+				_thread.Join();
 			}
 
 			_frameSignal.Dispose();

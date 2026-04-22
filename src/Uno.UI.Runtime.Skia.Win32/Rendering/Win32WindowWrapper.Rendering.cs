@@ -24,7 +24,10 @@ internal partial class Win32WindowWrapper
 		// Mark the window dirty for WM_PAINT. This handles external repaints (window
 		// uncovering, restore from minimized) where Windows generates WM_PAINT.
 		// Like WPF (InvalidateRect in HwndTarget) and Avalonia (InvalidateRect in WindowImpl).
-		PInvoke.InvalidateRect(_hwnd, default(RECT*), false);
+		if (!PInvoke.InvalidateRect(_hwnd, default(RECT*), false))
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}");
+		}
 
 		// Signal the render thread to present the current frame.
 		_renderThread?.SignalNewFrame();
@@ -43,7 +46,10 @@ internal partial class Win32WindowWrapper
 		// (WglCurrentContextDisposable doesn't restore to "no context" when there
 		// was none before). Detach it so the render thread can make it current.
 		// No-op for the software renderer (no GL context to detach).
-		PInvoke.wglMakeCurrent(default, HGLRC.Null);
+		if (!PInvoke.wglMakeCurrent(default, HGLRC.Null))
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.wglMakeCurrent)} (detach) failed: {Win32Helper.GetErrorMessage()}");
+		}
 
 		_renderThread = new RenderThread(
 			_renderer,
@@ -98,6 +104,7 @@ internal partial class Win32WindowWrapper
 
 		if (!PInvoke.GetClientRect(_hwnd, out RECT clientRect))
 		{
+			this.LogError()?.Error($"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
 			return null;
 		}
 

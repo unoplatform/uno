@@ -125,8 +125,9 @@ public partial class CompositionTarget
 		}
 
 		// Throttled hosts (Win32) fire FrameRendered here — this is the actual "frame on screen"
-		// moment, matching WinUI's CompositionTarget.Rendered semantics. Unthrottled hosts fire
-		// it from inside Render() since they have no present-completion callback to hook.
+		// moment, matching WinUI's CompositionTarget.Rendered semantics. Unthrottled hosts also
+		// raise it here, after Draw(), when OnFramePresented() is called from
+		// OnNativePlatformFrameRequested.
 		FrameRendered?.Invoke();
 
 		if (reschedule)

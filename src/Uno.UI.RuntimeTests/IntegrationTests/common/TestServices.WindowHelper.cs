@@ -188,7 +188,10 @@ namespace Private.Infrastructure
 #if (HAS_UNO && __SKIA__) || WINAPPSDK
 			private static async Task ForceFrameTickAsync()
 			{
-				var tcs = new TaskCompletionSource<object>();
+				// RunContinuationsAsynchronously: the Rendering handler runs on the UI thread,
+				// so completing the TCS inline would re-enter UI work from inside the rendering
+				// callback. Hop continuations off the rendering callback before they run.
+				var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
 				EventHandler<object> handler = null;
 
 				// Subscription must run on the UI thread — Rendering.add asserts thread access
@@ -584,38 +587,43 @@ namespace Private.Infrastructure
 
 			internal static async Task WaitForOpened(BitmapImage source, int timeoutMS = 10000)
 			{
-				var tcs = new TaskCompletionSource<bool>();
+				// RunContinuationsAsynchronously: ImageOpened/ImageFailed fire on the UI thread;
+				// without this an inline continuation would run UI work from the event raiser.
+				var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-				source.ImageOpened += (s, e) =>
+				RoutedEventHandler openedHandler = (_, _) => tcs.TrySetResult(true);
+				ExceptionRoutedEventHandler failedHandler = (_, e) => tcs.TrySetException(new Exception(e.ErrorMessage));
+				source.ImageOpened += openedHandler;
+				source.ImageFailed += failedHandler;
+
+				try
 				{
-					tcs.TrySetResult(true);
-				};
-
-				source.ImageFailed += (s, e) =>
-				{
-					tcs.TrySetException(new Exception(e.ErrorMessage));
-				};
-
 #if HAS_UNO
-				if (source.IsOpened)
-				{
-					tcs.TrySetResult(true);
-				}
+					if (source.IsOpened)
+					{
+						tcs.TrySetResult(true);
+					}
 #endif
 
-				// Bound the wait so a stuck image-load (e.g. dispatcher starvation, thread-pool
-				// exhaustion, BitmapImage chain not reaching RaiseImageOpened/RaiseImageFailed)
-				// surfaces as an actionable test failure instead of hanging CI for the job timeout.
-				var timeout = Task.Delay(timeoutMS);
-				if (await Task.WhenAny(tcs.Task, timeout) == timeout)
-				{
-					throw new TimeoutException(
-						$"WaitForOpened(BitmapImage) timed out after {timeoutMS}ms. " +
-						$"UriSource: {source.UriSource}. " +
-						"Neither ImageOpened nor ImageFailed fired and IsOpened stayed false.");
-				}
+					// Bound the wait so a stuck image-load (e.g. dispatcher starvation, thread-pool
+					// exhaustion, BitmapImage chain not reaching RaiseImageOpened/RaiseImageFailed)
+					// surfaces as an actionable test failure instead of hanging CI for the job timeout.
+					var timeout = Task.Delay(timeoutMS);
+					if (await Task.WhenAny(tcs.Task, timeout) == timeout)
+					{
+						throw new TimeoutException(
+							$"WaitForOpened(BitmapImage) timed out after {timeoutMS}ms. " +
+							$"UriSource: {source.UriSource}. " +
+							"Neither ImageOpened nor ImageFailed fired and IsOpened stayed false.");
+					}
 
-				await tcs.Task; // surface any ImageFailed exception
+					await tcs.Task; // surface any ImageFailed exception
+				}
+				finally
+				{
+					source.ImageOpened -= openedHandler;
+					source.ImageFailed -= failedHandler;
+				}
 			}
 
 #if HAS_UNO
@@ -653,29 +661,33 @@ namespace Private.Infrastructure
 
 			internal static async Task WaitForOpened(ImageBrush source, int timeoutMS = 10000)
 			{
-				var tcs = new TaskCompletionSource<bool>();
+				// See BitmapImage overload for the RunContinuationsAsynchronously rationale.
+				var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-				source.ImageOpened += (s, e) =>
-				{
-					tcs.TrySetResult(true);
-				};
+				RoutedEventHandler openedHandler = (_, _) => tcs.TrySetResult(true);
+				ExceptionRoutedEventHandler failedHandler = (_, e) => tcs.TrySetException(new Exception(e.ErrorMessage));
+				source.ImageOpened += openedHandler;
+				source.ImageFailed += failedHandler;
 
-				source.ImageFailed += (s, e) =>
+				try
 				{
-					tcs.TrySetException(new Exception(e.ErrorMessage));
-				};
+					// Bound the wait so a stuck image-load surfaces as an actionable test failure
+					// instead of hanging CI for the job timeout. See BitmapImage overload above.
+					var timeout = Task.Delay(timeoutMS);
+					if (await Task.WhenAny(tcs.Task, timeout) == timeout)
+					{
+						throw new TimeoutException(
+							$"WaitForOpened(ImageBrush) timed out after {timeoutMS}ms. " +
+							"Neither ImageOpened nor ImageFailed fired.");
+					}
 
-				// Bound the wait so a stuck image-load surfaces as an actionable test failure
-				// instead of hanging CI for the job timeout. See BitmapImage overload above.
-				var timeout = Task.Delay(timeoutMS);
-				if (await Task.WhenAny(tcs.Task, timeout) == timeout)
-				{
-					throw new TimeoutException(
-						$"WaitForOpened(ImageBrush) timed out after {timeoutMS}ms. " +
-						"Neither ImageOpened nor ImageFailed fired.");
+					await tcs.Task; // surface any ImageFailed exception
 				}
-
-				await tcs.Task; // surface any ImageFailed exception
+				finally
+				{
+					source.ImageOpened -= openedHandler;
+					source.ImageFailed -= failedHandler;
+				}
 			}
 #endif
 		}
