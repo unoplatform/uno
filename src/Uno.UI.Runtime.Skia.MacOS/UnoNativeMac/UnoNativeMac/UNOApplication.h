@@ -18,6 +18,26 @@ high_contrast_change_fn_ptr uno_get_high_contrast_change_callback(void);
 void uno_set_high_contrast_change_callback(high_contrast_change_fn_ptr p);
 bool uno_get_high_contrast(void);
 
+// High Contrast system colors (ARGB packed as uint32)
+typedef struct {
+    uint32 buttonFaceColor;
+    uint32 buttonTextColor;
+    uint32 grayTextColor;
+    uint32 highlightColor;
+    uint32 highlightTextColor;
+    uint32 hotlightColor;
+    uint32 windowColor;
+    uint32 windowTextColor;
+    uint32 activeCaptionColor;
+    uint32 backgroundColor;
+    uint32 captionTextColor;
+    uint32 inactiveCaptionColor;
+    uint32 inactiveCaptionTextColor;
+    uint32 disabledTextColor;
+} UnoHighContrastColors;
+
+void uno_get_high_contrast_colors(UnoHighContrastColors *colors);
+
 bool uno_app_initialize(bool *supportsMetal);
 NSWindow* uno_app_get_main_window(void);
 

@@ -207,6 +207,28 @@ internal static partial class NativeUno
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_get_high_contrast();
 
+	[StructLayout(LayoutKind.Sequential)]
+	internal struct UnoHighContrastColors
+	{
+		public uint ButtonFaceColor;
+		public uint ButtonTextColor;
+		public uint GrayTextColor;
+		public uint HighlightColor;
+		public uint HighlightTextColor;
+		public uint HotlightColor;
+		public uint WindowColor;
+		public uint WindowTextColor;
+		public uint ActiveCaptionColor;
+		public uint BackgroundColor;
+		public uint CaptionTextColor;
+		public uint InactiveCaptionColor;
+		public uint InactiveCaptionTextColor;
+		public uint DisabledTextColor;
+	}
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_get_high_contrast_colors(out UnoHighContrastColors colors);
+
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_application_start_callback(delegate* unmanaged[Cdecl]<void> callback);
 

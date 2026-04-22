@@ -43,6 +43,45 @@ bool uno_get_high_contrast(void)
     return [[NSWorkspace sharedWorkspace] accessibilityDisplayShouldIncreaseContrast];
 }
 
+static uint32 nscolor_to_argb(NSColor *color)
+{
+    NSColor *rgbColor = [color colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
+    if (!rgbColor) {
+        // Fallback for pattern/catalog colors that can't be converted
+        return 0xFF000000;
+    }
+    CGFloat r, g, b, a;
+    [rgbColor getRed:&r green:&g blue:&b alpha:&a];
+    uint8_t ar = (uint8_t)(a * 255.0 + 0.5);
+    uint8_t rr = (uint8_t)(r * 255.0 + 0.5);
+    uint8_t gr = (uint8_t)(g * 255.0 + 0.5);
+    uint8_t br = (uint8_t)(b * 255.0 + 0.5);
+    return ((uint32)ar << 24) | ((uint32)rr << 16) | ((uint32)gr << 8) | (uint32)br;
+}
+
+void uno_get_high_contrast_colors(UnoHighContrastColors *colors)
+{
+    if (!colors) return;
+    
+    // Map macOS system colors to Windows HC color concepts.
+    // macOS "Increase Contrast" mode adjusts system colors
+    // to have higher contrast automatically.
+    colors->windowColor = nscolor_to_argb([NSColor windowBackgroundColor]);
+    colors->windowTextColor = nscolor_to_argb([NSColor textColor]);
+    colors->buttonFaceColor = nscolor_to_argb([NSColor controlColor]);
+    colors->buttonTextColor = nscolor_to_argb([NSColor controlTextColor]);
+    colors->grayTextColor = nscolor_to_argb([NSColor disabledControlTextColor]);
+    colors->highlightColor = nscolor_to_argb([NSColor selectedContentBackgroundColor]);
+    colors->highlightTextColor = nscolor_to_argb([NSColor alternateSelectedControlTextColor]);
+    colors->hotlightColor = nscolor_to_argb([NSColor linkColor]);
+    colors->activeCaptionColor = nscolor_to_argb([NSColor windowBackgroundColor]);
+    colors->backgroundColor = nscolor_to_argb([NSColor windowBackgroundColor]);
+    colors->captionTextColor = nscolor_to_argb([NSColor textColor]);
+    colors->inactiveCaptionColor = nscolor_to_argb([NSColor windowBackgroundColor]);
+    colors->inactiveCaptionTextColor = nscolor_to_argb([NSColor disabledControlTextColor]);
+    colors->disabledTextColor = nscolor_to_argb([NSColor disabledControlTextColor]);
+}
+
 bool uno_app_initialize(bool *metal)
 {
     NSApplication *app = [NSApplication sharedApplication];

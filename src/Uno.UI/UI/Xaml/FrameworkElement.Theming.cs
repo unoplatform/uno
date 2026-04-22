@@ -28,6 +28,14 @@ public partial class FrameworkElement
 	private Brush _themeForeground;
 	private bool _isForegroundFrozen;
 
+	// MUX Reference FrameworkTheming.cpp, IsHighContrastChanging
+	// Tracks whether the current theme walk was triggered by an HC change.
+	// Set by Application.OnHighContrastChanged before the walk, cleared after.
+	internal static bool IsHighContrastChanging { get; set; }
+
+	// Tracks whether we were in HC before the current transition (for HC→non-HC detection).
+	internal static bool WasHighContrastActive { get; set; }
+
 	/// <summary>
 	/// Returns true when this element is a theme boundary that should block automatic
 	/// DP inheritance cascade for Foreground-type properties.
@@ -156,6 +164,12 @@ public partial class FrameworkElement
 	/// Occurs when the ActualTheme property value has changed.
 	/// </summary>
 	public event TypedEventHandler<FrameworkElement, object> ActualThemeChanged;
+
+	// MUX Reference framework.cpp, lines 3348-3363
+	/// <summary>
+	/// Occurs when the system High Contrast theme changes for this element.
+	/// </summary>
+	public event TypedEventHandler<FrameworkElement, object> HighContrastChanged;
 
 	// MUX Reference framework.cpp, lines 3313-3333
 	/// <summary>
@@ -335,19 +349,34 @@ public partial class FrameworkElement
 
 	// MUX Reference framework.cpp, lines 3346-3386
 	/// <summary>
-	/// Raises the ActualThemeChanged event.
+	/// Raises the ActualThemeChanged and/or HighContrastChanged events,
+	/// following WinUI's event suppression logic for HC transitions.
 	/// </summary>
 	private void RaiseActualThemeChanged()
 	{
 		try
 		{
+			// MUX Reference framework.cpp, lines 3348-3363
+			// Raise HighContrastChanged if HC is transitioning.
+			if (IsHighContrastChanging)
+			{
+				HighContrastChanged?.Invoke(this, null);
+
+				// For backwards compat: if transitioning TO HC (non-HC→HC or HC→HC),
+				// suppress ActualThemeChanged. Only fire both when leaving HC (HC→non-HC).
+				if (Uno.Helpers.Theming.SystemThemeHelper.IsHighContrastEnabled)
+				{
+					return;
+				}
+			}
+
 			ActualThemeChanged?.Invoke(this, null);
 		}
 		catch (Exception e)
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				this.Log().Error("ActualThemeChanged handler threw an exception", e);
+				this.Log().Error("ActualThemeChanged/HighContrastChanged handler threw an exception", e);
 			}
 		}
 	}

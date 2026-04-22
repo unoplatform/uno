@@ -31,7 +31,13 @@ internal static partial class SystemThemeHelper
 		HighlightTextColor: Color.FromArgb(255, 0, 0, 0),
 		HotlightColor: Color.FromArgb(255, 255, 255, 0),
 		WindowColor: Color.FromArgb(255, 0, 0, 0),
-		WindowTextColor: Color.FromArgb(255, 255, 255, 255));
+		WindowTextColor: Color.FromArgb(255, 255, 255, 255),
+		ActiveCaptionColor: Color.FromArgb(255, 0, 0, 0),
+		BackgroundColor: Color.FromArgb(255, 0, 0, 0),
+		CaptionTextColor: Color.FromArgb(255, 255, 255, 255),
+		InactiveCaptionColor: Color.FromArgb(255, 0, 0, 0),
+		InactiveCaptionTextColor: Color.FromArgb(255, 63, 242, 63),
+		DisabledTextColor: Color.FromArgb(255, 63, 242, 63));
 
 	private static readonly HighContrastSystemColors _mobileHighContrastWhiteSystemColors = new(
 		ButtonFaceColor: Color.FromArgb(255, 255, 255, 255),
@@ -41,7 +47,13 @@ internal static partial class SystemThemeHelper
 		HighlightTextColor: Color.FromArgb(255, 255, 255, 255),
 		HotlightColor: Color.FromArgb(255, 0, 0, 255),
 		WindowColor: Color.FromArgb(255, 255, 255, 255),
-		WindowTextColor: Color.FromArgb(255, 0, 0, 0));
+		WindowTextColor: Color.FromArgb(255, 0, 0, 0),
+		ActiveCaptionColor: Color.FromArgb(255, 255, 255, 255),
+		BackgroundColor: Color.FromArgb(255, 255, 255, 255),
+		CaptionTextColor: Color.FromArgb(255, 0, 0, 0),
+		InactiveCaptionColor: Color.FromArgb(255, 255, 255, 255),
+		InactiveCaptionTextColor: Color.FromArgb(255, 109, 109, 109),
+		DisabledTextColor: Color.FromArgb(255, 109, 109, 109));
 #endif
 
 	/// <summary>

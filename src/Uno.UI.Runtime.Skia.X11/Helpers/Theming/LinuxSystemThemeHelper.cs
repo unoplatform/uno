@@ -20,6 +20,7 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 
 	private SystemTheme _currentTheme = SystemTheme.Light;
 	private bool _currentHighContrast;
+	private string? _currentGtkThemeName;
 
 	private SystemTheme CurrentTheme
 	{
@@ -63,7 +64,30 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 
 	public SystemTheme GetSystemTheme() => CurrentTheme;
 	public bool IsHighContrastEnabled() => CurrentHighContrast;
-	public string GetHighContrastSchemeName() => "High Contrast Black";
+
+	// MUX Reference SystemThemingInterop.cpp GetSystemHighContrastTheme
+	// On Linux, infer the HC scheme from the GTK theme name or fallback to
+	// Dark/Light based on the current system theme.
+	public string GetHighContrastSchemeName()
+	{
+		if (_currentGtkThemeName is { } themeName)
+		{
+			// GTK "HighContrastInverse" is a dark HC theme (white-on-black).
+			// GTK "HighContrast" (without Inverse) is a light HC theme (black-on-white).
+			if (themeName.Contains("Inverse", StringComparison.OrdinalIgnoreCase))
+			{
+				return "High Contrast Black";
+			}
+			else if (themeName.Contains("HighContrast", StringComparison.OrdinalIgnoreCase)
+				|| themeName.Contains("high-contrast", StringComparison.OrdinalIgnoreCase))
+			{
+				return "High Contrast White";
+			}
+		}
+
+		// Fallback: infer from current system theme
+		return _currentTheme == SystemTheme.Dark ? "High Contrast Black" : "High Contrast White";
+	}
 
 	public static LinuxSystemThemeHelper Instance { get; } = new();
 
@@ -119,6 +143,7 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 				{
 					var themeResult = await settings.ReadOneAsync("org.gnome.desktop.interface", "gtk-theme");
 					var themeName = themeResult.GetString();
+					_currentGtkThemeName = themeName;
 					_currentHighContrast = themeName?.Contains("HighContrast", StringComparison.OrdinalIgnoreCase) == true ||
 											themeName?.Contains("high-contrast", StringComparison.OrdinalIgnoreCase) == true;
 				}

@@ -680,7 +680,20 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		ref var rootTransform = ref parentSession.RootTransform;
 
-		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
+		float localOpacity;
+		if (IsHighContrastOpacityOverrideActive && Opacity > 0f && Opacity < 1.0f)
+		{
+			// MUX Reference hwwalk.cpp ShouldOverrideRenderOpacity
+			// In High Contrast with HighContrastAdjustment = Auto,
+			// any element with 0 < opacity < 1 gets opacity forced to 1.
+			localOpacity = 1.0f;
+		}
+		else
+		{
+			localOpacity = Opacity;
+		}
+
+		var opacity = localOpacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * localOpacity;
 
 		_factory.CreateInstance(this, canvas, ref rootTransform, opacity, out session);
 

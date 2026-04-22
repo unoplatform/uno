@@ -77,6 +77,16 @@ namespace Windows.UI.ViewManagement
 			WinRTFeatureConfiguration.Accessibility.HighContrast;
 #endif
 
+		/// <summary>
+		/// Gets the current High Contrast scheme name (static accessor for internal use).
+		/// </summary>
+		internal static string HighContrastSchemeName =>
+#if __SKIA__ || __WASM__
+			WinRTFeatureConfiguration.Accessibility.HighContrastSchemeOverride ?? SystemThemeHelper.HighContrastSchemeName;
+#else
+			WinRTFeatureConfiguration.Accessibility.HighContrastScheme;
+#endif
+
 		internal static void OnHighContrastChanged()
 		{
 			foreach (var instance in _instances)

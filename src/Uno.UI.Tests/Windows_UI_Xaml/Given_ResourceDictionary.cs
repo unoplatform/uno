@@ -1046,7 +1046,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 					HighlightTextColor: Color.FromArgb(255, 240, 241, 242),
 					HotlightColor: Color.FromArgb(255, 17, 181, 203),
 					WindowColor: Color.FromArgb(255, 11, 12, 13),
-					WindowTextColor: Color.FromArgb(255, 244, 245, 246));
+					WindowTextColor: Color.FromArgb(255, 244, 245, 246),
+					ActiveCaptionColor: Color.FromArgb(255, 12, 34, 56),
+					BackgroundColor: Color.FromArgb(255, 11, 12, 13),
+					CaptionTextColor: Color.FromArgb(255, 244, 245, 246),
+					InactiveCaptionColor: Color.FromArgb(255, 12, 34, 56),
+					InactiveCaptionTextColor: Color.FromArgb(255, 145, 156, 167),
+					DisabledTextColor: Color.FromArgb(255, 145, 156, 167));
 
 				Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride = firstColors;
 				ApplicationHelper.ReapplyApplicationTheme();
@@ -1063,7 +1069,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 					HighlightTextColor: Color.FromArgb(255, 110, 120, 130),
 					HotlightColor: Color.FromArgb(255, 140, 150, 160),
 					WindowColor: Color.FromArgb(255, 170, 180, 190),
-					WindowTextColor: Color.FromArgb(255, 210, 220, 230));
+					WindowTextColor: Color.FromArgb(255, 210, 220, 230),
+					ActiveCaptionColor: Color.FromArgb(255, 200, 10, 20),
+					BackgroundColor: Color.FromArgb(255, 170, 180, 190),
+					CaptionTextColor: Color.FromArgb(255, 210, 220, 230),
+					InactiveCaptionColor: Color.FromArgb(255, 200, 10, 20),
+					InactiveCaptionTextColor: Color.FromArgb(255, 50, 60, 70),
+					DisabledTextColor: Color.FromArgb(255, 50, 60, 70));
 
 				Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride = secondColors;
 				ApplicationHelper.ReapplyApplicationTheme();

@@ -2,6 +2,7 @@
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Uno.Helpers.Theming;
 using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml;
@@ -30,7 +31,17 @@ internal static class BorderHelper
 
 	public static void UpdateBackground(this IBorderInfoProvider @this)
 	{
-		@this.BorderVisual.BackgroundBrush = @this.Background?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
+		// MUX Reference Border.cpp, GetBackgroundBrush
+		// If UseBackgroundOverride is set and HC is active, use SystemColorWindowBrush.
+		if (@this is Border border && border.UseBackgroundOverride && SystemThemeHelper.IsHighContrastEnabled)
+		{
+			var windowBrush = Application.Current?.Resources?["SystemColorWindowColorBrush"] as Brush;
+			@this.BorderVisual.BackgroundBrush = windowBrush?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
+		}
+		else
+		{
+			@this.BorderVisual.BackgroundBrush = @this.Background?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
+		}
 	}
 
 	public static void UpdateBorderBrush(this IBorderInfoProvider @this)

@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Windows.UI;
 
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -31,10 +32,39 @@ internal class MacOSSystemThemeHelperExtension : ISystemThemeHelperExtension
 
 	public string GetHighContrastSchemeName()
 	{
-		// macOS doesn't differentiate between HC Black/White/Custom.
-		// "Increase Contrast" is essentially the only mode.
-		return "High Contrast Black";
+		// macOS "Increase Contrast" doesn't have named HC schemes like Windows.
+		// Infer from the current system theme (dark appearance → HC Black, light → HC White).
+		var theme = (SystemTheme)NativeUno.uno_get_system_theme();
+		return theme == SystemTheme.Dark ? "High Contrast Black" : "High Contrast White";
 	}
+
+	public HighContrastSystemColors? GetHighContrastSystemColors()
+	{
+		NativeUno.uno_get_high_contrast_colors(out var native);
+		return new HighContrastSystemColors(
+			ButtonFaceColor: ArgbToColor(native.ButtonFaceColor),
+			ButtonTextColor: ArgbToColor(native.ButtonTextColor),
+			GrayTextColor: ArgbToColor(native.GrayTextColor),
+			HighlightColor: ArgbToColor(native.HighlightColor),
+			HighlightTextColor: ArgbToColor(native.HighlightTextColor),
+			HotlightColor: ArgbToColor(native.HotlightColor),
+			WindowColor: ArgbToColor(native.WindowColor),
+			WindowTextColor: ArgbToColor(native.WindowTextColor),
+			ActiveCaptionColor: ArgbToColor(native.ActiveCaptionColor),
+			BackgroundColor: ArgbToColor(native.BackgroundColor),
+			CaptionTextColor: ArgbToColor(native.CaptionTextColor),
+			InactiveCaptionColor: ArgbToColor(native.InactiveCaptionColor),
+			InactiveCaptionTextColor: ArgbToColor(native.InactiveCaptionTextColor),
+			DisabledTextColor: ArgbToColor(native.DisabledTextColor)
+		);
+	}
+
+	private static Color ArgbToColor(uint argb) =>
+		Color.FromArgb(
+			(byte)((argb >> 24) & 0xFF),
+			(byte)((argb >> 16) & 0xFF),
+			(byte)((argb >> 8) & 0xFF),
+			(byte)(argb & 0xFF));
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	internal static void Update()
@@ -58,4 +88,3 @@ internal class MacOSSystemThemeHelperExtension : ISystemThemeHelperExtension
 		_instance.HighContrastChanged?.Invoke(_instance, EventArgs.Empty);
 	}
 }
-

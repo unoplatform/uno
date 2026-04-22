@@ -117,10 +117,16 @@ internal class Win32SystemThemeHelperExtension : ISystemThemeHelperExtension
 		byte textG = (byte)((textColor >> 8) & 0xFF);
 		byte textB = (byte)((textColor >> 16) & 0xFF);
 
-		bool isWhiteBg = windowR == 255 && windowG == 255 && windowB == 255;
-		bool isBlackBg = windowR == 0 && windowG == 0 && windowB == 0;
-		bool isWhiteText = textR == 255 && textG == 255 && textB == 255;
-		bool isBlackText = textR == 0 && textG == 0 && textB == 0;
+		// MUX Reference SystemThemingInterop.cpp GetSystemHighContrastTheme
+		// Check for pure white/black and Xbox video-safe colors (0xEBEBEB / 0x101010).
+		bool isWhiteBg = (windowR == 255 && windowG == 255 && windowB == 255)
+			|| (windowR == 0xEB && windowG == 0xEB && windowB == 0xEB);
+		bool isBlackBg = (windowR == 0 && windowG == 0 && windowB == 0)
+			|| (windowR == 0x10 && windowG == 0x10 && windowB == 0x10);
+		bool isWhiteText = (textR == 255 && textG == 255 && textB == 255)
+			|| (textR == 0xEB && textG == 0xEB && textB == 0xEB);
+		bool isBlackText = (textR == 0 && textG == 0 && textB == 0)
+			|| (textR == 0x10 && textG == 0x10 && textB == 0x10);
 
 		if (isWhiteBg && isBlackText)
 		{
@@ -151,7 +157,13 @@ internal class Win32SystemThemeHelperExtension : ISystemThemeHelperExtension
 			HighlightTextColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_HIGHLIGHTTEXT),
 			HotlightColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_HOTLIGHT),
 			WindowColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_WINDOW),
-			WindowTextColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_WINDOWTEXT));
+			WindowTextColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_WINDOWTEXT),
+			ActiveCaptionColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_ACTIVECAPTION),
+			BackgroundColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_BACKGROUND),
+			CaptionTextColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_CAPTIONTEXT),
+			InactiveCaptionColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_INACTIVECAPTION),
+			InactiveCaptionTextColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_INACTIVECAPTIONTEXT),
+			DisabledTextColor: GetSystemColor(SYS_COLOR_INDEX.COLOR_GRAYTEXT));
 	}
 
 	private static Color GetSystemColor(SYS_COLOR_INDEX colorIndex)

@@ -380,7 +380,19 @@ namespace Microsoft.UI.Xaml
 			AccessibilitySettings.OnHighContrastChanged();
 			ResourceResolver.UpdateHighContrastSystemColors();
 			UpdateRequestedThemesForResources();
-			OnRequestedThemeChanged();
+
+			// MUX Reference framework.cpp, lines 3348-3363
+			// Set the HC-changing flag so the theme walk can fire the correct events.
+			FrameworkElement.IsHighContrastChanging = true;
+			try
+			{
+				OnRequestedThemeChanged();
+			}
+			finally
+			{
+				FrameworkElement.IsHighContrastChanging = false;
+			}
+
 			UISettings.OnColorValuesChanged();
 			InvalidateHighContrastAdjustmentVisuals();
 		}
@@ -408,12 +420,27 @@ namespace Microsoft.UI.Xaml
 		{
 			if (instance is UIElement element)
 			{
+				// MUX Reference application.cpp NotifyApplicationHighContrastAdjustmentChangedCore
+				// WinUI only notifies elements whose HighContrastAdjustment is at its default
+				// value (Application), meaning they inherit from Application.HighContrastAdjustment.
+				// Elements with explicit Auto or None are not affected by the App-level change.
+				if (element.HighContrastAdjustment != ElementHighContrastAdjustment.Application
+					&& element.HighContrastAdjustment != ElementHighContrastAdjustment.None
+					&& element.HighContrastAdjustment != ElementHighContrastAdjustment.Auto)
+				{
+					// Non-default value; skip this element but still walk children
+					// since children may have the default value.
+				}
+				else
+				{
 #if __SKIA__
-				var visual = Hosting.ElementCompositionPreview.GetElementVisual(element);
-				visual.Compositor.InvalidateRender(visual);
+					element.UpdateHighContrastOpacityOverride();
+					var visual = Hosting.ElementCompositionPreview.GetElementVisual(element);
+					visual.Compositor.InvalidateRender(visual);
 #else
-				element.InvalidateMeasure();
+					element.InvalidateMeasure();
 #endif
+				}
 			}
 
 			if (instance is Controls.Panel p)

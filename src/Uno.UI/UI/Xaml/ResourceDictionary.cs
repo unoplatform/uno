@@ -563,21 +563,29 @@ namespace Microsoft.UI.Xaml
 		private ResourceDictionary _activeThemeDictionary;
 		private ResourceKey _activeTheme;
 		private bool _activeThemeIsHighContrast;
+		private string _activeHighContrastScheme;
 
+		// MUX Reference Resources.cpp, tag winui3/release/1.4.2, lines 718-758
 		private ResourceDictionary GetActiveThemeDictionary(in ResourceKey activeTheme)
 		{
 			var isHighContrastActive = AccessibilitySettings.IsHighContrastActive;
+			var hcScheme = isHighContrastActive ? AccessibilitySettings.HighContrastSchemeName : null;
 
-			if (!activeTheme.Equals(_activeTheme) || _activeThemeIsHighContrast != isHighContrastActive)
+			if (!activeTheme.Equals(_activeTheme) || _activeThemeIsHighContrast != isHighContrastActive
+				|| !string.Equals(_activeHighContrastScheme, hcScheme, StringComparison.Ordinal))
 			{
 				InvalidateNotFoundCache(false);
 				_activeTheme = activeTheme;
 				_activeThemeIsHighContrast = isHighContrastActive;
+				_activeHighContrastScheme = hcScheme;
 
-				// When HC is active, try HC dictionary first, then fall back to base theme, then Default.
+				// MUX Reference Resources.cpp:
+				// When HC is active, try scheme-specific HC dictionary first,
+				// then generic "HighContrast", then base theme, then Default.
 				if (isHighContrastActive)
 				{
-					_activeThemeDictionary = GetThemeDictionary(Themes.HighContrast)
+					_activeThemeDictionary = GetHighContrastThemeDictionary(activeTheme, hcScheme)
+						?? GetThemeDictionary(Themes.HighContrast)
 						?? GetThemeDictionary(activeTheme)
 						?? GetThemeDictionary(Themes.Default);
 				}
@@ -588,6 +596,31 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return _activeThemeDictionary;
+		}
+
+		// MUX Reference Resources.cpp, lines 722-756
+		// Resolves the scheme-specific HC dictionary key based on the current subtree
+		// RequestedTheme and the active HC scheme.
+		private ResourceDictionary GetHighContrastThemeDictionary(in ResourceKey activeTheme, string hcScheme)
+		{
+			// If a subtree requested a specific theme (Light/Dark), map to HC variant.
+			if (activeTheme.Equals(Themes.Light))
+			{
+				return GetThemeDictionary(Themes.HighContrastWhite);
+			}
+			else if (activeTheme.Equals(Themes.Dark))
+			{
+				return GetThemeDictionary(Themes.HighContrastBlack);
+			}
+
+			// No subtree theme override — use the actual HC scheme.
+			return hcScheme switch
+			{
+				"High Contrast Black" => GetThemeDictionary(Themes.HighContrastBlack),
+				"High Contrast White" => GetThemeDictionary(Themes.HighContrastWhite),
+				"High Contrast #1" => GetThemeDictionary(Themes.HighContrastCustom),
+				_ => null
+			};
 		}
 
 		private ResourceDictionary GetThemeDictionary(in ResourceKey theme)
@@ -1037,6 +1070,9 @@ namespace Microsoft.UI.Xaml
 			public static SpecializedResourceDictionary.ResourceKey Light { get; } = "Light";
 			public static SpecializedResourceDictionary.ResourceKey Dark { get; } = "Dark";
 			public static SpecializedResourceDictionary.ResourceKey HighContrast { get; } = "HighContrast";
+			public static SpecializedResourceDictionary.ResourceKey HighContrastBlack { get; } = "HighContrastBlack";
+			public static SpecializedResourceDictionary.ResourceKey HighContrastWhite { get; } = "HighContrastWhite";
+			public static SpecializedResourceDictionary.ResourceKey HighContrastCustom { get; } = "HighContrastCustom";
 			public static SpecializedResourceDictionary.ResourceKey Default { get; } = "Default";
 			public static SpecializedResourceDictionary.ResourceKey Active { get; set; } = Default;
 
