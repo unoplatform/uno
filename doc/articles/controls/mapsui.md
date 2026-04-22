@@ -27,7 +27,7 @@ MapsUI is an open-source .NET map control library that supports multiple platfor
 Add the `Mapsui.Uno.WinUI` NuGet package to your Uno Platform project:
 
 ```xml
-<PackageReference Include="Mapsui.Uno.WinUI" Version="x.x.x" />
+<PackageReference Include="Mapsui.Uno.WinUI" Version="5.0.2" />
 ```
 
 > [!TIP]
