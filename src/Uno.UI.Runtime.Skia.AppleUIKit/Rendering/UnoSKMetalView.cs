@@ -188,7 +188,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				{
 					NativeDispatcher.Main.Enqueue(
 						ct.OnFramePresented,
-						NativeDispatcherPriority.Render);
+						NativeDispatcherPriority.High);
 				}
 			}
 			finally

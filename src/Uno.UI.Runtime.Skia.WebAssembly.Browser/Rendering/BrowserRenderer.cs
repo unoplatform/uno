@@ -102,7 +102,7 @@ internal partial class BrowserRenderer
 		// but kept for forward-compatibility with future MT WASM render worker.
 		NativeDispatcher.Main.Enqueue(
 			compositionTarget.OnFramePresented,
-			NativeDispatcherPriority.Render);
+			NativeDispatcherPriority.High);
 
 		var (path, fillType) = !currentClipPath.IsEmpty ? (currentClipPath.ToSvgPathData(), currentClipPath.FillType is SKPathFillType.EvenOdd ? "evenodd" : "nonzero") : ("", "nonzero");
 		BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(path, fillType);

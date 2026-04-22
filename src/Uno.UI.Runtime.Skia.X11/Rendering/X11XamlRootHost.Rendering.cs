@@ -23,7 +23,7 @@ internal partial class X11XamlRootHost
 			{
 				NativeDispatcher.Main.Enqueue(
 					OnFramePresented,
-					NativeDispatcherPriority.Render);
+					NativeDispatcherPriority.High);
 			});
 	}
 

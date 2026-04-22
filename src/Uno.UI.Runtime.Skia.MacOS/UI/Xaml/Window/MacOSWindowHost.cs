@@ -99,7 +99,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			{
 				NativeDispatcher.Main.Enqueue(
 					OnFramePresented,
-					NativeDispatcherPriority.Render);
+					NativeDispatcherPriority.High);
 			});
 	}
 
@@ -264,7 +264,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		{
 			NativeDispatcher.Main.Enqueue(
 				ct.OnFramePresented,
-				NativeDispatcherPriority.Render);
+				NativeDispatcherPriority.High);
 		}
 	}
 
