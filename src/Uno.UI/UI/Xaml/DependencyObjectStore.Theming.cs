@@ -532,9 +532,23 @@ public partial class DependencyObjectStore
 
 			if (!wasSet)
 			{
-				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
+				// Use the overload that also returns the providing dictionary so we can pin it
+				// on the matching _themeResources entry. Without pinning, subsequent theme
+				// changes cannot re-resolve app-level themed resources correctly when the
+				// binding was registered through the programmatic Style.ApplyTo path.
+				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value, out var providingDict))
 				{
 					SetResourceBindingValue(property, binding, value);
+
+					if (providingDict is not null && _themeResources is not null)
+					{
+						var themeRef = _themeResources.Get(property, binding.Precedence);
+						if (themeRef is not null)
+						{
+							themeRef.SetTargetDictionary(providingDict);
+							themeRef.LastResolvedValue = value;
+						}
+					}
 				}
 			}
 		}

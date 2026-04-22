@@ -312,7 +312,6 @@ namespace Uno.UI
 			// the top-level fallback path, which is fragile in combination with element-level
 			// themes, VisualState transitions and Style assignments that bypass the XAML parser
 			// (e.g. applying a cached app-level Style programmatically after the control is loaded).
-			// See https://github.com/unoplatform/kahua-private/issues/455.
 			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value, out var providingDictionary))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
