@@ -156,27 +156,24 @@ namespace Private.Infrastructure
 			internal static async Task WaitForIdle()
 			{
 #if (HAS_UNO && __SKIA__) || WINAPPSDK
-				// Mirrors WinUI's IdleSynchronizer::WaitInternal
-				// (D:\Mux\Mux\Samples\AppTestAutomationHelpers\IdleSynchronizer.cpp:115-174)
-				// by running both load-bearing steps per iteration:
+				// Mirrors WinUI's IdleSynchronizer.WaitInternal by running both load-bearing
+				// steps per iteration:
 				//
-				//   1. SynchronouslyTickUIThread(1) (IdleSynchronizer.cpp:364) — subscribe to
-				//      CompositionTarget.Rendering inside a dispatcher work item, wait for
-				//      the callback. On Uno Skia, Rendering.add arms ScheduleFrameTick via
-				//      RequestNewFrame, so a FrameTick (UpdateLayout + Loaded events +
-				//      Rendering callbacks + Draw) is guaranteed to run end-to-end.
+				//   1. SynchronouslyTickUIThread(1) — subscribe to CompositionTarget.Rendering
+				//      inside a dispatcher work item, wait for the callback. On Uno Skia,
+				//      Rendering.add arms ScheduleFrameTick via RequestNewFrame, so a FrameTick
+				//      (UpdateLayout + Loaded events + Rendering callbacks + Draw) is guaranteed
+				//      to run end-to-end.
 				//
-				//   2. WaitForIdleDispatcher (IdleSynchronizer.cpp:212) — a non-repeating
-				//      DispatcherQueueTimer with zero Interval fires once the normal queue
-				//      has drained. Tick alone leaves normal-priority work items (Loaded
-				//      handlers, COM/clipboard continuations, awaited async completions)
-				//      pending when the Rendering callback returns.
+				//   2. WaitForIdleDispatcher — a non-repeating DispatcherQueueTimer with zero
+				//      Interval fires once the normal queue has drained. Tick alone leaves
+				//      normal-priority work items (Loaded handlers, COM/clipboard continuations,
+				//      awaited async completions) pending when the Rendering callback returns.
 				//
-				// WinUI itself uses an infinite wait per tick (IdleSynchronizer.cpp:385 →
-				// Event.h:52). We keep a 30 s safety net in ForceFrameTickAsync that throws
-				// rather than silently proceeding — hangs in CI are worse than a visible
-				// failure, but silent "idle" skew on every subsequent assertion is worse
-				// still.
+				// WinUI itself uses an infinite wait per tick. We keep a 30 s safety net in
+				// ForceFrameTickAsync that throws rather than silently proceeding — hangs in
+				// CI are worse than a visible failure, but silent "idle" skew on every
+				// subsequent assertion is worse still.
 				await ForceFrameTickAsync();
 				await WaitForIdleDispatcherAsync();
 #else
@@ -209,9 +206,9 @@ namespace Private.Infrastructure
 				});
 
 				// 30s bound — purely a safety net for a stalled composition/render pipeline.
-				// WinUI's SynchronouslyTickUIThread waits infinitely (IdleSynchronizer.cpp:385);
-				// we prefer a loud failure over a hang in CI, but silently proceeding on a
-				// missed tick would skew every subsequent assertion.
+				// WinUI's SynchronouslyTickUIThread waits infinitely; we prefer a loud failure
+				// over a hang in CI, but silently proceeding on a missed tick would skew every
+				// subsequent assertion.
 				var timeout = Task.Delay(TimeSpan.FromSeconds(30));
 				if (await Task.WhenAny(tcs.Task, timeout) == timeout)
 				{
@@ -227,10 +224,9 @@ namespace Private.Infrastructure
 
 			private static async Task WaitForIdleDispatcherAsync()
 			{
-				// Mirrors WinUI's IdleSynchronizer::WaitForIdleDispatcher
-				// (D:\Mux\Mux\Samples\AppTestAutomationHelpers\IdleSynchronizer.cpp:212):
-				// a non-repeating DispatcherQueueTimer with zero Interval ticks once the
-				// normal-priority queue has drained.
+				// Mirrors WinUI's IdleSynchronizer.WaitForIdleDispatcher: a non-repeating
+				// DispatcherQueueTimer with zero Interval ticks once the normal-priority
+				// queue has drained.
 				var dispatcherQueue = CurrentTestWindow?.DispatcherQueue
 					?? Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 				if (dispatcherQueue is null)
