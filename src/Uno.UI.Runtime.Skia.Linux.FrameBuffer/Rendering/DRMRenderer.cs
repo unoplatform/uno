@@ -41,11 +41,7 @@ namespace Uno.UI.Runtime.Skia
 		private bool _invalidateRenderCalledWhileWaitingForPageFlip;
 		private readonly GCHandle _selfHandle;
 
-		private LibDrm.drmModeModeInfo _savedMode;
-		private uint _savedBufferId;
-		private uint _savedCrtcX;
-		private uint _savedCrtcY;
-		private int _savedModeValid;
+		private LibDrm.drmModeCrtc _savedCrtc;
 		private uint _savedConnectorId;
 		private volatile bool _disposed;
 		private bool _crtcRestored;
@@ -232,11 +228,7 @@ namespace Uno.UI.Runtime.Skia
 			var savedCrtc = LibDrm.drmModeGetCrtc(_card, _crtc);
 			if (savedCrtc != null)
 			{
-				_savedMode = savedCrtc->mode;
-				_savedBufferId = savedCrtc->buffer_id;
-				_savedCrtcX = savedCrtc->x;
-				_savedCrtcY = savedCrtc->y;
-				_savedModeValid = savedCrtc->mode_valid;
+				_savedCrtc = *savedCrtc;
 				_savedConnectorId = connectorId;
 				LibDrm.drmModeFreeCrtc(savedCrtc);
 			}
@@ -462,11 +454,11 @@ namespace Uno.UI.Runtime.Skia
 			{
 				var connectorId = _savedConnectorId;
 				int restoreRes;
-				if (_savedModeValid != 0 && connectorId != 0)
+				if (_savedCrtc.mode_valid != 0 && connectorId != 0)
 				{
-					fixed (LibDrm.drmModeModeInfo* modePtr = &_savedMode)
+					fixed (LibDrm.drmModeModeInfo* modePtr = &_savedCrtc.mode)
 					{
-						restoreRes = LibDrm.drmModeSetCrtc(_card, _crtc, _savedBufferId, _savedCrtcX, _savedCrtcY, &connectorId, 1, modePtr);
+						restoreRes = LibDrm.drmModeSetCrtc(_card, _crtc, _savedCrtc.buffer_id, _savedCrtc.x, _savedCrtc.y, &connectorId, 1, modePtr);
 					}
 				}
 				else
