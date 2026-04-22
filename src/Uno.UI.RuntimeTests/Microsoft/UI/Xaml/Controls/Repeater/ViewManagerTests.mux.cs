@@ -777,7 +777,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		// Why does this test work?
 		// When the elements get created from the RecyclingElementFactory, we get already "existing" data templates.
 		// However, the reason for the crash in #2384 is that those "empty" data templates actually still had their data context
