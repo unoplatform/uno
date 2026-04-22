@@ -115,6 +115,23 @@ public sealed class HotReloadManager : IDisposable
 		// Detects the changes and try to update the solution
 		var originalSolution = workspace.CurrentSolution;
 		var changeSet = await _changesDetector.DiscoverChangesAsync(originalSolution, files, ct).ConfigureAwait(false);
+
+		// [HR-Diag] Temporary instrumentation for unoplatform/uno-private#1956 investigation — do NOT ship.
+		_tracker.Output($"[HR-Diag] changeSet: files={files.Count} " +
+			$"editedDocs={changeSet.EditedDocuments.Length} " +
+			$"editedAdditional={changeSet.EditedAdditionalDocuments.Length} " +
+			$"addedDocs={changeSet.AddedDocuments.Length} " +
+			$"addedAdditional={changeSet.AddedAdditionalDocuments.Length} " +
+			$"ignored={changeSet.IgnoredFiles.Count}");
+		foreach (var ad in changeSet.EditedAdditionalDocuments)
+		{
+			_tracker.Output($"[HR-Diag]   editedAdditional: {ad.FilePath} in project {ad.Project.Name}");
+		}
+		foreach (var ignored in changeSet.IgnoredFiles)
+		{
+			_tracker.Output($"[HR-Diag]   ignored: {ignored}");
+		}
+
 		var solution = await originalSolution.ApplyAsync(changeSet, hotReload, ct).ConfigureAwait(false);
 
 		if (solution == originalSolution)
@@ -131,6 +148,11 @@ public sealed class HotReloadManager : IDisposable
 
 		// Compile the solution and get deltas
 		var (updates, hotReloadDiagnostics) = await _watchService.EmitSolutionUpdateAsync(solution, ct).ConfigureAwait(false);
+
+		// [HR-Diag] Temporary instrumentation for unoplatform/uno-private#1956 investigation — do NOT ship.
+		_tracker.Output($"[HR-Diag] emit: {updates.Length} update(s), " +
+			$"modules=[{string.Join(", ", updates.Select(u => u.ModuleId.ToString().Substring(0, 8)))}] " +
+			$"diagnostics={hotReloadDiagnostics.Length}");
 		// hotReloadDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
 		// of unrecoverable errors that a user cannot fix and requires an app rebuild.
 		var rudeEdits = hotReloadDiagnostics.RemoveAll(d => d.Severity == DiagnosticSeverity.Warning || !d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal));
