@@ -13,6 +13,8 @@ namespace Uno.UI.Runtime.Skia
 	{
 		private FrameBufferDevice _fbDev;
 		private readonly AutoResetEvent _renderInvalidationEvent = new(false);
+		private readonly Thread _renderThread;
+		private volatile bool _disposed;
 
 		public SoftwareRenderer(IXamlRootHost host, MouseIndicatorOptions mouseIndicatorOptions) : base(host, mouseIndicatorOptions)
 		{
@@ -25,13 +27,17 @@ namespace Uno.UI.Runtime.Skia
 				this.Log().Info($"Software renderer initialized: {_fbDev.ScreenSize.Width}x{_fbDev.ScreenSize.Height}, {_fbDev.PixelFormat}");
 			}
 
-			new Thread(_ =>
+			_renderThread = new Thread(_ =>
 			{
-				while (true)
+				while (!_disposed)
 				{
 					try
 					{
 						_renderInvalidationEvent.WaitOne();
+						if (_disposed)
+						{
+							break;
+						}
 						Render();
 						_fbDev.VSync();
 						_surface?.ReadPixels(
@@ -50,7 +56,8 @@ namespace Uno.UI.Runtime.Skia
 			{
 				IsBackground = true,
 				Name = "FrameBuffer software rendering thread"
-			}.Start();
+			};
+			_renderThread.Start();
 		}
 
 		public override void InvalidateRender() => _renderInvalidationEvent.Set();
@@ -62,6 +69,23 @@ namespace Uno.UI.Runtime.Skia
 
 		public override void Dispose()
 		{
+			if (_disposed)
+			{
+				return;
+			}
+			_disposed = true;
+
+			// Wake the render thread so it can observe _disposed and exit before we tear down the framebuffer.
+			_renderInvalidationEvent.Set();
+			try
+			{
+				_renderThread.Join(TimeSpan.FromSeconds(1));
+			}
+			catch (Exception e)
+			{
+				this.LogDebug()?.Debug($"Failed to join the software rendering thread on exit: {e.Message}");
+			}
+
 			// Clearing the mapped framebuffer makes the shell prompt visible again once the shell writes to it.
 			try
 			{
@@ -71,6 +95,17 @@ namespace Uno.UI.Runtime.Skia
 			{
 				this.LogDebug()?.Debug($"Failed to clear the framebuffer on exit: {e.Message}");
 			}
+
+			try
+			{
+				_fbDev.Dispose();
+			}
+			catch (Exception e)
+			{
+				this.LogDebug()?.Debug($"Failed to dispose the framebuffer device on exit: {e.Message}");
+			}
+
+			_surface?.Dispose();
 		}
 	}
 }
