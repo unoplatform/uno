@@ -158,6 +158,7 @@ public class Given_PasswordBox
 
 #if HAS_UNO
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia & ~RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Copy_Cut_Does_Not_Leak_Password()
 	{
 		if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<ApplicationModel.DataTransfer.IClipboardExtension>())
