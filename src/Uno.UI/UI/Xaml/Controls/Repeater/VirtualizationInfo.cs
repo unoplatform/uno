@@ -22,6 +22,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_keepAlive;
 		private bool m_autoRecycleCandidate;
 
+		// True when ViewManager set the element's DataContext during GetElementFromElementFactory.
+		// Used by ClearElementToElementFactory to decide whether to clear DataContext back to null
+		// to avoid holding on to stale bindings.
+		private bool m_mustClearDataContext;
+
 		private WeakReference<object> m_data;
 		private WeakReference<IDataTemplateComponent> m_dataTemplateComponent;
 
@@ -50,6 +55,12 @@ namespace Microsoft.UI.Xaml.Controls
 			set => m_autoRecycleCandidate = value;
 		}
 
+		public bool MustClearDataContext
+		{
+			get => m_mustClearDataContext;
+			set => m_mustClearDataContext = value;
+		}
+
 		public ElementOwner Owner => m_owner;
 
 		public int Index => m_index;
@@ -63,7 +74,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public bool IsHeldByLayout => m_owner == ElementOwner.Layout;
 
-		public bool IsRealized => IsHeldByLayout || m_owner == ElementOwner.PinnedPool;
+		public bool IsInPinnedPool => m_owner == ElementOwner.PinnedPool;
+
+		public bool IsRealized => IsHeldByLayout || IsInPinnedPool;
 
 		public bool IsInUniqueIdResetPool => m_owner == ElementOwner.UniqueIdResetPool;
 
