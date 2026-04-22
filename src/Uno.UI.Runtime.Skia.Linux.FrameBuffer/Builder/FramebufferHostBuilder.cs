@@ -38,7 +38,8 @@ public partial class FramebufferHostBuilder : IPlatformHostBuilder
 			// fall through and try fbdev
 		}
 
-		var anyCard = false;
+		var openedAnyCard = false;
+		var sawAccessError = false;
 		foreach (var path in entries)
 		{
 			if (!DRMCardPathRegex().IsMatch(Path.GetFileName(path)))
@@ -47,13 +48,20 @@ public partial class FramebufferHostBuilder : IPlatformHostBuilder
 				continue;
 			}
 
-			anyCard = true;
 			var fd = Libc.open(path, Libc.O_RDWR, 0);
 			if (fd == -1)
 			{
+				var openErrno = Marshal.GetLastWin32Error();
+				var openErrorString = Marshal.PtrToStringAnsi(Libc.strerror(openErrno));
+				if (openErrno is Libc.EACCES or Libc.EPERM)
+				{
+					sawAccessError = true;
+				}
+				typeof(FramebufferHostBuilder).LogDebug()?.Debug($"Failed to open DRM card '{path}' ({openErrno}: {openErrorString}).");
 				continue;
 			}
 
+			openedAnyCard = true;
 			try
 			{
 				if (LibDrm.drmIsMaster(fd) != 0)
@@ -67,14 +75,22 @@ public partial class FramebufferHostBuilder : IPlatformHostBuilder
 			}
 		}
 
-		if (anyCard)
+		if (openedAnyCard)
 		{
 			// DRM cards exist but another master (display server) owns them.
 			typeof(FramebufferHostBuilder).LogError()?.Error("The Linux framebuffer host detected a DRM device, but another process (most likely a running X11 or Wayland display server) currently holds the DRM master. The framebuffer host is supported on this system but cannot be used until the display server exits or releases the device.");
 			return false;
 		}
 
-		// No DRM — probe fbdev by trying to open the framebuffer device the software renderer would use.
+		if (sawAccessError)
+		{
+			// We found DRM card nodes but couldn't open any of them due to permission errors.
+			// Don't claim another master is holding them — fall through to fbdev, which may still be accessible
+			// (e.g. via the 'video' group) and usable for software rendering.
+			typeof(FramebufferHostBuilder).LogInfo()?.Info("The Linux framebuffer host found DRM card nodes but could not open any of them due to permission errors. Falling back to fbdev probing. Ensure the current user has access to DRM cards (e.g. is a member of the 'video' group) if hardware-accelerated rendering is required.");
+		}
+
+		// No DRM (or no accessible DRM) — probe fbdev by trying to open the framebuffer device the software renderer would use.
 		var fbPath = Environment.GetEnvironmentVariable("FRAMEBUFFER") ?? "/dev/fb0";
 		var fbFd = Libc.open(fbPath, Libc.O_RDWR, 0);
 		if (fbFd == -1)
