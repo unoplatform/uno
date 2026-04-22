@@ -200,15 +200,34 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				catch (Exception e)
 				{
 					this.LogError()?.Error("Failed to create an OpenGLES context, falling back to software rendering", e);
-					_renderer = new SoftwareRenderer(this, mouseIndicatorOptions);
+					_renderer = CreateSoftwareRenderer(mouseIndicatorOptions);
 				}
 			}
 			else
 			{
-				_renderer = new SoftwareRenderer(this, mouseIndicatorOptions);
+				_renderer = CreateSoftwareRenderer(mouseIndicatorOptions);
 			}
 
 			WUX.Application.Start(CreateApp);
+		}
+
+		private SoftwareRenderer CreateSoftwareRenderer(FrameBufferRenderer.MouseIndicatorOptions mouseIndicatorOptions)
+		{
+			try
+			{
+				return new SoftwareRenderer(this, mouseIndicatorOptions);
+			}
+			catch (Exception e)
+			{
+				var fbPath = Environment.GetEnvironmentVariable("FRAMEBUFFER") ?? "/dev/fb0";
+				var message =
+					$"The Linux framebuffer host failed to initialize the software renderer. " +
+					$"Ensure the framebuffer device '{fbPath}' exists and that the current user has read/write access to it " +
+					$"(e.g. is a member of the 'video' group). " +
+					$"Set the FRAMEBUFFER environment variable to point at a different device if needed.";
+				this.LogError()?.Error(message, e);
+				throw new InvalidOperationException(message, e);
+			}
 		}
 
 		void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
