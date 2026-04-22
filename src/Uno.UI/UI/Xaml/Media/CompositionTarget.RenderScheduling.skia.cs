@@ -59,32 +59,40 @@ public partial class CompositionTarget
 	private bool _inFrameTick;
 
 	/// <summary>
-	/// Protects <see cref="_waitingForPresent"/> + <see cref="_pendingFrameRequest"/> reads
-	/// in <see cref="ScheduleFrameTick"/> against UI-thread writes in <see cref="FrameTick"/> /
-	/// <see cref="OnFramePresented"/>. <see cref="ICompositionTarget.RequestNewFrame"/> can be
-	/// called from non-UI threads, so a lock is needed (volatile alone leaves a check-then-act
-	/// race that drops or duplicates schedules).
+	/// Guards frame-scheduling state against concurrent access. Two distinct uses:
+	///  - <see cref="ScheduleFrameTick"/> uses it for the <see cref="_frameTickScheduled"/>
+	///    check-then-act that coalesces duplicate schedules.
+	///  - <see cref="FrameTick"/> and <see cref="OnFramePresented"/> use it for the
+	///    throttle fields (<see cref="_waitingForPresent"/>, <see cref="_pendingFrameRequest"/>)
+	///    so the FrameTick "throttled? → set pending : arm throttle" sequence is atomic
+	///    against the OnFramePresented "clear throttle, read pending" sequence.
+	/// <see cref="ICompositionTarget.RequestNewFrame"/> can be called from non-UI threads,
+	/// so a lock is needed — volatile alone leaves check-then-act races that drop or
+	/// duplicate schedules.
 	/// </summary>
 	private readonly Lock _scheduleGate = new();
 
 	/// <summary>
-	/// Throttle flag: when true, ScheduleFrameTick defers until OnFramePresented clears it.
-	/// Set unconditionally after Render() in FrameTick. Cleared by:
+	/// Throttle flag: when true, <see cref="FrameTick"/> defers the render-side work
+	/// (Rendering event + Render call) and sets <see cref="_pendingFrameRequest"/> so
+	/// OnFramePresented can reschedule. Set unconditionally before Render() runs in
+	/// FrameTick. Cleared by:
 	///  - Win32 (SupportsRenderThrottle == true): the render thread calls OnFramePresented
 	///    after SwapBuffers/BitBlt completes.
 	///  - All other hosts: OnNativePlatformFrameRequested calls OnFramePresented automatically
 	///    after Draw() — that's the platform's vsync callback (Choreographer on Android,
 	///    requestAnimationFrame on WASM, etc).
-	/// Together with the throttle, this paces UI thread render production at vsync rate
-	/// instead of the dispatcher pump rate, preventing wasted SKPicture records and
-	/// idle-queue starvation during continuous animation.
+	/// This paces UI thread render production at vsync rate instead of the dispatcher
+	/// pump rate, preventing wasted SKPicture records and idle-queue starvation during
+	/// continuous animation.
 	/// Read/written under <see cref="_scheduleGate"/>.
 	/// </summary>
 	private bool _waitingForPresent;
 
 	/// <summary>
-	/// Set when ScheduleFrameTick is called while throttled. OnFramePresented schedules
-	/// the deferred FrameTick when it clears the throttle.
+	/// Set inside <see cref="FrameTick"/> when the throttle defers the render-side work
+	/// for this tick. OnFramePresented schedules the deferred FrameTick when it clears
+	/// the throttle.
 	/// Read/written under <see cref="_scheduleGate"/>.
 	/// </summary>
 	private bool _pendingFrameRequest;
