@@ -76,7 +76,7 @@ NavigationView, NumberBox, InfoBar, ProgressRing, ToggleSwitch, HyperlinkButton,
 | `Calendar` | `CalendarView` | Similar functionality with updated API |
 | `ListBox` | `ListBox` or `ListView` | `ListBox` exists in WinUI/Uno; prefer `ListView` when you need richer built-in list item presentation or interaction features |
 
-Package guidance for Community Toolkit controls in this table: in WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, use the Uno-ported toolkit packages (`Uno.CommunityToolkit.WinUI.*`).
+Package guidance for Community Toolkit controls in this table: in WinUI 3 (Windows App SDK), use `CommunityToolkit.WinUI.UI.Controls`; for Uno Platform non-Windows targets, install the matching Uno package for the control you use, such as `Uno.CommunityToolkit.WinUI.UI.Controls` for controls like `DockPanel` and `GridSplitter`, or `Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid` for `DataGrid`. See [Uno Community Toolkit packages](uno-community-toolkit.md) for the authoritative package list and version guidance.
 
 ### Useful NuGet Packages
 
