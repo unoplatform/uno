@@ -1,4 +1,5 @@
 #if __SKIA__
+#nullable enable
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -53,7 +54,9 @@ public class Given_MultiWindowAccessibility
 			await TestServices.WindowHelper.WaitFor(() => activated);
 			await TestServices.WindowHelper.WaitForLoaded(secondaryButton);
 
-			var secondaryOwner = GetAccessibilityOwnerForXamlRoot(secondary.Content.XamlRoot);
+			var secondaryXamlRoot = secondaryButton.XamlRoot
+				?? throw new InvalidOperationException("Secondary button has no XamlRoot.");
+			var secondaryOwner = GetAccessibilityOwnerForXamlRoot(secondaryXamlRoot);
 			Assert.IsNotNull(secondaryOwner, "Secondary window host must implement IAccessibilityOwner (FR-001).");
 
 			var secondaryAccessibility = GetAccessibility(secondaryOwner);
@@ -110,7 +113,9 @@ public class Given_MultiWindowAccessibility
 			await TestServices.WindowHelper.WaitFor(() => activated);
 			await TestServices.WindowHelper.WaitForLoaded(secondaryButton);
 
-			var secondaryOwner = GetAccessibilityOwnerForXamlRoot(secondary.Content.XamlRoot)
+			var secondaryXamlRoot = secondaryButton.XamlRoot
+				?? throw new InvalidOperationException("Secondary button has no XamlRoot.");
+			var secondaryOwner = GetAccessibilityOwnerForXamlRoot(secondaryXamlRoot)
 				?? throw new InvalidOperationException("Secondary owner missing.");
 			secondaryAccessibility = GetAccessibility(secondaryOwner)
 				?? throw new InvalidOperationException("Secondary accessibility missing.");
@@ -159,7 +164,9 @@ public class Given_MultiWindowAccessibility
 			TestServices.WindowHelper.CurrentTestWindow.Activate();
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var secondaryOwner = GetAccessibilityOwnerForXamlRoot(secondary.Content.XamlRoot)
+			var secondaryXamlRoot = secondaryButton.XamlRoot
+				?? throw new InvalidOperationException("Secondary button has no XamlRoot.");
+			var secondaryOwner = GetAccessibilityOwnerForXamlRoot(secondaryXamlRoot)
 				?? throw new InvalidOperationException("Secondary owner missing.");
 			var secondaryAccessibility = GetAccessibility(secondaryOwner)
 				?? throw new InvalidOperationException("Secondary accessibility missing.");
@@ -203,7 +210,9 @@ public class Given_MultiWindowAccessibility
 			await TestServices.WindowHelper.WaitFor(() => activated);
 			await TestServices.WindowHelper.WaitForLoaded(secondaryButton);
 
-			var secondaryOwner = GetAccessibilityOwnerForXamlRoot(secondary.Content.XamlRoot)
+			var secondaryXamlRoot = secondaryButton.XamlRoot
+				?? throw new InvalidOperationException("Secondary button has no XamlRoot.");
+			var secondaryOwner = GetAccessibilityOwnerForXamlRoot(secondaryXamlRoot)
 				?? throw new InvalidOperationException("Secondary owner missing.");
 			var secondaryAccessibility = GetAccessibility(secondaryOwner)
 				?? throw new InvalidOperationException("Secondary accessibility missing.");
@@ -267,7 +276,9 @@ public class Given_MultiWindowAccessibility
 				await TestServices.WindowHelper.WaitFor(() => activated);
 				await TestServices.WindowHelper.WaitForLoaded(secondaryButton);
 
-				var secondaryOwner = GetAccessibilityOwnerForXamlRoot(secondary.Content.XamlRoot)
+				var secondaryXamlRoot = secondaryButton.XamlRoot
+					?? throw new InvalidOperationException("Secondary button has no XamlRoot.");
+				var secondaryOwner = GetAccessibilityOwnerForXamlRoot(secondaryXamlRoot)
 					?? throw new InvalidOperationException("Secondary owner missing.");
 				var secondaryAccessibility = GetAccessibility(secondaryOwner)
 					?? throw new InvalidOperationException("Secondary accessibility missing.");
