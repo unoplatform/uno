@@ -39,8 +39,6 @@ partial class XamlCodeGeneration
 		writer.AppendLine();
 		writer.AppendLineIndented("// Register an embedded sources provider for Hot Reload");
 		writer.AppendLineInvariantIndented("[assembly: global::System.Reflection.AssemblyMetadata(\"Uno.HotDesign.HotReloadEmbeddedXamlSourceFilesProvider\", \"{0}.__Sources__.{1}\")]", _defaultNamespace, embeddedXamlSourcesClassName);
-		writer.AppendLineIndented("// Register a metadata update handler so the cached XAML sources are invalidated when hot reload applies new IL for the GetSources_N() method bodies.");
-		writer.AppendLineInvariantIndented("[assembly: global::System.Reflection.Metadata.MetadataUpdateHandlerAttribute(typeof({0}.__Sources__.{1}.HotReloadMetadataUpdateHandler))]", _defaultNamespace, embeddedXamlSourcesClassName);
 		writer.AppendLine();
 		writer.AppendLineInvariantIndented("namespace {0}.__Sources__;", _defaultNamespace);
 		writer.AppendLine();
@@ -131,25 +129,6 @@ partial class XamlCodeGeneration
 				writer.AppendLineIndented("var normalizedPath = NormalizePath(path);");
 				using (writer.BlockInvariant("if (EnsureInitialize().TryGetValue(normalizedPath, out var entry))"))
 				{
-					writer.AppendLineIndented("// Hot reload workaround: the IL for the baked GetSources_N() delegates is not updated when a .xaml file is edited at runtime");
-					writer.AppendLineIndented("// (the XAML source generator does not re-run during WatchHotReloadService delta emission). Read the file from disk when available");
-					writer.AppendLineIndented("// so Hot Design's property editor observes the user's current XAML. Fall back to the baked payload if the file is absent.");
-					using (writer.BlockInvariant("try"))
-					{
-						using (writer.BlockInvariant("if (global::System.IO.File.Exists(entry.ActualPath))"))
-						{
-							writer.AppendLineIndented("var diskContent = global::System.IO.File.ReadAllText(entry.ActualPath);");
-							writer.AppendLineIndented("var diskHash = ComputeContentHash(diskContent);");
-							writer.AppendLineIndented("global::System.Console.WriteLine($\"[HD-Diag] GetXamlFile: read from disk path={entry.ActualPath} len={diskContent.Length} hash={diskHash}\");");
-							writer.AppendLineIndented("return (entry.ActualPath, diskHash, diskContent);");
-						}
-					}
-					writer.AppendLineIndented("catch (global::System.Exception ex)");
-					using (writer.BlockInvariant(""))
-					{
-						writer.AppendLineIndented("global::System.Console.WriteLine($\"[HD-Diag] GetXamlFile: disk read failed path={entry.ActualPath} error={ex.Message}; falling back to baked payload\");");
-					}
-					writer.AppendLine();
 					writer.AppendLineIndented("var sources = entry.Getter();");
 					writer.AppendLineIndented("return (entry.ActualPath, sources.Hash, sources.Payload);");
 				}
@@ -158,48 +137,6 @@ partial class XamlCodeGeneration
 
 			writer.AppendLine();
 			writer.AppendLineIndented(@"private static string NormalizePath(string path) => path.Replace('\\', '/');");
-
-			writer.AppendLine();
-			using (writer.BlockInvariant("private static string ComputeContentHash(string content)"))
-			{
-				writer.AppendLineIndented("// Stable hex hash of UTF-8 bytes. Consumers (Hot Design) treat the hash opaquely; only stability and content-sensitivity matter.");
-				writer.AppendLineIndented("using var sha = global::System.Security.Cryptography.SHA1.Create();");
-				writer.AppendLineIndented("var bytes = _utf8.GetBytes(content);");
-				writer.AppendLineIndented("var hashBytes = sha.ComputeHash(bytes);");
-				writer.AppendLineIndented("var sb = new global::System.Text.StringBuilder(hashBytes.Length * 2);");
-				using (writer.BlockInvariant("for (var i = 0; i < hashBytes.Length; i++)"))
-				{
-					writer.AppendLineIndented("sb.Append(hashBytes[i].ToString(\"x2\", global::System.Globalization.CultureInfo.InvariantCulture));");
-				}
-				writer.AppendLineIndented("return sb.ToString();");
-			}
-
-			writer.AppendLine();
-			writer.AppendLineIndented("/// <summary>");
-			writer.AppendLineIndented("/// Metadata update handler discovered by <see cref=\"global::System.Reflection.Metadata.MetadataUpdateHandlerAttribute\"/>.");
-			writer.AppendLineIndented("/// Invalidates the cached <c>_XamlSources</c> dictionary and bumps <c>_updateCounter</c> when hot reload applies metadata deltas,");
-			writer.AppendLineIndented("/// so the next call to <c>EnsureInitialize</c> rebuilds the dictionary and re-invokes the freshly-updated <c>GetSources_N</c> method bodies.");
-			writer.AppendLineIndented("/// </summary>");
-			using (writer.BlockInvariant("internal static class HotReloadMetadataUpdateHandler"))
-			{
-				using (writer.BlockInvariant("public static void ClearCache(global::System.Type[]? types)"))
-				{
-					writer.AppendLineIndented("global::System.Console.WriteLine($\"[HD-Diag] EmbeddedXamlSourcesProvider.HotReloadMetadataUpdateHandler.ClearCache invoked, types={types?.Length ?? 0}\");");
-					writer.AppendLineIndented("// Dropping _XamlSources forces the next EnsureInitialize call to rebuild the dictionary using the updated method-group references to GetSources_N(), which may now carry new IL.");
-					writer.AppendLineIndented("_XamlSources = null;");
-					writer.AppendLineIndented("_filesListHash = null;");
-					writer.AppendLineIndented("unchecked { _updateCounter++; }");
-				}
-				writer.AppendLine();
-				using (writer.BlockInvariant("public static void UpdateApplication(global::System.Type[]? types)"))
-				{
-					writer.AppendLineIndented("global::System.Console.WriteLine($\"[HD-Diag] EmbeddedXamlSourcesProvider.HotReloadMetadataUpdateHandler.UpdateApplication invoked, types={types?.Length ?? 0}\");");
-					writer.AppendLineIndented("// Called after metadata deltas are applied. ClearCache already invalidated our state; this method is present so the runtime recognizes the handler even in delta-ordering scenarios.");
-					writer.AppendLineIndented("_XamlSources = null;");
-					writer.AppendLineIndented("_filesListHash = null;");
-					writer.AppendLineIndented("unchecked { _updateCounter++; }");
-				}
-			}
 
 			foreach (var f in interestingFiles)
 			{
