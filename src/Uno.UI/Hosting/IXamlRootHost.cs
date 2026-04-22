@@ -26,8 +26,10 @@ internal interface IXamlRootHost
 	/// "previous frame is on its way to the display" moment for hosts that don't need
 	/// post-present accuracy.
 	///
-	/// Either way, FrameTick scheduling is throttled by <c>_waitingForPresent</c> until
-	/// OnFramePresented fires, pacing UI thread render production at vsync rate.
+	/// Either way, <c>_waitingForPresent</c> paces render-side work until OnFramePresented
+	/// fires: frame ticks may still be enqueued (so layout and Loaded events keep flowing),
+	/// but the Rendering event and Render call inside FrameTick are gated while waiting
+	/// for the prior frame to be presented.
 	///
 	/// Currently only Win32 returns true (its render thread is the present signal).
 	/// </summary>

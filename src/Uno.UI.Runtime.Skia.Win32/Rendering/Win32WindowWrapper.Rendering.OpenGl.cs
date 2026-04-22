@@ -116,7 +116,11 @@ internal partial class Win32WindowWrapper
 			if (wglSwapIntervalAddr != IntPtr.Zero)
 			{
 				var wglSwapInterval = Marshal.GetDelegateForFunctionPointer<WglSwapIntervalEXT>(wglSwapIntervalAddr);
-				wglSwapInterval(1);
+				if (wglSwapInterval(1) == 0)
+				{
+					typeof(GlRenderer).LogWarn()?.Warn(
+						"Failed to enable VSync via wglSwapIntervalEXT; the render loop may run unthrottled on this driver.");
+				}
 			}
 
 			var grGlInterface = GRGlInterface.Create();
