@@ -527,6 +527,14 @@ public class Given_ScrollViewer_Anchoring
 		var inserted = new Border { Width = 200, Height = 100, Background = new SolidColorBrush(Colors.LightGreen) };
 		panel.Children.Insert(0, inserted);
 
+		// On native WinUI, ScrollContentPresenter operates in its "actual-height-as-extent" mode when the
+		// content has default (Stretch) VerticalAlignment and no explicit Height. In that mode, inserting
+		// a new descendant causes ScrollContentPresenter.ArrangeOverride to defer the extent update by
+		// calling InvalidateArrange() when the child is still dirty after the first arrange — the extent
+		// only propagates on the SECOND arrange pass. Force two synchronous layout passes so the flushed
+		// extent reaches sv.ExtentHeight before we assert.
+		sv.UpdateLayout();
+		sv.UpdateLayout();
 		await WindowHelper.WaitForIdle();
 
 		Assert.AreEqual(extentBefore + 100, sv.ExtentHeight, 1.5, "Extent should have grown.");
@@ -547,6 +555,9 @@ public class Given_ScrollViewer_Anchoring
 		var added = new Border { Width = 200, Height = 100, Background = new SolidColorBrush(Colors.LightGreen) };
 		panel.Children.Add(added);
 
+		// Force two layout passes; see FarEdge_Anchoring_VerticalRatio1 for rationale.
+		sv.UpdateLayout();
+		sv.UpdateLayout();
 		await WindowHelper.WaitForIdle();
 
 		Assert.AreEqual(0, sv.VerticalOffset, 0.5, "At near edge with ratio 0, offset should remain at 0.");

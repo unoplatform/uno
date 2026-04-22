@@ -8,11 +8,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TextCompositionChangedEventArgs
 	{
-#if false || false || false || false || false || false || false
-		internal TextCompositionChangedEventArgs()
-		{
-		}
-#endif
+		// Skipping already declared property Length
+		// Skipping already declared property StartIndex
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionChangedEventArgs.Length.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionChangedEventArgs.StartIndex.get
 	}
