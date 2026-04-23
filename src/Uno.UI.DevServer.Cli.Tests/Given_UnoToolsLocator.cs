@@ -259,7 +259,7 @@ public class Given_UnoToolsLocator
 	{
 		var psi = DevServerProcessHelper.CreateDotnetProcessStartInfo(
 			hostPath: "stub.dll",
-			arguments: Array.Empty<string>(),
+			arguments: [],
 			workingDirectory: Path.GetTempPath(),
 			redirectOutput: true,
 			enableMajorRollForward: true);
@@ -276,7 +276,7 @@ public class Given_UnoToolsLocator
 	public void When_EnableMajorRollForward_Is_False_Then_Helper_Does_Not_Force_Major()
 	{
 		var psi = DevServerProcessHelper.CreateDotnetProcessStartInfo(
-			"stub.dll", Array.Empty<string>(), Path.GetTempPath(),
+			"stub.dll", [], Path.GetTempPath(),
 			redirectOutput: true, enableMajorRollForward: false);
 
 		if (psi.Environment.TryGetValue("DOTNET_ROLL_FORWARD", out var value))

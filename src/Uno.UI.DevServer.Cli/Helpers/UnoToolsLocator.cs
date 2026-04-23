@@ -603,8 +603,8 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 	/// when the directory does not exist so the caller can surface a clean error.
 	/// The result is sorted by parsed (major, minor) in ascending order; string-ordinal
 	/// sort would incorrectly place <c>net10.0</c> before <c>net9.0</c>, which is
-	/// harmless for <see cref="TryResolveHostTfm"/> (it re-sorts numerically) but misleads
-	/// the user-facing "present" list in the error log.
+	/// harmless for <see cref="TryResolveHostTfm"/> (it scans in a single pass and is
+	/// order-independent) but misleads the user-facing "present" list in the error log.
 	/// </summary>
 	internal static string[] EnumerateHostTfms(string hostRoot)
 	{
