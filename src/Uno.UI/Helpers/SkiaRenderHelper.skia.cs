@@ -174,7 +174,7 @@ internal static class SkiaRenderHelper
 		};
 
 		private readonly TimeSpan[] _frameTimes;
-		// Stopwatch elapsed ticks; accessed across threads via Interlocked to avoid torn reads on 32-bit.
+		// TimeSpan ticks (100ns units); accessed across threads via Interlocked to avoid torn reads on 32-bit.
 		private readonly long[] _drawToPresentTimeTicks;
 		private readonly Timer _fpsTimer;
 		private int _frameTimesHead;
