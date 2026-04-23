@@ -142,7 +142,6 @@ internal static class SkiaRenderHelper
 
 		private static readonly SKPaint _backgroundPaint = new() { Color = new SKColor(0, 0, 0, 0xCC), IsAntialias = true };
 		private static readonly SKPaint _textPaint = new() { Color = SKColors.White, IsAntialias = true };
-		private static readonly SKPaint _iconDotPaint = new() { Color = SKColors.White, IsAntialias = true };
 		private static readonly SKPaint _fpsIconPaint = CreateStrokePaint(new SKColor(0x4C, 0xAF, 0x50));
 		private static readonly SKPaint _fpsIconFillPaint = CreateFillPaint(new SKColor(0x4C, 0xAF, 0x50));
 		private static readonly SKPaint _droppedIconPaint = CreateStrokePaint(new SKColor(0xF4, 0x43, 0x36));
@@ -174,7 +173,8 @@ internal static class SkiaRenderHelper
 		};
 
 		private readonly TimeSpan[] _frameTimes;
-		private readonly TimeSpan[] _drawToPresentTimes;
+		// Stopwatch elapsed ticks; accessed across threads via Interlocked to avoid torn reads on 32-bit.
+		private readonly long[] _drawToPresentTimeTicks;
 		private readonly Timer _fpsTimer;
 		private int _frameTimesHead;
 		private int _drawToPresentTimesHead;
@@ -193,7 +193,7 @@ internal static class SkiaRenderHelper
 		public FpsHelper(int numberOfFramesToCalculateFrameTime = 10)
 		{
 			_frameTimes = new TimeSpan[numberOfFramesToCalculateFrameTime];
-			_drawToPresentTimes = new TimeSpan[numberOfFramesToCalculateFrameTime];
+			_drawToPresentTimeTicks = new long[numberOfFramesToCalculateFrameTime];
 			_fpsTimer = new Timer(static state => (state as FpsHelper)?.TimerTick(), this, TimeSpan.Zero, TimeSpan.FromSeconds(1));
 		}
 
@@ -287,8 +287,9 @@ internal static class SkiaRenderHelper
 			var pictureReady = Interlocked.Read(ref _pictureReadyTimestamp);
 			if (pictureReady != 0)
 			{
-				_drawToPresentTimes[_drawToPresentTimesHead] = Stopwatch.GetElapsedTime(pictureReady);
-				_drawToPresentTimesHead = (_drawToPresentTimesHead + 1) % _drawToPresentTimes.Length;
+				var elapsedTicks = Stopwatch.GetElapsedTime(pictureReady).Ticks;
+				Interlocked.Exchange(ref _drawToPresentTimeTicks[_drawToPresentTimesHead], elapsedTicks);
+				_drawToPresentTimesHead = (_drawToPresentTimesHead + 1) % _drawToPresentTimeTicks.Length;
 			}
 
 			Interlocked.Exchange(ref _lastPresentedGeneration, current);
@@ -318,7 +319,7 @@ internal static class SkiaRenderHelper
 			if (applyScale)
 			{
 				canvas.Save();
-				canvas.Scale(Scale!.Value, Scale.Value);
+				canvas.Scale(scale, scale);
 			}
 
 			canvas.DrawRoundRect(new SKRect(0, 0, panelWidth, panelHeight), BackgroundCornerRadius, BackgroundCornerRadius, _backgroundPaint);
@@ -433,12 +434,12 @@ internal static class SkiaRenderHelper
 			DroppedFrames = Interlocked.Exchange(ref _droppedThisSecond, 0);
 			UnpresentedFrames = Interlocked.Exchange(ref _unpresentedThisSecond, 0);
 
-			var acc = TimeSpan.Zero;
-			foreach (var t in _drawToPresentTimes)
+			long accTicks = 0;
+			for (var i = 0; i < _drawToPresentTimeTicks.Length; i++)
 			{
-				acc += t;
+				accTicks += Interlocked.Read(ref _drawToPresentTimeTicks[i]);
 			}
-			DrawToPresentDelayMs = acc.TotalMilliseconds / _drawToPresentTimes.Length;
+			DrawToPresentDelayMs = TimeSpan.FromTicks(accTicks).TotalMilliseconds / _drawToPresentTimeTicks.Length;
 		}
 
 		public void Dispose() => _fpsTimer.Dispose();
