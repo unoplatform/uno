@@ -36,20 +36,29 @@ internal class X11TextScaleFactorExtension : ITextScaleFactorExtension
 				return;
 			}
 
-			var connection = new DBusConnection(sessionsAddressBus);
-			await connection.ConnectAsync();
-
-			var desktopService = new DBusService(connection, Service);
-			var settings = desktopService.CreateSettings(ObjectPath);
-
-			var version = await settings.GetVersionAsync();
-			if (version != 2)
+			double newScale;
+			using (var connection = new DBusConnection(sessionsAddressBus))
 			{
-				return;
+				await connection.ConnectAsync();
+
+				var desktopService = new DBusService(connection, Service);
+				var settings = desktopService.CreateSettings(ObjectPath);
+
+				var version = await settings.GetVersionAsync();
+				if (version != 2)
+				{
+					return;
+				}
+
+				var result = await settings.ReadOneAsync("org.gnome.desktop.interface", "text-scaling-factor");
+				newScale = result.GetDouble();
 			}
 
-			var result = await settings.ReadOneAsync("org.gnome.desktop.interface", "text-scaling-factor");
-			_currentScale = result.GetDouble();
+			if (!newScale.Equals(_currentScale))
+			{
+				_currentScale = newScale;
+				RaiseTextScaleFactorChanged();
+			}
 		}
 		catch (Exception e)
 		{

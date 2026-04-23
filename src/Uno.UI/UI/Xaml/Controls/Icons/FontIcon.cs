@@ -152,7 +152,7 @@ public partial class FontIcon : IconElement, IThemeChangeAware
 			typeof(bool),
 			typeof(FontIcon),
 			new FrameworkPropertyMetadata(
-				false,
+				true,
 				(s, e) => ((FontIcon)s)._textBlock.IsTextScaleFactorEnabled = (bool)e.NewValue));
 
 	/// <summary>

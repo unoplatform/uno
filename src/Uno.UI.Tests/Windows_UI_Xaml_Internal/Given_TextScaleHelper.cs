@@ -54,6 +54,18 @@ public class Given_TextScaleHelper
 	}
 
 	[TestMethod]
+	public void When_FontScaleLessThanOne_Returns_Original()
+	{
+		// Android/iOS can report scales below 1.0. WinUI only supports >= 1.0,
+		// so we clamp to avoid negative or reduced font sizes.
+		var result = TextScaleHelper.GetScaledFontSize(1, 0.8, true);
+		Assert.AreEqual(1.0, result, "fontScale < 1.0 should return the original font size unchanged");
+
+		var result2 = TextScaleHelper.GetScaledFontSize(14, 0.5, true);
+		Assert.AreEqual(14.0, result2, "fontScale < 1.0 should return the original font size unchanged");
+	}
+
+	[TestMethod]
 	public void When_Scaled_Result_Greater_Than_Input()
 	{
 		var result = TextScaleHelper.GetScaledFontSize(14, 1.5, true);

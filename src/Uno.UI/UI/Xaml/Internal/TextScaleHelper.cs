@@ -28,6 +28,13 @@ internal static class TextScaleHelper
 			return inputFontSize;
 		}
 
+		// WinUI only supports scale factors >= 1.0. Clamp to avoid reducing font sizes
+		// or producing negative values (which can occur on Android/iOS with scale < 1.0).
+		if (fontScale <= 1.0)
+		{
+			return inputFontSize;
+		}
+
 		double capped = Math.Max(inputFontSize, 1.0);
 
 		// s_o = s_i + max(-e * ln(s_i) + 18, 0) * (f - 1)
