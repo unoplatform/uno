@@ -315,7 +315,7 @@ public class Given_UnoToolsLocator
 		"points at a likely cause (missing/partial package restore).")]
 	public void When_No_Tfms_Are_Available_Then_Returns_Null()
 	{
-		UnoToolsLocator.TryResolveHostTfm(Array.Empty<string>(), "net10.0").Should().BeNull();
+		UnoToolsLocator.TryResolveHostTfm([], "net10.0").Should().BeNull();
 	}
 
 	[TestMethod]
