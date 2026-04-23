@@ -402,4 +402,24 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		var success = PInvoke.SetLayeredWindowAttributes((HWND)window.Hwnd, new COLORREF(0), (byte)Math.Round(opacity * 255), LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_ALPHA);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetLayeredWindowAttributes)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
+
+	public bool SupportsZIndex() => true;
+
+	public void SetZIndex(object content, int zIndex)
+	{
+		if (content is not Win32NativeWindow window)
+		{
+			return;
+		}
+
+		var success = PInvoke.SetWindowPos(
+			(HWND)window.Hwnd,
+			default, // HWND_TOP == (HWND)0
+			0, 0, 0, 0,
+			SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
+		if (!success)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} (z-order) failed: {Win32Helper.GetErrorMessage()}");
+		}
+	}
 }
