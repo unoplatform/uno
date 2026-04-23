@@ -82,11 +82,14 @@ public partial class CompositionTarget
 
 		_fpsHelper.RequestRedraw ??= () =>
 		{
-			var root = ContentRoot.VisualTree.RootElement?.XamlRoot;
-			if (root != null)
+			NativeDispatcher.Main.Enqueue(() =>
 			{
-				XamlRootMap.GetHostForRoot(root)?.InvalidateRender();
-			}
+				var root = ContentRoot.VisualTree.RootElement?.XamlRoot;
+				if (root != null)
+				{
+					XamlRootMap.GetHostForRoot(root)?.InvalidateRender();
+				}
+			});
 		};
 
 		var rootElement = ContentRoot.VisualTree.RootElement;
