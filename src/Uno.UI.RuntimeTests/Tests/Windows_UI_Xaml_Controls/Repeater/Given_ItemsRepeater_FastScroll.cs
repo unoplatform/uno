@@ -35,6 +35,14 @@ public class Given_ItemsRepeater_FastScroll
 		</DataTemplate>
 		""";
 
+	// Horizontal variant reuses the model's Height property as the major-axis size (Width) so
+	// vertical/horizontal tests can share the same ItemModel and helpers.
+	private const string ItemTemplateHorizontalXaml = """
+		<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+			<Border Width="{Binding Height}" Background="{Binding Background}" />
+		</DataTemplate>
+		""";
+
 	[TestMethod]
 #if __ANDROID__ || __IOS__ || __WASM__
 	[Ignore("Fails due to async native scrolling.")]
@@ -175,6 +183,77 @@ public class Given_ItemsRepeater_FastScroll
 			"Item 6 must shift down by the growth delta after item 5 grows");
 	}
 
+	[TestMethod]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_FastScrollHorizontal_WithHighVarianceItems_Then_NoOverlap()
+	{
+		// Horizontal orientation counterpart of When_FastScrollWithHighVarianceItems_Then_NoOverlap.
+		// The StackLayout.GetExtent clamp applied to the major axis regardless of orientation, so the
+		// bug symptoms are equally reproducible horizontally. This guards against orientation-specific
+		// regressions in the anchor-shift pipeline.
+		var sut = CreateHighVarianceHorizontalSut(itemCount: 200, viewport: new Size(600, 300));
+		await LoadAsync(sut);
+
+		var offsets = new[] { 5000.0, 0.0, 12000.0, 300.0 };
+		foreach (var offset in offsets)
+		{
+			sut.Scroller.ChangeView(offset, null, null, disableAnimation: true);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			AssertNoOverlapHorizontal(sut);
+			AssertAllMaterializedChildrenHaveFiniteOffsets(sut);
+		}
+	}
+
+	[TestMethod]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_ScrolledToBottom_Then_ScrollableExtentIsConsistent()
+	{
+		// After the clamp fix, the estimated extent must converge toward the real cumulative size as
+		// items are realized. This test scrolls through the whole list, then verifies:
+		//   (1) VerticalOffset reaches ScrollableHeight when requested,
+		//   (2) ExtentHeight == ScrollableHeight + ViewportHeight (the trivial ScrollViewer invariant),
+		//   (3) the last item is positioned so its bottom aligns with the content extent.
+		// Before the fix, the clamp produced inconsistent ExtentHeight values that broke (1) and (3).
+		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		await LoadAsync(sut);
+
+		// Walk down to the bottom in small increments so every item gets measured at least once
+		// (drives the average-size estimation toward the true mean).
+		const int Steps = 40;
+		var bottomTarget = sut.Scroller.ScrollableHeight;
+		for (var i = 1; i <= Steps; i++)
+		{
+			sut.Scroller.ChangeView(null, bottomTarget * i / Steps, null, disableAnimation: true);
+			await TestServices.WindowHelper.WaitForIdle();
+			bottomTarget = sut.Scroller.ScrollableHeight;
+		}
+
+		// Final explicit scroll to end using the latest-known ScrollableHeight.
+		sut.Scroller.ChangeView(null, sut.Scroller.ScrollableHeight, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		sut.Scroller.VerticalOffset.Should().BeApproximately(sut.Scroller.ScrollableHeight, OffsetTolerance,
+			"VerticalOffset must reach ScrollableHeight after ChangeView to end");
+
+		(sut.Scroller.ExtentHeight - sut.Scroller.ViewportHeight).Should().BeApproximately(
+			sut.Scroller.ScrollableHeight, OffsetTolerance,
+			"ExtentHeight must equal ScrollableHeight + ViewportHeight");
+
+		// The last item must sit at the bottom of the content extent. Its bottom edge in scroller
+		// space is (ActualOffset.Y relative to repeater) + Height — this must land at or before the
+		// viewport's bottom. An ExtentHeight that's too small would push the last item out of reach.
+		var lastItem = FindMaterializedElementForIndex(sut, sut.Source.Count - 1);
+		lastItem.Should().NotBeNull("Last item must be materialized when scrolled to the bottom");
+		var lastItemBottomInScroller = lastItem!.TransformToVisual(sut.Scroller).TransformPoint(new Point(0, lastItem.ActualHeight)).Y;
+		lastItemBottomInScroller.Should().BeApproximately(sut.Scroller.ViewportHeight, 1,
+			"Last item's bottom must align with the viewport's bottom when scrolled to the end");
+	}
+
 	// ----- helpers -----
 
 	private static SutHandle CreateHighVarianceSut(int itemCount, Size viewport)
@@ -183,6 +262,36 @@ public class Given_ItemsRepeater_FastScroll
 			.Select(i => new ItemModel(i, (i % 10 == 3) ? 1200 : 40, ColorForIndex(i)))
 			.ToArray();
 		return CreateSut(items, viewport);
+	}
+
+	private static SutHandle CreateHighVarianceHorizontalSut(int itemCount, Size viewport)
+	{
+		var items = Enumerable.Range(0, itemCount)
+			.Select(i => new ItemModel(i, (i % 10 == 3) ? 1200 : 40, ColorForIndex(i)))
+			.ToArray();
+
+		var source = new ObservableCollection<ItemModel>(items);
+		var template = (DataTemplate)XamlReader.Load(ItemTemplateHorizontalXaml);
+
+		ItemsRepeater repeater = new()
+		{
+			ItemsSource = source,
+			Layout = new StackLayout { Orientation = Orientation.Horizontal },
+			ItemTemplate = template,
+			// Horizontal mirror of the chat-style layout anchored to the trailing edge.
+			HorizontalAlignment = HorizontalAlignment.Right,
+		};
+
+		ScrollViewer scroller = new()
+		{
+			Width = viewport.Width,
+			Height = viewport.Height,
+			Content = repeater,
+			HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+			VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+		};
+
+		return new SutHandle(scroller, repeater, source);
 	}
 
 	private static SutHandle CreateSut(IReadOnlyList<ItemModel> items, Size viewport)
@@ -283,6 +392,23 @@ public class Given_ItemsRepeater_FastScroll
 			var curr = laidOut[i];
 			(curr.Top - prev.Bottom).Should().BeGreaterThanOrEqualTo(-OverlapTolerance,
 				$"Items must not overlap, but item@{curr.Top:F2} overlaps previous item bottom@{prev.Bottom:F2}");
+		}
+	}
+
+	private static void AssertNoOverlapHorizontal(SutHandle sut)
+	{
+		var laidOut = EnumerateRepeaterChildren(sut.Repeater)
+			.Where(c => c.ActualWidth > 0 && c.ActualOffset.X > -1000)
+			.Select(c => (Left: c.ActualOffset.X, Right: c.ActualOffset.X + c.ActualWidth))
+			.OrderBy(t => t.Left)
+			.ToArray();
+
+		for (var i = 1; i < laidOut.Length; i++)
+		{
+			var prev = laidOut[i - 1];
+			var curr = laidOut[i];
+			(curr.Left - prev.Right).Should().BeGreaterThanOrEqualTo(-OverlapTolerance,
+				$"Items must not overlap, but item@{curr.Left:F2} overlaps previous item right@{prev.Right:F2}");
 		}
 	}
 
