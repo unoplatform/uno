@@ -27,8 +27,9 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	private readonly ContentPresenter _presenter;
 	private readonly SKPath _tempPath = new();
-	private SKPath? _lastClipPath;
 	private Rect _lastArrangeRect;
+	private Rect _pendingArrangeRect;
+	private bool _arrangePending;
 	private string? _lastFinalSvgClipPath;
 	private HRGN _lastClipHrgn;
 	private bool _showWindowOnNextArrange;
@@ -101,8 +102,49 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	private unsafe void OnRenderingNegativePathReevaluated(object? sender, SKPath path)
 	{
-		_lastClipPath = path;
+		if (_presenter.Content is not Win32NativeWindow window)
+		{
+			return;
+		}
 
+		if (_arrangePending)
+		{
+			_arrangePending = false;
+			_lastArrangeRect = _pendingArrangeRect;
+			_lastFinalSvgClipPath = null; // force clip recomputation for the new arrange rect
+
+			var posSuccess = PInvoke.SetWindowPos(
+				(HWND)window.Hwnd,
+				HWND.Null,
+				(int)_lastArrangeRect.X,
+				(int)_lastArrangeRect.Y,
+				(int)_lastArrangeRect.Width,
+				(int)_lastArrangeRect.Height,
+				SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
+			if (!posSuccess)
+			{
+				this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+			}
+		}
+
+		try
+		{
+			ApplyClipPath(path);
+		}
+		finally
+		{
+			// Reveal the window only after position + clip are applied for the first time,
+			// to avoid a split-second flash of an unpositioned / unclipped window.
+			if (_showWindowOnNextArrange)
+			{
+				_showWindowOnNextArrange = false;
+				_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+			}
+		}
+	}
+
+	private unsafe void ApplyClipPath(SKPath path)
+	{
 		_tempPath.Rewind();
 		_tempPath.AddRect(_lastArrangeRect.ToSKRect());
 		path.Op(_tempPath, SKPathOp.Intersect, _tempPath);
@@ -286,7 +328,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	public void ArrangeNativeElement(object content, Rect arrangeRect)
 	{
-		if (content is not Win32NativeWindow window)
+		if (content is not Win32NativeWindow)
 		{
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
@@ -298,36 +340,18 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		var width = arrangeRect.Width * scale;
 		var height = arrangeRect.Height * scale;
 
-		_lastArrangeRect = new Rect(
+		// Stash the intended rect and defer SetWindowPos to OnRenderingNegativePathReevaluated,
+		// which fires between the Skia picture playback and CopyPixels. Moving the child HWND
+		// at that point keeps its position update temporally adjacent to the parent framebuffer
+		// present, so DWM is more likely to see both updates in the same compose cycle — rather
+		// than compositing the child at a new position over the parent's previous frame (visible
+		// as flicker when scrolling a native element).
+		_pendingArrangeRect = new Rect(
 			double.IsFinite(x) ? x : 0,
 			double.IsFinite(y) ? y : 0,
 			double.IsFinite(width) ? width : 0,
 			double.IsFinite(height) ? height : 0);
-
-		var success = PInvoke.SetWindowPos(
-				(HWND)window.Hwnd,
-				HWND.Null,
-				(int)_lastArrangeRect.X,
-				(int)_lastArrangeRect.Y,
-				(int)_lastArrangeRect.Width,
-				(int)_lastArrangeRect.Height,
-				SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
-		if (!success)
-		{
-			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
-		}
-
-		if (_lastClipPath is not null)
-		{
-			_lastFinalSvgClipPath = null; // force reapply clip path after arranging
-			OnRenderingNegativePathReevaluated(this, _lastClipPath);
-		}
-
-		if (_showWindowOnNextArrange)
-		{
-			_showWindowOnNextArrange = false;
-			_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
-		}
+		_arrangePending = true;
 	}
 
 	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize)
