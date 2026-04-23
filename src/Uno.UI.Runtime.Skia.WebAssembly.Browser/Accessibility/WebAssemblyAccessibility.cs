@@ -38,7 +38,21 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			this.Log().Trace($"Initializing {nameof(WebAssemblyAccessibility)}");
 		}
 
-		RegisterCallbacks();
+		// WebAssembly is a single-window runtime (one browser tab); the Skia-Desktop
+		// AccessibilityRouter is not used here. Wire the framework's single-slot
+		// accessibility registrations directly to this singleton.
+		AccessibilityAnnouncer.AccessibilityImpl = this;
+		UIElementAccessibilityHelper.ExternalOnChildAdded = (parent, child, index) => RouteChildAdded(parent, child, index);
+		UIElementAccessibilityHelper.ExternalOnChildRemoved = (parent, child) => RouteChildRemoved(parent, child);
+		VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = visual => RouteVisualOffsetOrSizeChanged(visual);
+		AutomationPeer.AutomationPeerListener = this;
+	}
+
+	protected override void DisposeCore()
+	{
+		// WebAssembly runs in a single browser tab; disposal is not part of the
+		// per-window lifecycle exercised by the Skia-Desktop router. No-op so the
+		// base-class lifecycle contract holds.
 	}
 
 	private bool _isAccessibilityEnabled;

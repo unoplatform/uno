@@ -22,7 +22,7 @@ using Window = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCorePointerInputSource
+internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCorePointerInputSource, IAccessibilityOwner
 {
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly MacOSWindowNative _nativeWindow;
@@ -36,6 +36,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private bool _initializationCompleted;
 	private string? _lastSvgClipPath;
 	private Size _nativeWindowSize;
+	private MacOSAccessibility? _accessibility;
+	private bool _accessibilityBuildQueued;
 
 	public MacOSWindowHost(MacOSWindowNative nativeWindow, Window winUIWindow, XamlRoot xamlRoot)
 	{
@@ -203,6 +205,83 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	}
 
 	public UIElement? RootElement => _winUIWindow.RootElement;
+
+	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
+
+	internal void InitializeAccessibility()
+	{
+		if (_accessibility is not null || _nativeWindow.Handle == nint.Zero)
+		{
+			return;
+		}
+
+		_accessibility = new MacOSAccessibility(_nativeWindow.Handle);
+
+		if (_winUIWindow.RootElement is { } rootElement)
+		{
+			QueueTreeBuild(rootElement);
+		}
+		else
+		{
+			// Defer the tree build until the window is activated and has content.
+			_winUIWindow.Activated += OnWinUIWindowActivatedForAccessibility;
+		}
+	}
+
+	private void OnWinUIWindowActivatedForAccessibility(object sender, Microsoft.UI.Xaml.WindowActivatedEventArgs args)
+	{
+		// Sticky active-owner tracking (FR-007, research Decision 3): update on
+		// Activated (WA_ACTIVE / NSWindowDidBecomeMainNotification analog), never
+		// clear on Deactivated.
+		if (args.WindowActivationState != Windows.UI.Core.CoreWindowActivationState.Deactivated &&
+			_accessibility is not null)
+		{
+			AccessibilityRouter.SetActive(this);
+		}
+
+		if (_accessibility is not { IsAccessibilityEnabled: true })
+		{
+			return;
+		}
+
+		if (_winUIWindow.RootElement is { } rootElement)
+		{
+			QueueTreeBuild(rootElement);
+		}
+	}
+
+	private void QueueTreeBuild(UIElement rootElement)
+	{
+		if (_accessibilityBuildQueued)
+		{
+			return;
+		}
+		_accessibilityBuildQueued = true;
+
+		_ = rootElement.Dispatcher.RunAsync(
+			Windows.UI.Core.CoreDispatcherPriority.Low,
+			() =>
+			{
+				_accessibilityBuildQueued = false;
+				if (_accessibility is { IsAccessibilityEnabled: true })
+				{
+					_accessibility.BuildTree(rootElement);
+				}
+			});
+	}
+
+	internal void DisposeAccessibility()
+	{
+		if (_accessibility is not { } accessibility)
+		{
+			return;
+		}
+
+		_accessibility = null;
+		_winUIWindow.Activated -= OnWinUIWindowActivatedForAccessibility;
+		accessibility.Dispose();
+		AccessibilityRouter.NotifyDisposed(this);
+	}
 
 	void IXamlRootHost.InvalidateRender() => NativeUno.uno_window_invalidate(_nativeWindow.Handle);
 

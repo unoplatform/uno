@@ -38,7 +38,8 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		MacOSNativeWebViewProvider.Register();
 		MacOSMediaPlayerExtension.Register();
 		MacOSMediaPlayerPresenterExtension.Register();
-		MacOSAccessibility.Register();
+		AccessibilityRouter.EnsureInitialized();
+		MacOSAccessibility.RegisterCallbacks();
 		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => MacOSImeTextBoxExtension.Instance);
 	}
 
