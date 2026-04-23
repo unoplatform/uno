@@ -60,12 +60,22 @@ public class HotReloadClientOperationEvent : IMessage
 	/// <summary>
 	/// Derived lifecycle state based on which timestamps are set.
 	/// </summary>
+	/// <remarks>
+	/// <para><see cref="EndTime"/> takes priority over <see cref="IgnoreTime"/>: once
+	/// <see cref="EndTime"/> is set the op has reached a terminal
+	/// <see cref="HotReloadClientOperationKind.Succeeded"/> / <see cref="HotReloadClientOperationKind.Failed"/>
+	/// state, even if it passed through an intermediate <see cref="HotReloadClientOperationKind.Ignored"/>
+	/// phase (e.g. <c>TypeMappings.IsPaused</c> deferred the first apply and HotDesign later
+	/// re-applied the delta). Consumers that want to distinguish "completed after being
+	/// ignored" from "completed directly" can still inspect <see cref="IgnoreTime"/> /
+	/// <see cref="IgnoreReason"/> on the event — they are preserved deliberately.</para>
+	/// </remarks>
 	[JsonIgnore]
 	public HotReloadClientOperationKind Kind => (IgnoreTime, EndTime, ErrorMessage) switch
 	{
-		({ }, _, _) => HotReloadClientOperationKind.Ignored,
 		(_, { }, null or "") => HotReloadClientOperationKind.Succeeded,
 		(_, { }, _) => HotReloadClientOperationKind.Failed,
+		({ }, null, _) => HotReloadClientOperationKind.Ignored,
 		_ => HotReloadClientOperationKind.Started,
 	};
 }

@@ -141,6 +141,9 @@ public partial class ClientHotReloadProcessor
 		public HotReloadClientOperation ContinueOrStartLocal(HotReloadSource source, Type[] types)
 		{
 			// Fast path: re-use the last operation if it's still in-progress or was ignored.
+			// ReportIgnored does not set _result, so a reused ignored op is still "live":
+			// the upcoming ReportCompleted will complete it normally and the terminal event
+			// overrides the earlier Ignored one.
 			if (_localOperations is [.., { Result: null or HotReloadClientResult.Ignored } last])
 			{
 				return last;
@@ -409,24 +412,49 @@ public partial class ClientHotReloadProcessor
 			ReportError(error);
 		}
 
+		/// <summary>
+		/// Marks the operation as complete and sends a terminal event to the server.
+		/// </summary>
+		/// <remarks>
+		/// <para>This is the single point where <see cref="_result"/> is assigned. It is
+		/// intentionally never called from <see cref="ReportIgnored"/>: an Ignored op
+		/// is <em>potentially</em> — not necessarily — intermediate. HotDesign may
+		/// re-apply the deferred delta and call <see cref="ReportCompleted"/> through
+		/// <c>ReloadWithUpdatedTypes</c>, in which case Ignored was indeed a transient
+		/// phase; or no one re-applies and Ignored remains the effective final state
+		/// (observed downstream as a <c>TimedOut</c> once the UI-feedback window elapses).
+		/// Keeping <see cref="_result"/> at <c>-1</c> after <see cref="ReportIgnored"/>
+		/// is what lets the first case override the second.</para>
+		/// <para><see cref="IgnoreTime"/> and <see cref="IgnoreReason"/> are preserved
+		/// across the override — they document that the op went through an Ignored
+		/// phase. The emitted event's <c>Kind</c> still surfaces the terminal
+		/// Succeeded/Failed because <c>HotReloadClientOperationEvent.Kind</c> gives
+		/// <see cref="EndTime"/> priority over <see cref="IgnoreTime"/>.</para>
+		/// </remarks>
 		internal void ReportCompleted()
 		{
 			if (_isEmpty) return;
 
-			var result = (_exceptions, IgnoreReason) switch
-			{
-				({ Count: > 0 }, _) => HotReloadClientResult.Failed,
-				(_, not null) => HotReloadClientResult.Ignored,
-				_ => HotReloadClientResult.Success
-			};
+			// IgnoreReason is intentionally NOT consulted here: an explicit ReportCompleted
+			// overrides any prior ReportIgnored. Only _exceptions decide Success vs Failed.
+			var result = _exceptions.Count > 0
+				? HotReloadClientResult.Failed
+				: HotReloadClientResult.Success;
 
 			if (Interlocked.CompareExchange(ref _result, (int)result, -1) is -1)
 			{
 				EndTime = DateTimeOffset.Now;
+
+				// IgnoreTime / IgnoreReason are deliberately preserved: they document
+				// that the op went through a transient Ignored phase before completing.
+				// The Kind derivation on HotReloadClientOperationEvent gives EndTime
+				// priority over IgnoreTime, so the emitted event's Kind is the terminal
+				// Succeeded/Failed; consumers that care about the intermediate Ignored
+				// state can still inspect IgnoreTime/IgnoreReason on the event.
 				_onUpdated?.Invoke();
 				SendEvent();
 			}
-			else if (_result != (int)HotReloadClientResult.Ignored) // ReportIgnored auto completes but caller usually does not expect it (use ReportCompleted in finally)
+			else
 			{
 				Debug.Fail("The result should not have already been set.");
 			}
@@ -436,9 +464,19 @@ public partial class ClientHotReloadProcessor
 		{
 			if (_isEmpty) return;
 
+			// NOTE: DO NOT call ReportCompleted from here. Ignored is *potentially*
+			// intermediate (HotDesign may later re-apply the delta and call
+			// ReportCompleted, in which case the terminal state overrides), but it
+			// may also remain the effective final state if no one re-applies — the
+			// downstream consumer decides how to interpret it, typically by waiting
+			// out the UI-feedback window and escalating to TimedOut. Either way the
+			// op must stay reopenable, so we leave _result at -1 and emit the
+			// Ignored event directly. _result transitions from -1 only through
+			// ReportCompleted.
 			IgnoreReason = reason;
 			IgnoreTime = DateTimeOffset.Now;
-			ReportCompleted();
+			_onUpdated?.Invoke();
+			SendEvent();
 		}
 
 		private void SendEvent()
