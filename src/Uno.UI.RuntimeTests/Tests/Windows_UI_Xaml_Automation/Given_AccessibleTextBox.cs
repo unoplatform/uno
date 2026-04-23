@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
@@ -173,6 +174,120 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.IsNotNull(valueProvider);
 			Assert.IsTrue(valueProvider.IsReadOnly, "Read-only TextBox should report IsReadOnly=true");
 		}
+
+#if __SKIA__
+		/// <summary>
+		/// Verifies that browser-originated typing through the semantic textbox keeps
+		/// the caret at the browser-managed position instead of jumping back to the start.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_SemanticTextBox_Receives_Input_Then_Text_Order_And_Caret_Are_Preserved()
+		{
+			var textBox = new TextBox();
+
+			await UITestHelper.Load(textBox);
+			textBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticTextBoxExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
+			await UITestHelper.WaitForIdle();
+
+			TypeCharacterIntoSemanticTextBox(textBox, "a");
+			await UITestHelper.WaitForIdle();
+			TypeCharacterIntoSemanticTextBox(textBox, "b");
+			await UITestHelper.WaitForIdle();
+			TypeCharacterIntoSemanticTextBox(textBox, "c");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("abc", textBox.Text, "Semantic typing should preserve text order in the managed TextBox.");
+			Assert.AreEqual("abc", GetSemanticTextBoxValue(textBox), "Semantic textbox DOM value should stay in sync with managed text.");
+			Assert.AreEqual("3", GetSemanticTextBoxCaret(textBox), "Caret should remain at the end after sequential semantic input.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Accessibility_Is_Enabled_After_Text_Exists_Then_SemanticTyping_Appends_At_Current_Caret()
+		{
+			var textBox = new TextBox
+			{
+				Text = "test"
+			};
+
+			await UITestHelper.Load(textBox);
+			textBox.Focus(FocusState.Programmatic);
+			textBox.Select(textBox.Text.Length, 0);
+			textBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticTextBoxExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("test", GetSemanticTextBoxValue(textBox), "Semantic textbox should mirror the existing managed value when accessibility is enabled.");
+			Assert.AreEqual("4", GetSemanticTextBoxCaret(textBox), "Semantic textbox should inherit the managed caret position when created.");
+			Assert.IsFalse(HiddenNativeTextBoxExists(), "The hidden browser textbox should be detached once the semantic textbox owns focus.");
+
+			TypeTextIntoSemanticTextBox(textBox, "test");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("testtest", textBox.Text, "Semantic typing should append at the current caret instead of inserting in reverse at the start.");
+			Assert.AreEqual("testtest", GetSemanticTextBoxValue(textBox), "Semantic textbox DOM value should stay aligned after appending text.");
+			Assert.AreEqual("8", GetSemanticTextBoxCaret(textBox), "Caret should remain at the end after appending to preexisting text.");
+		}
+
+		private static void EnableAccessibilityThroughDom()
+		{
+			InvokeBrowserJs("(function(){const button = document.getElementById('uno-enable-accessibility'); if (button) { button.click(); } return 'ok';})()");
+		}
+
+		// Targets the exact semantic element for a given TextBox. Using a generic
+		// '#uno-semantics-root input' selector would match the first semantic input in the
+		// document, which is usually not the TextBox under test (e.g. the test runner header).
+		private static string GetSemanticElementId(TextBox textBox)
+			=> $"uno-semantics-{((long)textBox.Visual.Handle)}";
+
+		private static bool SemanticTextBoxExists(TextBox textBox)
+			=> InvokeBrowserJs($"(function(){{return document.getElementById('{GetSemanticElementId(textBox)}') ? '1' : '0';}})()") == "1";
+
+		private static string GetSemanticTextBoxValue(TextBox textBox)
+			=> InvokeBrowserJs($"(function(){{const element = document.getElementById('{GetSemanticElementId(textBox)}'); return element ? element.value : '';}})()");
+
+		private static string GetSemanticTextBoxCaret(TextBox textBox)
+			=> InvokeBrowserJs($"(function(){{const element = document.getElementById('{GetSemanticElementId(textBox)}'); return element ? String(element.selectionStart ?? -1) : '-1';}})()");
+
+		private static bool HiddenNativeTextBoxExists()
+			=> InvokeBrowserJs("(function(){return document.getElementById('uno-input') ? '1' : '0';})()") == "1";
+
+		private static void TypeCharacterIntoSemanticTextBox(TextBox textBox, string character)
+		{
+			var escapedCharacter = character
+				.Replace("\\", "\\\\")
+				.Replace("'", "\\'");
+
+			InvokeBrowserJs($"(function(){{const element = document.getElementById('{GetSemanticElementId(textBox)}'); if (!element) {{ return 'missing'; }} element.focus(); const start = element.selectionStart ?? 0; const end = element.selectionEnd ?? start; const character = '{escapedCharacter}'; element.value = element.value.slice(0, start) + character + element.value.slice(end); const caret = start + character.length; element.setSelectionRange(caret, caret); element.dispatchEvent(new Event('input', {{ bubbles: true }})); return element.value; }})()");
+		}
+
+		private static void TypeTextIntoSemanticTextBox(TextBox textBox, string text)
+		{
+			foreach (var character in text)
+			{
+				TypeCharacterIntoSemanticTextBox(textBox, character.ToString());
+			}
+		}
+
+		private static string InvokeBrowserJs(string javascript)
+		{
+			var runtimeType = Type.GetType("Uno.Foundation.WebAssemblyRuntime, Uno.Foundation.Runtime.WebAssembly", throwOnError: false);
+			Assert.IsNotNull(runtimeType, "Unable to locate Uno.Foundation.WebAssemblyRuntime at runtime.");
+
+			var invokeJs = runtimeType.GetMethod("InvokeJS", new[] { typeof(string) });
+			Assert.IsNotNull(invokeJs, "Unable to locate Uno.Foundation.WebAssemblyRuntime.InvokeJS(string).");
+
+			return invokeJs.Invoke(obj: null, parameters: new object[] { javascript }) as string ?? string.Empty;
+		}
+#endif
 
 #if HAS_UNO
 		/// <summary>

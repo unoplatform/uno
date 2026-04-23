@@ -200,6 +200,17 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial uint uno_get_system_theme();
 
+	// IME (Input Method Editor) callbacks
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_ime_callbacks(
+		delegate* unmanaged[Cdecl]<nint, ushort*, int, void> insertTextCallback,
+		delegate* unmanaged[Cdecl]<nint, ushort*, int, int, int, void> setMarkedTextCallback,
+		delegate* unmanaged[Cdecl]<nint, void> unmarkTextCallback,
+		delegate* unmanaged[Cdecl]<nint, double*, double*, double*, double*, void> getCaretRectCallback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_set_ime_active(nint windowHandle, [MarshalAs(UnmanagedType.U1)] bool active);
+
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_application_start_callback(delegate* unmanaged[Cdecl]<void> callback);
 

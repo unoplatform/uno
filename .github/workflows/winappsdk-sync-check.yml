@@ -2,15 +2,6 @@ name: WinAppSDK Sync Generator Check
 
 on:
   pull_request:
-    paths:
-      - 'src/Uno.WinAppSDKSyncGenerator/**'
-      - 'src/Uno.WinAppSDKSyncGenerator.References/**'
-      - 'src/Uno.UI.SourceGenerators.Internal/**'
-      - 'src/**/Generated/**'
-      - 'build/run-api-sync-tool.cmd'
-      - 'build/filters/Uno.UI-top-projects-for-sync-gen.slnf'
-      - 'build/Uno.UI.Build.csproj'
-      - '.github/workflows/winappsdk-sync-check.yml'
   workflow_dispatch:
 
 jobs:

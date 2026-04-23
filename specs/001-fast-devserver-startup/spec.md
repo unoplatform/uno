@@ -187,7 +187,7 @@ Both use the same registration pattern:
 1. **Backward compatibility is critical**: Must work with older Uno SDK versions (5.x, 6.5). Package structures and add-in layouts may differ.
 2. **IDE integrations use the same Host process**: VS, Rider, VS Code extensions launch `RemoteControl.Host` directly. Changes to Host must not break these paths.
 3. **All existing CLI flags must remain accepted**: `--force-roots-fallback`, `--force-generate-tool-cache` (deprecated no-op, kept for backward compatibility), `--solution-dir`, `--mcp-wait-tools-list`, `--port`, `--log-level`, `--file-log`.
-4. **MCP protocol constraints**: Most MCP clients do not support `tools/list_changed` (only 3 of 8 do). Several don't support `roots` (Claude Desktop, Codex CLI, Windsurf). No client supports `resources/subscribe`. The `--force-roots-fallback` + `--mcp-wait-tools-list` workarounds must continue working. See [Appendix G](spec-appendix-g-compatibility-matrix.md) section 5 for the full matrix.
+4. **MCP protocol constraints**: Most MCP clients do not support `tools/list_changed` (only 3 of 8 do). Several don't support `roots` (Claude Desktop, Codex CLI, Windsurf). No client supports `resources/subscribe`. The roots fallback is auto-enabled when the client does not advertise `capabilities.roots` (legacy `--force-roots-fallback` remains accepted as an explicit override). The `--mcp-wait-tools-list` workaround must continue working. See [Appendix G](spec-appendix-g-compatibility-matrix.md) section 5 for the full matrix.
 5. **License validation must not block startup**: The `MCPToolsObserverService` in `Uno.UI.App.Mcp.Server` already handles license-based tool filtering asynchronously. We must not introduce new blocking license checks.
 6. **Code conventions**: New code should follow the project `.editorconfig` and **match the style of surrounding code** in each file. Prefer `internal` for new types unless they are part of a public API contract. Follow existing patterns in the target project (`*Extensions.cs` for extension methods, DI via `IServiceCollection`). Note: the existing codebase uses both block-scoped and file-scoped namespaces; `.editorconfig` expresses a preference, not a hard rule. Do not reformat existing files to match a different style.
 
@@ -258,7 +258,7 @@ Before any phase is considered complete:
 - [ ] macOS/Linux — forward slash paths, case-insensitive NuGet lookup
 - [ ] Custom `$NUGET_PACKAGES` — respected in all path resolution
 - [ ] MCP client without `tools/list_changed` — `--mcp-wait-tools-list` still works
-- [ ] MCP client without `roots` — `--force-roots-fallback` still works
+- [ ] MCP client without `roots` — roots fallback auto-enabled (and legacy `--force-roots-fallback` override still accepted)
 
 ---
 

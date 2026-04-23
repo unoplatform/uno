@@ -80,7 +80,7 @@ This is the existing MCP STDIO proxy. All current options remain:
 |--------|-------------|
 | `--port <port>` | Port for DevServer (default: auto-allocate) |
 | `--mcp-wait-tools-list` | Wait for upstream server tools before responding to `list_tools` |
-| `--force-roots-fallback` | Expose `uno_app_initialize` tool and defer workspace resolution until the tool is called. `uno_app_initialize` takes `workspaceDirectory` (required) and `solutionPath` (optional), blocks until the DevServer is connected, and returns status plus available tools. The provided directory is always accepted as workspace root, even when no Uno solution is found yet — the file watcher monitors the directory and auto-starts the DevServer when a solution appears. **Auto-detected**: when the MCP client does not advertise the `roots` capability and the workspace is not already resolved, the proxy automatically enables roots fallback behavior. The CLI flag is still supported for explicit override but is no longer required in most configurations. |
+| `--force-roots-fallback` | **Legacy explicit override.** The proxy auto-detects when the MCP client does not advertise the `roots` capability and the workspace is not already resolved, and in that case automatically exposes the `uno_app_initialize` tool and defers workspace resolution until the tool is called. `uno_app_initialize` takes `workspaceDirectory` (required) and `solutionPath` (optional), blocks until the DevServer is connected, and returns status plus available tools. The provided directory is always accepted as workspace root, even when no Uno solution is found yet — the file watcher monitors the directory and auto-starts the DevServer when a solution appears. The CLI flag is still accepted but is rarely needed and is not encoded in any IDE registration profile. |
 | `--force-generate-tool-cache` | **Deprecated (no-op)**. Kept for backward compatibility but does nothing. The tool cache (`tools-cache.json`) has been removed; meta-tools (`uno_discover_tools` and `uno_execute_tool`) replace the cache as the stable compatibility mechanism for accessing upstream tools as the direct tool set changes during the session. |
 | `--solution-dir <path>` | Explicit solution root |
 
@@ -491,27 +491,33 @@ Each MCP client has a profile that defines config file locations, write targets,
 
 | Client | Config Locations (scan order) | Write Target | JSON Format |
 |-----|-------------------------------|--------------|-------------|
-| **copilot-vscode** | `{ws}/.vscode/mcp.json`, `~/.vscode/mcp.json`, global OS path | `{ws}/.vscode/mcp.json` | `servers` |
-| **copilot-vs** | `{ws}/.vs/mcp.json`, `{ws}/.vscode/mcp.json` | `{ws}/.vs/mcp.json` | `servers` |
+| **copilot-vscode** | `{ws}/.vscode/mcp.json`, `~/.vscode/mcp.json` | `{ws}/.vscode/mcp.json` | `servers` |
+| **copilot-vs** | `~/.mcp.json`, `{ws}/.vs/mcp.json`, `{ws}/.mcp.json`, `{ws}/.vscode/mcp.json` | `{ws}/.vs/mcp.json` | `servers` |
 | **Cursor** | `{ws}/.cursor/mcp.json`, `~/.cursor/mcp.json` | `{ws}/.cursor/mcp.json` | `mcpServers` |
 | **Windsurf** | `~/.codeium/windsurf/mcp_config.json` | `~/.codeium/windsurf/mcp_config.json` | `mcpServers` with `serverUrl` for HTTP servers |
 | **Kiro** | `{ws}/.kiro/settings/mcp.json`, `~/.kiro/settings/mcp.json` | `{ws}/.kiro/settings/mcp.json` | `mcpServers` |
 | **gemini-antigravity** | `~/.gemini/antigravity/mcp_config.json` | same (global only) | `mcpServers` with `type` and `serverUrl` |
 
-VS Code global OS paths:
-- Windows: `%APPDATA%/Code/User/settings.json`
-- macOS: `~/Library/Application Support/Code/User/settings.json`
-- Linux: `~/.config/Code/User/settings.json`
+> **Shared workspace note**: Visual Studio can also consume the shared workspace-level `.vscode/mcp.json` registration and the repo-tracked `.mcp.json`. As a result, `copilot-vscode` and `copilot-vs` may both report `registered` against the same `.vscode/mcp.json` file. `copilot-vs` still keeps `{ws}/.vs/mcp.json` as its dedicated write target so it can diverge when needed.
 
-> **Shared workspace note**: Visual Studio can also consume the shared workspace-level `.vscode/mcp.json` registration. As a result, `copilot-vscode` and `copilot-vs` may both report `registered` against the same `.vscode/mcp.json` file. `copilot-vs` still keeps `{ws}/.vs/mcp.json` as its dedicated write target so it can diverge when needed.
+**Vendor references**:
+- `copilot-vscode`: [VS Code — Configure MCP servers](https://code.visualstudio.com/docs/copilot/customization/mcp-servers). The previously scanned `<userProfile>/Code/User/settings.json` is no longer documented as an MCP configuration source and has been removed from the scan order.
+- `copilot-vs`: [Visual Studio — Use MCP servers](https://learn.microsoft.com/en-us/visualstudio/ide/mcp-servers). VS discovery order: `~/.mcp.json`, `<solution>/.vs/mcp.json`, `<solution>/.mcp.json`, `<solution>/.vscode/mcp.json`.
+- `copilot-cli`: [GitHub Copilot CLI — Add MCP servers](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers) and [migration from vscode mcp.json](https://gh.io/copilotcli-mcpmigrate).
+- `cursor`: [Cursor — MCP](https://cursor.com/docs/context/mcp) / [CLI MCP](https://cursor.com/docs/cli/mcp).
+- `windsurf`: [Windsurf — Cascade MCP](https://docs.windsurf.com/windsurf/cascade/mcp).
+- `gemini-antigravity`: [Antigravity — MCP](https://antigravity.google/docs/mcp).
+- `kiro`: [Kiro — MCP configuration](https://kiro.dev/docs/mcp/configuration/).
 
 ### JetBrains / Agent Hosts
 
 | Client | Config Locations | Write Target | JSON Format |
 |-----|------------------|--------------|-------------|
-| **junie-rider** | `{ws}/.idea/mcpServers.json` | `{ws}/.idea/mcpServers.json` | `mcpServers` |
+| **junie-rider** | `{ws}/.junie/mcp/mcp.json`, `~/.junie/mcp/mcp.json` | `{ws}/.junie/mcp/mcp.json` | `mcpServers` |
 
-> **Note**: Junie's global Rider MCP config lives under a version-specific directory (e.g., `~/.config/JetBrains/Rider2025.1/mcpServers.json`). This path varies per Rider version and is excluded from v1 to avoid complex version-enumeration logic. Workspace-level config is sufficient for the primary use case.
+**Vendor references**:
+- `junie-rider`: [Junie — CLI MCP configuration](https://junie.jetbrains.com/docs/junie-cli-mcp-configuration.html) and [Junie — MCP Settings](https://www.jetbrains.com/help/junie/mcp-settings.html). The earlier `{ws}/.idea/mcpServers.json` path is not the documented location; vendor docs list `.junie/mcp/mcp.json` (workspace + user scope).
+- `jetbrains-air`: [JetBrains Air — Set up](https://www.jetbrains.com/help/air/set-up.html).
 
 ### CLI Agents (tool only, no extension)
 
@@ -524,6 +530,13 @@ VS Code global OS paths:
 | **JetBrains Air** | `{ws}/.air/mcp.json`, `{ws}/.mcp.json`, `{appdata}/JetBrains/Air/mcp.json` | `{ws}/.air/mcp.json` | `mcpServers` |
 | **Continue** *(v2)* | `{ws}/.continue/config.json` (MCP section) | same | `mcpServers` (nested) |
 | **Zed** *(v2)* | `{ws}/.zed/settings.json` (section) | same | `context_servers` |
+
+**Vendor references**:
+- `claude-code`: [Claude Code — MCP](https://code.claude.com/docs/en/mcp) (redirected from `docs.claude.com/en/docs/claude-code/mcp`).
+- `claude-desktop`: [MCP Quickstart — User](https://modelcontextprotocol.io/quickstart/user).
+- `codex-cli`: [OpenAI Codex — MCP](https://developers.openai.com/codex/mcp) and [Config reference](https://developers.openai.com/codex/config-reference). Configuration is TOML-only (`~/.codex/config.toml`, table `[mcp_servers.<name>]`), so the setup tool uses the native CLI exclusively.
+- `gemini-cli`: [gemini-cli — MCP server](https://github.com/google-gemini/gemini-cli/blob/main/docs/tools/mcp-server.md).
+- `opencode`: [OpenCode — MCP servers](https://opencode.ai/docs/mcp-servers/) and [OpenCode CLI](https://opencode.ai/docs/cli/). The CLI currently exposes `mcp add`, `mcp list`, `mcp auth`, `mcp debug`, `mcp logout`; there is no documented `opencode mcp remove`, so the profile keeps only `list` and relies on file-based removal.
 
 > **v2 note:** Continue and Zed are excluded from the initial implementation. Continue uses an array-based `mcpServers` format (and is migrating to YAML), while Zed nests `context_servers` inside a multi-purpose `settings.json`. Both require specialized merge logic beyond the simple "write under root key" approach used for all other IDEs.
 
@@ -1181,16 +1194,16 @@ The root is a JSON object keyed by MCP client identifier (matching the CLI clien
   },
   "junie-rider": {
     "configPaths": [
-      "{workspace}/.idea/mcpServers.json"
+      "{workspace}/.junie/mcp/mcp.json",
+      "{home}/.junie/mcp/mcp.json"
     ],
-    "writeTarget": "{workspace}/.idea/mcpServers.json",
+    "writeTarget": "{workspace}/.junie/mcp/mcp.json",
     "jsonRootKey": "mcpServers"
   },
   "copilot-vscode": {
     "configPaths": [
       "{workspace}/.vscode/mcp.json",
-      "{home}/.vscode/mcp.json",
-      "{appdata}/Code/User/settings.json"
+      "{home}/.vscode/mcp.json"
     ],
     "writeTarget": "{workspace}/.vscode/mcp.json",
     "jsonRootKey": "servers",
@@ -1198,7 +1211,9 @@ The root is a JSON object keyed by MCP client identifier (matching the CLI clien
   },
   "copilot-vs": {
     "configPaths": [
+      "{home}/.mcp.json",
       "{workspace}/.vs/mcp.json",
+      "{workspace}/.mcp.json",
       "{workspace}/.vscode/mcp.json"
     ],
     "writeTarget": "{workspace}/.vs/mcp.json",

@@ -6,6 +6,7 @@ using ObjCRuntime;
 using UIKit;
 using Uno.Extensions;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
@@ -43,16 +44,6 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 
 	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => !textBox.AcceptsReturn;
 
-	// UIKit uses the first-responder's firstRect/caretRect (UITextInput) to
-	// position the iPad floating numeric keypad. Returning the view's full
-	// Bounds makes the keypad anchor adjacent to the whole NumberBox rather
-	// than overlapping it when the field has non-default Padding or sits
-	// near a screen edge. Gated by the same condition the extension uses
-	// to anchor the native view (see InvisibleTextBoxViewExtension.
-	// IsFloatingNumericKeypad) so other scenarios keep native behavior.
-	public override CGRect GetFirstRectForRange(UITextRange range)
-		=> InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType) ? Bounds : base.GetFirstRectForRange(range);
-
 	public override CGRect GetCaretRectForPosition(UITextPosition? position)
 		=> InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType) ? Bounds : base.GetCaretRectForPosition(position);
 
@@ -77,6 +68,8 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 			baseAction.Invoke();
 		}
 	}
+
+	public bool IsComposing => AppleUIKitImeTextBoxExtension.Instance.IsComposing;
 
 	internal InvisibleTextBoxViewExtension TextBoxViewExtension => _textBoxViewExtension.GetTarget();
 
@@ -196,4 +189,64 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 			}
 		}
 	}
+
+	#region IME Composition (UITextInput overrides)
+
+	public override void SetMarkedText(string markedText, NSRange selectedRange)
+	{
+		markedText ??= string.Empty;
+		AppleUIKitImeTextBoxExtension.Instance.OnSetMarkedText(markedText);
+		base.SetMarkedText(markedText, selectedRange);
+	}
+
+	public new void InsertText(string text)
+	{
+		var wasComposing = AppleUIKitImeTextBoxExtension.Instance.IsComposing;
+		base.InsertText(text);
+
+		// Only fire composition events when completing an active IME composition
+		// (SetMarkedText was called first). Regular native keystrokes and
+		// BecomeFirstResponder's silent text restore should not trigger composition.
+		if (wasComposing)
+		{
+			AppleUIKitImeTextBoxExtension.Instance.OnInsertText(text);
+		}
+	}
+
+	public override void UnmarkText()
+	{
+		AppleUIKitImeTextBoxExtension.Instance.OnUnmarkText();
+		base.UnmarkText();
+	}
+
+	// UIKit uses the first-responder's firstRect/caretRect (UITextInput) to
+	// position the iPad floating numeric keypad. Returning the view's full
+	// Bounds makes the keypad anchor adjacent to the whole NumberBox rather
+	// than overlapping it when the field has non-default Padding or sits
+	// near a screen edge. Gated by the same condition the extension uses
+	// to anchor the native view (see InvisibleTextBoxViewExtension.
+	// IsFloatingNumericKeypad) so other scenarios keep native behavior.
+	public override CoreGraphics.CGRect GetFirstRectForRange(UITextRange range)
+	{
+		if (InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType))
+		{
+			return Bounds;
+		}
+
+		var caretRect = AppleUIKitImeTextBoxExtension.Instance.GetCaretRect();
+		if (caretRect != Windows.Foundation.Rect.Empty && Superview is not null)
+		{
+			// GetCaretRect returns Uno logical coordinates (relative to the XamlRoot).
+			// iOS expects the result in the view's own coordinate system, then uses the
+			// view hierarchy to convert to screen coordinates for the candidate window.
+			// Since our view is off-screen, convert from the superview's (window) coordinate
+			// space into our local coordinate space.
+			var windowRect = new CoreGraphics.CGRect(caretRect.X, caretRect.Y, caretRect.Width, caretRect.Height);
+			return ConvertRectFromView(windowRect, Superview);
+		}
+
+		return base.GetFirstRectForRange(range);
+	}
+
+	#endregion
 }

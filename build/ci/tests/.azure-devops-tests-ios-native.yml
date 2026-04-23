@@ -116,7 +116,7 @@ jobs:
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)/logs
-      ArtifactName: ios-uitest-build-logs
+      ArtifactName: samplesapp-ios-native-logs
       ArtifactType: Container
 
 ##
@@ -137,6 +137,8 @@ jobs:
       UITEST_TEST_TIMEOUT: '20m'
       UITEST_ALLOW_RERUN: 'false'
       SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
+      UITEST_VARIANT: 'native'
+      TEST_KIND: ui
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       dependsOn:
         - iOS_Build
@@ -161,6 +163,8 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
       UITEST_ALLOW_RERUN: 'false'
       SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
+      UITEST_VARIANT: 'native'
+      TEST_KIND: runtime
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       dependsOn:
         - iOS_Build
@@ -176,6 +180,8 @@ jobs:
 #     UITEST_SNAPSHOTS_ONLY: false
 #     UITEST_AUTOMATED_GROUP: Benchmarks
 #     SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
+#     UITEST_VARIANT: 'native'
+#     TEST_KIND: benchmark
 #     xCodeRoot: ${{ parameters.xCodeRootTest }}
 
 - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
@@ -194,6 +200,8 @@ jobs:
         UITEST_TEST_TIMEOUT: '10m'
         UITEST_ALLOW_RERUN: 'false'
         SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
+        UITEST_VARIANT: 'native'
+        TEST_KIND: screenshot
         xCodeRoot: ${{ parameters.xCodeRootTest }}
         dependsOn:
           - iOS_Build

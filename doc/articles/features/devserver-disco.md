@@ -23,10 +23,10 @@ The `disco` command is part of the Dev Server CLI. You can run it in two ways:
 
 ### [**.NET 10+**](#tab/net10)
 
-No installation needed — use `dnx` to run it directly:
+No installation needed — use `dotnet dnx` to run it directly:
 
 ```bash
-dnx -y uno.devserver disco
+dotnet dnx -y uno.devserver disco
 ```
 
 ### [**.NET 9**](#tab/net9)

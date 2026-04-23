@@ -9,7 +9,8 @@ internal interface IParsedText
 {
 	void Draw(in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
-		IEnumerable<TextHighlighter> highlighters
+		IEnumerable<TextHighlighter> highlighters,
+		(int startIndex, int length)? compositionRange
 	);
 
 	Rect GetRectForIndex(int adjustedIndex);

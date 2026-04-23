@@ -123,7 +123,7 @@ jobs:
       retryCountOnTaskFailure: 3
       inputs:
         PathtoPublish: $(build.artifactstagingdirectory)
-        ArtifactName: uitests-results
+        ArtifactName: screenshot-tests-results
         ArtifactType: Container
 
 
@@ -141,6 +141,7 @@ jobs:
         SITE_SUFFIX: 'net10.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Default'
         TEST_RUN_NAME: 'UI Tests'
+        TEST_KIND: ui
         UITEST_TEST_TIMEOUT: '5m'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
@@ -149,6 +150,7 @@ jobs:
         SITE_SUFFIX: 'net10.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
         TEST_RUN_NAME: 'Benchmarks'
+        TEST_KIND: benchmark
         UITEST_TEST_TIMEOUT: '15m'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
@@ -157,6 +159,7 @@ jobs:
         SITE_SUFFIX: 'net10.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         TEST_RUN_NAME: 'Runtime Tests 0'
+        TEST_KIND: runtime
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
@@ -167,6 +170,7 @@ jobs:
         SITE_SUFFIX: 'net10.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         TEST_RUN_NAME: 'Runtime Tests 1'
+        TEST_KIND: runtime
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
@@ -177,6 +181,7 @@ jobs:
         SITE_SUFFIX: 'net10.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         TEST_RUN_NAME: 'Runtime Tests 2'
+        TEST_KIND: runtime
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
@@ -208,13 +213,13 @@ jobs:
       artifact: samplesapp-wasm-native
       path: $(build.sourcesdirectory)/build/samplesapp-wasm-native
 
-  - task: DownloadBuildArtifacts@0
+  - task: DownloadPipelineArtifact@2
     condition: gt(variables['System.JobAttempt'], 1)
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-        artifactName: uitests-failure-results
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: $(TEST_KIND)-tests-wasm-native-failures
+      path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
    ## First ui tests run
   - bash: |
@@ -255,7 +260,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-results
+      ArtifactName: $(TEST_KIND)-tests-wasm-native-results
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
@@ -263,5 +268,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: uitests-failure-results
+      ArtifactName: $(TEST_KIND)-tests-wasm-native-failures
       ArtifactType: Container

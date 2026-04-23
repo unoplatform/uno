@@ -89,7 +89,13 @@ NSWindow* uno_app_get_main_window(void)
     return main_window;
 }
 
-@implementation UNOMetalFlippedView : MTKView
+@implementation UNOMetalFlippedView {
+    NSMutableAttributedString *_markedText;
+    NSRange _markedRange;
+    NSRange _selectedRange;
+    NSTextInputContext *_imeInputContext;
+    BOOL _keyEventHandledByIME;
+}
 
 // behave like UIView/UWP/WinUI, where the origin is top/left, instead of bottom/left
 -(BOOL) isFlipped {
@@ -103,9 +109,167 @@ NSWindow* uno_app_get_main_window(void)
 -(instancetype) initWithFrame:(CGRect)frameRect device:(id<MTLDevice>)device {
     self = [super initWithFrame:frameRect device:device];
     if (self) {
-        // TODO
+        _markedText = [[NSMutableAttributedString alloc] init];
+        _markedRange = NSMakeRange(NSNotFound, 0);
+        _selectedRange = NSMakeRange(0, 0);
+        _imeActive = NO;
     }
     return self;
+}
+
+// Override inputContext to ensure we always have a valid NSTextInputContext
+// when IME is active. MTKView (a rendering view) may not provide one by default,
+// which would cause interpretKeyEvents: to bypass the input method entirely.
+- (NSTextInputContext *)inputContext {
+    if (_imeActive) {
+        if (!_imeInputContext) {
+            _imeInputContext = [[NSTextInputContext alloc] initWithClient:self];
+        }
+        return _imeInputContext;
+    }
+    return [super inputContext];
+}
+
+// When IME is active, route key events through the text input system.
+// _keyEventHandledByIME is set to YES by insertText:/setMarkedText: if the
+// input method consumed the event. If NO after handleEvent:, the event was a
+// non-composition key (arrow, backspace, tab, etc.) and sendEvent: should
+// fall through to normal key handling.
+- (void)keyDown:(NSEvent *)event {
+    if (_imeActive) {
+        _keyEventHandledByIME = NO;
+        NSTextInputContext *ctx = self.inputContext;
+        if (ctx) {
+            [ctx handleEvent:event];
+        } else {
+            [self interpretKeyEvents:@[event]];
+        }
+#if DEBUG
+        NSLog(@"UNOMetalFlippedView keyDown: inputContext=%p handledByIME=%s event=%@",
+              ctx, _keyEventHandledByIME ? "YES" : "NO", event);
+#endif
+    }
+    // If not IME active, UNOWindow.sendEvent: handles the key event directly
+}
+
+#pragma mark - NSTextInputClient
+
+- (void)insertText:(id)string replacementRange:(NSRange)replacementRange {
+    _keyEventHandledByIME = YES;
+
+    NSString *text;
+    if ([string isKindOfClass:[NSAttributedString class]]) {
+        text = [(NSAttributedString *)string string];
+    } else {
+        text = (NSString *)string;
+    }
+
+#if DEBUG
+    NSLog(@"UNOMetalFlippedView insertText: '%@' replacementRange: {%lu, %lu}", text, (unsigned long)replacementRange.location, (unsigned long)replacementRange.length);
+#endif
+
+    // Clear marked text
+    [_markedText setAttributedString:[[NSAttributedString alloc] init]];
+    _markedRange = NSMakeRange(NSNotFound, 0);
+
+    ime_insert_text_callback_fn_ptr callback = uno_get_ime_insert_text_callback();
+    if (callback && text.length > 0) {
+        unichar *buffer = malloc(sizeof(unichar) * text.length);
+        [text getCharacters:buffer range:NSMakeRange(0, text.length)];
+        callback((UNOWindow *)self.window, buffer, (int32_t)text.length);
+        free(buffer);
+    }
+}
+
+- (void)setMarkedText:(id)string selectedRange:(NSRange)selectedRange replacementRange:(NSRange)replacementRange {
+    _keyEventHandledByIME = YES;
+
+    NSString *text;
+    if ([string isKindOfClass:[NSAttributedString class]]) {
+        text = [(NSAttributedString *)string string];
+        [_markedText setAttributedString:(NSAttributedString *)string];
+    } else {
+        text = (NSString *)string;
+        [_markedText setAttributedString:[[NSAttributedString alloc] initWithString:text]];
+    }
+
+    if (text.length > 0) {
+        _markedRange = NSMakeRange(0, text.length);
+    } else {
+        _markedRange = NSMakeRange(NSNotFound, 0);
+    }
+    _selectedRange = selectedRange;
+
+#if DEBUG
+    NSLog(@"UNOMetalFlippedView setMarkedText: '%@' selectedRange: {%lu, %lu}", text, (unsigned long)selectedRange.location, (unsigned long)selectedRange.length);
+#endif
+
+    ime_set_marked_text_callback_fn_ptr callback = uno_get_ime_set_marked_text_callback();
+    if (callback) {
+        unichar *buffer = NULL;
+        if (text.length > 0) {
+            buffer = malloc(sizeof(unichar) * text.length);
+            [text getCharacters:buffer range:NSMakeRange(0, text.length)];
+        }
+        callback((UNOWindow *)self.window, buffer, (int32_t)text.length, (int32_t)selectedRange.location, (int32_t)selectedRange.length);
+        if (buffer) free(buffer);
+    }
+}
+
+- (void)unmarkText {
+#if DEBUG
+    NSLog(@"UNOMetalFlippedView unmarkText");
+#endif
+    [_markedText setAttributedString:[[NSAttributedString alloc] init]];
+    _markedRange = NSMakeRange(NSNotFound, 0);
+
+    ime_unmark_text_callback_fn_ptr callback = uno_get_ime_unmark_text_callback();
+    if (callback) {
+        callback((UNOWindow *)self.window);
+    }
+}
+
+- (BOOL)hasMarkedText {
+    return _markedRange.location != NSNotFound && _markedRange.length > 0;
+}
+
+- (NSRange)markedRange {
+    return _markedRange;
+}
+
+- (NSRange)selectedRange {
+    return _selectedRange;
+}
+
+- (NSRect)firstRectForCharacterRange:(NSRange)range actualRange:(nullable NSRangePointer)actualRange {
+    ime_get_caret_rect_callback_fn_ptr callback = uno_get_ime_get_caret_rect_callback();
+    if (callback) {
+        double x = 0, y = 0, w = 0, h = 0;
+        callback((UNOWindow *)self.window, &x, &y, &w, &h);
+        // Convert from view coordinates to screen coordinates
+        NSRect viewRect = NSMakeRect(x, y, w, h);
+        NSRect windowRect = [self convertRect:viewRect toView:nil];
+        NSRect screenRect = [self.window convertRectToScreen:windowRect];
+        return screenRect;
+    }
+    return NSZeroRect;
+}
+
+- (NSUInteger)characterIndexForPoint:(NSPoint)point {
+    return NSNotFound;
+}
+
+- (nullable NSAttributedString *)attributedSubstringForProposedRange:(NSRange)range actualRange:(nullable NSRangePointer)actualRange {
+    return nil;
+}
+
+- (NSArray<NSAttributedStringKey> *)validAttributesForMarkedText {
+    return @[];
+}
+
+- (void)doCommandBySelector:(SEL)selector {
+    // Let the system handle unrecognized commands (e.g., moveLeft:, deleteBackward:)
+    [super doCommandBySelector:selector];
 }
 
 @end
@@ -761,6 +925,60 @@ void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, wind
     window_close = close;
 }
 
+// IME callback storage
+static ime_insert_text_callback_fn_ptr ime_insert_text_callback;
+static ime_set_marked_text_callback_fn_ptr ime_set_marked_text_callback;
+static ime_unmark_text_callback_fn_ptr ime_unmark_text_callback;
+static ime_get_caret_rect_callback_fn_ptr ime_get_caret_rect_callback;
+
+ime_insert_text_callback_fn_ptr uno_get_ime_insert_text_callback(void)
+{
+    return ime_insert_text_callback;
+}
+
+ime_set_marked_text_callback_fn_ptr uno_get_ime_set_marked_text_callback(void)
+{
+    return ime_set_marked_text_callback;
+}
+
+ime_unmark_text_callback_fn_ptr uno_get_ime_unmark_text_callback(void)
+{
+    return ime_unmark_text_callback;
+}
+
+ime_get_caret_rect_callback_fn_ptr uno_get_ime_get_caret_rect_callback(void)
+{
+    return ime_get_caret_rect_callback;
+}
+
+void uno_set_ime_callbacks(ime_insert_text_callback_fn_ptr insertText,
+                           ime_set_marked_text_callback_fn_ptr setMarkedText,
+                           ime_unmark_text_callback_fn_ptr unmarkText,
+                           ime_get_caret_rect_callback_fn_ptr getCaretRect)
+{
+    ime_insert_text_callback = insertText;
+    ime_set_marked_text_callback = setMarkedText;
+    ime_unmark_text_callback = unmarkText;
+    ime_get_caret_rect_callback = getCaretRect;
+}
+
+void uno_set_ime_active(UNOWindow* window, bool active)
+{
+    NSView *contentView = window.contentViewController.view;
+#if DEBUG
+    NSLog(@"uno_set_ime_active: window=%p active=%s contentView=%@ respondsToSelector=%s",
+          window, active ? "true" : "false", contentView,
+          [contentView respondsToSelector:@selector(setImeActive:)] ? "true" : "false");
+#endif
+    if ([contentView respondsToSelector:@selector(setImeActive:)]) {
+        [(id)contentView setImeActive:active];
+        if (active) {
+            // Ensure the content view is the first responder when activating IME
+            [window makeFirstResponder:contentView];
+        }
+    }
+}
+
 void uno_window_get_metal_handles(UNOWindow* window, void** device, void** queue)
 {
     *device = (__bridge void *)(uno_application_get_metal_device());
@@ -1006,11 +1224,35 @@ NSOperatingSystemVersion _osVersion;
             break;
         }
         case NSEventTypeKeyDown: {
-            unsigned short scanCode = event.keyCode;
-            UniChar unicode = get_unicode(event);
-            handled = uno_get_window_key_down_callback()(self, get_virtual_key(scanCode), get_modifiers(event.modifierFlags), scanCode, unicode);
+            // When IME is active, route key events through the content view's
+            // text input system (NSTextInputClient) for composition support.
+            // The content view's keyDown: calls handleEvent: which triggers
+            // the NSTextInputClient protocol callbacks (setMarkedText/insertText).
+            // If the IME didn't consume the event (arrow keys, backspace, tab, etc.),
+            // fall through to normal key handling.
+            NSView *contentView = self.contentViewController.view;
+            BOOL imeActive = [contentView respondsToSelector:@selector(imeActive)] && [(id)contentView imeActive];
+            if (imeActive) {
+                [self makeFirstResponder:contentView];
+                [contentView keyDown:event];
+                BOOL consumed = [contentView respondsToSelector:@selector(keyEventHandledByIME)]
+                    && [(id)contentView keyEventHandledByIME];
+                if (consumed) {
+                    handled = true;
+                } else {
+                    // IME didn't handle this key (arrow, backspace, tab, etc.)
+                    // Fall through to normal key processing
+                    unsigned short scanCode = event.keyCode;
+                    UniChar unicode = get_unicode(event);
+                    handled = uno_get_window_key_down_callback()(self, get_virtual_key(scanCode), get_modifiers(event.modifierFlags), scanCode, unicode);
+                }
+            } else {
+                unsigned short scanCode = event.keyCode;
+                UniChar unicode = get_unicode(event);
+                handled = uno_get_window_key_down_callback()(self, get_virtual_key(scanCode), get_modifiers(event.modifierFlags), scanCode, unicode);
+            }
 #if DEBUG
-            NSLog(@"NSEventTypeKeyDown: %@ window %p unicode %d handled? %s", event, self, unicode, handled ? "true" : "false");
+            NSLog(@"NSEventTypeKeyDown: %@ window %p imeActive %s handled? %s", event, self, imeActive ? "true" : "false", handled ? "true" : "false");
 #endif
             break;
         }

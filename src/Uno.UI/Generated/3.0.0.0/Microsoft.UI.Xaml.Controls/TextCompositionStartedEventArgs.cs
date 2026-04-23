@@ -3,36 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TextCompositionStartedEventArgs
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal TextCompositionStartedEventArgs()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Length
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int TextCompositionStartedEventArgs.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TextCompositionStartedEventArgs.Length");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int StartIndex
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int TextCompositionStartedEventArgs.StartIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TextCompositionStartedEventArgs.StartIndex");
-			}
-		}
-#endif
+		// Skipping already declared property Length
+		// Skipping already declared property StartIndex
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.Length.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs.StartIndex.get
 	}
