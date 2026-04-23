@@ -498,6 +498,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("hello world", SUT.Text);
+
+			// Release the key so the process-wide KeyboardStateTracker doesn't carry
+			// a stuck "Shift is Down" state into subsequent tests.
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Shift, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
 		}
 
 		[TestMethod]
@@ -521,27 +526,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("hello world", SUT.Text);
 			Assert.AreEqual(1, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Menu, VirtualKeyModifiers.None, unicodeKey: '\0'));
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("hello world", SUT.Text);
 			Assert.AreEqual(2, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("hello world", SUT.Text);
 			Assert.AreEqual(3, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
 
 			// Test Command/Windows keys
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("hello world", SUT.Text);
 			Assert.AreEqual(4, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("hello world", SUT.Text);
 			Assert.AreEqual(5, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+
+			await WindowHelper.WaitForIdle();
 		}
 
 		[TestMethod]
